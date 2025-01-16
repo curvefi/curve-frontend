@@ -7,7 +7,7 @@ import groupBy from 'lodash/groupBy'
 import { getErrorMessage } from '@/dex/utils'
 
 import AlertFormError from '@/dex/components/AlertFormError'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import Compensations from '@/dex/components/PageCompensation/components/Compensations'
 
 const FormCompensation = ({

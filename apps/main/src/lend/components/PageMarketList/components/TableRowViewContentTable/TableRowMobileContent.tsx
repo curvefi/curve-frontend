@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { FilterType } from '@/lend/components/PageMarketList/utils'
 import { TITLE } from '@/lend/constants'
 import { _showContent } from '@/lend/utils/helpers'
-import Button from '@/ui/Button'
+import Button from '@ui/Button'
 import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
 import CellLoanUserState from '@/lend/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/lend/components/SharedCellData/CellLoanUserHealth'
@@ -16,7 +16,7 @@ import CellRewards from '@/lend/components/SharedCellData/CellRewards'
 import CellTotalCollateralValue from '@/lend/components/SharedCellData/CellTotalCollateralValue'
 import CellUtilization from '@/lend/components/SharedCellData/CellUtilization'
 import CellUserVaultShares from '@/lend/components/SharedCellData/CellUserVaultShares'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 
 type Props = TableRowProps & {
   cellProps: TableCellProps

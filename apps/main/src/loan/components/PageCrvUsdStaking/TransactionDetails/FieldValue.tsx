@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
-import { formatNumber, FORMAT_OPTIONS } from '@/ui/utils'
-import { isReady, isLoading, isIdle } from '@/components/PageCrvUsdStaking/utils'
+import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
+import { isReady, isLoading, isIdle } from '@/loan/components/PageCrvUsdStaking/utils'
 
-import Loader from '@/ui/Loader'
-import Tooltip from '@/ui/Tooltip'
-import Icon from '@/ui/Icon'
+import Loader from '@ui/Loader'
+import Tooltip from '@ui/Tooltip'
+import Icon from '@ui/Icon'
 
 type FieldValueProps = {
   value: string | number

@@ -7,7 +7,7 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 
-import AlertBox from '@/ui/AlertBox'
+import AlertBox from '@ui/AlertBox'
 import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
 import { useSignerAddress } from '@/dex/entities/signer'

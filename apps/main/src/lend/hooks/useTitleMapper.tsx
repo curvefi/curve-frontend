@@ -1,8 +1,8 @@
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import Box from '@ui/Box'
+import ExternalLink from '@ui/Link/ExternalLink'
 
 const useTitleMapper = (): TitleMapper => ({
   isInMarket: { title: '' },

@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 import type { MarketListItem, MarketListMapper } from '@/lend/components/PageMarketList/types'
-import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
+import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 
 import { sleep } from '@/lend/utils/helpers'
 import cloneDeep from 'lodash/cloneDeep'

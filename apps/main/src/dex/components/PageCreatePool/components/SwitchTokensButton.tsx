@@ -13,8 +13,8 @@ import {
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
 
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
 
 type Props = {
   curve: CurveApi

@@ -4,14 +4,14 @@ import React, { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
+import { breakpoints } from '@ui/utils'
+import { scrollToTop } from '@/dao/utils'
+import usePageOnMount from '@/dao/hooks/usePageOnMount'
 
-import Gauges from '@/components/PageGauges/index'
-import DocumentHead from '@/layout/DocumentHead'
-import Settings from '@/layout/Settings'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Gauges from '@/dao/components/PageGauges/index'
+import DocumentHead from '@/dao/layout/DocumentHead'
+import Settings from '@/dao/layout/Settings'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const Page: NextPage = () => {
   const params = useParams()

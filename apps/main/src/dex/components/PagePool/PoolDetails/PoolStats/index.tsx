@@ -4,18 +4,18 @@ import { t } from '@lingui/macro'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { getPath } from '@/dex/utils/utilsRouter'
 
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import ExternalLink from '@ui/Link/ExternalLink'
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
-import { InternalLink } from '@/ui/Link'
+import { InternalLink } from '@ui/Link'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null

@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from '@/dex/entities/gauge'
-import { FlexContainer } from '@/ui/styled-containers'
+import { FlexContainer } from '@ui/styled-containers'
 
 export const GasEstimation: React.FC<{
   chainId: ChainId

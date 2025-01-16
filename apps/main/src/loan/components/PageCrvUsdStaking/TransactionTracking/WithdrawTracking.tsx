@@ -1,7 +1,7 @@
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { txIsConfirming, txIsSuccess, txIsLoading } from '@/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 
 import {
   Wrapper,
@@ -14,9 +14,9 @@ import {
   ResetButton,
 } from './styles'
 
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import Spinner from '@/ui/Spinner'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import Spinner from '@ui/Spinner'
 
 type WithdrawTrackingProps = {
   className?: string

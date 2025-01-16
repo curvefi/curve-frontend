@@ -1,4 +1,4 @@
-import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
+import type { LpTradeToken, PricesApiCoin } from '@ui/Chart/types'
 
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -6,9 +6,9 @@ import styled from 'styled-components'
 
 import useStore from '@/dex/store/useStore'
 
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Button from '@/ui/Button/Button'
-import Icon from '@/ui/Icon'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Button from '@ui/Button/Button'
+import Icon from '@ui/Icon'
 import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import LiquidityData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
 

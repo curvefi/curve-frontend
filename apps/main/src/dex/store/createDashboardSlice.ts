@@ -20,7 +20,7 @@ import orderBy from 'lodash/orderBy'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
-import { shortenAccount } from '@/ui/utils'
+import { shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE

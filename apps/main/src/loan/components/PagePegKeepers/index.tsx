@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils/responsive'
+import useStore from '@/loan/store/useStore'
 
-import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/constants'
-import { usePageVisibleInterval } from '@/ui/hooks'
+import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/loan/constants'
+import { usePageVisibleInterval } from '@ui/hooks'
 
-import PegKeeperContent from '@/components/PagePegKeepers/components/PegKeeperContent'
+import PegKeeperContent from '@/loan/components/PagePegKeepers/components/PegKeeperContent'
 
 const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: Provider }) => {
   const isPageVisible = useStore((state) => state.isPageVisible)

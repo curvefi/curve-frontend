@@ -7,7 +7,7 @@ import { debounce } from 'lodash'
 import useStore from '@/dex/store/useStore'
 
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   TOKEN_A,

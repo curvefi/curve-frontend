@@ -1,12 +1,12 @@
-import type { FormType, VecrvInfo } from '@/components/PageVeCrv/types'
+import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
-import { formatNumber } from '@/ui/utils'
-import { Chip } from '@/ui/Typography'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { formatNumber } from '@ui/utils'
+import { Chip } from '@ui/Typography'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { ExternalLink } from '@/ui/Link'
+import { ExternalLink } from '@ui/Link'
 
 const FieldLockedAmt = ({
   disabled,

@@ -1,11 +1,11 @@
-import { InputDebounced } from '@/ui/InputComp'
+import { InputDebounced } from '@ui/InputComp'
 import { useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { TIME_FRAMES } from '@/dex/constants'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/dex/features/deposit-gauge-reward/ui/index'
 import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/dex/entities/gauge'
-import { FlexContainer } from '@/ui/styled-containers'
+import { FlexContainer } from '@ui/styled-containers'
 
 export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const { setValue, formState, watch } = useFormContext<DepositRewardFormValues>()

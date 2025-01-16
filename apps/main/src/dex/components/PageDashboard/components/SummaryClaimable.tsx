@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import {
@@ -11,9 +11,9 @@ import {
   SummarySpinnerWrapper,
   tooltipProps,
 } from '@/dex/components/PageDashboard/components/Summary'
-import Chip from '@/ui/Typography/Chip'
-import Spinner from '@/ui/Spinner'
-import Stats from '@/ui/Stats'
+import Chip from '@ui/Typography/Chip'
+import Spinner from '@ui/Spinner'
+import Stats from '@ui/Stats'
 
 type AllTotal = {
   totalUsd: number

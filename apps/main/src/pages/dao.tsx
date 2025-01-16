@@ -1,18 +1,18 @@
 import type { NextPage } from 'next'
 
 import { Navigate, Route, Routes } from 'react-router'
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@/dao/constants'
 import dynamic from 'next/dynamic'
 
-const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
-const PageDao = dynamic(() => import('@/components/PageProposals/Page'), { ssr: false })
-const PageProposal = dynamic(() => import('@/components/PageProposal/Page'), { ssr: false })
-const PageGauges = dynamic(() => import('@/components/PageGauges/Page'), { ssr: false })
-const PageAnalytics = dynamic(() => import('@/components/PageAnalytics/Page'), { ssr: false })
-const PageUser = dynamic(() => import('@/components/PageUser/Page'), { ssr: false })
-const PageGauge = dynamic(() => import('@/components/PageGauge/Page'), { ssr: false })
-const PageVeCrv = dynamic(() => import('@/components/PageVeCrv/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
+const Page404 = dynamic(() => import('@/dao/components/Page404/Page'), { ssr: false })
+const PageDao = dynamic(() => import('@/dao/components/PageProposals/Page'), { ssr: false })
+const PageProposal = dynamic(() => import('@/dao/components/PageProposal/Page'), { ssr: false })
+const PageGauges = dynamic(() => import('@/dao/components/PageGauges/Page'), { ssr: false })
+const PageAnalytics = dynamic(() => import('@/dao/components/PageAnalytics/Page'), { ssr: false })
+const PageUser = dynamic(() => import('@/dao/components/PageUser/Page'), { ssr: false })
+const PageGauge = dynamic(() => import('@/dao/components/PageGauge/Page'), { ssr: false })
+const PageVeCrv = dynamic(() => import('@/dao/components/PageVeCrv/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/dao/components/PageDisclaimer/Page'), { ssr: false })
 
 const App: NextPage = () => {
   const SubRoutes = (

@@ -4,13 +4,13 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import { shortenTokenAddress } from '@/dex/utils'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/dex/store/useStore'
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
+import { Chip } from '@ui/Typography'
+import Box from '@ui/Box'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
-import Stats from '@/ui/Stats'
-import Table from '@/ui/Table'
+import Stats from '@ui/Stats'
+import Table from '@ui/Table'
 
 const MySharesStats = ({
   className,

@@ -1,4 +1,4 @@
-import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { t } from '@lingui/macro'
 import { useCallback, useMemo, type Key } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -23,7 +23,7 @@ import {
 } from '@/dex/entities/gauge'
 import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/dex/entities/signer'
 import { useTokens } from '@/dex/entities/token'
-import { FlexContainer } from '@/ui/styled-containers'
+import { FlexContainer } from '@ui/styled-containers'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId

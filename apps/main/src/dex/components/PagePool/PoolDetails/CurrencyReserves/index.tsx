@@ -3,13 +3,13 @@ import styled from 'styled-components'
 
 import { copyToClipboard } from '@/dex/lib/utils'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import usePoolTokensLinksMapper from '@/dex/hooks/usePoolTokensLinksMapper'
 import useStore from '@/dex/store/useStore'
-import { Chip } from '@/ui/Typography'
+import { Chip } from '@ui/Typography'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import CurrencyReservesContent from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
 
 interface Props {
   rChainId: ChainId

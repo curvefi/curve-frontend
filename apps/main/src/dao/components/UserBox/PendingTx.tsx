@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import Spinner from '@/ui/Spinner'
-import Box from '@/ui/Box'
+import Spinner from '@ui/Spinner'
+import Box from '@ui/Box'
 
 type Props = {
   pendingMessage: string

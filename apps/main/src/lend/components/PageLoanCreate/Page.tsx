@@ -19,7 +19,7 @@ import {
   AppPageInfoContentHeader,
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
-} from '@/ui/AppPage'
+} from '@ui/AppPage'
 import DocumentHead from '@/lend/layout/DocumentHead'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import DetailsMarket from '@/lend/components/DetailsMarket'
@@ -30,8 +30,8 @@ import {
   ExpandIcon,
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
-} from '@/ui/Chart/styles'
-import Box from '@/ui/Box'
+} from '@ui/Chart/styles'
+import Box from '@ui/Box'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ConnectWallet from '@/lend/components/ConnectWallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'

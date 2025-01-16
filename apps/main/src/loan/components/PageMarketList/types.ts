@@ -1,7 +1,7 @@
 import type { Params } from 'react-router'
-import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
-import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
+import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 
 export type FormStatus = {
   error: string

@@ -2,9 +2,9 @@ import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import Checkbox from '@/ui/Checkbox'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
 
 function DialogHealthLeverageWarning({
   confirmed,

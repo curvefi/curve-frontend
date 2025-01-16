@@ -3,17 +3,17 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@/dao/store/useStore'
 
-import networks from '@/networks'
+import networks from '@/dao/networks'
 
 import { USER_VOTES_TABLE_LABELS } from './constants'
-import Box from '@/ui/Box'
-import PaginatedTable from '@/components/PaginatedTable'
-import VoteGauge from '@/components/PageGauges/GaugeVoting/VoteGauge'
-import GaugeListItem from '@/components/PageGauges/GaugeListItem'
-import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
-import GaugeVotingStats from '@/components/PageGauges/GaugeVoting/GaugeVotingStats'
+import Box from '@ui/Box'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
+import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
+import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
+import GaugeVotingStats from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
 
 type CurrentVotesProps = {
   userAddress: string | undefined

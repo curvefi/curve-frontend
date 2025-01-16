@@ -17,7 +17,7 @@ import {
   separateCrvProfit,
   separateCrvReward,
 } from '@/dex/utils/utilsCurvejs'
-import { BN } from '@/ui/utils'
+import { BN } from '@ui/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
 import { httpFetcher } from '@/dex/lib/utils'

@@ -1,6 +1,6 @@
 import { t } from '@lingui/macro'
 
-import networks from '@/networks'
+import networks from '@/loan/networks'
 
 interface CustomError extends Error {
   data?: { message: string }

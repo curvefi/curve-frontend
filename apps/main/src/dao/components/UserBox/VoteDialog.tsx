@@ -1,14 +1,14 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/ui/utils'
+import useStore from '@/dao/store/useStore'
+import { formatNumber } from '@ui/utils'
 
-import Button from '@/ui/Button'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import AlertBox from '@/ui/AlertBox'
-import PendingTx from '@/components/UserBox/PendingTx'
+import Button from '@ui/Button'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import AlertBox from '@ui/AlertBox'
+import PendingTx from '@/dao/components/UserBox/PendingTx'
 
 type Props = {
   userAddress: string

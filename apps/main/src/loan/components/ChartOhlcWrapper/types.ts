@@ -1,4 +1,4 @@
-import type { LlammaControllerEvent, LlammaTradeEvent } from '@/ui/Chart/types'
+import type { LlammaControllerEvent, LlammaTradeEvent } from '@ui/Chart/types'
 
 export type LlammaLiquidityCoins = {
   crvusd: {

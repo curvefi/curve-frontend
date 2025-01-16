@@ -1,6 +1,6 @@
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/components/PageLoanCreate/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/loan/components/PageLoanCreate/types'
 
-import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
 
 export const DEFAULT_DETAIL_INFO_LEVERAGE: FormDetailInfoLeverage = {
   collateral: '',

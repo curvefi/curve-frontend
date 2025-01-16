@@ -4,7 +4,7 @@ import useStore from '@/dex/store/useStore'
 
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import { CategoryColumn, SummaryCategoryTitle, StyledCheckmark } from '@/dex/components/PageCreatePool/Summary/styles'
 import StableswapParameters from '@/dex/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters'
 import CryptoswapParameters from '@/dex/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters'

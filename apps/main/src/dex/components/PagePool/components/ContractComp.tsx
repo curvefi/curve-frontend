@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'
 import { shortenTokenAddress } from '@/dex/utils'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Icon from '@/ui/Icon'
+import Box from '@ui/Box'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Icon from '@ui/Icon'
 import useStore from '@/dex/store/useStore'
 
 const ContractComp = ({

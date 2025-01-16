@@ -2,10 +2,10 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import Image from 'next/image'
 
-import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from '@/images'
+import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from '@ui/images'
 
-import Icon from '@/ui/Icon'
-import { ExternalLink } from '@/ui/Link'
+import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
 
 import { APP_LINK } from '@ui-kit/shared/routes'
 

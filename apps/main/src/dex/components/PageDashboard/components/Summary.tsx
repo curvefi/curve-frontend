@@ -1,25 +1,25 @@
-import type { TooltipProps } from '@/ui/Tooltip/types'
+import type { TooltipProps } from '@ui/Tooltip/types'
 
 import React, { useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import { Item, Section } from 'react-stately'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { shortenAccount } from '@/ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { shortenAccount } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import useStore from '@/dex/store/useStore'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import ComboBoxAddress from '@/dex/components/PageDashboard/components/ComboBoxAddress'
 import FormClaimFees from '@/dex/components/PageDashboard/components/FormClaimFees'
 import FormVecrv from '@/dex/components/PageDashboard/components/FormVecrv'
-import { SpinnerWrapper } from '@/ui/Spinner'
-import Stats from '@/ui/Stats'
+import { SpinnerWrapper } from '@ui/Spinner'
+import Stats from '@ui/Stats'
 import SummaryClaimable from '@/dex/components/PageDashboard/components/SummaryClaimable'
 import SummaryRecurrence from '@/dex/components/PageDashboard/components/SummaryRecurrence'
 import SummaryTotal from '@/dex/components/PageDashboard/components/SummaryTotal'
-import TabSlide, { SlideTab, SlideTabs } from '@/ui/TabSlide'
+import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 
 type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
 

@@ -2,10 +2,10 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 
-import CellMarketsTotalDebt from '@/components/SharedCells/TableCellMarketsTotalDebt'
-import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
+import CellMarketsTotalDebt from '@/loan/components/SharedCells/TableCellMarketsTotalDebt'
+import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const TableStats = () => {

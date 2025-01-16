@@ -9,11 +9,11 @@ import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import AlertFormError from '@/dex/components/AlertFormError'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Icon from '@/ui/Icon'
-import TxInfoBar from '@/ui/TxInfoBar'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Icon from '@ui/Icon'
+import TxInfoBar from '@ui/TxInfoBar'
 
 const Compensation = ({
   rChainId,

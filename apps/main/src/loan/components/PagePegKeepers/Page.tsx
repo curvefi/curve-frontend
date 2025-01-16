@@ -5,17 +5,17 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { scrollToTop } from '@/utils/helpers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils/responsive'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
 
-import Box from '@/ui/Box'
-import ConnectWallet from '@/components/ConnectWallet'
-import DocumentHead from '@/layout/DocumentHead'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Settings from '@/layout/Settings'
-import PagePegKeepers from '@/components/PagePegKeepers'
+import Box from '@ui/Box'
+import ConnectWallet from '@/loan/components/ConnectWallet'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Settings from '@/loan/layout/Settings'
+import PagePegKeepers from '@/loan/components/PagePegKeepers'
 
 const Page: NextPage = () => {
   const params = useParams()

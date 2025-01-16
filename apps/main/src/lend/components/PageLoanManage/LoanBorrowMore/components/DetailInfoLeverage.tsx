@@ -1,4 +1,4 @@
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'

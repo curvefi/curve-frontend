@@ -2,14 +2,14 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useState } from 'react'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import Loader from '@/ui/Loader'
-import Button from '@/ui/Button'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import Loader from '@ui/Loader'
+import Button from '@ui/Button'
 
-import NumberField from '@/components/PageCrvUsdStaking/components/InputComp/NumberField'
+import NumberField from '@/loan/components/PageCrvUsdStaking/components/InputComp/NumberField'
 
 type InputCompProps = {
   walletBalance: string

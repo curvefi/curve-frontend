@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { TITLE } from '@/lend/constants'
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
@@ -11,7 +11,7 @@ import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
 import CellToken from '@/lend/components/SharedCellData/CellToken'
 import DetailsConnectWallet from '@/lend/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserSupplyStakedUnstaked from '@/lend/components/DetailsUser/components/DetailsUserSupplyStakedUnstaked'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, userActiveKey, market, titleMapper } = pageProps

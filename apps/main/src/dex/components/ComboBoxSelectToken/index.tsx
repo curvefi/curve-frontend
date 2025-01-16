@@ -12,8 +12,8 @@ import useStore from '@/dex/store/useStore'
 import ComboBox from '@/dex/components/ComboBoxSelectToken/ComboBox'
 import ComboBoxSelectedToken from '@/dex/components/ComboBoxSelectToken/ComboBoxSelectedToken'
 import ComboBoxSelectedTokenButton from '@/dex/components/ComboBoxSelectToken/ComboBoxSelectedTokenButton'
-import ModalDialog from '@/ui/Dialog'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import ModalDialog from '@ui/Dialog'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const ComboBoxTokens = ({
   disabled,

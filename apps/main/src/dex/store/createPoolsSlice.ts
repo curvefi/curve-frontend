@@ -14,7 +14,7 @@ import type {
   PricesApiPool,
   PricesApiPoolResponse,
   TimeOptions,
-} from '@/ui/Chart/types'
+} from '@ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
 import { PromisePool } from '@supercharge/promise-pool'
@@ -29,7 +29,7 @@ import pick from 'lodash/pick'
 import { INVALID_ADDRESS } from '@/dex/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
 import { log } from '@ui-kit/lib/logging'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE

@@ -1,4 +1,4 @@
-import type { FormDetailInfo as Di, FormStatus as Fs } from '@/components/PageLoanManage/types'
+import type { FormDetailInfo as Di, FormStatus as Fs } from '@/loan/components/PageLoanManage/types'
 
 export type FormValues = {
   isFullRepay: boolean

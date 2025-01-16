@@ -1,6 +1,6 @@
 import { t } from '@lingui/macro'
 
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 
 const FieldLpToken = ({
   amount,

@@ -12,12 +12,12 @@ import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
 import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
 import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
 
-import Box, { BoxHeader } from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Switch from '@/ui/Switch/Switch'
-import IconButton from '@/ui/IconButton'
-import Icon from '@/ui/Icon/Icon'
-import ModalDialog from '@/ui/Dialog/ModalDialog'
+import Box, { BoxHeader } from '@ui/Box'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Switch from '@ui/Switch/Switch'
+import IconButton from '@ui/IconButton'
+import Icon from '@ui/Icon/Icon'
+import ModalDialog from '@ui/Dialog/ModalDialog'
 
 type Props = {
   curve: CurveApi

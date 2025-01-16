@@ -11,7 +11,7 @@ import { scrollToTop } from '@/dex/utils'
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import Transfer from '@/dex/components/PagePool/index'
 import ConnectWallet from '@/dex/components/ConnectWallet'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 const Page: NextPage = () => {
   const params = useParams()

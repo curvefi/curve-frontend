@@ -14,7 +14,7 @@ import {
   STABLESWAPOLD,
 } from '@/dex/components/PageDeployGauge/constants'
 
-import InteralLinkButton from '@/ui/InternalLinkButton'
+import InteralLinkButton from '@ui/InternalLinkButton'
 
 const AddGaugeLink = ({
   chainId,

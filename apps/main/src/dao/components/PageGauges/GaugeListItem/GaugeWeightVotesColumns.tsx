@@ -2,12 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils/'
+import { formatNumber } from '@ui/utils/'
 import { calculateStaleVeCrvPercentage } from './utils'
-import useStore from '@/store/useStore'
+import useStore from '@/dao/store/useStore'
 
-import Tooltip from '@/ui/Tooltip'
-import Box from '@/ui/Box'
+import Tooltip from '@ui/Tooltip'
+import Box from '@ui/Box'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight

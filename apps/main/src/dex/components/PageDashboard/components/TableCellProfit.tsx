@@ -2,7 +2,7 @@ import type { WalletPoolData, SortId } from '@/dex/components/PageDashboard/type
 
 import React, { useMemo } from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 

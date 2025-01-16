@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import DeployGauge from '@/dex/components/PageDeployGauge/index'

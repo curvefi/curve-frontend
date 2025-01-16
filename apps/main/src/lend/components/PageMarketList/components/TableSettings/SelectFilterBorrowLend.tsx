@@ -3,7 +3,7 @@ import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import TableButtonFilters from '@/ui/TableButtonFilters'
+import TableButtonFilters from '@ui/TableButtonFilters'
 
 const SelectFilterBorrowLend = ({
   searchParams,

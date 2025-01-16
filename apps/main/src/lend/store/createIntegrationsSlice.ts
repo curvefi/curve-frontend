@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 import type { FilterKey, FormStatus, FormValues } from '@/lend/components/PageIntegrations/types'
-import type { IntegrationApp, IntegrationsTags } from '@/ui/Integration/types'
+import type { IntegrationApp, IntegrationsTags } from '@ui/Integration/types'
 
 import Fuse from 'fuse.js'
 import cloneDeep from 'lodash/cloneDeep'

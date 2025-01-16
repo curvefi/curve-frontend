@@ -4,9 +4,9 @@ import type { SortKey } from '@/dex/components/PagePoolList/types'
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import Box from '@/ui/Box'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import TheadSortButton, { type TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+import Box from '@ui/Box'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import TheadSortButton, { type TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 const TableHeadRewards = ({
   isReadyRewardsApy,

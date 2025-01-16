@@ -8,16 +8,16 @@ import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { getPath } from '@/dex/utils/utilsRouter'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 import useStore from '@/dex/store/useStore'
 
 import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
 import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
-import { ExternalLink } from '@/ui/Link'
+import { ExternalLink } from '@ui/Link'
 
 type Props = {
   setStableFeeValue: React.Dispatch<React.SetStateAction<string>>

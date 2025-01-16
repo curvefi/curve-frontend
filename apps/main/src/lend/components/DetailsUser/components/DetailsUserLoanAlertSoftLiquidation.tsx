@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import ExternalLink from '@ui/Link/ExternalLink'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageContentProps) => {
   const { borrowed_token, collateral_token } = market ?? {}

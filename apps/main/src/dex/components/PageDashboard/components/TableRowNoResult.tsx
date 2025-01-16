@@ -2,10 +2,10 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { shortenAccount } from '@/ui/utils'
+import { shortenAccount } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
-import { SpinnerWrapper } from '@/ui/Spinner'
+import { SpinnerWrapper } from '@ui/Spinner'
 
 type Props = {
   colSpan: number

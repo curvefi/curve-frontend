@@ -2,14 +2,14 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
 
-import { RCCrossCurve } from '@/images'
-import { ExternalLink, InternalLink } from '@/ui/Link'
-import Box from '@/ui/Box'
+import { RCCrossCurve } from '@ui/images'
+import { ExternalLink, InternalLink } from '@ui/Link'
+import Box from '@ui/Box'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {

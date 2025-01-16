@@ -1,5 +1,5 @@
-import { LendingSnapshot, useLendingSnapshots } from '@/entities/lending'
-import { LendingVault } from '@/entities/vaults'
+import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending'
+import { LendingVault } from '@/loan/entities/vaults'
 import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'

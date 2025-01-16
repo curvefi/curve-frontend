@@ -1,5 +1,5 @@
 import { t } from '@lingui/macro'
-import TabSlider, { Tab } from '@/ui/TabSlider/TabSlider'
+import TabSlider, { Tab } from '@ui/TabSlider/TabSlider'
 import { useCallback, useMemo, useState } from 'react'
 import { isAddressEqual, type Address } from 'viem'
 import type { TabValue } from '@/dex/widgets/manage-gauge/types'

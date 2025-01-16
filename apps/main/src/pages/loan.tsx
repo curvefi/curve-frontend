@@ -3,19 +3,22 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@/loan/constants'
 
-const PageMarketList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
-const PageLlamaMarkets = dynamic(() => import('@/components/PageLlamaMarkets/Page').then((p) => p.PageLlamaMarkets), {
-  ssr: false,
-})
-const PageLoanCreate = dynamic(() => import('@/components/PageLoanCreate/Page'), { ssr: false })
-const PageLoanManage = dynamic(() => import('@/components/PageLoanManage/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
-const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
-const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
-const PagePegKeepers = dynamic(() => import('@/components/PagePegKeepers/Page'), { ssr: false })
-const PageCrvUsdStaking = dynamic(() => import('@/components/PageCrvUsdStaking/Page'), { ssr: false })
+const PageMarketList = dynamic(() => import('@/loan/components/PageMarketList/Page'), { ssr: false })
+const PageLlamaMarkets = dynamic(
+  () => import('@/loan/components/PageLlamaMarkets/Page').then((p) => p.PageLlamaMarkets),
+  {
+    ssr: false,
+  },
+)
+const PageLoanCreate = dynamic(() => import('@/loan/components/PageLoanCreate/Page'), { ssr: false })
+const PageLoanManage = dynamic(() => import('@/loan/components/PageLoanManage/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/loan/components/PageDisclaimer/Page'), { ssr: false })
+const Page404 = dynamic(() => import('@/loan/components/Page404/Page'), { ssr: false })
+const PageIntegrations = dynamic(() => import('@/loan/components/PageIntegrations/Page'), { ssr: false })
+const PagePegKeepers = dynamic(() => import('@/loan/components/PagePegKeepers/Page'), { ssr: false })
+const PageCrvUsdStaking = dynamic(() => import('@/loan/components/PageCrvUsdStaking/Page'), { ssr: false })
 
 const App: NextPage = () => {
   const SubRoutes = (

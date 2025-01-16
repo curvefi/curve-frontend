@@ -1,10 +1,10 @@
-import type { InternalLinkProps } from '@/ui/Link/InternalLink'
+import type { InternalLinkProps } from '@ui/Link/InternalLink'
 
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import { InternalLink } from '@/ui/Link'
+import { InternalLink } from '@ui/Link'
 
 interface TableRowProps {
   holder: any

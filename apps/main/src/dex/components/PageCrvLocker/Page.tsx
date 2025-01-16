@@ -12,12 +12,12 @@ import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
 
-import Box, { BoxHeader } from '@/ui/Box'
+import Box, { BoxHeader } from '@ui/Box'
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
-import IconButton from '@/ui/IconButton'
+import IconButton from '@ui/IconButton'
 import Settings from '@/dex/layout/default/Settings'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const Page: NextPage = () => {
   const params = useParams()

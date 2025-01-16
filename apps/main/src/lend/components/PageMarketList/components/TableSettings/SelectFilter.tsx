@@ -5,7 +5,7 @@ import { Item } from 'react-stately'
 import { t } from '@lingui/macro'
 
 import { Filter } from '@/lend/components/PageMarketList/utils'
-import Select from '@/ui/Select'
+import Select from '@ui/Select'
 
 type ListItem = { id: string; displayName: string }
 

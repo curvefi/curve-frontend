@@ -4,13 +4,13 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { CellInPool } from '@/ui/Table'
-import Box from '@/ui/Box'
+import { CellInPool } from '@ui/Table'
+import Box from '@ui/Box'
 import CellToken from '@/lend/components/SharedCellData/CellToken'
 import CellMaxLeverage from '@/lend/components/SharedCellData/CellMaxLeverage'
-import IconButton from '@/ui/IconButton'
-import Icon from '@/ui/Icon'
-import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
+import IconButton from '@ui/IconButton'
+import Icon from '@ui/Icon'
+import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
 
 type Props = TableRowProps & {
   cellProps: TableCellProps

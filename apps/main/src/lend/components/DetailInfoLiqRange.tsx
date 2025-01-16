@@ -4,14 +4,14 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import Button from '@/ui/Button'
+import { Chip } from '@ui/Typography'
+import Button from '@ui/Button'
 import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfoLiqRange = ({

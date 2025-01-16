@@ -14,9 +14,9 @@ import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]

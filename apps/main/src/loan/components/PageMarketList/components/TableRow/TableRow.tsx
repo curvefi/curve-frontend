@@ -1,18 +1,18 @@
-import type { TableRowProps } from '@/components/PageMarketList/types'
+import type { TableRowProps } from '@/loan/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+import { TITLE } from '@/loan/constants'
+import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
-import { Tr, Td, CellInPool } from '@/ui/Table'
-import TokenLabel from '@/components/TokenLabel'
-import TableCellRate from '@/components/SharedCells/TableCellRate'
-import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
-import TableCellUser from '@/components/SharedCells/TableCellUser'
-import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
+import { Tr, Td, CellInPool } from '@ui/Table'
+import TokenLabel from '@/loan/components/TokenLabel'
+import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
+import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
+import TableCellUser from '@/loan/components/SharedCells/TableCellUser'
+import TableCellUtilization from '@/loan/components/SharedCells/TableCellUtilization'
 
 const TableRow = ({
   className,

@@ -1,10 +1,10 @@
-import type { AlertBoxProps } from '@/ui/AlertBox/types'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
 
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import AlertBox from '@/ui/AlertBox'
+import AlertBox from '@ui/AlertBox'
 
 const ALERT_FORM_ERROR_KEYS = {
   'error-user-rejected-action': 'error-user-rejected-action',

@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import Icon from '@/ui/Icon'
+import Icon from '@ui/Icon'
 
-import InputComp from '@/components/PageCrvUsdStaking/components/InputComp'
+import InputComp from '@/loan/components/PageCrvUsdStaking/components/InputComp'
 
 export const SelectorBox = styled.div`
   padding: var(--spacing-2);

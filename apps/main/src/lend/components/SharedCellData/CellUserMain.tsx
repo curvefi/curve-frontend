@@ -2,13 +2,13 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import useVaultShares from '@/lend/hooks/useVaultShares'
 
-import Chip from '@/ui/Typography/Chip'
+import Chip from '@ui/Typography/Chip'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
-import ListInfoItem from '@/ui/ListInfo'
+import ListInfoItem from '@ui/ListInfo'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const CellUserMain = ({

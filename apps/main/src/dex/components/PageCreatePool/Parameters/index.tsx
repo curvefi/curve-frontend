@@ -16,8 +16,8 @@ import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
 import Switch from '@/dex/components/PageCreatePool/components/Switch'
 import TokenWarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
 
 type Props = {
   curve: CurveApi

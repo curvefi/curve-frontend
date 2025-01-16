@@ -1,10 +1,10 @@
-import type { ChipProps } from '@/ui/Typography/types'
+import type { ChipProps } from '@ui/Typography/types'
 
 import React from 'react'
 
 import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
-import TextCaption from '@/ui/TextCaption'
-import Box from '@/ui/Box'
+import TextCaption from '@ui/TextCaption'
+import Box from '@ui/Box'
 import useVaultShares from '@/lend/hooks/useVaultShares'
 
 const ChipVaultSharesUsdRate = ({

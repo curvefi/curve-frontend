@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@/loan/store/useStore'
 
-import ChartLiquidationRange from '@/components/ChartLiquidationRange'
+import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {

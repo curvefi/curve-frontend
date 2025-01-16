@@ -1,10 +1,10 @@
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
-import Item from '@/ui/Items/Item'
-import Items from '@/ui/Items/Items'
+import Item from '@ui/Items/Item'
+import Items from '@ui/Items/Items'
 
 interface PoolTotalStakedProps {
   poolDataCacheOrApi: PoolDataCacheOrApi

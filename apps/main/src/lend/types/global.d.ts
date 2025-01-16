@@ -5,8 +5,8 @@ import type { ReactNode } from 'react'
 import React from 'react'
 import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
-import type { TooltipProps } from '@/ui/Tooltip/types'
-import type { BaseConfig } from '@/ui/utils'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import type { BaseConfig } from '@ui/utils'
 import { TITLE } from '@/lend/constants'
 
 declare global {

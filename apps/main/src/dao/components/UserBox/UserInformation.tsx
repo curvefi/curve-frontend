@@ -2,13 +2,13 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import useStore from '@/store/useStore'
-import { shortenTokenAddress, formatNumber } from '@/ui/utils'
+import useStore from '@/dao/store/useStore'
+import { shortenTokenAddress, formatNumber } from '@ui/utils'
 
-import { TooltipIcon } from '@/ui/Tooltip'
-import Loader from '@/ui/Loader/Loader'
-import InternalLink from '@/ui/Link/InternalLink'
-import Box from '@/ui/Box'
+import { TooltipIcon } from '@ui/Tooltip'
+import Loader from '@ui/Loader/Loader'
+import InternalLink from '@ui/Link/InternalLink'
+import Box from '@ui/Box'
 
 type Props = {
   noLink?: boolean

@@ -1,4 +1,4 @@
-import type { InputVariant } from '@/ui/InputComp/types'
+import type { InputVariant } from '@ui/InputComp/types'
 
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { t } from '@lingui/macro'
@@ -6,17 +6,17 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { delayAction } from '@/lend/utils/helpers'
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import { Radio, RadioGroup } from '@/ui/Radio'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import ModalDialog, { OpenDialogIconButton } from '@/ui/Dialog'
-import InputProvider, { InputField } from '@/ui/InputComp'
+import { Chip } from '@ui/Typography'
+import { Radio, RadioGroup } from '@ui/Radio'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import Icon from '@ui/Icon'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import ModalDialog, { OpenDialogIconButton } from '@ui/Dialog'
+import InputProvider, { InputField } from '@ui/InputComp'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type FormValues = {

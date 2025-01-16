@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Chip } from '@/ui/Typography'
+import { Chip } from '@ui/Typography'
 
 export const StyledInpChip = styled(Chip)`
   padding: 0 0.3125rem; // 5px

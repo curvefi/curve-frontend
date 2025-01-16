@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 
 import useStore from '@/dex/store/useStore'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 

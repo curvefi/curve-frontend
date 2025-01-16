@@ -1,16 +1,16 @@
-import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/components/PageLoanCreate/types'
+import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 
 import React from 'react'
 
-import { DEFAULT_DETAIL_INFO } from '@/components/PageLoanManage/utils'
-import useStore from '@/store/useStore'
+import { DEFAULT_DETAIL_INFO } from '@/loan/components/PageLoanManage/utils'
+import useStore from '@/loan/store/useStore'
 
-import DetailInfoBorrowRate from '@/components/DetailInfoBorrowRate'
-import DetailInfoEstGas from '@/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
-import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
-import DetailInfoN from '@/components/DetailInfoN'
+import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
+import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
+import DetailInfoLiqRangeEdit from '@/loan/components/DetailInfoLiqRangeEdit'
+import DetailInfoN from '@/loan/components/DetailInfoN'
 
 const DetailInfoNonLeverage = ({
   activeKey,

@@ -18,15 +18,15 @@ import {
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { BN, formatNumber } from '@/ui/utils'
+import { BN, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
 import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import TextCaption from '@/ui/TextCaption'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import TextCaption from '@ui/TextCaption'
 
 const ChartBandBalances = ({
   rChainId,

@@ -7,9 +7,9 @@ import { copyToClipboard, shortenTokenAddress } from '@/lend/utils/helpers'
 import networks from '@/lend/networks'
 
 import { StyledStats } from '@/lend/components/DetailsMarket/styles'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
 
 interface Props extends StatsProps {
   chainId: ChainId

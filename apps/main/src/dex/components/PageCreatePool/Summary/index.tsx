@@ -6,7 +6,7 @@ import useStore from '@/dex/store/useStore'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 
 import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
 import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
 import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'

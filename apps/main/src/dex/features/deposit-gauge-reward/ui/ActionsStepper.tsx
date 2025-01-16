@@ -6,10 +6,10 @@ import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui/index'
 import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
 import { REFRESH_INTERVAL } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
-import Stepper from '@/ui/Stepper'
-import { getStepStatus } from '@/ui/Stepper/helpers'
-import type { Step } from '@/ui/Stepper/types'
-import TxInfoBar from '@/ui/TxInfoBar'
+import Stepper from '@ui/Stepper'
+import { getStepStatus } from '@ui/Stepper/helpers'
+import type { Step } from '@ui/Stepper/types'
+import TxInfoBar from '@ui/TxInfoBar'
 
 type TxInfo = {
   description: string

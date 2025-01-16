@@ -1,11 +1,11 @@
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import AdvancedSettings from '@/components/AdvancedSettings'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
+import AdvancedSettings from '@/loan/components/AdvancedSettings'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
 
 type Props = {
   maxSlippage: string

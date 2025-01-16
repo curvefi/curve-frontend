@@ -1,7 +1,7 @@
 import React from 'react'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import type { FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export type FormType = 'create' | 'vault' | 'leverage'

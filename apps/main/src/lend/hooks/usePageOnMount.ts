@@ -1,6 +1,6 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@/ui/utils'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
 
 import { ethers } from 'ethers'

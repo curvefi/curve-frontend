@@ -1,4 +1,4 @@
-import type { SearchParams, SearchTermsResult } from '@/components/PageMarketList/types'
+import type { SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
 import type { SearchTermsFuseResult } from '@ui-kit/utils'
 
 export const DEFAULT_SEARCH_PARAMS: SearchParams = {

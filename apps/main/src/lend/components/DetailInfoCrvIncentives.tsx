@@ -3,14 +3,14 @@ import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { INVALID_ADDRESS } from '@/lend/constants'
 import useAbiTotalSupply from '@/lend/hooks/useAbiTotalSupply'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
-import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
+import TooltipIcon from '@ui/Tooltip/TooltipIcon'
 import { useOneWayMarket } from '@/lend/entities/chain'
 
 type Data = {

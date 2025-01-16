@@ -13,7 +13,7 @@ import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
-import { TrSearchedTextResult } from '@/ui/Table'
+import { TrSearchedTextResult } from '@ui/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface PoolRowProps {

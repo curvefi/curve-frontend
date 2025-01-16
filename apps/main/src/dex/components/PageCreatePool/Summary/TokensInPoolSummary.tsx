@@ -28,9 +28,9 @@ import {
   TokenType,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import OracleSummary from '@/dex/components/PageCreatePool/Summary/OracleSummary'
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import { Chip } from '@/ui/Typography'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import { Chip } from '@ui/Typography'
 
 type Props = {
   imageBaseUrl: string

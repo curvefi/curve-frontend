@@ -1,5 +1,5 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
@@ -12,7 +12,7 @@ import { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 import { useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRouter'
 import { getWalletChainId } from '@/dex/store/createWalletSlice'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import useStore from '@/dex/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

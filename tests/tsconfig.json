@@ -6,8 +6,8 @@
     "resolveJsonModule": true,
     "paths": {
       "@/*": ["*"],
-      "@/ui": ["../packages/ui/src/index.ts"],
-      "@/ui/*": ["../packages/ui/src/*"]
+      "@ui": ["../packages/ui/src/index.ts"],
+      "@ui/*": ["../packages/ui/src/*"]
     }
   },
   "include": [

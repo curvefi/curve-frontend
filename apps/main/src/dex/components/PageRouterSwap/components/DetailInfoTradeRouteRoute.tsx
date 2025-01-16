@@ -10,9 +10,9 @@ import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
 
-import { ExternalLink } from '@/ui/Link'
-import Icon from '@/ui/Icon'
-import TextEllipsis from '@/ui/TextEllipsis'
+import { ExternalLink } from '@ui/Link'
+import Icon from '@ui/Icon'
+import TextEllipsis from '@ui/TextEllipsis'
 import useStore from '@/dex/store/useStore'
 
 const DetailInfoTradeRouteRoute = ({

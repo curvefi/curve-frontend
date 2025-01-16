@@ -6,8 +6,8 @@ import styled from 'styled-components'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 
 import { DetailsButton } from '@/lend/components/DetailInfoLeverageAdvancedExpected'
-import Icon from '@/ui/Icon'
-import Loader from '@/ui/Loader'
+import Icon from '@ui/Icon'
+import Loader from '@ui/Loader'
 
 const ExpectedLabel = ({
   loading,

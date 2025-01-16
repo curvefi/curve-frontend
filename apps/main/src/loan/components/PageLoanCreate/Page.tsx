@@ -5,15 +5,15 @@ import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { REFRESH_INTERVAL } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
-import { getTokenName } from '@/utils/utilsLoan'
-import { hasLeverage } from '@/components/PageLoanCreate/utils'
-import { scrollToTop } from '@/utils/helpers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-import useTitleMapper from '@/hooks/useTitleMapper'
+import { REFRESH_INTERVAL } from '@/loan/constants'
+import { breakpoints } from '@ui/utils/responsive'
+import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import { getTokenName } from '@/loan/utils/utilsLoan'
+import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
+import useTitleMapper from '@/loan/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -22,17 +22,17 @@ import {
   AppPageInfoContentHeader,
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
-} from '@/ui/AppPage'
-import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
-import Box from '@/ui/Box'
-import DocumentHead from '@/layout/DocumentHead'
-import LoanCreate from '@/components/PageLoanCreate/index'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import LoanInfoLlamma from '@/components/LoanInfoLlamma'
-import TextEllipsis from '@/ui/TextEllipsis'
-import Button from '@/ui/Button'
-import Icon from '@/ui/Icon'
-import ConnectWallet from '@/components/ConnectWallet'
+} from '@ui/AppPage'
+import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
+import Box from '@ui/Box'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import LoanCreate from '@/loan/components/PageLoanCreate/index'
+import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
+import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
+import TextEllipsis from '@ui/TextEllipsis'
+import Button from '@ui/Button'
+import Icon from '@ui/Icon'
+import ConnectWallet from '@/loan/components/ConnectWallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {

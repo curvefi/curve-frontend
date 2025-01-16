@@ -1,13 +1,13 @@
-import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
-import type { Order, SearchParams, TableLabel } from '@/components/PageMarketList/types'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
+import type { Order, SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 
 import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import useStore from '@/store/useStore'
+import { TITLE } from '@/loan/constants'
+import useStore from '@/loan/store/useStore'
 
-import { Th, Thead, TheadSortButton } from '@/ui/Table'
-import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import { Th, Thead, TheadSortButton } from '@ui/Table'
+import TooltipIcon from '@ui/Tooltip/TooltipIcon'
 
 const TableHead = ({
   someLoanExists,

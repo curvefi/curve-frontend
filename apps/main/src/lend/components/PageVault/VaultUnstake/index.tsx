@@ -1,25 +1,25 @@
 import type { FormValues, FormStatus, StepKey } from '@/lend/components/PageVault/VaultUnstake/types'
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
-import { getActiveStep } from '@/ui/Stepper/helpers'
+import { formatNumber } from '@ui/utils'
+import { getActiveStep } from '@ui/Stepper/helpers'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
-import AlertBox from '@/ui/AlertBox'
+import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/lend/components/AlertFormError'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import InpChipVaultSharesUsdRate from '@/lend/components/InpChipVaultShareUsdRate'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
+import Stepper from '@ui/Stepper'
+import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {

@@ -4,10 +4,10 @@ import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import { Chip } from '@/ui/Typography'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { Chip } from '@ui/Typography'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 
 const FieldLockedAmt = ({
   disabled,

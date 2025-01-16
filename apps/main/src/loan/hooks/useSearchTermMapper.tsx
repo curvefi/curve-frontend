@@ -1,4 +1,4 @@
-import type { SearchTermKey, SearchTermMapper } from '@/components/PageMarketList/types'
+import type { SearchTermKey, SearchTermMapper } from '@/loan/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 

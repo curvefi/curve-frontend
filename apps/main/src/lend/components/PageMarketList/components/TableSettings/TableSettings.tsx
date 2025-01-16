@@ -4,14 +4,14 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 
-import Box from '@/ui/Box'
-import Checkbox from '@/ui/Checkbox'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
 import SelectFilter from '@/lend/components/PageMarketList/components/TableSettings/SelectFilter'
 import SelectFilterType from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterType'
 import SelectFilterBorrowLend from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
-import SearchListInput from '@/ui/SearchInput/SearchListInput'
+import SearchListInput from '@ui/SearchInput/SearchListInput'
 
 const TableSettings = ({
   filterList,

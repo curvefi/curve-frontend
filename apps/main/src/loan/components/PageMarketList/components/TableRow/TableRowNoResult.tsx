@@ -1,14 +1,14 @@
-import type { SearchParams } from '@/components/PageMarketList/types'
+import type { SearchParams } from '@/loan/components/PageMarketList/types'
 
 import { Trans } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@/loan/store/useStore'
 
-import { Td, Tr } from '@/ui/Table'
-import Button from '@/ui/Button'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import { Td, Tr } from '@ui/Table'
+import Button from '@ui/Button'
+import ExternalLink from '@ui/Link/ExternalLink'
 
 const TableRowNoResult = ({
   colSpan,

@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
 
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 
 const LoanCreate = (pageProps: PageContentProps) => {

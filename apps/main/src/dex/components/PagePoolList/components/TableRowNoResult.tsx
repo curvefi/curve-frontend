@@ -4,14 +4,14 @@ import { Trans } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { shortenAccount } from '@/ui/utils'
+import { shortenAccount } from '@ui/utils'
 import useStore from '@/dex/store/useStore'
 
-import { Td, Tr } from '@/ui/Table'
-import Box from '@/ui/Box'
-import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import { Td, Tr } from '@ui/Table'
+import Box from '@ui/Box'
+import AlertBox from '@ui/AlertBox'
+import Button from '@ui/Button'
+import ExternalLink from '@ui/Link/ExternalLink'
 
 enum ERROR {
   api = 'api',

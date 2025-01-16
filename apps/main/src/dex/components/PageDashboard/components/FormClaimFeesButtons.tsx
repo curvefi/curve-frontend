@@ -1,14 +1,14 @@
-import type { ButtonProps } from '@/ui/Button/types'
-import type { Step } from '@/ui/Stepper/types'
+import type { ButtonProps } from '@ui/Button/types'
+import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import useStore from '@/dex/store/useStore'
-import Button from '@/ui/Button'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
+import Button from '@ui/Button'
+import Stepper from '@ui/Stepper'
+import TxInfoBar from '@ui/TxInfoBar'
 
 const FormClaimFeesButtons = ({
   activeKey,

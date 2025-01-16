@@ -1,4 +1,4 @@
-import type { TooltipProps } from '@/ui/Tooltip/types'
+import type { TooltipProps } from '@ui/Tooltip/types'
 
 import React from 'react'
 

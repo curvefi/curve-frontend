@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 
-import CampaignBannerComp from '@/ui/CampaignRewards/CampaignBannerComp'
+import CampaignBannerComp from '@ui/CampaignRewards/CampaignBannerComp'
 
 interface CampaignRewardsBannerProps {
   address: string

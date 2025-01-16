@@ -1,5 +1,5 @@
-import { FormDetailInfo, FormEstGas, FormStatus } from '@/components/PageLoanManage/types'
-import { INVALID_ADDRESS } from '@/constants'
+import { FormDetailInfo, FormEstGas, FormStatus } from '@/loan/components/PageLoanManage/types'
+import { INVALID_ADDRESS } from '@/loan/constants'
 
 export const DEFAULT_HEALTH_MODE: HealthMode = {
   percent: '',

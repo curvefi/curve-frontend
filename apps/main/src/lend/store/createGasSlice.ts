@@ -4,7 +4,7 @@ import type { GasInfo } from '@/lend/store/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
+import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { gweiToWai } from '@ui-kit/utils'
 import { httpFetcher, log } from '@/lend/utils/helpers'
 import lendingApi from '@/lend/lib/apiLending'

@@ -1,14 +1,14 @@
-import type { PageCollateralList, TableLabel } from '@/components/PageMarketList/types'
+import type { PageCollateralList, TableLabel } from '@/loan/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils'
+import useStore from '@/loan/store/useStore'
 
-import SelectFilterType from '@/components/PageMarketList/components/TableSettings/SelectFilterType'
-import SearchListInput from '@/ui/SearchInput/SearchListInput'
+import SelectFilterType from '@/loan/components/PageMarketList/components/TableSettings/SelectFilterType'
+import SearchListInput from '@ui/SearchInput/SearchListInput'
 
 const TableSettings = ({
   someLoanExists,

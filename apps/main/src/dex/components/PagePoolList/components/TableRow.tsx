@@ -1,15 +1,15 @@
 import type { ColumnKeys, FormValues, SearchParams, ShowDetailsMapper } from '@/dex/components/PagePoolList/types'
-import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
+import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
-import { Td, Tr, CellInPool } from '@/ui/Table'
-import Box from '@/ui/Box'
+import { Td, Tr, CellInPool } from '@ui/Table'
+import Box from '@ui/Box'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
 import PoolLabel from '@/dex/components/PoolLabel'
 import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'

@@ -2,13 +2,13 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@/loan/store/useStore'
 
-import Box from '@/ui/Box'
-import Chip from '@/ui/Typography/Chip'
-import InpChipUsdRate from '@/components/InpChipUsdRate'
-import TextCaption from '@/ui/TextCaption'
+import Box from '@ui/Box'
+import Chip from '@ui/Typography/Chip'
+import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
+import TextCaption from '@ui/TextCaption'
 
 const SMALL_AMOUNT = 0.0001
 

@@ -2,7 +2,7 @@ import { t } from '@lingui/macro'
 
 import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
 
-import CampaignBannerComp from '@/ui/CampaignRewards/CampaignBannerComp'
+import CampaignBannerComp from '@ui/CampaignRewards/CampaignBannerComp'
 
 interface CampaignRewardsBannerProps {
   borrowAddress: string

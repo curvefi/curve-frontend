@@ -4,8 +4,8 @@ import { t } from '@lingui/macro'
 import useStore from '@/dex/store/useStore'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 
-import Icon from '@/ui/Icon'
-import Button from '@/ui/Button'
+import Icon from '@ui/Icon'
+import Button from '@ui/Button'
 import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
 
 interface Props {

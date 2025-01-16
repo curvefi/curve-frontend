@@ -4,8 +4,8 @@ import { t } from '@lingui/macro'
 
 import Stack from '@mui/material/Stack'
 
-import DocumentHead from '@/layout/DocumentHead'
-import { scrollToTop } from '@/utils/helpers'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import { scrollToTop } from '@/loan/utils/helpers'
 
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'

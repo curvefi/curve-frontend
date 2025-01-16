@@ -3,7 +3,7 @@ import type { AlertSummaryProps } from '@/lend/components/AlertLoanSummary/types
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import SummaryCreate from '@/lend/components/AlertLoanSummary/components/SummaryCreate'
 import SummaryFull from '@/lend/components/AlertLoanSummary/components/SummaryFull'
 import SummaryPartial from '@/lend/components/AlertLoanSummary/components/SummaryPartial'

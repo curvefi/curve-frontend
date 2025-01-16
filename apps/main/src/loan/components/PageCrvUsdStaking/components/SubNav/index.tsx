@@ -1,9 +1,9 @@
-import { SubNavItem } from '@/components/PageCrvUsdStaking/components/SubNav/types'
+import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNav/types'
 
 import styled from 'styled-components'
 
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
 
 interface SubNavProps {
   activeKey: string

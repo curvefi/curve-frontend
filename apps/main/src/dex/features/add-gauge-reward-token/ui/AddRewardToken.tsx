@@ -14,11 +14,11 @@ import {
 import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
 import { useSignerAddress } from '@/dex/entities/signer'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
-import { FlexContainer, FormContainer, FormFieldsContainer } from '@/ui/styled-containers'
+import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
 import AlertFormError from '@/dex/components/AlertFormError'
 import useStore from '@/dex/store/useStore'
-import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
-import TxInfoBar from '@/ui/TxInfoBar'
+import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
+import TxInfoBar from '@ui/TxInfoBar'
 
 export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId }) => {
   const { data: signerAddress } = useSignerAddress()

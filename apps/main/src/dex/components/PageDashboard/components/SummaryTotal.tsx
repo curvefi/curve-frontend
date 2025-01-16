@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import {
@@ -10,8 +10,8 @@ import {
   SummaryInnerContent,
   SummarySpinnerWrapper,
 } from '@/dex/components/PageDashboard/components/Summary'
-import { Chip } from '@/ui/Typography'
-import Spinner from '@/ui/Spinner'
+import { Chip } from '@ui/Typography'
+import Spinner from '@ui/Spinner'
 
 const SummaryTotal: React.FC = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()

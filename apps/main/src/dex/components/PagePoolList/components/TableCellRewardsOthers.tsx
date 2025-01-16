@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import { Chip } from '@/ui/Typography'
+import { Chip } from '@ui/Typography'
 
 type Prop = {
   isHighlight: boolean

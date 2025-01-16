@@ -1,9 +1,9 @@
 import { t } from '@lingui/macro'
 
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import DetailInfo from '@ui/DetailInfo'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
 
 const DetailInfoPriceImpact = ({
   loading,

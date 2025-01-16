@@ -1,4 +1,4 @@
-import { Column } from '@/components/PaginatedTable'
+import { Column } from '@/dao/components/PaginatedTable'
 
 export const GAUGE_VOTES_TABLE_LABELS: Column<GaugeVote>[] = [
   { key: 'timestamp', label: 'Date' },

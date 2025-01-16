@@ -1,4 +1,4 @@
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
 const CellLoanUserState = ({ userActiveKey, type }: { userActiveKey: string; type: 'debt' }) => {

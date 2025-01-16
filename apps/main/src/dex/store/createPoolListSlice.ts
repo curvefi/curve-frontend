@@ -9,7 +9,7 @@ import type {
   SearchTermsResult,
   SortKey,
 } from '@/dex/components/PagePoolList/types'
-import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
+import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
 
 import chunk from 'lodash/chunk'

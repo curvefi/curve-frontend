@@ -5,8 +5,8 @@ import styled from 'styled-components'
 
 import useStore from '@/lend/store/useStore'
 
-import TableSortSelect from '@/ui/TableSort/TableSortSelect'
-import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
+import TableSortSelect from '@ui/TableSort/TableSortSelect'
+import TableSortSelectMobile from '@ui/TableSort/TableSortSelectMobile'
 
 const SelectFilterType = ({
   showBorrowSignerCell,

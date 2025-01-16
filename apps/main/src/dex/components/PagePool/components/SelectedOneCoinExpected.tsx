@@ -4,14 +4,14 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 import { shortenTokenAddress } from '@/dex/utils'
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import { Chip } from '@/ui/Typography'
-import { Radio, RadioGroup } from '@/ui/Radio'
-import Loader from '@/ui/Loader'
-import Spacer from '@/ui/Spacer'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import TextEllipsis from '@/ui/TextEllipsis'
+import { Chip } from '@ui/Typography'
+import { Radio, RadioGroup } from '@ui/Radio'
+import Loader from '@ui/Loader'
+import Spacer from '@ui/Spacer'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import TextEllipsis from '@ui/TextEllipsis'
 import TokenIcon from '@/dex/components/TokenIcon'
 
 const SelectedOneCoinExpected = ({

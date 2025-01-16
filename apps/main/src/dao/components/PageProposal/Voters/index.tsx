@@ -2,13 +2,13 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
-import { shortenTokenAddress, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
-import networks from '@/networks'
+import { shortenTokenAddress, formatNumber } from '@ui/utils'
+import useStore from '@/dao/store/useStore'
+import networks from '@/dao/networks'
 
-import Box from '@/ui/Box'
-import { ExternalLink, InternalLink } from '@/ui/Link'
-import Icon from '@/ui/Icon'
+import Box from '@ui/Box'
+import { ExternalLink, InternalLink } from '@ui/Link'
+import Icon from '@ui/Icon'
 
 type Props = {
   totalVotes: number

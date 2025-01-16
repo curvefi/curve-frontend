@@ -2,14 +2,14 @@ import styled from 'styled-components'
 import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { TOP_HOLDERS_FILTERS } from '@/components/PageAnalytics/constants'
+import useStore from '@/dao/store/useStore'
+import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import Spinner from '../../Spinner'
-import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
-import ErrorMessage from '@/components/ErrorMessage'
-import TopHoldersBarChartComponent from '@/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
+import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 
 const TopLockers: React.FC = () => {
   const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(

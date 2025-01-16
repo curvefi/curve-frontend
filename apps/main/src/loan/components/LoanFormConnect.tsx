@@ -1,12 +1,12 @@
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import { CONNECT_STAGE } from '@/constants'
-import { isLoading } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { CONNECT_STAGE } from '@/loan/constants'
+import { isLoading } from '@ui/utils'
+import useStore from '@/loan/store/useStore'
 
-import Button from '@/ui/Button'
-import Spinner from '@/ui/Spinner'
+import Button from '@ui/Button'
+import Spinner from '@ui/Spinner'
 
 const LoanFormConnect = ({
   haveSigner,

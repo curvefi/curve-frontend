@@ -1,5 +1,5 @@
-import type { FilterKey, FormValues } from '@/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@/ui/Integration/types'
+import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
+import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
 
 import { Trans } from '@lingui/macro'
@@ -7,18 +7,18 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
 
-import { ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
-import { getPath } from '@/utils/utilsRouter'
+import { ROUTE } from '@/loan/constants'
+import { breakpoints } from '@ui/utils'
+import { getPath } from '@/loan/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
-import networks, { networksIdMapper } from '@/networks'
-import useStore from '@/store/useStore'
+import networks, { networksIdMapper } from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
 
-import Box from '@/ui/Box'
-import IntegrationAppComp from '@/ui/Integration/IntegrationApp'
-import SearchInput from '@/ui/SearchInput'
-import TableButtonFilters from '@/ui/TableButtonFilters'
-import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
+import Box from '@ui/Box'
+import IntegrationAppComp from '@ui/Integration/IntegrationApp'
+import SearchInput from '@ui/SearchInput'
+import TableButtonFilters from '@ui/TableButtonFilters'
+import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({

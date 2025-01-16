@@ -4,9 +4,9 @@ import { t } from '@lingui/macro'
 import useStore from '@/dex/store/useStore'
 import { curveProps } from '@/dex/lib/utils'
 
-import Button from '@/ui/Button'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import AlertBox from '@/ui/AlertBox'
+import Button from '@ui/Button'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 
 interface Props {

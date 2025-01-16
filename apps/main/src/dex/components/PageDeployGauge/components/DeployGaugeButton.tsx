@@ -13,9 +13,9 @@ import {
   STABLESWAP,
   STABLESWAPOLD,
 } from '@/dex/components/PageDeployGauge/constants'
-import Button from '@/ui/Button'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import AlertBox from '@/ui/AlertBox'
+import Button from '@ui/Button'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 
 interface Props {

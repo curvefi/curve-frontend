@@ -1,5 +1,5 @@
 import type { FormValues, Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
-import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
@@ -7,10 +7,10 @@ import { t } from '@lingui/macro'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
-import { Th, Thead, TheadSortButton } from '@/ui/Table'
-import Box from '@/ui/Box'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { breakpoints } from '@/ui/utils'
+import { Th, Thead, TheadSortButton } from '@ui/Table'
+import Box from '@ui/Box'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { breakpoints } from '@ui/utils'
 import styled from 'styled-components'
 
 const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {

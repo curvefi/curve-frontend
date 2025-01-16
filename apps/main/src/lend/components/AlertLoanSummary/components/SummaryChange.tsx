@@ -5,7 +5,7 @@ import React from 'react'
 
 import { format } from '@/lend/components/AlertLoanSummary/utils'
 
-import Icon from '@/ui/Icon'
+import Icon from '@ui/Icon'
 import Item from '@/lend/components/AlertLoanSummary/components/Item'
 
 const SummaryChange = ({

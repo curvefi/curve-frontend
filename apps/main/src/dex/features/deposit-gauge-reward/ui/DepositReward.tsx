@@ -11,10 +11,10 @@ import {
 } from '@/dex/features/deposit-gauge-reward/ui/index'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
-import { BlockSkeleton } from '@/ui/skeleton'
-import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/ui/styled-containers'
+import { BlockSkeleton } from '@ui/skeleton'
+import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
 import AlertFormError from '@/dex/components/AlertFormError'
-import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
+import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 
 export const DepositReward: React.FC<{
   chainId: ChainId

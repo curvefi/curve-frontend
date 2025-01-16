@@ -1,14 +1,14 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { ConnectState } from '@/ui/utils'
+import type { State } from '@/loan/store/useStore'
+import type { ConnectState } from '@ui/utils'
 
 import produce from 'immer'
 
 import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
-import { httpFetcher, log } from '@/utils/helpers'
+import { httpFetcher, log } from '@/loan/utils/helpers'
 import isEqual from 'lodash/isEqual'
-import networks from '@/networks'
+import networks from '@/loan/networks'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -65,7 +65,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
   getContract: async (jsonModuleName, contractAddress, provider) => {
     try {
-      const abi = await import(`@/abis/${jsonModuleName}.json`).then((module) => module.default)
+      const abi = await import(`@/loan/abis/${jsonModuleName}.json`).then((module) => module.default)
 
       if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
 

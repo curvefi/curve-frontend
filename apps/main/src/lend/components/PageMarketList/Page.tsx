@@ -14,12 +14,12 @@ import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
 import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 
-import { AppPageContainer } from '@/ui/AppPage'
+import { AppPageContainer } from '@ui/AppPage'
 import DocumentHead from '@/lend/layout/DocumentHead'
 import MarketList from '@/lend/components/PageMarketList/index'
 import Settings from '@/lend/layout/Settings'
 import ConnectWallet from '@/lend/components/ConnectWallet'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 enum SEARCH {
   filter = 'filter',

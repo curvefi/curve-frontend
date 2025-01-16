@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@/loan/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -5,7 +5,7 @@ import useStore from '@/dex/store/useStore'
 
 import { CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import {
   CategoryColumn,
   SummaryData,

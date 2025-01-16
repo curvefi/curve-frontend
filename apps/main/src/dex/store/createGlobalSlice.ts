@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import type { Locale } from '@ui-kit/lib/i18n'
-import { ConnectState, getPageWidthClassName } from '@/ui/utils'
+import { ConnectState, getPageWidthClassName } from '@ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'

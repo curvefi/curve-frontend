@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import Box from '@/ui/Box'
-import { ExternalLink } from '@/ui/Link'
-import AlertBox from '@/ui/AlertBox'
+import Box from '@ui/Box'
+import { ExternalLink } from '@ui/Link'
+import AlertBox from '@ui/AlertBox'
 
 const InfoBox = () => (
   <StyledAlertBox alertType="info">

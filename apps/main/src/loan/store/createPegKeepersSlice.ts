@@ -1,13 +1,13 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { DetailsMapper, FormStatus } from '@/components/PagePegKeepers/types'
+import type { State } from '@/loan/store/useStore'
+import type { DetailsMapper, FormStatus } from '@/loan/components/PagePegKeepers/types'
 
 import PromisePool from '@supercharge/promise-pool'
 import { ethers } from 'ethers'
-import crvusdjsApi from '@/lib/apiCrvusd'
+import crvusdjsApi from '@/loan/lib/apiCrvusd'
 
-import { DEFAULT_FORM_STATUS } from '@/components/PagePegKeepers/utils'
-import { PEG_KEEPERS_ADDRESSES } from '@/constants'
+import { DEFAULT_FORM_STATUS } from '@/loan/components/PagePegKeepers/utils'
+import { PEG_KEEPERS_ADDRESSES } from '@/loan/constants'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

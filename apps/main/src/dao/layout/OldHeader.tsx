@@ -1,20 +1,20 @@
-// import type { AppLogoProps } from '@/ui/Brand/AppLogo'
-// import type { AppPage } from '@/ui/AppNav/types'
-// import type { ThemeType } from '@/ui/Select/SelectThemes'
+// import type { AppLogoProps } from '@ui/Brand/AppLogo'
+// import type { AppPage } from '@ui/AppNav/types'
+// import type { ThemeType } from '@ui/Select/SelectThemes'
 
 // import React, { useRef } from 'react'
 // import { t } from '@lingui/macro'
 // import { useNavigate, useParams } from 'react-router-dom'
 
-// import { CONNECT_STAGE, ROUTE } from '@/constants'
-// import { DEFAULT_LOCALES } from '@/lib/i18n'
-// import { isLoading } from '@/ui/utils'
-// import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
-// import { getWalletSignerAddress } from '@/store/createWalletSlice'
+// import { CONNECT_STAGE, ROUTE } from '@/dao/constants'
+// import { DEFAULT_LOCALES } from '@/dao/lib/i18n'
+// import { isLoading } from '@ui/utils'
+// import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname } from '@/dao/utils/utilsRouter'
+// import { getWalletSignerAddress } from '@/dao/store/createWalletSlice'
 // import { useConnectWallet } from '@ui-kit/features/connect-wallet'
-// import networks, { visibleNetworksList } from '@/networks'
-// import useLayoutHeight from '@/hooks/useLayoutHeight'
-// import useStore from '@/store/useStore'
+// import networks, { visibleNetworksList } from '@/dao/networks'
+// import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
+// import useStore from '@/dao/store/useStore'
 
 // import {
 //   APP_LINK,
@@ -24,12 +24,12 @@
 //   AppNavBar,
 //   AppNavMenuSection,
 //   AppSelectNetwork,
-// } from '@/ui/AppNav'
-// import { CommunitySection, ResourcesSection } from '@/layout/Footer'
-// import AppLogo from '@/ui/Brand'
-// import AppNavPages from '@/ui/AppNav/AppNavPages'
-// import ConnectWallet from '@/ui/Button/ConnectWallet'
-// import HeaderSecondary from '@/layout/HeaderSecondary'
+// } from '@ui/AppNav'
+// import { CommunitySection, ResourcesSection } from '@/dao/layout/Footer'
+// import AppLogo from '@ui/Brand'
+// import AppNavPages from '@ui/AppNav/AppNavPages'
+// import ConnectWallet from '@ui/Button/ConnectWallet'
+// import HeaderSecondary from '@/dao/layout/HeaderSecondary'
 
 // const Header = () => {
 //   const [{ wallet }] = useConnectWallet()

@@ -1,6 +1,6 @@
 import type { State } from '@/lend/store/useStore'
 import type { GetState, SetState } from 'zustand'
-import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
+import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import produce from 'immer'
 
 import campaigns from '@/shared/external-rewards'

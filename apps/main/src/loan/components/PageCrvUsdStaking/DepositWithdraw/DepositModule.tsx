@@ -1,21 +1,18 @@
 import { t } from '@lingui/macro'
 import Image from 'next/image'
 import BigNumber from 'bignumber.js'
-
-import useStore from '@/store/useStore'
-import { isLoading } from '@/components/PageCrvUsdStaking/utils'
-
-import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from '@/images'
-
-import Box from '@/ui/Box'
+import useStore from '@/loan/store/useStore'
+import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
+import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from '@ui/images'
+import Box from '@ui/Box'
 import {
+  ErrorText,
   InputLabel,
+  InputSelectorText,
   InputWrapper,
   SelectorBox,
   StyledIcon,
   StyledInputComp,
-  InputSelectorText,
-  ErrorText,
 } from './styles'
 
 const DepositModule = () => {

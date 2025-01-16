@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { isValidAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
 
-import { SlideTabs, SlideTab } from '@/ui/TabSlide'
+import { SlideTabs, SlideTab } from '@ui/TabSlide'
 import { StyledTabSlide } from '@/dex/components/PagePool/styles'
 import FormClaim from '@/dex/components/PagePool/Withdraw/components/FormClaim'
 import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'

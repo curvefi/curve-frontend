@@ -9,7 +9,7 @@ import { parseSearchTermMapper } from '@/lend/hooks/useSearchTermMapper'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 
-import { TrSearchedTextResult } from '@/ui/Table'
+import { TrSearchedTextResult } from '@ui/Table'
 import TableRow from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import TableRowMobile from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
 import { useOneWayMarket } from '@/lend/entities/chain'

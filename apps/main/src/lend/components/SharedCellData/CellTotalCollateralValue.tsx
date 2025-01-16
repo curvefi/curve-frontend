@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
-import TextCaption from '@/ui/TextCaption'
+import TextCaption from '@ui/TextCaption'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

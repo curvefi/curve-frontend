@@ -2,8 +2,8 @@ import styled, { keyframes } from 'styled-components'
 
 import useStore from '@/lend/store/useStore'
 
-import Icon from '@/ui/Icon'
-import Button from '@/ui/Button'
+import Icon from '@ui/Icon'
+import Button from '@ui/Button'
 
 type Props = {
   showScrollButton?: boolean

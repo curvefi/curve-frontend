@@ -3,7 +3,7 @@ import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import numbro from 'numbro'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
-import { shortenAccount } from '@/ui/utils'
+import { shortenAccount } from '@ui/utils'
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection

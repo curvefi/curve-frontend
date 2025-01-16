@@ -2,14 +2,14 @@ import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
 
-import Box from '@/ui/Box'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
-import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import Box from '@ui/Box'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
+import TooltipIcon from '@ui/Tooltip/TooltipIcon'
 
 const DetailInfoExpectedApy = ({
   crvApr,

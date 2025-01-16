@@ -2,11 +2,11 @@ import React from 'react'
 import { t } from '@lingui/macro'
 
 import { LARGE_APY } from '@/dex/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import { Chip } from '@/ui/Typography'
+import { Chip } from '@ui/Typography'
 import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TooltipBaseApy from '@/dex/components/PagePoolList/components/TooltipBaseApy'
 
 type Props = {

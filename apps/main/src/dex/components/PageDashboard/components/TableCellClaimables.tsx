@@ -3,7 +3,7 @@ import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 

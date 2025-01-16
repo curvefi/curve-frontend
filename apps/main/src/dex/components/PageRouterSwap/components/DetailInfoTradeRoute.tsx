@@ -6,10 +6,10 @@ import styled from 'styled-components'
 
 import useStore from '@/dex/store/useStore'
 
-import { RCCircle } from '@/images'
-import Box from '@/ui/Box'
+import { RCCircle } from '@ui/images'
+import Box from '@ui/Box'
 import DetailInfoTradeRouteRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
-import Loader from '@/ui/Loader'
+import Loader from '@ui/Loader'
 
 const DetailInfoTradeRoute = ({
   params,

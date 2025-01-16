@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
-import useStore from '@/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import { GAUGE_VOTES_LABELS } from '../constants'
 
-import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@/ui/utils'
+import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
 
-import PaginatedTable from '@/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 
 interface UserGaugeVotesTableProps {
   userAddress: string

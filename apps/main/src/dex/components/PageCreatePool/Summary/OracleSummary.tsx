@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@/dex/utils'
 import styled from 'styled-components'
 import useStore from '@/dex/store/useStore'
-import Icon from '@/ui/Icon'
+import Icon from '@ui/Icon'
 import {
   CategoryDataRow,
   SummaryDataTitle,

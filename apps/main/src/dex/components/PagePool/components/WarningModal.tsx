@@ -1,10 +1,10 @@
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import Checkbox from '@/ui/Checkbox'
-import AlertBox from '@/ui/AlertBox'
+import Checkbox from '@ui/Checkbox'
+import AlertBox from '@ui/AlertBox'
 
 type SharedProps = {
   confirmed: boolean

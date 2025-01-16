@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import useStore from '@/dex/store/useStore'
 
-import TabSlide, { SlideTab, SlideTabs } from '@/ui/TabSlide'
+import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import FormLockCreate from '@/dex/components/PageCrvLocker/components/FormLockCreate'
 import FormLockCrv from '@/dex/components/PageCrvLocker/components/FormLockCrv'
 import FormLockDate from '@/dex/components/PageCrvLocker/components/FormLockDate'

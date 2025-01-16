@@ -3,15 +3,15 @@ import { t } from '@lingui/macro'
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 
-import useStore from '@/store/useStore'
-import { isReady } from '@/components/PageCrvUsdStaking/utils'
-import { formatNumber } from '@/ui/utils'
-import { RCScrvUSDLogoSM } from '@/images'
-import { CRVUSD_ADDRESS } from '@/constants'
+import useStore from '@/loan/store/useStore'
+import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
+import { formatNumber } from '@ui/utils'
+import { RCScrvUSDLogoSM } from '@ui/images'
+import { CRVUSD_ADDRESS } from '@/loan/constants'
 
-import Box from '@/ui/Box'
-import Loader from '@/ui/Loader'
-import Tooltip from '@/ui/Tooltip'
+import Box from '@ui/Box'
+import Loader from '@ui/Loader'
+import Tooltip from '@ui/Tooltip'
 
 type UserPositionBannerProps = {
   className?: string

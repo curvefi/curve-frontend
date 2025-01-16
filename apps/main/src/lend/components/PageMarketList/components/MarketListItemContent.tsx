@@ -3,7 +3,7 @@ import type { MarketListItemResult, PageMarketList, TableLabel } from '@/lend/co
 import React from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
 import MarketListTable from '@/lend/components/PageMarketList/components/TableRowViewContentTable'

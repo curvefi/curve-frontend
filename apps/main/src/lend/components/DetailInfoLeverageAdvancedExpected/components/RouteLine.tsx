@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { RCCircle } from '@/images'
+import { RCCircle } from '@ui/images'
 
 const RouteLine = () => (
   <RouteTravelDecor>

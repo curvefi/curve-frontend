@@ -1,5 +1,5 @@
 import type { FilterKey } from '@/dex/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@/ui/Integration/types'
+import type { IntegrationsTags } from '@ui/Integration/types'
 import type { ChainOption } from '@ui-kit/features/switch-chain'
 
 export function parseSearchParams(

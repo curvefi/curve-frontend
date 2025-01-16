@@ -6,7 +6,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 
 import { ContentWrapper, DarkContent, SubTitle, Wrapper } from '@/lend/components/DetailsMarket/styles'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
 import CellCap from '@/lend/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/lend/components/SharedCellData/CellLoanTotalDebt'
@@ -17,7 +17,7 @@ import DetailsLoanChartBalances from '@/lend/components/DetailsMarket/components
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper, userActiveKey } = pageProps

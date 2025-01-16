@@ -1,5 +1,5 @@
-import { LendingVault } from '@/entities/vaults'
-import { formatNumber } from '@/ui/utils'
+import { LendingVault } from '@/loan/entities/vaults'
+import { formatNumber } from '@ui/utils'
 import { CellContext } from '@tanstack/react-table'
 
 export const CompactUsdCell = ({ getValue }: CellContext<LendingVault, number>) => {

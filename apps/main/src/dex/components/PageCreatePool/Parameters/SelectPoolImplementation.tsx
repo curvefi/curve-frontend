@@ -6,10 +6,10 @@ import useStore from '@/dex/store/useStore'
 
 import { IMPLEMENTATION_IDS } from '@/dex/components/PageCreatePool/constants'
 
-import Checkbox from '@/ui/Checkbox'
-import Tooltip from '@/ui/Tooltip'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
+import Checkbox from '@ui/Checkbox'
+import Tooltip from '@ui/Tooltip'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
 
 type Props = {
   chainId: ChainId

@@ -6,11 +6,11 @@ import styled from 'styled-components'
 
 import { Filter } from '@/lend/components/PageMarketList/utils'
 
-import { shortenAccount } from '@/ui/utils'
-import Box from '@/ui/Box'
-import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import { shortenAccount } from '@ui/utils'
+import Box from '@ui/Box'
+import AlertBox from '@ui/AlertBox'
+import Button from '@ui/Button'
+import ExternalLink from '@ui/Link/ExternalLink'
 import { useChainId, useOneWayMarketMapping } from '@/lend/entities/chain'
 
 enum ERROR {

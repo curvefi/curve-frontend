@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import SliderSingleThumb from '@/ui/SliderSingleThumb'
+import SliderSingleThumb from '@ui/SliderSingleThumb'
 
 const DetailInfoLiqRangeEdit = ({
   liqRanges,

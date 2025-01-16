@@ -1,6 +1,6 @@
 import { t } from '@lingui/macro'
 
-import { Thead, Th } from '@/ui/Table'
+import { Thead, Th } from '@ui/Table'
 
 const TableHeadMobile = () => (
   <Thead>

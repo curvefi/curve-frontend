@@ -1,11 +1,11 @@
-import type { ChipProps } from '@/ui/Typography/types'
+import type { ChipProps } from '@ui/Typography/types'
 
 import React from 'react'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
+import Chip from '@ui/Typography/Chip'
 
 const CellUserBalances = ({
   userActiveKey,

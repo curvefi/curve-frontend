@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { LayoutHeight } from '@/store/types'
+import type { State } from '@/loan/store/useStore'
+import type { LayoutHeight } from '@/loan/store/types'
 
 import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'

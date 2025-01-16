@@ -2,9 +2,9 @@ import { t } from '@lingui/macro'
 import React from 'react'
 import isUndefined from 'lodash/isUndefined'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
 
 interface Props {
   parameters: LoanParameter | undefined

@@ -13,13 +13,13 @@ import type {
   LlammaControllerApiResponse,
   LlammaTradeEvent,
   LlammaControllerEvent,
-} from '@/ui/Chart/types'
+} from '@ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
 import produce from 'immer'
 
 import networks from '@/lend/networks'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 
 type SliceState = {
   chartLlammaOhlc: {

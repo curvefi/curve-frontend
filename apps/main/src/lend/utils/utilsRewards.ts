@@ -1,4 +1,4 @@
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 export function getTotalApr(lendApr: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
   const othersTotal = (others ?? []).reduce((prev, curr) => {

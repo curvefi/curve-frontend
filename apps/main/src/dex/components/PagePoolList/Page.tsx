@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'

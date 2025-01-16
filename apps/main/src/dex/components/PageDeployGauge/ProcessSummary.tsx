@@ -3,12 +3,12 @@ import { t } from '@lingui/macro'
 import useStore from '@/dex/store/useStore'
 import { shortenTokenAddress } from '@/dex/utils'
 import { useNavigate } from 'react-router-dom'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import InternalLinkButton from '@/ui/InternalLinkButton'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import InternalLinkButton from '@ui/InternalLinkButton'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
-import Spinner from '@/ui/Spinner'
+import Spinner from '@ui/Spinner'
 
 type Props = {
   chainId: ChainId

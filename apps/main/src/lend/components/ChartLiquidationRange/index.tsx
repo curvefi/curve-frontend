@@ -14,7 +14,7 @@ import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'

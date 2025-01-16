@@ -1,7 +1,7 @@
 import React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
 import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
 

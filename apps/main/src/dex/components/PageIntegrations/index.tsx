@@ -1,5 +1,5 @@
 import type { FormValues } from '@/dex/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@/ui/Integration/types'
+import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
 
 import { useFocusRing } from '@react-aria/focus'
@@ -9,15 +9,15 @@ import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import useStore from '@/dex/store/useStore'
 
-import Box from '@/ui/Box'
-import IntegrationAppComp from '@/ui/Integration/IntegrationApp'
-import SearchInput from '@/ui/SearchInput'
-import SelectNetwork from '@/ui/SelectNetwork/SelectNetwork'
+import Box from '@ui/Box'
+import IntegrationAppComp from '@ui/Integration/IntegrationApp'
+import SearchInput from '@ui/SearchInput'
+import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations

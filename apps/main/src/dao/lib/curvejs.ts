@@ -1,13 +1,13 @@
-import type { FormType as LockFormType } from '@/components/PageVeCrv/types'
+import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
 import type { DateValue } from '@internationalized/date'
 
 import dayjs from '@ui-kit/lib/dayjs'
 import PromisePool from '@supercharge/promise-pool/dist'
 
-import networks from '@/networks'
+import networks from '@/dao/networks'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { getErrorMessage } from '@/utils'
+import { getErrorMessage } from '@/dao/utils'
 import { log } from '@ui-kit/lib'
 
 export const helpers = {

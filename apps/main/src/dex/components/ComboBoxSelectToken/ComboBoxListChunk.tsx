@@ -3,7 +3,7 @@ import type { ComboBoxSelectTokenProps } from '@/dex/components/ComboBoxSelectTo
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
 import SelectTokenListItem from '@/dex/components/ComboBoxSelectToken/ComboBoxListItem'
 

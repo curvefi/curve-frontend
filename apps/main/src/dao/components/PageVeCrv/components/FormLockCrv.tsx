@@ -1,23 +1,23 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageVeCrv/types'
-import type { Step } from '@/ui/Stepper/types'
+import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/dao/components/PageVeCrv/types'
+import type { Step } from '@ui/Stepper/types'
 
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_EST_GAS } from '@/components/PageVeCrv/utils'
-import { REFRESH_INTERVAL } from '@/constants'
-import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import networks from '@/networks'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import useStore from '@/store/useStore'
+import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
+import { REFRESH_INTERVAL } from '@/dao/constants'
+import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import networks from '@/dao/networks'
+import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
+import useStore from '@/dao/store/useStore'
 
-import AlertFormError from '@/components/AlertFormError'
-import FormActions from '@/components/PageVeCrv/components/FormActions'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import FieldLockedAmt from '@/components/PageVeCrv/components/FieldLockedAmt'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
+import AlertFormError from '@/dao/components/AlertFormError'
+import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
+import FieldLockedAmt from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
+import Stepper from '@ui/Stepper'
+import TxInfoBar from '@ui/TxInfoBar'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 
-import Icon from '@/ui/Icon'
+import Icon from '@ui/Icon'
 
 const ExpectedSummary = ({
   label,

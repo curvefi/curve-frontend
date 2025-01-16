@@ -7,11 +7,11 @@ import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
 
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
-import AlertBox from '@/ui/AlertBox'
-import InternalLink from '@/ui/Link/InternalLink'
-import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
-import Spinner from '@/ui/Spinner'
-import TextCaption from '@/ui/TextCaption'
+import AlertBox from '@ui/AlertBox'
+import InternalLink from '@ui/Link/InternalLink'
+import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
+import Spinner from '@ui/Spinner'
+import TextCaption from '@ui/TextCaption'
 
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {
   const params = useParams()

@@ -1,4 +1,4 @@
-import InputProvider from '@/ui/InputComp'
+import InputProvider from '@ui/InputComp'
 import styled from 'styled-components'
 import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 

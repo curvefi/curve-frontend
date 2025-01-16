@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { ExternalLink } from '@/ui/Link'
+import { ExternalLink } from '@ui/Link'
 import useStore from '@/dex/store/useStore'
 
 const ClassicPoolsOnlyDescription = () => {

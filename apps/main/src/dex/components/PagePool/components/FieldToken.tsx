@@ -3,8 +3,8 @@ import { t } from '@lingui/macro'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { shortenTokenAddress, shortenTokenName } from '@/dex/utils'
 
-import Box from '@/ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import Box from '@ui/Box'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import TokenIcon from '@/dex/components/TokenIcon'
 
 type Props = {

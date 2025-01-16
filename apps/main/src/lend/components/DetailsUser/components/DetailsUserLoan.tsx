@@ -3,13 +3,13 @@ import styled from 'styled-components'
 
 import { TITLE } from '@/lend/constants'
 import { _showContent } from '@/lend/utils/helpers'
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import networks from '@/lend/networks'
 
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import CellHealthStatus from '@/lend/components/SharedCellData/CellHealthStatus'
 import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
 import CellLlammaBalances from '@/lend/components/SharedCellData/CellLlammaBalances'
@@ -21,7 +21,7 @@ import DetailsUserLoanAlertSoftLiquidation from '@/lend/components/DetailsUser/c
 import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import DetailsUserLoanChartLiquidationRange from '@/lend/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {

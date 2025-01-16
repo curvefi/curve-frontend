@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@/dao/store/useStore'
 
-import { sleep } from '@/utils'
+import { sleep } from '@/dao/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -21,10 +21,10 @@ import {
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
 import ComboBoxTokenPicker from '@/dex/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
-import Box from '@/ui/Box'
-import Checkbox from '@/ui/Checkbox'
-import Icon from '@/ui/Icon'
-import Button from '@/ui/Button'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
+import Icon from '@ui/Icon'
+import Button from '@ui/Button'
 import { Key } from 'react'
 
 type Props = {

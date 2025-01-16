@@ -2,10 +2,10 @@ import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
-import { RCCircle } from '@/images'
-import Box from '@/ui/Box'
-import Loader from '@/ui/Loader'
+import { formatNumber } from '@ui/utils'
+import { RCCircle } from '@ui/images'
+import Box from '@ui/Box'
+import Loader from '@ui/Loader'
 
 const DetailInfoTradeRoutes = ({
   input,

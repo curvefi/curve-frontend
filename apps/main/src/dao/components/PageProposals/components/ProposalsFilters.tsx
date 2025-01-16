@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@/dao/store/useStore'
 
-import Button from '@/ui/Button'
-import Spinner from '@/ui/Spinner'
+import Button from '@ui/Button'
+import Spinner from '@ui/Spinner'
 
 type Props = {
   className?: string

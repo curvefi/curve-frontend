@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@/loan/store/useStore'
 
-import { sleep } from '@/utils/helpers'
+import { sleep } from '@/loan/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

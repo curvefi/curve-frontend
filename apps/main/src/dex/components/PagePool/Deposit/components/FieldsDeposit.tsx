@@ -3,10 +3,10 @@ import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposi
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/dex/store/useStore'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
-import Checkbox from '@/ui/Checkbox'
+import Checkbox from '@ui/Checkbox'
 import FieldToken from '@/dex/components/PagePool/components/FieldToken'
 
 const FieldsDeposit = ({

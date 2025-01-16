@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
 import isEqual from 'lodash/isEqual'

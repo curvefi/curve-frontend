@@ -21,21 +21,21 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
-} from '@/ui/AppPage'
+} from '@ui/AppPage'
 import DocumentHead from '@/lend/layout/DocumentHead'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
 import LoanMange from '@/lend/components/PageLoanManage/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import Tabs, { Tab } from '@/ui/Tab'
-import Box from '@/ui/Box'
+import Tabs, { Tab } from '@ui/Tab'
+import Box from '@ui/Box'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import {
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
   ExpandButton,
   ExpandIcon,
-} from '@/ui/Chart/styles'
+} from '@ui/Chart/styles'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ConnectWallet from '@/lend/components/ConnectWallet'
 import { useOneWayMarket } from '@/lend/entities/chain'

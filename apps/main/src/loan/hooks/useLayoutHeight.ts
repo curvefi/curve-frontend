@@ -1,8 +1,8 @@
-import type { LayoutHeight } from '@/store/types'
+import type { LayoutHeight } from '@/loan/store/types'
 
 import React, { useEffect } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 function useLayoutHeight(elementRef: React.RefObject<Element>, key: keyof LayoutHeight) {
   const pageWidth = useStore((state) => state.layout.pageWidth)

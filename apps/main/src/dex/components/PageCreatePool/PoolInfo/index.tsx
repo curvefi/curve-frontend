@@ -2,8 +2,8 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import useStore from '@/dex/store/useStore'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 
 type Props = {

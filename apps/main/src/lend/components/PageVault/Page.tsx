@@ -20,14 +20,14 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
-} from '@/ui/AppPage'
+} from '@ui/AppPage'
 import DocumentHead from '@/lend/layout/DocumentHead'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUser from '@/lend/components/DetailsUser'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import Tabs, { Tab } from '@/ui/Tab'
+import Tabs, { Tab } from '@ui/Tab'
 import Vault from '@/lend/components/PageVault/index'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ConnectWallet from '@/lend/components/ConnectWallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'

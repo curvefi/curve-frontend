@@ -1,18 +1,18 @@
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool'
-import { getStepStatus } from '@/ui/Stepper/helpers'
-import { formatNumber } from '@/ui/utils'
+import { getStepStatus } from '@ui/Stepper/helpers'
+import { formatNumber } from '@ui/utils'
 import useStore from '@/dex/store/useStore'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
+import Stepper from '@ui/Stepper'
+import TxInfoBar from '@ui/TxInfoBar'
 
 const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)

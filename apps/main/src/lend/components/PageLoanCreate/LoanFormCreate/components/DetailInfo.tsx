@@ -3,7 +3,7 @@ import type { DetailInfoCompAdditionalProps, DetailInfoCompProps } from '@/lend/
 
 import React, { useMemo } from 'react'
 
-import { getActiveStep } from '@/ui/Stepper/helpers'
+import { getActiveStep } from '@ui/Stepper/helpers'
 import useStore from '@/lend/store/useStore'
 
 import DetailInfoNonLeverage from '@/lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'

@@ -1,10 +1,10 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@/dao/store/useStore'
 import Fuse from 'fuse.js'
 import produce from 'immer'
 import { t } from '@lingui/macro'
 
-import { shortenTokenAddress } from '@/ui/utils'
+import { shortenTokenAddress } from '@ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

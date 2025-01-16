@@ -1,4 +1,4 @@
-import Button from '@/ui/Button'
+import Button from '@ui/Button'
 import styled from 'styled-components'
 import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 

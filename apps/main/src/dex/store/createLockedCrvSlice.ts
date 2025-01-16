@@ -11,7 +11,7 @@ import {
   DEFAULT_FORM_EST_GAS,
 } from '@/dex/components/PageCrvLocker/utils'
 
-import { formatNumber, shortenAccount } from '@/ui/utils'
+import { formatNumber, shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import dayjs from '@ui-kit/lib/dayjs'
 

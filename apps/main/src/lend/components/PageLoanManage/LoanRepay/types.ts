@@ -1,6 +1,6 @@
 import type { FormDetailInfo, FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
 import type { InpError } from '@/lend/components/PageLoanCreate/types'
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 import React from 'react'
 
 export type FormValues = {

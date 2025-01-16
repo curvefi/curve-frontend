@@ -1,9 +1,9 @@
 import type { Params } from 'react-router'
 
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@/dao/constants'
 import { DEFAULT_LOCALES, Locale, parseLocale } from '@ui-kit/lib/i18n'
-import networks, { networksIdMapper } from '@/networks'
+import networks, { networksIdMapper } from '@/dao/networks'
 
 export function getPath({ locale, network, ...rest }: Params, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)

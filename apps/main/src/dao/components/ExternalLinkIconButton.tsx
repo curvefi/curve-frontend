@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import TooltipButton from '@/ui/Tooltip'
-import { ExternalLink } from '@/ui/Link'
-import Icon from '@/ui/Icon'
+import TooltipButton from '@ui/Tooltip'
+import { ExternalLink } from '@ui/Link'
+import Icon from '@ui/Icon'
 
 type ExternalLinkIconButtonProps = {
   href: string
