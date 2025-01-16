@@ -3,19 +3,19 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@/dex/constants'
 
-const PageDashboard = dynamic(() => import('@/components/PageDashboard/Page'), { ssr: false })
-const PageLockedCrv = dynamic(() => import('@/components/PageCrvLocker/Page'), { ssr: false })
-const PagePoolTransfer = dynamic(() => import('@/components/PagePool/Page'), { ssr: false })
-const PagePools = dynamic(() => import('@/components/PagePoolList/Page'), { ssr: false })
-const PageSwap = dynamic(() => import('@/components/PageRouterSwap/Page'), { ssr: false })
-const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
-const PageCreatePool = dynamic(() => import('@/components/PageCreatePool/Page'), { ssr: false })
-const PageDeployGauge = dynamic(() => import('@/components/PageDeployGauge/Page'), { ssr: false })
-const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
-const PageCompensation = dynamic(() => import('@/components/PageCompensation/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
+const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
+const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })
+const PagePoolTransfer = dynamic(() => import('@/dex/components/PagePool/Page'), { ssr: false })
+const PagePools = dynamic(() => import('@/dex/components/PagePoolList/Page'), { ssr: false })
+const PageSwap = dynamic(() => import('@/dex/components/PageRouterSwap/Page'), { ssr: false })
+const Page404 = dynamic(() => import('@/dex/components/Page404/Page'), { ssr: false })
+const PageCreatePool = dynamic(() => import('@/dex/components/PageCreatePool/Page'), { ssr: false })
+const PageDeployGauge = dynamic(() => import('@/dex/components/PageDeployGauge/Page'), { ssr: false })
+const PageIntegrations = dynamic(() => import('@/dex/components/PageIntegrations/Page'), { ssr: false })
+const PageCompensation = dynamic(() => import('@/dex/components/PageCompensation/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/dex/components/PageDisclaimer/Page'), { ssr: false })
 
 const App: NextPage = () => {
   const SubRoutes = (

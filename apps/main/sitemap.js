@@ -1,7 +1,7 @@
 import { MAIN_ROUTE } from '@/constants'
 
 export default function sitemap() {
-  const BASE_URL = 'https://curve.fi'
+  const BASE_URL = 'https://lend.curve.fi'
   return Object.entries(MAIN_ROUTE).map(([_, route]) => {
     return {
       url: `${BASE_URL}${route}`,

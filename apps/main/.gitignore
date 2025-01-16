@@ -7,8 +7,6 @@
  
 # testing
 /coverage
-cypress/videos
-cypress/screenshots
 
 # next.js
 /.next/
@@ -43,8 +41,7 @@ yarn-error.log*
 .vercel
 
 # lingui compiled translation files
-src/locales/_build/
-src/locales/**/*.js
+src/locales
 
 # TypeChain generated files
 src/sdk/types/ethers-contracts

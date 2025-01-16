@@ -37,9 +37,9 @@ yarn dev
 
 Access the application in a web browser:
 
-- Main app: http://localhost:3000
+- Main & lend app: http://localhost:3000
 - crvUSD app: http://localhost:3001
-- Lend app: http://localhost:3003
+- DAO app: http://localhost:3002
 
 ## Forked Mainnet
 
