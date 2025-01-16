@@ -20678,63 +20678,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lend@workspace:apps/lend":
-  version: 0.0.0-use.local
-  resolution: "lend@workspace:apps/lend"
-  dependencies:
-    "@curvefi/lending-api": "npm:^2.4.0"
-    "@lingui/cli": "npm:^4.6.0"
-    "@lingui/loader": "npm:^4.6.0"
-    "@lingui/macro": "npm:^4.6.0"
-    "@lingui/swc-plugin": "npm:^4.0.4"
-    "@next/bundle-analyzer": "npm:^13.5.6"
-    "@supercharge/promise-pool": "npm:^2.3.2"
-    "@svgr/webpack": "npm:^8.1.0"
-    "@types/lodash": "npm:^4.14.182"
-    "@types/node": "npm:17.0.24"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@types/styled-components": "npm:5.1.14"
-    bignumber.js: "npm:^9.1.2"
-    cross-fetch: "npm:^3.1.5"
-    curve-ui-kit: "npm:*"
-    eslint-config-custom: "npm:*"
-    ethers: "npm:^6.13.4"
-    external-rewards: "npm:*"
-    focus-visible: "npm:5.2.0"
-    fuse.js: "npm:^6.6.2"
-    immer: "npm:^9.0.12"
-    intersection-observer: "npm:^0.12.0"
-    lodash: "npm:4.17.21"
-    memoizee: "npm:^0.4.17"
-    next: "npm:^13.5.6"
-    next-images: "npm:^1.8.5"
-    pinst: "npm:^2.1.4"
-    prop-types: "npm:^15.6.0"
-    react: "npm:*"
-    react-aria: "npm:3.22.0"
-    react-dom: "npm:*"
-    react-is: "npm:16.13.1"
-    react-router-dom: "npm:^6.3.0"
-    react-stately: "npm:3.18.0"
-    recharts: "npm:2.4.1"
-    sharp: "npm:^0.32.6"
-    styled-components: "npm:5.3.11"
-    swr: "npm:^1.3.0"
-    tsconfig: "npm:*"
-    typescript: "npm:*"
-    ui: "npm:*"
-    webpack: "npm:^5.83.1"
-    zustand: "npm:^4.5.5"
-  peerDependencies:
-    eslint-config-custom: "*"
-    react: "*"
-    react-dom: "*"
-    tsconfig: "*"
-    typescript: "*"
-  languageName: unknown
-  linkType: soft
-
 "leven@npm:^3.1.0":
   version: 3.1.0
   resolution: "leven@npm:3.1.0"
@@ -20944,64 +20887,6 @@ __metadata:
   checksum: 10c0/f2af4eb185ac5bf7e56e1337b666f90744e9f443861ac521b48f093fb9e8347f191c8960b4388a3365147d218913bc23421234e7788db69f385bacfefa0b4758
   languageName: node
   linkType: hard
-
-"loan@workspace:apps/loan":
-  version: 0.0.0-use.local
-  resolution: "loan@workspace:apps/loan"
-  dependencies:
-    "@curvefi/lending-api": "npm:^2.4.0"
-    "@curvefi/stablecoin-api": "npm:^1.5.8"
-    "@lingui/cli": "npm:^4.6.0"
-    "@lingui/loader": "npm:^4.6.0"
-    "@lingui/macro": "npm:^4.6.0"
-    "@lingui/swc-plugin": "npm:^4.0.4"
-    "@next/bundle-analyzer": "npm:^13.5.6"
-    "@supercharge/promise-pool": "npm:^2.3.2"
-    "@svgr/webpack": "npm:^8.1.0"
-    "@tanstack/react-table": "npm:^8.20.6"
-    "@types/lodash": "npm:^4.14.182"
-    "@types/node": "npm:17.0.24"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@types/styled-components": "npm:5.1.14"
-    bignumber.js: "npm:^9.1.2"
-    cross-fetch: "npm:^3.1.5"
-    curve-ui-kit: "npm:*"
-    eslint-config-custom: "npm:*"
-    ethers: "npm:^6.13.4"
-    focus-visible: "npm:5.2.0"
-    fuse.js: "npm:^6.6.2"
-    immer: "npm:^9.0.12"
-    intersection-observer: "npm:^0.12.0"
-    lodash: "npm:4.17.21"
-    memoizee: "npm:^0.4.17"
-    next: "npm:^13.5.6"
-    next-images: "npm:^1.8.5"
-    pinst: "npm:^2.1.4"
-    prop-types: "npm:^15.6.0"
-    react: "npm:*"
-    react-aria: "npm:3.22.0"
-    react-dom: "npm:*"
-    react-is: "npm:16.13.1"
-    react-router-dom: "npm:^6.3.0"
-    react-stately: "npm:3.18.0"
-    recharts: "npm:2.4.1"
-    sharp: "npm:^0.32.6"
-    styled-components: "npm:5.3.11"
-    swr: "npm:^1.3.0"
-    tsconfig: "npm:*"
-    typescript: "npm:*"
-    ui: "npm:*"
-    webpack: "npm:^5.83.1"
-    zustand: "npm:^4.5.5"
-  peerDependencies:
-    eslint-config-custom: "*"
-    react: "*"
-    react-dom: "*"
-    tsconfig: "*"
-    typescript: "*"
-  languageName: unknown
-  linkType: soft
 
 "locate-path@npm:^2.0.0":
   version: 2.0.0
@@ -21379,6 +21264,8 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:^2.65.27"
+    "@curvefi/lending-api": "npm:^2.4.0"
+    "@curvefi/stablecoin-api": "npm:^1.5.8"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
@@ -21388,6 +21275,7 @@ __metadata:
     "@next/bundle-analyzer": "npm:^13.5.6"
     "@supercharge/promise-pool": "npm:^2.3.2"
     "@svgr/webpack": "npm:^8.1.0"
+    "@tanstack/react-table": "npm:^8.20.6"
     "@types/lodash": "npm:^4.14.182"
     "@types/node": "npm:17.0.24"
     "@types/react": "npm:*"
@@ -21417,6 +21305,7 @@ __metadata:
     react-is: "npm:16.13.1"
     react-router-dom: "npm:^6.3.0"
     react-stately: "npm:3.18.0"
+    recharts: "npm:2.4.1"
     sharp: "npm:^0.32.6"
     styled-components: "npm:5.3.11"
     swr: "npm:^2.2.2"
@@ -23517,7 +23406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -26318,15 +26207,6 @@ __metadata:
   bin:
     svgo: ./bin/svgo
   checksum: 10c0/2751ddbb27a9461a0e9b2b9faa2e599bbd57da1a9115565bb0336582655d38292f4ec444b6abf2e7adb3fc38abb8a6acb7cabd7f30bd186722dceba8495c2583
-  languageName: node
-  linkType: hard
-
-"swr@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "swr@npm:1.3.0"
-  peerDependencies:
-    react: ^16.11.0 || ^17.0.0 || ^18.0.0
-  checksum: 10c0/a02b3dd621e5117320ad45788fb407f60301985edb5fa4197f1b95e28cbe8b3bd093e3cb9a6002102f8c12b40a85941ee525f2b47273366870435aecd61d0e7b
   languageName: node
   linkType: hard
 
