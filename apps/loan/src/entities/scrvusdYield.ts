@@ -11,6 +11,11 @@ type ScrvUsdYieldFromApi = {
   price: number
 }
 
+export type ScrvUsdYieldWithAverages = ScrvUsdYieldFromApi & {
+  proj_apy_7d_avg: number
+  proj_apy_total_avg: number
+}
+
 type GetScrvUsdYieldResponse = {
   data?: ScrvUsdYieldFromApi[]
   detail?: string
@@ -35,7 +40,28 @@ export const _getScrvUsdYield = async (params: { timeFrame: TimeFrame }) => {
     throw new Error(`Failed to fetch scrvUSD historical yield data. ${detail}`)
   }
 
-  return data
+  if (!data) {
+    return []
+  }
+
+  const dataWithAverages: ScrvUsdYieldWithAverages[] = data?.map((item, index, array) => {
+    // Calculate overall average across all data points
+    const totalAverage = array.reduce((sum, curr) => sum + curr.proj_apy, 0) / array.length
+
+    // Calculate 7-day moving average (looking back 7 days)
+    const lookback = 7 * 24 * 12 // 7 days worth of 5-minute intervals
+    const startIdx = Math.max(0, index - lookback)
+    const relevantData = array.slice(startIdx, index + 1)
+    const movingAverage = relevantData.reduce((sum, curr) => sum + curr.proj_apy, 0) / relevantData.length
+
+    return {
+      ...item,
+      proj_apy_7d_avg: movingAverage,
+      proj_apy_total_avg: totalAverage,
+    }
+  })
+
+  return dataWithAverages
 }
 
 export const { useQuery: useScrvUsdYield } = queryFactory({
