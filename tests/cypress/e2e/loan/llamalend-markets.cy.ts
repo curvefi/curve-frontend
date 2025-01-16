@@ -112,7 +112,7 @@ describe('LlamaLend Markets', () => {
       { toggle: 'borrowChart', element: 'line-graph-borrow' },
       { toggle: 'lendChart', element: 'line-graph-lend' },
     )
-    cy.get(`[data-testid="${element}"]`).scrollIntoView()
+    cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
     cy.get(`[data-testid="btn-visibility-settings"]`).click()
     cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
