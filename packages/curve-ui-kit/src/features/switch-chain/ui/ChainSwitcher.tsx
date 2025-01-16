@@ -50,7 +50,7 @@ export const ChainSwitcher = <TChainId extends number>({
   return (
     <>
       <IconButton size="small" disabled={disabled} onClick={onClick} data-testid="btn-change-chain">
-        <ChainSwitcherIcon chain={selectedNetwork} />
+        {selectedNetwork && <ChainSwitcherIcon chain={selectedNetwork} />}
         {options.length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
 

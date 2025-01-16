@@ -35,7 +35,7 @@ export type AppName = (typeof AppNames)[number]
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {
-    root: getAppRoot('curve.fi', 'dapp', 3000),
+    root: getAppRoot('dex'),
     label: 'DEX',
     pages: [
       { route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
@@ -45,7 +45,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     ],
   },
   crvusd: {
-    root: getAppRoot('crvusd.curve.fi', 'dapp-crvusd', 3001),
+    root: getAppRoot('loan'),
     label: 'crvUSD',
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
@@ -55,7 +55,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     ],
   },
   lend: {
-    root: getAppRoot('lend.curve.fi', 'dapp-lend', 3003),
+    root: getAppRoot('lend'),
     label: 'Lend',
     pages: [
       { route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
@@ -63,7 +63,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     ],
   },
   dao: {
-    root: getAppRoot('dao.curve.fi', 'dapp-dao', 3002),
+    root: getAppRoot('dao'),
     label: 'DAO',
     pages: [
       { route: DAO_ROUTES.PAGE_VECRV_CREATE, label: () => t`Lock CRV` },
@@ -74,24 +74,23 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
   },
 }
 
-function getAppRoot(productionHost: string, previewPrefix: string, developmentPort: number) {
+function getAppRoot(path: 'dex' | 'dao' | 'lend' | 'loan', developmentPort = 3000) {
   if (process.env.NODE_ENV === 'development') {
-    return `http://localhost:${developmentPort}`
+    return `http://localhost:${developmentPort}/${path}`
   }
-  const windowHost = typeof window === 'undefined' ? undefined : window.location.host
-  if (windowHost?.startsWith('staging')) {
-    return `https://staging${productionHost === 'curve.fi' ? `.${productionHost}` : `-${productionHost}`}/`
-  }
-  if (windowHost?.endsWith('curvefi.vercel.app')) {
-    const branchPrefix = /curve-dapp(-lend|-crvusd|-dao)?-(.*)-curvefi.vercel.app/.exec(windowHost)?.[2]
-    if (branchPrefix) {
-      return `https://curve-${previewPrefix}-${branchPrefix}-curvefi.vercel.app`
+  if (typeof window !== 'undefined') {
+    const { host } = window.location
+    if (host.startsWith('staging')) {
+      return `https://staging.curve.fi/${path}`
+    }
+    if (host.endsWith('vercel.app')) {
+      return `https://${host}/${path}`
+    }
+    if (!host.endsWith('curve.fi')) {
+      console.warn(`Unexpected host: ${host}`)
     }
   }
-  if (windowHost && !windowHost.endsWith('curve.fi')) {
-    console.warn(`Unexpected host: ${windowHost}`)
-  }
-  return `https://${productionHost}`
+  return `https://curve.fi/${path}`
 }
 
 export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
