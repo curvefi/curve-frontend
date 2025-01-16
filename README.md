@@ -54,7 +54,6 @@ This repository is organized as follows:
 - `/apps/lend`: Lend [React](https://react.dev/) application.
 - `/tests`: DApp tests
 - `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@ui-kit`
-- `/packages/curve-common`: List of features for the DApps, mapped as `@/common`
 
 ## Development Guide
 

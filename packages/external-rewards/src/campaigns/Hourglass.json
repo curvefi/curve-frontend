@@ -1,0 +1,33 @@
+{
+  "campaignName": "Hourglass Points",
+  "platform": "Hourglass",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "hourglass.png",
+  "dashboardLink": "https://hourglass.com/boost/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1736874600",
+      "campaignEnd": "1742947200",
+      "address": "0xebe423b5466f9675669b2a4521b6e9f852dd1f52",
+      "network": "corn",
+      "multiplier": "4x",
+      "tags": ["points"],
+      "lock": "true"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1736874600",
+      "campaignEnd": "1742947200",
+      "address": "0xf34a494e2e148d3227a2e8eea70d58bcbe88b188",
+      "network": "corn",
+      "multiplier": "4x",
+      "tags": ["points"],
+      "lock": "true"
+    }
+  ]
+}

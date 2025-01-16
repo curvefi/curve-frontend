@@ -33,6 +33,7 @@ import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import ConnectWallet from '@/components/ConnectWallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -45,11 +46,9 @@ const Page: NextPage = () => {
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const navHeight = useStore((state) => state.layout.navHeight)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
@@ -58,6 +57,9 @@ const Page: NextPage = () => {
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [loaded, setLoaded] = useState(false)
 
@@ -187,7 +189,7 @@ const Page: NextPage = () => {
               </PriceAndTradesExpandedWrapper>
             </PriceAndTradesExpandedContainer>
           )}
-          <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
+          <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
             <AppPageFormsWrapper navHeight={navHeight}>
               {!isMdUp && !chartExpanded && <TitleComp />}
               {rChainId && rCollateralId && (

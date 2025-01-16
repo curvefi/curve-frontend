@@ -77,8 +77,7 @@ export function dynamicActivate(locale: string, data: { messages: Record<string,
   i18n.activate(locale)
 }
 
-export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key: 'locale', value: T) => void) {
-  updateGlobalStoreByKey('locale', locale)
+export function updateAppLocale(locale: string) {
   setDayjsLocale(locale as Locale['value'])
 
   let numbroLang = ''
@@ -86,7 +85,6 @@ export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key:
   if (locale === 'zh-Hans') numbroLang = 'zh-CN'
 
   if (numbroLang) {
-    // @ts-ignore
     import(`numbro/languages/${numbroLang}`).then((module) => {
       numbro.registerLanguage(module.default)
       numbro.setLanguage(numbroLang)

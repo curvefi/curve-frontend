@@ -6,6 +6,7 @@ export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const ROUTE = {
   ...CRVUSD_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',
+  PAGE_DISCLAIMER: '/disclaimer',
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
   PAGE_404: '/404',

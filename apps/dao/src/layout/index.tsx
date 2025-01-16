@@ -1,4 +1,4 @@
-import { Locale } from '@/common/widgets/Header/types'
+import { Locale } from '@ui-kit/widgets/Header/types'
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -12,7 +12,8 @@ import { useHeightResizeObserver } from '@/ui/hooks'
 import useStore from '@/store/useStore'
 
 import Header from '@/layout/Header'
-import { Footer } from 'curve-ui-kit/src/widgets/Footer'
+import { Footer } from '@ui-kit/widgets/Footer'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
@@ -23,7 +24,8 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-  const locale = useStore((state) => state.locale)
+
+  const locale = useUserProfileStore((state) => state.locale)
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight)
@@ -71,7 +73,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer networkName={rNetwork} />
+      <Footer appName="dao" networkName={rNetwork} />
     </Container>
   )
 }
@@ -83,6 +85,7 @@ const getSections = (locale: Locale) => [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
+      { route: '/disclaimer', label: t`Risk Disclaimers` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],

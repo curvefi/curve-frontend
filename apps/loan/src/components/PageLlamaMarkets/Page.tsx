@@ -8,13 +8,16 @@ import DocumentHead from '@/layout/DocumentHead'
 import { t } from '@lingui/macro'
 import React from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useHeaderHeight } from '@/common/widgets/Header'
+import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import useStore from '@/store/useStore'
 
 const onReload = () => invalidateLendingVaults({})
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
+/**
+ * Page for displaying the lending markets table.
+ */
 export const PageLlamaMarkets = () => {
   const { data, error, isFetching } = useLendingVaults({}) // todo: show errors and loading state
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

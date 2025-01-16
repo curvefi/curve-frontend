@@ -28,6 +28,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -37,7 +38,6 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const formEstGas = useStore((state) => state.loanCollateralAdd.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCollateralAdd.formStatus)
   const formValues = useStore((state) => state.loanCollateralAdd.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
@@ -46,6 +46,8 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanCollateralAdd.setFormValues)
   const resetState = useStore((state) => state.loanCollateralAdd.resetState)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -197,7 +199,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvanceMode && (
+        {isAdvancedMode && (
           <DetailInfoLiqRange
             isManage
             rChainId={rChainId}

@@ -8,12 +8,12 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
-import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from '@ui-kit/themes/typography'
+import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
+import { Duration } from '../../themes/design/0_primitives'
 
 const { Spacing } = SizesAndSpaces
-const COPY_ALERT_DURATION = 6000
 
 // Correspond to flexbox align items values.
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
@@ -83,6 +83,8 @@ type Props = {
   label: string
   /** Optional tooltip content shown next to the label */
   tooltip?: string
+  /** The text to display when the value is copied to the clipboard */
+  copyText?: string
 
   /** The actual metric value to display */
   value: number
@@ -113,6 +115,7 @@ type Props = {
 export const Metric = ({
   label,
   tooltip,
+  copyText,
 
   value,
   formatter = (value: number) => formatValue(value, decimals),
@@ -224,9 +227,9 @@ export const Metric = ({
         </Typography>
       )}
 
-      <Snackbar open={openCopyAlert} autoHideDuration={COPY_ALERT_DURATION} onClose={() => setOpenCopyAlert(false)}>
+      <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
-          Copied metric value: {value}
+          {copyText}: {value}
         </Alert>
       </Snackbar>
     </Box>

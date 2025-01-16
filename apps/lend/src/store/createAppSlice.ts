@@ -3,36 +3,26 @@ import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
-import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
-import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
-import { Locale } from '@ui-kit/lib/i18n'
 import { prefetchMarkets } from '@/entities/chain/chain-query'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type AppCacheKeys = 'themeType' | 'isAdvanceMode'
-
 type SliceState = {
   connectState: ConnectState
   api: Api | null
-  isAdvanceMode: boolean
   isLoadingApi: boolean
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  locale: Locale['value']
-  maxSlippage: string
   routerProps: RouterProps | null
   scrollY: number
-  themeType: ThemeKey
 }
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  setAppCache<T>(key: AppCacheKeys, value: T): void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateApi(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
@@ -45,28 +35,17 @@ export interface AppSlice extends SliceState {
 const DEFAULT_STATE: SliceState = {
   connectState: { status: '' as const, stage: '' },
   api: null,
-  isAdvanceMode: false,
   isLoadingApi: true,
   isLoadingCurve: true,
   isMobile: false,
   isPageVisible: true,
-  locale: 'en' as const,
-  maxSlippage: '0.1',
   routerProps: null,
   scrollY: 0,
-  themeType: 'light',
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  setAppCache: <T>(key: AppCacheKeys, value: T) => {
-    get().updateGlobalStoreByKey(key, value)
-    setStorageValue('APP_CACHE', {
-      themeType: key === 'themeType' ? value : get().themeType || 'default',
-      isAdvanceMode: key === 'isAdvanceMode' ? value : get().isAdvanceMode || false,
-    })
-  },
   updateConnectState: (status, stage, options) => {
     const value = options ? { status, stage, options } : { status, stage }
     get().updateGlobalStoreByKey('connectState', value)

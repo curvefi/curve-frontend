@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/constants'
 import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
@@ -8,11 +8,10 @@ import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/conne
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
-import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/material/styles'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import type { NavigationSection } from '@/common/widgets/Header/types'
+import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
@@ -29,42 +28,28 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const { rLocalePathname, rNetwork } = getParamsFromUrl()
 
   const connectState = useStore((state) => state.connectState)
-  const isAdvancedMode = useStore((state) => state.isAdvanceMode)
-  const locale = useStore((state) => state.locale)
   const routerProps = useStore((state) => state.routerProps)
-  const themeType = useStore((state) => state.themeType)
-  const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
 
-  const { params: routerParams, location } = routerProps ?? {}
+  const location = useLocation()
+  const { params: routerParams } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 
-  const theme = (themeType as string) == 'default' ? 'light' : themeType
   return (
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[
-        isAdvancedMode,
-        useCallback((isAdvanced) => setAppCache('isAdvanceMode', isAdvanced), [setAppCache]),
-      ]}
       currentApp="lend"
       pages={useMemo(
         () => _parseRouteAndIsActive(APP_LINK.lend.pages, rLocalePathname, routerPathname, routerNetwork),
         [rLocalePathname, routerNetwork, routerPathname],
       )}
-      themes={[
-        theme,
-        useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
-      ]}
       ChainProps={{
         options: visibleNetworksList,
-        theme,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: chainId,
         onChange: useCallback(

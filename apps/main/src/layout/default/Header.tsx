@@ -1,14 +1,13 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { useParamsFromUrl, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/store/useStore'
-import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
-import { NavigationSection } from '@/common/widgets/Header/types'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
+import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
@@ -24,14 +23,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
-  const locale = useStore((state) => state.locale)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
   const volumeCryptoShare = useStore((state) => state.pools.volumeCryptoShare)
-  const themeType = useStore((state) => state.themeType)
-  const setThemeType = useStore((state) => state.setThemeType)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
@@ -41,18 +36,15 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const { params: routerParams, location } = routerProps ?? {}
+  const location = useLocation()
   const network = networks[rChainId]
   const routerPathname = location?.pathname ?? ''
-  const routerNetwork = routerParams?.network
   const restPartialPathname = useRestPartialPathname()
 
-  const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
       currentApp="main"
       isLite={network?.isLite}
@@ -74,18 +66,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
             routerPathname,
             rNetwork,
           ),
-        [hasRouter, network, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
+        [hasRouter, network, networks, rChainId, rLocalePathname, rNetwork, routerCached, routerPathname],
       )}
-      themes={[
-        theme,
-        useCallback(
-          (selectedThemeType: ThemeKey) => setThemeType(selectedThemeType == 'light' ? 'default' : selectedThemeType),
-          [setThemeType],
-        ),
-      ]}
       ChainProps={{
         options: visibleNetworksList,
-        theme,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
         onChange: useCallback(

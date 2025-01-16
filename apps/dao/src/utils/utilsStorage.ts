@@ -1,5 +1,3 @@
-import type { Theme } from '@/store/createAppSlice'
-
 import merge from 'lodash/merge'
 
 import dayjs from '@ui-kit/lib/dayjs'
@@ -24,17 +22,9 @@ export function getStorageValue(key: Key) {
 
   if (key === 'APP_CACHE') {
     return {
-      themeType: getTheme(parsedStoredValue.themeType),
       timestamp: parsedStoredValue.timestamp ?? '',
       walletName: getWalletName(parsedStoredValue.walletName, parsedStoredValue.timestamp),
     }
-  }
-}
-
-function getTheme(svThemeType: string | undefined) {
-  if (svThemeType) {
-    const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === svThemeType) as Theme
-    return (foundThemeType || 'default') as Theme
   }
 }
 

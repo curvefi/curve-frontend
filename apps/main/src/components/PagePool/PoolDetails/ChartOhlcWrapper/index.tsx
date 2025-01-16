@@ -13,12 +13,14 @@ import Icon from '@/ui/Icon'
 import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
   rChainId,
   pricesApiPoolData,
 }) => {
-  const themeType = useStore((state) => state.themeType)
+  const theme = useUserProfileStore((state) => state.theme)
+
   const {
     pricesApiState: {
       chartOhlcData,
@@ -210,7 +212,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
           chartStatus={chartStatus}
           chartHeight={chartHeight}
           chartExpanded={chartExpanded}
-          themeType={themeType}
+          themeType={theme}
           ohlcData={chartOhlcData}
           selectChartList={selectChartList}
           selectedChartIndex={selectedChartIndex}
@@ -277,7 +279,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
           chartStatus={chartStatus}
           chartHeight={chartHeight}
           chartExpanded={chartExpanded}
-          themeType={themeType}
+          themeType={theme}
           ohlcData={chartOhlcData}
           selectChartList={selectChartList}
           selectedChartIndex={selectedChartIndex}

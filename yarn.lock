@@ -3328,16 +3328,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.25":
-  version: 2.65.25
-  resolution: "@curvefi/api@npm:2.65.25"
+"@curvefi/api@npm:^2.65.27":
+  version: 2.65.27
+  resolution: "@curvefi/api@npm:2.65.27"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.7"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.11.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/457b62ed1a8a1ac8f910cf4be070b7a4a17ebc6992b4a1594dbc24c517d027c6f59f640ca73be89a75976e975be88db4b86175122200ebd2306a4ea8524457a7
+  checksum: 10c0/6df410842269ede29be4948264960c339c463c9e14d06942e812c05fade0e0e05df926794b9e7768bfffb4f3791ad7436f9440023a9b34bb62a87f1dbac01747
   languageName: node
   linkType: hard
 
@@ -3366,9 +3366,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/stablecoin-api@npm:^1.5.7":
-  version: 1.5.7
-  resolution: "@curvefi/stablecoin-api@npm:1.5.7"
+"@curvefi/stablecoin-api@npm:^1.5.8":
+  version: 1.5.8
+  resolution: "@curvefi/stablecoin-api@npm:1.5.8"
   dependencies:
     "@ethersproject/networks": "npm:^5.5.0"
     axios: "npm:^0.21.1"
@@ -3376,7 +3376,7 @@ __metadata:
     ethcall: "npm:^4.2.5"
     ethers: "npm:^5.4.6"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/4fda5b88629594a1b30953c99d86d8467918e0b5ad16862f208673d1f9b25e1dbbd599092120a2d21c4680ce1dfbe94cc0a6786a623d1de5b697475e761ad70a
+  checksum: 10c0/471a8cba14f5e58a1a0ced060b94ee63f128e2229b12846d3b1ff9832d29a0ea9696f93716fd1cb88a78f39c9bc66c57308bbf1367c4cad8334240fde546860f
   languageName: node
   linkType: hard
 
@@ -15082,38 +15082,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"curve-common@npm:*, curve-common@workspace:packages/curve-common":
-  version: 0.0.0-use.local
-  resolution: "curve-common@workspace:packages/curve-common"
-  dependencies:
-    "@babel/core": "npm:^7.25.2"
-    "@babel/runtime": "npm:^7.25.6"
-    "@safe-global/safe-apps-provider": "npm:^0.18.3"
-    "@safe-global/safe-apps-sdk": "npm:^9.1.0"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@web3-onboard/bitget": "npm:^2.1.1"
-    "@web3-onboard/coinbase": "npm:^2.4.1"
-    "@web3-onboard/core": "npm:^2.22.3"
-    "@web3-onboard/fortmatic": "npm:^2.1.1"
-    "@web3-onboard/frontier": "npm:^2.1.1"
-    "@web3-onboard/gnosis": "npm:^2.3.2"
-    "@web3-onboard/injected-wallets": "npm:^2.11.2"
-    "@web3-onboard/ledger": "npm:^2.7.1"
-    "@web3-onboard/metamask": "npm:^2.1.3"
-    "@web3-onboard/phantom": "npm:^2.1.1"
-    "@web3-onboard/react": "npm:^2.9.3"
-    "@web3-onboard/torus": "npm:^2.3.1"
-    "@web3-onboard/trezor": "npm:^2.4.6"
-    "@web3-onboard/trust": "npm:^2.1.2"
-    "@web3-onboard/walletconnect": "npm:^2.6.1"
-    ethers: "npm:^6.13.4"
-  peerDependencies:
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
 "curve-frontend@workspace:.":
   version: 0.0.0-use.local
   resolution: "curve-frontend@workspace:."
@@ -15146,6 +15114,8 @@ __metadata:
     "@chromatic-com/storybook": "npm:^2.0.2"
     "@emotion/react": "npm:^11.13.3"
     "@emotion/styled": "npm:^11.13.0"
+    "@lingui/detect-locale": "npm:^4.6.0"
+    "@lingui/react": "npm:^4.6.0"
     "@mui/icons-material": "npm:^6.1.4"
     "@mui/material": "npm:^6.1.4"
     "@mui/utils": "npm:^6.1.4"
@@ -15182,9 +15152,12 @@ __metadata:
     "@web3-onboard/trust": "npm:^2.1.2"
     "@web3-onboard/walletconnect": "npm:^2.6.1"
     ajv: "npm:^8.17.1"
+    dayjs: "npm:^1.11.7"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    ethers: "npm:^6.11.0"
+    ethers: "npm:^6.13.4"
+    make-plural: "npm:^7.1.0"
+    numbro: "npm:^2.4.0"
     prop-types: "npm:^15.8.1"
     react: "npm:*"
     react-docgen-typescript: "npm:^2.2.2"
@@ -15374,13 +15347,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dao@workspace:apps/dao"
   dependencies:
-    "@curvefi/api": "npm:^2.65.25"
+    "@curvefi/api": "npm:^2.65.27"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
     "@lingui/macro": "npm:^4.6.0"
-    "@lingui/react": "npm:^4.6.0"
     "@lingui/swc-plugin": "npm:^4.0.4"
     "@next/bundle-analyzer": "npm:^13.5.6"
     "@supercharge/promise-pool": "npm:^2.3.2"
@@ -15392,9 +15364,7 @@ __metadata:
     "@types/styled-components": "npm:5.1.14"
     "@types/validator": "npm:^13.12.1"
     bignumber.js: "npm:^9.1.2"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
-    dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.13.4"
     focus-visible: "npm:5.2.0"
@@ -15403,7 +15373,6 @@ __metadata:
     intersection-observer: "npm:^0.12.0"
     lightweight-charts: "npm:4.1.2"
     lodash: "npm:4.17.21"
-    make-plural: "npm:^7.1.0"
     memoizee: "npm:^0.4.17"
     next: "npm:^13.5.6"
     next-images: "npm:^1.8.5"
@@ -20715,10 +20684,8 @@ __metadata:
   dependencies:
     "@curvefi/lending-api": "npm:^2.4.0"
     "@lingui/cli": "npm:^4.6.0"
-    "@lingui/detect-locale": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
     "@lingui/macro": "npm:^4.6.0"
-    "@lingui/react": "npm:^4.6.0"
     "@lingui/swc-plugin": "npm:^4.0.4"
     "@next/bundle-analyzer": "npm:^13.5.6"
     "@supercharge/promise-pool": "npm:^2.3.2"
@@ -20730,9 +20697,7 @@ __metadata:
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.1.2"
     cross-fetch: "npm:^3.1.5"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
-    dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.13.4"
     external-rewards: "npm:*"
@@ -20741,11 +20706,9 @@ __metadata:
     immer: "npm:^9.0.12"
     intersection-observer: "npm:^0.12.0"
     lodash: "npm:4.17.21"
-    make-plural: "npm:^7.1.0"
     memoizee: "npm:^0.4.17"
     next: "npm:^13.5.6"
     next-images: "npm:^1.8.5"
-    numbro: "npm:^2.4.0"
     pinst: "npm:^2.1.4"
     prop-types: "npm:^15.6.0"
     react: "npm:*"
@@ -20987,12 +20950,10 @@ __metadata:
   resolution: "loan@workspace:apps/loan"
   dependencies:
     "@curvefi/lending-api": "npm:^2.4.0"
-    "@curvefi/stablecoin-api": "npm:^1.5.7"
+    "@curvefi/stablecoin-api": "npm:^1.5.8"
     "@lingui/cli": "npm:^4.6.0"
-    "@lingui/detect-locale": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
     "@lingui/macro": "npm:^4.6.0"
-    "@lingui/react": "npm:^4.6.0"
     "@lingui/swc-plugin": "npm:^4.0.4"
     "@next/bundle-analyzer": "npm:^13.5.6"
     "@supercharge/promise-pool": "npm:^2.3.2"
@@ -21005,9 +20966,7 @@ __metadata:
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.1.2"
     cross-fetch: "npm:^3.1.5"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
-    dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.13.4"
     focus-visible: "npm:5.2.0"
@@ -21015,11 +20974,9 @@ __metadata:
     immer: "npm:^9.0.12"
     intersection-observer: "npm:^0.12.0"
     lodash: "npm:4.17.21"
-    make-plural: "npm:^7.1.0"
     memoizee: "npm:^0.4.17"
     next: "npm:^13.5.6"
     next-images: "npm:^1.8.5"
-    numbro: "npm:^2.4.0"
     pinst: "npm:^2.1.4"
     prop-types: "npm:^15.6.0"
     react: "npm:*"
@@ -21421,13 +21378,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.65.25"
+    "@curvefi/api": "npm:^2.65.27"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
     "@lingui/macro": "npm:^4.6.0"
-    "@lingui/react": "npm:^4.6.0"
     "@lingui/swc-plugin": "npm:^4.0.4"
     "@next/bundle-analyzer": "npm:^13.5.6"
     "@supercharge/promise-pool": "npm:^2.3.2"
@@ -21440,9 +21396,7 @@ __metadata:
     "@types/validator": "npm:^13.12.1"
     bignumber.js: "npm:^9.1.2"
     cross-fetch: "npm:^3.1.5"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
-    dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.13.4"
     external-rewards: "npm:*"
@@ -21452,11 +21406,9 @@ __metadata:
     intersection-observer: "npm:^0.12.0"
     lightweight-charts: "npm:4.1.2"
     lodash: "npm:4.17.21"
-    make-plural: "npm:^7.1.0"
     memoizee: "npm:^0.4.17"
     next: "npm:^13.5.6"
     next-images: "npm:^1.8.5"
-    numbro: "npm:^2.4.0"
     pinst: "npm:^2.1.4"
     react: "npm:*"
     react-aria: "npm:3.22.0"
@@ -27151,7 +27103,6 @@ __metadata:
   resolution: "ui@workspace:packages/ui"
   dependencies:
     "@carbon/icons-react": "npm:11.17.0"
-    "@lingui/detect-locale": "npm:^4.6.0"
     "@types/carbon__icons-react": "npm:11.16.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"

@@ -6,20 +6,39 @@ import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
-import { XIcon } from 'curve-ui-kit/src/shared/icons/XIcon'
-import { DiscordIcon } from 'curve-ui-kit/src/shared/icons/DiscordIcon'
-import { LAFIcon } from 'curve-ui-kit/src/shared/icons/LAFIcon'
-import { DuneIcon } from 'curve-ui-kit/src/shared/icons/DuneIcon'
-import { CrvHubIcon } from 'curve-ui-kit/src/shared/icons/CrvHubIcon'
-import { NewsIcon } from 'curve-ui-kit/src/shared/icons/NewsIcon'
-import { IntegrationsIcon } from 'curve-ui-kit/src/shared/icons/IntegrationsIcon'
-import { DocsIcon } from 'curve-ui-kit/src/shared/icons/DocsIcon'
-import { TelegramIcon } from 'curve-ui-kit/src/shared/icons/TelegramIcon'
-import { TelegramCNIcon } from 'curve-ui-kit/src/shared/icons/TelegramCNIcon'
-import { TelegramRUIcon } from 'curve-ui-kit/src/shared/icons/TelegramRUIcon'
+import { XIcon } from '@ui-kit/shared/icons/XIcon'
+import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
+import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
+import { DuneIcon } from '@ui-kit/shared/icons/DuneIcon'
+import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
+import { NewsIcon } from '@ui-kit/shared/icons/NewsIcon'
+import { IntegrationsIcon } from '@ui-kit/shared/icons/IntegrationsIcon'
+import { DocsIcon } from '@ui-kit/shared/icons/DocsIcon'
+import { TelegramIcon } from '@ui-kit/shared/icons/TelegramIcon'
+import { TelegramCNIcon } from '@ui-kit/shared/icons/TelegramCNIcon'
+import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
+import { RiskDisclaimersIcon } from '@ui-kit/shared/icons/RiskDisclaimersIcon'
 import { SectionProps } from './Section'
 
-export const getSections = (): Omit<SectionProps, 'networkName'>[] => [
+import { AppName } from '@ui-kit/shared/routes'
+
+function getDisclaimersTab(appName: AppName) {
+  if (appName === 'crvusd') {
+    if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
+      return '?tab=scrvusd'
+    }
+
+    return '?tab=crvusd'
+  }
+
+  if (appName === 'lend') {
+    return '?tab=lend'
+  }
+
+  return ''
+}
+
+export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>[] => [
   {
     title: t`Community`,
     links: [
@@ -88,6 +107,11 @@ export const getSections = (): Omit<SectionProps, 'networkName'>[] => [
         label: t`Github`,
         href: 'https://github.com/curvefi',
         icon: <GitHubIcon />,
+      },
+      {
+        label: t`Risk Disclaimers`,
+        href: `/disclaimer${getDisclaimersTab(appName)}`,
+        icon: <RiskDisclaimersIcon />,
       },
     ],
   },

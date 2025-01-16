@@ -27,14 +27,14 @@ const buttonColor = ({ Default, Disabled, Hover, Current }: ButtonColor) => ({
 const sizeBreakpoint = (
   height: string,
   fontSize: Responsive,
-  fontWeight: Responsive,
+  fontWeight: number,
   lineHeight: Responsive,
   breakpoint: Breakpoint,
 ) => ({
   [basicMuiTheme.breakpoints.up(breakpoint)]: {
     height,
     fontSize: fontSize[breakpoint],
-    fontWeight: fontWeight[breakpoint],
+    fontWeight,
     lineHeight: lineHeight[breakpoint],
   },
 })

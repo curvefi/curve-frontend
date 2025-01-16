@@ -10,11 +10,11 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
+import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
 import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
-import { getLocaleFromUrl, getStorageValue } from '@/utils'
+import { getLocaleFromUrl } from '@/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@/ui/utils'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
@@ -25,15 +25,14 @@ import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout'
 import GlobalStyle from '@/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
 
 function CurveApp({ Component }: AppProps) {
   const connectState = useStore((state) => state.connectState)
-  const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.layout.pageWidth)
-  const themeType = useStore((state) => state.themeType)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -47,6 +46,10 @@ function CurveApp({ Component }: AppProps) {
   const onboard = useStore((state) => state.wallet.onboard)
   const isPageVisible = useStore((state) => state.isPageVisible)
 
+  const theme = useUserProfileStore((state) => state.theme)
+  const locale = useUserProfileStore((state) => state.locale)
+  const setLocale = useUserProfileStore((state) => state.setLocale)
+
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
@@ -57,8 +60,8 @@ function CurveApp({ Component }: AppProps) {
   useEffect(() => {
     if (!pageWidth) return
 
-    document.body.className = `theme-${themeType} ${pageWidth} ${getIsMobile() ? '' : 'scrollSmooth'}`
-    document.body.setAttribute('data-theme', themeType || '')
+    document.body.className = `theme-${theme} ${pageWidth} ${getIsMobile() ? '' : 'scrollSmooth'}`
+    document.body.setAttribute('data-theme', theme)
     document.documentElement.lang = locale
   })
 
@@ -66,12 +69,6 @@ function CurveApp({ Component }: AppProps) {
     const handleScrollListener = () => {
       updateShowScrollButton(window.scrollY)
     }
-
-    const { themeType } = getStorageValue('APP_CACHE') ?? {}
-
-    // init theme
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
 
     // init locale
     const { rLocale } = getLocaleFromUrl()
@@ -81,10 +78,11 @@ function CurveApp({ Component }: AppProps) {
       let data = await import(`@/locales/${parsedLocale}/messages`)
       dynamicActivate(parsedLocale, data)
     })()
-    updateAppLocale(parsedLocale, updateGlobalStoreByKey)
+    setLocale(parsedLocale)
+    updateAppLocale(parsedLocale)
 
     // init onboard
-    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
+    const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
     updateWalletStoreByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {
@@ -148,8 +146,8 @@ function CurveApp({ Component }: AppProps) {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
-      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
+    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
             <I18nProvider i18n={i18n}>

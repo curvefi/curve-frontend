@@ -1,0 +1,69 @@
+{
+  "campaignName": "Babylon Points",
+  "platform": "Babylon",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "babylon.png",
+  "dashboardLink": "https://babylonlabs.io/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xab3291b73a1087265e126e330cede0cfd4b8a693",
+      "network": "corn",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xb27d447cf1d211ca60676728ac28060ecfb90800",
+      "network": "corn",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xa1174d3af66ad2fd7c6d5c7b458b6da38988cd56",
+      "network": "corn",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xf59aa8acd7944abecf804e455a22b65f285af534",
+      "network": "corn",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x29c1b0baa9ac0182cf9f6ffceaf143f3ef3546a0",
+      "network": "corn",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

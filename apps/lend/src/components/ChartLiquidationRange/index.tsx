@@ -17,7 +17,7 @@ import styled from 'styled-components'
 import { formatNumber } from '@/ui/utils'
 
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
-import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]
