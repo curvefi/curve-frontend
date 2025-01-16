@@ -5,7 +5,7 @@ import produce from 'immer'
 import { formatUnits, formatEther, Contract } from 'ethers'
 import { contractVeCRV, contractCrv } from '@/store/contracts'
 import { abiVeCrv } from '@/store/abis'
-import { convertToLocaleTimestamp, formatDateFromTimestamp } from 'ui/src/utils'
+import { convertToLocaleTimestamp, formatDateFromTimestamp } from '@/ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

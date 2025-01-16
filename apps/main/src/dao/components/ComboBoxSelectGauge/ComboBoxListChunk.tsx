@@ -3,7 +3,7 @@ import type { ComboBoxSelectGaugeProps } from '@/components/ComboBoxSelectGauge/
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
 import SelectGaugeListItem from '@/components/ComboBoxSelectGauge/ComboBoxListItem'
 
