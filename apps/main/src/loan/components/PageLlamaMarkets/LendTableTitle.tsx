@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import LlamaSunglasses from '../../../public/images/llama-sunglasses.png'
+import LlamaSunglasses from '../../../../public/images/llama-sunglasses.png'
 import Image from 'next/image'
 import { t } from '@lingui/macro'
 import Typography from '@mui/material/Typography'

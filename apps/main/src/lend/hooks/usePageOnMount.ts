@@ -240,7 +240,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
         ;(async () => {
-          let data = await import(`@lend/locales/${rLocale}/messages`)
+          let data = await import(`@/locales/${rLocale}/messages`)
           dynamicActivate(rLocale, data)
         })()
         setLocale(rLocale)

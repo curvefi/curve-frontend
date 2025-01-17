@@ -22,8 +22,8 @@ import {
   AppPageInfoWrapper,
 } from '@ui/AppPage'
 import DocumentHead from '@lend/layout/DocumentHead'
-import DetailsMarket from 'components/DetailsMarket'
-import DetailsUser from 'components/DetailsUser'
+import DetailsMarket from '@lend/components/DetailsMarket'
+import DetailsUser from '@lend/components/DetailsUser'
 import PageTitleBorrowSupplyLinks from '@lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import Tabs, { Tab } from '@ui/Tab'
 import Vault from '@lend/components/PageVault/index'

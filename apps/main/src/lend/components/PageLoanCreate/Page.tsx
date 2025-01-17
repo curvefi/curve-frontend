@@ -22,7 +22,7 @@ import {
 } from '@ui/AppPage'
 import DocumentHead from '@lend/layout/DocumentHead'
 import LoanCreate from '@lend/components/PageLoanCreate/index'
-import DetailsMarket from 'components/DetailsMarket'
+import DetailsMarket from '@lend/components/DetailsMarket'
 import PageTitleBorrowSupplyLinks from '@lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import ChartOhlcWrapper from '@lend/components/ChartOhlcWrapper'
 import {

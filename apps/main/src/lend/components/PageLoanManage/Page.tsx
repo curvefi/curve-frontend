@@ -23,7 +23,7 @@ import {
   AppPageInfoWrapper,
 } from '@ui/AppPage'
 import DocumentHead from '@lend/layout/DocumentHead'
-import DetailsMarket from 'components/DetailsMarket'
+import DetailsMarket from '@lend/components/DetailsMarket'
 import DetailsUserLoan from '@lend/components/DetailsUser/components/DetailsUserLoan'
 import LoanMange from '@lend/components/PageLoanManage/index'
 import PageTitleBorrowSupplyLinks from '@lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'

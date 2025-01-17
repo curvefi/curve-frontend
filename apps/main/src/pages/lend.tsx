@@ -1,3 +1,7 @@
+import type { NextPage } from 'next'
+import dynamic from 'next/dynamic'
+import { Navigate, Route, Routes } from 'react-router'
+import { ROUTE } from '@/lend/constants'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -5,29 +9,35 @@ import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import 'intersection-observer'
 import 'focus-visible'
-import '@lend/globals.css'
 import { HashRouter } from 'react-router-dom'
-import type { AppProps } from 'next/app'
 import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import GlobalStyle from '@lend/globalStyle'
-import Page from '@lend/layout/index'
+import GlobalStyle from '@/lend/globalStyle'
+import Page from '@/lend/layout'
 import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
-import networks from '@lend/networks'
-import { getPageWidthClassName } from '@lend/store/createLayoutSlice'
-import useStore from '@lend/store/useStore'
+import networks from '@/lend/networks'
+import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
+import useStore from '@/lend/store/useStore'
 import { QueryProvider } from '@ui/QueryProvider'
-import { isMobile, removeExtraSpaces } from '@lend/utils/helpers'
-import { getLocaleFromUrl } from '@lend/utils/utilsRouter'
+import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
+import { getLocaleFromUrl } from '@/lend/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
 
-function CurveApp({ Component }: AppProps) {
+const PageLlammasList = dynamic(() => import('@/lend/components/PageMarketList/Page'), { ssr: false })
+const PageLoanCreate = dynamic(() => import('@/lend/components/PageLoanCreate/Page'), { ssr: false })
+const PageLoanManage = dynamic(() => import('@/lend/components/PageLoanManage/Page'), { ssr: false })
+const PageVault = dynamic(() => import('@/lend/components/PageVault/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/lend/components/PageDisclaimer/Page'), { ssr: false })
+const Page404 = dynamic(() => import('@/lend/components/Page404/Page'), { ssr: false })
+const PageIntegrations = dynamic(() => import('@/lend/components/PageIntegrations/Page'), { ssr: false })
+
+const App: NextPage = () => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -90,6 +100,22 @@ function CurveApp({ Component }: AppProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const SubRoutes = (
+    <>
+      <Route path=":network" element={<PageLlammasList />} />
+      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
+      <Route path=":network/integrations" element={<PageIntegrations />} />
+      <Route path=":network/markets" element={<PageLlammasList />} />
+      <Route path=":network/markets/:owmId" element={<Navigate to="create" />} />
+      <Route path=":network/markets/:owmId/create" element={<PageLoanCreate />} />
+      <Route path=":network/markets/:owmId/create/:formType" element={<PageLoanCreate />} />
+      <Route path=":network/markets/:owmId/manage" element={<PageLoanManage />} />
+      <Route path=":network/markets/:owmId/manage/:formType" element={<PageLoanManage />} />
+      <Route path=":network/markets/:owmId/vault" element={<PageVault />} />
+      <Route path=":network/markets/:owmId/vault/:formType" element={<PageVault />} />
+    </>
+  )
+
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <ThemeProvider theme={theme}>
@@ -99,7 +125,22 @@ function CurveApp({ Component }: AppProps) {
               <QueryProvider persister={persister} queryClient={queryClient}>
                 <OverlayProvider>
                   <Page>
-                    <Component />
+                    <Routes>
+                      {SubRoutes}
+                      <Route path=":locale">{SubRoutes}</Route>
+                      <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
+                      <Route
+                        path="/disclaimer"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
+                      />
+                      <Route
+                        path="/integrations"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_INTEGRATIONS}`} replace />}
+                      />
+                      <Route path="/" element={<Navigate to={`/ethereum/markets`} replace />} />
+                      <Route path="404" element={<Page404 />} />
+                      <Route path="*" element={<Page404 />} />
+                    </Routes>
                   </Page>
                   <GlobalStyle />
                 </OverlayProvider>
@@ -112,4 +153,4 @@ function CurveApp({ Component }: AppProps) {
   )
 }
 
-export default CurveApp
+export default App

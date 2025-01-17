@@ -46,7 +46,7 @@ import CampaignRewardsBanner from '@main/components/PagePool/components/Campaign
 import PoolInfoData from '@main/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@main/components/PagePool/PoolDetails/PoolParameters'
 import { useGaugeManager } from '@main/entities/gauge'
-import { BlockSkeleton } from '../../../../../packages/ui/src/skeleton'
+import { BlockSkeleton } from '@ui/skeleton'
 import { ManageGauge } from '@main/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'

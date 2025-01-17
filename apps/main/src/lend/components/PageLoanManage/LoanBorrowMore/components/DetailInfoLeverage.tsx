@@ -8,7 +8,7 @@ import useStore from '@lend/store/useStore'
 
 import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@lend/components/DetailInfoHealth'
-import DetailInfoLeverageAdvancedExpected from 'components/DetailInfoLeverageAdvancedExpected'
+import DetailInfoLeverageAdvancedExpected from '@lend/components/DetailInfoLeverageAdvancedExpected'
 import DetailInfoLeverageAvgPrice from '@lend/components/DetailInfoLeverageAvgPrice'
 import DetailInfoLeverageExpected from '@lend/components/DetailInfoLeverageExpected'
 import DetailInfoLiqRange from '@lend/components/DetailInfoLiqRange'

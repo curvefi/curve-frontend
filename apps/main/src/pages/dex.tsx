@@ -1,4 +1,7 @@
-import '@main/globals.css'
+import type { NextPage } from 'next'
+import dynamic from 'next/dynamic'
+import { Navigate, Route, Routes } from 'react-router'
+import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import 'focus-visible'
 import 'intersection-observer'
 import { i18n } from '@lingui/core'
@@ -8,29 +11,39 @@ import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
-import type { AppProps } from 'next/app'
 import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { REFRESH_INTERVAL } from '@main/constants'
-import GlobalStyle from '@main/globalStyle'
-import usePageVisibleInterval from '@main/hooks/usePageVisibleInterval'
-import Page from '@main/layout/default'
+import GlobalStyle from '@/dex/globalStyle'
+import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
+import Page from '@/dex/layout/default'
 import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
-import curvejsApi from '@main/lib/curvejs'
-import useStore from '@main/store/useStore'
+import curvejsApi from '@/dex/lib/curvejs'
+import useStore from '@/dex/store/useStore'
 import { QueryProvider } from '@ui/QueryProvider'
-import { isMobile, removeExtraSpaces } from '@main/utils'
-import { getLocaleFromUrl } from '@main/utils/utilsRouter'
+import { isMobile, removeExtraSpaces } from '@/dex/utils'
+import { getLocaleFromUrl } from '@/dex/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { CurveApi } from '@main/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
 
-function CurveApp({ Component }: AppProps) {
+const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
+const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })
+const PagePoolTransfer = dynamic(() => import('@/dex/components/PagePool/Page'), { ssr: false })
+const PagePools = dynamic(() => import('@/dex/components/PagePoolList/Page'), { ssr: false })
+const PageSwap = dynamic(() => import('@/dex/components/PageRouterSwap/Page'), { ssr: false })
+const Page404 = dynamic(() => import('@/dex/components/Page404/Page'), { ssr: false })
+const PageCreatePool = dynamic(() => import('@/dex/components/PageCreatePool/Page'), { ssr: false })
+const PageDeployGauge = dynamic(() => import('@/dex/components/PageDeployGauge/Page'), { ssr: false })
+const PageIntegrations = dynamic(() => import('@/dex/components/PageIntegrations/Page'), { ssr: false })
+const PageCompensation = dynamic(() => import('@/dex/components/PageCompensation/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/dex/components/PageDisclaimer/Page'), { ssr: false })
+
+const App: NextPage = () => {
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -148,6 +161,24 @@ function CurveApp({ Component }: AppProps) {
     isPageVisible,
   )
 
+  const SubRoutes = (
+    <>
+      <Route path=":network" element={<PageSwap />} />
+      <Route path=":network/dashboard" element={<PageDashboard />} />
+      <Route path=":network/locker" element={<PageLockedCrv />} />
+      <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
+      <Route path=":network/create-pool" element={<PageCreatePool />} />
+      <Route path=":network/deploy-gauge" element={<PageDeployGauge />} />
+      <Route path=":network/integrations" element={<PageIntegrations />} />
+      <Route path=":network/pools" element={<PagePools />} />
+      <Route path=":network/pools/:pool" element={<Navigate to="deposit" replace />} />
+      <Route path=":network/pools/:pool/:transfer" element={<PagePoolTransfer />} />
+      <Route path=":network/swap" element={<PageSwap />} />
+      <Route path=":network/compensation" element={<PageCompensation />} />
+      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
+    </>
+  )
+
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <ThemeProvider theme={theme}>
@@ -158,7 +189,37 @@ function CurveApp({ Component }: AppProps) {
                 <QueryProvider persister={persister} queryClient={queryClient}>
                   <OverlayProvider>
                     <Page>
-                      <Component />
+                      <Routes>
+                        {SubRoutes}
+                        <Route path=":locale">{SubRoutes}</Route>
+                        <Route
+                          path="/dashboard"
+                          element={<Navigate to={`/ethereum${ROUTE.PAGE_DASHBOARD}`} replace />}
+                        />
+                        <Route
+                          path="/deploy-gauge"
+                          element={<Navigate to={`/ethereum${ROUTE.PAGE_DEPLOY_GAUGE}`} replace />}
+                        />
+                        <Route path="/locker" element={<Navigate to={`/ethereum${ROUTE.PAGE_LOCKER}`} replace />} />
+                        <Route
+                          path="/create-pool"
+                          element={<Navigate to={`/ethereum${ROUTE.PAGE_CREATE_POOL}`} replace />}
+                        />
+                        <Route path="/integrations" element={<PageIntegrations />} />
+                        <Route path="/pools/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} replace />} />
+                        <Route path="/swap" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} replace />} />
+                        <Route
+                          path="/compensation"
+                          element={<Navigate to={`/ethereum${ROUTE.PAGE_COMPENSATION}`} replace />}
+                        />
+                        <Route
+                          path="/disclaimer"
+                          element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
+                        />
+                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
+                        <Route path="404" element={<Page404 />} />
+                        <Route path="*" element={<Page404 />} />
+                      </Routes>
                     </Page>
                     <GlobalStyle />
                   </OverlayProvider>
@@ -172,4 +233,4 @@ function CurveApp({ Component }: AppProps) {
   )
 }
 
-export default CurveApp
+export default App
