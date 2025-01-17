@@ -3,19 +3,19 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import CellMarketsTotalDebt from '@/components/SharedCells/TableCellMarketsTotalDebt'
 import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const TableStats = () => {
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const stats = [{ title: t`PegKeepers Debt`, content: <CellMarketsTotalDebt /> }]
 
   return (
     <>
-      {isAdvanceMode && (
+      {isAdvancedMode && (
         <Wrapper>
           <StyledListInfoItems>
             {stats.map(({ title, content }, idx) => (

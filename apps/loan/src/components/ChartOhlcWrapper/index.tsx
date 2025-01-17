@@ -13,16 +13,15 @@ import ChartWrapper from '@/ui/Chart'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, llammaId }) => {
   const address = llamma?.address ?? ''
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
   const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
   const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
-  const themeType = useStore((state) => state.themeType)
   const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
   const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
@@ -35,6 +34,10 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
   const decreaseCollateralPrices = useStore(
     (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
+
+  const theme = useUserProfileStore((state) => state.theme)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
     chartFetchStatus,
@@ -243,7 +246,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
           chartStatus={llamma ? chartFetchStatus : 'LOADING'}
           chartHeight={chartHeight}
           chartExpanded={chartExpanded}
-          themeType={themeType}
+          themeType={theme}
           ohlcData={chartOhlcData}
           volumeData={volumeData}
           oraclePriceData={oraclePriceData}
@@ -269,7 +272,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
-    <Wrapper className={!isAdvanceMode ? 'normal-mode' : ''} chartExpanded={chartExpanded}>
+    <Wrapper className={isAdvancedMode ? '' : 'normal-mode'} chartExpanded={chartExpanded}>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
@@ -299,7 +302,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
           chartStatus={llamma ? chartFetchStatus : 'LOADING'}
           chartHeight={chartHeight}
           chartExpanded={false}
-          themeType={themeType}
+          themeType={theme}
           ohlcData={chartOhlcData}
           volumeData={volumeData}
           oraclePriceData={oraclePriceData}

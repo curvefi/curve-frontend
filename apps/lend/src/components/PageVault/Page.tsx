@@ -32,6 +32,7 @@ import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 import ConnectWallet from '@/components/ConnectWallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@/entities/chain'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -42,7 +43,6 @@ const Page: NextPage = () => {
   const { rChainId, rOwmId, rSubdirectory, rFormType } = routerParams
 
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -53,6 +53,8 @@ const Page: NextPage = () => {
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const provider = useStore((state) => state.wallet.getProvider(''))
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token } = market ?? {}
@@ -133,13 +135,13 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
       {provider ? (
-        <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+        <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
           <AppPageFormsWrapper navHeight="var(--nav-height)">
-            {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+            {(!isMdUp || !isAdvancedMode) && <TitleComp />}
             {rChainId && rOwmId && <Vault {...pageProps} />}
           </AppPageFormsWrapper>
 
-          {isAdvanceMode && rChainId && rOwmId && (
+          {isAdvancedMode && rChainId && rOwmId && (
             <AppPageInfoWrapper>
               {isMdUp && <TitleComp />}
               <Box margin="0 0 var(--spacing-2)">

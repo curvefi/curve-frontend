@@ -8,7 +8,7 @@ import DocumentHead from '@/layout/DocumentHead'
 import { t } from '@lingui/macro'
 import React from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useHeaderHeight } from '@/common/widgets/Header'
+import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import useStore from '@/store/useStore'
 
 const onReload = () => invalidateLendingVaults({})

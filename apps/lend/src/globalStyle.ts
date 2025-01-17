@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components'
-import { CURVE_ASSETS_URL } from '@/ui/utils'
 
 const GlobalStyle = createGlobalStyle`
   /* || GENERAL STYLES */
@@ -17,11 +16,6 @@ const GlobalStyle = createGlobalStyle`
 
     color: var(--page--text-color);
     background-color: var(--page--background-color);
-    /* background-image: url(${CURVE_ASSETS_URL + '/branding/curve-app-header.webp'});
-    background-size: auto 400px;
-    background-repeat: repeat-x;
-    background-attachment: fixed; */
-    //background-position-y: var(--header-height);
     
     &.scrollSmooth {
       scroll-behavior: smooth;

@@ -16,6 +16,7 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import IconButton from '@/ui/IconButton'
 import QuickSwap from '@/components/PageRouterSwap/index'
 import ConnectWallet from '@/components/ConnectWallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -27,13 +28,14 @@ const Page: NextPage = () => {
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const maxSlippage = useStore((state) => state.maxSlippage['router'])
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const provider = useStore((state) => state.wallet.getProvider(''))
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
+
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [loaded, setLoaded] = useState(false)
 
@@ -72,7 +74,7 @@ const Page: NextPage = () => {
         return
       }
       if (paramsMaxSlippage) {
-        updateGlobalStoreByKey('maxSlippage', paramsMaxSlippage)
+        setMaxSlippage(paramsMaxSlippage)
       }
 
       const routerDefault = network.swap

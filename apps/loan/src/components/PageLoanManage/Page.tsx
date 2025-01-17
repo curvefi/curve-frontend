@@ -36,6 +36,7 @@ import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import ConnectWallet from '@/components/ConnectWallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -48,7 +49,6 @@ const Page: NextPage = () => {
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId])
@@ -57,6 +57,8 @@ const Page: NextPage = () => {
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
@@ -68,13 +70,13 @@ const Page: NextPage = () => {
 
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = useMemo(
     () =>
-      isAdvanceMode
+      isAdvancedMode
         ? [
             { label: t`LLAMMA Details`, key: 'llamma' },
             { label: t`Your Loan Details`, key: 'user' },
           ]
         : [{ label: t`Your Loan Details`, key: 'user' }],
-    [isAdvanceMode],
+    [isAdvancedMode],
   )
 
   // onMount
@@ -173,9 +175,9 @@ const Page: NextPage = () => {
               </PriceAndTradesExpandedWrapper>
             </PriceAndTradesExpandedContainer>
           )}
-          <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
+          <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
             <AppPageFormsWrapper navHeight={navHeight}>
-              {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
+              {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
               {isValidRouterParams && (
                 <LoanMange
                   {...formProps}

@@ -2,6 +2,13 @@ import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import { TabSwitcherVariants, TABS_VARIANT_CLASSES, TABS_HEIGHT_CLASSES } from '../../themes/tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+
+const defaultTextVariants = {
+  small: 'buttonS',
+  medium: 'buttonM',
+  large: 'headingMBold',
+} as const satisfies Record<keyof typeof TABS_HEIGHT_CLASSES, TypographyVariantKey>
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
@@ -20,7 +27,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
 
 export const TabsSwitcher = <T extends string | number>({
   variant = 'contained',
-  size = 'medium',
+  size = 'small',
   muiVariant,
   options,
   onChange,
@@ -37,7 +44,12 @@ export const TabsSwitcher = <T extends string | number>({
     {...props}
   >
     {options.map(({ value, label, ...props }) => (
-      <Tab key={value} value={value} label={<Typography variant={textVariant}>{label}</Typography>} {...props} />
+      <Tab
+        key={value}
+        value={value}
+        label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
+        {...props}
+      />
     ))}
   </Tabs>
 )

@@ -14,6 +14,8 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@lingui/detect-locale": "^4.6.0",
+    "@lingui/react": "^4.6.0",
     "@mui/icons-material": "^6.1.4",
     "@mui/material": "^6.1.4",
     "@mui/utils": "^6.1.4",
@@ -38,7 +40,10 @@
     "@web3-onboard/trezor": "^2.4.6",
     "@web3-onboard/trust": "^2.1.2",
     "@web3-onboard/walletconnect": "^2.6.1",
-    "ethers": "^6.11.0",
+    "dayjs": "^1.11.7",
+    "ethers": "^6.13.4",
+    "make-plural": "^7.1.0",
+    "numbro": "^2.4.0",
     "react": "*",
     "react-dom": "*"
   },

@@ -11,6 +11,7 @@ import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
 import DetailInfoLTV from '@/components/DetailInfoLTV'
 import DetailInfoN from '@/components/DetailInfoN'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfoNonLeverage = ({
   activeStep,
@@ -32,9 +33,10 @@ const DetailInfoNonLeverage = ({
   const detailInfo = useStore((state) => state.loanCreate.detailInfo[activeKey])
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = market ?? {}
@@ -43,7 +45,7 @@ const DetailInfoNonLeverage = ({
 
   return (
     <div>
-      {isAdvanceMode && (
+      {isAdvancedMode && (
         <>
           <DetailInfoLiqRange
             {...detailInfo}
@@ -79,7 +81,7 @@ const DetailInfoNonLeverage = ({
         userActiveKey={userActiveKey}
       />
       <DetailInfoRate isBorrow={true} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
-      {isAdvanceMode && (
+      {isAdvancedMode && (
         <DetailInfoLTV
           loading={loading}
           debt={borrowed_token ? { amount: formValues.debt, address: borrowed_token.address } : undefined}

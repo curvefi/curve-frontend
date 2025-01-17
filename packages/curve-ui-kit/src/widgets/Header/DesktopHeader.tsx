@@ -2,20 +2,22 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
-import { ConnectWalletIndicator } from 'curve-ui-kit/src/features/connect-wallet'
-import { ChainSwitcher } from 'curve-ui-kit/src/features/switch-chain'
+import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
+import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
-import { ThemeSwitcherButton } from 'curve-ui-kit/src/features/switch-theme'
-import { AdvancedModeSwitcher } from 'curve-ui-kit/src/features/switch-advanced-mode'
+import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
+import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { BaseHeaderProps } from './types'
-import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
+import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { useState } from 'react'
-import { AppName } from 'curve-ui-kit/src/shared/routes'
+import { AppName } from '@ui-kit/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
+import { isBeta, isCypress } from '@ui-kit/utils'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
 
@@ -28,12 +30,16 @@ export const DesktopHeader = <TChainId extends number>({
   height, // height above + banner height
   pages,
   appStats,
-  themes: [theme, setTheme],
-  advancedMode,
   networkName,
   isLite = false,
 }: BaseHeaderProps<TChainId>) => {
   const [selectedApp, setSelectedApp] = useState<AppName>(currentApp)
+
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
+
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef}>
@@ -50,8 +56,15 @@ export const DesktopHeader = <TChainId extends number>({
             <Box sx={{ flexGrow: 1 }} />
 
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t`Advanced`} />}
-              <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
+              {isBeta && !isCypress ? (
+                <UserProfileButton />
+              ) : (
+                <>
+                  <AdvancedModeSwitcher advancedMode={[isAdvancedMode, setAdvancedMode]} label={t`Advanced`} />
+                  <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
+                </>
+              )}
+
               <ChainSwitcher {...ChainProps} headerHeight={height} />
               <ConnectWalletIndicator {...WalletProps} />
             </Box>

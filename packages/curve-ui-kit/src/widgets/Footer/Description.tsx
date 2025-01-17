@@ -4,8 +4,8 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import SvgIcon from '@mui/material/SvgIcon'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { Sizing } from 'curve-ui-kit/src/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Sizing } from '@ui-kit/themes/design/0_primitives'
 
 import { RCLogoSM } from 'ui/src/images'
 

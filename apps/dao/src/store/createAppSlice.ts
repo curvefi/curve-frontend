@@ -1,26 +1,21 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@ui-kit/lib/i18n'
 
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
 import { log } from '@ui-kit/lib'
-import { setStorageValue } from '@/utils'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
-export type Theme = 'dark' | 'default' | 'chad'
 export type LayoutHeight = {
   globalAlert: number
   mainNav: number
   secondaryNav: number
   footer: number
 }
-
-type AppCacheKeys = 'themeType'
 
 type SliceState = {
   connectState: ConnectState
@@ -31,21 +26,16 @@ type SliceState = {
   isPageVisible: boolean
   layoutHeight: LayoutHeight
   loaded: boolean
-  locale: Locale['value']
-  maxSlippage: string
   routerProps: RouterProps | null
   showScrollButton: boolean
-  themeType: Theme
 }
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  setThemeType: (themeType: Theme) => void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
   updateShowScrollButton(scrollY: number): void
-  setAppCache<T>(key: AppCacheKeys, value: T): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -62,7 +52,6 @@ const DEFAULT_STATE = {
   isLoadingCurve: true,
   isPageVisible: true,
   loaded: false,
-  locale: 'en' as const,
   pageWidth: null,
   layoutHeight: {
     globalAlert: 0,
@@ -70,23 +59,13 @@ const DEFAULT_STATE = {
     secondaryNav: 0,
     footer: 0,
   },
-  maxSlippage: '',
   routerProps: null,
   showScrollButton: false,
-  themeType: 'default' as const,
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  setThemeType: (themeType: Theme) => {
-    set(
-      produce((state: State) => {
-        state.themeType = themeType
-      }),
-    )
-    setStorageValue('APP_CACHE', { themeType })
-  },
   updateConnectState: (
     status: ConnectState['status'],
     stage: ConnectState['stage'],
@@ -145,12 +124,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         }),
       )
     }
-  },
-  setAppCache: <T>(key: AppCacheKeys, value: T) => {
-    get().updateGlobalStoreByKey(key, value)
-    setStorageValue('APP_CACHE', {
-      themeType: key === 'themeType' ? value : get().themeType || 'default',
-    })
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(

@@ -1,16 +1,23 @@
 import { LendingSnapshot, useLendingSnapshots } from '@/entities/lending'
 import { LendingVault } from '@/entities/vaults'
-import { Line, LineChart } from 'recharts'
+import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Skeleton from '@mui/material/Skeleton'
+import Typography from '@mui/material/Typography'
+import { t } from '@lingui/macro'
+import { useMemo } from 'react'
+import { meanBy } from 'lodash'
+import Box from '@mui/material/Box'
 
 const graphSize = { width: 172, height: 48 }
 
 type GraphType = 'borrow' | 'lend'
 
+/**
+ * Get the color for the line graph. Will be green if the last value is higher than the first, red if lower, and blue if equal.
+ */
 function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType) {
   if (!data.length) return undefined
   const first = data[0][`${type}_apy`]
@@ -18,34 +25,66 @@ function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType
   return design.Text.TextColors[last === first ? 'Info' : last < first ? 'Error' : 'Success']
 }
 
-export const LineGraphCell = ({ vault, type }: { vault: LendingVault; type: GraphType }) => {
+/** Center the y-axis around the first value */
+const calculateDomain =
+  (first: number) =>
+  ([dataMin, dataMax]: [number, number]): [number, number] => {
+    const diff = Math.max(dataMax - first, first - dataMin)
+    return [first - diff, first + diff]
+  }
+
+/**
+ * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
+ */
+export const LineGraphCell = ({
+  vault,
+  type,
+  showChart,
+}: {
+  vault: LendingVault
+  type: GraphType
+  showChart: boolean // chart is hidden depending on the chart settings
+}) => {
   const { data: snapshots, isLoading } = useLendingSnapshots({
     blockchainId: vault.blockchainId,
     contractAddress: vault.controllerAddress,
   })
   const { design } = useTheme()
-  const value = vault.rates[`${type}ApyPcent`]
-  if (value == null) {
+  const currentValue = vault.rates[`${type}ApyPcent`]
+  const snapshotKey = `${type}_apy` as const
+
+  const rate = useMemo(
+    () => (snapshots?.length ? meanBy(snapshots, (row) => row[snapshotKey]) : currentValue),
+    [snapshots, currentValue, snapshotKey],
+  )
+  if (rate == null) {
     return '-'
   }
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="end" gap={3} data-testid={`line-graph-cell-${type}`}>
-      {value.toPrecision(4)}%
-      {snapshots?.length ? (
-        <LineChart data={snapshots} {...graphSize}>
-          <Line
-            type="monotone"
-            dataKey={`${type}_apy`}
-            stroke={getColor(design, snapshots, type)}
-            strokeWidth={1}
-            dot={<></>}
-          />
-        </LineChart>
-      ) : isLoading ? (
-        <Skeleton {...graphSize} />
-      ) : (
-        <Box sx={graphSize} />
+      {rate.toPrecision(4)}%
+      {showChart && (
+        <Box data-testid={`line-graph-${type}`}>
+          {snapshots?.length ? (
+            <LineChart data={snapshots} {...graphSize} compact>
+              <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey])} />
+              <Line
+                type="monotone"
+                dataKey={snapshotKey}
+                stroke={getColor(design, snapshots, type)}
+                strokeWidth={1}
+                dot={<></>}
+              />
+            </LineChart>
+          ) : isLoading ? (
+            <Skeleton {...graphSize} />
+          ) : (
+            <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
+              {t`No historical data`}
+            </Typography>
+          )}
+        </Box>
       )}
     </Stack>
   )

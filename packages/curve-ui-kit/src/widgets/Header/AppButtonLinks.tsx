@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
-import { APP_LINK, AppNames, type AppName } from 'curve-ui-kit/src/shared/routes'
+import { APP_LINK, AppNames, type AppName } from '@ui-kit/shared/routes'
 
 type AppNavAppsProps = { selectedApp: AppName; onChange: (appName: AppName) => void; networkName: string }
 

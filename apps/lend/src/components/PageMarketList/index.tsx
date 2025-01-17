@@ -14,6 +14,7 @@ import MarketListItemContent from '@/components/PageMarketList/components/Market
 import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import { useOneWayMarketMapping } from '@/entities/chain'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
@@ -23,13 +24,14 @@ const MarketList = (pageProps: PageMarketList) => {
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
   const setFormValues = useStore((state) => state.marketList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 
@@ -49,7 +51,7 @@ const MarketList = (pageProps: PageMarketList) => {
       { sortIdKey: 'myDebt', className: '', show: showBorrowSignerCell, width: '140px' },
       { sortIdKey: 'rateBorrow', className: 'right nowrap', width: '100px' },
       { sortIdKey: 'utilization', className: 'right', width: '150px' },
-      { sortIdKey: 'totalCollateralValue', className: 'right', width: isAdvanceMode ? '220px' : '150px' },
+      { sortIdKey: 'totalCollateralValue', className: 'right', width: isAdvancedMode ? '220px' : '150px' },
     ],
     [FilterType.supply]: [
       { sortIdKey: 'isInMarket', className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },

@@ -2,7 +2,6 @@ import IconButton from '@mui/material/IconButton'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useEffect, useMemo } from 'react'
-import { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { t } from '@lingui/macro'
@@ -13,7 +12,7 @@ import { ChainSettings } from './ChainSettings'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
-import { Duration } from 'curve-ui-kit/src/themes/design/0_primitives'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Container from '@mui/material/Container'
 
 export type ChainOption<TChainId> = {
@@ -29,7 +28,6 @@ export type ChainSwitcherProps<TChainId> = {
   options: ChainOption<TChainId>[]
   onChange: (chainId: TChainId) => void
   disabled?: boolean
-  theme: ThemeKey
   headerHeight: string
 }
 

@@ -17,6 +17,7 @@ import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import ModalDialog, { OpenDialogIconButton } from '@/ui/Dialog'
 import InputProvider, { InputField } from '@/ui/InputComp'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type FormValues = {
   selected: string
@@ -57,13 +58,14 @@ function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: str
 export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: React.PropsWithChildren<Props>) => {
   const overlayTriggerState = useOverlayTriggerState({})
   const isMobile = useStore((state) => state.isMobile)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 
   const handleSave = () => {
     const updatedCustomSlippage = formValues.selected === 'custom' ? formValues.customValue : formValues.selected
-    updateGlobalStoreByKey('maxSlippage', updatedCustomSlippage)
+    setMaxSlippage(updatedCustomSlippage)
     if (isMobile) {
       delayAction(overlayTriggerState.close)
     } else {

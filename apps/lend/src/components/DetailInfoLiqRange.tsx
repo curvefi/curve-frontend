@@ -12,6 +12,7 @@ import Button from '@/ui/Button'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfoLiqRange = ({
   rChainId,
@@ -44,9 +45,10 @@ const DetailInfoLiqRange = ({
   userActiveKey: string
   handleLiqRangesEdit?: () => void
 }) => {
-  const theme = useStore((state) => state.themeType)
   const userDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
+
+  const theme = useUserProfileStore((state) => state.theme)
 
   const { prices: loanPrices } = loanPricesResp ?? {}
   const { prices: currPrices, bands: currBands } = userDetailsResp?.details ?? {}

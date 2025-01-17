@@ -29,6 +29,7 @@ import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -40,7 +41,6 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const formEstGas = useStore((state) => state.loanCollateralIncrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanCollateralIncrease.formStatus)
   const formValues = useStore((state) => state.loanCollateralIncrease.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
@@ -54,6 +54,8 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const setFormValues = useStore((state) => state.loanCollateralIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanCollateralIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanCollateralIncrease.resetState)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -257,7 +259,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
         {/* detail info */}
         <StyledDetailInfoWrapper>
-          {isAdvanceMode && (
+          {isAdvancedMode && (
             <DetailInfoLiqRange
               isManage
               {...detailInfo}

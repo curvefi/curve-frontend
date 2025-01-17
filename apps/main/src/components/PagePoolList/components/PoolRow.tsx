@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface PoolRowProps {
   poolId: string
@@ -59,11 +60,12 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const tvlCached = useStore((state) => state.storeCache.tvlMapper[rChainId]?.[poolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId])
   const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
-  const themeType = useStore((state) => state.themeType)
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
   const network = useStore((state) => state.networks.networks[rChainId])
   const campaignRewardsMapper = useCampaignRewardsMapper()
+
+  const theme = useUserProfileStore((state) => state.theme)
 
   const poolDataCachedOrApi = poolData ?? poolDataCached
 
@@ -110,7 +112,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
         <TableRowMobile
           tableLabel={tableLabels}
           showDetail={showDetail}
-          themeType={themeType}
+          themeType={theme}
           setShowDetail={setShowDetail}
           {...tableRowProps}
         />

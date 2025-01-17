@@ -12,7 +12,6 @@ export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-export type Theme = 'dark' | 'default' | 'chad'
 export type LayoutHeight = {
   globalAlert: number
   mainNav: number
@@ -38,22 +37,21 @@ type GlobalState = {
   isXLgUp: boolean
   layoutHeight: LayoutHeight
   loaded: boolean
-  locale: Locale['value']
   pageWidthPx: number | null
   pageWidth: PageWidthClassName | null
-  maxSlippage: { [key: string]: string }
   routerProps: RouterProps | null
   showScrollButton: boolean
-  themeType: Theme
 }
 
-// prettier-ignore
 export interface GlobalSlice extends GlobalState {
   getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
   setNetworkConfigFromApi(curve: CurveApi): void
   setPageWidth: (pageWidth: number) => void
-  setThemeType: (themeType: Theme) => void
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState(
+    status: ConnectState['status'],
+    stage: ConnectState['stage'],
+    options?: ConnectState['options'],
+  ): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateMaxSlippage(key: string, value: string | null): void
@@ -82,7 +80,6 @@ const DEFAULT_STATE = {
   isLgUp: false,
   isXLgUp: false,
   loaded: false,
-  locale: 'en' as const,
   pageWidth: null,
   layoutHeight: {
     globalAlert: 0,
@@ -90,10 +87,8 @@ const DEFAULT_STATE = {
     secondaryNav: 0,
     footer: 0,
   },
-  maxSlippage: {},
   routerProps: null,
   showScrollButton: false,
-  themeType: 'default',
 }
 
 const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -121,14 +116,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
         state.storeCache.hasRouter[chainId] = hasRouter
       }),
     )
-  },
-  setThemeType: (themeType: Theme) => {
-    set(
-      produce((state: State) => {
-        state.themeType = themeType
-      }),
-    )
-    setStorageValue('APP_CACHE', { themeType })
   },
   setPageWidth: (pageWidth: number) => {
     const pageWidthClassName = getPageWidthClassName(pageWidth)
@@ -244,18 +231,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     set(
       produce((state: State) => {
         state.layoutHeight[key] = value
-      }),
-    )
-  },
-  updateMaxSlippage: (key: string, value: string | null) => {
-    set(
-      produce((state: State) => {
-        if (value === null) {
-          delete state.maxSlippage[key]
-          return
-        }
-
-        state.maxSlippage[key] = value
       }),
     )
   },

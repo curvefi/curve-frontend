@@ -13,6 +13,7 @@ import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo
 import UserInfoLiquidationRange from '@/components/LoanInfoUser/components/UserInfoLiquidationRange'
 import UserInfoLoss from '@/components/LoanInfoUser/components/UserInfoLoss'
 import UserInfoLlammaBalances from '@/components/LoanInfoUser/components/UserInfoLlammaBalances'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const UserInfos = ({
   llammaId,
@@ -27,8 +28,9 @@ const UserInfos = ({
   healthMode: HealthMode
   titleMapper: TitleMapper
 }) => {
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const {
     coins: [stablecoin],
@@ -46,7 +48,7 @@ const UserInfos = ({
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <UserInfoLiquidationRange {...props} type='liquidationRange' /> },
-      { titleKey: TITLE.liquidationBandRange, content: <UserInfoLiquidationRange {...props} type='liquidationBandRange' />, show: isAdvanceMode },
+      { titleKey: TITLE.liquidationBandRange, content: <UserInfoLiquidationRange {...props} type='liquidationBandRange' />, show: isAdvancedMode },
       { titleKey: TITLE.liquidationRangePercent, content: formatNumber(userBandsPct, FORMAT_OPTIONS.PERCENT) },
     ],
     [

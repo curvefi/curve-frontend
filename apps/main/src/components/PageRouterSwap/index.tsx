@@ -33,6 +33,7 @@ import Stepper from '@/ui/Stepper'
 import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const QuickSwap = ({
   pageLoaded,
@@ -62,7 +63,6 @@ const QuickSwap = ({
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
-  const globalMaxSlippage = useStore((state) => state.maxSlippage['router'])
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
@@ -82,6 +82,8 @@ const QuickSwap = ({
   const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+
+  const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])

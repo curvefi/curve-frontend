@@ -15,7 +15,7 @@ const generateTheme = (theme: ThemeKey, options: DesignOptions = {}): Theme => {
     ...basicMuiTheme,
     design: { ...design, options },
     palette: createPalette(paletteMode(theme, options), design),
-    typography: createTypography(design),
+    typography,
     components: createComponents(design, typography),
     shape: { borderRadius: 0 },
     cssVariables: true,
