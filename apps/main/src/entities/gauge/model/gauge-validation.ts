@@ -9,9 +9,9 @@ import {
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
-import { TIME_FRAMES } from '@/constants'
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/utils'
+import { TIME_FRAMES } from '@main/constants'
+import useStore from '@main/store/useStore'
+import { formatNumber } from '@main/utils'
 
 export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardValidationGroup', () => {

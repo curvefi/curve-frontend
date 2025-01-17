@@ -1,4 +1,4 @@
-import { ParsedBandsBalances } from '@/types/lend.types'
+import { ParsedBandsBalances } from '@lend/types/lend.types'
 
 export const DEFAULT_BAND_CHART_DATA: ParsedBandsBalances = {
   borrowed: '0',

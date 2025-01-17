@@ -1,30 +1,30 @@
-import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { t } from '@lingui/macro'
 import { useCallback, useMemo, type Key } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
-import { NETWORK_TOKEN } from '@/constants'
-import useTokensMapper from '@/hooks/useTokensMapper'
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/utils'
-import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
+import { NETWORK_TOKEN } from '@main/constants'
+import useTokensMapper from '@main/hooks/useTokensMapper'
+import useStore from '@main/store/useStore'
+import { formatNumber } from '@main/utils'
+import { DepositRewardStep, type DepositRewardFormValues } from '@main/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
   FlexItemMaxBtn,
   FlexItemToken,
   StyledInputProvider,
   StyledTokenComboBox,
-} from '@/features/deposit-gauge-reward/ui/styled'
-import { useImageBaseUrl } from '@/entities/chain'
+} from '@main/features/deposit-gauge-reward/ui/styled'
+import { useImageBaseUrl } from '@main/entities/chain'
 import {
   useDepositRewardApproveIsMutating,
   useDepositRewardIsMutating,
   useGaugeRewardsDistributors,
-} from '@/entities/gauge'
-import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
-import { useTokens } from '@/entities/token'
-import { FlexContainer } from '@/ui/styled-containers'
-import { ChainId, Token } from '@/types/main.types'
+} from '@main/entities/gauge'
+import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@main/entities/signer'
+import { useTokens } from '@main/entities/token'
+import { FlexContainer } from '@ui/styled-containers'
+import { ChainId, Token } from '@main/types/main.types'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId

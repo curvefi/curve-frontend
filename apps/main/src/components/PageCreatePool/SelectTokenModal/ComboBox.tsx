@@ -8,14 +8,14 @@ import { t } from '@lingui/macro'
 
 import debounce from 'lodash/debounce'
 
-import Icon from '@/ui/Icon'
-import InputWrapper from '@/ui/InputComp'
-import { ListBox } from '@/ui/DialogComboBox'
-import { StyledInput } from '@/ui/InputComp/styles'
-import { ReactComponent as EditClearSymbolic } from '@/images/edit-clear-symbolic.svg'
-import IconButton from '@/ui/IconButton'
-import Box from '@/ui/Box'
-import Popover from '@/ui/Popover'
+import Icon from '@ui/Icon'
+import InputWrapper from '@ui/InputComp'
+import { ListBox } from '@ui/DialogComboBox'
+import { StyledInput } from '@ui/InputComp/styles'
+import { ReactComponent as EditClearSymbolic } from '@main/images/edit-clear-symbolic.svg'
+import IconButton from '@ui/IconButton'
+import Box from '@ui/Box'
+import Popover from '@ui/Popover'
 
 type Props = {
   activeKey: string

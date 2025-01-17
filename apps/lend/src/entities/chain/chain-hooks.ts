@@ -1,10 +1,10 @@
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useMemo } from 'react'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import networks from '@lend/networks'
+import useStore from '@lend/store/useStore'
 import { useOneWayMarketNames } from './chain-query'
 import { ChainParams } from '@ui-kit/lib/model/query'
-import { ChainId } from '@/types/lend.types'
+import { ChainId } from '@lend/types/lend.types'
 
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params

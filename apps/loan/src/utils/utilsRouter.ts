@@ -1,12 +1,12 @@
 import type { Params } from 'react-router'
-import type { FormType as ManageFormType } from '@/components/PageLoanManage/types'
+import type { FormType as ManageFormType } from '@loan/components/PageLoanManage/types'
 import type { Locale } from '@ui-kit/lib/i18n'
 
 import { DEFAULT_LOCALES, parseLocale } from '@ui-kit/lib/i18n'
-import { ROUTE } from '@/constants'
-import networks, { networksIdMapper } from '@/networks'
+import { ROUTE } from '@loan/constants'
+import networks, { networksIdMapper } from '@loan/networks'
 import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
-import { NetworkEnum, RouterParams } from '@/types/loan.types'
+import { NetworkEnum, RouterParams } from '@loan/types/loan.types'
 
 export function getPath({ locale = 'en', network = 'ethereum' }: Params<string>, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)

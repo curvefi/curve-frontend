@@ -1,15 +1,15 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 
-import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
-import { TOP_HOLDERS } from '@/constants'
+import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
+import { TOP_HOLDERS } from '@dao/constants'
 
-import PaginatedTable, { Column } from '@/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
-import Box from '@/ui/Box'
-import { VeCrvHolder, AllHoldersSortBy } from '@/types/dao.types'
+import PaginatedTable, { Column } from '@dao/components/PaginatedTable'
+import { TableRowWrapper, TableData, TableDataLink } from '@dao/components/PaginatedTable/TableRow'
+import Box from '@ui/Box'
+import { VeCrvHolder, AllHoldersSortBy } from '@dao/types/dao.types'
 
 const TopHoldersTable: React.FC = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)

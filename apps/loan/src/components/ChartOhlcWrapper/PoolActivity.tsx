@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@loan/store/useStore'
 
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Button from '@/ui/Button/Button'
-import Icon from '@/ui/Icon'
-import TradesData from '@/components/ChartOhlcWrapper/TradesData'
-import LiquidityData from '@/components/ChartOhlcWrapper/LiquidityData'
-import { ChainId } from '@/types/loan.types'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Button from '@ui/Button/Button'
+import Icon from '@ui/Icon'
+import TradesData from '@loan/components/ChartOhlcWrapper/TradesData'
+import LiquidityData from '@loan/components/ChartOhlcWrapper/LiquidityData'
+import { ChainId } from '@loan/types/loan.types'
 
 interface Props {
   poolAddress: string

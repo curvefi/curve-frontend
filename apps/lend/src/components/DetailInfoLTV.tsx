@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import DetailInfo from '@/ui/DetailInfo'
-import { useTokenUsdRate, useTokenUsdRates } from '@/entities/token'
-import { useChainId } from '@/entities/chain'
+import DetailInfo from '@ui/DetailInfo'
+import { useTokenUsdRate, useTokenUsdRates } from '@lend/entities/token'
+import { useChainId } from '@lend/entities/chain'
 
 type Amount = { amount: string; address: string }
 

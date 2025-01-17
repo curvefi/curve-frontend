@@ -9,8 +9,8 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import * as api from '@/entities/gauge/api'
-import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
+import * as api from '@main/entities/gauge/api'
+import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@main/entities/gauge/types'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import {
   gaugeAddRewardValidationSuite,

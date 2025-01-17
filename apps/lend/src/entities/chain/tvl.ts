@@ -5,7 +5,7 @@ import {
   MarketsStatsTotalsMapper,
   MarketsStatsAMMBalancesMapper,
   MarketsTotalLiquidityMapper,
-} from '@/types/lend.types'
+} from '@lend/types/lend.types'
 
 export function calculateChainTvl(
   marketMapping: IDict<OneWayMarketTemplate>,

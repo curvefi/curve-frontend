@@ -1,19 +1,19 @@
 import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { CONNECT_STAGE, ROUTE } from '@/constants'
-import { useNetworkFromUrl } from '@/utils/utilsRouter'
-import { getWalletChainId } from '@/store/createWalletSlice'
-import { isFailure, isLoading } from '@/ui/utils'
+import { CONNECT_STAGE, ROUTE } from '@main/constants'
+import { useNetworkFromUrl } from '@main/utils/utilsRouter'
+import { getWalletChainId } from '@main/store/createWalletSlice'
+import { isFailure, isLoading } from '@ui/utils'
 import { useConnectWallet } from '@ui-kit/features/connect-wallet'
-import useLayoutHeight from '@/hooks/useLayoutHeight'
-import useStore from '@/store/useStore'
+import useLayoutHeight from '@main/hooks/useLayoutHeight'
+import useStore from '@main/store/useStore'
 
-import Header from '@/layout/default/Header'
+import Header from '@main/layout/default/Header'
 import { Locale } from '@ui-kit/widgets/Header/types'
 import { t } from '@lingui/macro'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { layoutHeightKeys } from '@/store/createGlobalSlice'
+import { layoutHeightKeys } from '@main/store/createGlobalSlice'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {

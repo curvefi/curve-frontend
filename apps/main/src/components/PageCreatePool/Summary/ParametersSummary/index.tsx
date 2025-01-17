@@ -1,15 +1,15 @@
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
-import { STABLESWAP } from '@/components/PageCreatePool/constants'
+import { STABLESWAP } from '@main/components/PageCreatePool/constants'
 
-import Box from '@/ui/Box'
-import { CategoryColumn, SummaryCategoryTitle, StyledCheckmark } from '@/components/PageCreatePool/Summary/styles'
-import StableswapParameters from '@/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters'
-import CryptoswapParameters from '@/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters'
-import PoolPresetSummary from '@/components/PageCreatePool/Summary/PoolPresetSummary'
-import { ChainId } from '@/types/main.types'
+import Box from '@ui/Box'
+import { CategoryColumn, SummaryCategoryTitle, StyledCheckmark } from '@main/components/PageCreatePool/Summary/styles'
+import StableswapParameters from '@main/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters'
+import CryptoswapParameters from '@main/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters'
+import PoolPresetSummary from '@main/components/PageCreatePool/Summary/PoolPresetSummary'
+import { ChainId } from '@main/types/main.types'
 
 type Props = {
   chainId: ChainId

@@ -1,12 +1,12 @@
-import type { WalletPoolData } from '@/components/PageDashboard/types'
+import type { WalletPoolData } from '@main/components/PageDashboard/types'
 
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { tooltipProps } from '@/components/PageDashboard/components/Summary'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { tooltipProps } from '@main/components/PageDashboard/components/Summary'
 
-import { Chip } from '@/ui/Typography'
-import { DetailText } from '@/components/PageDashboard/components/TableRow'
+import { Chip } from '@ui/Typography'
+import { DetailText } from '@main/components/PageDashboard/components/TableRow'
 
 type Props = Pick<WalletPoolData, 'liquidityUsd' | 'percentStaked'> & {
   isHighLight: boolean

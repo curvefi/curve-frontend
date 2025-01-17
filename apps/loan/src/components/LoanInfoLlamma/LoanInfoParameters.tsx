@@ -1,13 +1,13 @@
-import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
+import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
 
 import { t } from '@lingui/macro'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@loan/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
-import DetailInfo from '@/ui/DetailInfo'
+import { Chip } from '@ui/Typography'
+import Box from '@ui/Box'
+import DetailInfo from '@ui/DetailInfo'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId'> {}
 

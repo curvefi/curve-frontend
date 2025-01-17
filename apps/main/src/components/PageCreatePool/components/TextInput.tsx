@@ -4,7 +4,7 @@ import { useTextField } from 'react-aria'
 import { useRef } from 'react'
 import styled from 'styled-components'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 interface Props extends AriaTextFieldProps {
   row?: boolean

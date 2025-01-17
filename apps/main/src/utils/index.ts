@@ -1,10 +1,10 @@
-import type { AlertFormErrorKey } from '@/components/AlertFormError'
+import type { AlertFormErrorKey } from '@main/components/AlertFormError'
 
 import numbro from 'numbro'
 
 export { getStorageValue, setStorageValue } from '@/utils/storage'
-import { shortenAccount } from '@/ui/utils'
-import { ChainId } from '@/types/main.types'
+import { shortenAccount } from '@ui/utils'
+import { ChainId } from '@main/types/main.types'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
 export function isMobile() {

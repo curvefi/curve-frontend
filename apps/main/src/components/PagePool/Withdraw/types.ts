@@ -1,5 +1,5 @@
-import type { Amount } from '@/components/PagePool/utils'
-import { ClaimableReward } from '@/types/main.types'
+import type { Amount } from '@main/components/PagePool/utils'
+import { ClaimableReward } from '@main/types/main.types'
 
 export type FormType = 'UNSTAKE' | 'WITHDRAW' | 'CLAIM'
 export type StepKey = 'APPROVAL' | 'UNSTAKE' | 'WITHDRAW' | 'CLAIM' | ''

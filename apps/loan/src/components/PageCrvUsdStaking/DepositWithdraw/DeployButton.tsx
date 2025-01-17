@@ -3,9 +3,9 @@ import { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@loan/store/useStore'
 
-import Button from '@/ui/Button'
+import Button from '@ui/Button'
 import React from 'react'
 
 type DeployButtonProps = {

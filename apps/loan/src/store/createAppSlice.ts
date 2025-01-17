@@ -1,15 +1,15 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { ConnectState } from '@/ui/utils'
+import type { State } from '@loan/store/useStore'
+import type { ConnectState } from '@ui/utils'
 
 import produce from 'immer'
 
 import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
-import { httpFetcher, log } from '@/utils/helpers'
+import { httpFetcher, log } from '@loan/utils/helpers'
 import isEqual from 'lodash/isEqual'
-import networks from '@/networks'
-import { Curve, LendApi, RouterProps, Wallet } from '@/types/loan.types'
+import networks from '@loan/networks'
+import { Curve, LendApi, RouterProps, Wallet } from '@loan/types/loan.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

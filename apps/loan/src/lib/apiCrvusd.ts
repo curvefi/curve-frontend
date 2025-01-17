@@ -1,11 +1,11 @@
-import type { FormValues as SwapFormValues } from '@/components/PageLoanManage/LoanSwap/types'
-import type { LiqRange, Provider, MaxRecvLeverage } from '@/store/types'
-import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/components/PageLoanCreate/types'
-import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/components/PageLoanManage/LoanDeleverage/types'
+import type { FormValues as SwapFormValues } from '@loan/components/PageLoanManage/LoanSwap/types'
+import type { LiqRange, Provider, MaxRecvLeverage } from '@loan/store/types'
+import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@loan/components/PageLoanCreate/types'
+import type { FormDetailInfo as FormDetailInfoDeleverage } from '@loan/components/PageLoanManage/LoanDeleverage/types'
 import { BrowserProvider } from 'ethers'
 import PromisePool from '@supercharge/promise-pool'
 
-import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
+import { fulfilledValue, getErrorMessage, log } from '@loan/utils/helpers'
 import {
   getChartBandBalancesData,
   getIsUserCloseToLiquidation,
@@ -13,9 +13,9 @@ import {
   parseUserLoss,
   reverseBands,
   sortBands,
-} from '@/utils/utilsCurvejs'
-import networks from '@/networks'
-import { ChainId, Curve, Llamma, UserLoanDetails } from '@/types/loan.types'
+} from '@loan/utils/utilsCurvejs'
+import networks from '@loan/networks'
+import { ChainId, Curve, Llamma, UserLoanDetails } from '@loan/types/loan.types'
 
 export const network = {
   1: {

@@ -1,9 +1,9 @@
-import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '@/components/PageMarketList/types'
+import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '@lend/components/PageMarketList/types'
 
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import TableButtonFilters from '@/ui/TableButtonFilters'
+import TableButtonFilters from '@ui/TableButtonFilters'
 
 const SelectFilterBorrowLend = ({
   searchParams,

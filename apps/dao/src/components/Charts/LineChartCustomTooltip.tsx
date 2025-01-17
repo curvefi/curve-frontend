@@ -4,9 +4,9 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatDateFromTimestamp, formatNumber } from '@/ui/utils/utilsFormat'
+import { formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {

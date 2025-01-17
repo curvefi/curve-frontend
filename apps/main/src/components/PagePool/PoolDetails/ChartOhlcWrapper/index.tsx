@@ -1,20 +1,20 @@
-import type { PricesApiPool, PricesApiCoin, LabelList } from '@/ui/Chart/types'
+import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
-import { combinations } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
-import Button from '@/ui/Button'
-import ChartWrapper from '@/ui/Chart'
-import Icon from '@/ui/Icon'
-import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
-import Box from '@/ui/Box'
+import { combinations } from '@main/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import Button from '@ui/Button'
+import ChartWrapper from '@ui/Chart'
+import Icon from '@ui/Icon'
+import PoolActivity from '@main/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
+import Box from '@ui/Box'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@/types/main.types'
+import { ChainId } from '@main/types/main.types'
 
 const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
   rChainId,

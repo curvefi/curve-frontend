@@ -2,13 +2,13 @@ import { t, Trans } from '@lingui/macro'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import { Chip } from '@/ui/Typography'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import Icon from '@/ui/Icon'
-import ChipInactive from '@/components/ChipInactive'
-import { RewardsApy, PoolData, PoolDataCache } from '@/types/main.types'
+import { Chip } from '@ui/Typography'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import Icon from '@ui/Icon'
+import ChipInactive from '@main/components/ChipInactive'
+import { RewardsApy, PoolData, PoolDataCache } from '@main/types/main.types'
 
 const PoolRewardsCrv = ({
   isHighlight,

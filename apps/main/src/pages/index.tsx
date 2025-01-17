@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@main/constants'
 
 const PageDashboard = dynamic(() => import('@/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/components/PageCrvLocker/Page'), { ssr: false })

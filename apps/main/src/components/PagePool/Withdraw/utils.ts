@@ -1,4 +1,4 @@
-import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
+import type { FormStatus, FormValues } from '@main/components/PagePool/Withdraw/types'
 
 import { t } from '@lingui/macro'
 

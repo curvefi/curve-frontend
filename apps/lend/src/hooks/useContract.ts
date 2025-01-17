@@ -1,9 +1,9 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-import { ChainId, Provider } from '@/types/lend.types'
+import networks from '@lend/networks'
+import useStore from '@lend/store/useStore'
+import { ChainId, Provider } from '@lend/types/lend.types'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,

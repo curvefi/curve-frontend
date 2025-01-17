@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@loan/constants'
 
 const PageMarketList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
 const PageLlamaMarkets = dynamic(() => import('@/components/PageLlamaMarkets/Page').then((p) => p.PageLlamaMarkets), {

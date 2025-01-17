@@ -1,17 +1,17 @@
-import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
-import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@main/components/PagePoolList/types'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 
-import { Th, Thead, TheadSortButton } from '@/ui/Table'
-import Box from '@/ui/Box'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import TableHeadRewards from '@/components/PagePoolList/components/TableHeadRewards'
-import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
+import { Th, Thead, TheadSortButton } from '@ui/Table'
+import Box from '@ui/Box'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import TableHeadRewards from '@main/components/PagePoolList/components/TableHeadRewards'
+import { COLUMN_KEYS } from '@main/components/PagePoolList/utils'
 
 type Props = {
   isLite: boolean

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@lend/store/useStore'
 
 const useCampaignRewardsMapper = () => {
   const cached = useStore((state) => state.storeCache.campaignRewardsMapper)

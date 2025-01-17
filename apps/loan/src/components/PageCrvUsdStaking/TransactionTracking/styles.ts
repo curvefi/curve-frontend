@@ -2,9 +2,9 @@ import styled from 'styled-components'
 
 import { RCPinBottom } from 'ui/src/images'
 
-import Button from '@/ui/Button'
-import { ExternalLink } from '@/ui/Link'
-import Icon from '@/ui/Icon'
+import Button from '@ui/Button'
+import { ExternalLink } from '@ui/Link'
+import Icon from '@ui/Icon'
 
 export const Wrapper = styled.div`
   display: flex;

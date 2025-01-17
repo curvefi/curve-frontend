@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 
-import useStore from '@/store/useStore'
-import { formatNumber, convertToLocaleTimestamp } from '@/ui/utils'
+import useStore from '@dao/store/useStore'
+import { formatNumber, convertToLocaleTimestamp } from '@ui/utils'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import Spinner from '../../Spinner'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@dao/components/ErrorMessage'
 import VeCrvFeesChart from '../VeCrvFeesChart'
 
 const VeCrcFees: React.FC = () => {

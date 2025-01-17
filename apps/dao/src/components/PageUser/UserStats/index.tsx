@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils/'
-import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
-import Box from '@/ui/Box'
-import { VeCrvHolder } from '@/types/dao.types'
+import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils/'
+import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import Box from '@ui/Box'
+import { VeCrvHolder } from '@dao/types/dao.types'
 
 interface UserStatsProps {
   veCrvHolder: VeCrvHolder

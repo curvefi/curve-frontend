@@ -1,24 +1,24 @@
 import type { NextPage } from 'next'
-import type { FormType } from '@/components/PageVeCrv/types'
+import type { FormType } from '@dao/components/PageVeCrv/types'
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { ROUTE } from '@/constants'
-import { getPath } from '@/utils/utilsRouter'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
+import { ROUTE } from '@dao/constants'
+import { getPath } from '@dao/utils/utilsRouter'
+import { scrollToTop } from '@dao/utils'
+import usePageOnMount from '@dao/hooks/usePageOnMount'
+import useStore from '@dao/store/useStore'
 
-import Box, { BoxHeader } from '@/ui/Box'
-import DocumentHead from '@/layout/DocumentHead'
-import FormCrvLocker from '@/components/PageVeCrv/index'
-import IconButton from '@/ui/IconButton'
-import Settings from '@/layout/Settings'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { CurveApi } from '@/types/dao.types'
+import Box, { BoxHeader } from '@ui/Box'
+import DocumentHead from '@dao/layout/DocumentHead'
+import FormCrvLocker from '@dao/components/PageVeCrv/index'
+import IconButton from '@ui/IconButton'
+import Settings from '@dao/layout/Settings'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { CurveApi } from '@dao/types/dao.types'
 
 const Page: NextPage = () => {
   const params = useParams()

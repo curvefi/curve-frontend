@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { CurveApi, ChainId, Pool, RewardsApy, Wallet } from '@/types/main.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { CurveApi, ChainId, Pool, RewardsApy, Wallet } from '@main/types/main.types'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet) {
   const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi

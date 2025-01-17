@@ -2,10 +2,10 @@ import styled from 'styled-components'
 import { useConnectWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@lingui/macro'
 
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
 import UserInformation from './UserInformation'
-import { SnapshotVotingPower, ActiveProposal } from '@/types/dao.types'
+import { SnapshotVotingPower, ActiveProposal } from '@dao/types/dao.types'
 
 type Props = {
   children?: React.ReactNode

@@ -1,13 +1,13 @@
 import React from 'react'
 
-import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
+import useCampaignRewardsMapper from '@lend/hooks/useCampaignRewardsMapper'
 
-import Chip from '@/ui/Typography/Chip'
-import Box from '@/ui/Box'
-import CampaignRewardsRow from '@/components/CampaignRewardsRow'
-import TokenLabel from '@/components/TokenLabel'
+import Chip from '@ui/Typography/Chip'
+import Box from '@ui/Box'
+import CampaignRewardsRow from '@lend/components/CampaignRewardsRow'
+import TokenLabel from '@lend/components/TokenLabel'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId } from '@/types/lend.types'
+import { ChainId } from '@lend/types/lend.types'
 
 const CellToken = ({
   hideIcon,

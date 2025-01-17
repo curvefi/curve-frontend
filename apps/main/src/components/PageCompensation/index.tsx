@@ -1,15 +1,15 @@
-import type { Balances, EtherContract, VestedTotals } from '@/components/PageCompensation/types'
+import type { Balances, EtherContract, VestedTotals } from '@main/components/PageCompensation/types'
 
 import { Contract, ContractRunner, Interface } from 'ethers'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
 
-import { getErrorMessage } from '@/utils'
+import { getErrorMessage } from '@main/utils'
 
-import AlertFormError from '@/components/AlertFormError'
-import Box from '@/ui/Box'
-import Compensations from '@/components/PageCompensation/components/Compensations'
-import { CurveApi, ChainId, Provider } from '@/types/main.types'
+import AlertFormError from '@main/components/AlertFormError'
+import Box from '@ui/Box'
+import Compensations from '@main/components/PageCompensation/components/Compensations'
+import { CurveApi, ChainId, Provider } from '@main/types/main.types'
 
 const FormCompensation = ({
   rChainId,

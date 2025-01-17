@@ -2,12 +2,12 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { ROUTE } from '@/constants'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { ROUTE } from '@loan/constants'
+import useStore from '@loan/store/useStore'
 
-import InternalLink from '@/ui/Link/InternalLink'
-import TextCaption from '@/ui/TextCaption'
+import InternalLink from '@ui/Link/InternalLink'
+import TextCaption from '@ui/TextCaption'
 
 const TableCellMarketsTotalDebt = () => {
   const totalSupplyResp = useStore((state) => state.crvusdTotalSupply)

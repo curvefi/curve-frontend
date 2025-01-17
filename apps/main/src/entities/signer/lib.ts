@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
 export const useSignerAddress = (): { data: Address | undefined } => {
   const onboardInstance = useStore((state) => state.wallet.onboard)

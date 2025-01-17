@@ -1,5 +1,5 @@
-import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
-import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
+import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { BrushStartEndIndex } from '@loan/components/ChartBandBalances/types'
 
 import { t } from '@lingui/macro'
 import {
@@ -19,15 +19,15 @@ import {
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { getTokenName } from '@/utils/utilsLoan'
-import useStore from '@/store/useStore'
+import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { getTokenName } from '@loan/utils/utilsLoan'
+import useStore from '@loan/store/useStore'
 
-import ChartBandBalancesSettings from '@/components/ChartBandBalances/ChartBandBalancesSettings'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
-import Box from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { BandsBalancesData } from '@/types/loan.types'
+import ChartBandBalancesSettings from '@loan/components/ChartBandBalances/ChartBandBalancesSettings'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@loan/components/ChartTooltip'
+import Box from '@ui/Box'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { BandsBalancesData } from '@loan/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   brushIndex: BrushStartEndIndex

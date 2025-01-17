@@ -4,10 +4,10 @@ import {
   TokenId,
   SelectTokenFormValues,
   TokensInPoolState,
-} from '@/components/PageCreatePool/types'
+} from '@main/components/PageCreatePool/types'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -19,14 +19,14 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
-} from '@/components/PageCreatePool/constants'
-import ComboBoxTokenPicker from '@/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
-import Box from '@/ui/Box'
-import Checkbox from '@/ui/Checkbox'
-import Icon from '@/ui/Icon'
-import Button from '@/ui/Button'
+} from '@main/components/PageCreatePool/constants'
+import ComboBoxTokenPicker from '@main/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
+import Icon from '@ui/Icon'
+import Button from '@ui/Button'
 import { Key } from 'react'
-import { CurveApi, ChainId } from '@/types/main.types'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 type Props = {
   curve: CurveApi

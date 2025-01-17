@@ -3,14 +3,14 @@ import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import networks from '@loan/networks'
+import useStore from '@loan/store/useStore'
 
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { ChainId } from '@/types/loan.types'
+import DetailInfo from '@ui/DetailInfo'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { ChainId } from '@loan/types/loan.types'
 
 export type StepProgress = {
   active: number

@@ -1,20 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
+import { TITLE } from '@lend/constants'
+import { breakpoints } from '@ui/utils'
 
-import { ContentWrapper, DarkContent } from '@/components/DetailsMarket/styles'
-import Box from '@/ui/Box'
-import CellCap from '@/components/SharedCellData/CellCap'
-import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
-import CellToken from '@/components/SharedCellData/CellToken'
-import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
-import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
-import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
-import { MarketListType, PageContentProps, TitleKey } from '@/types/lend.types'
+import { ContentWrapper, DarkContent } from '@lend/components/DetailsMarket/styles'
+import Box from '@ui/Box'
+import CellCap from '@lend/components/SharedCellData/CellCap'
+import CellLoanTotalDebt from '@lend/components/SharedCellData/CellLoanTotalDebt'
+import CellToken from '@lend/components/SharedCellData/CellToken'
+import CellSupplyTotalLiquidity from '@lend/components/SharedCellData/CellSupplyTotalLiquidity'
+import DetailsSupplyRewards from '@lend/components/DetailsMarket/components/DetailsSupplyRewards'
+import DetailsContracts from '@lend/components/DetailsMarket/components/DetailsContracts'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import MarketParameters from '@lend/components/DetailsMarket/components/MarketParameters'
+import { MarketListType, PageContentProps, TitleKey } from '@lend/types/lend.types'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper } = pageProps

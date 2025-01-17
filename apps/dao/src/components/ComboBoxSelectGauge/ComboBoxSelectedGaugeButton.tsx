@@ -1,11 +1,11 @@
 import type { AriaButtonProps } from 'react-aria'
-import type { ButtonProps } from '@/ui/Button/types'
+import type { ButtonProps } from '@ui/Button/types'
 
 import { useButton } from 'react-aria'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import ButtonComp from '@/ui/Button'
+import ButtonComp from '@ui/Button'
 
 const ComboBoxSelectedGaugeButton = (props: React.PropsWithChildren<AriaButtonProps<'button'> & ButtonProps>) => {
   const ref = useRef<HTMLButtonElement>(null)

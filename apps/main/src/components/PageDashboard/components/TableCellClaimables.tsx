@@ -1,11 +1,11 @@
-import type { WalletPoolData } from '@/components/PageDashboard/types'
+import type { WalletPoolData } from '@main/components/PageDashboard/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import { DetailText, Info } from '@/components/PageDashboard/components/TableRow'
+import { DetailText, Info } from '@main/components/PageDashboard/components/TableRow'
 
 type Props = Pick<WalletPoolData, 'claimableCrv' | 'claimableOthers' | 'claimablesTotalUsd'> & {
   isMobile?: boolean

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
-import Box from '@/ui/Box'
+import { breakpoints } from '@ui/utils'
+import Box from '@ui/Box'
 
 export const SubTitle = styled.h3`
   font-size: var(--font-size-3);

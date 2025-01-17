@@ -1,6 +1,6 @@
 import merge from 'lodash/merge'
 import dayjs from '@ui-kit/lib/dayjs'
-import { Theme } from '@/types/loan.types'
+import { Theme } from '@loan/types/loan.types'
 
 export const APP_STORAGE = {
   APP_CACHE: 'crvusd-app-cache',

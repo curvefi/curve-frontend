@@ -1,8 +1,8 @@
-import type { LayoutHeight } from '@/store/createGlobalSlice'
+import type { LayoutHeight } from '@main/store/createGlobalSlice'
 
 import React, { useEffect } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
 function useLayoutHeight(elementRef: React.RefObject<Element>, key: keyof LayoutHeight) {
   const pageWidth = useStore((state) => state.pageWidth)

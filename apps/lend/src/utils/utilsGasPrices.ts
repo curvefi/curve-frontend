@@ -1,6 +1,6 @@
-import { httpFetcher } from '@/utils/helpers'
-import networks from '@/networks'
-import { ChainId } from '@/types/lend.types'
+import { httpFetcher } from '@lend/utils/helpers'
+import networks from '@lend/networks'
+import { ChainId } from '@lend/types/lend.types'
 
 export type GasPrices = {
   eip1559Gas: {

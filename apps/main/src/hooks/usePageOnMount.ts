@@ -1,21 +1,21 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@main/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@/utils/storage'
-import { useNetworkFromUrl, useParsedParams } from '@/utils/utilsRouter'
-import { getWalletChainId } from '@/store/createWalletSlice'
-import { initCurveJs } from '@/utils/utilsCurvejs'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { getStorageValue, setStorageValue } from '@main/utils/storage'
+import { useNetworkFromUrl, useParsedParams } from '@main/utils/utilsRouter'
+import { getWalletChainId } from '@main/store/createWalletSlice'
+import { initCurveJs } from '@main/utils/utilsCurvejs'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
+import useStore from '@main/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@/types/main.types'
+import { ChainId, PageProps, Wallet } from '@main/types/main.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()

@@ -2,9 +2,9 @@ import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
-import AlertBox from '@/ui/AlertBox'
-import Checkbox from '@/ui/Checkbox'
-import { HealthMode } from '@/types/loan.types'
+import AlertBox from '@ui/AlertBox'
+import Checkbox from '@ui/Checkbox'
+import { HealthMode } from '@loan/types/loan.types'
 
 interface Props extends HealthMode {
   confirmed: boolean

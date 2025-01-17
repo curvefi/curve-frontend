@@ -5,14 +5,14 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 
-import DocumentHead from '@/layout/default/DocumentHead'
-import DeployGauge from '@/components/PageDeployGauge/index'
+import DocumentHead from '@main/layout/default/DocumentHead'
+import DeployGauge from '@main/components/PageDeployGauge/index'
 
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import { CurveApi } from '@/types/main.types'
+import { scrollToTop } from '@main/utils'
+import usePageOnMount from '@main/hooks/usePageOnMount'
+import { CurveApi } from '@main/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

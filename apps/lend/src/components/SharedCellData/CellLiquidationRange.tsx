@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 import isUndefined from 'lodash/isUndefined'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@lend/store/useStore'
 
 const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'range' | 'band' | 'bandPct' }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])

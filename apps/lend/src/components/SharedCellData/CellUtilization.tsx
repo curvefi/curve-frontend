@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@lend/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
-import CellUtilizationTooltip from '@/components/SharedCellData/CellUtilizationTooltip'
-import ProgressBar from '@/ui/ProgressBar'
+import Chip from '@ui/Typography/Chip'
+import CellUtilizationTooltip from '@lend/components/SharedCellData/CellUtilizationTooltip'
+import ProgressBar from '@ui/ProgressBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId } from '@/types/lend.types'
+import { ChainId } from '@lend/types/lend.types'
 
 type Props = {
   isMobile?: boolean

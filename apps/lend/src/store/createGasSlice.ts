@@ -1,15 +1,15 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { GasInfo } from '@/store/types'
+import type { State } from '@lend/store/useStore'
+import type { GasInfo } from '@lend/store/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
+import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { gweiToWai } from '@ui-kit/utils'
-import { httpFetcher, log } from '@/utils/helpers'
-import lendingApi from '@/lib/apiLending'
-import networks from '@/networks'
-import { Api, Provider } from '@/types/lend.types'
+import { httpFetcher, log } from '@lend/utils/helpers'
+import lendingApi from '@lend/lib/apiLending'
+import networks from '@lend/networks'
+import { Api, Provider } from '@lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,9 +1,9 @@
-import type { FormEstGas, FormStatus as Fs } from '@/components/PageLoanManage/types'
-import type { LiqRangeSliderIdx } from '@/store/types'
+import type { FormEstGas, FormStatus as Fs } from '@loan/components/PageLoanManage/types'
+import type { LiqRangeSliderIdx } from '@loan/store/types'
 import type { Params } from 'react-router'
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 import React from 'react'
-import { ChainId, Curve, Llamma, HealthMode } from '@/types/loan.types'
+import { ChainId, Curve, Llamma, HealthMode } from '@loan/types/loan.types'
 
 export type FormType = 'create' | 'leverage'
 

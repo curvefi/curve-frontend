@@ -1,4 +1,4 @@
-import { ProposalListFilterItem } from '@/types/dao.types'
+import { ProposalListFilterItem } from '@dao/types/dao.types'
 
 export const PROPOSAL_FILTERS: ProposalListFilterItem[] = [
   { key: 'all', label: 'All' },

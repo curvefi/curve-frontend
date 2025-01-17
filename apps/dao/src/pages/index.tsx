@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 
 import { Navigate, Route, Routes } from 'react-router'
-import { ROUTE } from '@/constants'
+import { ROUTE } from '@dao/constants'
 import dynamic from 'next/dynamic'
 
 const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })

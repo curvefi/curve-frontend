@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import TextCaption from '@/ui/TextCaption'
-import TokenIcon from '@/components/TokenIcon'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import TextCaption from '@ui/TextCaption'
+import TokenIcon from '@lend/components/TokenIcon'
 
 const HopSteps = ({
   fromTokenAddress,

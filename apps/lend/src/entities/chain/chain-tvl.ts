@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useTokenUsdRates } from '@/entities/token/lib'
+import { useTokenUsdRates } from '@lend/entities/token/lib'
 import { FETCHING, PartialQueryResult, READY } from '@ui-kit/lib/queries'
 import { calculateChainTvl } from './tvl'
 import { useOneWayMarketMapping } from './chain-hooks'
-import useStore from '@/store/useStore'
-import { ChainId } from '@/types/lend.types'
+import useStore from '@lend/store/useStore'
+import { ChainId } from '@lend/types/lend.types'
 
 export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
   const marketMapping = useOneWayMarketMapping({ chainId }).data

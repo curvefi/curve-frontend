@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import SmallLabel from '@/components/SmallLabel'
-import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
-import VoteCountdown from '@/components/VoteCountdown'
-import { ProposalData } from '@/types/dao.types'
+import SmallLabel from '@dao/components/SmallLabel'
+import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import VoteCountdown from '@dao/components/VoteCountdown'
+import { ProposalData } from '@dao/types/dao.types'
 
 type ProposalHeaderProps = {
   proposal: ProposalData

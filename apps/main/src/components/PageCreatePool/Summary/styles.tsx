@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import Icon from '@/ui/Icon'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import TokenIcon from '@/components/TokenIcon'
+import Icon from '@ui/Icon'
+import ExternalLink from '@ui/Link/ExternalLink'
+import TokenIcon from '@main/components/TokenIcon'
 
 export const CategoryColumn = styled.div`
   display: flex;

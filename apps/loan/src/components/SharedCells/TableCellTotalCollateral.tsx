@@ -3,15 +3,15 @@ import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { formatNumber, type NumberFormatOptions } from '@/ui/utils'
-import { getTokenName } from '@/utils/utilsLoan'
-import useStore from '@/store/useStore'
+import { formatNumber, type NumberFormatOptions } from '@ui/utils'
+import { getTokenName } from '@loan/utils/utilsLoan'
+import useStore from '@loan/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
-import TextCaption from '@/ui/TextCaption'
+import { Chip } from '@ui/Typography'
+import Box from '@ui/Box'
+import TextCaption from '@ui/TextCaption'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@/types/loan.types'
+import { ChainId } from '@loan/types/loan.types'
 
 type Props = {
   rChainId: ChainId

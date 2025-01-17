@@ -5,15 +5,15 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils/responsive'
+import { scrollToTop } from '@main/utils'
+import usePageOnMount from '@main/hooks/usePageOnMount'
+import useStore from '@main/store/useStore'
 
-import { ExternalLink } from '@/ui/Link'
-import DocumentHead from '@/layout/default/DocumentHead'
-import IntegrationsComp from '@/components/PageIntegrations/index'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { ExternalLink } from '@ui/Link'
+import DocumentHead from '@main/layout/default/DocumentHead'
+import IntegrationsComp from '@main/components/PageIntegrations/index'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const Page: NextPage = () => {
   const params = useParams()

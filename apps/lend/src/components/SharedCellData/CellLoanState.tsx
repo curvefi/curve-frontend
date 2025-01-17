@@ -2,13 +2,13 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { formatNumber } from '@ui/utils'
+import useStore from '@lend/store/useStore'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 import Chip from 'ui/src/Typography/Chip'
-import InpChipUsdRate from '@/components/InpChipUsdRate'
-import TextCaption from '@/ui/TextCaption'
+import InpChipUsdRate from '@lend/components/InpChipUsdRate'
+import TextCaption from '@ui/TextCaption'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const CellLoanState = ({ userActiveKey, market }: { userActiveKey: string; market: OneWayMarketTemplate }) => {
