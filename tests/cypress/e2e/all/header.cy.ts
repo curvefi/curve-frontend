@@ -1,4 +1,5 @@
 import {
+  AppPath,
   checkIsDarkMode,
   oneAppPath,
   oneDesktopViewport,
@@ -22,14 +23,16 @@ describe('Header', () => {
 
   describe('Desktop', () => {
     let isDarkMode: boolean // when running locally, the dark mode might be the default
+    let appPath: AppPath
 
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
-      cy.visit(oneAppPath(), {
+      appPath = oneAppPath()
+      cy.visit(appPath, {
         onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
-      waitIsLoaded()
+      waitIsLoaded(appPath)
     })
 
     it('should have the right size', () => {
@@ -72,7 +75,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['loan', 'dao'].includes(Cypress.env('APP'))) {
+      if (['loan', 'dao'].includes(appPath)) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum`)
@@ -84,11 +87,14 @@ describe('Header', () => {
   })
 
   describe('mobile or tablet', () => {
+    let appPath: AppPath
+
     beforeEach(() => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
-      cy.visit('/')
-      waitIsLoaded()
+      appPath = oneAppPath()
+      cy.visit(`/${appPath}`)
+      waitIsLoaded(appPath)
     })
 
     it('should have the right size', () => {
@@ -110,7 +116,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = Cypress.env('APP') == 'dao' ? 0 : 1
+        const clickIndex = appPath == 'dao' ? 0 : 1
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
@@ -134,7 +140,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['loan', 'dao'].includes(Cypress.env('APP'))) {
+      if (['loan', 'dao'].includes(appPath)) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
@@ -150,8 +156,8 @@ describe('Header', () => {
     })
   })
 
-  function waitIsLoaded() {
-    const testId = Cypress.env('APP') == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
+  function waitIsLoaded(appPath: AppPath) {
+    const testId = appPath == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
     cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
   }
 

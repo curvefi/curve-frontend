@@ -32,4 +32,6 @@ export const isInViewport = ($el: JQuery) => {
 
 export const checkIsDarkMode = (win: Cypress.AUTWindow) => win.matchMedia('(prefers-color-scheme: dark)').matches
 
-export const oneAppPath = () => oneOf(oneOf('', '/dex'), '/lend', '/dao', '/loan')
+const oneDexPath = () => oneOf('', 'dex')
+export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'loan'] as const))
+export type AppPath = ReturnType<typeof oneAppPath>
