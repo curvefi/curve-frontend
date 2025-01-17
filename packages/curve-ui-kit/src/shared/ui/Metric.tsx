@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Tooltip from '@mui/material/Tooltip'
@@ -9,12 +9,12 @@ import Typography from '@mui/material/Typography'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from '@ui-kit/themes/typography'
+import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import AlertTitle from '@mui/material/AlertTitle'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
 // Correspond to flexbox align items values.
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
@@ -149,74 +149,64 @@ export const Metric = ({
     setOpenCopyAlert(true)
   }
 
+  const fontVariant = MetricSize[size]
+
   return (
-    <Box display="flex" flexDirection="column" alignItems={alignment} gap={Spacing.xs}>
+    <Stack alignItems={alignment}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {tooltip && (
           <Tooltip arrow placement="top" title={tooltip}>
             <span>
               {' '}
-              <InfoOutlinedIcon sx={{ fontSize: '1.25em' }} />
+              <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />
             </span>
           </Tooltip>
         )}
       </Typography>
 
       {loading ? (
-        <Skeleton
-          variant="text"
-          width="100%"
-          sx={{
-            fontSize: TYPOGRAPHY_VARIANTS[MetricSize[size]],
-          }}
-        />
+        <Skeleton variant="text" width="100%" sx={(t) => ({ ...t.typography[fontVariant] })} />
       ) : (
-        <Box display="flex" gap={Spacing.xs} alignItems="baseline">
+        <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
           <Tooltip
             arrow
             placement="bottom"
             title={value.toLocaleString()}
             onClick={copyValue}
-            sx={{
-              cursor: 'pointer',
-            }}
+            sx={{ cursor: 'pointer' }}
           >
-            <Box display="flex" gap={Spacing.xxs} alignItems="baseline">
+            <Stack direction="row">
               {unit?.position === 'prefix' && (
-                <Typography variant={MetricSize[size]} color="textSecondary">
+                <Typography variant={fontVariant} color="textSecondary">
                   {unit.symbol}
                 </Typography>
               )}
 
-              <Typography variant={MetricSize[size]} color="textPrimary">
+              <Typography variant={fontVariant} color="textPrimary">
                 {formatter(abbreviate ? abbreviateNumber(value) : value)}
               </Typography>
 
               {abbreviate && (
-                <Typography variant={MetricSize[size]} color="textPrimary" textTransform="capitalize">
+                <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
                   {scaleSuffix(value)}
                 </Typography>
               )}
 
               {unit?.position === 'suffix' && (
-                <Typography variant={MetricSize[size]} color="textSecondary">
+                <Typography variant={fontVariant} color="textSecondary">
                   {unit.symbol}
                 </Typography>
               )}
-            </Box>
+            </Stack>
           </Tooltip>
 
           {(change || change === 0) && (
-            <Typography
-              variant="highlightM"
-              color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}
-              sx={{ marginInlineStart: Spacing.xs }}
-            >
+            <Typography variant="highlightM" color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}>
               {formatChange(change)}%
             </Typography>
           )}
-        </Box>
+        </Stack>
       )}
 
       {notional !== undefined && (
@@ -234,6 +224,6 @@ export const Metric = ({
           {value}
         </Alert>
       </Snackbar>
-    </Box>
+    </Stack>
   )
 }
