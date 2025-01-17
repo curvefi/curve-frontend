@@ -86,7 +86,7 @@ export function getAppRoot(path: 'dex' | 'dao' | 'lend' | 'loan', developmentPor
     if (host.endsWith('vercel.app')) {
       const branchPrefix = /curve-dapp(-lend|-crvusd|-dao)?-(.*)-curvefi.vercel.app/.exec(host)?.[2]
       if (branchPrefix) {
-        return `https://curve-dapp-${branchPrefix}-curvefi.vercel.app`
+        return `https://curve-dapp-${branchPrefix}-curvefi.vercel.app/${path}`
       }
       return `https://${host}/${path}`
     }
