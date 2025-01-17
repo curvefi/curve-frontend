@@ -12,6 +12,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from '@ui-kit/themes/typography'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
+import AlertTitle from '@mui/material/AlertTitle'
 
 const { Spacing } = SizesAndSpaces
 
@@ -229,7 +230,8 @@ export const Metric = ({
 
       <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
-          {copyText}: {value}
+          <AlertTitle>{copyText}</AlertTitle>
+          {value}
         </Alert>
       </Snackbar>
     </Box>
