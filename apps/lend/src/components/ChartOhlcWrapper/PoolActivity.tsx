@@ -1,6 +1,6 @@
 import { PoolActivityProps } from './types'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 

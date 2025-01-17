@@ -1,4 +1,4 @@
-import type { ColumnKeys, FormValues, SearchParams, ShowDetailsMapper } from '@/components/PagePoolList/types'
+import type { ColumnKeys, FormValues, SearchParams } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import React from 'react'

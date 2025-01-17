@@ -6,7 +6,7 @@ import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { formatDisplayDate, toCalendarDate, todayInMilliseconds } from '@/utils/utilsDates'
+import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
 import dayjs from '@ui-kit/lib/dayjs'
 
 import { Chip } from '@/ui/Typography'

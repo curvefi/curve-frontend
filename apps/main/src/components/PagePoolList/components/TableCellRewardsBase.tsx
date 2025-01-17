@@ -1,5 +1,4 @@
 import React from 'react'
-import { t } from '@lingui/macro'
 
 import { LARGE_APY } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'

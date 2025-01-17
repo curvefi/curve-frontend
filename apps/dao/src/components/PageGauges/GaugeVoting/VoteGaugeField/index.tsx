@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import useStore from '@/store/useStore'
 import { convertToLocaleTimestamp, formatNumber } from '@/ui/utils'

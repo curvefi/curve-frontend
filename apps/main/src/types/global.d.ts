@@ -3,7 +3,7 @@ import type { SearchParams as PoolListSearchParams } from '@/components/PagePool
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@/ui/Tooltip/types'
-import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
+import type { WalletState } from '@web3-onboard/core'
 import type { Locale } from '@ui-kit/lib/i18n'
 import type { BaseConfig } from '@/ui/utils'
 import type curveApi from '@curvefi/api'

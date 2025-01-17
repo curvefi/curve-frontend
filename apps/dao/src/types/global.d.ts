@@ -1,5 +1,5 @@
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
-import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
+import type { WalletState } from '@web3-onboard/core'
 import type { Locale } from '@ui-kit/lib/i18n'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type curveApi from '@curvefi/api'

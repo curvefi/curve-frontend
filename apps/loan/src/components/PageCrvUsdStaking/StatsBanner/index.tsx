@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { isLoading, isReady } from '@/components/PageCrvUsdStaking/utils'
+import { isReady } from '@/components/PageCrvUsdStaking/utils'
 import { formatNumber } from '@/ui/utils'
 
 import Box from '@/ui/Box'

@@ -2,7 +2,7 @@ import type { ColumnKeys, PoolListTableLabel, SearchParams, SearchTermMapper } f
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
 import TableRow, { TableRowProps } from '@/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'

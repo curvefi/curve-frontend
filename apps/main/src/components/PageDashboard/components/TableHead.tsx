@@ -1,7 +1,7 @@
-import type { FormValues, Order, SortId, TableLabel } from '@/components/PageDashboard/types'
+import type { Order, SortId, TableLabel } from '@/components/PageDashboard/types'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { t } from '@lingui/macro'
 
 import { SORT_ID } from '@/components/PageDashboard/utils'

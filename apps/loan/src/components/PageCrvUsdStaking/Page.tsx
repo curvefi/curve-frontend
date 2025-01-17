@@ -12,7 +12,6 @@ import usePageOnMount from '@/hooks/usePageOnMount'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 
 import DocumentHead from '@/layout/DocumentHead'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import Box from '@/ui/Box'
 import Settings from '@/layout/Settings'
 

@@ -3,7 +3,7 @@ import type { State } from '@/store/useStore'
 import type { CustomNotification, NotificationType } from '@web3-onboard/core/dist/types'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 
-import { ethers, isError } from 'ethers'
+import { isError } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { getWalletProvider } from '@ui-kit/features/connect-wallet'
 
