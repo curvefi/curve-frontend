@@ -9,7 +9,7 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-import { Section, Header, Title, Paragraph } from '../Section'
+import { Section, Header, Paragraph } from '../Section'
 import { List } from '../List'
 
 const { Spacing } = SizesAndSpaces

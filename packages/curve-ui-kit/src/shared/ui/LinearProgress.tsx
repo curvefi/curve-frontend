@@ -1,4 +1,4 @@
-import MuiLinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress'
+import MuiLinearProgress from '@mui/material/LinearProgress'
 import { useEffect, useState } from 'react'
 
 const SIZE_MAPPING = {
