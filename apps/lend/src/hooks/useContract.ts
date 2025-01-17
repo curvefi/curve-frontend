@@ -18,7 +18,7 @@ const useAbiGaugeTotalSupply = (
   const getContract = useCallback(
     async (jsonModuleName: string, contractAddress: string, provider: Provider | JsonRpcProvider) => {
       try {
-        const abi = await import(`@/abis/${jsonModuleName}.json`).then((module) => module.default.abi)
+        const abi = await import(`@lend/abis/${jsonModuleName}.json`).then((module) => module.default.abi)
 
         if (!abi) {
           console.error('cannot find abi')

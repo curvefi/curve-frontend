@@ -75,7 +75,7 @@ function CurveApp({ Component }: AppProps) {
     const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
     ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
+      let data = await import(`@dao/locales/${parsedLocale}/messages`)
       dynamicActivate(parsedLocale, data)
     })()
     setLocale(parsedLocale)

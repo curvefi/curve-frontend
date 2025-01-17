@@ -66,7 +66,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
   getContract: async (jsonModuleName, contractAddress, provider) => {
     try {
-      const abi = await import(`@/abis/${jsonModuleName}.json`).then((module) => module.default)
+      const abi = await import(`@loan/abis/${jsonModuleName}.json`).then((module) => module.default)
 
       if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
 
