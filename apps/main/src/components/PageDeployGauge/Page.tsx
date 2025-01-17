@@ -12,6 +12,7 @@ import DeployGauge from '@/components/PageDeployGauge/index'
 
 import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import { CurveApi } from '@/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

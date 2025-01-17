@@ -20,6 +20,7 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import LazyItem from '@/ui/LazyItem'
 import Checkbox from '@/ui/Checkbox'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

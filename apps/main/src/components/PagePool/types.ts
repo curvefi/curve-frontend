@@ -1,4 +1,15 @@
 import { Params } from 'react-router'
+import {
+  Balances,
+  CurveApi,
+  ChainId,
+  RFormType,
+  TokensMapper,
+  PoolData,
+  PoolDataCache,
+  PoolAlert,
+  EstimatedGas,
+} from '@/types/main.types'
 
 export type EstimatedGas = {
   loading: boolean

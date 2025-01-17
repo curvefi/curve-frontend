@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+import { ChainId, Provider } from '@/types/lend.types'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,

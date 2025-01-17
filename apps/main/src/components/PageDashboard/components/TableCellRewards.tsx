@@ -12,6 +12,7 @@ import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import TableCellRewardsTooltip from '@/components/PageDashboard/components/TableCellRewardsTooltip'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import { RewardsApy, PoolData } from '@/types/main.types'
 
 const TableCellRewards = ({
   poolData,

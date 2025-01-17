@@ -41,6 +41,7 @@ import ConnectWallet from '@/components/ConnectWallet'
 import { useOneWayMarket } from '@/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Api, PageContentProps } from '@/types/lend.types'
 
 const Page: NextPage = () => {
   const params = useParams()

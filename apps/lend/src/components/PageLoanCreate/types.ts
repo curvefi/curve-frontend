@@ -3,6 +3,7 @@ import type { LiqRangeSliderIdx } from '@/store/types'
 import type { FormStatus as Fs } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { DetailInfoResp, DetailInfoLeverageResp, ExpectedCollateral, HealthMode } from '@/types/lend.types'
 
 export type FormType = 'create' | 'vault' | 'leverage'
 export type StepKey = 'APPROVAL' | 'CREATE' | ''

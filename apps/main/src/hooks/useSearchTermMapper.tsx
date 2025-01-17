@@ -1,6 +1,7 @@
 import type { SearchTermKey, SearchTermMapper } from '@/components/PagePoolList/types'
 
 import { t } from '@lingui/macro'
+import { PoolDataCacheOrApi } from '@/types/main.types'
 
 export enum SEARCH_TERM {
   'pool.wrappedCoins' = 'pool.wrappedCoins',

@@ -14,6 +14,7 @@ import { type Theme } from '@mui/material/styles'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
+import { ChainId } from '@/types/lend.types'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 

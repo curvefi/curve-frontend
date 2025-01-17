@@ -9,6 +9,7 @@ import Box from '@/ui/Box'
 import InternalLinkButton from '@/ui/InternalLinkButton'
 import InfoBox from '@/components/PageDeployGauge/InfoBox'
 import Spinner from '@/ui/Spinner'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId

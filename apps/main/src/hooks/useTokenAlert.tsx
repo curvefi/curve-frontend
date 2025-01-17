@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import ExternalLink from '@/ui/Link/ExternalLink'
+import { PoolAlert } from '@/types/main.types'
 
 const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
   useMemo(() => {

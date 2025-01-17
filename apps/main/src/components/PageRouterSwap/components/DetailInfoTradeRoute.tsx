@@ -8,6 +8,7 @@ import { RCCircle } from '@/images'
 import Box from '@/ui/Box'
 import DetailInfoTradeRouteRoute from '@/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
 import Loader from '@/ui/Loader'
+import { TokensNameMapper } from '@/types/main.types'
 
 const DetailInfoTradeRoute = ({
   params,

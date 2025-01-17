@@ -4,6 +4,7 @@ import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from '@/entities/gauge'
 import { FlexContainer } from '@/ui/styled-containers'
+import { ChainId } from '@/types/main.types'
 
 export const GasEstimation: React.FC<{
   chainId: ChainId

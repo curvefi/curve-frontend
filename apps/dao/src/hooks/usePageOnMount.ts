@@ -15,6 +15,7 @@ import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId, PageProps, Wallet } from '@/types/dao.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()

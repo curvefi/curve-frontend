@@ -6,6 +6,7 @@ import networks from '@/networks'
 
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
+import { ChainId } from '@/types/lend.types'
 
 const MarketListItemHeader = ({
   rChainId,

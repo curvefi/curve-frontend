@@ -20,6 +20,16 @@ import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { isBonus, isHighSlippage } from '@/utils'
 import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import curvejsApi from '@/lib/curvejs'
+import {
+  Balances,
+  CurveApi,
+  ChainId,
+  Pool,
+  PoolData,
+  FnStepEstGasApprovalResponse,
+  FnStepApproveResponse,
+  FnStepResponse,
+} from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

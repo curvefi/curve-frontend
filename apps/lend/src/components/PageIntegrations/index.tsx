@@ -19,6 +19,7 @@ import IntegrationAppComp from '@/ui/Integration/IntegrationApp'
 import SearchInput from '@/ui/SearchInput'
 import TableButtonFilters from '@/ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
+import { ChainId, NetworkEnum } from '@/types/lend.types'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({

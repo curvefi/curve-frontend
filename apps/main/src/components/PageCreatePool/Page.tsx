@@ -14,6 +14,7 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import PoolCreation from '@/components/PageCreatePool/index'
 import Box from '@/ui/Box'
 import ConnectWallet from '@/components/ConnectWallet'
+import { CurveApi } from '@/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

@@ -8,6 +8,7 @@ import { useGaugeRewardsDistributors } from '@/entities/gauge'
 import { NETWORK_TOKEN } from '@/constants'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import useStore from '@/store/useStore'
+import { ChainId, Token } from '@/types/main.types'
 
 export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disabled: boolean }> = ({
   chainId,

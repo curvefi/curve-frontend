@@ -17,6 +17,7 @@ import styled from 'styled-components'
 import { formatNumber } from '@/ui/utils'
 
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
+import { HeathColorKey, Theme } from '@/types/loan.types'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]

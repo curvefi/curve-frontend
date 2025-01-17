@@ -22,6 +22,7 @@ import Stats from '@/ui/Stats'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, PageContentProps, MarketClaimable } from '@/types/lend.types'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

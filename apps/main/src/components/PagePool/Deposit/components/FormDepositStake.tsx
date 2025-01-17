@@ -22,6 +22,7 @@ import HighSlippagePriceImpactModal from '@/components/PagePool/components/Warni
 import Stepper from '@/ui/Stepper'
 import TransferActions from '@/components/PagePool/components/TransferActions'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi, Pool, PoolData } from '@/types/main.types'
 
 const FormDepositStake = ({
   chainIdPoolId,

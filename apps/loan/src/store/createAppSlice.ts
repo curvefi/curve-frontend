@@ -9,6 +9,7 @@ import { Interface } from '@ethersproject/abi'
 import { httpFetcher, log } from '@/utils/helpers'
 import isEqual from 'lodash/isEqual'
 import networks from '@/networks'
+import { Curve, LendApi, RouterProps, Wallet } from '@/types/loan.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

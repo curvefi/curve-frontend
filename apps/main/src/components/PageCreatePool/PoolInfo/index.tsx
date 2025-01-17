@@ -5,6 +5,7 @@ import { STABLESWAP } from '@/components/PageCreatePool/constants'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import TextInput from '@/components/PageCreatePool/components/TextInput'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId

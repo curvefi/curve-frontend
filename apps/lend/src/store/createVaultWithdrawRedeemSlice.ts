@@ -11,6 +11,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PageVault
 import { _getMaxActiveKey } from '@/store/createVaultDepositMintSlice'
 import apiLending, { helpers } from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId, Api, FutureRates } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null

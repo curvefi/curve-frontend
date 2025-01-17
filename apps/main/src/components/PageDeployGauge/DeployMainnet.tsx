@@ -14,6 +14,7 @@ import {
 import Box from '@/ui/Box/Box'
 import TextInput from '@/components/PageDeployGauge/components/TextInput'
 import DialogSelect from '@/components/PageDeployGauge/components/DialogSelect'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId

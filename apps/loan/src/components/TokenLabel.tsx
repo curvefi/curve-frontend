@@ -7,6 +7,7 @@ import useCollateralAlert from '@/hooks/useCollateralAlert'
 import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
+import { ChainId, CollateralData, CollateralDataCache } from '@/types/loan.types'
 
 type Props = {
   className?: string

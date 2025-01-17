@@ -10,6 +10,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import Box from '@/ui/Box'
 import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
 import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/types/dao.types'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean

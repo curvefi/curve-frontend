@@ -12,6 +12,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { ChainId, Curve } from '@/types/loan.types'
 
 type Props = {
   rChainId: ChainId

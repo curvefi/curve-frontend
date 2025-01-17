@@ -11,6 +11,7 @@ import UserProposalVotesTable from './UserProposalVotesTable'
 import UserLocksTable from './UserLocksTable'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import SubNav from '@/components/SubNav'
+import { VeCrvHolder } from '@/types/dao.types'
 
 type UserPageProps = {
   routerParams: {

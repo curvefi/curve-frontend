@@ -34,6 +34,7 @@ import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { CurveApi, ChainId, Token, TokensMapper } from '@/types/main.types'
 
 const QuickSwap = ({
   pageLoaded,

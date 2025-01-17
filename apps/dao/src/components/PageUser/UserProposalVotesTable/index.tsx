@@ -10,6 +10,7 @@ import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from 
 
 import PaginatedTable from '@/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
+import { UserProposalVoteData, UserProposalVotesSortBy } from '@/types/dao.types'
 
 interface UserProposalVotesTableProps {
   userAddress: string

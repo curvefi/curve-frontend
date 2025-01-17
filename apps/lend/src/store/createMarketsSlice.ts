@@ -3,6 +3,22 @@ import type { State } from '@/store/useStore'
 import { getErrorMessage } from '@/utils/helpers'
 import apiLending from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import {
+  ChainId,
+  Api,
+  MarketsStatsParametersMapper,
+  MarketsStatsBandsMapper,
+  MarketsStatsTotalsMapper,
+  MarketsStatsAMMBalancesMapper,
+  MarketsStatsCapAndAvailableMapper,
+  MarketsMaxLeverageMapper,
+  MarketsPricesMapper,
+  MarketsRatesMapper,
+  MarketsTotalLiquidityMapper,
+  MarketsTotalCollateralValueMapper,
+  MarketsRewardsMapper,
+  MarketDetailsView,
+} from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

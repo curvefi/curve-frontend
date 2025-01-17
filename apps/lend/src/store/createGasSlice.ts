@@ -9,6 +9,7 @@ import { gweiToWai } from '@ui-kit/utils'
 import { httpFetcher, log } from '@/utils/helpers'
 import lendingApi from '@/lib/apiLending'
 import networks from '@/networks'
+import { Api, Provider } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

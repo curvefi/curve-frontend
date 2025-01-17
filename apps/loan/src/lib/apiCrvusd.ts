@@ -15,6 +15,7 @@ import {
   sortBands,
 } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
+import { Array, ChainId, Curve, Provider, Llamma, LiqRange, UserLoanDetails } from '@/types/loan.types'
 
 export const network = {
   1: {

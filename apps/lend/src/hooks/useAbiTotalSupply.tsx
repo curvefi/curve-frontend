@@ -7,6 +7,7 @@ import { weiToEther } from '@ui-kit/utils'
 import useContract from '@/hooks/useContract'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+import { ChainId } from '@/types/lend.types'
 
 const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefined) => {
   const contract = useContract(rChainId, false, 'totalSupply', contractAddress)

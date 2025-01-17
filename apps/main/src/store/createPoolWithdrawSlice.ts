@@ -12,6 +12,15 @@ import { DEFAULT_SLIPPAGE } from 'components/PagePool'
 import { parseAmountsForAPI } from '@/components/PagePool/utils'
 import { isBonus, isHighSlippage, shortenTokenAddress } from '@/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PagePool/Withdraw/utils'
+import {
+  CurveApi,
+  ChainId,
+  Pool,
+  PoolData,
+  FnStepEstGasApprovalResponse,
+  FnStepApproveResponse,
+  FnStepResponse,
+} from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

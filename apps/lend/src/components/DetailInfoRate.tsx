@@ -6,6 +6,7 @@ import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
+import { ChainId, FutureRates } from '@/types/lend.types'
 
 const DetailInfoRate = ({
   rChainId,

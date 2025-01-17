@@ -13,6 +13,7 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@/types/loan.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 

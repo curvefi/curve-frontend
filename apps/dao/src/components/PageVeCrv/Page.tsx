@@ -18,6 +18,7 @@ import FormCrvLocker from '@/components/PageVeCrv/index'
 import IconButton from '@/ui/IconButton'
 import Settings from '@/layout/Settings'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { CurveApi } from '@/types/dao.types'
 
 const Page: NextPage = () => {
   const params = useParams()

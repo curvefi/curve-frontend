@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { getTokensMapperStr } from '@/store/createTokensSlice'
 import useStore from '@/store/useStore'
 import { useChainId } from '@/entities/chain'
+import { ChainId } from '@/types/main.types'
 
 const useTokensMapper = (rChainId?: ChainId | number | null) => {
   const { data: chainId } = useChainId()

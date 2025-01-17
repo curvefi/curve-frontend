@@ -1,3 +1,5 @@
+import { ChainId, NetworkConfig, CurrencyReservesToken, TokensMapper } from '@/types/main.types'
+
 export interface CurrencyReservesProps {
   cr: CurrencyReservesToken | undefined
   haveSameTokenName: boolean

@@ -11,6 +11,7 @@ import PoolTypeSummary from '@/components/PageCreatePool/Summary/PoolTypeSummary
 import TokensInPoolSummary from '@/components/PageCreatePool/Summary/TokensInPoolSummary'
 import ParametersSummary from '@/components/PageCreatePool/Summary/ParametersSummary'
 import PoolInfoSummary from '@/components/PageCreatePool/Summary/PoolInfoSummary'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   imageBaseUrl: string

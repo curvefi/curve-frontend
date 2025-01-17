@@ -7,6 +7,7 @@ import Box from '@/ui/Box'
 import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 import TokenLabel from '@/components/TokenLabel'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId } from '@/types/lend.types'
 
 const CellToken = ({
   hideIcon,

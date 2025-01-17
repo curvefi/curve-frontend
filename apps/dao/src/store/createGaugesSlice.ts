@@ -5,6 +5,22 @@ import produce from 'immer'
 import { t } from '@lingui/macro'
 
 import { shortenTokenAddress } from '@/ui/utils'
+import {
+  CurveGaugeResponse,
+  PricesGaugeOverviewResponse,
+  GaugeFormattedData,
+  GaugeMapper,
+  GaugeCurveApiDataMapper,
+  GaugeVotesResponse,
+  GaugeVotesMapper,
+  GaugeWeightHistoryData,
+  FetchingState,
+  TransactionState,
+  SortByFilterGaugesKeys,
+  SortByFilterGauges,
+  SortDirection,
+  GaugeVotesSortBy,
+} from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

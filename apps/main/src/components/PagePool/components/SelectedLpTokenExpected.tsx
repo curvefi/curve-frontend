@@ -12,6 +12,7 @@ import Spacer from '@/ui/Spacer'
 import Loader from '@/ui/Loader'
 import TextEllipsis from '@/ui/TextEllipsis'
 import TokenIcon from '@/components/TokenIcon'
+import { TokensMapper, PoolDataCacheOrApi } from '@/types/main.types'
 
 const SelectedLpTokenExpected = ({
   amounts,

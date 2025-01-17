@@ -7,6 +7,7 @@ import AddRewardToken from '@/features/add-gauge-reward-token'
 import DepositReward from '@/features/deposit-gauge-reward'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/entities/gauge'
 import { useSignerAddress } from '@/entities/signer'
+import { ChainId } from '@/types/main.types'
 
 const ManageGauge: React.FC<{ poolId: string; chainId: ChainId }> = ({ poolId, chainId }) => {
   const sliderTabs: Tab<TabValue>[] = [

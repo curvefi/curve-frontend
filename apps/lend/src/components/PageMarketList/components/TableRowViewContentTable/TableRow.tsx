@@ -20,6 +20,7 @@ import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
 import CellUtilization from '@/components/SharedCellData/CellUtilization'
+import { TitleKey } from '@/types/lend.types'
 
 type Content = {
   className: string

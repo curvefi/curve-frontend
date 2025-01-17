@@ -14,6 +14,7 @@ import { ExternalLink } from '@/ui/Link'
 import TokenIcon from '@/components/TokenIcon'
 import Icon from '@/ui/Icon'
 import TextEllipsis from '@/ui/TextEllipsis'
+import { ChainId, PoolParameters, PoolData } from '@/types/main.types'
 
 type PoolParametersProps = {
   pricesApi: boolean

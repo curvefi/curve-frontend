@@ -15,6 +15,17 @@ import { NETWORK_TOKEN } from '@/constants'
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
 import curvejsApi from '@/lib/curvejs'
+import {
+  Balances,
+  CurveApi,
+  ChainId,
+  CurrencyReserves,
+  Pool,
+  PoolData,
+  FnStepEstGasApprovalResponse,
+  FnStepApproveResponse,
+  FnStepResponse,
+} from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

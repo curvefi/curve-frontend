@@ -15,6 +15,7 @@ import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import ListInfoItem from '@/ui/ListInfo'
 import TextCaption from '@/ui/TextCaption'
+import { ChainId } from '@/types/lend.types'
 
 // TODO: refactor to UI
 const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {

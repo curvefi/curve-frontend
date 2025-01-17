@@ -13,6 +13,7 @@ import Chip from '@/ui/Typography/Chip'
 import ChipInactive from '@/components/ChipInactive'
 import CellRewardsTooltip from '@/components/SharedCellData/CellRewardsTooltip'
 import Icon from '@/ui/Icon'
+import { ChainId } from '@/types/lend.types'
 
 const CellRewards = ({
   className = '',

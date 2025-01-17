@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import UserInfoStats from '@/components/DetailsUser/components/UserInfoStats'
+import { HeathColorKey } from '@/types/lend.types'
 
 export const MainUserInfoStats = styled(UserInfoStats)`
   border: 1px solid var(--nav_button--border-color);

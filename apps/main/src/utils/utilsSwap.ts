@@ -5,6 +5,7 @@ import { t } from '@lingui/macro'
 import BigNumber from 'bignumber.js'
 
 import { parseRouterRoutes } from '@/components/PageRouterSwap/utils'
+import { CurveApi, PoolData } from '@/types/main.types'
 
 const LOW_EXCHANGE_RATE = 0.98
 

@@ -31,6 +31,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Curve, Llamma, CollateralAlert } from '@/types/loan.types'
 
 const LoanCreate = ({
   collateralAlert,

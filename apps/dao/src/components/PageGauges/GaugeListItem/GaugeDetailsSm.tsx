@@ -7,6 +7,7 @@ import networks from '@/networks'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/types/dao.types'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData

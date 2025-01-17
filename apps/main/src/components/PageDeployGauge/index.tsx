@@ -18,6 +18,7 @@ import Switch from '@/ui/Switch/Switch'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon/Icon'
 import ModalDialog from '@/ui/Dialog/ModalDialog'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

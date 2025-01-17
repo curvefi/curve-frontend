@@ -5,6 +5,7 @@ import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/hooks/usePoolTotalStaked'
 import Item from '@/ui/Items/Item'
 import Items from '@/ui/Items/Items'
+import { PoolDataCacheOrApi } from '@/types/main.types'
 
 interface PoolTotalStakedProps {
   poolDataCacheOrApi: PoolDataCacheOrApi

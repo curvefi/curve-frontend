@@ -15,6 +15,7 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
 import ErrorMessage from '@/components/ErrorMessage'
+import { ProposalListFilter, SortByFilterProposals } from '@/types/dao.types'
 
 const Proposals = () => {
   const {

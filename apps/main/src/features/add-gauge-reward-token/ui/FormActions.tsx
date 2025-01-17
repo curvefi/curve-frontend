@@ -3,6 +3,7 @@ import React from 'react'
 import { useAddRewardTokenFormContext } from '@/features/add-gauge-reward-token/lib'
 import { StyledButton } from '@/features/add-gauge-reward-token/ui/styled'
 import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/entities/gauge'
+import { ChainId } from '@/types/main.types'
 
 export const FormActions: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const {

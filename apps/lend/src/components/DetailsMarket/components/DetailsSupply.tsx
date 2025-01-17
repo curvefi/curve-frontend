@@ -14,6 +14,7 @@ import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsS
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
+import { MarketListType, PageContentProps, TitleKey } from '@/types/lend.types'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper } = pageProps

@@ -2,6 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
 import { sleep } from '@/utils'
+import { ChainId, PoolDataCacheMapper } from '@/types/main.types'
 
 type SwapFormValuesCache = {
   fromAddress: string

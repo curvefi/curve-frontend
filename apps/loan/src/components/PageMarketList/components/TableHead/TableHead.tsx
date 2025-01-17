@@ -8,6 +8,7 @@ import useStore from '@/store/useStore'
 
 import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import { TitleKey, TitleMapper } from '@/types/loan.types'
 
 const TableHead = ({
   someLoanExists,

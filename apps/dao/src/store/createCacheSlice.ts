@@ -2,6 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
 import { sleep } from '@/utils'
+import { ProposalData, PricesProposalData, GaugeFormattedData, GaugeWeightHistoryData } from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

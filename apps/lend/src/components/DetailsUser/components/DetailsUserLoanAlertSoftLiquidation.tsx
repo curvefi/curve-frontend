@@ -7,6 +7,7 @@ import useStore from '@/store/useStore'
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageContentProps) => {
   const { borrowed_token, collateral_token } = market ?? {}

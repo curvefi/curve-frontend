@@ -20,6 +20,7 @@ import GaugeListColumns from '@/components/PageGauges/GaugeListItem/GaugeListCol
 import GaugeWeightVotesColumns from '@/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
 import VoteGaugeField from '@/components/PageGauges/GaugeVoting/VoteGaugeField'
 import GaugeDetails from '@/components/PageGauges/GaugeListItem/GaugeDetails'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/types/dao.types'
 
 type Props = {
   gaugeData: GaugeFormattedData

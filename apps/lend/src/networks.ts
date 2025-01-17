@@ -1,6 +1,7 @@
 import sortBy from 'lodash/sortBy'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
+import { ChainId, NetworkEnum, NetworkConfig } from '@/types/lend.types'
 
 const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},

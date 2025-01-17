@@ -11,6 +11,7 @@ import { RCCrossCurve } from '@/ui/images'
 import { ExternalLink, InternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import PoolAlertCustomMessage from '@/components/PoolAlertCustomMessage'
+import { PoolAlert } from '@/types/main.types'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
   const params = useStore((state) => state.routerProps?.params)

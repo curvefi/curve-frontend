@@ -50,6 +50,7 @@ import { BlockSkeleton } from '../../../../../packages/ui/src/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PoolParameters, EstimatedGas } from '@/types/main.types'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,

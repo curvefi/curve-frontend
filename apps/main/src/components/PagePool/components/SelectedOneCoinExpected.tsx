@@ -13,6 +13,7 @@ import Spacer from '@/ui/Spacer'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import TextEllipsis from '@/ui/TextEllipsis'
 import TokenIcon from '@/components/TokenIcon'
+import { TokensMapper, PoolDataCacheOrApi } from '@/types/main.types'
 
 const SelectedOneCoinExpected = ({
   amounts,

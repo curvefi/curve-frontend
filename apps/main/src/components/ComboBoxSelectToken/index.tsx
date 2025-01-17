@@ -14,6 +14,7 @@ import ComboBoxSelectedToken from '@/components/ComboBoxSelectToken/ComboBoxSele
 import ComboBoxSelectedTokenButton from '@/components/ComboBoxSelectToken/ComboBoxSelectedTokenButton'
 import ModalDialog from '@/ui/Dialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { Token } from '@/types/main.types'
 
 const ComboBoxTokens = ({
   disabled,

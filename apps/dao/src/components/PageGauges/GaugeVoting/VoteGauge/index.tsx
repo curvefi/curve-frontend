@@ -10,6 +10,7 @@ import Icon from '@/ui/Icon'
 import VoteGaugeField from '../VoteGaugeField'
 import TitleComp from '../../GaugeListItem/TitleComp'
 import GaugeDetails from '../../GaugeListItem/GaugeDetails'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/types/dao.types'
 
 type VoteGaugeProps = {
   imageBaseUrl: string

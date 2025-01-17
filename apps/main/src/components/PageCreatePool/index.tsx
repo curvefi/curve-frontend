@@ -24,6 +24,7 @@ import PoolInfo from '@/components/PageCreatePool/PoolInfo'
 import Summary from '@/components/PageCreatePool/Summary'
 import Parameters from '@/components/PageCreatePool/Parameters'
 import InfoBox from '@/components/PageCreatePool/components/InfoBox'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

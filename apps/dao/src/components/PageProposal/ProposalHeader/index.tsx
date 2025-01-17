@@ -4,6 +4,7 @@ import { t } from '@lingui/macro'
 import SmallLabel from '@/components/SmallLabel'
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import VoteCountdown from '@/components/VoteCountdown'
+import { ProposalData } from '@/types/dao.types'
 
 type ProposalHeaderProps = {
   proposal: ProposalData

@@ -6,6 +6,7 @@ import { Chain, gweiToWai } from '@ui-kit/utils'
 import { httpFetcher } from '@/lib/utils'
 import { log } from '@ui-kit/lib/logging'
 import api from '@/lib/curvejs'
+import { CurveApi, NetworkConfig, Provider, GasInfo } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -4,6 +4,7 @@ import useStore from '@/store/useStore'
 import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 import Box from '@/ui/Box'
 import SelectButton from '@/components/PageCreatePool/components/SelectButton'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId

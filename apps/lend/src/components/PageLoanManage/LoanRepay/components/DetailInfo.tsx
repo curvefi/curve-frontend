@@ -17,6 +17,7 @@ import DetailInfoPriceImpact from '@/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/components/DetailInfoRate'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailInfo = ({
   rChainId,

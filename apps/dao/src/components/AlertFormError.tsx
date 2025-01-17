@@ -5,6 +5,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import AlertBox from '@/ui/AlertBox'
+import { AlertFormErrorKey } from '@/types/dao.types'
 
 export enum AlertFormErrorKey {
   USER_REJECTED_ACTION = 'error-user-rejected-action',

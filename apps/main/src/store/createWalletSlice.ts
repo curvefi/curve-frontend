@@ -7,6 +7,7 @@ import { BrowserProvider, ethers } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { CONNECT_STAGE } from '@/constants'
+import { Provider, Wallet } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -10,6 +10,7 @@ import Chip from '@/ui/Typography/Chip'
 import InpChipUsdRate from '@/components/InpChipUsdRate'
 import ListInfoItem from '@/ui/ListInfo'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId } from '@/types/lend.types'
 
 const CellUserMain = ({
   rChainId,

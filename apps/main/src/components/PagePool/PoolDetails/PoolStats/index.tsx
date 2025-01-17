@@ -16,6 +16,7 @@ import ExternalLink from '@/ui/Link/ExternalLink'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/components/PagePool/PoolDetails/PoolStats/Rewards'
 import { InternalLink } from '@/ui/Link'
+import { CurrencyReserves, PoolParameters, TokensMapper, PoolAlert } from '@/types/main.types'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null

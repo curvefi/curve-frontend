@@ -3,6 +3,7 @@ import { DEFAULT_LOCALES, parseLocale } from '@ui-kit/lib/i18n'
 import { ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
+import { NetworkEnum, RouterParams } from '@/types/lend.types'
 
 export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)

@@ -9,6 +9,7 @@ import { TooltipIcon } from '@/ui/Tooltip'
 import Loader from 'ui/src/Loader/Loader'
 import InternalLink from '@/ui/Link/InternalLink'
 import Box from '@/ui/Box'
+import { SnapshotVotingPower, ActiveProposal } from '@/types/dao.types'
 
 type Props = {
   noLink?: boolean

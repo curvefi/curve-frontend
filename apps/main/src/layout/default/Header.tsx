@@ -11,6 +11,7 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
+import { ChainId, Networks } from '@/types/main.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 

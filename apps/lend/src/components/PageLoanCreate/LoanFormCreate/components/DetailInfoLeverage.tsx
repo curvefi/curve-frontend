@@ -20,6 +20,7 @@ import DetailInfoLeverageAvgPrice from '@/components/DetailInfoLeverageAvgPrice'
 import DetailInfoLTV from '@/components/DetailInfoLTV'
 import DetailInfoPriceImpact from '@/components/DetailInfoPriceImpact'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailInfoLeverage = ({
   activeStep,

@@ -8,6 +8,7 @@ import useStore from '@/store/useStore'
 import { DEFAULT_BAND_CHART_DATA } from '@/components/DetailsUser/utils'
 import { helpers } from '@/lib/apiLending'
 import ChartBandBalances from '@/components/ChartBandBalances'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailsUserLoanChartBandBalances = ({
   rChainId,

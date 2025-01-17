@@ -1,4 +1,5 @@
 import type { Amount } from '@/components/PagePool/utils'
+import { ClaimableReward } from '@/types/main.types'
 
 export type FormType = 'UNSTAKE' | 'WITHDRAW' | 'CLAIM'
 export type StepKey = 'APPROVAL' | 'UNSTAKE' | 'WITHDRAW' | 'CLAIM' | ''

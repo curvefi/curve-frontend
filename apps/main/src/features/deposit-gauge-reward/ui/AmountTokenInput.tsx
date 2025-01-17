@@ -24,6 +24,7 @@ import {
 import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
 import { useTokens } from '@/entities/token'
 import { FlexContainer } from '@/ui/styled-containers'
+import { ChainId, Token } from '@/types/main.types'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId

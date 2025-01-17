@@ -13,6 +13,7 @@ import ChipPool from '@/components/ChipPool'
 import ChipToken from '@/components/ChipToken'
 import TokenIcons from '@/components/TokenIcons'
 import TableCellReferenceAsset from '@/components/PagePoolList/components/TableCellReferenceAsset'
+import { PoolData, PoolDataCache } from '@/types/main.types'
 
 type PoolListProps = {
   quickViewValue?: string | React.ReactNode | null

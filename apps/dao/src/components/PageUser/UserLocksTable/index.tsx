@@ -9,6 +9,7 @@ import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from 
 
 import PaginatedTable from '@/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/components/PaginatedTable/TableRow'
+import { UserLock, UserLocksSortBy, veCrvLockType } from '@/types/dao.types'
 
 interface UserLocksTableProps {
   userAddress: string

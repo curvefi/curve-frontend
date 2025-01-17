@@ -7,6 +7,7 @@ import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { httpFetcher } from '@/utils'
 import { log } from '@ui-kit/lib'
 import networks from '@/networks'
+import { CurveApi, Provider, GasInfo } from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

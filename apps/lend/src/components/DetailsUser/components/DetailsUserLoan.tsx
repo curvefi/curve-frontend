@@ -23,6 +23,7 @@ import DetailsUserLoanChartLiquidationRange from '@/components/DetailsUser/compo
 import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps, TitleKey } from '@/types/lend.types'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps

@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
 import { log } from '@ui-kit/lib'
+import { CurveApi, RouterProps, Wallet } from '@/types/dao.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

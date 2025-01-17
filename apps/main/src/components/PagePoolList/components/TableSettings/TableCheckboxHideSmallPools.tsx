@@ -4,6 +4,7 @@ import React from 'react'
 import { t } from '@lingui/macro'
 
 import Checkbox from '@/ui/Checkbox'
+import { PoolData } from '@/types/main.types'
 
 const TableCheckboxHideSmallPools = ({
   searchParams,

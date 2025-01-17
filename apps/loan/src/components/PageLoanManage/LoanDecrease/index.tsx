@@ -31,6 +31,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Curve, Llamma } from '@/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 

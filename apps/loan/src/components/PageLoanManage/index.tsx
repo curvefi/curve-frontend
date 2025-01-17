@@ -18,6 +18,7 @@ import LoanDeleverage from '@/components/PageLoanManage/LoanDeleverage'
 import LoanIncrease from '@/components/PageLoanManage/LoanIncrease'
 import LoanLiquidate from '@/components/PageLoanManage/LoanLiquidate'
 import SlideTabsWrapper, { SlideTab, SlideTabs } from '@/ui/TabSlide'
+import { Array } from '@/types/loan.types'
 
 interface Props extends PageLoanManageProps {}
 

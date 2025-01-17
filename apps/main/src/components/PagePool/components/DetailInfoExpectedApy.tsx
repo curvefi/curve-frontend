@@ -10,6 +10,7 @@ import Box from '@/ui/Box'
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import { PoolDataCacheOrApi } from '@/types/main.types'
 
 const DetailInfoExpectedApy = ({
   crvApr,

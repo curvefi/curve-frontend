@@ -35,6 +35,7 @@ import TextCaption from '@/ui/TextCaption'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Api, PageContentProps, HealthMode } from '@/types/lend.types'
 
 const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps

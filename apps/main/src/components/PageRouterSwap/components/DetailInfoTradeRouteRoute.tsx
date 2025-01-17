@@ -14,6 +14,7 @@ import { ExternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
 import TextEllipsis from '@/ui/TextEllipsis'
 import useStore from '@/store/useStore'
+import { ChainId, NetworkEnum } from '@/types/main.types'
 
 const DetailInfoTradeRouteRoute = ({
   params,

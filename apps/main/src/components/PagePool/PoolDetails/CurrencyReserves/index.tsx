@@ -10,6 +10,7 @@ import { Chip } from '@/ui/Typography'
 import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import CurrencyReservesContent from '@/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { ChainId, CurrencyReserves, TokensMapper, Tvl } from '@/types/main.types'
 
 interface Props {
   rChainId: ChainId

@@ -9,6 +9,7 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 import type React from 'react'
+import { ChainId } from '@/types/main.types'
 
 const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
   lpEventsData,

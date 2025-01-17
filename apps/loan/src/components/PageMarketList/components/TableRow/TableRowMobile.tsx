@@ -18,6 +18,7 @@ import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
 import TableCellRate from '@/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
 import TableCellUser from '@/components/SharedCells/TableCellUser'
+import { TitleKey, TitleMapper } from '@/types/loan.types'
 
 const TableRowMobile = ({
   className = '',

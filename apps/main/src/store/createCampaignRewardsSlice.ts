@@ -4,6 +4,7 @@ import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 
 import produce from 'immer'
 
 import campaigns from '@/shared/external-rewards'
+import { ChainId } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

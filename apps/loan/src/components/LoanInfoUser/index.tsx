@@ -17,6 +17,7 @@ import ChartUserBands from '@/components/LoanInfoUser/components/ChartUserBands'
 import ChartUserLiquidationRange from '@/components/LoanInfoUser/components/ChartUserLiquidationRange'
 import UserInfos from '@/components/LoanInfoUser/components/UserInfos'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId

@@ -6,6 +6,7 @@ import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import { isError } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { getWalletProvider } from '@ui-kit/features/connect-wallet'
+import { Provider, Wallet } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

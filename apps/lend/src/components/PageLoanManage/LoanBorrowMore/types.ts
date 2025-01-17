@@ -1,5 +1,6 @@
 import type { FormDetailInfo, FormStatus as Fs } from '@/components/PageLoanManage/types'
 import type { InpError } from '@/components/PageLoanCreate/types'
+import { ExpectedCollateral } from '@/types/lend.types'
 
 export type FormValues = {
   userCollateral: string

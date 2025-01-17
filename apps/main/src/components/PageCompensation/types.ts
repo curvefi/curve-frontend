@@ -1,4 +1,5 @@
 import ethers from 'ethers'
+import { Balances } from '@/types/main.types'
 
 export type EtherContract = {
   contractAddress: string

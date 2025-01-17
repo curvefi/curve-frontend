@@ -26,6 +26,7 @@ import Checkbox from '@/ui/Checkbox'
 import Icon from '@/ui/Icon'
 import Button from '@/ui/Button'
 import { Key } from 'react'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

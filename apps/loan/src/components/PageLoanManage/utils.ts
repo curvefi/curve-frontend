@@ -1,5 +1,6 @@
 import { FormDetailInfo, FormEstGas, FormStatus } from '@/components/PageLoanManage/types'
 import { INVALID_ADDRESS } from '@/constants'
+import { Llamma, HealthMode, UserWalletBalances } from '@/types/loan.types'
 
 export const DEFAULT_HEALTH_MODE: HealthMode = {
   percent: '',

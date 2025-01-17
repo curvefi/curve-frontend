@@ -6,6 +6,7 @@ import { StyledInpChip } from '@/components/PageLoanManage/styles'
 import TextCaption from '@/ui/TextCaption'
 import Box from '@/ui/Box'
 import useVaultShares from '@/hooks/useVaultShares'
+import { ChainId } from '@/types/lend.types'
 
 const ChipVaultSharesUsdRate = ({
   className = '',

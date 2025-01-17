@@ -10,6 +10,7 @@ import NumberField from './NumberField'
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
 import { TooltipIcon } from '@/ui/Tooltip'
+import { UserGaugeVoteWeight } from '@/types/dao.types'
 
 type VoteGaugeFieldProps = {
   powerUsed: number

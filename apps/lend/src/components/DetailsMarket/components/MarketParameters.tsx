@@ -11,6 +11,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 import { useOneWayMarket } from '@/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@/types/lend.types'
 
 const MarketParameters = ({
   rChainId,

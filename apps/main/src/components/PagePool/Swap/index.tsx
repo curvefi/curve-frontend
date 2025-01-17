@@ -34,6 +34,7 @@ import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TransferActions from '@/components/PagePool/components/TransferActions'
 import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
+import { Balances, CurveApi, TokensMapper, PoolData, PoolAlert } from '@/types/main.types'
 
 const Swap = ({
   chainIdPoolId,

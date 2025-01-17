@@ -15,6 +15,7 @@ import {
 
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

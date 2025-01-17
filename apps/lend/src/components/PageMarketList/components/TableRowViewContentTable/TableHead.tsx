@@ -8,6 +8,7 @@ import { _showContent } from '@/utils/helpers'
 import useStore from '@/store/useStore'
 
 import { Thead, Th, TheadSortButton } from '@/ui/Table'
+import { Order, TitleKey } from '@/types/lend.types'
 
 const TableHead = ({
   address,

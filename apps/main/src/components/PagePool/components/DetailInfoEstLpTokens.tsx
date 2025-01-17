@@ -7,6 +7,7 @@ import { formatNumber } from '@/ui/utils'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { PoolDataCacheOrApi } from '@/types/main.types'
 
 const DetailInfoEstLpTokens = ({
   formLpTokenExpected,

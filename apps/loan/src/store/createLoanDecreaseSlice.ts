@@ -12,6 +12,7 @@ import {
 } from '@/components/PageLoanManage/utils'
 import { loadingLRPrices } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
+import { ChainId, Curve, Llamma } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

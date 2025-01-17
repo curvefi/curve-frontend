@@ -21,6 +21,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, PageContentProps } from '@/types/lend.types'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

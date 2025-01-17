@@ -7,6 +7,7 @@ import { formatNumber } from '@/ui/utils'
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
+import { Array } from '@/types/lend.types'
 
 type PriceImpact = { priceImpact: string; swapFrom: string; swapTo: string }
 

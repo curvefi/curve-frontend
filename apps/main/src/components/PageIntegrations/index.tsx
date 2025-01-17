@@ -19,6 +19,7 @@ import IntegrationAppComp from '@/ui/Integration/IntegrationApp'
 import SearchInput from '@/ui/SearchInput'
 import SelectNetwork from '@/ui/SelectNetwork/SelectNetwork'
 import SelectIntegrationTags from '@/components/PageIntegrations/components/SelectIntegrationTags'
+import { ChainId, NetworkEnum } from '@/types/main.types'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({

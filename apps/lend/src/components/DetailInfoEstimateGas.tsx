@@ -12,6 +12,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { useTokenUsdRate } from '@/entities/token'
 import { NETWORK_TOKEN } from '@/constants'
+import { ChainId } from '@/types/lend.types'
 
 export type StepProgress = {
   active: number

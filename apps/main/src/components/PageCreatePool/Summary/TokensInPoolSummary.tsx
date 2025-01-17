@@ -31,6 +31,7 @@ import OracleSummary from '@/components/PageCreatePool/Summary/OracleSummary'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 import { Chip } from '@/ui/Typography'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   imageBaseUrl: string

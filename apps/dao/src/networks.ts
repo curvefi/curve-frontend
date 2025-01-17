@@ -4,6 +4,7 @@ import sortBy from 'lodash/sortBy'
 
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
+import { ChainId, NetworkEnum, NetworkConfig } from '@/types/dao.types'
 
 const DEFAULT_NETWORK_CONFIG = {
   api: curvejsApi,

@@ -4,6 +4,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { formatNumber } from 'ui/src/utils'
 
 import FeesBarChartTooltip from './FeesBarChartTooltip'
+import { VeCrvFee } from '@/types/dao.types'
 
 type FeesBarChartProps = {
   data: VeCrvFee[]

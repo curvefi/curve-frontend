@@ -12,6 +12,7 @@ import Table, { Tbody, Th } from '@/ui/Table'
 import TableHead from '@/components/PageMarketList/components/TableRowViewContentTable/TableHead'
 import TableRowContainer from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
 import TextCaption from '@/ui/TextCaption'
+import { Array } from '@/types/lend.types'
 
 const MarketListTable = ({
   className = '',

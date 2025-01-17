@@ -31,6 +31,26 @@ import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/utils'
 import { log } from '@ui-kit/lib/logging'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import curvejsApi from '@/lib/curvejs'
+import {
+  CurveApi,
+  ChainId,
+  NetworkConfig,
+  CurrencyReservesToken,
+  CurrencyReserves,
+  CurrencyReservesMapper,
+  RewardsApyMapper,
+  TokensMapper,
+  PoolData,
+  BasePool,
+  PoolDataMapper,
+  PoolDataCache,
+  PricesApiPoolData,
+  SnapshotsMapper,
+  PricesApiSnapshotsResponse,
+  PoolDataCacheMapper,
+  TvlMapper,
+  VolumeMapper,
+} from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

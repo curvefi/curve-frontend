@@ -22,6 +22,7 @@ import AlertBox from '@/ui/AlertBox'
 import Button from '@/ui/Button'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi } from '@/types/main.types'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {

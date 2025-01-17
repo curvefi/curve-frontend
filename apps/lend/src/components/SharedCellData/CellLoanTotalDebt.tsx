@@ -2,6 +2,7 @@ import React from 'react'
 
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
+import { ChainId } from '@/types/lend.types'
 
 const CellLoanTotalDebt = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const resp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])

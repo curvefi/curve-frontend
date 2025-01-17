@@ -5,6 +5,15 @@ import cloneDeep from 'lodash/cloneDeep'
 import pick from 'lodash/pick'
 
 import networks from '@/networks'
+import {
+  ChainId,
+  Curve,
+  Llamma,
+  CollateralData,
+  CollateralDatasMapper,
+  CollateralDataCache,
+  CollateralDataCacheMapper,
+} from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,5 +1,6 @@
 import { t } from '@lingui/macro'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api } from '@/types/lend.types'
 
 export * from './utilsGasPrices'
 export * from './utilsRouter'

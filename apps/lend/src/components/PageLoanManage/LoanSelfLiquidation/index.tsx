@@ -31,6 +31,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Api, PageContentProps, UserLoanState } from '@/types/lend.types'
 
 const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

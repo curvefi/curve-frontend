@@ -1,4 +1,5 @@
 import { shortenTokenName } from '@/utils'
+import { Balances } from '@/types/main.types'
 
 export type Amount = {
   value: string

@@ -9,6 +9,7 @@ import { getErrorMessage } from '@/utils'
 import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
 import Compensations from '@/components/PageCompensation/components/Compensations'
+import { Balances, CurveApi, ChainId, Provider } from '@/types/main.types'
 
 const FormCompensation = ({
   rChainId,

@@ -13,6 +13,7 @@ import TableCellRate from '@/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
 import TableCellUser from '@/components/SharedCells/TableCellUser'
 import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
+import { TitleKey } from '@/types/loan.types'
 
 const TableRow = ({
   className,

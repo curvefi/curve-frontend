@@ -1,4 +1,5 @@
 import { SORT_ID } from '@/components/PageDashboard/utils'
+import { ChainId, RewardsApy, PoolData } from '@/types/main.types'
 
 type UserBaseProfit = {
   day: string

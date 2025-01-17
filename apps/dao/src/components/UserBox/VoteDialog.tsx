@@ -9,6 +9,7 @@ import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import AlertBox from '@/ui/AlertBox'
 import PendingTx from '@/components/UserBox/PendingTx'
+import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/types/dao.types'
 
 type Props = {
   userAddress: string

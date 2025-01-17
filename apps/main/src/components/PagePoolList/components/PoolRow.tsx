@@ -10,6 +10,7 @@ import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 interface PoolRowProps {
   poolId: string

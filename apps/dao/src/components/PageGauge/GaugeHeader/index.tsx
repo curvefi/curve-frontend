@@ -8,6 +8,7 @@ import Box from '@/ui/Box'
 import Loader from '@/ui/Loader'
 import SmallLabel from '@/components/SmallLabel'
 import TokenIcons from '@/components/TokenIcons'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 interface GaugeHeaderProps {
   gaugeData: GaugeFormattedData | undefined

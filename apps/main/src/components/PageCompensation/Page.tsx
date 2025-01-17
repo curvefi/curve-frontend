@@ -19,6 +19,7 @@ import FormCompensation from '@/components/PageCompensation/index'
 import IconButton from '@/ui/IconButton'
 import Settings from '@/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { Provider } from '@/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

@@ -9,6 +9,7 @@ import TokenIcons from '@/components/TokenIcons'
 import SmallLabel from '@/components/SmallLabel'
 import CopyIconButton from '@/components/CopyIconButton'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 interface TitleCompProps {
   gaugeData: GaugeFormattedData

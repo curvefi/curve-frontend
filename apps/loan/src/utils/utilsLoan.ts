@@ -1,6 +1,7 @@
 import type { StepStatus } from '@/ui/Stepper/types'
 
 import { formatNumber } from '@/ui/utils'
+import { Llamma } from '@/types/loan.types'
 
 export function getStepStatus(isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus {
   return isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending'

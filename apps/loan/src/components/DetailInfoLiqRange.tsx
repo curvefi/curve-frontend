@@ -12,6 +12,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import Icon from '@/ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { HealthMode, LoanDetails, UserLoanDetails } from '@/types/loan.types'
 
 const DetailInfoLiqRange = ({
   bands: newBands,

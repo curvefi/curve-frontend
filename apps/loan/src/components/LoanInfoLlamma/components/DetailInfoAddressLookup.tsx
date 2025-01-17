@@ -10,6 +10,7 @@ import { StyledStats } from '@/components/LoanInfoLlamma/styles'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import ExternalLink from '@/ui/Link/ExternalLink'
+import { ChainId } from '@/types/loan.types'
 
 interface Props extends StatsProps {
   chainId: ChainId

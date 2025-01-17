@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
 import curvejsApi from '@/lib/curvejs'
+import { CurveApi, ChainId, NetworkConfigFromApi, PageWidthClassName, RouterProps, Wallet } from '@/types/main.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

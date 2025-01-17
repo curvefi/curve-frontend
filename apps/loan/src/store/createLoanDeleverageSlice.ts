@@ -12,6 +12,7 @@ import {
 } from '@/components/PageLoanManage/LoanDeleverage/utils'
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import networks from '@/networks'
+import { ChainId, Curve, Llamma, UserLoanDetails } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

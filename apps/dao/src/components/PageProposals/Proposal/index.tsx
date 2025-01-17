@@ -6,6 +6,7 @@ import VoteCountdown from '../../VoteCountdown'
 import ProposalVoteStatusBox from '@/components/ProposalVoteStatusBox'
 import LazyItem from '@/ui/LazyItem'
 import SmallLabel from '@/components/SmallLabel'
+import { ProposalType, ProposalData } from '@/types/dao.types'
 
 type Props = {
   proposalData: ProposalData

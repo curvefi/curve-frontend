@@ -8,6 +8,7 @@ import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 import TableRowMobileContent from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowMobileContent'
 import TableRowMobileHead from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowMobileHead'
 import { Tr } from '@/ui/Table'
+import { TitleKey } from '@/types/lend.types'
 
 export type Content = {
   tableKey: TitleKey

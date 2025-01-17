@@ -1,4 +1,5 @@
 import { Column } from '@/components/PaginatedTable'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 export const GAUGE_VOTES_TABLE_LABELS: Column<GaugeFormattedData>[] = [
   { key: 'title', label: 'Gauge', disabled: true },

@@ -19,6 +19,7 @@ import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
 import { getChainSignerActiveKey, sleep } from '@/utils'
 import curvejsApi from '@/lib/curvejs'
+import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

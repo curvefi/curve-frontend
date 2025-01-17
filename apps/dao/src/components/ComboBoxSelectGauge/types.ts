@@ -1,3 +1,5 @@
+import { GaugeFormattedData } from '@/types/dao.types'
+
 export type EndsWith = (string: string, substring: string) => boolean
 
 export type ComboBoxSelectGaugeProps = {

@@ -15,6 +15,7 @@ import {
 } from '@/components/PageDeployGauge/constants'
 
 import InteralLinkButton from '@/ui/InternalLinkButton'
+import { ChainId } from '@/types/main.types'
 
 const AddGaugeLink = ({
   chainId,

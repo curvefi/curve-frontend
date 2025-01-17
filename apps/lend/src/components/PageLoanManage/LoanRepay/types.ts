@@ -2,6 +2,7 @@ import type { FormDetailInfo, FormStatus as Fs } from '@/components/PageLoanMana
 import type { InpError } from '@/components/PageLoanCreate/types'
 import type { Step } from '@/ui/Stepper/types'
 import React from 'react'
+import { ExpectedBorrowed, PageContentProps, HealthMode } from '@/types/lend.types'
 
 export type FormValues = {
   stateCollateral: string

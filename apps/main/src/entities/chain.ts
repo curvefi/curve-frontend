@@ -1,5 +1,6 @@
 import { useCurve } from '@/entities/curve'
 import useStore from '@/store/useStore'
+import { ChainId } from '@/types/main.types'
 
 export const useChainId = () => {
   const { data: curve } = useCurve()

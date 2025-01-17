@@ -13,6 +13,7 @@ import {
 import { getTokenName } from '@/utils/utilsLoan'
 import { loadingLRPrices } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
+import { ChainId, Curve, Llamma } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

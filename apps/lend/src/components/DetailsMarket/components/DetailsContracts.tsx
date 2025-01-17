@@ -9,6 +9,7 @@ import Chip from '@/ui/Typography/Chip'
 import ChipInactive from '@/components/ChipInactive'
 import DetailInfoAddressLookup from '@/components/DetailsMarket/components/DetailInfoAddressLookup'
 import TokenLabel from '@/components/TokenLabel'
+import { PageContentProps } from '@/types/lend.types'
 
 type ContractItems = { label: string | React.ReactNode; address: string | undefined; invalidText?: string }[]
 

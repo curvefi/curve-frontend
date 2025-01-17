@@ -12,6 +12,7 @@ import {
   SummaryDataPlaceholder,
   StyledCheckmark,
 } from '@/components/PageCreatePool/Summary/styles'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId
