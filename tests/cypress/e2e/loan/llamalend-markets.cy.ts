@@ -22,7 +22,7 @@ describe('LlamaLend Markets', () => {
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
     cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
-    cy.get('[data-testid="data-table-head"]').last().then(isInViewport).should('be.true')
+    cy.get('[data-testid="data-table-head"]').first().then(isInViewport).should('be.true')
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', 64)
   })
 
@@ -34,9 +34,9 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
-    const [green, red] = [isDarkMode ? 'rgb(39, 184, 108)' : 'rgb(31, 162, 94)', 'rgb(237, 36, 47)']
-    cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.css', 'stroke', green)
-    cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.css', 'stroke', red)
+    const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
+    cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.attr', 'stroke', green)
+    cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@snapshots.all`).then((calls1) => {

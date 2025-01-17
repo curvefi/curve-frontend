@@ -22,7 +22,7 @@ describe('Disclaimers', () => {
 
     it(`should contain multiple tabs for ${viewport[0]}x${viewport[1]}`, () => {
       cy.viewport(...viewport)
-      cy.visit(`${oneAppPath()}/ethereum/disclaimer`)
+      cy.visit(`${oneAppPath()}#/ethereum/disclaimer`)
 
       // Make sure there's tabs available and click one.
       cy.get(`[data-testid='disclaimer']`).should('be.visible')
