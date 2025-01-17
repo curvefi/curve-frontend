@@ -21,11 +21,11 @@ type Action = {
   /**
    * Sets or removes a max slippage value for a given key.
    * @param slippage - The slippage value as a string percentage (e.g. "0.1" for 0.1%), or null to remove
-   * @param key - Optional key to set slippage for (e.g. "router" or chainId-poolId). If omitted, sets slippage to all existing keys.
+   * @param key - Optional key to set slippage for (e.g. "global" or chainId-poolId). If omitted, sets slippage to all existing keys.
    * @returns boolean - True if slippage was successfully set/removed, false if invalid input
    * @example
    * // Set router slippage to 0.1%
-   * setMaxSlippage("0.1", "router")
+   * setMaxSlippage("0.1", "global")
    *
    * // Remove slippage for specific pool
    * setMaxSlippage(null, "1-0x123...")

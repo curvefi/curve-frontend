@@ -125,7 +125,7 @@ const Page: NextPage = () => {
           <BoxHeader className="title-text">
             <IconButton testId="hidden" hidden />
             {t`Swap`}
-            <AdvancedSettings stateKey="router" testId="advance-settings" maxSlippage={maxSlippage} />
+            <AdvancedSettings stateKey="global" testId="advance-settings" maxSlippage={maxSlippage} />
           </BoxHeader>
 
           <Box grid gridRowGap={3} padding>
