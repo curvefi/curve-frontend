@@ -99,7 +99,7 @@ const DetailInfoLeverage = ({
         <DetailInfoLeverageExpected
           loading={expectedLoading}
           total={expectedCollateral?.totalCollateral}
-          swapToSymbol={borrowed_token?.symbol}
+          swapToSymbol={collateral_token?.symbol}
         />
       )}
 

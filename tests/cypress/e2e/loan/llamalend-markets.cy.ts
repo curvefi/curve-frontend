@@ -34,7 +34,7 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
-    const [green, red] = [isDarkMode ? 'rgb(39, 184, 108)' : 'rgb(31, 162, 94)', 'rgb(237, 36, 47)']
+    const [green, red] = [isDarkMode ? 'rgb(50, 206, 121)' : 'rgb(22, 125, 74)', 'rgb(237, 36, 47)']
     cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.css', 'stroke', green)
     cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.css', 'stroke', red)
 
@@ -112,7 +112,7 @@ describe('LlamaLend Markets', () => {
       { toggle: 'borrowChart', element: 'line-graph-borrow' },
       { toggle: 'lendChart', element: 'line-graph-lend' },
     )
-    cy.get(`[data-testid="${element}"]`).scrollIntoView()
+    cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
     cy.get(`[data-testid="btn-visibility-settings"]`).click()
     cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()

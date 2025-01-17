@@ -22,7 +22,7 @@ function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType
   if (!data.length) return undefined
   const first = data[0][`${type}_apy`]
   const last = data[data.length - 1][`${type}_apy`]
-  return design.Text.TextColors[last === first ? 'Info' : last < first ? 'Error' : 'Success']
+  return design.Layer.Feedback[last === first ? 'Info' : last < first ? 'Error' : 'Success']
 }
 
 /** Center the y-axis around the first value */
