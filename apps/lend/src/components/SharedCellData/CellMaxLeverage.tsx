@@ -9,6 +9,7 @@ import useStore from '@/store/useStore'
 
 import Chip from '@/ui/Typography/Chip'
 import TextCaption from '@/ui/TextCaption'
+import { ChainId } from '@/types/lend.types'
 
 const CellMaxLeverage = ({
   className = '',

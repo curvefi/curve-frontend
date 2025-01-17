@@ -68,10 +68,10 @@ const TableRowResult = ({
 
   return (
     <>
-      {!isMdUp ? (
-        <TableRowMobile key={collateralId} {...tableRowProps} showDetail={showDetail} setShowDetail={setShowDetail} />
-      ) : (
+      {isMdUp ? (
         <TableRow key={collateralId} {...tableRowProps} someLoanExists={someLoanExists} />
+      ) : (
+        <TableRowMobile key={collateralId} {...tableRowProps} showDetail={showDetail} setShowDetail={setShowDetail} />
       )}
 
       {searchedByAddresses && Object.keys(searchedByAddresses).length > 0 && (

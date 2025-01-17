@@ -9,6 +9,7 @@ import { shortenTokenAddress } from '@/ui/utils'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import Chip from '@/ui/Typography/Chip'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 const ComboBoxListItem = ({
   imageBaseUrl,

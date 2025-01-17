@@ -20,6 +20,7 @@ import produce from 'immer'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import { ChainId } from '@/types/lend.types'
 
 type SliceState = {
   chartLlammaOhlc: {

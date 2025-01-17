@@ -9,6 +9,7 @@ import useStore from '@/store/useStore'
 
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
+import { PageContentProps } from '@/types/lend.types'
 
 const LoanCreate = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, rFormType, market } = pageProps

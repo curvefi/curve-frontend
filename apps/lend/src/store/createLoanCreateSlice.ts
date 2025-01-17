@@ -16,6 +16,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@/compone
 import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId, Api } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

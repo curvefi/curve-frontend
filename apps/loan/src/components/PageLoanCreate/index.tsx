@@ -10,6 +10,7 @@ import useCollateralAlert from '@/hooks/useCollateralAlert'
 
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
+import { Curve, Llamma } from '@/types/loan.types'
 
 const LoanCreate = ({
   fetchInitial,

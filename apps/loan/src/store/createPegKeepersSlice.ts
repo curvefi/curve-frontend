@@ -8,6 +8,7 @@ import crvusdjsApi from '@/lib/apiCrvusd'
 
 import { DEFAULT_FORM_STATUS } from '@/components/PagePegKeepers/utils'
 import { PEG_KEEPERS_ADDRESSES } from '@/constants'
+import { Curve, Provider } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

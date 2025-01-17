@@ -15,6 +15,7 @@ import { BlockSkeleton } from '../../../../../../packages/ui/src/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/ui/styled-containers'
 import AlertFormError from '@/components/AlertFormError'
 import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
+import { ChainId } from '@/types/main.types'
 
 export const DepositReward: React.FC<{
   chainId: ChainId

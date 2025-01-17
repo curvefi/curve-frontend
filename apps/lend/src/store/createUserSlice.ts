@@ -6,6 +6,18 @@ import cloneDeep from 'lodash/cloneDeep'
 import apiLending, { helpers } from '@/lib/apiLending'
 import { log } from '@ui-kit/lib/logging'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import {
+  Api,
+  UsersLoansHealthsMapper,
+  UserLoanState,
+  UsersLoansStatesMapper,
+  UserLoanDetails,
+  UsersLoansDetailsMapper,
+  UserLoanExists,
+  UsersLoansExistsMapper,
+  UserMarketBalances,
+  UsersMarketsBalancesMapper,
+} from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

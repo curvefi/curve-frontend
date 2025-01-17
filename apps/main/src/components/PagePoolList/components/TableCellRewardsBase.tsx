@@ -1,5 +1,4 @@
 import React from 'react'
-import { t } from '@lingui/macro'
 
 import { LARGE_APY } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
@@ -8,6 +7,7 @@ import { Chip } from '@/ui/Typography'
 import ChipVolatileBaseApy from '@/components/PagePoolList/components/ChipVolatileBaseApy'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TooltipBaseApy from '@/components/PagePoolList/components/TooltipBaseApy'
+import { RewardBase, PoolData, PoolDataCache } from '@/types/main.types'
 
 type Props = {
   base: RewardBase | undefined

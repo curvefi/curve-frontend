@@ -1,4 +1,4 @@
-import type { ColumnKeys, FormValues, SearchParams, ShowDetailsMapper } from '@/components/PagePoolList/types'
+import type { ColumnKeys, FormValues, SearchParams } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import React from 'react'
@@ -18,6 +18,7 @@ import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import { RewardsApy, PoolData, PoolDataCache, Tvl, Volume } from '@/types/main.types'
 
 export type TableRowProps = {
   index: number

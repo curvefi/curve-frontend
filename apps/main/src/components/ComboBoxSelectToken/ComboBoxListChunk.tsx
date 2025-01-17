@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 import SelectTokenListItem from '@/components/ComboBoxSelectToken/ComboBoxListItem'
+import { Token } from '@/types/main.types'
 
 const SelectTokenListChunk = ({
   testId,

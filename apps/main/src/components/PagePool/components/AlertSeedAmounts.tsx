@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { formatNumber } from '@/ui/utils'
 
 import AlertBox from '@/ui/AlertBox'
+import { PoolData } from '@/types/main.types'
 
 type Props = {
   seed: Seed

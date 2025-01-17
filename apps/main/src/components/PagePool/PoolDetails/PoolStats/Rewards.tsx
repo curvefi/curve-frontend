@@ -19,6 +19,7 @@ import Tooltip from '@/ui/Tooltip'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import Spacer from '@/ui/Spacer'
 import CampaignRewardsRow from '@/components/CampaignRewardsRow'
+import { ChainId, RewardsApy, PoolData } from '@/types/main.types'
 
 type RewardsProps = {
   chainId: ChainId

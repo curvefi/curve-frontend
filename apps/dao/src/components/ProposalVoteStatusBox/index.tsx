@@ -6,6 +6,7 @@ import { breakpoints, formatNumber } from '@/ui/utils'
 import Box from '@/ui/Box'
 import ProgressBar from '@/components/ProposalVoteStatusBox/ProgressBar'
 import Tooltip, { TooltipIcon } from '@/ui/Tooltip'
+import { ProposalData } from '@/types/dao.types'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData

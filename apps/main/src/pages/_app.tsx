@@ -25,6 +25,7 @@ import { isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { CurveApi } from '@/types/main.types'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')

@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import ExternalLink from '@/ui/Link/ExternalLink'
+import { AlertType } from '@/types/loan.types'
 
 type TokenAlert = {
   alertType: AlertType

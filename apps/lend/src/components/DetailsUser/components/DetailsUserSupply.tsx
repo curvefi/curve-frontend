@@ -12,6 +12,7 @@ import CellToken from '@/components/SharedCellData/CellToken'
 import DetailsConnectWallet from '@/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserSupplyStakedUnstaked from '@/components/DetailsUser/components/DetailsUserSupplyStakedUnstaked'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { PageContentProps, TitleKey } from '@/types/lend.types'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, userActiveKey, market, titleMapper } = pageProps

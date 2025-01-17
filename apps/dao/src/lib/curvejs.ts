@@ -9,6 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { getErrorMessage } from '@/utils'
 import { log } from '@ui-kit/lib'
+import { CurveApi, ChainId, Provider, Wallet, EstimatedGas, UsdRatesMapper, ClaimButtonsKey } from '@/types/dao.types'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {

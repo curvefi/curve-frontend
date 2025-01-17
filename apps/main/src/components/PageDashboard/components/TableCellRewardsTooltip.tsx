@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { rewardsApyCrvText } from '@/utils/utilsCurvejs'
 import Box from '@/ui/Box'
+import { RewardCrv } from '@/types/main.types'
 
 type Props = {
   crv?: RewardCrv[]

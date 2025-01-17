@@ -26,6 +26,16 @@ import { getTokenUsdRateQueryData } from '@/entities/token'
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { logQuery, logSuccess } from '@ui-kit/lib'
+import {
+  ChainId,
+  Api,
+  MarketsStatsTotalsMapper,
+  MarketsStatsCapAndAvailableMapper,
+  MarketsRatesMapper,
+  MarketsRewardsMapper,
+  Order,
+  TitleKey,
+} from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

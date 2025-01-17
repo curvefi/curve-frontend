@@ -8,6 +8,7 @@ import useStore from '@/store/useStore'
 
 import TableSortSelect from '@/ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
+import { TitleMapper } from '@/types/loan.types'
 
 const SelectFilterType = ({
   someLoanExists,

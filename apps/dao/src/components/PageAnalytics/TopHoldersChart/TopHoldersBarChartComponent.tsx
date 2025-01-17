@@ -5,6 +5,7 @@ import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import { TOP_HOLDERS } from '@/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'
+import { VeCrvHolder, TopHoldersSortBy } from '@/types/dao.types'
 
 type TopHoldersBarChartProps = {
   data: VeCrvHolder[]

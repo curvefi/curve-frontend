@@ -18,6 +18,7 @@ import DetailsContracts from '@/components/DetailsMarket/components/DetailsContr
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { MarketListType, PageContentProps, TitleKey } from '@/types/lend.types'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper, userActiveKey } = pageProps

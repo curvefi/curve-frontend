@@ -13,6 +13,7 @@ import IconButton from '@/ui/IconButton'
 import TextEllipsis from '@/ui/TextEllipsis'
 import TokenIcon from '@/components/TokenIcon'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId } from '@/types/lend.types'
 
 const TokenLabel = ({
   rChainId,

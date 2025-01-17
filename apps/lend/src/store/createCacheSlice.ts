@@ -1,6 +1,5 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { MarketListItem, MarketListMapper } from '@/components/PageMarketList/types'
 import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { sleep } from '@/utils/helpers'

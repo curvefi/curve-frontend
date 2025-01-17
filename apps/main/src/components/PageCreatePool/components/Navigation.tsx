@@ -7,6 +7,7 @@ import { checkFormReady } from '@/components/PageCreatePool/utils'
 import Icon from '@/ui/Icon'
 import Button from '@/ui/Button'
 import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 interface Props {
   navigation: number

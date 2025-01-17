@@ -3,6 +3,7 @@ import React from 'react'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 
 import { Chip } from '@/ui/Typography'
+import { RewardsApy } from '@/types/main.types'
 
 type Prop = {
   isHighlight: boolean

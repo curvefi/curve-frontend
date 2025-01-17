@@ -12,6 +12,7 @@ import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { CurveApi, ChainId, EstimatedGas } from '@/types/dao.types'
 
 export type StepProgress = {
   active: number

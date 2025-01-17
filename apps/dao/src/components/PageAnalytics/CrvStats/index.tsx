@@ -28,13 +28,14 @@ const CrvStats: React.FC = () => {
 
   const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].fees_usd, veCrvData.totalVeCrv, crv)
 
+  const loading = Boolean(provider && veCrvLoading)
   return (
     <Wrapper>
       <Container>
         <h4>{t`VECRV METRICS`}</h4>
         <MetricsContainer>
           <MetricsComp
-            loading={provider && veCrvLoading}
+            loading={loading}
             title={t`Total CRV`}
             data={
               <MetricsColumnData>
@@ -43,7 +44,7 @@ const CrvStats: React.FC = () => {
             }
           />
           <MetricsComp
-            loading={provider && veCrvLoading}
+            loading={loading}
             title={t`Locked CRV`}
             data={
               <MetricsColumnData>
@@ -52,7 +53,7 @@ const CrvStats: React.FC = () => {
             }
           />
           <MetricsComp
-            loading={provider && veCrvLoading}
+            loading={loading}
             title={t`veCRV`}
             data={
               <MetricsColumnData>
@@ -74,7 +75,7 @@ const CrvStats: React.FC = () => {
             }
           />
           <MetricsComp
-            loading={provider && veCrvLoading}
+            loading={loading}
             title={t`CRV Supply Locked`}
             data={
               <MetricsColumnData>
@@ -87,7 +88,7 @@ const CrvStats: React.FC = () => {
             }
           />
           <MetricsComp
-            loading={provider && (veCrvLoading || veCrvFeesLoading || aprLoading)}
+            loading={Boolean(provider && (veCrvLoading || veCrvFeesLoading || aprLoading))}
             title={t`veCRV APR`}
             data={
               <AprRow>

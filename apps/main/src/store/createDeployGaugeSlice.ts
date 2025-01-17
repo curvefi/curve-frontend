@@ -6,6 +6,7 @@ import type { State } from '@/store/useStore'
 import produce from 'immer'
 import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@/utils'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type NetworkWithFactory = {
   chainId: ChainId

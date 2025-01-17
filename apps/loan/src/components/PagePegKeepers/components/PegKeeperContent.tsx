@@ -11,6 +11,7 @@ import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
 import PegKeeperLabel from '@/components/PagePegKeepers/components/PegKeeperLabel'
 import PegKeeperForm from '@/components/PagePegKeepers/components/PegKeeperForm'
 import TextCaption from '@/ui/TextCaption'
+import { ChainId } from '@/types/loan.types'
 
 type Props = {
   rChainId: ChainId

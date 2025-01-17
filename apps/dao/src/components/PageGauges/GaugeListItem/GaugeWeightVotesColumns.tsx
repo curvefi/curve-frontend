@@ -8,6 +8,7 @@ import useStore from '@/store/useStore'
 
 import Tooltip from '@/ui/Tooltip'
 import Box from '@/ui/Box'
+import { UserGaugeVoteWeight } from '@/types/dao.types'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight

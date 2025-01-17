@@ -15,6 +15,7 @@ import LoanRepay from '@/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/components/PageLoanManage/LoanSelfLiquidation'
 import LoanCollateralAdd from '@/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/components/PageLoanManage/LoanCollateralRemove'
+import { PageContentProps } from '@/types/lend.types'
 
 const ManageLoan = (pageProps: PageContentProps) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId } = pageProps

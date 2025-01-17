@@ -29,6 +29,7 @@ import TxInfoBar from '@/ui/TxInfoBar'
 import { getItemsName } from '@/components/PageLoanManage/LoanSwap/utils'
 import AlertFormError from '@/components/AlertFormError'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Curve, Llamma } from '@/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 

@@ -10,6 +10,7 @@ import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { httpFetcher } from '@/utils/helpers'
 import { log } from '@ui-kit/lib/logging'
 import networks from '@/networks'
+import { ChainId, Curve } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

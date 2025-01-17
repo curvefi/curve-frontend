@@ -13,6 +13,7 @@ import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import ErrorMessage from '@/components/ErrorMessage'
 import PaginatedTable from '@/components/PaginatedTable'
 import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
+import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/types/dao.types'
 
 const GaugesList = () => {
   const {

@@ -23,6 +23,7 @@ import TableRowMobile from '@/components/PageDashboard/components/TableRowMobile
 import TableRowNoResult from '@/components/PageDashboard/components/TableRowNoResult'
 import TableSortDialog from '@/components/PageDashboard/components/TableSortDialog'
 import { getDashboardDataActiveKey } from '@/store/createDashboardSlice'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 const Dashboard = ({
   curve,

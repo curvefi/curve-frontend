@@ -6,6 +6,7 @@ import useStore from '@/store/useStore'
 
 import Chip from '@/ui/Typography/Chip'
 import Icon from '@/ui/Icon'
+import { ChainId } from '@/types/lend.types'
 
 const DetailsSupplyRewardsCrv = ({
   rChainId,

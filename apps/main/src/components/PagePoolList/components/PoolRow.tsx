@@ -2,7 +2,7 @@ import type { ColumnKeys, PoolListTableLabel, SearchParams, SearchTermMapper } f
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
 import TableRow, { TableRowProps } from '@/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +10,7 @@ import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 interface PoolRowProps {
   poolId: string

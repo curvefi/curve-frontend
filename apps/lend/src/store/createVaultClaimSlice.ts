@@ -9,6 +9,7 @@ import merge from 'lodash/merge'
 import { DEFAULT_FORM_STATUS } from '@/components/PageVault/VaultClaim/utils'
 import apiLending from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, MarketClaimable } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -14,6 +14,7 @@ import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import FieldLockedAmt from '@/components/PageCrvLocker/components/FieldLockedAmt'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi } from '@/types/main.types'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

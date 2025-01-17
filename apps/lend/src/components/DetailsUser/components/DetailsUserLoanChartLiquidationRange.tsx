@@ -4,6 +4,7 @@ import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)

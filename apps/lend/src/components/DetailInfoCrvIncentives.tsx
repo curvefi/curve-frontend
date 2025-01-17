@@ -12,6 +12,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
 import { useOneWayMarket } from '@/entities/chain'
+import { ChainId } from '@/types/lend.types'
 
 type Data = {
   label: string

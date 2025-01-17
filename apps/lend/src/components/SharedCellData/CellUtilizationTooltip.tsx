@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId } from '@/types/lend.types'
 
 type Props = {
   className?: string

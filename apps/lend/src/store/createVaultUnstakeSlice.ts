@@ -10,6 +10,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PageVault/VaultUnstake/utils'
 import apiLending, { helpers } from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId, Api } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null

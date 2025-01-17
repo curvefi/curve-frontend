@@ -24,6 +24,7 @@ import { MetricsTitle } from '@/components/MetricsComp'
 import BackButton from '../BackButton'
 import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
+import { ProposalType } from '@/types/dao.types'
 
 type ProposalProps = {
   routerParams: {

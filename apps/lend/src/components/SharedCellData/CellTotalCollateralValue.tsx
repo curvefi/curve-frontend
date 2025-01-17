@@ -7,6 +7,7 @@ import useStore from '@/store/useStore'
 import TextCaption from '@/ui/TextCaption'
 import { useOneWayMarket } from '@/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@/types/lend.types'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data

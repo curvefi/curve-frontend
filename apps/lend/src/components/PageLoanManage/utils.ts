@@ -1,4 +1,5 @@
 import { FormDetailInfo, FormEstGas, FormStatus } from '@/components/PageLoanManage/types'
+import { HealthMode, MarketDetailsView } from '@/types/lend.types'
 
 export const DEFAULT_HEALTH_MODE: HealthMode = {
   percent: '',

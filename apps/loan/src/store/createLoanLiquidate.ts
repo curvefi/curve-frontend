@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import networks from '@/networks'
+import { ChainId, Curve, Llamma, UserWalletBalances } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

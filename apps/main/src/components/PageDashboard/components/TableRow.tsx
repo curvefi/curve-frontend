@@ -1,6 +1,6 @@
 import type { DashboardTableRowProps } from '@/components/PageDashboard/types'
 
-import React, { useMemo, useRef } from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 import { SORT_ID } from '@/components/PageDashboard/utils'

@@ -8,6 +8,7 @@ import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import AlertBox from '@/ui/AlertBox'
 import InfoLinkBar from '@/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { CurveApi } from '@/types/main.types'
 
 interface Props {
   disabled: boolean

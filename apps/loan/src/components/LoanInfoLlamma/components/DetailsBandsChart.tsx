@@ -6,6 +6,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import ChartBandBalances from '@/components/ChartBandBalances'
+import { Llamma, BandsBalancesData } from '@/types/loan.types'
 
 const DEFAULT_BAND_CHART_DATA = {
   collateral: '0',
@@ -14,6 +15,7 @@ const DEFAULT_BAND_CHART_DATA = {
   isOraclePriceBand: false,
   isNGrouped: false,
   n: '',
+  pUpDownMedian: '',
   p_up: '0',
   p_down: '0',
   stablecoin: '0',

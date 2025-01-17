@@ -8,6 +8,7 @@ import { SCRVUSD_GAS_ESTIMATE } from '@/constants'
 import networks from '@/networks'
 import { Contract } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
+import { FetchStatus, TransactionStatus } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

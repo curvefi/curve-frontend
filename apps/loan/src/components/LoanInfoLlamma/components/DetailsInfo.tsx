@@ -6,6 +6,7 @@ import TokenLabel from '@/components/TokenLabel'
 import TableCellRate from '@/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
 import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
+import { ChainId, TitleKey, TitleMapper } from '@/types/loan.types'
 
 const DetailsInfo = ({
   rChainId,

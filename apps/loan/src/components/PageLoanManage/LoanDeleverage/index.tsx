@@ -44,6 +44,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Curve, Llamma } from '@/types/loan.types'
 
 // Loan Deleverage
 const LoanDeleverage = ({

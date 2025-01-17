@@ -13,6 +13,7 @@ import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId, HealthMode } from '@/types/lend.types'
 
 const DetailInfoLiqRange = ({
   rChainId,

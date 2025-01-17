@@ -3,6 +3,7 @@ import type { State } from '@/store/useStore'
 
 import Fuse from 'fuse.js'
 import cloneDeep from 'lodash/cloneDeep'
+import { Token } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

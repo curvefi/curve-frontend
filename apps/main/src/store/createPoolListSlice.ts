@@ -19,6 +19,16 @@ import uniqBy from 'lodash/uniqBy'
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { parseSearchTermResults } from '@/components/PagePoolList/utils'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'
+import {
+  ChainId,
+  Pool,
+  RewardsApyMapper,
+  PoolData,
+  PoolDataCache,
+  TvlMapper,
+  UserPoolListMapper,
+  VolumeMapper,
+} from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

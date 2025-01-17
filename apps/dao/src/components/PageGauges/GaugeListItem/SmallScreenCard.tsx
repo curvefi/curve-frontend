@@ -16,6 +16,7 @@ import LineChartComponent from '@/components/Charts/LineChartComponent'
 import TitleComp from './TitleComp'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
 import GaugeDetailsSm from './GaugeDetailsSm'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/types/dao.types'
 
 type Props = {
   gaugeData: GaugeFormattedData

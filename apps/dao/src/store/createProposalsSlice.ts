@@ -9,6 +9,20 @@ import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 import { t } from '@lingui/macro'
+import {
+  ProposalType,
+  PricesProposalResponseData,
+  ProposalData,
+  PricesProposalsResponse,
+  PricesProposalResponse,
+  ProposalMapper,
+  UserProposalVoteResData,
+  FetchingState,
+  TransactionState,
+  ProposalListFilter,
+  SortByFilterProposals,
+  SortDirection,
+} from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

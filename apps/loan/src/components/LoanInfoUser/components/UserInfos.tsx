@@ -14,6 +14,7 @@ import UserInfoLiquidationRange from '@/components/LoanInfoUser/components/UserI
 import UserInfoLoss from '@/components/LoanInfoUser/components/UserInfoLoss'
 import UserInfoLlammaBalances from '@/components/LoanInfoUser/components/UserInfoLlammaBalances'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/types/loan.types'
 
 const UserInfos = ({
   llammaId,

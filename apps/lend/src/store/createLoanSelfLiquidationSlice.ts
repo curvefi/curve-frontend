@@ -10,6 +10,7 @@ import { FormWarning } from '@/components/AlertFormWarning'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import apiLending from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, FutureRates } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

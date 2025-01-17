@@ -15,6 +15,7 @@ import { initCurveJs } from '@/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId, PageProps, Wallet } from '@/types/main.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()

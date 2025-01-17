@@ -6,7 +6,7 @@ import React from 'react'
 
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/components/PageLoanCreate/utils'
 import { getTokenName } from '@/utils/utilsLoan'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'

@@ -1,6 +1,7 @@
 import { t } from '@lingui/macro'
 
 import networks from '@/networks'
+import { Curve } from '@/types/loan.types'
 
 interface CustomError extends Error {
   data?: { message: string }
@@ -99,12 +100,6 @@ export const shortenAccount = (account: string, visibleLength = 4): string =>
   account.slice(account.length - visibleLength)
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
-declare global {
-  interface Window {
-    clipboardData: any
-  }
-}
 
 export function copyToClipboard(text: string) {
   if (window.clipboardData && window.clipboardData.setData) {

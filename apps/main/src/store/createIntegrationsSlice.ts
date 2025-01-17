@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 import sortBy from 'lodash/sortBy'
 import { httpFetcher } from '@/lib/utils'
+import { ChainId } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

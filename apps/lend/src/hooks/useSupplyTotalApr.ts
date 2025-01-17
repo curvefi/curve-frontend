@@ -5,6 +5,7 @@ import { INVALID_ADDRESS } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { getTotalApr } from '@/utils/utilsRewards'
 import { useOneWayMarket } from '@/entities/chain'
+import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/types/lend.types'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const market = useOneWayMarket(rChainId, rOwmId).data

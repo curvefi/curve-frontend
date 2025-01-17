@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { isValidAddress } from '@/utils'
 import useStore from '@/store/useStore'
 import dayjs from '@ui-kit/lib/dayjs'
+import { Provider, PoolDataCacheOrApi } from '@/types/main.types'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}

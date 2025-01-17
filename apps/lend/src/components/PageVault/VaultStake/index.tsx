@@ -22,6 +22,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import InpChipVaultSharesUsdRate from '@/components/InpChipVaultShareUsdRate'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, PageContentProps } from '@/types/lend.types'
 
 const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

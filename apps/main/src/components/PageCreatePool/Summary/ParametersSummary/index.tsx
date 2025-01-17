@@ -9,6 +9,7 @@ import { CategoryColumn, SummaryCategoryTitle, StyledCheckmark } from '@/compone
 import StableswapParameters from '@/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters'
 import CryptoswapParameters from '@/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters'
 import PoolPresetSummary from '@/components/PageCreatePool/Summary/PoolPresetSummary'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId

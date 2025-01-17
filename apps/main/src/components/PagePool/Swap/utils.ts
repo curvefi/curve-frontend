@@ -3,6 +3,7 @@ import type { ExchangeOutput, FormStatus, FormValues } from '@/components/PagePo
 
 import sortBy from 'lodash/sortBy'
 import cloneDeep from 'lodash/cloneDeep'
+import { Token, TokensMapper, PoolDataCacheOrApi } from '@/types/main.types'
 
 export const DEFAULT_EST_GAS: FormEstGas = {
   estimatedGas: 0,

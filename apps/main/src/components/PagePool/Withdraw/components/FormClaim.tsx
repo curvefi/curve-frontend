@@ -17,6 +17,7 @@ import Stats from '@/ui/Stats'
 import Stepper from '@/ui/Stepper'
 import TransferActions from '@/components/PagePool/components/TransferActions'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi, PoolData } from '@/types/main.types'
 
 const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)

@@ -27,6 +27,7 @@ import ChartBandBalancesSettings from '@/components/ChartBandBalances/ChartBandB
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
 import Box from '@/ui/Box'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { BandsBalancesData } from '@/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   brushIndex: BrushStartEndIndex

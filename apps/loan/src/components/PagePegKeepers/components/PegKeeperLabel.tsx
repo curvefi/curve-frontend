@@ -5,6 +5,7 @@ import { breakpoints } from '@/ui/utils'
 import networks from '@/networks'
 
 import TokenIcons from '@/components/TokenIcons'
+import { ChainId } from '@/types/loan.types'
 
 type Props = {
   className?: string

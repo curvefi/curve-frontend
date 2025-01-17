@@ -10,6 +10,7 @@ import Checkbox from '@/ui/Checkbox'
 import Tooltip from '@/ui/Tooltip'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
+import { ChainId } from '@/types/main.types'
 
 type Props = {
   chainId: ChainId

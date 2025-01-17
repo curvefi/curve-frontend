@@ -4,6 +4,7 @@ import useStore from '@/store/useStore'
 import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@/ui/utils'
 import { useTokenUsdRate } from '@/entities/token'
 import { useOneWayMarket } from '@/entities/chain'
+import { ChainId } from '@/types/lend.types'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data

@@ -17,6 +17,7 @@ import createTokensSlice, { TokensSlice } from './createTokensSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from './createUsdRatesSlice'
 import createLayoutSlice, { AppLayoutSlice } from './createLayoutSlice'
+
 export type State = AppSlice &
   CacheSlice &
   GasSlice &

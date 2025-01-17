@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 import SelectGaugeListItem from '@/components/ComboBoxSelectGauge/ComboBoxListItem'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 const SelectGaugeListChunk = ({
   testId,

@@ -6,6 +6,7 @@ import { isReady, isLoading, isIdle } from '@/components/PageCrvUsdStaking/utils
 import Loader from '@/ui/Loader'
 import Tooltip from '@/ui/Tooltip'
 import Icon from '@/ui/Icon'
+import { FetchStatus } from '@/types/loan.types'
 
 type FieldValueProps = {
   value: string | number

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { formatNumber } from '@/ui/utils'
 
 import useStore from '@/store/useStore'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 type GaugeListColumnsProps = {
   gaugeData: GaugeFormattedData

@@ -11,6 +11,7 @@ import Button from '@/ui/Button/Button'
 import Icon from '@/ui/Icon'
 import TradesData from '@/components/ChartOhlcWrapper/TradesData'
 import LiquidityData from '@/components/ChartOhlcWrapper/LiquidityData'
+import { ChainId } from '@/types/loan.types'
 
 interface Props {
   poolAddress: string

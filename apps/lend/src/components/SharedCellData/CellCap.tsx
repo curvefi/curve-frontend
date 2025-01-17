@@ -4,6 +4,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import TextCaption from '@/ui/TextCaption'
+import { ChainId } from '@/types/lend.types'
 
 const CellCap = ({
   rChainId,

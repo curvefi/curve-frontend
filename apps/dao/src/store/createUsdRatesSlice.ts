@@ -5,6 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { NETWORK_TOKEN } from '@/constants'
 import curvejsApi from '@/lib/curvejs'
+import { CurveApi, UsdRatesMapper } from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,5 +1,6 @@
 import { t } from '@lingui/macro'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api } from '@/types/lend.types'
 
 export * from './utilsGasPrices'
 export * from './utilsRouter'
@@ -93,12 +94,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
 }
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
-declare global {
-  interface Window {
-    clipboardData: any
-  }
-}
 
 export function copyToClipboard(text: string) {
   if (window.clipboardData && window.clipboardData.setData) {

@@ -5,6 +5,7 @@ import produce from 'immer'
 
 import campaigns from '@/shared/external-rewards'
 import networks from '@/networks'
+import { ChainId } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

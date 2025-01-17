@@ -11,6 +11,7 @@ import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { TITLE } from '@/constants'
 import { searchByText } from '@ui-kit/utils'
 import { sleep } from '@/utils/helpers'
+import { ChainId, Curve, CollateralData, TitleKey } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

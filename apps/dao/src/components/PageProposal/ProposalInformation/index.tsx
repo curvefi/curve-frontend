@@ -7,6 +7,7 @@ import { shortenTokenAddress, convertToLocaleTimestamp } from '@/ui/utils'
 import Box from '@/ui/Box'
 import { MetricsTitle } from '@/components/MetricsComp'
 import { InternalLink } from '@/ui/Link'
+import { ProposalData } from '@/types/dao.types'
 
 type ProposalInformationProps = {
   proposal: ProposalData

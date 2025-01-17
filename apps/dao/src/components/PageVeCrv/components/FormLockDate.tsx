@@ -22,6 +22,7 @@ import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import FieldDatePicker from '@/components/PageVeCrv/components/FieldDatePicker'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi } from '@/types/dao.types'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

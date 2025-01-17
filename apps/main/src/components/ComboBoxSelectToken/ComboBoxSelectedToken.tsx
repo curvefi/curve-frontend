@@ -6,6 +6,7 @@ import { shortenTokenAddress } from '@/utils'
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
+import { Token } from '@/types/main.types'
 
 const ComboBoxSelectedToken = ({
   imageBaseUrl,

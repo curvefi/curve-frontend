@@ -4,6 +4,16 @@ import PromisePool from '@supercharge/promise-pool'
 
 import { BN } from '@/ui/utils'
 import networks from '@/networks'
+import {
+  BandBalance,
+  ChainId,
+  Curve,
+  HeathColorKey,
+  LendApi,
+  Llamma,
+  UserLoanDetails,
+  Wallet,
+} from '@/types/loan.types'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
   const { networkId } = networks[chainId]

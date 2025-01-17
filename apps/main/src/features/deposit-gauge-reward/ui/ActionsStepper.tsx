@@ -10,6 +10,7 @@ import Stepper from '@/ui/Stepper'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { ChainId } from '@/types/main.types'
 
 type TxInfo = {
   description: string

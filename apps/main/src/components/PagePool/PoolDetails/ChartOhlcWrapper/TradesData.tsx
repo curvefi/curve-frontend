@@ -7,6 +7,7 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 import useStore from '@/store/useStore'
+import { ChainId } from '@/types/main.types'
 
 const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tradesTokens: LpTradeToken[] }> = ({
   lpTradesData,

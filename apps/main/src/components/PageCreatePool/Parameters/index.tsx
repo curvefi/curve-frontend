@@ -18,6 +18,7 @@ import Switch from '@/components/PageCreatePool/components/Switch'
 import TokenWarningBox from '@/components/PageCreatePool/components/WarningBox'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

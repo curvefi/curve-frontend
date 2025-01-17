@@ -4,6 +4,7 @@ import useStore from '@/store/useStore'
 
 import Button from '@/ui/Button'
 import Spinner from '@/ui/Spinner'
+import { ProposalListFilter, ProposalListFilterItem } from '@/types/dao.types'
 
 type Props = {
   className?: string

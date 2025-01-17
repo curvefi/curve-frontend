@@ -4,6 +4,7 @@ import useStore from '@/store/useStore'
 
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { HealthMode } from '@/types/loan.types'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])

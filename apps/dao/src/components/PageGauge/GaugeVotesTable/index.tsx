@@ -11,6 +11,7 @@ import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp, shorte
 
 import PaginatedTable from '@/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
+import { GaugeVote, GaugeVotesSortBy } from '@/types/dao.types'
 
 interface GaugeVotesTableProps {
   gaugeAddress: string

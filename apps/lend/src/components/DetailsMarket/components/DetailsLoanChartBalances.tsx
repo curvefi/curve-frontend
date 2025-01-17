@@ -8,6 +8,7 @@ import { DEFAULT_BAND_CHART_DATA } from '@/components/DetailsUser/utils'
 import useStore from '@/store/useStore'
 
 import ChartBandBalances from '@/components/ChartBandBalances'
+import { PageContentProps, ParsedBandsBalances } from '@/types/lend.types'
 
 const DetailsLoanChartBalances = ({
   rChainId,

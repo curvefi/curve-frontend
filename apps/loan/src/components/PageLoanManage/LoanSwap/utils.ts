@@ -1,4 +1,5 @@
 import { FormValues } from '@/components/PageLoanManage/LoanSwap/types'
+import { Llamma } from '@/types/loan.types'
 
 export function getItemsName(llamma: Llamma, formValues: FormValues) {
   return {

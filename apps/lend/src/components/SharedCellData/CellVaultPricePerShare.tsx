@@ -6,6 +6,7 @@ import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import Chip from '@/ui/Typography/Chip'
+import { ChainId } from '@/types/lend.types'
 
 const CellVaultPricePerShare = ({
   rChainId,

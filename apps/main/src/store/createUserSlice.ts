@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { fulfilledValue, isValidAddress } from '@/utils'
 import curvejsApi from '@/lib/curvejs'
+import { Balances, CurveApi, ChainId, UserPoolListMapper } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

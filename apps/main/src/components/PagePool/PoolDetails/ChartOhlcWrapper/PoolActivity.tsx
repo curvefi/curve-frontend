@@ -11,6 +11,7 @@ import Button from '@/ui/Button/Button'
 import Icon from '@/ui/Icon'
 import TradesData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import LiquidityData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
+import { ChainId } from '@/types/main.types'
 
 const PoolActivity: React.FC<{
   poolAddress: string

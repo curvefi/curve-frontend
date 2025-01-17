@@ -3,6 +3,7 @@ import type { Address } from 'viem'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import useStore from '@/store/useStore'
 import { useChainId } from '@/entities/chain'
+import { Token } from '@/types/main.types'
 
 export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | undefined)[] } => {
   const { data: chainId } = useChainId()

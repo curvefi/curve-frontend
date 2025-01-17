@@ -11,6 +11,7 @@ import Button from '@/ui/Button'
 import Chip from '@/ui/Typography/Chip'
 import SelectTokenListItemUserBalance from '@/components/ComboBoxSelectToken/ComboBoxTokenUserBalance'
 import TokenIcon from '@/components/TokenIcon'
+import { Token } from '@/types/main.types'
 
 const ComboBoxListItem = ({
   imageBaseUrl,

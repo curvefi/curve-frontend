@@ -10,6 +10,7 @@ import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { ChainId } from '@/types/loan.types'
 
 export type StepProgress = {
   active: number

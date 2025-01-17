@@ -8,6 +8,7 @@ import { Chip } from '@/ui/Typography'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Icon from '@/ui/Icon'
 import ChipInactive from '@/components/ChipInactive'
+import { RewardsApy, PoolData, PoolDataCache } from '@/types/main.types'
 
 const PoolRewardsCrv = ({
   isHighlight,

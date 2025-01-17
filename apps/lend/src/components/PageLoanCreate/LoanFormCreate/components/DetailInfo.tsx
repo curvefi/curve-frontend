@@ -8,6 +8,7 @@ import useStore from '@/store/useStore'
 
 import DetailInfoNonLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
 import DetailInfoLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
   const { api, market, steps, updateFormValues } = props

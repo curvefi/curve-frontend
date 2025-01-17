@@ -14,6 +14,13 @@ import {
 import { formatNumber, shortenAccount } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
 import dayjs from '@ui-kit/lib/dayjs'
+import {
+  CurveApi,
+  ChainId,
+  FnStepEstGasApprovalResponse,
+  FnStepApproveResponse,
+  FnStepResponse,
+} from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

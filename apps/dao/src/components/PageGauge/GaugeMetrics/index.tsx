@@ -9,6 +9,7 @@ import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
 import CopyIconButton from '@/components/CopyIconButton'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined

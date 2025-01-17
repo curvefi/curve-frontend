@@ -35,6 +35,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Api, PageContentProps, HealthMode } from '@/types/lend.types'
 
 const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

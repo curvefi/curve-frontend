@@ -6,6 +6,7 @@ import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
 import type { ChainOption } from '@ui-kit/features/switch-chain'
 import curve from '@curvefi/api'
 import sortBy from 'lodash/sortBy'
+import { CurveApi, ChainId, NetworkConfig, NetworkAliases, NativeToken, Networks } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

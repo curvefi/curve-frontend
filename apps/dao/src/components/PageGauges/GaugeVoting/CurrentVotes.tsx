@@ -14,6 +14,7 @@ import VoteGauge from '@/components/PageGauges/GaugeVoting/VoteGauge'
 import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
 import GaugeVotingStats from '@/components/PageGauges/GaugeVoting/GaugeVotingStats'
+import { GaugeFormattedData, UserGaugeVoteWeight, UserGaugeVoteWeightSortBy } from '@/types/dao.types'
 
 type CurrentVotesProps = {
   userAddress: string | undefined

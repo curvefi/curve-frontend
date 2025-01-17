@@ -34,6 +34,7 @@ import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import ConnectWallet from '@/components/ConnectWallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { Curve, Llamma } from '@/types/loan.types'
 
 const Page: NextPage = () => {
   const params = useParams()

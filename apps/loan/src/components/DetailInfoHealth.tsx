@@ -12,6 +12,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { HealthMode, HeathColorKey, LoanDetails, UserLoanDetails } from '@/types/loan.types'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 

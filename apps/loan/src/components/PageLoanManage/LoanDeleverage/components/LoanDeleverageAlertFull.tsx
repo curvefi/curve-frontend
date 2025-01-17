@@ -8,6 +8,7 @@ import { getTokenName } from '@/utils/utilsLoan'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import Box from '@/ui/Box'
 import DetailInfo from '@/ui/DetailInfo'
+import { Llamma, UserLoanDetails } from '@/types/loan.types'
 
 // Deleverage full repayment will result in the following changes to user wallet:
 // 1. wallet.collateral = userState.collateral - formValues.collateral

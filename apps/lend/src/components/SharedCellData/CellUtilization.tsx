@@ -8,6 +8,7 @@ import Chip from '@/ui/Typography/Chip'
 import CellUtilizationTooltip from '@/components/SharedCellData/CellUtilizationTooltip'
 import ProgressBar from '@/ui/ProgressBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { ChainId } from '@/types/lend.types'
 
 type Props = {
   isMobile?: boolean

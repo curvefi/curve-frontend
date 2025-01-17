@@ -9,6 +9,25 @@ import { SEVEN_DAYS } from '@/constants'
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
 import { contractVeCRV } from '@/store/contracts'
 import { abiVeCrv } from '@/store/abis'
+import {
+  CurveApi,
+  UserMapper,
+  UserVoteData,
+  SnapshotVotingPower,
+  UserLockRes,
+  UserLock,
+  UserProposalVoteData,
+  UserProposalVotesRes,
+  UserGaugeVote,
+  UserGaugeVotesRes,
+  UserGaugeVoteWeightsMapper,
+  FetchingState,
+  SortDirection,
+  UserLocksSortBy,
+  UserGaugeVotesSortBy,
+  UserProposalVotesSortBy,
+  UserGaugeVoteWeightSortBy,
+} from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

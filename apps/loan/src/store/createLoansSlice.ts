@@ -6,6 +6,16 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { log } from '@ui-kit/lib/logging'
 import networks from '@/networks'
+import {
+  CollateralData,
+  Curve,
+  Llamma,
+  LoanDetails,
+  LoanExists,
+  LoanPriceInfo,
+  UserLoanDetails,
+  UserWalletBalances,
+} from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

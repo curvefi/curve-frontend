@@ -19,6 +19,7 @@ import InputProvider from '@/ui/InputComp/InputProvider'
 import Popover from '@/ui/Popover/Popover'
 import Spinner from '@/ui/Spinner'
 import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
+import { Token } from '@/types/main.types'
 
 const ComboBox = ({
   testId,

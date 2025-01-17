@@ -4,6 +4,7 @@ import { t } from '@lingui/macro'
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils/'
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
+import { VeCrvHolder } from '@/types/dao.types'
 
 interface UserStatsProps {
   veCrvHolder: VeCrvHolder

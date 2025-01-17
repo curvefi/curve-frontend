@@ -11,6 +11,7 @@ import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 import TableCheckboxHideSmallPools from '@/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
+import { ChainId, PoolData } from '@/types/main.types'
 
 type Props = {
   isReady: boolean

@@ -11,6 +11,7 @@ import {
 import { loadingLRPrices } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
 import cloneDeep from 'lodash/cloneDeep'
+import { ChainId, Curve, Llamma } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

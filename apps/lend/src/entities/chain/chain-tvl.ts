@@ -4,6 +4,7 @@ import { FETCHING, PartialQueryResult, READY } from '@ui-kit/lib/queries'
 import { calculateChainTvl } from './tvl'
 import { useOneWayMarketMapping } from './chain-hooks'
 import useStore from '@/store/useStore'
+import { ChainId } from '@/types/lend.types'
 
 export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
   const marketMapping = useOneWayMarketMapping({ chainId }).data

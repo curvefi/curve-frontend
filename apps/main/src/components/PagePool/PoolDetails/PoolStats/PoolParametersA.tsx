@@ -7,6 +7,7 @@ import dayjs from '@ui-kit/lib/dayjs'
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import Chip from '@/ui/Typography/Chip'
 import Item from '@/ui/Items/Item'
+import { PoolData } from '@/types/main.types'
 
 const PoolParametersA: React.FC<{ parameters: PoolData['parameters'] }> = ({ parameters }) => {
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}

@@ -9,6 +9,7 @@ import { isValidAddress } from '@/utils'
 import ChipInactive from '@/components/ChipInactive'
 import AddGaugeLink from '@/components/PagePool/components/AddGaugeLink'
 import ContractComp from '@/components/PagePool/components/ContractComp'
+import { ChainId, PoolDataCacheOrApi } from '@/types/main.types'
 
 type ContractsProps = {
   rChainId: ChainId

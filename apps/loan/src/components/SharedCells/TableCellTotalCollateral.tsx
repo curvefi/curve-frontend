@@ -11,6 +11,7 @@ import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import TextCaption from '@/ui/TextCaption'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@/types/loan.types'
 
 type Props = {
   rChainId: ChainId

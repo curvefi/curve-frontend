@@ -10,6 +10,7 @@ import Spinner from '../../Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/components/ErrorMessage'
 import TopHoldersBarChartComponent from '@/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
+import { VeCrvHolder, TopHoldersSortBy } from '@/types/dao.types'
 
 const TopLockers: React.FC = () => {
   const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(

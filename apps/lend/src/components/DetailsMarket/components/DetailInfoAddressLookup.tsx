@@ -10,6 +10,7 @@ import { StyledStats } from '@/components/DetailsMarket/styles'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
+import { ChainId } from '@/types/lend.types'
 
 interface Props extends StatsProps {
   chainId: ChainId

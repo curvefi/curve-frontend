@@ -2,6 +2,7 @@ import type { ImplementationId } from '@/components/PageCreatePool/types'
 import BigNumber from 'bignumber.js'
 
 import { t } from '@lingui/macro'
+import { NativeToken } from '@/types/main.types'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'

@@ -1,4 +1,5 @@
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
+import { RewardsApy, PoolData, PoolDataCache } from '@/types/main.types'
 
 type Prop = {
   isHighlight: boolean

@@ -16846,6 +16846,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:^3.6.3"
     eslint-plugin-no-only-tests: "npm:^3.3.0"
     eslint-plugin-react: "npm:7.36.1"
+    eslint-plugin-unused-imports: "npm:^3.2.0"
     prettier-eslint: "npm:^16.3.0"
   peerDependencies:
     eslint: "*"
@@ -17121,6 +17122,28 @@ __metadata:
   peerDependencies:
     eslint: ">6.6.0"
   checksum: 10c0/06dffb23d934ff679e3094482f8ab53875529a580bbc3696a50b59e898a06df8f42199a7641053b326e6dcade16677ffac411ea2b98d49ecefd5ee84bcc7d112
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-unused-imports@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "eslint-plugin-unused-imports@npm:3.2.0"
+  dependencies:
+    eslint-rule-composer: "npm:^0.3.0"
+  peerDependencies:
+    "@typescript-eslint/eslint-plugin": 6 - 7
+    eslint: 8
+  peerDependenciesMeta:
+    "@typescript-eslint/eslint-plugin":
+      optional: true
+  checksum: 10c0/70c93efaa4dccd1172db3858b27968184c97cb8b7ffb2d9e6ffb09d9509863c70651b533b48eec4d10bc7f633d7f50fd190fdd5b36e8cac2c4efd5cecb5d5d98
+  languageName: node
+  linkType: hard
+
+"eslint-rule-composer@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "eslint-rule-composer@npm:0.3.0"
+  checksum: 10c0/1f0c40d209e1503a955101a0dbba37e7fc67c8aaa47a5b9ae0b0fcbae7022c86e52b3df2b1b9ffd658e16cd80f31fff92e7222460a44d8251e61d49e0af79a07
   languageName: node
   linkType: hard
 

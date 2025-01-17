@@ -1,12 +1,11 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { Locale } from '@ui-kit/lib/i18n'
 import { ConnectState, getPageWidthClassName } from '@/ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
-import { setStorageValue } from '@/utils'
 import curvejsApi from '@/lib/curvejs'
+import { CurveApi, ChainId, NetworkConfigFromApi, PageWidthClassName, RouterProps, Wallet } from '@/types/main.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

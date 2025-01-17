@@ -12,6 +12,7 @@ import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
 import DetailInfoLTV from '@/components/DetailInfoLTV'
 import DetailInfoN from '@/components/DetailInfoN'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps } from '@/types/lend.types'
 
 const DetailInfoNonLeverage = ({
   activeStep,

@@ -10,6 +10,7 @@ import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress 
 
 import PaginatedTable from '@/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
+import { UserGaugeVote, UserGaugeVotesSortBy } from '@/types/dao.types'
 
 interface UserGaugeVotesTableProps {
   userAddress: string

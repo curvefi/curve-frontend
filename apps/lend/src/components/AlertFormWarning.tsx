@@ -4,6 +4,7 @@ import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 
 import AlertBox from '@/ui/AlertBox'
+import { AlertType } from '@/types/lend.types'
 
 export enum FormWarning {
   // loan deleverage

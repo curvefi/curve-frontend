@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
@@ -8,6 +8,7 @@ import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/constants'
 import { usePageVisibleInterval } from '@/ui/hooks'
 
 import PegKeeperContent from '@/components/PagePegKeepers/components/PegKeeperContent'
+import { ChainId, Provider } from '@/types/loan.types'
 
 const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: Provider }) => {
   const isPageVisible = useStore((state) => state.isPageVisible)

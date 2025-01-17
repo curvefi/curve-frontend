@@ -22,6 +22,7 @@ import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaim
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/utils'
 import { shortenAccount } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
+import { CurveApi, ChainId, PoolDataMapper, FnStepResponse } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

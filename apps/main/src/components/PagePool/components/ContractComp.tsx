@@ -7,6 +7,7 @@ import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import useStore from '@/store/useStore'
+import { ChainId } from '@/types/main.types'
 
 const ContractComp = ({
   address,

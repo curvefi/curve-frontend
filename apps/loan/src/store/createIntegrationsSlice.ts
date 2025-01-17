@@ -10,6 +10,7 @@ import sortBy from 'lodash/sortBy'
 
 import { fulfilledValue, httpFetcher } from '@/utils/helpers'
 import networks from '@/networks'
+import { ChainId } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

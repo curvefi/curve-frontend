@@ -9,6 +9,7 @@ import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/comp
 import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api } from '@/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

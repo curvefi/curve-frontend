@@ -29,6 +29,22 @@ import {
 } from '@/utils/utilsSwap'
 import { log } from '@ui-kit/lib/logging'
 import useStore from '@/store/useStore'
+import {
+  CurveApi,
+  ChainId,
+  NetworkConfig,
+  Pool,
+  Provider,
+  ClaimableReward,
+  RewardCrv,
+  RewardOther,
+  RewardsApy,
+  PoolParameters,
+  UserBalancesMapper,
+  PoolData,
+  UsdRatesMapper,
+  EstimatedGas,
+} from '@/types/main.types'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {

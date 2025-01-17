@@ -14,6 +14,7 @@ import Button from '@/ui/Button'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi, ChainId, Provider } from '@/types/main.types'
 
 const Compensation = ({
   rChainId,

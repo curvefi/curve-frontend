@@ -3,6 +3,7 @@ import type { LiqRangeSliderIdx } from '@/store/types'
 import type { Params } from 'react-router'
 import type { Step } from '@/ui/Stepper/types'
 import React from 'react'
+import { ChainId, Curve, Llamma, HealthMode } from '@/types/loan.types'
 
 export type FormType = 'create' | 'leverage'
 

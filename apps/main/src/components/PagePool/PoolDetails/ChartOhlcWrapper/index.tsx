@@ -14,6 +14,7 @@ import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/Poo
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@/types/main.types'
 
 const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
   rChainId,

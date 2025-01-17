@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { CRVUSD_ADDRESS } from '@/constants'
 import { log } from '@ui-kit/lib/logging'
 import networks from '@/networks'
+import { Curve, UsdRate } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

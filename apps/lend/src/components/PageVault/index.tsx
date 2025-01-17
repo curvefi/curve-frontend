@@ -15,6 +15,7 @@ import VaultWithdrawRedeem from '@/components/PageVault/VaultWithdrawRedeem'
 import VaultStake from '@/components/PageVault/VaultStake'
 import VaultUnstake from '@/components/PageVault/VaultUnstake'
 import VaultClaim from '@/components/PageVault/VaultClaim'
+import { PageContentProps } from '@/types/lend.types'
 
 const Vault = (pageProps: PageContentProps) => {
   const { rOwmId, rFormType, rChainId } = pageProps

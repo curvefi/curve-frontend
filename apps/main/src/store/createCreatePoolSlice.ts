@@ -29,6 +29,7 @@ import {
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
 import { isTricrypto } from '@/components/PageCreatePool/utils'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type SliceState = {
   navigationIndex: number

@@ -7,6 +7,7 @@ import useStore from '@/store/useStore'
 
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
+import { TitleMapper } from '@/types/lend.types'
 
 const SelectFilterType = ({
   showBorrowSignerCell,

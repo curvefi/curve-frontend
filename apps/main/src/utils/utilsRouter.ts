@@ -4,6 +4,7 @@ import { MAIN_ROUTE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES, Locale, parseLocale } from '@ui-kit/lib/i18n'
 import useStore from '@/store/useStore'
 import { useMemo } from 'react'
+import { NetworkEnum, RouterParams } from '@/types/main.types'
 
 export function getPath({ locale, network }: Params, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)

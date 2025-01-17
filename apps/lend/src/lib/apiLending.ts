@@ -11,6 +11,41 @@ import { BN, shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/shared/config'
+import {
+  ChainId,
+  Api,
+  Provider,
+  EstimatedGas,
+  MaxRecvLeverageResp,
+  LiqRangeResp,
+  DetailInfoResp,
+  DetailInfoLeverageResp,
+  ExpectedCollateral,
+  ExpectedBorrowed,
+  HeathColorKey,
+  MarketStatParameters,
+  BandsBalances,
+  BandsBalancesArr,
+  ParsedBandsBalances,
+  MarketStatBands,
+  MarketStatTotals,
+  MarketStatAmmBalances,
+  MarketStatCapAndAvailable,
+  MarketMaxLeverage,
+  MarketPrices,
+  MarketRates,
+  MarketTotalLiquidity,
+  MarketsTotalCollateralValueMapper,
+  RewardOther,
+  RewardCrv,
+  MarketRewards,
+  UserLoanHealth,
+  UserLoanState,
+  UserLoanDetails,
+  UserMarketBalances,
+  FutureRates,
+  Wallet,
+} from '@/types/lend.types'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {

@@ -14,6 +14,7 @@ import { helpers } from '@/lib/apiLending'
 import useStore from '@/store/useStore'
 import { useOneWayMarket } from '@/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { PageContentProps, HeathColorKey, HealthMode } from '@/types/lend.types'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 

@@ -6,6 +6,18 @@ import { formatUnits, formatEther, Contract } from 'ethers'
 import { contractVeCRV, contractCrv } from '@/store/contracts'
 import { abiVeCrv } from '@/store/abis'
 import { convertToLocaleTimestamp, formatDateFromTimestamp } from 'ui/src/utils'
+import {
+  VeCrvFeeRes,
+  VeCrvFee,
+  VeCrvFeesRes,
+  VeCrvDailyLock,
+  VeCrvDailyLockRes,
+  VeCrvHolder,
+  VeCrvHoldersRes,
+  FetchingState,
+  TopHoldersSortBy,
+  AllHoldersSortBy,
+} from '@/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

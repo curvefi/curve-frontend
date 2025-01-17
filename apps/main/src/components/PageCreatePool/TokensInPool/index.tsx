@@ -25,6 +25,7 @@ import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTok
 import WarningBox from '@/components/PageCreatePool/components/WarningBox'
 import SelectToken from '@/components/PageCreatePool/TokensInPool/SelectToken'
 import SetOracle from '@/components/PageCreatePool/TokensInPool/SetOracle'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

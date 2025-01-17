@@ -4,6 +4,7 @@ import type { LayoutHeight } from '@/store/types'
 
 import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
+import { PageWidthClassName } from '@/types/lend.types'
 
 export type StateKey = keyof typeof DEFAULT_STATE
 

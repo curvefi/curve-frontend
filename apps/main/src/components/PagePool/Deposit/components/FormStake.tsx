@@ -18,6 +18,7 @@ import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
 import Stepper from '@/ui/Stepper'
 import TransferActions from '@/components/PagePool/components/TransferActions'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { CurveApi, Pool, PoolData } from '@/types/main.types'
 
 const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)

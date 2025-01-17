@@ -5,6 +5,7 @@ import useStore from '@/store/useStore'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import { RewardsApy, PoolData, PoolDataCache } from '@/types/main.types'
 
 interface Props {
   isHighlightBase: boolean

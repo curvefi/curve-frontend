@@ -27,6 +27,7 @@ import ChartBandBalancesSettings from '@/components/ChartBandBalances/ChartBandB
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import TextCaption from '@/ui/TextCaption'
+import { PageContentProps, ParsedBandsBalances } from '@/types/lend.types'
 
 const ChartBandBalances = ({
   rChainId,

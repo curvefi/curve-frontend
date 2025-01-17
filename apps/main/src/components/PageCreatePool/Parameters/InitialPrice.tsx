@@ -8,6 +8,7 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import NumberField from '@/components/PageCreatePool/components/NumberField'
 import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTokensButton'
+import { CurveApi, ChainId } from '@/types/main.types'
 
 type Props = {
   curve: CurveApi

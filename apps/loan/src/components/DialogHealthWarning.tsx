@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import AlertBox from '@/ui/AlertBox'
 import Checkbox from '@/ui/Checkbox'
+import { HealthMode } from '@/types/loan.types'
 
 interface Props extends HealthMode {
   confirmed: boolean

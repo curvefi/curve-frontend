@@ -12,6 +12,7 @@ import InternalLink from '@/ui/Link/InternalLink'
 import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
 import Spinner from '@/ui/Spinner'
 import TextCaption from '@/ui/TextCaption'
+import { PageContentProps } from '@/types/lend.types'
 
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {
   const params = useParams()

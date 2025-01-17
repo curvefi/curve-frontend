@@ -8,6 +8,7 @@ import DetailInfoHealth from '@/components/DetailInfoHealth'
 import DetailInfoRate from '@/components/DetailInfoRate'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps, HealthMode } from '@/types/lend.types'
 
 const DetailInfo = ({
   rChainId,

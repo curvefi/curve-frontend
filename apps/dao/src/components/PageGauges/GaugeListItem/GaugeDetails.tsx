@@ -9,6 +9,7 @@ import Box from '@/ui/Box'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 import CopyIconButton from '@/components/CopyIconButton'
 import { ExternalLink } from '@/ui/Link'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => (
   <Wrapper className={className}>

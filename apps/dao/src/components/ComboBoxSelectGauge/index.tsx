@@ -13,6 +13,7 @@ import networks from '@/networks'
 import ComboBox from '@/components/ComboBoxSelectGauge/ComboBox'
 import ComboBoxSelectedGaugeButton from '@/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import ModalDialog from '@/ui/Dialog'
+import { GaugeFormattedData } from '@/types/dao.types'
 
 const ComboBoxGauges = ({
   disabled,
