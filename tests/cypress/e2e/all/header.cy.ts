@@ -1,4 +1,10 @@
-import { checkIsDarkMode, oneDesktopViewport, oneMobileOrTabletViewport, TABLET_BREAKPOINT } from '@/support/ui'
+import {
+  checkIsDarkMode,
+  oneAppPath,
+  oneDesktopViewport,
+  oneMobileOrTabletViewport,
+  TABLET_BREAKPOINT,
+} from '@/support/ui'
 
 const expectedMainNavHeight = 56
 const expectedSubNavHeight = 42 // 40 + 2px border
@@ -9,7 +15,7 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMaxWidth = 1536
 const scrollbarWidth = 15 // scrollbar in px for the test browser
 
-const mainAppUrl = 'http://localhost:3000'
+const mainAppUrl = 'http://localhost:3000/dex'
 
 describe('Header', () => {
   let viewport: readonly [number, number]
@@ -20,7 +26,7 @@ describe('Header', () => {
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
-      cy.visit('/', {
+      cy.visit(oneAppPath(), {
         onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
       waitIsLoaded()
