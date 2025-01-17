@@ -84,6 +84,10 @@ export function getAppRoot(path: 'dex' | 'dao' | 'lend' | 'loan', developmentPor
       return `https://staging.curve.fi/${path}`
     }
     if (host.endsWith('vercel.app')) {
+      const branchPrefix = /curve-dapp(-lend|-crvusd|-dao)?-(.*)-curvefi.vercel.app/.exec(host)?.[2]
+      if (branchPrefix) {
+        return `https://curve-dapp-${branchPrefix}-curvefi.vercel.app`
+      }
       return `https://${host}/${path}`
     }
     if (!host.endsWith('curve.fi')) {

@@ -17,10 +17,6 @@ jobs:
   cypress:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [main, loan, lend, dao]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,12 +27,12 @@ jobs:
       - run: yarn install --immutable
 
       - run: yarn run dev &
-        working-directory: apps/${{ matrix.app }}
-      - run: yarn run cy:run:e2e:${{ matrix.app }}
+        working-directory: apps/main
+      - run: yarn run cy:run:e2e
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-${{ matrix.app }}
+          name: cypress-main
           path: tests/cypress/screenshots
