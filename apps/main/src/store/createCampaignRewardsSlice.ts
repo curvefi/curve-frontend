@@ -3,7 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
 
-import campaigns from '@/shared/external-rewards'
+import campaigns from '@external-rewards'
 import { ChainId } from '@/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE

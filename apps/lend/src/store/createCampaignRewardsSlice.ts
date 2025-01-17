@@ -3,7 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
 
-import campaigns from '@/shared/external-rewards'
+import campaigns from '@external-rewards'
 import networks from '@/networks'
 import { ChainId } from '@/types/lend.types'
 
