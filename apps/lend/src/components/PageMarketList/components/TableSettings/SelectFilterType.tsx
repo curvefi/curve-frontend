@@ -1,13 +1,13 @@
-import type { SearchParams, TableLabel } from '@/components/PageMarketList/types'
+import type { SearchParams, TableLabel } from '@lend/components/PageMarketList/types'
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@lend/store/useStore'
 
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
-import { TitleMapper } from '@/types/lend.types'
+import { TitleMapper } from '@lend/types/lend.types'
 
 const SelectFilterType = ({
   showBorrowSignerCell,

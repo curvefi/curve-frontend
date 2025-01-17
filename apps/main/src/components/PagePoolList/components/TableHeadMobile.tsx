@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@lingui/macro'
-import { Th, Tr } from '@/ui/Table'
+import { Th, Tr } from '@ui/Table'
 
 type Props = {
   showInPoolColumn: boolean

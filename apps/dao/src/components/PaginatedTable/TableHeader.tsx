@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import Icon from '@/ui/Icon'
-import Button from '@/ui/Button'
+import Icon from '@ui/Icon'
+import Button from '@ui/Button'
 
 interface TableHeaderProps<T> {
   columns: { key: keyof T; label: string; disabled?: boolean }[]

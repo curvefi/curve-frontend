@@ -1,12 +1,12 @@
-import { TITLE } from '@/constants'
-import useStore from '@/store/useStore'
+import { TITLE } from '@loan/constants'
+import useStore from '@loan/store/useStore'
 
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import TokenLabel from '@/components/TokenLabel'
-import TableCellRate from '@/components/SharedCells/TableCellRate'
-import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
-import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
-import { ChainId, TitleKey, TitleMapper } from '@/types/loan.types'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import TokenLabel from '@loan/components/TokenLabel'
+import TableCellRate from '@loan/components/SharedCells/TableCellRate'
+import TableCellTotalCollateral from '@loan/components/SharedCells/TableCellTotalCollateral'
+import TableCellUtilization from '@loan/components/SharedCells/TableCellUtilization'
+import { ChainId, TitleKey, TitleMapper } from '@loan/types/loan.types'
 
 const DetailsInfo = ({
   rChainId,

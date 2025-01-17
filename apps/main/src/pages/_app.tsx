@@ -1,4 +1,4 @@
-import '@/globals.css'
+import '@main/globals.css'
 import 'focus-visible'
 import 'intersection-observer'
 import { i18n } from '@lingui/core'
@@ -12,20 +12,20 @@ import type { AppProps } from 'next/app'
 import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { REFRESH_INTERVAL } from '@/constants'
-import GlobalStyle from '@/globalStyle'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import Page from '@/layout/default'
+import { REFRESH_INTERVAL } from '@main/constants'
+import GlobalStyle from '@main/globalStyle'
+import usePageVisibleInterval from '@main/hooks/usePageVisibleInterval'
+import Page from '@main/layout/default'
 import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
-import { messages as messagesEn } from '@/locales/en/messages.js'
-import curvejsApi from '@/lib/curvejs'
-import useStore from '@/store/useStore'
-import { QueryProvider } from '@/ui/QueryProvider'
-import { isMobile, removeExtraSpaces } from '@/utils'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { messages as messagesEn } from '@main/locales/en/messages.js'
+import curvejsApi from '@main/lib/curvejs'
+import useStore from '@main/store/useStore'
+import { QueryProvider } from '@ui/QueryProvider'
+import { isMobile, removeExtraSpaces } from '@main/utils'
+import { getLocaleFromUrl } from '@main/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { CurveApi } from '@/types/main.types'
+import { CurveApi } from '@main/types/main.types'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -88,7 +88,7 @@ function CurveApp({ Component }: AppProps) {
     const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
     ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
+      let data = await import(`@main/locales/${parsedLocale}/messages`)
       dynamicActivate(parsedLocale, data)
     })()
     ;(async () => {

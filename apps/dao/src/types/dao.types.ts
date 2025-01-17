@@ -4,8 +4,8 @@ import type { Locale } from '@ui-kit/lib/i18n'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
-import curvejsApi from '@/lib/curvejs'
-import type { BaseConfig } from '@/ui/utils'
+import curvejsApi from '@dao/lib/curvejs'
+import type { BaseConfig } from '@ui/utils'
 
 export type PageWidthClassName =
   | 'page-wide'

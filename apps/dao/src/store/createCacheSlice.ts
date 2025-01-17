@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@dao/store/useStore'
 
-import { sleep } from '@/utils'
-import { ProposalData, PricesProposalData, GaugeFormattedData, GaugeWeightHistoryData } from '@/types/dao.types'
+import { sleep } from '@dao/utils'
+import { ProposalData, PricesProposalData, GaugeFormattedData, GaugeWeightHistoryData } from '@dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

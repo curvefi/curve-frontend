@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 
-import Button from '@/ui/Button'
-import Spinner from '@/ui/Spinner'
-import { ProposalListFilter, ProposalListFilterItem } from '@/types/dao.types'
+import Button from '@ui/Button'
+import Spinner from '@ui/Spinner'
+import { ProposalListFilter, ProposalListFilterItem } from '@dao/types/dao.types'
 
 type Props = {
   className?: string

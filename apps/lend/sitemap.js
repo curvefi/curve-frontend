@@ -1,4 +1,4 @@
-import { MAIN_ROUTE } from '@/constants'
+import { MAIN_ROUTE } from '@lend/constants'
 
 export default function sitemap() {
   const BASE_URL = 'https://lend.curve.fi'

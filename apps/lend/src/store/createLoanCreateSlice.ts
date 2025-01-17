@@ -1,22 +1,22 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { LiqRange, LiqRangesMapper } from '@/store/types'
+import type { State } from '@lend/store/useStore'
+import type { LiqRange, LiqRangesMapper } from '@lend/store/types'
 import type {
   FormEstGas,
   FormStatus,
   FormValues,
   DetailInfo,
   DetailInfoLeverage,
-} from '@/components/PageLoanCreate/types'
+} from '@lend/components/PageLoanCreate/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@/components/PageLoanCreate/utils'
-import { _parseActiveKey } from '@/utils/helpers'
-import apiLending, { helpers } from '@/lib/apiLending'
+import { DEFAULT_FORM_EST_GAS } from '@lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@lend/components/PageLoanCreate/utils'
+import { _parseActiveKey } from '@lend/utils/helpers'
+import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api } from '@/types/lend.types'
+import { ChainId, Api } from '@lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

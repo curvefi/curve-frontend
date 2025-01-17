@@ -1,4 +1,4 @@
-import { FutureRates } from '@/types/lend.types'
+import { FutureRates } from '@lend/types/lend.types'
 
 export type DetailInfoTypes = 'user' | 'market'
 export type FormType = 'loan' | 'collateral' | 'leverage'

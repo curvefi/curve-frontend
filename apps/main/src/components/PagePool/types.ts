@@ -8,7 +8,7 @@ import {
   PoolData,
   PoolDataCache,
   PoolAlert,
-} from '@/types/main.types'
+} from '@main/types/main.types'
 
 export type EstimatedGas = {
   loading: boolean

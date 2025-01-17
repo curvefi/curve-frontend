@@ -2,8 +2,8 @@ import { t, Trans } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import ExternalLink from '@/ui/Link/ExternalLink'
-import { PoolAlert } from '@/types/main.types'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { PoolAlert } from '@main/types/main.types'
 
 const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
   useMemo(() => {

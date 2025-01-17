@@ -2,10 +2,10 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 import { useMemo } from 'react'
 
-import { formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { formatNumber } from '@ui/utils'
+import useStore from '@lend/store/useStore'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId } from '@/types/lend.types'
+import { ChainId } from '@lend/types/lend.types'
 
 type Props = {
   className?: string

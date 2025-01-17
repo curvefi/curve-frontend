@@ -1,6 +1,6 @@
-import type { FormStatus, FormValues } from '@/components/PageDashboard/types'
+import type { FormStatus, FormValues } from '@main/components/PageDashboard/types'
 
-import { todayInMilliseconds } from '@/utils/utilsDates'
+import { todayInMilliseconds } from '@main/utils/utilsDates'
 
 export function getIsLockExpired(lockedAmount: string, unlockTime: number) {
   return unlockTime && unlockTime < todayInMilliseconds() && +lockedAmount > 0

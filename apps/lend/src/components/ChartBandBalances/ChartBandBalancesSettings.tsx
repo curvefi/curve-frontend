@@ -1,8 +1,8 @@
 import React from 'react'
 
-import ChartBandBalancesSettingsContent from '@/components/ChartBandBalances/ChartBandBalancesSettingsContent'
-import Icon from '@/ui/Icon'
-import Popover, { Popover2Dialog } from '@/ui/Popover2'
+import ChartBandBalancesSettingsContent from '@lend/components/ChartBandBalances/ChartBandBalancesSettingsContent'
+import Icon from '@ui/Icon'
+import Popover, { Popover2Dialog } from '@ui/Popover2'
 
 const ChartBandBalancesSettings = () => (
   <Popover

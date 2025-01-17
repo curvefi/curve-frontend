@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import useStore from '@/store/useStore'
-import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
-import Box from '@/ui/Box'
-import SelectButton from '@/components/PageCreatePool/components/SelectButton'
-import { ChainId } from '@/types/main.types'
+import useStore from '@main/store/useStore'
+import { STABLESWAP, CRYPTOSWAP } from '@main/components/PageCreatePool/constants'
+import Box from '@ui/Box'
+import SelectButton from '@main/components/PageCreatePool/components/SelectButton'
+import { ChainId } from '@main/types/main.types'
 
 type Props = {
   chainId: ChainId

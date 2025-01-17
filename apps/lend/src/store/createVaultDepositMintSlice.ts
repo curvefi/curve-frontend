@@ -1,16 +1,16 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormEstGas } from '@/components/PageLoanManage/types'
-import type { FormStatus, FormValues } from '@/components/PageVault/VaultDepositMint/types'
+import type { State } from '@lend/store/useStore'
+import type { FormEstGas } from '@lend/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@lend/components/PageVault/VaultDepositMint/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PageVault/VaultDepositMint/utils'
-import apiLending, { helpers } from '@/lib/apiLending'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageVault/VaultDepositMint/utils'
+import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api, FutureRates } from '@/types/lend.types'
+import { ChainId, Api, FutureRates } from '@lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null

@@ -4,8 +4,8 @@ import Image from 'next/image'
 
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
 
-import Icon from '@/ui/Icon'
-import { ExternalLink } from '@/ui/Link'
+import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
 
 import { APP_LINK } from '@ui-kit/shared/routes'
 

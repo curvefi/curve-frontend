@@ -2,15 +2,15 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
-import useVaultShares from '@/hooks/useVaultShares'
+import { formatNumber } from '@ui/utils'
+import useStore from '@lend/store/useStore'
+import useVaultShares from '@lend/hooks/useVaultShares'
 
-import Chip from '@/ui/Typography/Chip'
-import InpChipUsdRate from '@/components/InpChipUsdRate'
-import ListInfoItem from '@/ui/ListInfo'
+import Chip from '@ui/Typography/Chip'
+import InpChipUsdRate from '@lend/components/InpChipUsdRate'
+import ListInfoItem from '@ui/ListInfo'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId } from '@/types/lend.types'
+import { ChainId } from '@lend/types/lend.types'
 
 const CellUserMain = ({
   rChainId,

@@ -1,13 +1,13 @@
-import { LendingVault } from '@/entities/vaults'
+import { LendingVault } from '@loan/entities/vaults'
 import Stack from '@mui/material/Stack'
-import TokenIcons from 'main/src/components/TokenIcons'
+import TokenIcons from '@loan/components/TokenIcons'
 import React, { useMemo } from 'react'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
-import { PoolBadges } from '@/components/PageLlamaMarkets/cells/PoolTitleCell/PoolBadges'
-import { PoolWarnings } from '@/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
-import { getImageBaseUrl } from '@/ui/utils'
+import { PoolBadges } from '@loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolBadges'
+import { PoolWarnings } from '@loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
+import { getImageBaseUrl } from '@ui/utils'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 const { Spacing } = SizesAndSpaces

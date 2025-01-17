@@ -3,9 +3,9 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
+import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 const TopHoldersBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {

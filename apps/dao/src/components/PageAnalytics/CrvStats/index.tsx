@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/ui/utils'
+import useStore from '@dao/store/useStore'
+import { formatNumber } from '@ui/utils'
 import { t } from '@lingui/macro'
 
-import Box from '@/ui/Box'
-import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
-import Tooltip from '@/ui/Tooltip'
+import Box from '@ui/Box'
+import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import Tooltip from '@ui/Tooltip'
 
 const CrvStats: React.FC = () => {
   const provider = useStore((state) => state.wallet.getProvider(''))

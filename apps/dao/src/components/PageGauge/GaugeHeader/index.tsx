@@ -2,13 +2,13 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import networks from '@/networks'
+import networks from '@dao/networks'
 
-import Box from '@/ui/Box'
-import Loader from '@/ui/Loader'
-import SmallLabel from '@/components/SmallLabel'
-import TokenIcons from '@/components/TokenIcons'
-import { GaugeFormattedData } from '@/types/dao.types'
+import Box from '@ui/Box'
+import Loader from '@ui/Loader'
+import SmallLabel from '@dao/components/SmallLabel'
+import TokenIcons from '@dao/components/TokenIcons'
+import { GaugeFormattedData } from '@dao/types/dao.types'
 
 interface GaugeHeaderProps {
   gaugeData: GaugeFormattedData | undefined

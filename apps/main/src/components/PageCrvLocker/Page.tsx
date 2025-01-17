@@ -1,24 +1,24 @@
 import type { NextPage } from 'next'
-import type { FormType } from '@/components/PageCrvLocker/types'
+import type { FormType } from '@main/components/PageCrvLocker/types'
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { ROUTE } from '@/constants'
-import { getPath } from '@/utils/utilsRouter'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
+import { ROUTE } from '@main/constants'
+import { getPath } from '@main/utils/utilsRouter'
+import { scrollToTop } from '@main/utils'
+import usePageOnMount from '@main/hooks/usePageOnMount'
+import useStore from '@main/store/useStore'
 
-import Box, { BoxHeader } from '@/ui/Box'
-import DocumentHead from '@/layout/default/DocumentHead'
-import FormCrvLocker from '@/components/PageCrvLocker/index'
-import IconButton from '@/ui/IconButton'
-import Settings from '@/layout/default/Settings'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { CurveApi } from '@/types/main.types'
+import Box, { BoxHeader } from '@ui/Box'
+import DocumentHead from '@main/layout/default/DocumentHead'
+import FormCrvLocker from '@main/components/PageCrvLocker/index'
+import IconButton from '@ui/IconButton'
+import Settings from '@main/layout/default/Settings'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { CurveApi } from '@main/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

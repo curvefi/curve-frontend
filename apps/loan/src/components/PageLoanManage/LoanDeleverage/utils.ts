@@ -1,9 +1,9 @@
-import type { FormDetailInfo, FormStatus, FormValues } from '@/components/PageLoanManage/LoanDeleverage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@loan/components/PageLoanManage/LoanDeleverage/types'
 
 import {
   DEFAULT_DETAIL_INFO as DETAIL_INFO,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@/components/PageLoanManage/utils'
+} from '@loan/components/PageLoanManage/utils'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,

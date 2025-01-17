@@ -1,4 +1,4 @@
-import { ChainId } from '@/types/lend.types'
+import { ChainId } from '@lend/types/lend.types'
 
 export type Hop = {
   hops: { name: string; part: number; fromTokenAddress: string; toTokenAddress: string }[][]

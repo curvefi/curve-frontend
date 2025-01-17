@@ -2,23 +2,23 @@ import { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { BigNumber } from 'bignumber.js'
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 import {
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
   TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
   POOL_PRESETS,
-} from '@/components/PageCreatePool/constants'
-import SelectPreset from '@/components/PageCreatePool/Parameters/SelectPreset'
-import SelectPoolImplementation from '@/components/PageCreatePool/Parameters/SelectPoolImplementation'
-import NumberField from '@/components/PageCreatePool/components/NumberField'
-import InitialPrice from '@/components/PageCreatePool/Parameters/InitialPrice'
-import Switch from '@/components/PageCreatePool/components/Switch'
-import TokenWarningBox from '@/components/PageCreatePool/components/WarningBox'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import { CurveApi, ChainId } from '@/types/main.types'
+} from '@main/components/PageCreatePool/constants'
+import SelectPreset from '@main/components/PageCreatePool/Parameters/SelectPreset'
+import SelectPoolImplementation from '@main/components/PageCreatePool/Parameters/SelectPoolImplementation'
+import NumberField from '@main/components/PageCreatePool/components/NumberField'
+import InitialPrice from '@main/components/PageCreatePool/Parameters/InitialPrice'
+import Switch from '@main/components/PageCreatePool/components/Switch'
+import TokenWarningBox from '@main/components/PageCreatePool/components/WarningBox'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 type Props = {
   curve: CurveApi

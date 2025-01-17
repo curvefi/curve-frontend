@@ -1,4 +1,4 @@
-import { GaugeFormattedData } from '@/types/dao.types'
+import { GaugeFormattedData } from '@dao/types/dao.types'
 
 export type EndsWith = (string: string, substring: string) => boolean
 

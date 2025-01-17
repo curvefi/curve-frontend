@@ -1,4 +1,4 @@
-import type { ExchangeRate, Route, RoutesAndOutputModal } from '@/components/PageRouterSwap/types'
+import type { ExchangeRate, Route, RoutesAndOutputModal } from '@main/components/PageRouterSwap/types'
 
 export type StepKey = 'APPROVAL' | 'SWAP' | ''
 

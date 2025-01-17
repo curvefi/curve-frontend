@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
-import { ChainId } from '@/types/lend.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@lend/store/useStore'
+import { ChainId } from '@lend/types/lend.types'
 
 const CellBorrowRate = ({
   rChainId,

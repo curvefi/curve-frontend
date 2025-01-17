@@ -1,17 +1,17 @@
 import type { NextPage } from 'next'
-import type { DetailInfoTypes } from '@/components/PageLoanManage/types'
+import type { DetailInfoTypes } from '@lend/components/PageLoanManage/types'
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { REFRESH_INTERVAL } from '@/constants'
-import { _getSelectedTab } from '@/components/PageLoanManage/utils'
-import { helpers } from '@/lib/apiLending'
-import { scrollToTop } from '@/utils/helpers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-import useTitleMapper from '@/hooks/useTitleMapper'
+import { REFRESH_INTERVAL } from '@lend/constants'
+import { _getSelectedTab } from '@lend/components/PageLoanManage/utils'
+import { helpers } from '@lend/lib/apiLending'
+import { scrollToTop } from '@lend/utils/helpers'
+import usePageOnMount from '@lend/hooks/usePageOnMount'
+import useStore from '@lend/store/useStore'
+import useTitleMapper from '@lend/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -20,20 +20,20 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
-} from '@/ui/AppPage'
-import DocumentHead from '@/layout/DocumentHead'
+} from '@ui/AppPage'
+import DocumentHead from '@lend/layout/DocumentHead'
 import DetailsMarket from 'components/DetailsMarket'
 import DetailsUser from 'components/DetailsUser'
-import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import Tabs, { Tab } from '@/ui/Tab'
-import Vault from '@/components/PageVault/index'
-import Box from '@/ui/Box'
-import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
-import ConnectWallet from '@/components/ConnectWallet'
+import PageTitleBorrowSupplyLinks from '@lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import Tabs, { Tab } from '@ui/Tab'
+import Vault from '@lend/components/PageVault/index'
+import Box from '@ui/Box'
+import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
+import ConnectWallet from '@lend/components/ConnectWallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { useOneWayMarket } from '@/entities/chain'
+import { useOneWayMarket } from '@lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps } from '@/types/lend.types'
+import { Api, PageContentProps } from '@lend/types/lend.types'
 
 const Page: NextPage = () => {
   const params = useParams()

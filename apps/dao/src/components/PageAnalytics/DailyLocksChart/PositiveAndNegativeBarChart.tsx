@@ -4,7 +4,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLin
 import { formatNumber } from 'ui/src/utils'
 
 import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
-import { VeCrvDailyLock } from '@/types/dao.types'
+import { VeCrvDailyLock } from '@dao/types/dao.types'
 
 type PositiveAndNegativeBarChartProps = {
   data: VeCrvDailyLock[]

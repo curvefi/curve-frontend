@@ -6,18 +6,18 @@ import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
-import { getPath } from '@/utils/utilsRouter'
+import { getPath } from '@main/utils/utilsRouter'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils/responsive'
+import useStore from '@main/store/useStore'
 
-import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
+import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@main/components/PageCreatePool/constants'
 
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
-import SelectButton from '@/components/PageCreatePool/components/SelectButton'
-import { ExternalLink } from '@/ui/Link'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import ModalDialog from '@main/components/PageCreatePool/ConfirmModal/ModalDialog'
+import SelectButton from '@main/components/PageCreatePool/components/SelectButton'
+import { ExternalLink } from '@ui/Link'
 
 type Props = {
   setStableFeeValue: React.Dispatch<React.SetStateAction<string>>

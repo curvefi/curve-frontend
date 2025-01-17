@@ -1,10 +1,10 @@
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
-import Button from '@/ui/Button'
-import Spinner from '@/ui/Spinner'
+import Button from '@ui/Button'
+import Spinner from '@ui/Spinner'
 
 const FormActions = ({
   haveSigner,

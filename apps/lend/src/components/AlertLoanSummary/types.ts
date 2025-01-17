@@ -1,5 +1,5 @@
 import React from 'react'
-import { PageContentProps, UserLoanState, UserMarketBalances } from '@/types/lend.types'
+import { PageContentProps, UserLoanState, UserMarketBalances } from '@lend/types/lend.types'
 
 export type AlertSummaryProps = Pick<PageContentProps, 'market'> & {
   pendingMessage: React.ReactNode

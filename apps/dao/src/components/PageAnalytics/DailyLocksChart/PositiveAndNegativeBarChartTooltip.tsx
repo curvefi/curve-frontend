@@ -4,9 +4,9 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils/utilsFormat'
+import { formatNumber } from '@ui/utils/utilsFormat'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {

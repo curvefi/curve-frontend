@@ -1,4 +1,4 @@
-import { AlertFormErrorKey } from '@/types/dao.types'
+import { AlertFormErrorKey } from '@dao/types/dao.types'
 
 export * from './utilsStorage'
 export * from './utilsRouter'

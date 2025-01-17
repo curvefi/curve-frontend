@@ -1,10 +1,10 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@dao/store/useStore'
 
 import produce from 'immer'
 import { formatUnits, formatEther, Contract } from 'ethers'
-import { contractVeCRV, contractCrv } from '@/store/contracts'
-import { abiVeCrv } from '@/store/abis'
+import { contractVeCRV, contractCrv } from '@dao/store/contracts'
+import { abiVeCrv } from '@dao/store/abis'
 import { convertToLocaleTimestamp, formatDateFromTimestamp } from 'ui/src/utils'
 import {
   VeCrvFeeRes,
@@ -17,7 +17,7 @@ import {
   FetchingState,
   TopHoldersSortBy,
   AllHoldersSortBy,
-} from '@/types/dao.types'
+} from '@dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

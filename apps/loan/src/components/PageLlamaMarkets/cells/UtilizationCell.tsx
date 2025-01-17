@@ -1,4 +1,4 @@
-import { LendingVault } from '@/entities/vaults'
+import { LendingVault } from '@loan/entities/vaults'
 import { CellContext } from '@tanstack/react-table'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import Stack from '@mui/material/Stack'

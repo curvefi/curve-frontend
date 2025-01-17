@@ -10,7 +10,7 @@
  * They play a crucial role in maintaining a predictable and efficient data fetching strategy.
  */
 
-import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
+import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@main/entities/gauge/types'
 import { GaugeParams, rootKeys } from '@ui-kit/lib/model/query'
 
 export const gaugeKeys = {

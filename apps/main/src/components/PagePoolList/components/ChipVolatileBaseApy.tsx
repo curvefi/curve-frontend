@@ -2,10 +2,10 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import Chip from '@/ui/Typography/Chip'
-import Icon from '@/ui/Icon'
+import Chip from '@ui/Typography/Chip'
+import Icon from '@ui/Icon'
 
 const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?: boolean }) => (
   <VolatileChip

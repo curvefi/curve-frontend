@@ -1,20 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { TITLE } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { TITLE } from '@loan/constants'
+import { breakpoints } from '@ui/utils/responsive'
+import useStore from '@loan/store/useStore'
 
-import { HealthColorText } from '@/components/LoanInfoUser/styles'
-import AlertSoftLiquidation from '@/components/LoanInfoUser/components/AlertSoftLiquidation'
-import UserInfoDebt from '@/components/LoanInfoUser/components/UserInfoDebt'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import UserInfoLiquidationRange from '@/components/LoanInfoUser/components/UserInfoLiquidationRange'
-import UserInfoLoss from '@/components/LoanInfoUser/components/UserInfoLoss'
-import UserInfoLlammaBalances from '@/components/LoanInfoUser/components/UserInfoLlammaBalances'
+import { HealthColorText } from '@loan/components/LoanInfoUser/styles'
+import AlertSoftLiquidation from '@loan/components/LoanInfoUser/components/AlertSoftLiquidation'
+import UserInfoDebt from '@loan/components/LoanInfoUser/components/UserInfoDebt'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import UserInfoLiquidationRange from '@loan/components/LoanInfoUser/components/UserInfoLiquidationRange'
+import UserInfoLoss from '@loan/components/LoanInfoUser/components/UserInfoLoss'
+import UserInfoLlammaBalances from '@loan/components/LoanInfoUser/components/UserInfoLlammaBalances'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/types/loan.types'
+import { Llamma, HealthMode, TitleKey, TitleMapper } from '@loan/types/loan.types'
 
 const UserInfos = ({
   llammaId,

@@ -4,9 +4,9 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber, convertToLocaleTimestamp } from '@/ui/utils/utilsFormat'
+import { formatNumber, convertToLocaleTimestamp } from '@ui/utils/utilsFormat'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)

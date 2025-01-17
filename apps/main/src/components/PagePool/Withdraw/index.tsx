@@ -1,17 +1,17 @@
-import type { FormType } from '@/components/PagePool/Withdraw/types'
-import type { TransferProps } from '@/components/PagePool/types'
+import type { FormType } from '@main/components/PagePool/Withdraw/types'
+import type { TransferProps } from '@main/components/PagePool/types'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { isValidAddress } from '@/utils'
-import useStore from '@/store/useStore'
+import { isValidAddress } from '@main/utils'
+import useStore from '@main/store/useStore'
 
-import { SlideTabs, SlideTab } from '@/ui/TabSlide'
-import { StyledTabSlide } from '@/components/PagePool/styles'
-import FormClaim from '@/components/PagePool/Withdraw/components/FormClaim'
-import FormWithdraw from '@/components/PagePool/Withdraw/components/FormWithdraw'
-import FormUnstake from '@/components/PagePool/Withdraw/components/FormUnstake'
+import { SlideTabs, SlideTab } from '@ui/TabSlide'
+import { StyledTabSlide } from '@main/components/PagePool/styles'
+import FormClaim from '@main/components/PagePool/Withdraw/components/FormClaim'
+import FormWithdraw from '@main/components/PagePool/Withdraw/components/FormWithdraw'
+import FormUnstake from '@main/components/PagePool/Withdraw/components/FormUnstake'
 
 const Withdraw: React.FC<TransferProps> = (transferProps) => {
   const tabsRef = useRef<HTMLDivElement>(null)

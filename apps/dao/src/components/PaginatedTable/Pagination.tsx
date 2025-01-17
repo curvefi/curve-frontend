@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import Button from '@/ui/Button'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
+import Button from '@ui/Button'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
 
 interface PaginationProps {
   currentPage: number

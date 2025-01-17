@@ -1,15 +1,15 @@
-import type { ChipProps } from '@/ui/Typography/types'
+import type { ChipProps } from '@ui/Typography/types'
 
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@loan/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
+import { Chip } from '@ui/Typography'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 
 interface Props extends ChipProps {
   collateralId: string

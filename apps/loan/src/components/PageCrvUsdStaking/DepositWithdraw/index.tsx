@@ -1,17 +1,17 @@
-import { SubNavItem } from '@/components/PageCrvUsdStaking/components/SubNav/types'
-import { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types'
+import { SubNavItem } from '@loan/components/PageCrvUsdStaking/components/SubNav/types'
+import { DepositWithdrawModule } from '@loan/components/PageCrvUsdStaking/types'
 import { useEffect } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
-import { SUB_NAV_ITEMS } from '@/components/PageCrvUsdStaking/DepositWithdraw/constants'
+import useStore from '@loan/store/useStore'
+import { SUB_NAV_ITEMS } from '@loan/components/PageCrvUsdStaking/DepositWithdraw/constants'
 
-import SubNav from '@/components/PageCrvUsdStaking/components/SubNav'
-import TransactionDetails from '@/components/PageCrvUsdStaking/TransactionDetails'
-import DepositModule from '@/components/PageCrvUsdStaking/DepositWithdraw/DepositModule'
-import WithdrawModule from '@/components/PageCrvUsdStaking/DepositWithdraw/WithdrawModule'
-import DeployButton from '@/components/PageCrvUsdStaking/DepositWithdraw/DeployButton'
-import TransactionTracking from '@/components/PageCrvUsdStaking/TransactionTracking'
+import SubNav from '@loan/components/PageCrvUsdStaking/components/SubNav'
+import TransactionDetails from '@loan/components/PageCrvUsdStaking/TransactionDetails'
+import DepositModule from '@loan/components/PageCrvUsdStaking/DepositWithdraw/DepositModule'
+import WithdrawModule from '@loan/components/PageCrvUsdStaking/DepositWithdraw/WithdrawModule'
+import DeployButton from '@loan/components/PageCrvUsdStaking/DepositWithdraw/DeployButton'
+import TransactionTracking from '@loan/components/PageCrvUsdStaking/TransactionTracking'
 
 type DepositWithdrawProps = {
   className?: string

@@ -2,21 +2,21 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useState, useEffect } from 'react'
 
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import networks from '@dao/networks'
+import useStore from '@dao/store/useStore'
 
-import IconButton from '@/ui/IconButton'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import ErrorMessage from '@/components/ErrorMessage'
-import InternalLinkButton from '@/components/InternalLinkButton'
+import IconButton from '@ui/IconButton'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import ErrorMessage from '@dao/components/ErrorMessage'
+import InternalLinkButton from '@dao/components/InternalLinkButton'
 
-import LineChartComponent from '@/components/Charts/LineChartComponent'
+import LineChartComponent from '@dao/components/Charts/LineChartComponent'
 import TitleComp from './TitleComp'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
 import GaugeDetailsSm from './GaugeDetailsSm'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@/types/dao.types'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@dao/types/dao.types'
 
 type Props = {
   gaugeData: GaugeFormattedData

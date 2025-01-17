@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 type Props = {
   loaded: boolean

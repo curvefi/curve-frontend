@@ -1,13 +1,17 @@
-import type { LpTradesData, LpTradeToken } from '@/ui/Chart/types'
+import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
 import styled from 'styled-components'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
-import Box from '@/ui/Box'
-import TokenIcon from '@/components/TokenIcon'
-import { Chip } from '@/ui/Typography'
-import Tooltip from '@/ui/Tooltip'
-import useStore from '@/store/useStore'
-import { ChainId } from '@/types/main.types'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import {
+  convertFullTime,
+  convertTime,
+  convertTimeAgo,
+} from '@main/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import Box from '@ui/Box'
+import TokenIcon from '@main/components/TokenIcon'
+import { Chip } from '@ui/Typography'
+import Tooltip from '@ui/Tooltip'
+import useStore from '@main/store/useStore'
+import { ChainId } from '@main/types/main.types'
 
 const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tradesTokens: LpTradeToken[] }> = ({
   lpTradesData,

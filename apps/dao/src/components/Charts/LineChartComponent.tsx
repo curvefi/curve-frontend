@@ -1,9 +1,9 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-import { formatDateFromTimestamp } from '@/ui/utils/utilsFormat'
+import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
 
 import LineChartCustomTooltip from './LineChartCustomTooltip'
-import { GaugeWeightHistoryData } from '@/types/dao.types'
+import { GaugeWeightHistoryData } from '@dao/types/dao.types'
 
 type Props = {
   data: GaugeWeightHistoryData[]

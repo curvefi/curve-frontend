@@ -1,10 +1,10 @@
-import { SubNavItem } from '@/components/SubNav/types'
+import { SubNavItem } from '@dao/components/SubNav/types'
 
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 
 import CrvStats from './CrvStats'
 import VeCrvFees from './VeCrvFeesTable'
@@ -12,7 +12,7 @@ import DailyLocks from './DailyLocksChart'
 import TopHolders from './TopHoldersChart'
 import HoldersTable from './HoldersTable'
 import SubNav from '../SubNav'
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 

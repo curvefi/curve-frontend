@@ -1,18 +1,18 @@
-import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
+import type { LlammaLiquididationRange, LiquidationRanges } from '@ui/Chart/types'
 import { LlammaLiquidityCoins, ChartOhlcWrapperProps } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
+import useStore from '@loan/store/useStore'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 
-import Button from '@/ui/Button'
-import ChartWrapper from '@/ui/Chart'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
+import Button from '@ui/Button'
+import ChartWrapper from '@ui/Chart'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import PoolActivity from '@loan/components/ChartOhlcWrapper/PoolActivity'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, llammaId }) => {

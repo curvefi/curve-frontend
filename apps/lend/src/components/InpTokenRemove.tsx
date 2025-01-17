@@ -1,16 +1,16 @@
-import type { BoxProps } from '@/ui/Box/types'
+import type { BoxProps } from '@ui/Box/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import { StyledInpChip } from '@/components/PageLoanManage/styles'
-import { FieldsTitle } from '@/components/SharedFormStyles/FieldsWrapper'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import InpChipUsdRate from '@/components/InpChipUsdRate'
+import { StyledInpChip } from '@lend/components/PageLoanManage/styles'
+import { FieldsTitle } from '@lend/components/SharedFormStyles/FieldsWrapper'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import InpChipUsdRate from '@lend/components/InpChipUsdRate'
 
-import Box from '@/ui/Box'
+import Box from '@ui/Box'
 
 const InpTokenRemove = ({
   id,

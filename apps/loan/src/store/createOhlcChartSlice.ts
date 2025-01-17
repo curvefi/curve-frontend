@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@loan/store/useStore'
 import type {
   TimeOptions,
   FetchingStatus,
@@ -17,9 +17,9 @@ import type { UTCTimestamp } from 'lightweight-charts'
 
 import produce from 'immer'
 
-import networks from '@/networks'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
-import { ChainId } from '@/types/loan.types'
+import networks from '@loan/networks'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import { ChainId } from '@loan/types/loan.types'
 
 type SliceState = {
   chartOhlcData: LpPriceOhlcDataFormatted[]

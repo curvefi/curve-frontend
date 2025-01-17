@@ -1,7 +1,7 @@
-import { isLoading } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { isLoading } from '@ui/utils'
+import useStore from '@main/store/useStore'
 
-import ConnectWalletPrompt from '@/ui/ConnectWalletPrompt'
+import ConnectWalletPrompt from '@ui/ConnectWalletPrompt'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type ConnectWalletProps = {

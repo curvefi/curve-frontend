@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@main/store/useStore'
 import type {
   FormEstGas,
   FormStatus,
@@ -7,19 +7,19 @@ import type {
   RoutesAndOutput,
   RoutesAndOutputModal,
   SearchedParams,
-} from '@/components/PageRouterSwap/types'
+} from '@main/components/PageRouterSwap/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import orderBy from 'lodash/orderBy'
 
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/components/PageRouterSwap/utils'
-import { NETWORK_TOKEN } from '@/constants'
-import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@/utils/utilsSwap'
-import { getChainSignerActiveKey, sleep } from '@/utils'
-import curvejsApi from '@/lib/curvejs'
-import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@/types/main.types'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@main/components/PageRouterSwap/utils'
+import { NETWORK_TOKEN } from '@main/constants'
+import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@main/utils/utilsSwap'
+import { getChainSignerActiveKey, sleep } from '@main/utils'
+import curvejsApi from '@main/lib/curvejs'
+import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@main/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

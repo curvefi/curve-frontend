@@ -1,22 +1,22 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@/ui/utils'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@loan/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@/utils/storage'
-import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
-import { getWalletChainId } from '@/store/createWalletSlice'
-import { initCurveJs, initLendApi } from '@/utils/utilsCurvejs'
-import networks, { networksIdMapper } from '@/networks'
-import useStore from '@/store/useStore'
+import { getStorageValue, setStorageValue } from '@loan/utils/storage'
+import { getNetworkFromUrl, parseParams } from '@loan/utils/utilsRouter'
+import { getWalletChainId } from '@loan/store/createWalletSlice'
+import { initCurveJs, initLendApi } from '@loan/utils/utilsCurvejs'
+import networks, { networksIdMapper } from '@loan/networks'
+import useStore from '@loan/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@/types/loan.types'
+import { ChainId, PageProps, Wallet } from '@loan/types/loan.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -261,7 +261,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
         ;(async () => {
-          let data = await import(`@/locales/${rLocale}/messages`)
+          let data = await import(`@loan/locales/${rLocale}/messages`)
           dynamicActivate(rLocale, data)
         })()
         setLocale(rLocale)

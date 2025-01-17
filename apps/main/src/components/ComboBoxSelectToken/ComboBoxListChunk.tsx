@@ -1,12 +1,12 @@
-import type { ComboBoxSelectTokenProps } from '@/components/ComboBoxSelectToken/types'
+import type { ComboBoxSelectTokenProps } from '@main/components/ComboBoxSelectToken/types'
 
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
-import SelectTokenListItem from '@/components/ComboBoxSelectToken/ComboBoxListItem'
-import { Token } from '@/types/main.types'
+import SelectTokenListItem from '@main/components/ComboBoxSelectToken/ComboBoxListItem'
+import { Token } from '@main/types/main.types'
 
 const SelectTokenListChunk = ({
   testId,

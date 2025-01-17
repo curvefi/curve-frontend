@@ -1,4 +1,4 @@
-import { FormLpTokenExpected, FormStatus, FormValues } from '@/components/PagePool/Deposit/types'
+import { FormLpTokenExpected, FormStatus, FormValues } from '@main/components/PagePool/Deposit/types'
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   amounts: [],

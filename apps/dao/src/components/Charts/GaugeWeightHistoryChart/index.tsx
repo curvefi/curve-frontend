@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import LineChartComponent from '@/components/Charts/LineChartComponent'
-import ErrorMessage from '@/components/ErrorMessage'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import LineChartComponent from '@dao/components/Charts/LineChartComponent'
+import ErrorMessage from '@dao/components/ErrorMessage'
 
 interface GaugeWeightHistoryChartProps {
   gaugeAddress: string

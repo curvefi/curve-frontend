@@ -1,23 +1,23 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE } from '@/constants'
-import useStore from '@/store/useStore'
-import { curveProps } from '@/lib/utils'
-import { useNetworkFromUrl } from '@/utils/utilsRouter'
-import { shortenTokenAddress } from '@/utils'
+import { CONNECT_STAGE } from '@main/constants'
+import useStore from '@main/store/useStore'
+import { curveProps } from '@main/lib/utils'
+import { useNetworkFromUrl } from '@main/utils/utilsRouter'
+import { shortenTokenAddress } from '@main/utils'
 import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
   THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
-} from '@/components/PageDeployGauge/constants'
-import Button from '@/ui/Button'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import AlertBox from '@/ui/AlertBox'
-import InfoLinkBar from '@/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { CurveApi, ChainId } from '@/types/main.types'
+} from '@main/components/PageDeployGauge/constants'
+import Button from '@ui/Button'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import AlertBox from '@ui/AlertBox'
+import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 interface Props {
   disabled: boolean

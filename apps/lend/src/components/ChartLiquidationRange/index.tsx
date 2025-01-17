@@ -14,11 +14,11 @@ import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@lend/components/ChartTooltip'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { HeathColorKey } from '@/types/lend.types'
+import { HeathColorKey } from '@lend/types/lend.types'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]

@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import { shortenTokenAddress, convertToLocaleTimestamp } from '@/ui/utils'
+import { shortenTokenAddress, convertToLocaleTimestamp } from '@ui/utils'
 
-import Box from '@/ui/Box'
-import { MetricsTitle } from '@/components/MetricsComp'
-import { InternalLink } from '@/ui/Link'
-import { ProposalData } from '@/types/dao.types'
+import Box from '@ui/Box'
+import { MetricsTitle } from '@dao/components/MetricsComp'
+import { InternalLink } from '@ui/Link'
+import { ProposalData } from '@dao/types/dao.types'
 
 type ProposalInformationProps = {
   proposal: ProposalData
