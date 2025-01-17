@@ -512,7 +512,7 @@ const QuickSwap = ({
         <DetailInfoSlippageTolerance
           maxSlippage={globalMaxSlippage || routesAndOutput?.maxSlippage}
           testId="slippage-tolerance"
-          stateKey="router"
+          stateKey="global"
         />
       </div>
 
