@@ -12,6 +12,7 @@ import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
+import AlertTitle from '@mui/material/AlertTitle'
 
 enum ChainType {
   test = 'test',
@@ -86,7 +87,7 @@ export function ChainList<TChainId extends number>({
             ))
         ) : (
           <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>
-            {t`No networks found`}
+            <AlertTitle>{t`No networks found`}</AlertTitle>
           </Alert>
         )}
       </Box>

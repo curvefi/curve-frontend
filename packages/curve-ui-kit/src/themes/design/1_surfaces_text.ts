@@ -1,4 +1,4 @@
-import { Grays, Blues, Violet } from './0_primitives'
+import { Grays, Blues, Violet, Reds, Greens } from './0_primitives'
 
 export const SurfacesAndText = {
   plain: {
@@ -9,6 +9,12 @@ export const SurfacesAndText = {
         tertiary: Grays[500],
         Disabled: Grays[400],
         highlight: Blues[500],
+        Feedback: {
+          Success: Greens[500],
+          Warning: Reds[400],
+          Error: Reds[500],
+          Inverted: Grays[50],
+        },
       },
       Layer: {
         '1': {
@@ -28,6 +34,12 @@ export const SurfacesAndText = {
           Selected: Grays[100],
           Hover: Grays[150],
         },
+        Feedback: {
+          Info: Blues[500],
+          Success: Greens[600],
+          Warning: Reds[300],
+          Error: Reds[500],
+        },
       },
       Tables: {
         Header: { Fill: Grays[200] },
@@ -40,6 +52,12 @@ export const SurfacesAndText = {
         tertiary: Grays[400],
         Disabled: Grays[500],
         highlight: Blues[500],
+        Feedback: {
+          Success: Greens[600],
+          Warning: Reds[300],
+          Error: Reds[500],
+          Inverted: Grays[950],
+        },
       },
       Layer: {
         '1': {
@@ -59,6 +77,12 @@ export const SurfacesAndText = {
           Selected: Grays[750],
           Hover: Grays[800],
         },
+        Feedback: {
+          Info: Blues[50],
+          Success: Greens[300],
+          Warning: Reds[400],
+          Error: Reds[500],
+        },
       },
       Tables: {
         Header: { Fill: Grays[800] },
@@ -71,6 +95,12 @@ export const SurfacesAndText = {
         tertiary: Grays[500],
         Disabled: Grays[400],
         highlight: Violet[600],
+        Feedback: {
+          Success: Greens[600],
+          Warning: Reds[400],
+          Error: Reds[500],
+          Inverted: Grays[50],
+        },
       },
       Tables: {
         Header: { Fill: Violet[50] },
@@ -93,6 +123,12 @@ export const SurfacesAndText = {
           Selected: Violet[50],
           Hover: Violet[200],
         },
+        Feedback: {
+          Info: Violet[700],
+          Success: Greens[600],
+          Warning: Reds[300],
+          Error: Reds[500],
+        },
       },
     },
   },
@@ -104,6 +140,12 @@ export const SurfacesAndText = {
         tertiary: Grays[400],
         Disabled: Grays[500],
         highlight: Blues[500],
+        Feedback: {
+          Success: Greens[300],
+          Warning: Reds[300],
+          Error: Reds[500],
+          Inverted: Grays[950],
+        },
       },
       Layer: {
         '1': {
@@ -123,6 +165,12 @@ export const SurfacesAndText = {
           Selected: Grays[850],
           Hover: Grays[900],
         },
+        Feedback: {
+          Info: Blues[800],
+          Success: Greens[300],
+          Warning: Reds[400],
+          Error: Reds[500],
+        },
       },
       Tables: {
         Header: { Fill: Grays[800] },
@@ -135,6 +183,12 @@ export const SurfacesAndText = {
         tertiary: Grays[600],
         Disabled: Grays[400],
         highlight: Blues[500],
+        Feedback: {
+          Success: Greens[500],
+          Warning: Reds[400],
+          Error: Reds[500],
+          Inverted: Grays[50],
+        },
       },
       Layer: {
         '1': {
@@ -154,6 +208,12 @@ export const SurfacesAndText = {
           Selected: Blues[100],
           Hover: Blues[50],
         },
+        Feedback: {
+          Info: Blues[500],
+          Success: Greens[600],
+          Warning: Reds[300],
+          Error: Reds[500],
+        },
       },
       Tables: {
         Header: { Fill: Grays[200] },
@@ -166,6 +226,12 @@ export const SurfacesAndText = {
         tertiary: Grays[400],
         Disabled: Grays[500],
         highlight: Violet[400],
+        Feedback: {
+          Success: Greens[500],
+          Warning: Reds[300],
+          Error: Reds[500],
+          Inverted: Grays[950],
+        },
       },
       Tables: {
         Header: { Fill: Violet[800] },
@@ -187,6 +253,12 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Violet[800],
           Hover: Violet[900],
+        },
+        Feedback: {
+          Info: Grays[850],
+          Success: Greens[300],
+          Warning: Reds[400],
+          Error: Reds[500],
         },
       },
     },
