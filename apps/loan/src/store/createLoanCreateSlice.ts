@@ -15,7 +15,7 @@ import {
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import { loadingLRPrices } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
-import { ChainId, Curve, Llamma, LiqRange } from '@/types/loan.types'
+import { ChainId, Curve, Llamma } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

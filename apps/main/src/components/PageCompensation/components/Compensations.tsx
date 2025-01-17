@@ -3,7 +3,7 @@ import type { Balances, EtherContract, VestedTotals } from '@/components/PageCom
 import React from 'react'
 
 import Compensation from '@/components/PageCompensation/components/Compensation'
-import { Balances, CurveApi, ChainId, Provider } from '@/types/main.types'
+import { CurveApi, ChainId, Provider } from '@/types/main.types'
 
 const Compensations = ({
   poolId,

@@ -15,7 +15,6 @@ import TableSettings from '@/components/PageMarketList/components/TableSettings/
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import { useOneWayMarketMapping } from '@/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Array } from '@/types/lend.types'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps

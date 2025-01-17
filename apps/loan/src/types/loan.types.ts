@@ -12,10 +12,6 @@ import type { BaseConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/apiCrvusd'
 import { TITLE } from '@/constants'
 
-export interface Array<T> {
-  findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number
-}
-
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = 1
 export type Curve = typeof stablecoinApi & { chainId: ChainId }
@@ -105,13 +101,13 @@ export type LoanParameter = {
   liquidation_discount: string
   loan_discount: string
 }
-export type BandBalance = IDict<{ stablecoin: string; collateral: string }>
+export type BandBalance = Record<string, { stablecoin: string; collateral: string }>
 export type LoanDetails = {
   activeBand: number | null
   parameters: LoanParameter
   balances: [string, string]
   basePrice: string | undefined
-  bandsBalances: BandBalance
+  bandsBalances: BandsBalancesData[]
   totalDebt: string
   totalCollateral: string
   totalStablecoin: string
@@ -172,7 +168,7 @@ export interface CollateralAlert extends TooltipProps {
 export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<
   TITLE,
-  { title: string | React.ReactNode; tooltip?: string | React.ReactNode; tooltipProps?: TooltipProps }
+  { title: string | ReactNode; tooltip?: string | ReactNode; tooltipProps?: TooltipProps }
 >
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

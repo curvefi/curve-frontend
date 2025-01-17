@@ -15,6 +15,7 @@ const DEFAULT_BAND_CHART_DATA = {
   isOraclePriceBand: false,
   isNGrouped: false,
   n: '',
+  pUpDownMedian: '',
   p_up: '0',
   p_down: '0',
   stablecoin: '0',

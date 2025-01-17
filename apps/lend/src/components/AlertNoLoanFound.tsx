@@ -10,7 +10,6 @@ import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
 import Button from '@/ui/Button'
-import { AlertType } from '@/types/lend.types'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
   const params = useParams()

@@ -16,7 +16,7 @@ import { initCurveJs, initLendApi } from '@/utils/utilsCurvejs'
 import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Array, ChainId, PageProps, Wallet } from '@/types/loan.types'
+import { ChainId, PageProps, Wallet } from '@/types/loan.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()

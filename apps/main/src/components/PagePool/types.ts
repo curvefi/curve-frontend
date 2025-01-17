@@ -8,7 +8,6 @@ import {
   PoolData,
   PoolDataCache,
   PoolAlert,
-  EstimatedGas,
 } from '@/types/main.types'
 
 export type EstimatedGas = {

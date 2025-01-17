@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import SliderSingleThumb from '@/ui/SliderSingleThumb'
-import { Array, LiqRange } from '@/types/loan.types'
 
 const DetailInfoLiqRangeEdit = ({
   liqRanges,

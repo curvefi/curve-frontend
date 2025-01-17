@@ -5,12 +5,12 @@ import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@/ui/utils'
 import networks from '@/networks'
 import {
+  BandBalance,
   ChainId,
   Curve,
+  HeathColorKey,
   LendApi,
   Llamma,
-  HeathColorKey,
-  BandBalance,
   UserLoanDetails,
   Wallet,
 } from '@/types/loan.types'

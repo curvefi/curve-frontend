@@ -31,7 +31,7 @@ const Page: NextPage = () => {
   const getProvider = useStore((state) => state.wallet.getProvider)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
-  const [provider, setProvider] = useState()
+  const [provider, setProvider] = useState<Provider>()
   const [contracts, setContracts] = useState<EtherContract[]>([])
 
   const fetchData = useCallback(async (provider: Provider) => {

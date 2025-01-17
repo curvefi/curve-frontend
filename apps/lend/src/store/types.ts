@@ -1,6 +1,4 @@
 /* createAppLayoutSlice */
-import { LiqRange } from '@/types/lend.types'
-
 export type LayoutHeight = {
   globalAlert: number
   footer: number

@@ -1,5 +1,4 @@
 import { BrowserProvider } from 'ethers'
-import { Provider, LiqRange } from '@/types/loan.types'
 
 /* createAppSlice */
 

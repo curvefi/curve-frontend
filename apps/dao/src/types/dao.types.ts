@@ -35,7 +35,7 @@ export type RouterParams = {
   rProposalId: string
   rUserAddress: string
   rGaugeAddress: string
-  rFormType: RFormType
+  rFormType: 'adjust_date' | 'adjust_crv'
   redirectPathname: string
   restFullPathname: string
 }
@@ -49,7 +49,7 @@ export type RouterProps = {
   location: Location
   navigate: NavigateFunction
 }
-export type Provider = ethers.Provider.BrowserProvider
+export type Provider = ethers.BrowserProvider
 export type Wallet = WalletState
 export type EstimatedGas = number | number[] | null
 export type GasInfo = {
@@ -98,7 +98,7 @@ export type PricesProposalResponseData = {
   votes_for: string
 }
 
-export interface ProposalData extends ProposalResponseData {
+export interface ProposalData extends Omit<ProposalResponseData, 'votesFor' | 'votesAgainst'> {
   status: 'Active' | 'Passed' | 'Denied'
   votesFor: number
   votesAgainst: number
@@ -264,7 +264,7 @@ export type PricesGaugeOverviewResponse = {
   gauges: PricesGaugeOverviewData[]
 }
 
-export interface GaugeFormattedData extends PricesGaugeOverviewData {
+export interface GaugeFormattedData extends Omit<PricesGaugeOverviewData, 'gauge_weight'> {
   title: string
   platform: string
   gauge_weight: number
@@ -443,14 +443,6 @@ export interface UserProposalVotesRes {
   data: UserProposalVoteResData[]
 }
 
-export type UserGaugeVoteData = {
-  gauge: string
-  gauge_name: string
-  weight: number
-  block_number: number
-  timestamp: string
-  transaction: string
-}
 export type UserGaugeVote = {
   gauge: string
   gauge_name: string
@@ -462,23 +454,7 @@ export type UserGaugeVote = {
 export type UserGaugeVotesRes = {
   votes: UserGaugeVote[]
 }
-export type UserGaugeVoteWeightResData = {
-  userPower: string
-  userVeCrv: string
-  userFutureVeCrv: string
-  expired: boolean
-  gaugeData: {
-    gaugeAddress: string
-    isKilled: boolean
-    lpTokenAddress: string
-    network: string
-    poolAddress: string
-    poolName: string
-    poolUrl: string
-    relativeWeight: string
-    totalVeCrv: string
-  }[]
-}
+
 export type UserGaugeVoteWeight = {
   title: string
   userPower: number
@@ -500,11 +476,7 @@ export type UserGaugeVoteWeight = {
   }
   canVote: boolean
 }
-export type UserGaugeVoteWeightRes = {
-  powerUsed: string
-  veCrvUsed: string
-  gauges: UserGaugeVoteWeightResData[]
-}
+
 export type UserGaugeVoteWeightsMapper = {
   [userAddress: string]: {
     fetchingState: FetchingState
@@ -563,32 +535,30 @@ export enum ClaimButtonsKey {
   crvUSD = 'crvUSD',
 }
 
-export type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
-const ALERT_FORM_ERROR_KEYS = {
-  'error-user-rejected-action': 'error-user-rejected-action',
-  'error-est-gas-approval': 'error-est-gas-approval',
-  'error-invalid-provider': 'error-invalid-provider',
-  'error-pool-list': 'error-pool-list',
-  'error-step-approve': 'error-step-approve',
-  'error-step-deposit': 'error-step-deposit',
-  'error-step-swap': 'error-step-swap',
-  'error-step-stake': 'error-step-stake',
-  'error-step-withdraw': 'error-step-withdraw',
-  'error-step-unstake': 'error-step-unstake',
-  'error-swap-exchange-and-output': 'error-swap-exchange-and-output',
-  'error-swap-not-available': 'error-swap-not-available',
-  'error-deposit-bonus': 'error-deposit-bonus',
-  'error-deposit-balance': 'error-deposit-balance',
-  'error-deposit-withdraw-expected': 'error-deposit-withdraw-expected',
-  'error-deposit-withdraw-expected-bonus': 'error-deposit-withdraw-expected-bonus',
-  'error-step-claim': 'error-step-claim',
-  'error-get-claimable': 'error-get-claimable',
-  'error-get-dashboard-data': 'error-get-dashboard-data',
-  'error-get-gas': 'error-get-gas',
-  'error-get-locked-crv-info': 'error-get-locked-crv-info',
-  'error-step-claim-fees': 'error-step-claim-fees',
-  'error-step-create-locked-crv': 'error-step-create-locked-crv',
-  'error-step-locked-time': 'error-step-locked-time',
-  'error-step-locked-crv': 'error-step-locked-crv',
-  'error-withdraw-locked-crv': 'error-withdraw-locked-crv',
-} as const
+export type AlertFormErrorKey =
+  | 'error-user-rejected-action'
+  | 'error-est-gas-approval'
+  | 'error-invalid-provider'
+  | 'error-pool-list'
+  | 'error-step-approve'
+  | 'error-step-deposit'
+  | 'error-step-swap'
+  | 'error-step-stake'
+  | 'error-step-withdraw'
+  | 'error-step-unstake'
+  | 'error-swap-exchange-and-output'
+  | 'error-swap-not-available'
+  | 'error-deposit-bonus'
+  | 'error-deposit-balance'
+  | 'error-deposit-withdraw-expected'
+  | 'error-deposit-withdraw-expected-bonus'
+  | 'error-step-claim'
+  | 'error-get-claimable'
+  | 'error-get-dashboard-data'
+  | 'error-get-gas'
+  | 'error-get-locked-crv-info'
+  | 'error-step-claim-fees'
+  | 'error-step-create-locked-crv'
+  | 'error-step-locked-time'
+  | 'error-step-locked-crv'
+  | 'error-withdraw-locked-crv'

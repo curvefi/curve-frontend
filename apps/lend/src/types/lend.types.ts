@@ -8,16 +8,13 @@ import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { BaseConfig } from '@/ui/utils'
 import { TITLE } from '@/constants'
-
-export interface Array<T> {
-  findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number
-}
+import { ethers } from 'ethers'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
 export type Api = typeof lendingApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
-export type Provider = ethers.Provider.BrowserProvider
+export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
 export type EstimatedGas = number | number[] | null
 
@@ -77,7 +74,7 @@ export type ExpectedBorrowed = {
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
 export type RouterParams = {
-  rLocale: Locale | null
+  rLocale: { value: 'en' } | null
   rLocalePathname: string
   rChainId: ChainId
   rNetwork: NetworkEnum
@@ -192,7 +189,7 @@ export type MarketRates = {
   } | null
   error: string
 }
-export type MarketsRatesMapper = { [owmId: string]: MartetRates }
+export type MarketsRatesMapper = { [owmId: string]: MarketRates }
 export type MarketTotalLiquidity = {
   totalLiquidity: string
   error: string
@@ -229,7 +226,7 @@ export type MarketClaimable = {
   } | null
   error: string
 }
-export type MarketsClaimableMapper = { [owmId: string]: MarketClaimable }
+
 export type UserLoss = {
   deposited_collateral: string
   current_collateral_estimation: string
@@ -246,7 +243,7 @@ export type UserLoanDetails = {
     healthFull: string
     healthNotFull: string
     bands: number[]
-    bandsBalances: BandsBalancesData[]
+    bandsBalances: ParsedBandsBalances[]
     bandsPct: string
     isCloseToLiquidation: boolean
     loss: UserLoss

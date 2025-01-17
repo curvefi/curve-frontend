@@ -407,7 +407,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const { dismiss: dismissLoading } = notifyNotification(loadingNotificationMessage, 'pending')
         dismissNotificationHandler = dismissLoading
 
-        await provider.waitForTransaction(res)
+        await provider!.waitForTransaction(res)
 
         set(
           produce(get(), (state) => {

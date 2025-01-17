@@ -13,7 +13,7 @@ import PoolTotalStaked from '@/components/PagePool/PoolDetails/PoolStats/PoolTot
 import Stats from '@/ui/Stats'
 import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
 import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
-import { PoolParameters } from '@/types/main.types'
+import type { PoolParameters } from '@/types/main.types'
 
 const PoolParameters: React.FC<
   {

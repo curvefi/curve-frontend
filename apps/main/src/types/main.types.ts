@@ -9,7 +9,7 @@ import type { BaseConfig } from '@/ui/utils'
 import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
 import React from 'react'
-import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
+import { IGaugePool } from '@curvefi/api/lib/pools/subClasses/gaugePool'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>
@@ -92,7 +92,7 @@ export type PageProps = {
   routerParams: RouterParams
 }
 export type Pool = PoolTemplate
-export type Provider = ethers.Provider.BrowserProvider
+export type Provider = ethers.BrowserProvider
 export type ClaimableReward = {
   token: string
   symbol: string

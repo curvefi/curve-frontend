@@ -7,12 +7,12 @@ import cloneDeep from 'lodash/cloneDeep'
 import { log } from '@ui-kit/lib/logging'
 import networks from '@/networks'
 import {
+  CollateralData,
   Curve,
   Llamma,
-  CollateralData,
+  LoanDetails,
   LoanExists,
   LoanPriceInfo,
-  LoanDetails,
   UserLoanDetails,
   UserWalletBalances,
 } from '@/types/loan.types'

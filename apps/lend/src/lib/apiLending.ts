@@ -12,7 +12,6 @@ import networks from '@/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/shared/config'
 import {
-  Array,
   ChainId,
   Api,
   Provider,
@@ -24,7 +23,6 @@ import {
   ExpectedCollateral,
   ExpectedBorrowed,
   HeathColorKey,
-  LiqRange,
   MarketStatParameters,
   BandsBalances,
   BandsBalancesArr,

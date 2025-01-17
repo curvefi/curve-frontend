@@ -5,7 +5,7 @@ import type { Provider } from '@/store/types'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import cloneDeep from 'lodash/cloneDeep'
 import { BrowserProvider } from 'ethers'
-import { Provider, Wallet } from '@/types/loan.types'
+import { Wallet } from '@/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
