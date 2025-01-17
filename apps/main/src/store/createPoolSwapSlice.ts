@@ -97,7 +97,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         if (!provider) return false
 
         try {
-          const json = await import('@/components/PagePool/abis/stored_rates.json').then((module) => module.default)
+          const json = await import('@main/components/PagePool/abis/stored_rates.json').then((module) => module.default)
           const iface = new Interface(json)
           const contract = new Contract(pool.address, iface.format(), provider)
           const storedRates = await contract.stored_rates()

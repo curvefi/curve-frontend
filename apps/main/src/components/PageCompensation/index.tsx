@@ -78,7 +78,9 @@ const FormCompensation = ({
       try {
         const signer = await provider.getSigner()
         const vestAddresses = await Promise.all(contracts.map((c) => c.contract.vest()))
-        const abi = await import('@/components/PageCompensation/abis/vest_abi.json').then((module) => module.default)
+        const abi = await import('@main/components/PageCompensation/abis/vest_abi.json').then(
+          (module) => module.default,
+        )
         // @ts-ignore
         const iface = new Interface(abi)
         const vestedTotals = await Promise.all(

@@ -36,7 +36,7 @@ const Page: NextPage = () => {
 
   const fetchData = useCallback(async (provider: Provider) => {
     const signer = await provider.getSigner()
-    const contracts = await import('@/components/PageCompensation/abis').then((modules) =>
+    const contracts = await import('@main/components/PageCompensation/abis').then((modules) =>
       Object.entries(modules).map(([, { contractAddress, abi, ...rest }]) => {
         const iface = new Interface(abi)
         const contract = new Contract(contractAddress, iface.format(), signer)

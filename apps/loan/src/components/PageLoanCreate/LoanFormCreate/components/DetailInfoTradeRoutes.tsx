@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import { RCCircle } from '@loan/images'
+import { RCCircle } from '@ui/images'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 

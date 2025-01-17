@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { ReactComponent as ExternalIcon } from '@main/images/external.svg'
+import { ReactComponent as ExternalIcon } from '@ui/images/external.svg'
 import ExternalLink from '@ui/Link/ExternalLink'
 
 type Props = {

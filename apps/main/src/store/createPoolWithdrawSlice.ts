@@ -8,7 +8,7 @@ import type { LoadMaxAmount } from '@main/components/PagePool/Deposit/types'
 import cloneDeep from 'lodash/cloneDeep'
 
 import curvejsApi from '@main/lib/curvejs'
-import { DEFAULT_SLIPPAGE } from 'components/PagePool'
+import { DEFAULT_SLIPPAGE } from '@main/components/PagePool'
 import { parseAmountsForAPI } from '@main/components/PagePool/utils'
 import { isBonus, isHighSlippage, shortenTokenAddress } from '@main/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@main/components/PagePool/Withdraw/utils'

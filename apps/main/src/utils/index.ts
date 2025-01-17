@@ -2,7 +2,7 @@ import type { AlertFormErrorKey } from '@main/components/AlertFormError'
 
 import numbro from 'numbro'
 
-export { getStorageValue, setStorageValue } from '@/utils/storage'
+export { getStorageValue, setStorageValue } from '@main/utils/storage'
 import { shortenAccount } from '@ui/utils'
 import { ChainId } from '@main/types/main.types'
 

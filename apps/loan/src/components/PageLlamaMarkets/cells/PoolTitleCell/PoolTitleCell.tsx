@@ -1,6 +1,6 @@
 import { LendingVault } from '@loan/entities/vaults'
 import Stack from '@mui/material/Stack'
-import TokenIcons from 'main/src/components/TokenIcons'
+import TokenIcons from '@loan/components/TokenIcons'
 import React, { useMemo } from 'react'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'

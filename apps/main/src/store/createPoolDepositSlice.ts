@@ -13,7 +13,7 @@ import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@main/components/PagePool/Deposit/utils'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from 'components/PagePool'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@main/components/PagePool'
 import { NETWORK_TOKEN } from '@main/constants'
 import { getAmountsError, parseAmountsForAPI } from '@main/components/PagePool/utils'
 import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'

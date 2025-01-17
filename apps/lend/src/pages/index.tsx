@@ -5,13 +5,13 @@ import { Navigate, Route, Routes } from 'react-router'
 
 import { ROUTE } from '@lend/constants'
 
-const PageLlammasList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
-const PageLoanCreate = dynamic(() => import('@/components/PageLoanCreate/Page'), { ssr: false })
-const PageLoanManage = dynamic(() => import('@/components/PageLoanManage/Page'), { ssr: false })
-const PageVault = dynamic(() => import('@/components/PageVault/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
-const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
-const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
+const PageLlammasList = dynamic(() => import('@lend/components/PageMarketList/Page'), { ssr: false })
+const PageLoanCreate = dynamic(() => import('@lend/components/PageLoanCreate/Page'), { ssr: false })
+const PageLoanManage = dynamic(() => import('@lend/components/PageLoanManage/Page'), { ssr: false })
+const PageVault = dynamic(() => import('@lend/components/PageVault/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@lend/components/PageDisclaimer/Page'), { ssr: false })
+const Page404 = dynamic(() => import('@lend/components/Page404/Page'), { ssr: false })
+const PageIntegrations = dynamic(() => import('@lend/components/PageIntegrations/Page'), { ssr: false })
 
 const App: NextPage = () => {
   const SubRoutes = (

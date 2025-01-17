@@ -4,7 +4,7 @@ import type { Route } from '@main/components/PageRouterSwap/types'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { RCCircle } from '@main/images'
+import { RCCircle } from '@ui/images'
 import Box from '@ui/Box'
 import DetailInfoTradeRouteRoute from '@main/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
 import Loader from '@ui/Loader'
