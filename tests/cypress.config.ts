@@ -10,7 +10,7 @@ export default defineConfig({
   retries: { runMode: 2, openMode: 0 },
   scrollBehavior: 'center',
   e2e: {
-    baseUrl: 'http://localhost:3000/#',
+    baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*',
   },
 })

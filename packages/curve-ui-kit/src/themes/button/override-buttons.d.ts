@@ -1,4 +1,4 @@
-import { DesignSystem, DesignOptions } from './design'
+import { DesignSystem } from './design'
 
 declare module '@mui/material/Button' {
   type Buttons = Omit<DesignSystem['Button'], 'Focus_Outline'>
