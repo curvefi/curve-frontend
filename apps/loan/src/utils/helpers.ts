@@ -100,12 +100,6 @@ export const shortenAccount = (account: string, visibleLength = 4): string =>
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 
-declare global {
-  interface Window {
-    clipboardData: any
-  }
-}
-
 export function copyToClipboard(text: string) {
   if (window.clipboardData && window.clipboardData.setData) {
     // IE specific code path to prevent textarea being shown while dialog is visible.

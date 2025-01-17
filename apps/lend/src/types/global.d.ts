@@ -10,13 +10,6 @@ import type { BaseConfig } from '@/ui/utils'
 import { TITLE } from '@/constants'
 
 declare global {
-  interface Window {
-    clipboardData: any
-    ethereum: Eip1193Provider
-    exodus?: Eip1193Provider
-    enkrypt?: { providers: { ethereum: Eip1193Provider } }
-  }
-
   interface Array<T> {
     findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number
   }

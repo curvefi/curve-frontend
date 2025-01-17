@@ -9,13 +9,6 @@ import curvejsApi from '@/lib/curvejs'
 import type { BaseConfig } from '@/ui/utils'
 
 declare global {
-  interface Window {
-    clipboardData: any
-    ethereum: Eip1193Provider
-    exodus?: Eip1193Provider
-    enkrypt?: { providers: { ethereum: Eip1193Provider } }
-  }
-
   type PageWidthClassName = 'page-wide' | 'page-large' | 'page-medium' | 'page-small' | 'page-small-x' | 'page-small-xx'
   type CurveApi = typeof curveApi & { chainId: 1 }
   type ChainId = 1

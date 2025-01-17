@@ -13,13 +13,6 @@ import React from 'react'
 import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
 
 declare global {
-  interface Window {
-    clipboardData: any
-    ethereum: Eip1193Provider
-    exodus?: Eip1193Provider
-    enkrypt?: { providers: { ethereum: Eip1193Provider } }
-  }
-
   type Balances = IDict<string>
   type Balance = string | IDict<string>
 

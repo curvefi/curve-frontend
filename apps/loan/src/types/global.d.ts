@@ -6,7 +6,6 @@ import type { NavigateFunction, Location, Params } from 'react-router'
 import type { ReactNode } from 'react'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
-import type { Eip1193Provider } from '@web3-onboard/core'
 import type stablecoinApi from '@curvefi/stablecoin-api'
 import type lendingApi from '@curvefi/lending-api'
 import type { BaseConfig } from '@/ui/utils'
@@ -16,13 +15,6 @@ import curvejsApi from '@/lib/apiCrvusd'
 import { TITLE } from '@/constants'
 
 declare global {
-  interface Window {
-    clipboardData: any
-    ethereum: Eip1193Provider
-    exodus?: Eip1193Provider
-    enkrypt?: { providers: { ethereum: Eip1193Provider } }
-  }
-
   interface Array<T> {
     findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number
   }
