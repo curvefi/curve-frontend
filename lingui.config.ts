@@ -1,14 +1,14 @@
 const defaultCatalog = {
   path: 'src/locales/{locale}/messages',
   include: [
-    'src/**/components',
-    'src/**/entities',
-    'src/**/features',
-    'src/**/hooks',
-    'src/**/layout',
-    'src/**/pages',
-    'src/**/store',
-    'src/**/widgets',
+    'src/components',
+    'src/entities',
+    'src/features',
+    'src/hooks',
+    'src/layout',
+    'src/pages',
+    'src/store',
+    'src/widgets',
     '../../packages/curve-ui-kit',
   ],
 } as const
