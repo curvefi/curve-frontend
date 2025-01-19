@@ -1,5 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
-import { type TypographyOptions } from '@mui/material/styles/createTypography'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
@@ -8,10 +8,8 @@ import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { linearProgressClasses } from '@mui/material/LinearProgress'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
@@ -105,6 +103,23 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
+  MuiSelect: {
+    styleOverrides: {
+      root: {
+        border: 'none',
+        '& .MuiOutlinedInput-notchedOutline': {
+          border: 'none',
+          borderBottom: `1px solid ${design.Layer[3].Outline}`,
+        },
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          border: `2px solid ${design.Inputs.Base.Default.Border.Active}`,
+        },
+      },
+      select: {
+        ...typography.bodyMBold,
+      },
+    },
+  },
   MuiSlider: {
     styleOverrides: {
       thumb: {
