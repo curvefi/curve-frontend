@@ -26,13 +26,9 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
   const sevenDayAverageLineColor = Color.Secondary[500]
   const mainLineColor = Color.Primary[500]
 
-  // const maxValue = Math.max(...data.map((item) => item.gauge_relative_weight))
-
-  console.log(data)
-
   const labels = {
-    proj_apy: { text: t`Historical APR`, dash: 'none' },
-    proj_apy_7d_avg: { text: t`7-day Average APR`, dash: '2 2' },
+    proj_apy: { text: t`APR`, dash: 'none' },
+    proj_apy_7d_avg: { text: t`7-day MA APR`, dash: '2 2' },
     proj_apy_total_avg: { text: t`Average APR`, dash: '4 4' },
   } as const
 
@@ -61,11 +57,11 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         />
         <YAxis
           tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
-          tickFormatter={(value) => `${value}%`}
+          tickFormatter={(value) => `${value.toFixed(0)}%`}
           tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
           axisLine={false}
+          dataKey={'proj_apy'}
           width={yAxisWidth}
-          // domain={[0, Math.ceil(maxValue)]}
         />
         <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
         <Line
@@ -97,7 +93,8 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         <Legend
           margin={{ top: 16, bottom: 16 }}
           verticalAlign="bottom"
-          iconType="line"
+          align="left"
+          iconType="plainline"
           iconSize={20}
           height={32}
           formatter={(value: keyof typeof labels) => labels[value].text}

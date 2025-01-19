@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { Stack, ToggleButtonGroup } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
 import ToggleButton from '@mui/material/ToggleButton'
@@ -13,29 +15,40 @@ export type ChartOption = {
   activeTitle: string
 }
 
-type TimeOption = {
-  label: '1d' | '7d' | '30d'
-}
+export type TimeOption = '1d' | '1w' | '1m'
 
 type ChartHeaderProps = {
   chartOptions: ChartOption[]
-  timeOptions?: TimeOption[]
+  timeOptions: TimeOption[]
+  activeChartOption: ChartOption
+  setActiveChartOption: (newChartOption: ChartOption) => void
+  activeTimeOption: TimeOption
+  setActiveTimeOption: (newTimeOption: TimeOption) => void
 }
 
-const ChartHeader = ({ chartOptions, timeOptions }: ChartHeaderProps) => {
-  const [activeChartOption, setActiveChartOption] = useState(chartOptions[0])
-
+const ChartHeader = ({
+  chartOptions,
+  timeOptions,
+  activeChartOption,
+  setActiveChartOption,
+  activeTimeOption,
+  setActiveTimeOption,
+}: ChartHeaderProps) => {
   const handleChartOption = (event: React.MouseEvent<HTMLElement>, newChartOption: ChartOption) => {
     // ensure that one option is always selected by checking null
     if (newChartOption !== null) setActiveChartOption(newChartOption)
   }
 
+  const handleTimeOption = (event: SelectChangeEvent<TimeOption>) => {
+    if (event.target.value !== null) setActiveTimeOption(event.target.value as TimeOption)
+  }
+
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ padding: Spacing.md }}>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={{ padding: Spacing.md }}>
       <Typography variant="headingXsBold" color="textSecondary">
         {activeChartOption.activeTitle}
       </Typography>
-      <ToggleButtonGroup exclusive value={activeChartOption} onChange={handleChartOption}>
+      <ToggleButtonGroup sx={{ marginLeft: 'auto' }} exclusive value={activeChartOption} onChange={handleChartOption}>
         {chartOptions.map((option) => (
           <ToggleButton value={option} key={option.label} size="small">
             {option.label}
@@ -45,6 +58,13 @@ const ChartHeader = ({ chartOptions, timeOptions }: ChartHeaderProps) => {
           <Icon name="Maximize" size={20} />
         </IconButton>
       </ToggleButtonGroup>
+      <Select value={activeTimeOption} onChange={handleTimeOption} size="small" sx={{ width: '100px' }}>
+        {timeOptions.map((option) => (
+          <MenuItem value={option} key={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
     </Stack>
   )
 }

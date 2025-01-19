@@ -1,7 +1,6 @@
+import type { TimeOption } from '@ui-kit/shared/ui/ChartHeader'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-
-type TimeFrame = '1d' | '1h' | '1m'
 
 type ScrvUsdYieldFromApi = {
   timestamp: number
@@ -21,17 +20,22 @@ type GetScrvUsdYieldResponse = {
   detail?: string
 }
 
-export const _getScrvUsdYield = async (params: { timeFrame: TimeFrame }) => {
-  const timeFrameCalc = {
+export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
+  const timeOptionCalc = {
     '1d': 300 * 24 * 60 * 60 * 1000,
-    '1h': 300 * 60 * 60 * 1000,
-    '1m': 300 * 60 * 1000,
+    '1w': 300 * 24 * 60 * 60 * 7 * 1000,
+    '1m': 300 * 24 * 60 * 60 * 30 * 1000,
+  }
+  const aggNumbers = {
+    '1d': 1,
+    '1w': 7,
+    '1m': 30,
   }
 
-  const startTimestamp = Math.floor((Date.now() - timeFrameCalc[params.timeFrame]) / 1000)
+  const startTimestamp = Math.floor((Date.now() - timeOptionCalc[params.timeOption]) / 1000)
   const endTimestamp = Math.floor(Date.now() / 1000)
 
-  const url = `https://prices.curve.fi/v1/crvusd/savings/yield?agg_number=1&agg_units=day&start=${startTimestamp}&end=${endTimestamp}`
+  const url = `https://prices.curve.fi/v1/crvusd/savings/yield?agg_number=${aggNumbers[params.timeOption]}&agg_units=day&start=${startTimestamp}&end=${endTimestamp}`
   const response = await fetch(url)
   const { data, detail } = (await response.json()) as GetScrvUsdYieldResponse
 
@@ -48,10 +52,17 @@ export const _getScrvUsdYield = async (params: { timeFrame: TimeFrame }) => {
     // Calculate overall average across all data points
     const totalAverage = array.reduce((sum, curr) => sum + curr.proj_apy, 0) / array.length
 
-    // Calculate 7-day moving average (looking back 7 days)
-    const lookback = 7 * 24 * 12 // 7 days worth of 5-minute intervals
-    const startIdx = Math.max(0, index - lookback)
-    const relevantData = array.slice(startIdx, index + 1)
+    // Calculate 7-day moving average
+    const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60
+    const currentTimestamp = item.timestamp
+    const sevenDaysAgoTimestamp = currentTimestamp - SEVEN_DAYS_IN_SECONDS
+
+    const relevantData = array.filter(
+      (dataPoint) =>
+        dataPoint.timestamp >= sevenDaysAgoTimestamp &&
+        dataPoint.timestamp <= currentTimestamp &&
+        array.indexOf(dataPoint) <= index, // Only include data points up to current index
+    )
     const movingAverage = relevantData.reduce((sum, curr) => sum + curr.proj_apy, 0) / relevantData.length
 
     return {
@@ -65,7 +76,7 @@ export const _getScrvUsdYield = async (params: { timeFrame: TimeFrame }) => {
 }
 
 export const { useQuery: useScrvUsdYield } = queryFactory({
-  queryKey: (params: { timeFrame: TimeFrame }) => ['scrvUsdYield', { timeFrame: params.timeFrame }] as const,
+  queryKey: (params: { timeOption: TimeOption }) => ['scrvUsdYield', { timeOption: params.timeOption }] as const,
   queryFn: _getScrvUsdYield,
   staleTime: '5m',
   validationSuite: createValidationSuite(() => {}),
