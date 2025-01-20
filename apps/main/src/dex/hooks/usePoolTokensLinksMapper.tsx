@@ -7,7 +7,7 @@ enum Pool {
   fantomFactoryStableNg39 = '250-factory-stable-ng-39',
 }
 
-const BASE_URL = getAppRoot('dex')
+const BASE_URL = getAppRoot('main')
 
 // Custom link for each token in a pool.
 const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrApi) => {

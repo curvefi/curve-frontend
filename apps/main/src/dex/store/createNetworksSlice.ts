@@ -75,7 +75,7 @@ const defaultNetworks = Object.entries({
       'factory-v2-370': true, // PRISMA/yPRISMA
     },
     swapCustomRouteRedirect: {
-      'sfrxeth-llamma': getAppRoot('loan'),
+      'sfrxeth-llamma': getAppRoot('crvusd'),
     },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',

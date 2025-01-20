@@ -35,7 +35,7 @@ export type AppName = (typeof AppNames)[number]
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {
-    root: getAppRoot('dex'),
+    root: getAppRoot('main'),
     label: 'DEX',
     pages: [
       { route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
@@ -45,7 +45,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     ],
   },
   crvusd: {
-    root: getAppRoot('loan'),
+    root: getAppRoot('crvusd'),
     label: 'crvUSD',
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
@@ -74,7 +74,8 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
   },
 }
 
-export function getAppRoot(path: 'dex' | 'dao' | 'lend' | 'loan', developmentPort = 3000) {
+export function getAppRoot(app: AppName, developmentPort = 3000) {
+  const path = app === 'main' ? 'dex' : app
   if (process.env.NODE_ENV === 'development') {
     return `http://localhost:${developmentPort}/${path}`
   }

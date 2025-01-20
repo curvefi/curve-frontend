@@ -56,7 +56,7 @@ export enum TITLE {
   llammaBalances = 'llammaBalances',
 }
 
-const BASE_URL = getAppRoot('dex')
+const BASE_URL = getAppRoot('main')
 
 export const PEG_KEEPERS = {
   '0x9201da0d97caaaff53f01b2fb56767c7072de340': {

@@ -117,7 +117,7 @@ export const SCrvUsd = () => (
 
       <Paragraph>
         {t`Read the`}{' '}
-        <Link color="textSecondary" href={`${getAppRoot('loan')}#/ethereum/risk-disclaimer`} target="_blank">
+        <Link color="textSecondary" href={`${getAppRoot('crvusd')}#/ethereum/risk-disclaimer`} target="_blank">
           {t`crvUSD Risk Disclaimer`}
         </Link>{' '}
         {t`for a more detailed overview of risks related to crvUSD.`}

@@ -22,6 +22,7 @@ declare global {
     }
 
     interface Chainable {
+      state: (of: 'window' | 'document') => Chainable<Window>
       dataTestId: typeof dataTestId
       createJsonRpcProvider: typeof createJsonRpcProvider
       prepareMetamaskWallet: ChainableFn<typeof prepareMetamaskWallet>
