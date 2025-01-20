@@ -4,7 +4,7 @@ import { Card, CardHeader, Box } from '@mui/material'
 import { useState } from 'react'
 import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
-import { useScrvUsdYield } from '@/entities/scrvusdYield'
+import { useScrvUsdYield } from '@loan/entities/scrvusdYield'
 import LineChart from './LineChart'
 
 const { Spacing, MaxWidth } = SizesAndSpaces

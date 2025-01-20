@@ -1,11 +1,11 @@
-import type { ScrvUsdYieldWithAverages } from '@/entities/scrvusdYield'
+import type { ScrvUsdYieldWithAverages } from '@loan/entities/scrvusdYield'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import CustomTooltip from './ChartTooltip'
 
-import { formatDateFromTimestamp } from '@/ui/utils/utilsFormat'
+import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
 
 // import LineChartCustomTooltip from './LineChartCustomTooltip'
 const { FontSize } = SizesAndSpaces

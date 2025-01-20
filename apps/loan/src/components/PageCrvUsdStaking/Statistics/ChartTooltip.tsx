@@ -3,7 +3,7 @@ import { TooltipProps } from 'recharts'
 import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatDateFromTimestamp } from '@/ui/utils/utilsFormat'
+import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
 import { useTheme } from '@mui/material/styles'
 
 const { Spacing } = SizesAndSpaces

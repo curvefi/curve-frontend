@@ -10,7 +10,6 @@ import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm

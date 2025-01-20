@@ -4,11 +4,11 @@ import BigNumber from 'bignumber.js'
 
 import useStore from '@loan/store/useStore'
 
-import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
-import Statistics from '@/components/PageCrvUsdStaking/Statistics'
-import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
-import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
-import UserPositionBanner from '@/components/PageCrvUsdStaking/UserPositionBanner'
+import StatsBanner from '@loan/components/PageCrvUsdStaking/StatsBanner'
+import Statistics from '@loan/components/PageCrvUsdStaking/Statistics'
+import DepositWithdraw from '@loan/components/PageCrvUsdStaking/DepositWithdraw'
+import UserInformation from '@loan/components/PageCrvUsdStaking/UserInformation'
+import UserPositionBanner from '@loan/components/PageCrvUsdStaking/UserPositionBanner'
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const {
