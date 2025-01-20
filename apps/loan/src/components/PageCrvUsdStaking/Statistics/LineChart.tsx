@@ -71,6 +71,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           strokeWidth={2}
           activeDot={{ r: 4 }}
           dot={false}
+          isAnimationActive={false}
         />
         <Line
           type="monotone"
@@ -80,6 +81,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           strokeDasharray={labels['proj_apy_7d_avg'].dash}
           activeDot={{ r: 4 }}
           dot={false}
+          isAnimationActive={false}
         />
         <Line
           type="monotone"
@@ -89,6 +91,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           strokeDasharray={labels['proj_apy_total_avg'].dash}
           activeDot={{ r: 4 }}
           dot={false}
+          isAnimationActive={false}
         />
         <Legend
           margin={{ top: 16, bottom: 16 }}
