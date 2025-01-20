@@ -10,7 +10,7 @@ describe('LlamaLend Markets', () => {
       fixture: 'lending-snapshots.json',
     }).as('snapshots')
     cy.viewport(...oneViewport())
-    cy.visit('/loan/#/ethereum/beta-markets', {
+    cy.visit('/crvusd#/ethereum/beta-markets', {
       onBeforeLoad: (win) => {
         win.localStorage.clear()
         isDarkMode = checkIsDarkMode(win)

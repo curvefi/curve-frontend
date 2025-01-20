@@ -56,13 +56,13 @@ export enum TITLE {
   llammaBalances = 'llammaBalances',
 }
 
-const BASE_URL = getAppRoot('main')
+const BASE_URL = `${getAppRoot('main')}#`
 
 export const PEG_KEEPERS = {
   '0x9201da0d97caaaff53f01b2fb56767c7072de340': {
     address: '0x9201da0d97caaaff53f01b2fb56767c7072de340',
     token: 'USDC',
-    poolUrl: `${BASE_URL}#/ethereum/pools/factory-crvusd-0/deposit`,
+    poolUrl: `${BASE_URL}/ethereum/pools/factory-crvusd-0/deposit`,
     pool: {
       id: 'factory-crvusd-0',
       name: 'crvUSD/USDC',
@@ -90,7 +90,7 @@ export const PEG_KEEPERS = {
   '0x3fa20eaa107de08b38a8734063d605d5842fe09c': {
     address: '0x3fa20eaa107de08b38a8734063d605d5842fe09c',
     token: 'pyUSD',
-    poolUrl: `${BASE_URL}#/ethereum/pools/factory-stable-ng-42/deposit`,
+    poolUrl: `${BASE_URL}/ethereum/pools/factory-stable-ng-42/deposit`,
     pool: {
       id: 'factory-stable-ng-42',
       name: 'pyUSD/crvUSD',
@@ -104,7 +104,7 @@ export const PEG_KEEPERS = {
   '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8': {
     address: '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8',
     token: 'USDM',
-    poolUrl: `${BASE_URL}#/ethereum/pools/factory-stable-ng-154/deposit`,
+    poolUrl: `${BASE_URL}/ethereum/pools/factory-stable-ng-154/deposit`,
     pool: {
       id: 'factory-stable-ng-154',
       name: 'crvUSD/USDM',
