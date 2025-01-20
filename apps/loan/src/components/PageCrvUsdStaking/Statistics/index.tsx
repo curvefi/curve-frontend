@@ -5,13 +5,14 @@ import { useState } from 'react'
 import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
 import { useScrvUsdYield } from '@loan/entities/scrvusdYield'
+import { useScrvUsdRevenue } from '@loan/entities/scrvusdRevenue'
 import LineChart from './LineChart'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
 const chartOptions: ChartOption[] = [
   { activeTitle: 'Historical Rate', label: 'Savings Rate' },
-  { activeTitle: 'Historical Rewards', label: 'Rewards' },
+  { activeTitle: 'Historical Distributions', label: 'Distributions' },
 ]
 
 const timeOptions: TimeOption[] = ['1d', '1w', '1m']
@@ -19,7 +20,10 @@ const timeOptions: TimeOption[] = ['1d', '1w', '1m']
 const Statistics = () => {
   const [activeChartOption, setActiveChartOption] = useState(chartOptions[0])
   const [activeTimeOption, setActiveTimeOption] = useState(timeOptions[0])
-  const { data } = useScrvUsdYield({ timeOption: activeTimeOption })
+  const { data: yieldData } = useScrvUsdYield({ timeOption: activeTimeOption })
+  const { data: revenueData } = useScrvUsdRevenue({})
+
+  console.log(revenueData)
 
   return (
     <Card
@@ -44,7 +48,7 @@ const Statistics = () => {
         chartOptions={chartOptions}
         timeOptions={timeOptions}
       />
-      <LineChart data={data ?? []} />
+      <LineChart data={yieldData ?? []} />
     </Card>
   )
 }

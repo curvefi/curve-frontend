@@ -28,6 +28,54 @@ type GetScrvUsdYieldResponse =
       }[]
     }
 
+type Epoch = {
+  startDate: string
+  endDate: string
+  weeklyRevenue: number
+  data: ScrvUsdRevenueHistory[]
+}
+
+const organizeDataIntoEpochs = (history: ScrvUsdRevenueHistory[]): Epoch[] => {
+  // Sort history by date
+  const sortedHistory = [...history].sort((a, b) => new Date(a.dt).getTime() - new Date(b.dt).getTime())
+
+  const epochs: Epoch[] = []
+  let currentEpoch: Epoch | null = null
+
+  sortedHistory.forEach((item) => {
+    const itemDate = new Date(item.dt)
+
+    // If we don't have a current epoch or the item doesn't belong to current epoch
+    if (!currentEpoch || itemDate > new Date(currentEpoch.endDate)) {
+      // Find the previous Thursday if item is not on Thursday
+      const startDate = new Date(itemDate)
+      while (startDate.getDay() !== 4) {
+        // 4 represents Thursday
+        startDate.setDate(startDate.getDate() - 1)
+      }
+
+      // Set end date to next Thursday
+      const endDate = new Date(startDate)
+      endDate.setDate(startDate.getDate() + 7)
+
+      currentEpoch = {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        weeklyRevenue: 0,
+        data: [],
+      }
+      epochs.push(currentEpoch)
+    }
+
+    // Add item to current epoch
+    currentEpoch.data.push(item)
+    // Add to weekly revenue (gain - loss)
+    currentEpoch.weeklyRevenue += (+item.gain - +item.loss) / 1e18
+  })
+
+  return epochs
+}
+
 export const _getScrvUsdRevenue = async () => {
   const pages = 1
   const dataPerPage = 300
@@ -45,6 +93,7 @@ export const _getScrvUsdRevenue = async () => {
   const formattedData = {
     ...data,
     total_distributed: +data.total_distributed / 1e18,
+    epochs: organizeDataIntoEpochs(data.history),
     history: data.history.map((item) => ({
       ...item,
       gain: +item.gain / 1e18,

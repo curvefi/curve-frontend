@@ -20,14 +20,19 @@ const StatsStack = () => {
         unit="dollar"
       />
       <Metric
-        label="Historical APY"
+        label="Current APY"
         value={yieldData?.[yieldData.length - 1]?.proj_apy ?? 0}
         loading={yieldIsFetching}
         decimals={2}
         unit="percentage"
       />
-      {/* <StatsColumn title="Total Revenue Distributed" value={data?.total_fees.toString() ?? ''} />
-      <StatsColumn title="Weekly Accumulated Revenue" value={data?.protocol_fees.toString() ?? ''} /> */}
+      <Metric
+        label="Total Revenue Distributed"
+        value={revenueData?.total_distributed ?? 0}
+        loading={revenueIsFetching}
+        unit="dollar"
+      />
+      {/* <StatsColumn title="Weekly Accumulated Revenue" value={data?.protocol_fees.toString() ?? ''} /> */}
     </Stack>
   )
 }
