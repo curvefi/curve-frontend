@@ -56,6 +56,10 @@ const variant = ({
   fontFamily,
   fontWeight: FontWeight[fontWeight ?? 'Medium'],
   letterSpacing,
+  // Undo the letter spacing to the right of the last letter
+  ...(letterSpacing !== '0%' && {
+    marginRight: `calc(${letterSpacing} * -1)`,
+  }),
   textTransform: textCase,
   ...(!(fontSize in FontSize) && { fontSize }),
   ...(!(lineHeight in LineHeight) && { lineHeight }),
