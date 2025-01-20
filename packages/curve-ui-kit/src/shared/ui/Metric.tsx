@@ -79,27 +79,69 @@ const formatChange = (value: number) => {
   })
 }
 
+type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate'>> & {
+  change?: number
+  unit: UnitOptions | undefined
+  fontVariant: TypographyVariantKey
+  copyValue: () => void
+}
+
+const MetricValue = ({ value, formatter, change, abbreviate, unit, fontVariant, copyValue }: MetricValueProps) => (
+  <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
+    <Tooltip arrow placement="bottom" title={value.toLocaleString()} onClick={copyValue} sx={{ cursor: 'pointer' }}>
+      <Stack direction="row">
+        {unit?.position === 'prefix' && (
+          <Typography variant={fontVariant} color="textSecondary">
+            {unit.symbol}
+          </Typography>
+        )}
+
+        <Typography variant={fontVariant} color="textPrimary">
+          {formatter(abbreviate ? abbreviateNumber(value) : value)}
+        </Typography>
+
+        {abbreviate && (
+          <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
+            {scaleSuffix(value)}
+          </Typography>
+        )}
+
+        {unit?.position === 'suffix' && (
+          <Typography variant={fontVariant} color="textSecondary">
+            {unit.symbol}
+          </Typography>
+        )}
+      </Stack>
+    </Tooltip>
+
+    {(change || change === 0) && (
+      <Typography variant="highlightM" color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}>
+        {formatChange(change)}%
+      </Typography>
+    )}
+  </Stack>
+)
+
 type Props = {
+  /** The actual metric value to display */
+  value: number
+  /** A unit can be a currency symbol or percentage, prefix or suffix */
+  unit?: Unit | undefined
+  /** The number of decimals the value should contain */
+  decimals?: number
+  /** If the value should be abbreviated to 1.23k or 3.45m */
+  abbreviate?: boolean
+  /** Optional value that denotes a change in metric value since 'last' time */
+  change?: number
+  /** Optional formatter for metric value */
+  formatter?: (value: number) => string
+
   /** Label that goes above the value */
   label: string
   /** Optional tooltip content shown next to the label */
   tooltip?: string
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
-
-  /** The actual metric value to display */
-  value: number
-  /** Optional formatter for metric value */
-  formatter?: (value: number) => string
-  /** If the value should be abbreviated to 1.23k or 3.45m */
-  abbreviate?: boolean
-  /** The number of decimals the value should contain */
-  decimals?: number
-  /** A unit can be a currency symbol or percentage, prefix or suffix */
-  unit?: Unit
-
-  /** Optional value that denotes a change in metric value since 'last' time */
-  change?: number
 
   /** Notional values give extra context to the metric, like underlying value */
   notional?: number
@@ -114,17 +156,16 @@ type Props = {
 }
 
 export const Metric = ({
+  value,
+  unit,
+  abbreviate,
+  change,
+  decimals = 1,
+  formatter = (value: number) => formatValue(value, decimals),
+
   label,
   tooltip,
   copyText,
-
-  value,
-  formatter = (value: number) => formatValue(value, decimals),
-  abbreviate,
-  unit,
-  decimals = 1,
-
-  change,
 
   notional,
   notionalFormatter = (value: number) => formatNotionalValue(value, notionalDecimals),
@@ -149,7 +190,15 @@ export const Metric = ({
     setOpenCopyAlert(true)
   }
 
-  const fontVariant = MetricSize[size]
+  const metricValueProps = {
+    value,
+    unit,
+    abbreviate,
+    change,
+    formatter,
+    fontVariant: MetricSize[size],
+    copyValue,
+  }
 
   return (
     <Stack alignItems={alignment}>
@@ -166,47 +215,11 @@ export const Metric = ({
       </Typography>
 
       {loading ? (
-        <Skeleton variant="text" width="100%" sx={(t) => ({ ...t.typography[fontVariant] })} />
+        <Skeleton variant="text" width="100%">
+          <MetricValue {...metricValueProps} />
+        </Skeleton>
       ) : (
-        <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
-          <Tooltip
-            arrow
-            placement="bottom"
-            title={value.toLocaleString()}
-            onClick={copyValue}
-            sx={{ cursor: 'pointer' }}
-          >
-            <Stack direction="row">
-              {unit?.position === 'prefix' && (
-                <Typography variant={fontVariant} color="textSecondary">
-                  {unit.symbol}
-                </Typography>
-              )}
-
-              <Typography variant={fontVariant} color="textPrimary">
-                {formatter(abbreviate ? abbreviateNumber(value) : value)}
-              </Typography>
-
-              {abbreviate && (
-                <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
-                  {scaleSuffix(value)}
-                </Typography>
-              )}
-
-              {unit?.position === 'suffix' && (
-                <Typography variant={fontVariant} color="textSecondary">
-                  {unit.symbol}
-                </Typography>
-              )}
-            </Stack>
-          </Tooltip>
-
-          {(change || change === 0) && (
-            <Typography variant="highlightM" color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}>
-              {formatChange(change)}%
-            </Typography>
-          )}
-        </Stack>
+        <MetricValue {...metricValueProps} />
       )}
 
       {notional !== undefined && (
