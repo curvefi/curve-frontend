@@ -1,21 +1,21 @@
-import type { DashboardTableRowProps } from '@/components/PageDashboard/types'
+import type { DashboardTableRowProps } from '@main/components/PageDashboard/types'
 
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { SORT_ID } from '@/components/PageDashboard/utils'
+import { SORT_ID } from '@main/components/PageDashboard/utils'
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
-import { Td, Tr } from '@/ui/Table'
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
-import PoolLabel from '@/components/PoolLabel'
-import TableCellClaimables from '@/components/PageDashboard/components/TableCellClaimables'
-import TableCellProfit from '@/components/PageDashboard/components/TableCellProfit'
-import TableCellRewards from '@/components/PageDashboard/components/TableCellRewards'
-import TableCellBalances from '@/components/PageDashboard/components/TableCellBalances'
-import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import { Td, Tr } from '@ui/Table'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import PoolLabel from '@main/components/PoolLabel'
+import TableCellClaimables from '@main/components/PageDashboard/components/TableCellClaimables'
+import TableCellProfit from '@main/components/PageDashboard/components/TableCellProfit'
+import TableCellRewards from '@main/components/PageDashboard/components/TableCellRewards'
+import TableCellBalances from '@main/components/PageDashboard/components/TableCellBalances'
+import TableCellRewardsOthers from '@main/components/PagePoolList/components/TableCellRewardsOthers'
 
 const TableRowMobile: React.FC<DashboardTableRowProps> = ({
   isLite,

@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 
-import { getTokensMapperStr } from '@/store/createTokensSlice'
-import useStore from '@/store/useStore'
-import { useChainId } from '@/entities/chain'
+import { getTokensMapperStr } from '@main/store/createTokensSlice'
+import useStore from '@main/store/useStore'
+import { useChainId } from '@main/entities/chain'
+import { ChainId } from '@main/types/main.types'
 
 const useTokensMapper = (rChainId?: ChainId | number | null) => {
   const { data: chainId } = useChainId()

@@ -2,15 +2,15 @@ import { TradesDataProps } from './types'
 
 import styled from 'styled-components'
 
-import networks from '@/networks'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
+import networks from '@loan/networks'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { getImageBaseUrl } from '@loan/utils/utilsCurvejs'
+import { convertFullTime, convertTime, convertTimeAgo } from '@loan/components/ChartOhlcWrapper/utils'
 
-import Box from '@/ui/Box'
-import TokenIcon from '@/components/TokenIcon'
-import { Chip } from '@/ui/Typography'
-import Tooltip from '@/ui/Tooltip'
+import Box from '@ui/Box'
+import TokenIcon from '@loan/components/TokenIcon'
+import { Chip } from '@ui/Typography'
+import Tooltip from '@ui/Tooltip'
 
 const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) => (
   <>

@@ -1,17 +1,17 @@
-import type { PageMarketList } from '@/components/PageMarketList/types'
+import type { PageMarketList } from '@lend/components/PageMarketList/types'
 
 import { t, Trans } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { Filter } from '@/components/PageMarketList/utils'
+import { Filter } from '@lend/components/PageMarketList/utils'
 
-import { shortenAccount } from '@/ui/utils'
-import Box from '@/ui/Box'
-import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
+import { shortenAccount } from '@ui/utils'
+import Box from '@ui/Box'
+import AlertBox from '@ui/AlertBox'
+import Button from '@ui/Button'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import { useChainId, useOneWayMarketMapping } from '@/entities/chain'
+import { useChainId, useOneWayMarketMapping } from '@lend/entities/chain'
 
 enum ERROR {
   api = 'api',

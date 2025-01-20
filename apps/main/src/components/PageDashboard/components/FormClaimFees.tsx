@@ -1,18 +1,18 @@
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 
 import React, { useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_STATUS } from '@/components/PageDashboard/utils'
-import { breakpoints } from '@/ui/utils/responsive'
-import { formatNumber } from '@/ui/utils'
-import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
-import useStore from '@/store/useStore'
+import { DEFAULT_FORM_STATUS } from '@main/components/PageDashboard/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { formatNumber } from '@ui/utils'
+import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import useStore from '@main/store/useStore'
 
-import AlertFormError from '@/components/AlertFormError'
-import FormClaimFeesButtons from '@/components/PageDashboard/components/FormClaimFeesButtons'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import AlertFormError from '@main/components/AlertFormError'
+import FormClaimFeesButtons from '@main/components/PageDashboard/components/FormClaimFeesButtons'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
 
 export enum claimButtonsKey {
   '3CRV' = '3CRV',

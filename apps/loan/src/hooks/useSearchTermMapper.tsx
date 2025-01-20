@@ -1,6 +1,7 @@
-import type { SearchTermKey, SearchTermMapper } from '@/components/PageMarketList/types'
+import type { SearchTermKey, SearchTermMapper } from '@loan/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
+import { CollateralDataCacheOrApi } from '@loan/types/loan.types'
 
 export enum SEARCH_TERM {
   'llamma.coins' = 'llamma.coins',

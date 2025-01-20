@@ -1,12 +1,13 @@
 import { t } from '@lingui/macro'
-import TabSlider, { Tab } from '@/ui/TabSlider/TabSlider'
+import TabSlider, { Tab } from '@ui/TabSlider/TabSlider'
 import { useCallback, useMemo, useState } from 'react'
 import { isAddressEqual, type Address } from 'viem'
-import type { TabValue } from '@/widgets/manage-gauge/types'
-import AddRewardToken from '@/features/add-gauge-reward-token'
-import DepositReward from '@/features/deposit-gauge-reward'
-import { useGaugeManager, useGaugeRewardsDistributors } from '@/entities/gauge'
-import { useSignerAddress } from '@/entities/signer'
+import type { TabValue } from '@main/widgets/manage-gauge/types'
+import AddRewardToken from '@main/features/add-gauge-reward-token'
+import DepositReward from '@main/features/deposit-gauge-reward'
+import { useGaugeManager, useGaugeRewardsDistributors } from '@main/entities/gauge'
+import { useSignerAddress } from '@main/entities/signer'
+import { ChainId } from '@main/types/main.types'
 
 const ManageGauge: React.FC<{ poolId: string; chainId: ChainId }> = ({ poolId, chainId }) => {
   const sliderTabs: Tab<TabValue>[] = [

@@ -2,14 +2,15 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 
 import BarChartComponent from '../../Charts/BarChartComponent'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import ErrorMessage from '@/components/ErrorMessage'
-import Box from '@/ui/Box'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import ErrorMessage from '@dao/components/ErrorMessage'
+import Box from '@ui/Box'
 import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
 import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@dao/types/dao.types'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean

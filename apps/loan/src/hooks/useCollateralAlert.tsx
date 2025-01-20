@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import { breakpoints } from '@ui/utils'
+import { CollateralAlert } from '@loan/types/loan.types'
 
 const useCollateralAlert = (collateralAddress: string | undefined) =>
   useMemo(() => {

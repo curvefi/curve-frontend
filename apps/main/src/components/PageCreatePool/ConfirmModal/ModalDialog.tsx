@@ -6,12 +6,12 @@ import { Overlay, FocusScope, useButton, useDialog, usePreventScroll, useModalOv
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils/responsive'
+import useStore from '@main/store/useStore'
 
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import IconButton from '@/ui/IconButton'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import IconButton from '@ui/IconButton'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
   footerContent?: React.ReactNode

@@ -2,14 +2,15 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
-import { IMPLEMENTATION_IDS } from '@/components/PageCreatePool/constants'
+import { IMPLEMENTATION_IDS } from '@main/components/PageCreatePool/constants'
 
-import Checkbox from '@/ui/Checkbox'
-import Tooltip from '@/ui/Tooltip'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
+import Checkbox from '@ui/Checkbox'
+import Tooltip from '@ui/Tooltip'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import { ChainId } from '@main/types/main.types'
 
 type Props = {
   chainId: ChainId

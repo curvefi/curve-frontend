@@ -3,19 +3,19 @@ import { t } from '@lingui/macro'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
-import { getPath } from '@/utils/utilsRouter'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-import useTokensMapper from '@/hooks/useTokensMapper'
-import AdvancedSettings from '@/components/AdvancedSettings'
-import Box, { BoxHeader } from '@/ui/Box'
-import DocumentHead from '@/layout/default/DocumentHead'
-import IconButton from '@/ui/IconButton'
-import QuickSwap from '@/components/PageRouterSwap/index'
-import ConnectWallet from '@/components/ConnectWallet'
+import { ROUTE } from '@main/constants'
+import { breakpoints } from '@ui/utils'
+import { getPath } from '@main/utils/utilsRouter'
+import { scrollToTop } from '@main/utils'
+import usePageOnMount from '@main/hooks/usePageOnMount'
+import useStore from '@main/store/useStore'
+import useTokensMapper from '@main/hooks/useTokensMapper'
+import AdvancedSettings from '@main/components/AdvancedSettings'
+import Box, { BoxHeader } from '@ui/Box'
+import DocumentHead from '@main/layout/default/DocumentHead'
+import IconButton from '@ui/IconButton'
+import QuickSwap from '@main/components/PageRouterSwap/index'
+import ConnectWallet from '@main/components/ConnectWallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
@@ -125,7 +125,7 @@ const Page: NextPage = () => {
           <BoxHeader className="title-text">
             <IconButton testId="hidden" hidden />
             {t`Swap`}
-            <AdvancedSettings stateKey="router" testId="advance-settings" maxSlippage={maxSlippage} />
+            <AdvancedSettings stateKey="global" testId="advance-settings" maxSlippage={maxSlippage} />
           </BoxHeader>
 
           <Box grid gridRowGap={3} padding>

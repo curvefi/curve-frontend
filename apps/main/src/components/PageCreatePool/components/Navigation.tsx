@@ -1,12 +1,13 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { checkFormReady } from '@/components/PageCreatePool/utils'
+import useStore from '@main/store/useStore'
+import { checkFormReady } from '@main/components/PageCreatePool/utils'
 
-import Icon from '@/ui/Icon'
-import Button from '@/ui/Button'
-import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
+import Icon from '@ui/Icon'
+import Button from '@ui/Button'
+import ConfirmModal from '@main/components/PageCreatePool/ConfirmModal'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 interface Props {
   navigation: number

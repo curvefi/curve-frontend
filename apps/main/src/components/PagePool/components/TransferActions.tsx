@@ -1,16 +1,16 @@
-import type { TransferProps } from '@/components/PagePool/types'
+import type { TransferProps } from '@main/components/PagePool/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { getChainPoolIdActiveKey } from '@/utils'
-import useStore from '@/store/useStore'
-import useTokenAlert from '@/hooks/useTokenAlert'
+import { getChainPoolIdActiveKey } from '@main/utils'
+import useStore from '@main/store/useStore'
+import useTokenAlert from '@main/hooks/useTokenAlert'
 
-import AlertBox from '@/ui/AlertBox'
-import AlertSeedAmounts from '@/components/PagePool/components/AlertSeedAmounts'
-import FormConnectWallet from '@/components/FormConnectWallet'
-import { useSignerAddress } from '@/entities/signer'
+import AlertBox from '@ui/AlertBox'
+import AlertSeedAmounts from '@main/components/PagePool/components/AlertSeedAmounts'
+import FormConnectWallet from '@main/components/FormConnectWallet'
+import { useSignerAddress } from '@main/entities/signer'
 
 const TransferActions = ({
   children,

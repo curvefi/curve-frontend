@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import AlertBox from '@/ui/AlertBox'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import AlertBox from '@ui/AlertBox'
 
 type Props = {
   maxSlippage: string

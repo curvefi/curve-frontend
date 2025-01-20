@@ -1,6 +1,6 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@/ui/utils'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
 
 import { ethers } from 'ethers'
@@ -13,14 +13,15 @@ import {
   useSetLocale,
 } from '@ui-kit/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@lend/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
-import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
-import { helpers } from '@/lib/apiLending'
-import networks, { networksIdMapper } from '@/networks'
-import useStore from '@/store/useStore'
+import { getStorageValue, setStorageValue } from '@lend/utils/utilsStorage'
+import { getNetworkFromUrl, parseParams } from '@lend/utils/utilsRouter'
+import { helpers } from '@lend/lib/apiLending'
+import networks, { networksIdMapper } from '@lend/networks'
+import useStore from '@lend/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId, PageProps, Wallet } from '@lend/types/lend.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -239,7 +240,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
         ;(async () => {
-          let data = await import(`@/locales/${rLocale}/messages`)
+          let data = await import(`@lend/locales/${rLocale}/messages`)
           dynamicActivate(rLocale, data)
         })()
         setLocale(rLocale)

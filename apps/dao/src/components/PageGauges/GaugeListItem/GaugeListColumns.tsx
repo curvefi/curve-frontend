@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
+import { GaugeFormattedData } from '@dao/types/dao.types'
 
 type GaugeListColumnsProps = {
   gaugeData: GaugeFormattedData

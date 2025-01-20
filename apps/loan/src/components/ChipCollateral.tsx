@@ -4,9 +4,9 @@ import { useButton } from 'react-aria'
 import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { copyToClipboard, shortenTokenAddress } from '@/utils/helpers'
-import Icon from '@/ui/Icon'
+import { breakpoints } from '@ui/utils/responsive'
+import { copyToClipboard, shortenTokenAddress } from '@loan/utils/helpers'
+import Icon from '@ui/Icon'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string

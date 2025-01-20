@@ -3328,16 +3328,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.27":
-  version: 2.65.27
-  resolution: "@curvefi/api@npm:2.65.27"
+"@curvefi/api@npm:^2.65.28":
+  version: 2.65.28
+  resolution: "@curvefi/api@npm:2.65.28"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.7"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.11.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/6df410842269ede29be4948264960c339c463c9e14d06942e812c05fade0e0e05df926794b9e7768bfffb4f3791ad7436f9440023a9b34bb62a87f1dbac01747
+  checksum: 10c0/588ed69b6b100f4ee4b4db2d9f05c9bb98bac1f77814d4ae4e047b9191bad6a662f3a36cee4a1c93a9ddd881fcdd1778b5429e8737c2f0fd7a71e7c2d74c6829
   languageName: node
   linkType: hard
 
@@ -15347,7 +15347,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dao@workspace:apps/dao"
   dependencies:
-    "@curvefi/api": "npm:^2.65.27"
+    "@curvefi/api": "npm:^2.65.28"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
@@ -16846,6 +16846,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:^3.6.3"
     eslint-plugin-no-only-tests: "npm:^3.3.0"
     eslint-plugin-react: "npm:7.36.1"
+    eslint-plugin-unused-imports: "npm:^3.2.0"
     prettier-eslint: "npm:^16.3.0"
   peerDependencies:
     eslint: "*"
@@ -17121,6 +17122,28 @@ __metadata:
   peerDependencies:
     eslint: ">6.6.0"
   checksum: 10c0/06dffb23d934ff679e3094482f8ab53875529a580bbc3696a50b59e898a06df8f42199a7641053b326e6dcade16677ffac411ea2b98d49ecefd5ee84bcc7d112
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-unused-imports@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "eslint-plugin-unused-imports@npm:3.2.0"
+  dependencies:
+    eslint-rule-composer: "npm:^0.3.0"
+  peerDependencies:
+    "@typescript-eslint/eslint-plugin": 6 - 7
+    eslint: 8
+  peerDependenciesMeta:
+    "@typescript-eslint/eslint-plugin":
+      optional: true
+  checksum: 10c0/70c93efaa4dccd1172db3858b27968184c97cb8b7ffb2d9e6ffb09d9509863c70651b533b48eec4d10bc7f633d7f50fd190fdd5b36e8cac2c4efd5cecb5d5d98
+  languageName: node
+  linkType: hard
+
+"eslint-rule-composer@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "eslint-rule-composer@npm:0.3.0"
+  checksum: 10c0/1f0c40d209e1503a955101a0dbba37e7fc67c8aaa47a5b9ae0b0fcbae7022c86e52b3df2b1b9ffd658e16cd80f31fff92e7222460a44d8251e61d49e0af79a07
   languageName: node
   linkType: hard
 
@@ -21378,7 +21401,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.65.27"
+    "@curvefi/api": "npm:^2.65.28"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"

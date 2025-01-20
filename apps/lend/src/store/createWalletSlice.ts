@@ -1,11 +1,12 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@lend/store/useStore'
 import type { CustomNotification, NotificationType } from '@web3-onboard/core/dist/types'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 
-import { ethers, isError } from 'ethers'
+import { isError } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { getWalletProvider } from '@ui-kit/features/connect-wallet'
+import { Provider, Wallet } from '@lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

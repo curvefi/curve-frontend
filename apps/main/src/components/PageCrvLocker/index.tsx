@@ -1,15 +1,15 @@
-import type { FormType, PageVecrv } from '@/components/PageCrvLocker/types'
+import type { FormType, PageVecrv } from '@main/components/PageCrvLocker/types'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
-import TabSlide, { SlideTab, SlideTabs } from '@/ui/TabSlide'
-import FormLockCreate from '@/components/PageCrvLocker/components/FormLockCreate'
-import FormLockCrv from '@/components/PageCrvLocker/components/FormLockCrv'
-import FormLockDate from '@/components/PageCrvLocker/components/FormLockDate'
+import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
+import FormLockCreate from '@main/components/PageCrvLocker/components/FormLockCreate'
+import FormLockCrv from '@main/components/PageCrvLocker/components/FormLockCrv'
+import FormLockDate from '@main/components/PageCrvLocker/components/FormLockDate'
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo, toggleForm } = pageProps

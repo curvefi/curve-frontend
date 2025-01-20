@@ -1,6 +1,7 @@
-import type { TooltipProps } from '@/ui/Tooltip/types'
+import type { TooltipProps } from '@ui/Tooltip/types'
 
 import React from 'react'
+import { TitleKey } from '@lend/types/lend.types'
 
 export type Content = {
   titleKey: TitleKey

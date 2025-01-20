@@ -1,5 +1,5 @@
-import type { FormValues } from '@/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@/ui/Integration/types'
+import type { FormValues } from '@main/components/PageIntegrations/types'
+import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
 
 import { useFocusRing } from '@react-aria/focus'
@@ -8,17 +8,18 @@ import Image from 'next/image'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
 
-import { ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
-import { getPath } from '@/utils/utilsRouter'
-import { parseSearchParams } from '@/components/PageIntegrations/utils'
-import useStore from '@/store/useStore'
+import { ROUTE } from '@main/constants'
+import { breakpoints } from '@ui/utils'
+import { getPath } from '@main/utils/utilsRouter'
+import { parseSearchParams } from '@main/components/PageIntegrations/utils'
+import useStore from '@main/store/useStore'
 
-import Box from '@/ui/Box'
-import IntegrationAppComp from '@/ui/Integration/IntegrationApp'
-import SearchInput from '@/ui/SearchInput'
-import SelectNetwork from '@/ui/SelectNetwork/SelectNetwork'
-import SelectIntegrationTags from '@/components/PageIntegrations/components/SelectIntegrationTags'
+import Box from '@ui/Box'
+import IntegrationAppComp from '@ui/Integration/IntegrationApp'
+import SearchInput from '@ui/SearchInput'
+import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
+import SelectIntegrationTags from '@main/components/PageIntegrations/components/SelectIntegrationTags'
+import { ChainId, NetworkEnum } from '@main/types/main.types'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({

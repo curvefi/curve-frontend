@@ -1,19 +1,20 @@
 import type { Params } from 'react-router'
-import type { Route } from '@/components/PageRouterSwap/types'
+import type { Route } from '@main/components/PageRouterSwap/types'
 
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { ROUTE } from '@/constants'
-import { getPath } from '@/utils/utilsRouter'
-import { shortenTokenAddress } from '@/utils'
+import { ROUTE } from '@main/constants'
+import { getPath } from '@main/utils/utilsRouter'
+import { shortenTokenAddress } from '@main/utils'
 
-import { ExternalLink } from '@/ui/Link'
-import Icon from '@/ui/Icon'
-import TextEllipsis from '@/ui/TextEllipsis'
-import useStore from '@/store/useStore'
+import { ExternalLink } from '@ui/Link'
+import Icon from '@ui/Icon'
+import TextEllipsis from '@ui/TextEllipsis'
+import useStore from '@main/store/useStore'
+import { ChainId, NetworkEnum } from '@main/types/main.types'
 
 const DetailInfoTradeRouteRoute = ({
   params,

@@ -3,15 +3,16 @@ import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import networks from '@lend/networks'
+import useStore from '@lend/store/useStore'
 
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { useTokenUsdRate } from '@/entities/token'
-import { NETWORK_TOKEN } from '@/constants'
+import DetailInfo from '@ui/DetailInfo'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { useTokenUsdRate } from '@lend/entities/token'
+import { NETWORK_TOKEN } from '@lend/constants'
+import { ChainId } from '@lend/types/lend.types'
 
 export type StepProgress = {
   active: number

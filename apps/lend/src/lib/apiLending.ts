@@ -1,16 +1,51 @@
-import type { LiqRange } from '@/store/types'
-import type { StepStatus } from '@/ui/Stepper/types'
+import type { LiqRange } from '@lend/store/types'
+import type { StepStatus } from '@ui/Stepper/types'
 
 import PromisePool from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 
-import { INVALID_ADDRESS } from '@/constants'
-import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
-import { BN, shortenAccount } from '@/ui/utils'
-import networks from '@/networks'
+import { INVALID_ADDRESS } from '@lend/constants'
+import { fulfilledValue, getErrorMessage, log } from '@lend/utils/helpers'
+import { BN, shortenAccount } from '@ui/utils'
+import networks from '@lend/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { USE_API } from '@/shared/config'
+import { USE_API } from '@lend/shared/config'
+import {
+  ChainId,
+  Api,
+  Provider,
+  EstimatedGas,
+  MaxRecvLeverageResp,
+  LiqRangeResp,
+  DetailInfoResp,
+  DetailInfoLeverageResp,
+  ExpectedCollateral,
+  ExpectedBorrowed,
+  HeathColorKey,
+  MarketStatParameters,
+  BandsBalances,
+  BandsBalancesArr,
+  ParsedBandsBalances,
+  MarketStatBands,
+  MarketStatTotals,
+  MarketStatAmmBalances,
+  MarketStatCapAndAvailable,
+  MarketMaxLeverage,
+  MarketPrices,
+  MarketRates,
+  MarketTotalLiquidity,
+  MarketsTotalCollateralValueMapper,
+  RewardOther,
+  RewardCrv,
+  MarketRewards,
+  UserLoanHealth,
+  UserLoanState,
+  UserLoanDetails,
+  UserMarketBalances,
+  FutureRates,
+  Wallet,
+} from '@lend/types/lend.types'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {

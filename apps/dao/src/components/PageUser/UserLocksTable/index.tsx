@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 
 import { LOCKS_LABELS } from '../constants'
 
-import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@/ui/utils'
+import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
 
-import PaginatedTable from '@/components/PaginatedTable'
-import { TableRowWrapper, TableData } from '@/components/PaginatedTable/TableRow'
+import PaginatedTable from '@dao/components/PaginatedTable'
+import { TableRowWrapper, TableData } from '@dao/components/PaginatedTable/TableRow'
+import { UserLock, UserLocksSortBy, veCrvLockType } from '@dao/types/dao.types'
 
 interface UserLocksTableProps {
   userAddress: string

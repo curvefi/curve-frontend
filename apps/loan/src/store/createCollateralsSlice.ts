@@ -1,10 +1,19 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@loan/store/useStore'
 
 import cloneDeep from 'lodash/cloneDeep'
 import pick from 'lodash/pick'
 
-import networks from '@/networks'
+import networks from '@loan/networks'
+import {
+  ChainId,
+  Curve,
+  Llamma,
+  CollateralData,
+  CollateralDatasMapper,
+  CollateralDataCache,
+  CollateralDataCacheMapper,
+} from '@loan/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

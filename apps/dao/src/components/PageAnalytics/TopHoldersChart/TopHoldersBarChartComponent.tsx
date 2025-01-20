@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-import { shortenTokenAddress, formatNumber } from '@/ui/utils'
-import { TOP_HOLDERS } from '@/constants'
+import { shortenTokenAddress, formatNumber } from '@ui/utils'
+import { TOP_HOLDERS } from '@dao/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'
+import { VeCrvHolder, TopHoldersSortBy } from '@dao/types/dao.types'
 
 type TopHoldersBarChartProps = {
   data: VeCrvHolder[]

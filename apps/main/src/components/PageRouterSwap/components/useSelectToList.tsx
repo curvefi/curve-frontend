@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
+import { ChainId } from '@main/types/main.types'
 
 const useSelectToList = (rChainId: ChainId | '') => {
   const selectToList = useStore((state) => state.quickSwap.selectToList[rChainId])

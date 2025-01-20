@@ -1,13 +1,14 @@
-import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/components/PageCreatePool/constants'
+import { TOKEN_A, TOKEN_B, TOKEN_C } from '@main/components/PageCreatePool/constants'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
 
-import Box from '@/ui/Box'
-import NumberField from '@/components/PageCreatePool/components/NumberField'
-import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTokensButton'
+import Box from '@ui/Box'
+import NumberField from '@main/components/PageCreatePool/components/NumberField'
+import SwitchTokensButton from '@main/components/PageCreatePool/components/SwitchTokensButton'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 type Props = {
   curve: CurveApi

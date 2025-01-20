@@ -1,11 +1,11 @@
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 
-import { Chip } from '@/ui/Typography'
-import { Item } from '@/ui/Items'
-import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
+import { Chip } from '@ui/Typography'
+import { Item } from '@ui/Items'
+import { StyledInformationSquare16 } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
 
 type AdminFee = string | number | undefined
 

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 
-import useStore from '@/store/useStore'
+import useStore from '@loan/store/useStore'
 
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
 import Statistics from '@/components/PageCrvUsdStaking/Statistics'

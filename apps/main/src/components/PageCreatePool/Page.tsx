@@ -5,15 +5,16 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@ui/utils/responsive'
+import { scrollToTop } from '@main/utils'
+import usePageOnMount from '@main/hooks/usePageOnMount'
+import useStore from '@main/store/useStore'
 
-import DocumentHead from '@/layout/default/DocumentHead'
-import PoolCreation from '@/components/PageCreatePool/index'
-import Box from '@/ui/Box'
-import ConnectWallet from '@/components/ConnectWallet'
+import DocumentHead from '@main/layout/default/DocumentHead'
+import PoolCreation from '@main/components/PageCreatePool/index'
+import Box from '@ui/Box'
+import ConnectWallet from '@main/components/ConnectWallet'
+import { CurveApi } from '@main/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

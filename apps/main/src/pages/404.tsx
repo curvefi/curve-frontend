@@ -1,7 +1,7 @@
-import Error404 from '@/ui/Error404'
+import Error404 from '@ui/Error404'
 import type { NextPage } from 'next'
 
-import DocumentHead from '@/layout/default/DocumentHead'
+import DocumentHead from '@main/layout/default/DocumentHead'
 
 const Page404: NextPage = () => (
   <>

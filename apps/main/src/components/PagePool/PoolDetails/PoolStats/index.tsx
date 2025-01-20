@@ -1,21 +1,22 @@
-import type { PageTransferProps } from '@/components/PagePool/types'
+import type { PageTransferProps } from '@main/components/PagePool/types'
 
 import { t } from '@lingui/macro'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import useTokenAlert from '@/hooks/useTokenAlert'
-import useStore from '@/store/useStore'
-import { getPath } from '@/utils/utilsRouter'
+import { breakpoints } from '@ui/utils/responsive'
+import useTokenAlert from '@main/hooks/useTokenAlert'
+import useStore from '@main/store/useStore'
+import { getPath } from '@main/utils/utilsRouter'
 
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import CurrencyReserves from '@/components/PagePool/PoolDetails/CurrencyReserves'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import PoolParameters from '@/components/PagePool/PoolDetails/PoolStats/PoolParameters'
-import RewardsComp from '@/components/PagePool/PoolDetails/PoolStats/Rewards'
-import { InternalLink } from '@/ui/Link'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import CurrencyReserves from '@main/components/PagePool/PoolDetails/CurrencyReserves'
+import ExternalLink from '@ui/Link/ExternalLink'
+import PoolParameters from '@main/components/PagePool/PoolDetails/PoolStats/PoolParameters'
+import RewardsComp from '@main/components/PagePool/PoolDetails/PoolStats/Rewards'
+import { InternalLink } from '@ui/Link'
+import { TokensMapper, PoolAlert } from '@main/types/main.types'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null

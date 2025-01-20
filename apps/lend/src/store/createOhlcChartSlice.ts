@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@lend/store/useStore'
 import { getAddress } from 'ethers'
 import type {
   TimeOptions,
@@ -18,8 +18,9 @@ import type { UTCTimestamp } from 'lightweight-charts'
 
 import produce from 'immer'
 
-import networks from '@/networks'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import networks from '@lend/networks'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import { ChainId } from '@lend/types/lend.types'
 
 type SliceState = {
   chartLlammaOhlc: {

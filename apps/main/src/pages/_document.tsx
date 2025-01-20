@@ -1,7 +1,7 @@
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 import { RootCssProperties } from '@ui-kit/themes/typography'
-import { CURVE_LOGO_URL } from '@/ui/utils'
+import { CURVE_LOGO_URL } from '@ui/utils'
 
 const injectIpfsPrefix = `
 (function () {

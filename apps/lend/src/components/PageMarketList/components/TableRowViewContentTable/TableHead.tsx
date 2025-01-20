@@ -1,13 +1,14 @@
-import type { TableLabel, PageMarketList, FilterTypeKey } from '@/components/PageMarketList/types'
-import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+import type { TableLabel, PageMarketList, FilterTypeKey } from '@lend/components/PageMarketList/types'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 import React from 'react'
 import styled from 'styled-components'
 
-import { _showContent } from '@/utils/helpers'
-import useStore from '@/store/useStore'
+import { _showContent } from '@lend/utils/helpers'
+import useStore from '@lend/store/useStore'
 
-import { Thead, Th, TheadSortButton } from '@/ui/Table'
+import { Thead, Th, TheadSortButton } from '@ui/Table'
+import { Order, TitleKey } from '@lend/types/lend.types'
 
 const TableHead = ({
   address,

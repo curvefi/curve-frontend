@@ -1,16 +1,17 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/components/PageMarketList/types'
+import type { State } from '@loan/store/useStore'
+import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@loan/components/PageMarketList/types'
 
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
 
-import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@/components/PageMarketList/utils'
-import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
-import { TITLE } from '@/constants'
+import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@loan/components/PageMarketList/utils'
+import { SEARCH_TERM } from '@loan/hooks/useSearchTermMapper'
+import { TITLE } from '@loan/constants'
 import { searchByText } from '@ui-kit/utils'
-import { sleep } from '@/utils/helpers'
+import { sleep } from '@loan/utils/helpers'
+import { ChainId, Curve, CollateralData, TitleKey } from '@loan/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

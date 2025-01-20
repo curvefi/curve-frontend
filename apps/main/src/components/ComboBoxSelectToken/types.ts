@@ -1,3 +1,5 @@
+import { Token } from '@main/types/main.types'
+
 export type EndsWith = (string: string, substring: string) => boolean
 
 export type ComboBoxSelectTokenProps = {

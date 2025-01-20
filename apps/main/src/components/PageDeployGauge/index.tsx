@@ -4,20 +4,21 @@ import { useEffect, useMemo, useRef } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'
 
-import { curveProps } from '@/lib/utils'
-import useStore from '@/store/useStore'
+import { curveProps } from '@main/lib/utils'
+import useStore from '@main/store/useStore'
 
-import DeploySidechain from '@/components/PageDeployGauge/DeploySidechain'
-import DeployMainnet from '@/components/PageDeployGauge/DeployMainnet'
-import ProcessSummary from '@/components/PageDeployGauge/ProcessSummary'
-import DeployGaugeButton from '@/components/PageDeployGauge/components/DeployGaugeButton'
+import DeploySidechain from '@main/components/PageDeployGauge/DeploySidechain'
+import DeployMainnet from '@main/components/PageDeployGauge/DeployMainnet'
+import ProcessSummary from '@main/components/PageDeployGauge/ProcessSummary'
+import DeployGaugeButton from '@main/components/PageDeployGauge/components/DeployGaugeButton'
 
-import Box, { BoxHeader } from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Switch from '@/ui/Switch/Switch'
-import IconButton from '@/ui/IconButton'
-import Icon from '@/ui/Icon/Icon'
-import ModalDialog from '@/ui/Dialog/ModalDialog'
+import Box, { BoxHeader } from '@ui/Box'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Switch from '@ui/Switch/Switch'
+import IconButton from '@ui/IconButton'
+import Icon from '@ui/Icon/Icon'
+import ModalDialog from '@ui/Dialog/ModalDialog'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 type Props = {
   curve: CurveApi

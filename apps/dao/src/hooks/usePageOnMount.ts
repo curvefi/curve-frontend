@@ -1,20 +1,21 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectState } from '@ui/utils'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL } from '@dao/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
-import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
-import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
-import { helpers } from '@/lib/curvejs'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import { getStorageValue, setStorageValue } from '@dao/utils/utilsStorage'
+import { getNetworkFromUrl, parseParams } from '@dao/utils/utilsRouter'
+import { getWalletChainId, getWalletSignerAddress } from '@dao/store/createWalletSlice'
+import { helpers } from '@dao/lib/curvejs'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
+import networks from '@dao/networks'
+import useStore from '@dao/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId, PageProps, Wallet } from '@dao/types/dao.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -219,7 +220,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
         ;(async () => {
-          let data = await import(`@/locales/${rLocale}/messages`)
+          let data = await import(`@dao/locales/${rLocale}/messages`)
           dynamicActivate(rLocale, data)
         })()
         setLocale(rLocale)

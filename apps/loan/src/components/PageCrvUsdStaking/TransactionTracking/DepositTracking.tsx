@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@loan/store/useStore'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-import { txIsConfirming, txIsSuccess, txIsLoading } from '@/components/PageCrvUsdStaking/utils'
+import { txIsConfirming, txIsSuccess, txIsLoading } from '@loan/components/PageCrvUsdStaking/utils'
 
 import {
   Wrapper,
@@ -19,9 +19,9 @@ import {
   ResetButton,
 } from './styles'
 
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import Spinner from '@/ui/Spinner'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import Spinner from '@ui/Spinner'
 
 type DepositTrackingProps = {
   className?: string

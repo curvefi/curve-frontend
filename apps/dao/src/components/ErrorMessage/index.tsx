@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import IconButton from '@/ui/IconButton'
-import Icon from '@/ui/Icon'
+import IconButton from '@ui/IconButton'
+import Icon from '@ui/Icon'
 
 type Props = {
   message: string

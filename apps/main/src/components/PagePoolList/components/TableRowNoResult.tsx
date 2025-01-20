@@ -1,16 +1,16 @@
-import type { SearchParams } from '@/components/PagePoolList/types'
+import type { SearchParams } from '@main/components/PagePoolList/types'
 
 import { Trans } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { shortenAccount } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { shortenAccount } from '@ui/utils'
+import useStore from '@main/store/useStore'
 
-import { Td, Tr } from '@/ui/Table'
-import Box from '@/ui/Box'
-import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
+import { Td, Tr } from '@ui/Table'
+import Box from '@ui/Box'
+import AlertBox from '@ui/AlertBox'
+import Button from '@ui/Button'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 
 enum ERROR {

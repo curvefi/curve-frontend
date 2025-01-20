@@ -1,15 +1,15 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { formatNumber, shortenTokenAddress } from '@/ui/utils'
+import useStore from '@dao/store/useStore'
+import { formatNumber, shortenTokenAddress } from '@ui/utils'
 import { calculateUserPowerStale } from './utils'
 
-import Box from '@/ui/Box'
-import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
-import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
-import InternalLink from '@/ui/Link/InternalLink'
-import AlertBox from '@/ui/AlertBox'
+import Box from '@ui/Box'
+import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import ComboBoxSelectGauge from '@dao/components/ComboBoxSelectGauge'
+import InternalLink from '@ui/Link/InternalLink'
+import AlertBox from '@ui/AlertBox'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
   const { userEns, userVeCrv } = useStore((state) => state.user)

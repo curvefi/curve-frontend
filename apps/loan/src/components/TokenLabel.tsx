@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import useCollateralAlert from '@/hooks/useCollateralAlert'
+import { getImageBaseUrl } from '@loan/utils/utilsCurvejs'
+import useCollateralAlert from '@loan/hooks/useCollateralAlert'
 
-import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
-import Box from '@/ui/Box'
-import TokenIcon from '@/components/TokenIcon'
+import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
+import Box from '@ui/Box'
+import TokenIcon from '@loan/components/TokenIcon'
+import { ChainId, CollateralData, CollateralDataCache } from '@loan/types/loan.types'
 
 type Props = {
   className?: string

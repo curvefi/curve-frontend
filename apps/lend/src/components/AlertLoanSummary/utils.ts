@@ -1,4 +1,4 @@
-import { formatNumber, NumberFormatOptions } from '@/ui/utils'
+import { formatNumber, NumberFormatOptions } from '@ui/utils'
 
 export function format(val: string | number | undefined) {
   const options: NumberFormatOptions =

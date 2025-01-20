@@ -1,9 +1,9 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { Amount } from '@/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/components/PagePool/types'
-import type { FormLpTokenExpected, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
-import type { FormType, FormStatus, FormValues } from '@/components/PagePool/Deposit/types'
+import type { State } from '@main/store/useStore'
+import type { Amount } from '@main/components/PagePool/utils'
+import type { EstimatedGas as FormEstGas, Slippage } from '@main/components/PagePool/types'
+import type { FormLpTokenExpected, LoadMaxAmount } from '@main/components/PagePool/Deposit/types'
+import type { FormType, FormStatus, FormValues } from '@main/components/PagePool/Deposit/types'
 
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
@@ -12,14 +12,24 @@ import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@/components/PagePool/Deposit/utils'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from 'components/PagePool'
-import { NETWORK_TOKEN } from '@/constants'
-import { getAmountsError, parseAmountsForAPI } from '@/components/PagePool/utils'
-import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
-import { isBonus, isHighSlippage } from '@/utils'
-import { getUserPoolActiveKey } from '@/store/createUserSlice'
-import curvejsApi from '@/lib/curvejs'
+} from '@main/components/PagePool/Deposit/utils'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@main/components/PagePool'
+import { NETWORK_TOKEN } from '@main/constants'
+import { getAmountsError, parseAmountsForAPI } from '@main/components/PagePool/utils'
+import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
+import { isBonus, isHighSlippage } from '@main/utils'
+import { getUserPoolActiveKey } from '@main/store/createUserSlice'
+import curvejsApi from '@main/lib/curvejs'
+import {
+  Balances,
+  CurveApi,
+  ChainId,
+  Pool,
+  PoolData,
+  FnStepEstGasApprovalResponse,
+  FnStepApproveResponse,
+  FnStepResponse,
+} from '@main/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

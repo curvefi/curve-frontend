@@ -1,4 +1,4 @@
-import type { FormStatus, FormValues } from '@/components/PageVault/VaultWithdrawRedeem/types'
+import type { FormStatus, FormValues } from '@lend/components/PageVault/VaultWithdrawRedeem/types'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isComplete: false,

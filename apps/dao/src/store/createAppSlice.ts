@@ -1,11 +1,12 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { ConnectState } from '@/ui/utils'
+import type { State } from '@dao/store/useStore'
+import type { ConnectState } from '@ui/utils'
 
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
 import { log } from '@ui-kit/lib'
+import { CurveApi, RouterProps, Wallet } from '@dao/types/dao.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

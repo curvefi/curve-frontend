@@ -1,9 +1,10 @@
-import type { AlertBoxProps } from '@/ui/AlertBox/types'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
 
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 
-import AlertBox from '@/ui/AlertBox'
+import AlertBox from '@ui/AlertBox'
+import { AlertType } from '@loan/types/loan.types'
 
 const ALERT_FORM_WARNING_KEYS = {
   // loan deleverage

@@ -3,9 +3,10 @@ import { useCallback } from 'react'
 import { t } from '@lingui/macro'
 
 import VoteCountdown from '../../VoteCountdown'
-import ProposalVoteStatusBox from '@/components/ProposalVoteStatusBox'
-import LazyItem from '@/ui/LazyItem'
-import SmallLabel from '@/components/SmallLabel'
+import ProposalVoteStatusBox from '@dao/components/ProposalVoteStatusBox'
+import LazyItem from '@ui/LazyItem'
+import SmallLabel from '@dao/components/SmallLabel'
+import { ProposalData } from '@dao/types/dao.types'
 
 type Props = {
   proposalData: ProposalData

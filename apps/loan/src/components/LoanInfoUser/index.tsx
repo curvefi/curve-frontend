@@ -1,22 +1,23 @@
-import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
+import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
 
 import React, { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getHealthMode } from '@/components/DetailInfoHealth'
-import useStore from '@/store/useStore'
+import { DEFAULT_HEALTH_MODE } from '@loan/components/PageLoanManage/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { getHealthMode } from '@loan/components/DetailInfoHealth'
+import useStore from '@loan/store/useStore'
 
-import { SubTitle } from '@/components/LoanInfoLlamma/styles'
-import Box from '@/ui/Box'
-import PoolInfoData from '@/components/ChartOhlcWrapper'
-import ChartUserBands from '@/components/LoanInfoUser/components/ChartUserBands'
-import ChartUserLiquidationRange from '@/components/LoanInfoUser/components/ChartUserLiquidationRange'
-import UserInfos from '@/components/LoanInfoUser/components/UserInfos'
+import { SubTitle } from '@loan/components/LoanInfoLlamma/styles'
+import Box from '@ui/Box'
+import PoolInfoData from '@loan/components/ChartOhlcWrapper'
+import ChartUserBands from '@loan/components/LoanInfoUser/components/ChartUserBands'
+import ChartUserLiquidationRange from '@loan/components/LoanInfoUser/components/ChartUserLiquidationRange'
+import UserInfos from '@loan/components/LoanInfoUser/components/UserInfos'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@loan/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId

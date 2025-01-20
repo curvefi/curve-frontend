@@ -1,7 +1,8 @@
 import type { Params } from 'react-router'
 
-import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
-import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
+import { SEARCH_TERM } from '@main/hooks/useSearchTermMapper'
+import { COLUMN_KEYS } from '@main/components/PagePoolList/utils'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 export type FormStatus = {
   error: string

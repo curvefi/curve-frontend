@@ -1,4 +1,4 @@
-import type { FormEstGas, FormStatus, FormValues, VecrvInfo } from '@/components/PageCrvLocker/types'
+import type { FormEstGas, FormStatus, FormValues, VecrvInfo } from '@main/components/PageCrvLocker/types'
 
 export const DEFAULT_USER_LOCKED_CRV_INFO: VecrvInfo = {
   crv: '0',

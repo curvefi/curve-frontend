@@ -4,7 +4,7 @@ import {
   TWOCOINCRYPTOSWAPNG,
   THREECOINCRYPTOSWAP,
   STABLESWAPOLD,
-} from '@/components/PageDeployGauge/constants'
+} from '@main/components/PageDeployGauge/constants'
 
 export type PoolType =
   | typeof TWOCOINCRYPTOSWAP

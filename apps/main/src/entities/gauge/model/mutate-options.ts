@@ -10,7 +10,7 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import * as api from '@/entities/gauge/api'
+import * as api from '@main/entities/gauge/api'
 import type {
   AddRewardMutation,
   AddRewardParams,
@@ -18,7 +18,7 @@ import type {
   DepositRewardApproveParams,
   DepositRewardMutation,
   DepositRewardParams,
-} from '@/entities/gauge/types'
+} from '@main/entities/gauge/types'
 import { assertValidity } from '@ui-kit/lib/validation'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 import {

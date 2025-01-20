@@ -2,7 +2,7 @@ import type { ImgHTMLAttributes } from 'react'
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import useStore from '@/store/useStore'
+import useStore from '@dao/store/useStore'
 import Image from 'next/image'
 
 type Size = 'sm'

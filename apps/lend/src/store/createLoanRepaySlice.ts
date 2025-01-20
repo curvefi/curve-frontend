@@ -1,16 +1,17 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/components/PageLoanManage/LoanRepay/types'
+import type { State } from '@lend/store/useStore'
+import type { FormDetailInfo, FormEstGas } from '@lend/components/PageLoanManage/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@lend/components/PageLoanManage/LoanRepay/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES, DEFAULT_FORM_STATUS, _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
-import { FormError } from '@/components/AlertFormError'
-import { _parseActiveKey } from '@/utils/helpers'
-import apiLending, { helpers } from '@/lib/apiLending'
+import { DEFAULT_FORM_EST_GAS } from '@lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_VALUES, DEFAULT_FORM_STATUS, _parseValues } from '@lend/components/PageLoanManage/LoanRepay/utils'
+import { FormError } from '@lend/components/AlertFormError'
+import { _parseActiveKey } from '@lend/utils/helpers'
+import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, UserLoanState } from '@lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

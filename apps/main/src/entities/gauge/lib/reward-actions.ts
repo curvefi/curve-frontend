@@ -11,8 +11,8 @@
 
 import { t } from '@lingui/macro'
 import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
-import * as models from '@/entities/gauge/model'
-import { gaugeKeys as keys } from '@/entities/gauge/model'
+import * as models from '@main/entities/gauge/model'
+import { gaugeKeys as keys } from '@main/entities/gauge/model'
 import type {
   AddRewardMutation,
   AddRewardParams,
@@ -20,11 +20,11 @@ import type {
   DepositRewardApproveParams,
   DepositRewardMutation,
   DepositRewardParams,
-} from '@/entities/gauge/types'
+} from '@main/entities/gauge/types'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { GaugeParams } from '@ui-kit/lib/model/query'
-import useTokensMapper from '@/hooks/useTokensMapper'
-import useStore from '@/store/useStore'
+import useTokensMapper from '@main/hooks/useTokensMapper'
+import useStore from '@main/store/useStore'
 
 export const useAddRewardToken = ({
   chainId,

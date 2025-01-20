@@ -26,13 +26,13 @@ import { useComboBoxState } from 'react-stately'
 import styled from 'styled-components'
 import React from 'react'
 
-import { breakpoints } from '@/ui/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
-import InputProvider from '@/ui/InputComp'
-import ShadowedBox from '@/ui/ShadowedBox'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import InputProvider from '@ui/InputComp'
+import ShadowedBox from '@ui/ShadowedBox'
 
 const Popover = (
   props: React.PropsWithChildren<AriaOverlayProps & { popoverRef: React.RefObject<HTMLDivElement> }>,

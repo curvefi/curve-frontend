@@ -1,14 +1,15 @@
-import type { FormType } from '@/components/PageLoanCreate/types'
+import type { FormType } from '@lend/components/PageLoanCreate/types'
 
 import { useMemo, useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { getLoanCreatePathname } from '@/utils/utilsRouter'
-import useStore from '@/store/useStore'
+import { getLoanCreatePathname } from '@lend/utils/utilsRouter'
+import useStore from '@lend/store/useStore'
 
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
-import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import LoanFormCreate from '@lend/components/PageLoanCreate/LoanFormCreate'
+import { PageContentProps } from '@lend/types/lend.types'
 
 const LoanCreate = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, rFormType, market } = pageProps

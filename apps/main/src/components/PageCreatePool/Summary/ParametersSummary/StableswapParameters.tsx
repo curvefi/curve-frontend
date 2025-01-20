@@ -1,13 +1,14 @@
 import { t } from '@lingui/macro'
-import useStore from '@/store/useStore'
-import { IMPLEMENTATION_IDS } from '@/components/PageCreatePool/constants'
+import useStore from '@main/store/useStore'
+import { IMPLEMENTATION_IDS } from '@main/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   SummaryDataTitle,
   SummaryData,
   SummaryDataPlaceholder,
   ExtraMarginRow,
-} from '@/components/PageCreatePool/Summary/styles'
+} from '@main/components/PageCreatePool/Summary/styles'
+import { ChainId } from '@main/types/main.types'
 
 type Props = {
   chainId: ChainId

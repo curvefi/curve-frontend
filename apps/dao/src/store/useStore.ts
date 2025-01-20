@@ -5,18 +5,19 @@ import { devtools, persist } from 'zustand/middleware'
 import { create } from 'zustand'
 import merge from 'lodash/merge'
 
-import createAppSlice, { AppSlice } from '@/store/createAppSlice'
-import createCacheSlice, { CacheSlice } from '@/store/createCacheSlice'
-import createGasSlice, { GasSlice } from '@/store/createGasSlice'
-import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
-import createProposalsSlice, { ProposalsSlice } from '@/store/createProposalsSlice'
-import createUserSlice, { UserSlice } from '@/store/createUserSlice'
-import createGaugesSlice, { GaugesSlice } from '@/store/createGaugesSlice'
-import createAnalyticsSlice, { AnalyticsSlice } from '@/store/createAnalyticsSlice'
+import createAppSlice, { AppSlice } from '@dao/store/createAppSlice'
+import createCacheSlice, { CacheSlice } from '@dao/store/createCacheSlice'
+import createGasSlice, { GasSlice } from '@dao/store/createGasSlice'
+import createWalletSlice, { WalletSlice } from '@dao/store/createWalletSlice'
+import createProposalsSlice, { ProposalsSlice } from '@dao/store/createProposalsSlice'
+import createUserSlice, { UserSlice } from '@dao/store/createUserSlice'
+import createGaugesSlice, { GaugesSlice } from '@dao/store/createGaugesSlice'
+import createAnalyticsSlice, { AnalyticsSlice } from '@dao/store/createAnalyticsSlice'
 import createTokensSlice, { TokensSlice } from './createTokensSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from './createUsdRatesSlice'
 import createLayoutSlice, { AppLayoutSlice } from './createLayoutSlice'
+
 export type State = AppSlice &
   CacheSlice &
   GasSlice &

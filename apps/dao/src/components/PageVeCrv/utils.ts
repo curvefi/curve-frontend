@@ -1,4 +1,4 @@
-import type { FormEstGas, FormStatus, FormValues, VecrvInfo } from '@/components/PageVeCrv/types'
+import type { FormEstGas, FormStatus, FormValues, VecrvInfo } from '@dao/components/PageVeCrv/types'
 
 export const DEFAULT_USER_LOCKED_CRV_INFO: VecrvInfo = {
   crv: '0',

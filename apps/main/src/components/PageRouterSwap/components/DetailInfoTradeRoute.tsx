@@ -1,15 +1,14 @@
 import type { Params } from 'react-router'
-import type { Route } from '@/components/PageRouterSwap/types'
+import type { Route } from '@main/components/PageRouterSwap/types'
 
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
-
-import { RCCircle } from '@/images'
-import Box from '@/ui/Box'
-import DetailInfoTradeRouteRoute from '@/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
-import Loader from '@/ui/Loader'
+import { RCCircle } from '@ui/images'
+import Box from '@ui/Box'
+import DetailInfoTradeRouteRoute from '@main/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
+import Loader from '@ui/Loader'
+import { TokensNameMapper } from '@main/types/main.types'
 
 const DetailInfoTradeRoute = ({
   params,

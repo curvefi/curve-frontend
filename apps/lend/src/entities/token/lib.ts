@@ -1,4 +1,4 @@
-import { tokenUsdRate } from '@/entities/token/model'
+import { tokenUsdRate } from '@lend/entities/token/model'
 import { useQueryMapping } from '@ui-kit/lib/queries'
 import { ChainParams } from '@ui-kit/lib/model/query'
 

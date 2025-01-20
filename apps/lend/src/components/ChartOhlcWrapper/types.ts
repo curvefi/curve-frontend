@@ -1,4 +1,5 @@
-import type { LlammaControllerEvent, LlammaTradeEvent } from '@/ui/Chart/types'
+import type { LlammaControllerEvent, LlammaTradeEvent } from '@ui/Chart/types'
+import { ChainId } from '@lend/types/lend.types'
 
 export type LendingMarketTokens = {
   borrowedToken: {

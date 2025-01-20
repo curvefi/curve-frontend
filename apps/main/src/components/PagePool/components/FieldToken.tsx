@@ -1,11 +1,11 @@
 import { t } from '@lingui/macro'
 
-import { NETWORK_TOKEN } from '@/constants'
-import { shortenTokenAddress, shortenTokenName } from '@/utils'
+import { NETWORK_TOKEN } from '@main/constants'
+import { shortenTokenAddress, shortenTokenName } from '@main/utils'
 
-import Box from '@/ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import TokenIcon from '@/components/TokenIcon'
+import Box from '@ui/Box'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import TokenIcon from '@main/components/TokenIcon'
 
 type Props = {
   idx: number

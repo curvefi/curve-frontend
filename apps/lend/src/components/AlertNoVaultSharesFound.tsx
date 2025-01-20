@@ -3,15 +3,16 @@ import { t } from '@lingui/macro'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { getVaultPathname } from '@/utils/utilsRouter'
-import useStore from '@/store/useStore'
+import { getVaultPathname } from '@lend/utils/utilsRouter'
+import useStore from '@lend/store/useStore'
 
-import { ContentWrapper } from '@/components/DetailsMarket/styles'
-import AlertBox from '@/ui/AlertBox'
-import InternalLink from '@/ui/Link/InternalLink'
-import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
-import Spinner from '@/ui/Spinner'
-import TextCaption from '@/ui/TextCaption'
+import { ContentWrapper } from '@lend/components/DetailsMarket/styles'
+import AlertBox from '@ui/AlertBox'
+import InternalLink from '@ui/Link/InternalLink'
+import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
+import Spinner from '@ui/Spinner'
+import TextCaption from '@ui/TextCaption'
+import { PageContentProps } from '@lend/types/lend.types'
 
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {
   const params = useParams()

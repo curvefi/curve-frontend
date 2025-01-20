@@ -1,5 +1,25 @@
-import type { UserBaseProfit, UserClaimableToken, UserTokenProfit } from '@/types'
-import { SORT_ID } from '@/components/PageDashboard/utils'
+import { SORT_ID } from '@main/components/PageDashboard/utils'
+import { ChainId, RewardsApy, PoolData } from '@main/types/main.types'
+
+type UserBaseProfit = {
+  day: string
+  week: string
+  month: string
+  year: string
+}
+
+type UserClaimableToken = {
+  token: string
+  symbol: string
+  amount: string
+  price: number
+}
+
+interface UserTokenProfit extends UserBaseProfit {
+  token: string
+  symbol: string
+  price: number
+}
 
 export type Order = 'asc' | 'desc'
 

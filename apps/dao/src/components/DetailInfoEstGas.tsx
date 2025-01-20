@@ -4,14 +4,15 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { NETWORK_TOKEN } from '@/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { NETWORK_TOKEN } from '@dao/constants'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import networks from '@dao/networks'
+import useStore from '@dao/store/useStore'
 
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import DetailInfo from '@ui/DetailInfo'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { CurveApi, ChainId, EstimatedGas } from '@dao/types/dao.types'
 
 export type StepProgress = {
   active: number

@@ -1,4 +1,4 @@
-import { Thead } from '@/ui/Table'
+import { Thead } from '@ui/Table'
 
 const TableHeadMobile = () => (
   <>

@@ -1,10 +1,10 @@
-import { SwapType, TokenState } from '@/components/PageCreatePool/types'
-import { STABLESWAP } from '@/components/PageCreatePool/constants'
+import { SwapType, TokenState } from '@main/components/PageCreatePool/types'
+import { STABLESWAP } from '@main/components/PageCreatePool/constants'
 import { t } from '@lingui/macro'
-import { shortenTokenAddress } from '@/utils'
+import { shortenTokenAddress } from '@main/utils'
 import styled from 'styled-components'
-import useStore from '@/store/useStore'
-import { checkTokensInPoolUnset, containsOracle } from '@/components/PageCreatePool/utils'
+import useStore from '@main/store/useStore'
+import { checkTokensInPoolUnset, containsOracle } from '@main/components/PageCreatePool/utils'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -14,7 +14,7 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
-} from '@/components/PageCreatePool/constants'
+} from '@main/components/PageCreatePool/constants'
 import {
   CategoryColumn,
   CategoryDataColumn,
@@ -26,11 +26,12 @@ import {
   AddressLink,
   ButtonTokenIcon,
   TokenType,
-} from '@/components/PageCreatePool/Summary/styles'
-import OracleSummary from '@/components/PageCreatePool/Summary/OracleSummary'
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import { Chip } from '@/ui/Typography'
+} from '@main/components/PageCreatePool/Summary/styles'
+import OracleSummary from '@main/components/PageCreatePool/Summary/OracleSummary'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import { Chip } from '@ui/Typography'
+import { ChainId } from '@main/types/main.types'
 
 type Props = {
   imageBaseUrl: string

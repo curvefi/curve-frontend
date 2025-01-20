@@ -15,6 +15,7 @@
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "7.36.1",
+    "eslint-plugin-unused-imports": "^3.2.0",
     "prettier-eslint": "^16.3.0"
   },
   "peerDependencies": {

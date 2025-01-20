@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@main/store/useStore'
 import type {
   FetchingStatus,
   LpLiquidityEventsApiResponse,
@@ -14,7 +14,7 @@ import type {
   PricesApiPool,
   PricesApiPoolResponse,
   TimeOptions,
-} from '@/ui/Chart/types'
+} from '@ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
 import { PromisePool } from '@supercharge/promise-pool'
@@ -26,11 +26,31 @@ import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
 
-import { INVALID_ADDRESS } from '@/constants'
-import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/utils'
+import { INVALID_ADDRESS } from '@main/constants'
+import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@main/utils'
 import { log } from '@ui-kit/lib/logging'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
-import curvejsApi from '@/lib/curvejs'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import curvejsApi from '@main/lib/curvejs'
+import {
+  CurveApi,
+  ChainId,
+  NetworkConfig,
+  CurrencyReservesToken,
+  CurrencyReserves,
+  CurrencyReservesMapper,
+  RewardsApyMapper,
+  TokensMapper,
+  PoolData,
+  BasePool,
+  PoolDataMapper,
+  PoolDataCache,
+  PricesApiPoolData,
+  SnapshotsMapper,
+  PricesApiSnapshotsResponse,
+  PoolDataCacheMapper,
+  TvlMapper,
+  VolumeMapper,
+} from '@main/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

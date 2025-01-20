@@ -14,6 +14,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Container from '@mui/material/Container'
+import AlertTitle from '@mui/material/AlertTitle'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
@@ -63,7 +64,7 @@ export const ChainSwitcher = <TChainId extends number>({
       >
         <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
           <Alert variant="filled" severity="warning" data-testid="alert-eth-only">
-            {t`This application is only available on the Ethereum Mainnet`}
+            <AlertTitle>{t`This application is only available on the Ethereum Mainnet`}</AlertTitle>
           </Alert>
         </Container>
       </Snackbar>

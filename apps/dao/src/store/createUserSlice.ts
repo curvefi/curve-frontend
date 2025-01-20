@@ -1,14 +1,33 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
+import type { State } from '@dao/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
 
 import { Contract } from 'ethers'
 import produce from 'immer'
 
-import { SEVEN_DAYS } from '@/constants'
-import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
-import { contractVeCRV } from '@/store/contracts'
-import { abiVeCrv } from '@/store/abis'
+import { SEVEN_DAYS } from '@dao/constants'
+import { getWalletSignerAddress, getWalletSignerEns } from '@dao/store/createWalletSlice'
+import { contractVeCRV } from '@dao/store/contracts'
+import { abiVeCrv } from '@dao/store/abis'
+import {
+  CurveApi,
+  UserMapper,
+  UserVoteData,
+  SnapshotVotingPower,
+  UserLockRes,
+  UserLock,
+  UserProposalVoteData,
+  UserProposalVotesRes,
+  UserGaugeVote,
+  UserGaugeVotesRes,
+  UserGaugeVoteWeightsMapper,
+  FetchingState,
+  SortDirection,
+  UserLocksSortBy,
+  UserGaugeVotesSortBy,
+  UserProposalVotesSortBy,
+  UserGaugeVoteWeightSortBy,
+} from '@dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

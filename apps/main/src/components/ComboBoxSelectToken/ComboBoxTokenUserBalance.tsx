@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import useStore from '@main/store/useStore'
 
-import Box from '@/ui/Box'
-import Spinner from '@/ui/Spinner'
-import TextCaption from '@/ui/TextCaption'
+import Box from '@ui/Box'
+import Spinner from '@ui/Spinner'
+import TextCaption from '@ui/TextCaption'
 
 const ComboBoxTokenUserBalance = ({ tokenAddress }: { tokenAddress: string }) => {
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)

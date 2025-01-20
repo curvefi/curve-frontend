@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ChainId, PoolDataCacheOrApi } from '@main/types/main.types'
 
 enum Pool {
   fantomFactoryStableNg24 = `250-factory-stable-ng-24`,

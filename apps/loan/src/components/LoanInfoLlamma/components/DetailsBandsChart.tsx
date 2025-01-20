@@ -1,11 +1,12 @@
-import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
+import type { BrushStartEndIndex } from '@loan/components/ChartBandBalances/types'
 
 import React, { useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
+import useStore from '@loan/store/useStore'
 
-import ChartBandBalances from '@/components/ChartBandBalances'
+import ChartBandBalances from '@loan/components/ChartBandBalances'
+import { Llamma, BandsBalancesData } from '@loan/types/loan.types'
 
 const DEFAULT_BAND_CHART_DATA = {
   collateral: '0',
@@ -14,6 +15,7 @@ const DEFAULT_BAND_CHART_DATA = {
   isOraclePriceBand: false,
   isNGrouped: false,
   n: '',
+  pUpDownMedian: '',
   p_up: '0',
   p_down: '0',
   stablecoin: '0',

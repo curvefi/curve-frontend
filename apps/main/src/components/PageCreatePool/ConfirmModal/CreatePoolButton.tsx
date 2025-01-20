@@ -1,13 +1,14 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-import { curveProps } from '@/lib/utils'
+import useStore from '@main/store/useStore'
+import { curveProps } from '@main/lib/utils'
 
-import Button from '@/ui/Button'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import AlertBox from '@/ui/AlertBox'
-import InfoLinkBar from '@/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import Button from '@ui/Button'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import AlertBox from '@ui/AlertBox'
+import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { CurveApi } from '@main/types/main.types'
 
 interface Props {
   disabled: boolean

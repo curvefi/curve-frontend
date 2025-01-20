@@ -1,5 +1,6 @@
-import { useCurve } from '@/entities/curve'
-import useStore from '@/store/useStore'
+import { useCurve } from '@main/entities/curve'
+import useStore from '@main/store/useStore'
+import { ChainId } from '@main/types/main.types'
 
 export const useChainId = () => {
   const { data: curve } = useCurve()

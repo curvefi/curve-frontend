@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react'
 import { t } from '@lingui/macro'
 
-import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@/ui/utils'
-import useStore from '@/store/useStore'
+import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
+import useStore from '@lend/store/useStore'
 
-import { SubTitle } from '@/components/DetailsMarket/styles'
-import Box from '@/ui/Box'
-import Chip from '@/ui/Typography/Chip'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
-import { useOneWayMarket } from '@/entities/chain'
+import { SubTitle } from '@lend/components/DetailsMarket/styles'
+import Box from '@ui/Box'
+import Chip from '@ui/Typography/Chip'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
+import { useOneWayMarket } from '@lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { ChainId } from '@lend/types/lend.types'
 
 const MarketParameters = ({
   rChainId,

@@ -1,4 +1,4 @@
-import type { SearchTermMapper, SearchTermKey } from '@/components/PageMarketList/types'
+import type { SearchTermMapper, SearchTermKey } from '@lend/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'

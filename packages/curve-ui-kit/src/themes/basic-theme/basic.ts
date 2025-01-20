@@ -27,17 +27,24 @@ export const basicMuiTheme = createMuiTheme({
  *   '@media (min-width: 1200px)': { width: 100, height: '300px' }
  *  }
  */
-export const handleBreakpoints = (values: Record<keyof CSSObject, number | string | Responsive>) =>
+export const handleBreakpoints = (values: Record<keyof CSSObject, number | string | Responsive>): CSSObject =>
   Object.fromEntries(
-    basicMuiTheme.breakpoints.keys.map((breakpoint) => [
-      basicMuiTheme.breakpoints.up(breakpoint),
-      Object.fromEntries(
-        Object.entries(values).map(([key, value]) => [
-          key,
-          typeof value === 'string' || typeof value === 'number' ? value : value[breakpoint],
-        ]),
-      ),
-    ]),
+    basicMuiTheme.breakpoints.keys.map((breakpoint) => {
+      const selector = basicMuiTheme.breakpoints.up(breakpoint)
+      return [
+        selector,
+        {
+          // in case the selector is already present, merge the values
+          ...((values[selector] as CSSObject) ?? {}),
+          ...Object.fromEntries(
+            Object.entries(values).map(([key, value]) => [
+              key,
+              typeof value === 'string' || typeof value === 'number' || value == null ? value : value[breakpoint],
+            ]),
+          ),
+        },
+      ]
+    }),
   )
 
 export type Responsive = Record<Breakpoint, string>

@@ -1,13 +1,14 @@
-import type { LiqRangeSliderIdx } from '@/store/types'
-import type { DetailInfoCompAdditionalProps, DetailInfoCompProps } from '@/components/PageLoanCreate/types'
+import type { LiqRangeSliderIdx } from '@lend/store/types'
+import type { DetailInfoCompAdditionalProps, DetailInfoCompProps } from '@lend/components/PageLoanCreate/types'
 
 import React, { useMemo } from 'react'
 
-import { getActiveStep } from '@/ui/Stepper/helpers'
-import useStore from '@/store/useStore'
+import { getActiveStep } from '@ui/Stepper/helpers'
+import useStore from '@lend/store/useStore'
 
-import DetailInfoNonLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
-import DetailInfoLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
+import DetailInfoNonLeverage from '@lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
+import DetailInfoLeverage from '@lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
+import { PageContentProps } from '@lend/types/lend.types'
 
 const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
   const { api, market, steps, updateFormValues } = props

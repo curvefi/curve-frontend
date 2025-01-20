@@ -1,8 +1,8 @@
 import type { DateValue } from '@internationalized/date'
-import type { FormType as LockFormType } from '@/components/PageCrvLocker/types'
+import type { FormType as LockFormType } from '@main/components/PageCrvLocker/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/components/PageRouterSwap/types'
-import type { FormValues as PoolSwapFormValues } from '@/components/PagePool/Swap/types'
+import type { ExchangeRate, FormValues, Route, SearchedParams } from '@main/components/PageRouterSwap/types'
+import type { FormValues as PoolSwapFormValues } from '@main/components/PagePool/Swap/types'
 import countBy from 'lodash/countBy'
 import dayjs from '@ui-kit/lib/dayjs'
 import chunk from 'lodash/chunk'
@@ -16,19 +16,35 @@ import {
   parseBaseProfit,
   separateCrvProfit,
   separateCrvReward,
-} from '@/utils/utilsCurvejs'
-import { BN } from '@/ui/utils'
-import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/utils'
-import { httpFetcher } from '@/lib/utils'
+} from '@main/utils/utilsCurvejs'
+import { BN } from '@ui/utils'
+import { claimButtonsKey } from '@main/components/PageDashboard/components/FormClaimFees'
+import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@main/utils'
+import { httpFetcher } from '@main/lib/utils'
 import {
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
   _parseRoutesAndOutput,
-} from '@/utils/utilsSwap'
+} from '@main/utils/utilsSwap'
 import { log } from '@ui-kit/lib/logging'
-import useStore from '@/store/useStore'
+import useStore from '@main/store/useStore'
+import {
+  CurveApi,
+  ChainId,
+  NetworkConfig,
+  Pool,
+  Provider,
+  ClaimableReward,
+  RewardCrv,
+  RewardOther,
+  RewardsApy,
+  PoolParameters,
+  UserBalancesMapper,
+  PoolData,
+  UsdRatesMapper,
+  EstimatedGas,
+} from '@main/types/main.types'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -105,7 +121,7 @@ const helpers = {
 // curve
 const network = {
   fetchAllPoolsList: async (curve: CurveApi, network: NetworkConfig) => {
-    log('fetchAllPoolsList', curve.chainId, network)
+    log('fetchAllPoolsList', curve.chainId)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
     const useApi = network.useApi
     await Promise.allSettled([

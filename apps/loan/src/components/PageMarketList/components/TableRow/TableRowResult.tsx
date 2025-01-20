@@ -1,16 +1,16 @@
-import type { PageCollateralList, TableRowProps } from '@/components/PageMarketList/types'
+import type { PageCollateralList, TableRowProps } from '@loan/components/PageMarketList/types'
 
 import React, { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
-import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import { getLoanCreatePathname, getLoanManagePathname } from '@loan/utils/utilsRouter'
+import { parseSearchTermMapper } from '@loan/hooks/useSearchTermMapper'
+import networks from '@loan/networks'
+import useStore from '@loan/store/useStore'
 
-import TableRow from '@/components/PageMarketList/components/TableRow/TableRow'
-import TableRowMobile from '@/components/PageMarketList/components/TableRow/TableRowMobile'
-import TrSearchedTextResult from '@/ui/Table/TrSearchedTextResult'
+import TableRow from '@loan/components/PageMarketList/components/TableRow/TableRow'
+import TableRowMobile from '@loan/components/PageMarketList/components/TableRow/TableRowMobile'
+import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
 
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
@@ -68,10 +68,10 @@ const TableRowResult = ({
 
   return (
     <>
-      {!isMdUp ? (
-        <TableRowMobile key={collateralId} {...tableRowProps} showDetail={showDetail} setShowDetail={setShowDetail} />
-      ) : (
+      {isMdUp ? (
         <TableRow key={collateralId} {...tableRowProps} someLoanExists={someLoanExists} />
+      ) : (
+        <TableRowMobile key={collateralId} {...tableRowProps} showDetail={showDetail} setShowDetail={setShowDetail} />
       )}
 
       {searchedByAddresses && Object.keys(searchedByAddresses).length > 0 && (

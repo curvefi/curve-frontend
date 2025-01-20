@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormType, FormEstGas, FormStatus, FormValues, VecrvInfo } from '@/components/PageVeCrv/types'
+import type { State } from '@dao/store/useStore'
+import type { FormType, FormEstGas, FormStatus, FormValues, VecrvInfo } from '@dao/components/PageVeCrv/types'
 
-import networks from '@/networks'
+import networks from '@dao/networks'
 import cloneDeep from 'lodash/cloneDeep'
 
 import {
@@ -10,10 +10,17 @@ import {
   DEFAULT_USER_LOCKED_CRV_INFO,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_EST_GAS,
-} from '@/components/PageVeCrv/utils'
+} from '@dao/components/PageVeCrv/utils'
 
-import { formatNumber, shortenAccount } from '@/ui/utils'
+import { formatNumber, shortenAccount } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
+import {
+  CurveApi,
+  ChainId,
+  FnStepEstGasApprovalResponse,
+  FnStepApproveResponse,
+  FnStepResponse,
+} from '@dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

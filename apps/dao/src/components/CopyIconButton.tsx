@@ -1,7 +1,7 @@
-import { copyToClipboard } from '@/utils'
+import { copyToClipboard } from '@dao/utils'
 
-import TooltipButton from '@/ui/Tooltip'
-import Icon from '@/ui/Icon'
+import TooltipButton from '@ui/Tooltip'
+import Icon from '@ui/Icon'
 
 type CopyIconButtonProps = {
   copyContent: string

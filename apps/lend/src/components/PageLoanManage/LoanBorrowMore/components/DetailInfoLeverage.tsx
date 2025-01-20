@@ -1,21 +1,22 @@
-import type { Step } from '@/ui/Stepper/types'
+import type { Step } from '@ui/Stepper/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { _parseValues } from '@/components/PageLoanManage/LoanBorrowMore/utils'
-import useStore from '@/store/useStore'
+import { _parseValues } from '@lend/components/PageLoanManage/LoanBorrowMore/utils'
+import useStore from '@lend/store/useStore'
 
-import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/components/DetailInfoHealth'
+import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@lend/components/DetailInfoHealth'
 import DetailInfoLeverageAdvancedExpected from 'components/DetailInfoLeverageAdvancedExpected'
-import DetailInfoLeverageAvgPrice from '@/components/DetailInfoLeverageAvgPrice'
-import DetailInfoLeverageExpected from '@/components/DetailInfoLeverageExpected'
-import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
-import DetailInfoPriceImpact from '@/components/DetailInfoPriceImpact'
-import DetailInfoRate from '@/components/DetailInfoRate'
-import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
+import DetailInfoLeverageAvgPrice from '@lend/components/DetailInfoLeverageAvgPrice'
+import DetailInfoLeverageExpected from '@lend/components/DetailInfoLeverageExpected'
+import DetailInfoLiqRange from '@lend/components/DetailInfoLiqRange'
+import DetailInfoPriceImpact from '@lend/components/DetailInfoPriceImpact'
+import DetailInfoRate from '@lend/components/DetailInfoRate'
+import DetailInfoSlippageTolerance from '@lend/components/DetailInfoSlippageTolerance'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PageContentProps, HealthMode } from '@lend/types/lend.types'
 
 const DetailInfoLeverage = ({
   rChainId,
@@ -98,7 +99,7 @@ const DetailInfoLeverage = ({
         <DetailInfoLeverageExpected
           loading={expectedLoading}
           total={expectedCollateral?.totalCollateral}
-          swapToSymbol={borrowed_token?.symbol}
+          swapToSymbol={collateral_token?.symbol}
         />
       )}
 

@@ -1,17 +1,18 @@
 import type { DateValue } from '@internationalized/date'
-import type { FormType, VecrvInfo } from '@/components/PageVeCrv/types'
+import type { FormType, VecrvInfo } from '@dao/components/PageVeCrv/types'
 
 import { t } from '@lingui/macro'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
+import { breakpoints } from '@ui/utils/responsive'
+import { formatDisplayDate, toCalendarDate } from '@dao/utils/utilsDates'
 import dayjs from '@ui-kit/lib/dayjs'
 
-import { Chip } from '@/ui/Typography'
-import Button from '@/ui/Button'
-import DatePicker from '@/ui/DatePicker'
+import { Chip } from '@ui/Typography'
+import Button from '@ui/Button'
+import DatePicker from '@ui/DatePicker'
+import { CurveApi } from '@dao/types/dao.types'
 
 const QUICK_ACTIONS: { unit: dayjs.ManipulateType; value: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },

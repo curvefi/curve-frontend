@@ -1,5 +1,5 @@
-import { LendingSnapshot, useLendingSnapshots } from '@/entities/lending'
-import { LendingVault } from '@/entities/vaults'
+import { LendingSnapshot, useLendingSnapshots } from '@loan/entities/lending'
+import { LendingVault } from '@loan/entities/vaults'
 import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
@@ -22,7 +22,7 @@ function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType
   if (!data.length) return undefined
   const first = data[0][`${type}_apy`]
   const last = data[data.length - 1][`${type}_apy`]
-  return design.Text.TextColors[last === first ? 'Info' : last < first ? 'Error' : 'Success']
+  return design.Layer.Feedback[last === first ? 'Info' : last < first ? 'Error' : 'Success']
 }
 
 /** Center the y-axis around the first value */

@@ -90,35 +90,20 @@ export function log(
   const logger = logMethod(status)
 
   const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
-
-  if (hasDefinedStatus) {
-    const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
-    logger(
-      `%cDApp%c @ %c${timestamp}%c -> %c${status}%c\n${formattedKeyString}${args.length > 0 ? '%c: ' : ''}%c`,
-      'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;',
-      'color: #666; font-weight: bold;',
-      'color: #2196F3;',
-      'color: #666;',
-      getStatusStyle(status),
-      'color: #4CAF50; font-weight: bold;',
-      ...keyStyles,
-      ...(args.length > 0 ? ['color: 666;'] : []),
-      'color: inherit;',
-      ...args,
-    )
-  } else {
-    const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
-    logger(
-      `%cDApp%c @ %c${timestamp}%c ->\n${formattedKeyString}${args.length > 0 ? '%c: ' : ''}%c`,
-      'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;',
-      'color: #666; font-weight: bold;',
-      'color: #2196F3;',
-      'color: #666;',
-      ...keyStyles,
-      'color: inherit;',
-      ...args,
-    )
-  }
+  const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
+  const restArgs = hasDefinedStatus ? args : [status, ...args]
+  const argsFormat = restArgs.length && `%c (%c${restArgs.map((i) => JSON.stringify(i)).join(', ')}%c)`
+  const format = `%cDApp%c @ %c${timestamp}%c -> ${hasDefinedStatus ? `%c${status} ` : ''}${formattedKeyString}${argsFormat ?? ''}`
+  logger(
+    format,
+    'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;', // DApp
+    'color: #666; font-weight: bold;', // @
+    'color: #2196F3;', // timestamp
+    'color: #666;', // ->
+    ...(hasDefinedStatus ? [getStatusStyle(status), 'color: #4CAF50; font-weight: bold;'] : []), // status
+    ...keyStyles, // key
+    ...(restArgs.length ? ['color: #fff;', 'color: #666;', 'color: #fff;'] : []), // args
+  )
 }
 
 export const logQuery = (key: QueryKey, ...args: unknown[]) => log(key, LogStatus.QUERY, ...args)

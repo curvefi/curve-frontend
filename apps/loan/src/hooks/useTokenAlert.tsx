@@ -2,7 +2,8 @@ import { t, Trans } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import ExternalLink from '@/ui/Link/ExternalLink'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { AlertType } from '@loan/types/loan.types'
 
 type TokenAlert = {
   alertType: AlertType

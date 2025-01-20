@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { curveProps } from '@/lib/utils'
-import useStore from '@/store/useStore'
+import { curveProps } from '@main/lib/utils'
+import useStore from '@main/store/useStore'
 import {
   checkSwapType,
   checkTokensInPool,
@@ -10,20 +10,21 @@ import {
   checkFormReady,
   oraclesReady,
   checkPoolInfo,
-} from '@/components/PageCreatePool/utils'
-import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
-import Spinner from '@/ui/Spinner'
-import Icon from '@/ui/Icon'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
-import Navigation from '@/components/PageCreatePool/components/Navigation'
-import PoolType from '@/components/PageCreatePool/PoolType'
-import TokensInPool from '@/components/PageCreatePool/TokensInPool'
-import PoolInfo from '@/components/PageCreatePool/PoolInfo'
-import Summary from '@/components/PageCreatePool/Summary'
-import Parameters from '@/components/PageCreatePool/Parameters'
-import InfoBox from '@/components/PageCreatePool/components/InfoBox'
+} from '@main/components/PageCreatePool/utils'
+import { STABLESWAP, CRYPTOSWAP } from '@main/components/PageCreatePool/constants'
+import Spinner from '@ui/Spinner'
+import Icon from '@ui/Icon'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import ConfirmModal from '@main/components/PageCreatePool/ConfirmModal'
+import Navigation from '@main/components/PageCreatePool/components/Navigation'
+import PoolType from '@main/components/PageCreatePool/PoolType'
+import TokensInPool from '@main/components/PageCreatePool/TokensInPool'
+import PoolInfo from '@main/components/PageCreatePool/PoolInfo'
+import Summary from '@main/components/PageCreatePool/Summary'
+import Parameters from '@main/components/PageCreatePool/Parameters'
+import InfoBox from '@main/components/PageCreatePool/components/InfoBox'
+import { CurveApi, ChainId } from '@main/types/main.types'
 
 type Props = {
   curve: CurveApi

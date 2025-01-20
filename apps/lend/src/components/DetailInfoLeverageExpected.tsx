@@ -1,9 +1,9 @@
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber } from '@ui/utils'
 
-import DetailInfo from '@/ui/DetailInfo'
+import DetailInfo from '@ui/DetailInfo'
 
 const DetailInfoLeverageExpected = ({
   total,
