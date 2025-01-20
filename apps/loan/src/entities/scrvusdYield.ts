@@ -1,4 +1,4 @@
-import type { TimeOption } from '@ui-kit/shared/ui/ChartHeader'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 

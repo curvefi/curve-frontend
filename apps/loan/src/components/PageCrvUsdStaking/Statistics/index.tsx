@@ -1,15 +1,16 @@
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Card, CardHeader, Box } from '@mui/material'
 import { useState } from 'react'
 import StatsStack from './StatsStack'
-import ChartHeader, { ChartOption, TimeOption } from '@ui-kit/shared/ui/ChartHeader'
+import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
 import { useScrvUsdYield } from '@/entities/scrvusdYield'
 import LineChart from './LineChart'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
 const chartOptions: ChartOption[] = [
-  { activeTitle: 'Historical Rate', label: 'Interest Rate' },
+  { activeTitle: 'Historical Rate', label: 'Savings Rate' },
   { activeTitle: 'Historical Rewards', label: 'Rewards' },
 ]
 

@@ -1,3 +1,4 @@
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import Stack from '@mui/material/Stack'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -14,8 +15,6 @@ export type ChartOption = {
   label: string
   activeTitle: string
 }
-
-export type TimeOption = '1d' | '1w' | '1m'
 
 type ChartHeaderProps = {
   chartOptions: ChartOption[]
