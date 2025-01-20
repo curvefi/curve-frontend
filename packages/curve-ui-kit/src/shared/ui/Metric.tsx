@@ -233,7 +233,7 @@ export const Metric = ({
       </Typography>
 
       {loading ? (
-        <Skeleton variant="text" width="100%">
+        <Skeleton variant="text">
           <MetricValue {...metricValueProps} />
         </Skeleton>
       ) : (
