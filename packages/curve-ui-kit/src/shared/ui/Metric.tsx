@@ -27,6 +27,13 @@ const MetricSize = {
   extraLarge: 'highlightXxl',
 } as const satisfies Record<string, TypographyVariantKey>
 
+const MetricUnitSize = {
+  small: 'highlightXs',
+  medium: 'highlightS',
+  large: 'highlightM',
+  extraLarge: 'highlightL',
+} as const satisfies Record<string, TypographyVariantKey>
+
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type UnitOptions = {
@@ -83,15 +90,25 @@ type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate
   change?: number
   unit: UnitOptions | undefined
   fontVariant: TypographyVariantKey
+  fontVariantUnit: TypographyVariantKey
   copyValue: () => void
 }
 
-const MetricValue = ({ value, formatter, change, abbreviate, unit, fontVariant, copyValue }: MetricValueProps) => (
+const MetricValue = ({
+  value,
+  formatter,
+  change,
+  abbreviate,
+  unit,
+  fontVariant,
+  fontVariantUnit,
+  copyValue,
+}: MetricValueProps) => (
   <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
     <Tooltip arrow placement="bottom" title={value.toLocaleString()} onClick={copyValue} sx={{ cursor: 'pointer' }}>
-      <Stack direction="row">
+      <Stack direction="row" alignItems="baseline">
         {unit?.position === 'prefix' && (
-          <Typography variant={fontVariant} color="textSecondary">
+          <Typography variant={fontVariantUnit} color="textSecondary">
             {unit.symbol}
           </Typography>
         )}
@@ -107,7 +124,7 @@ const MetricValue = ({ value, formatter, change, abbreviate, unit, fontVariant, 
         )}
 
         {unit?.position === 'suffix' && (
-          <Typography variant={fontVariant} color="textSecondary">
+          <Typography variant={fontVariantUnit} color="textSecondary">
             {unit.symbol}
           </Typography>
         )}
@@ -197,6 +214,7 @@ export const Metric = ({
     change,
     formatter,
     fontVariant: MetricSize[size],
+    fontVariantUnit: MetricUnitSize[size],
     copyValue,
   }
 
