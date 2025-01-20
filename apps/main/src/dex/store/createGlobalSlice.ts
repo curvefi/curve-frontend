@@ -13,6 +13,7 @@ import {
   RouterProps,
   Wallet,
 } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -27,7 +28,6 @@ export type LayoutHeight = {
 export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
 
 type GlobalState = {
-  connectState: ConnectState
   curve: CurveApi
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
@@ -151,7 +151,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     options?: ConnectState['options'],
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
-    get().updateGlobalStoreByKey('connectState', value)
+    useWalletStore.setState({ connectState: value })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const state = get()

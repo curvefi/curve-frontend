@@ -6,28 +6,29 @@ import { Contract } from 'ethers'
 import produce from 'immer'
 
 import { SEVEN_DAYS } from '@dao/constants'
-import { getWalletSignerAddress, getWalletSignerEns } from '@dao/store/createWalletSlice'
+import { getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
 import { contractVeCRV } from '@dao/store/contracts'
 import { abiVeCrv } from '@dao/store/abis'
 import {
   CurveApi,
-  UserMapper,
-  UserVoteData,
+  FetchingState,
   SnapshotVotingPower,
-  UserLockRes,
-  UserLock,
-  UserProposalVoteData,
-  UserProposalVotesRes,
+  SortDirection,
   UserGaugeVote,
   UserGaugeVotesRes,
-  UserGaugeVoteWeightsMapper,
-  FetchingState,
-  SortDirection,
-  UserLocksSortBy,
   UserGaugeVotesSortBy,
-  UserProposalVotesSortBy,
+  UserGaugeVoteWeightsMapper,
   UserGaugeVoteWeightSortBy,
+  UserLock,
+  UserLockRes,
+  UserLocksSortBy,
+  UserMapper,
+  UserProposalVoteData,
+  UserProposalVotesRes,
+  UserProposalVotesSortBy,
+  UserVoteData,
 } from '@dao/types/dao.types'
+import { getWalletSignerEns, useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -150,7 +151,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: WalletState) => {
       const getUserProposalVotes = get()[sliceKey].getUserProposalVotes
-      const userAddress = getWalletSignerAddress(wallet)
+      const userAddress = getWalletSignerAddress(wallet)!
 
       try {
         const veCRV = await curve.dao.userVeCrv(userAddress)
@@ -169,7 +170,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       })
     },
     getUserEns: async (userAddress: string) => {
-      const provider = get().wallet.getProvider('')
+      const { provider } = useWalletStore.getState()
 
       if (!provider) {
         console.error("Can't fetch ens, no provider available")

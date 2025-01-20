@@ -10,7 +10,7 @@ import useStore from '@main/store/useStore'
 import { scrollToTop } from '@main/utils'
 import DocumentHead from '@main/layout/default/DocumentHead'
 import Transfer from '@main/components/PagePool/index'
-import ConnectWallet from '@main/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 
 const Page: NextPage = () => {
@@ -27,7 +27,7 @@ const Page: NextPage = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const network = useStore((state) => state.networks.networks[rChainId])
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)

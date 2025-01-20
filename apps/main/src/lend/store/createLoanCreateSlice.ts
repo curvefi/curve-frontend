@@ -17,6 +17,8 @@ import { _parseActiveKey } from '@lend/utils/helpers'
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId, Api } from '@lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -258,11 +260,11 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 
     // steps
     fetchStepApprove: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
-      const { gas, wallet } = get()
+      const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
 
-      if (!provider) return
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
@@ -292,12 +294,13 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       }
     },
     fetchStepCreate: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
-      const { gas, markets, wallet, user } = get()
+      const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
-      const provider = wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
 
-      if (!provider || n === null) return
+      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (n === null) return
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {

@@ -1,15 +1,14 @@
 import styled from 'styled-components'
 import { useEffect } from 'react'
-
 import useStore from '@dao/store/useStore'
-
 import CurrentVotes from './CurrentVotes'
-import ConnectWallet from '@dao/components/ConnectWallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const { getUserGaugeVoteWeights, userGaugeVoteWeightsMapper } = useStore((state) => state.user)
   const curve = useStore((state) => state.curve)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   useEffect(() => {
     if (userAddress && curve && userGaugeVoteWeightsMapper[userAddress.toLowerCase()] === undefined) {
@@ -19,7 +18,7 @@ const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
 
   return !provider ? (
     <ConnectWrapper>
-      <ConnectWallet
+      <ConnectWalletPrompt
         description="Connect your wallet to view your current votes and vote on gauges"
         connectText="Connect Wallet"
         loadingText="Connecting"

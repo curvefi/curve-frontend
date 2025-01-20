@@ -2,7 +2,6 @@ import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
-
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import {
@@ -11,8 +10,8 @@ import {
   useConnectWallet,
   useSetChain,
   useSetLocale,
+  useWalletStore,
 } from '@ui-kit/features/connect-wallet'
-
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@lend/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getStorageValue, setStorageValue } from '@lend/utils/utilsStorage'
@@ -27,16 +26,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const [{ wallet }, connect, disconnect] = useConnectWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
-
   const api = useStore((state) => state.api)
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateApi = useStore((state) => state.updateApi)
-  const updateProvider = useStore((state) => state.wallet.updateProvider)
+  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-
   const setLocale = useUserProfileStore((state) => state.setLocale)
-
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
   const parsedParams = parseParams(params, chainIdNotRequired)
@@ -46,7 +42,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await updateProvider(wallet)
+          await chooseWallet(wallet)
           const prevApi = api ?? null
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -63,14 +59,14 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [updateProvider, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
+    [chooseWallet, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(
     async (options: ConnectState['options']) => {
       if (options) {
         const [walletName] = options
-        let walletState: Wallet | null = null
+        let walletState: Wallet | null
 
         if (walletName) {
           // If found label in localstorage, after 30s if not connected, reconnect with modal

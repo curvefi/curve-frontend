@@ -1,16 +1,12 @@
 import type { NextPage } from 'next'
 import type { EtherContract } from '@main/components/PageCompensation/types'
-
 import { Contract, Interface } from 'ethers'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import { scrollToTop } from '@main/utils'
 import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
-
 import Box, { BoxHeader } from '@ui/Box'
 import Button from '@ui/Button'
 import DocumentHead from '@main/layout/default/DocumentHead'
@@ -20,6 +16,7 @@ import IconButton from '@ui/IconButton'
 import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Provider } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -27,11 +24,8 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
-
-  const getProvider = useStore((state) => state.wallet.getProvider)
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-
-  const [provider, setProvider] = useState<Provider>()
+  const provider = useWalletStore((s) => s.provider)
+  const connectWallet = useWalletStore((s) => s.connectWallet)
   const [contracts, setContracts] = useState<EtherContract[]>([])
 
   const fetchData = useCallback(async (provider: Provider) => {
@@ -54,14 +48,10 @@ const Page: NextPage = () => {
   // get initial data
   useEffect(() => {
     if (!pageLoaded) return
-
-    const provider = getProvider('')
-
     if (provider) {
-      setProvider(provider)
       fetchData(provider)
     }
-  }, [fetchData, getProvider, pageLoaded])
+  }, [fetchData, pageLoaded, provider])
 
   return (
     <>
@@ -81,13 +71,7 @@ const Page: NextPage = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button
-                fillWidth
-                loading={!pageLoaded}
-                size="large"
-                variant="filled"
-                onClick={updateConnectWalletStateKeys}
-              >
+              <Button fillWidth loading={!pageLoaded} size="large" variant="filled" onClick={connectWallet}>
                 {t`Connect Wallet`}
               </Button>
             </>

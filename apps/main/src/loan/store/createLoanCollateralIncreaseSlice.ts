@@ -12,6 +12,8 @@ import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
 import networks from '@loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
 import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -141,74 +143,68 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
 
     // step
     fetchStepApprove: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const collateralIncreaseApproveFn = networks[chainId].api.collateralIncrease.approve
+      const resp = await collateralIncreaseApproveFn(activeKey, provider, llamma, formValues.collateral)
+      if (activeKey === get()[sliceKey].activeKey) {
         get()[sliceKey].setStateByKey('formStatus', {
           ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'APPROVAL',
+          isApproved: !resp.error,
+          step: '',
+          formProcessing: !resp.error,
+          error: resp.error,
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const collateralIncreaseApproveFn = networks[chainId].api.collateralIncrease.approve
-        const resp = await collateralIncreaseApproveFn(activeKey, provider, llamma, formValues.collateral)
-
-        if (activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKey('formStatus', {
-            ...get()[sliceKey].formStatus,
-            isApproved: !resp.error,
-            step: '',
-            formProcessing: !resp.error,
-            error: resp.error,
-          })
-
-          if (!resp.error) {
-            get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
-          }
-          return resp
+        if (!resp.error) {
+          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
         }
+        return resp
       }
     },
     fetchStepIncrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'ADD',
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'ADD',
+      })
+      const chainId = curve.chainId
+      await get().gas.fetchGasInfo(curve)
+      const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
+      const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
+      if (activeKey === get()[sliceKey].activeKey) {
+        // re-fetch loan info
+        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+
+        if (!loanExists.loanExists) {
+          get().loans.resetUserDetailsState(llamma)
+        }
+
+        get()[sliceKey].setStateByKeys({
+          detailInfo: {},
+          formEstGas: {},
+          formValues: DEFAULT_FORM_VALUES,
+          formStatus: {
+            ...get()[sliceKey].formStatus,
+            error: resp.error,
+            isInProgress: false,
+            isComplete: !resp.error,
+            step: '',
+          },
         })
 
-        const chainId = curve.chainId
-        await get().gas.fetchGasInfo(curve)
-        const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
-        const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
-
-        if (activeKey === get()[sliceKey].activeKey) {
-          // re-fetch loan info
-          const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-          if (!loanExists.loanExists) {
-            get().loans.resetUserDetailsState(llamma)
-          }
-
-          get()[sliceKey].setStateByKeys({
-            detailInfo: {},
-            formEstGas: {},
-            formValues: DEFAULT_FORM_VALUES,
-            formStatus: {
-              ...get()[sliceKey].formStatus,
-              error: resp.error,
-              isInProgress: false,
-              isComplete: !resp.error,
-              step: '',
-            },
-          })
-
-          return { ...resp, loanExists: loanExists.loanExists }
-        }
+        return { ...resp, loanExists: loanExists.loanExists }
       }
     },
 

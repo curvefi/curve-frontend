@@ -2,11 +2,11 @@ import { t } from '@lingui/macro'
 import React from 'react'
 
 import { isLoading } from '@ui/utils'
-import useStore from '@main/store/useStore'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import { useCurve } from '@main/entities/curve'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormConnectWallet = ({
   loading,
@@ -15,13 +15,12 @@ const FormConnectWallet = ({
   loading: boolean
 }>) => {
   const { data: curve } = useCurve()
-  const connectState = useStore((state) => state.connectState)
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-
+  const connectState = useWalletStore((s) => s.connectState)
+  const connectWallet = useWalletStore((s) => s.connectWallet)
   return (
     <>
       {!isLoading(connectState) && !loading && !curve?.signerAddress ? (
-        <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
+        <Button fillWidth size="large" variant="filled" onClick={connectWallet}>
           {t`Connect Wallet`}
         </Button>
       ) : isLoading(connectState) || loading ? (

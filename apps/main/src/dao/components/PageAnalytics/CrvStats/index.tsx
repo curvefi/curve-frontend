@@ -8,9 +8,10 @@ import { t } from '@lingui/macro'
 import Box from '@ui/Box'
 import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
 import Tooltip from '@ui/Tooltip'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const CrvStats: React.FC = () => {
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
   const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)
   const crv = usdRatesMapper.crv

@@ -58,7 +58,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const init = useStore((state) => state.loanIncrease.init)
   const fetchStepApprove = useStore((state) => state.loanIncrease.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanIncrease.fetchStepIncrease)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanIncrease.resetState)

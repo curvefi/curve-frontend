@@ -15,6 +15,7 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId } from '@lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -28,7 +29,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
 
   const { rLocalePathname, rNetwork } = getParamsFromUrl()
 
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })

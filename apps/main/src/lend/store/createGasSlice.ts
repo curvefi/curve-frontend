@@ -10,6 +10,7 @@ import { httpFetcher, log } from '@lend/utils/helpers'
 import lendingApi from '@lend/lib/apiLending'
 import networks from '@lend/networks'
 import { Api, Provider } from '@lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -99,7 +100,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 10) {
           // Optimism
-          const provider = get().wallet.getProvider('')
+          const { provider } = useWalletStore.getState()
 
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider)

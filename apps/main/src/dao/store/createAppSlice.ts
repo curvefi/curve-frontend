@@ -7,6 +7,7 @@ import produce from 'immer'
 
 import { log } from '@ui-kit/lib'
 import { CurveApi, RouterProps, Wallet } from '@dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -19,7 +20,6 @@ export type LayoutHeight = {
 }
 
 type SliceState = {
-  connectState: ConnectState
   curve: CurveApi | null
   isLoadingApi: boolean
   isLoadingCurve: boolean
@@ -46,7 +46,6 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE = {
-  connectState: { status: '', stage: '' } as ConnectState,
   curve: null,
   isMobile: false,
   isLoadingApi: false,
@@ -73,7 +72,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     options?: ConnectState['options'],
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
-    get().updateGlobalStoreByKey('connectState', value)
+    useWalletStore.setState({ connectState: value })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId

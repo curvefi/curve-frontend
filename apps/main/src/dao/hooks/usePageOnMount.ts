@@ -1,21 +1,25 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
-
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
-
+import {
+  getWalletChainId,
+  getWalletSignerAddress,
+  useConnectWallet,
+  useSetChain,
+  useSetLocale,
+} from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL } from '@dao/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getStorageValue, setStorageValue } from '@dao/utils/utilsStorage'
 import { getNetworkFromUrl, parseParams } from '@dao/utils/utilsRouter'
-import { getWalletChainId, getWalletSignerAddress } from '@dao/store/createWalletSlice'
 import { helpers } from '@dao/lib/curvejs'
-import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import networks from '@dao/networks'
 import useStore from '@dao/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -23,7 +27,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)

@@ -5,9 +5,10 @@ import useStore from '@lend/store/useStore'
 import { CONNECT_STAGE } from '@lend/constants'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const DetailsConnectWallet = () => {
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   return (

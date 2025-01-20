@@ -8,7 +8,6 @@ import merge from 'lodash/merge'
 import createAppSlice, { AppSlice } from '@dao/store/createAppSlice'
 import createCacheSlice, { CacheSlice } from '@dao/store/createCacheSlice'
 import createGasSlice, { GasSlice } from '@dao/store/createGasSlice'
-import createWalletSlice, { WalletSlice } from '@dao/store/createWalletSlice'
 import createProposalsSlice, { ProposalsSlice } from '@dao/store/createProposalsSlice'
 import createUserSlice, { UserSlice } from '@dao/store/createUserSlice'
 import createGaugesSlice, { GaugesSlice } from '@dao/store/createGaugesSlice'
@@ -21,7 +20,6 @@ import createLayoutSlice, { AppLayoutSlice } from './createLayoutSlice'
 export type State = AppSlice &
   CacheSlice &
   GasSlice &
-  WalletSlice &
   ProposalsSlice &
   UserSlice &
   GaugesSlice &
@@ -35,7 +33,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createAppSlice(set, get),
   ...createGasSlice(set, get),
   ...createCacheSlice(set, get),
-  ...createWalletSlice(set, get),
   ...createProposalsSlice(set, get),
   ...createGaugesSlice(set, get),
   ...createUserSlice(set, get),

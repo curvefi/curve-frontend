@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@main/store/useStore'
 import type { EstimatedGas as FormEstGas } from '@main/components/PagePool/types'
-import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@main/components/PagePool/Swap/types'
+import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@main/components/PagePool/Swap/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@main/components/PageRouterSwap/types'
 import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
@@ -17,15 +17,17 @@ import { getSwapActionModalType } from '@main/utils/utilsSwap'
 import curvejsApi from '@main/lib/curvejs'
 import {
   Balances,
-  CurveApi,
   ChainId,
   CurrencyReserves,
+  CurveApi,
+  FnStepApproveResponse,
+  FnStepEstGasApprovalResponse,
+  FnStepResponse,
   Pool,
   PoolData,
-  FnStepEstGasApprovalResponse,
-  FnStepApproveResponse,
-  FnStepResponse,
 } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -92,9 +94,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
         return storedIgnoreExchangeRateCheck
       } else {
-        const provider = state.wallet.getProvider('') || new JsonRpcProvider(networks[chainId].rpcUrl)
-
-        if (!provider) return false
+        const provider = useWalletStore.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
           const json = await import('@main/components/PagePool/abis/stored_rates.json').then((module) => module.default)
@@ -346,114 +346,100 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       return resp
     },
     fetchStepApprove: async (activeKey, curve, pool, formValues, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        const storedActiveKey = get()[sliceKey].activeKey
+      const storedActiveKey = get()[sliceKey].activeKey
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { fromAddress, fromAmount, isWrapped } = formValues
+      const resp = await curvejsApi.poolSwap.swapApprove(activeKey, provider, pool, isWrapped, fromAddress, fromAmount)
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'APPROVAL',
-        })
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'APPROVE'
+          cFormStatus.isApproved = true
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
-        await get().gas.fetchGasInfo(curve)
-        const { fromAddress, fromAmount, isWrapped } = formValues
-        const resp = await curvejsApi.poolSwap.swapApprove(
-          activeKey,
-          provider,
-          pool,
-          isWrapped,
-          fromAddress,
-          fromAmount,
-        )
-
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'APPROVE'
-            cFormStatus.isApproved = true
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-
-            // fetch est gas, approval and exchange
-            get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
-            await get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, formValues, maxSlippage)
-          }
-
-          return resp
+          // fetch est gas, approval and exchange
+          get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
+          await get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, formValues, maxSlippage)
         }
+
+        return resp
       }
     },
     fetchStepSwap: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'SWAP',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'SWAP',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { fromAddress, fromToken, fromAmount, toAddress, toToken, isWrapped } = formValues
+      const resp = await curvejsApi.poolSwap.swap(
+        activeKey,
+        provider,
+        poolData.pool,
+        isWrapped,
+        fromAddress,
+        toAddress,
+        fromAmount,
+        maxSlippage,
+      )
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-        await get().gas.fetchGasInfo(curve)
-        const { fromAddress, fromToken, fromAmount, toAddress, toToken, isWrapped } = formValues
-        const resp = await curvejsApi.poolSwap.swap(
-          activeKey,
-          provider,
-          poolData.pool,
-          isWrapped,
-          fromAddress,
-          toAddress,
-          fromAmount,
-          maxSlippage,
-        )
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          const cFormValues = cloneDeep(formValues)
+          cFormValues.fromAmount = ''
+          cFormValues.toAmount = ''
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
+          cFormStatus.formTypeCompleted = 'SWAP'
 
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            const cFormValues = cloneDeep(formValues)
-            cFormValues.fromAmount = ''
-            cFormValues.toAmount = ''
+          get()[sliceKey].setStateByKeys({
+            formStatus: cFormStatus,
+            activeKey: getActiveKey(cFormValues, maxSlippage),
+            exchangeOutput: {},
+            formEstGas: {},
+            formValues: cFormValues,
+          })
 
-            cFormStatus.formTypeCompleted = 'SWAP'
+          // cache swapped tokens
+          get().storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
+            fromAddress,
+            fromToken,
+            toAddress,
+            toToken,
+          })
 
-            get()[sliceKey].setStateByKeys({
-              formStatus: cFormStatus,
-              activeKey: getActiveKey(cFormValues, maxSlippage),
-              exchangeOutput: {},
-              formEstGas: {},
-              formValues: cFormValues,
-            })
-
-            // cache swapped tokens
-            get().storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
-              fromAddress,
-              fromToken,
-              toAddress,
-              toToken,
-            })
-
-            // re-fetch data
-            await Promise.all([
-              get().user.fetchUserPoolInfo(curve, poolData.pool.id, true),
-              get().pools.fetchPoolStats(curve, poolData),
-            ])
-          }
-          return resp
+          // re-fetch data
+          await Promise.all([
+            get().user.fetchUserPoolInfo(curve, poolData.pool.id, true),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
+        return resp
       }
     },
 

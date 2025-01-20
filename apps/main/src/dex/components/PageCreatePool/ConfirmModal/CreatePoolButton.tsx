@@ -9,6 +9,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { CurveApi } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 interface Props {
   disabled: boolean
@@ -21,14 +22,13 @@ const CreatePoolButton = ({ disabled, curve }: Props) => {
 
   const deployPool = useStore((state) => state.createPool.deployPool)
   const { txStatus, txSuccess, txLink, poolId, errorMessage } = useStore((state) => state.createPool.transactionState)
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-
+  const connectWallet = useWalletStore((s) => s.connectWallet)
   const handleClick = async () => {
     deployPool(curve)
   }
 
   return !haveSigner ? (
-    <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
+    <StyledButton variant="filled" onClick={connectWallet}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (

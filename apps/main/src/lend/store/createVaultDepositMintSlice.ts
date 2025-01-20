@@ -11,6 +11,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageV
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId, Api, FutureRates } from '@lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -136,9 +137,9 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
 
     // steps
     fetchStepApprove: async (activeKey, formType, api, market, formValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
 
-      if (!provider) return
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
@@ -162,10 +163,9 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       }
     },
     fetchStepDepositMint: async (activeKey, formType, api, market, formValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
 
-      if (!provider) return
-
+      if (!provider) return setMissingProvider(get()[sliceKey])
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'DEPOSIT_MINT' }
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))

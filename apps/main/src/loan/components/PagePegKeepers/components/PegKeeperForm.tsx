@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
-
 import { breakpoints, formatNumber } from '@ui/utils'
 import networks from '@loan/networks'
 import useStore from '@loan/store/useStore'
-
 import AlertFormError from '@loan/components/AlertFormError'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import LoanFormConnect from '@loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 import { ChainId, Curve } from '@loan/types/loan.types'
 
 type Props = {
@@ -26,7 +25,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const curve = useStore((state) => state.curve)
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
 
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

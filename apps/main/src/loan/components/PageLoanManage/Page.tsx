@@ -35,7 +35,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import ConnectWallet from '@loan/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
@@ -56,7 +56,7 @@ const Page: NextPage = () => {
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 

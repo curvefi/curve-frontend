@@ -14,6 +14,7 @@ import TransferActions from '@main/components/PagePool/components/TransferAction
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, PoolData } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -25,7 +26,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const formStatus = useStore((state) => state.poolWithdraw.formStatus)
   const formValues = useStore((state) => state.poolWithdraw.formValues)
   const fetchStepUnstake = useStore((state) => state.poolWithdraw.fetchStepUnstake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))

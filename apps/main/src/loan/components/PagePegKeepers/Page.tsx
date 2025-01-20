@@ -11,11 +11,12 @@ import usePageOnMount from '@loan/hooks/usePageOnMount'
 import useStore from '@loan/store/useStore'
 
 import Box from '@ui/Box'
-import ConnectWallet from '@loan/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import DocumentHead from '@loan/layout/DocumentHead'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Settings from '@loan/layout/Settings'
 import PagePegKeepers from '@loan/components/PagePegKeepers'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -24,7 +25,7 @@ const Page: NextPage = () => {
   const { routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   useEffect(() => {
     scrollToTop()

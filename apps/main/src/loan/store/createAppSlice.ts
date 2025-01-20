@@ -10,13 +10,13 @@ import { httpFetcher, log } from '@loan/utils/helpers'
 import isEqual from 'lodash/isEqual'
 import networks from '@loan/networks'
 import { Curve, LendApi, RouterProps, Wallet } from '@loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  connectState: ConnectState
   curve: Curve | null
   lendApi: LendApi | null
   crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
@@ -47,7 +47,6 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  connectState: { status: '' as const, stage: '' },
   curve: null,
   lendApi: null,
   crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
@@ -98,7 +97,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     options?: ConnectState['options'],
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
-    get().updateGlobalStoreByKey('connectState', value)
+    useWalletStore.setState({ connectState: value })
   },
   updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
     const { gas, loans, usdRates, ...state } = get()

@@ -30,6 +30,8 @@ import {
   FnStepApproveResponse,
   FnStepResponse,
 } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -364,221 +366,197 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       return resp
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'APPROVAL',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { chainId } = curve
+      const { amounts, isWrapped } = formValues
+      const approveFn =
+        formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositApprove : curvejsApi.poolDeposit.depositAndStakeApprove
+      const resp = await approveFn(activeKey, provider, pool, isWrapped, parseAmountsForAPI(amounts))
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-        await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
-        const { amounts, isWrapped } = formValues
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'APPROVE'
+          cFormStatus.isApproved = true
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
-        const approveFn =
-          formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositApprove : curvejsApi.poolDeposit.depositAndStakeApprove
-
-        const resp = await approveFn(activeKey, provider, pool, isWrapped, parseAmountsForAPI(amounts))
-
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'APPROVE'
-            cFormStatus.isApproved = true
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-
-            // fetch est gas and approval
-            await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
-          }
-
-          return resp
+          // fetch est gas and approval
+          await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
         }
+
+        return resp
       }
     },
     fetchStepDeposit: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'DEPOSIT',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'DEPOSIT',
+      })
 
-        await get().gas.fetchGasInfo(curve)
-        const { pool } = poolData
-        const { amounts, isWrapped } = formValues
-        const resp = await curvejsApi.poolDeposit.deposit(
-          activeKey,
-          provider,
-          pool,
-          isWrapped,
-          parseAmountsForAPI(amounts),
-          maxSlippage,
-        )
+      await get().gas.fetchGasInfo(curve)
+      const { pool } = poolData
+      const { amounts, isWrapped } = formValues
+      const resp = await curvejsApi.poolDeposit.deposit(
+        activeKey,
+        provider,
+        pool,
+        isWrapped,
+        parseAmountsForAPI(amounts),
+        maxSlippage,
+      )
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'DEPOSIT'
-            get()[sliceKey].setStateByKeys({
-              formStatus: cFormStatus,
-              formValues: resetFormValues(formValues),
-            })
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'DEPOSIT'
+          get()[sliceKey].setStateByKeys({
+            formStatus: cFormStatus,
+            formValues: resetFormValues(formValues),
+          })
 
-            // re-fetch data
-            await Promise.all([
-              get().user.fetchUserPoolInfo(curve, pool.id),
-              get().pools.fetchPoolStats(curve, poolData),
-            ])
-          }
-
-          return resp
+          // re-fetch data
+          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
         }
+
+        return resp
       }
     },
     fetchStepDepositStake: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'DEPOSIT_STAKE',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'DEPOSIT_STAKE',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { pool } = poolData
+      const { amounts, isWrapped } = formValues
+      const resp = await curvejsApi.poolDeposit.depositAndStake(
+        activeKey,
+        provider,
+        pool,
+        isWrapped,
+        parseAmountsForAPI(amounts),
+        maxSlippage,
+      )
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-        await get().gas.fetchGasInfo(curve)
-        const { pool } = poolData
-        const { amounts, isWrapped } = formValues
-        const resp = await curvejsApi.poolDeposit.depositAndStake(
-          activeKey,
-          provider,
-          pool,
-          isWrapped,
-          parseAmountsForAPI(amounts),
-          maxSlippage,
-        )
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
+          get()[sliceKey].setStateByKeys({
+            formStatus: cFormStatus,
+            formValues: resetFormValues(formValues),
+          })
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
-            get()[sliceKey].setStateByKeys({
-              formStatus: cFormStatus,
-              formValues: resetFormValues(formValues),
-            })
-
-            // re-fetch data
-            await Promise.all([
-              get().user.fetchUserPoolInfo(curve, pool.id),
-              get().pools.fetchPoolStats(curve, poolData),
-            ])
-          }
-
-          return resp
+          // re-fetch data
+          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
         }
+
+        return resp
       }
     },
     fetchStepStakeApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'APPROVAL',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { chainId } = curve
+      const { lpToken } = formValues
+      const resp = await curvejsApi.poolDeposit.stakeApprove(activeKey, provider, pool, lpToken)
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-        await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
-        const { lpToken } = formValues
-        const resp = await curvejsApi.poolDeposit.stakeApprove(activeKey, provider, pool, lpToken)
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'APPROVE'
+          cFormStatus.isApproved = true
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'APPROVE'
-            cFormStatus.isApproved = true
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-
-            // fetch est gas and approval
-            await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
-          }
-
-          return resp
+          // fetch est gas and approval
+          await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
         }
+
+        return resp
       }
     },
     fetchStepStake: async (activeKey, curve, poolData, formValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'STAKE',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'STAKE',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { pool } = poolData
+      const { lpToken } = formValues
+      const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-        await get().gas.fetchGasInfo(curve)
-        const { pool } = poolData
-        const { lpToken } = formValues
-        const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'STAKE'
+          get()[sliceKey].setStateByKeys({
+            formStatus: cFormStatus,
+            formValues: resetFormValues(formValues),
+          })
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'STAKE'
-            get()[sliceKey].setStateByKeys({
-              formStatus: cFormStatus,
-              formValues: resetFormValues(formValues),
-            })
-
-            // re-fetch data
-            await Promise.all([
-              get().user.fetchUserPoolInfo(curve, pool.id),
-              get().pools.fetchPoolStats(curve, poolData),
-            ])
-          }
-
-          return resp
+          // re-fetch data
+          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
         }
+
+        return resp
       }
     },
 

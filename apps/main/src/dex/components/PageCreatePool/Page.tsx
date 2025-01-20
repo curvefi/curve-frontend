@@ -13,15 +13,16 @@ import useStore from '@main/store/useStore'
 import DocumentHead from '@main/layout/default/DocumentHead'
 import PoolCreation from '@main/components/PageCreatePool/index'
 import Box from '@ui/Box'
-import ConnectWallet from '@main/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import { CurveApi } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const { curve } = usePageOnMount(params, location, navigate)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   useEffect(() => {
     scrollToTop()

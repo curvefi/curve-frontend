@@ -32,9 +32,10 @@ import LoanInfoLlamma from '@loan/components/LoanInfoLlamma'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import ConnectWallet from '@loan/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -57,7 +58,7 @@ const Page: NextPage = () => {
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)

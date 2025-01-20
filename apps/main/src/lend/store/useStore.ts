@@ -7,7 +7,6 @@ import merge from 'lodash/merge'
 import createCacheSlice, { CacheSlice } from '@lend/store/createCacheSlice'
 import createAppSlice, { AppSlice } from '@lend/store/createAppSlice'
 import createLayoutSlice, { AppLayoutSlice } from '@lend/store/createLayoutSlice'
-import createWalletSlice, { WalletSlice } from '@lend/store/createWalletSlice'
 import createGasSlice, { GasSlice } from '@lend/store/createGasSlice'
 import createTokensSlice, { TokensSlice } from '@lend/store/createTokensSlice'
 import createMarketsSlice, { MarketsSlice } from '@lend/store/createMarketsSlice'
@@ -33,7 +32,6 @@ import type { PersistOptions } from 'zustand/middleware/persist'
 export type State = CacheSlice &
   AppSlice &
   AppLayoutSlice &
-  WalletSlice &
   GasSlice &
   TokensSlice &
   IntegrationsSlice &
@@ -58,7 +56,6 @@ export type State = CacheSlice &
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
-  ...createWalletSlice(set, get),
   ...createLayoutSlice(set, get),
   ...createGasSlice(set, get),
   ...createTokensSlice(set, get),

@@ -15,7 +15,7 @@ import Box, { BoxHeader } from '@ui/Box'
 import DocumentHead from '@main/layout/default/DocumentHead'
 import IconButton from '@ui/IconButton'
 import QuickSwap from '@main/components/PageRouterSwap/index'
-import ConnectWallet from '@main/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
@@ -29,7 +29,7 @@ const Page: NextPage = () => {
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)

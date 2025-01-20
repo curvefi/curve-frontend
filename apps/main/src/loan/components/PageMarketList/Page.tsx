@@ -1,11 +1,9 @@
 import type { NextPage } from 'next'
 import type { SearchParams } from '@loan/components/PageMarketList/types'
-
 import { t } from '@lingui/macro'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { DEFAULT_SEARCH_PARAMS } from '@loan/components/PageMarketList/utils'
 import { ROUTE, TITLE } from '@loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
@@ -15,12 +13,11 @@ import usePageOnMount from '@loan/hooks/usePageOnMount'
 import useSearchTermMapper from '@loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@loan/hooks/useTitleMapper'
 import useStore from '@loan/store/useStore'
-
 import DocumentHead from '@loan/layout/DocumentHead'
 import CollateralList from '@loan/components/PageMarketList/index'
 import Settings from '@loan/layout/Settings'
 import TableStats from '@loan/components/PageMarketList/components/TableStats'
-import ConnectWallet from '@loan/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 
 enum SEARCH {
@@ -38,7 +35,7 @@ const Page: NextPage = () => {
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)

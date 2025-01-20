@@ -18,7 +18,7 @@ import { AppPageContainer } from '@ui/AppPage'
 import DocumentHead from '@lend/layout/DocumentHead'
 import MarketList from '@lend/components/PageMarketList/index'
 import Settings from '@lend/layout/Settings'
-import ConnectWallet from '@lend/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 
 enum SEARCH {
@@ -42,7 +42,7 @@ const Page: NextPage = () => {
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 

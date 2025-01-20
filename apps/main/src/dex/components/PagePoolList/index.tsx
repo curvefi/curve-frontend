@@ -1,9 +1,7 @@
 import type { ColumnKeys, PagePoolList, SearchParams } from '@main/components/PagePoolList/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { COLUMN_KEYS } from '@main/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@main/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@main/constants'
@@ -11,7 +9,6 @@ import usePageVisibleInterval from '@main/hooks/usePageVisibleInterval'
 import useStore from '@main/store/useStore'
 import { getUserActiveKey } from '@main/store/createUserSlice'
 import useCampaignRewardsMapper from '@main/hooks/useCampaignRewardsMapper'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody } from '@ui/Table'
 import TableHead from '@main/components/PagePoolList/components/TableHead'
@@ -19,7 +16,8 @@ import TableHeadMobile from '@main/components/PagePoolList/components/TableHeadM
 import TableSettings from '@main/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@main/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@main/components/PagePoolList/components/PoolRow'
-import ConnectWallet from '@main/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const PoolList = ({
   rChainId,
@@ -51,7 +49,7 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const network = useStore((state) => state.networks.networks[rChainId])
 
   const [showDetail, setShowDetail] = useState('')

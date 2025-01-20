@@ -3,13 +3,13 @@ import { useCallback, useEffect } from 'react'
 import { isValidAddress } from '@main/utils'
 import useStore from '@main/store/useStore'
 import dayjs from '@ui-kit/lib/dayjs'
-import { Provider, PoolDataCacheOrApi } from '@main/types/main.types'
+import { PoolDataCacheOrApi, Provider } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
-
   const curve = useStore((state) => state.curve)
-  const getProvider = useStore((state) => state.wallet.getProvider)
+  const walletProvider = useWalletStore((s) => s.provider)
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
   const { rpcUrl } = useStore((state) => curve && state.networks.networks[curve.chainId]) ?? {}
@@ -59,7 +59,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
 
     if (address && rpcUrl && shouldCallApi) {
       ;(async () => {
-        const provider = getProvider('') || new JsonRpcProvider(rpcUrl)
+        const provider = walletProvider || new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
           : null
@@ -77,7 +77,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
       })()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, curve?.chainId, address, rpcUrl])
+  }, [curve?.signerAddress, curve?.chainId, address, rpcUrl, walletProvider])
 
   return staked
 }

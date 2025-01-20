@@ -67,7 +67,7 @@ const LoanDeleverage = ({
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)

@@ -11,6 +11,7 @@ import AlertBox from '@ui/AlertBox'
 import AlertSeedAmounts from '@main/components/PagePool/components/AlertSeedAmounts'
 import FormConnectWallet from '@main/components/FormConnectWallet'
 import { useSignerAddress } from '@main/entities/signer'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const TransferActions = ({
   children,
@@ -27,7 +28,7 @@ const TransferActions = ({
   const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
 

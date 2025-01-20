@@ -29,7 +29,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import Vault from '@lend/components/PageVault/index'
 import Box from '@ui/Box'
 import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
-import ConnectWallet from '@lend/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -53,7 +53,7 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 

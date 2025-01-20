@@ -33,11 +33,12 @@ import {
 } from '@ui/Chart/styles'
 import Box from '@ui/Box'
 import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
-import ConnectWallet from '@lend/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps } from '@lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -55,7 +56,7 @@ const Page: NextPage = () => {
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 

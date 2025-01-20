@@ -14,6 +14,7 @@ import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -25,7 +26,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   const routerProps = useStore((state) => state.routerProps)

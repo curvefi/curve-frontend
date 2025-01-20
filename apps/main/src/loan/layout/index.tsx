@@ -4,9 +4,8 @@ import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@loan/constants'
 import { layoutHeightKeys } from '@loan/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@loan/utils/utilsRouter'
-import { getWalletChainId } from '@loan/store/createWalletSlice'
+import { getWalletChainId, useConnectWallet } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
-import { useConnectWallet } from '@ui-kit/features/connect-wallet'
 import useLayoutHeight from '@loan/hooks/useLayoutHeight'
 import useStore from '@loan/store/useStore'
 import Header from '@loan/layout/Header'
@@ -14,13 +13,14 @@ import { Locale } from '@ui-kit/widgets/Header/types'
 import { t } from '@lingui/macro'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
   const updateConnectState = useStore((state) => state.updateConnectState)
 

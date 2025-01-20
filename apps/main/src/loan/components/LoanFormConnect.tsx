@@ -7,6 +7,7 @@ import useStore from '@loan/store/useStore'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const LoanFormConnect = ({
   haveSigner,
@@ -16,7 +17,7 @@ const LoanFormConnect = ({
   haveSigner: boolean
   loading?: boolean
 }>) => {
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   const handleConnectClick = () => {

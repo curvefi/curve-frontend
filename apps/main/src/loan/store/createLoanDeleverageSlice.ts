@@ -13,6 +13,8 @@ import {
 import { DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
 import networks from '@loan/networks'
 import { ChainId, Curve, Llamma, UserLoanDetails } from '@loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -143,46 +145,43 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
     },
     fetchStepRepay: async (activeKey, curve, llamma, formValues, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'REPAY',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'REPAY',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const repayFn = networks[chainId].api.loanDeleverage.repay
+      const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        let loanExists = true
+        let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+        cFormStatus.isApproved = get()[sliceKey].formStatus.isApproved
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const repayFn = networks[chainId].api.loanDeleverage.repay
-        const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
+        if (resp.error) {
+          get()[sliceKey].setStateByKey('formStatus', cloneDeep({ ...cFormStatus, error: resp.error }))
+        } else {
+          // re-fetch loan info
+          const respLoanDetails = await get().loans.fetchLoanDetails(curve, llamma)
+          loanExists = respLoanDetails.loanExists.loanExists
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          let loanExists = true
-          let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
-          cFormStatus.isApproved = get()[sliceKey].formStatus.isApproved
-
-          if (resp.error) {
-            get()[sliceKey].setStateByKey('formStatus', cloneDeep({ ...cFormStatus, error: resp.error }))
-          } else {
-            // re-fetch loan info
-            const respLoanDetails = await get().loans.fetchLoanDetails(curve, llamma)
-            loanExists = respLoanDetails.loanExists.loanExists
-
-            if (!loanExists) {
-              get().loans.resetUserDetailsState(llamma)
-            }
-
-            get()[sliceKey].setStateByKeys({
-              formValues: DEFAULT_FORM_VALUES,
-              formStatus: cloneDeep({ ...cFormStatus, isComplete: true }),
-              detailInfo: {},
-              formEstGas: {},
-            })
+          if (!loanExists) {
+            get().loans.resetUserDetailsState(llamma)
           }
 
-          return { ...resp, loanExists }
+          get()[sliceKey].setStateByKeys({
+            formValues: DEFAULT_FORM_VALUES,
+            formStatus: cloneDeep({ ...cFormStatus, isComplete: true }),
+            detailInfo: {},
+            formEstGas: {},
+          })
         }
+
+        return { ...resp, loanExists }
       }
     },
 

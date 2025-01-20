@@ -8,14 +8,14 @@ import styled from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
 import { scrollToTop } from '@main/utils'
 import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
 
 import Dashboard from '@main/components/PageDashboard/index'
 import DocumentHead from '@main/layout/default/DocumentHead'
 import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import ConnectWallet from '@main/components/ConnectWallet'
+import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -23,7 +23,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { curve, routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   useEffect(() => {
     scrollToTop()

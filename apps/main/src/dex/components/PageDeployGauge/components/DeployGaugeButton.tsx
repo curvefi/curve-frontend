@@ -7,17 +7,18 @@ import { curveProps } from '@main/lib/utils'
 import { useNetworkFromUrl } from '@main/utils/utilsRouter'
 import { shortenTokenAddress } from '@main/utils'
 import {
-  TWOCOINCRYPTOSWAP,
-  TWOCOINCRYPTOSWAPNG,
-  THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
+  THREECOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAPNG,
 } from '@main/components/PageDeployGauge/constants'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { ChainId, CurveApi } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 interface Props {
   disabled: boolean
@@ -35,7 +36,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
     (state) => state.deployGauge,
   )
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
+  const connectWallet = useWalletStore((s) => s.connectWallet)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
@@ -88,7 +89,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
         </StyledSpinnerWrapper>
       ) // no signer
     ) : !haveSigner ? (
-      <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
+      <StyledButton variant="filled" onClick={connectWallet}>
         {t`Connect Wallet`}
       </StyledButton>
     ) : (
@@ -169,7 +170,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
       </StyledSpinnerWrapper>
     )
   ) : !haveSigner ? (
-    <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
+    <StyledButton variant="filled" onClick={connectWallet}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (

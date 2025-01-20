@@ -10,12 +10,13 @@ import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@main/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getStorageValue, setStorageValue } from '@main/utils/storage'
 import { useNetworkFromUrl, useParsedParams } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@main/store/createWalletSlice'
+import { getWalletChainId } from '@ui-kit/features/connect-wallet'
 import { initCurveJs } from '@main/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import useStore from '@main/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -23,7 +24,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const setNetworkConfigs = useStore((state) => state.networks.setNetworkConfigs)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)

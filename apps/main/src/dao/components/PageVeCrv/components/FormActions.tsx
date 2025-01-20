@@ -1,10 +1,8 @@
 import React from 'react'
 import { t } from '@lingui/macro'
-
-import useStore from '@dao/store/useStore'
-
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const FormActions = ({
   haveSigner,
@@ -14,12 +12,11 @@ const FormActions = ({
   haveSigner: boolean
   loading: boolean
 }>) => {
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-
+  const connectWallet = useWalletStore((s) => s.connectWallet)
   return (
     <>
       {!haveSigner && !loading ? (
-        <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
+        <Button fillWidth size="large" variant="filled" onClick={connectWallet}>
           {t`Connect Wallet`}
         </Button>
       ) : loading ? (

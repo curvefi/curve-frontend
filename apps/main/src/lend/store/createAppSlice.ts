@@ -6,13 +6,13 @@ import { log } from '@ui-kit/lib/logging'
 import isEqual from 'lodash/isEqual'
 import { prefetchMarkets } from '@lend/entities/chain/chain-query'
 import { Api, RouterProps, Wallet } from '@lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  connectState: ConnectState
   api: Api | null
   isLoadingApi: boolean
   isLoadingCurve: true
@@ -34,7 +34,6 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  connectState: { status: '' as const, stage: '' },
   api: null,
   isLoadingApi: true,
   isLoadingCurve: true,
@@ -49,7 +48,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
   updateConnectState: (status, stage, options) => {
     const value = options ? { status, stage, options } : { status, stage }
-    get().updateGlobalStoreByKey('connectState', value)
+    useWalletStore.setState({ connectState: value })
   },
   updateApi: async (api, prevApi, wallet) => {
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId

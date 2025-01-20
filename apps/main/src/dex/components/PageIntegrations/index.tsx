@@ -1,19 +1,17 @@
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import type { FormValues } from '@main/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
-
 import { useFocusRing } from '@react-aria/focus'
 import { Trans } from '@lingui/macro'
 import Image from 'next/image'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
-
 import { ROUTE } from '@main/constants'
 import { breakpoints } from '@ui/utils'
 import { getPath } from '@main/utils/utilsRouter'
 import { parseSearchParams } from '@main/components/PageIntegrations/utils'
 import useStore from '@main/store/useStore'
-
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
@@ -37,7 +35,7 @@ const IntegrationsComp = ({
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)

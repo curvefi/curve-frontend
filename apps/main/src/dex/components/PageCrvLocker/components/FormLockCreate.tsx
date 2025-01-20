@@ -21,6 +21,7 @@ import FieldLockedAmt from '@main/components/PageCrvLocker/components/FieldLocke
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -33,7 +34,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const formValues = useStore((state) => state.lockedCrv.formValues)
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.lockedCrv.fetchStepCreate)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
   const network = useStore((state) => state.networks.networks[rChainId])
 

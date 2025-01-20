@@ -14,6 +14,7 @@ import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -25,7 +26,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
-  const connectState = useStore((state) => state.connectState)
+  const connectState = useWalletStore((s) => s.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply)

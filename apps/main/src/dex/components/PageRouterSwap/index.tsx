@@ -35,6 +35,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi, ChainId, Token, TokensMapper } from '@main/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 const QuickSwap = ({
   pageLoaded,
@@ -66,7 +67,7 @@ const QuickSwap = ({
   const formValues = useStore((state) => state.quickSwap.formValues)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isHideSmallPools = useStore((state) => state.poolList.formValues.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
