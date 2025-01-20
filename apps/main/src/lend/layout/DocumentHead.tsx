@@ -6,7 +6,7 @@ export type Props = {
 
 const DocumentHead = ({ title }: Props) => (
   <Head>
-    <title>{title ? `${title} - Curve Lend` : 'lend.curve.fi'}</title>
+    <title>{title ? `${title} - Curve Lend` : 'curve.fi/lend'}</title>
     <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
   </Head>
 )

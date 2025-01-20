@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { ChainId, PoolDataCacheOrApi } from '@main/types/main.types'
+import { getAppRoot } from '@ui-kit/shared/routes'
 
 enum Pool {
   fantomFactoryStableNg24 = `250-factory-stable-ng-24`,
   fantomFactoryStableNg39 = '250-factory-stable-ng-39',
 }
 
-const BASE_URL = 'https://curve.fi/#/'
+const BASE_URL = getAppRoot('dex')
 
 // Custom link for each token in a pool.
 const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrApi) => {

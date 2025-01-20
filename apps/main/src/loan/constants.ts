@@ -1,4 +1,4 @@
-import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
+import { CRVUSD_ROUTES, getAppRoot } from '@ui-kit/shared/routes'
 
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -56,11 +56,13 @@ export enum TITLE {
   llammaBalances = 'llammaBalances',
 }
 
+const BASE_URL = getAppRoot('dex')
+
 export const PEG_KEEPERS = {
   '0x9201da0d97caaaff53f01b2fb56767c7072de340': {
     address: '0x9201da0d97caaaff53f01b2fb56767c7072de340',
     token: 'USDC',
-    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-crvusd-0/deposit',
+    poolUrl: `${BASE_URL}#/ethereum/pools/factory-crvusd-0/deposit`,
     pool: {
       id: 'factory-crvusd-0',
       name: 'crvUSD/USDC',
@@ -74,7 +76,7 @@ export const PEG_KEEPERS = {
   '0xfb726f57d251ab5c731e5c64ed4f5f94351ef9f3': {
     address: '0xfb726f57d251ab5c731e5c64ed4f5f94351ef9f3',
     token: 'USDT',
-    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-crvusd-1/deposit',
+    poolUrl: BASE_URL + '#/ethereum/pools/factory-crvusd-1/deposit',
     pool: {
       id: 'factory-crvusd-1',
       name: 'crvUSD/USDT',
@@ -88,7 +90,7 @@ export const PEG_KEEPERS = {
   '0x3fa20eaa107de08b38a8734063d605d5842fe09c': {
     address: '0x3fa20eaa107de08b38a8734063d605d5842fe09c',
     token: 'pyUSD',
-    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-stable-ng-42/deposit',
+    poolUrl: `${BASE_URL}#/ethereum/pools/factory-stable-ng-42/deposit`,
     pool: {
       id: 'factory-stable-ng-42',
       name: 'pyUSD/crvUSD',
@@ -102,7 +104,7 @@ export const PEG_KEEPERS = {
   '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8': {
     address: '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8',
     token: 'USDM',
-    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-stable-ng-154/deposit',
+    poolUrl: `${BASE_URL}#/ethereum/pools/factory-stable-ng-154/deposit`,
     pool: {
       id: 'factory-stable-ng-154',
       name: 'crvUSD/USDM',

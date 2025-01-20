@@ -12,6 +12,7 @@ import PegKeeperLabel from '@loan/components/PagePegKeepers/components/PegKeeper
 import PegKeeperForm from '@loan/components/PagePegKeepers/components/PegKeeperForm'
 import TextCaption from '@ui/TextCaption'
 import { ChainId } from '@loan/types/loan.types'
+import { getAppRoot } from '@ui-kit/shared/routes'
 
 type Props = {
   rChainId: ChainId
@@ -44,7 +45,9 @@ const PegKeeperContent = ({ rChainId, pegKeeperAddress, pool }: Props) => {
           <PegKeeperForm rChainId={rChainId} poolName={poolName} pegKeeperAddress={pegKeeperAddress} />
           <StyledLinks>
             <TextCaption isBold isCaps>{t`View:`}</TextCaption>
-            <StyledExternalLink href={`https://curve.fi/#/ethereum/pools/${pool.id}/deposit`}>Pool</StyledExternalLink>
+            <StyledExternalLink href={`${getAppRoot('dex')}#/ethereum/pools/${pool.id}/deposit`}>
+              Pool
+            </StyledExternalLink>
             <StyledExternalLink href={`https://etherscan.io/address/${pegKeeperAddress}`}>Contract</StyledExternalLink>
           </StyledLinks>
         </StyledInnerContent>

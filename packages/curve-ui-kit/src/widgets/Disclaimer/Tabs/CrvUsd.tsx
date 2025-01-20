@@ -10,6 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 import { Section, Header, Title, Paragraph } from '../Section'
 import { List } from '../List'
+import { getAppRoot } from '@ui-kit/shared/routes'
 
 const { Spacing } = SizesAndSpaces
 
@@ -117,7 +118,7 @@ export const CrvUsd = () => (
 
       <Paragraph>
         {t`Essentially, the borrow rate increases when the price of crvUSD goes lower and/or the proportion of Pegkeeper debt to total debt reduces. This process is intended to dynamically regulate market behavior such that it reinforces the crvUSD peg. Changes to the Monetary Policy are authorized only by the Curve DAO. A`}{' '}
-        <Link color="textSecondary" href="https://crvusd.curve.fi/crvUSD%20rate%20tool/" target="_blank">
+        <Link color="textSecondary" href={`${getAppRoot('loan')}crvUSD%20rate%20tool/`} target="_blank">
           {t`crvUSD rate tool`}
         </Link>{' '}
         {t`by 0xReviews allows Users to visualize the influence of these factors on the borrowing rate.`}

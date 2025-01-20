@@ -7,6 +7,7 @@ import type { ChainOption } from '@ui-kit/features/switch-chain'
 import curve from '@curvefi/api'
 import sortBy from 'lodash/sortBy'
 import { CurveApi, ChainId, NetworkConfig, NetworkAliases, NativeToken, Networks } from '@main/types/main.types'
+import { getAppRoot } from '@ui-kit/shared/routes'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -74,7 +75,7 @@ const defaultNetworks = Object.entries({
       'factory-v2-370': true, // PRISMA/yPRISMA
     },
     swapCustomRouteRedirect: {
-      'sfrxeth-llamma': 'https://crvusd.curve.fi/',
+      'sfrxeth-llamma': getAppRoot('loan'),
     },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
