@@ -1,4 +1,4 @@
-import { oneViewport, oneDesktopViewport, oneTabletViewport } from '@/support/ui'
+import { oneViewport, oneDesktopViewport, oneTabletViewport, oneAppPath } from '@/support/ui'
 
 describe('Disclaimers', () => {
   describe('Footer link', () => {
@@ -7,7 +7,7 @@ describe('Disclaimers', () => {
     footerViewports.forEach((viewport) => {
       it(`should contain footer disclaimer links for ${viewport[0]}x${viewport[1]}`, () => {
         cy.viewport(...viewport)
-        cy.visit('/')
+        cy.visit(`/${oneAppPath()}`)
 
         // Navigate to risk disclaimer from footer.
         cy.get(`[data-testid='footer']`).should('be.visible')
@@ -22,7 +22,7 @@ describe('Disclaimers', () => {
 
     it(`should contain multiple tabs for ${viewport[0]}x${viewport[1]}`, () => {
       cy.viewport(...viewport)
-      cy.visit('/ethereum/disclaimer')
+      cy.visit(`/${oneAppPath()}#/ethereum/disclaimer`)
 
       // Make sure there's tabs available and click one.
       cy.get(`[data-testid='disclaimer']`).should('be.visible')
