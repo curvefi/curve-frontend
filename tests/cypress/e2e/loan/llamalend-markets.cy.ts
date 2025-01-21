@@ -1,7 +1,8 @@
-import { checkIsDarkMode, isInViewport, oneOf, oneViewport } from '@/support/ui'
+import { checkIsDarkMode, isInViewport, oneOf, oneViewport, TABLET_BREAKPOINT } from '@/support/ui'
 
 describe('LlamaLend Markets', () => {
   let isDarkMode: boolean
+  let viewport: readonly [number, number]
 
   beforeEach(() => {
     cy.intercept('https://prices.curve.fi/v1/lending/chains', { body: { data: ['ethereum', 'fraxtal', 'arbitrum'] } })
@@ -9,7 +10,8 @@ describe('LlamaLend Markets', () => {
     cy.intercept('https://prices.curve.fi/v1/lending/markets/*/*/snapshots?agg=none', {
       fixture: 'lending-snapshots.json',
     }).as('snapshots')
-    cy.viewport(...oneViewport())
+    viewport = oneViewport()
+    cy.viewport(...viewport)
     cy.visit('/crvusd#/ethereum/beta-markets', {
       onBeforeLoad: (win) => {
         win.localStorage.clear()
@@ -21,9 +23,10 @@ describe('LlamaLend Markets', () => {
 
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
-    cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
-    cy.get('[data-testid="data-table-head"]').first().then(isInViewport).should('be.true')
-    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', 64)
+    cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
+    cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
+    const filterHeight = viewport[0] < TABLET_BREAKPOINT ? 48 : 64
+    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', filterHeight)
   })
 
   it('should sort', () => {
@@ -112,7 +115,7 @@ describe('LlamaLend Markets', () => {
       { toggle: 'borrowChart', element: 'line-graph-borrow' },
       { toggle: 'lendChart', element: 'line-graph-lend' },
     )
-    cy.get(`[data-testid="${element}"]`).scrollIntoView()
+    cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
     cy.get(`[data-testid="btn-visibility-settings"]`).click()
     cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
