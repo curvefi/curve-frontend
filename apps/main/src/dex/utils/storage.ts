@@ -1,8 +1,6 @@
 import merge from 'lodash/merge'
-import dayjs from '@ui-kit/lib/dayjs'
 
 export const APP_STORAGE = {
-  APP_CACHE: 'curve-app-cache',
   APP_DASHBOARD: 'curve-app-dashboard',
 }
 
@@ -20,23 +18,13 @@ export function getStorageValue(key: Key) {
     }
   }
 
-  if (key === 'APP_CACHE') {
-    return {
-      timestamp: parsedStoredValue.timestamp ?? '',
-      walletName: getWalletName(parsedStoredValue.walletName, parsedStoredValue.timestamp),
-    }
-  } else if (key === 'APP_DASHBOARD') {
+  if (key === 'APP_DASHBOARD') {
     return {
       addresses: Array.isArray(parsedStoredValue.addresses)
         ? (parsedStoredValue.addresses as string[])
         : ([] as string[]),
     }
   }
-}
-
-function getWalletName(walletName: string | undefined, timestamp: string | undefined) {
-  const isStaled = walletName && timestamp && dayjs().diff(+timestamp, 'days') > 5
-  return isStaled || !walletName ? '' : walletName
 }
 
 export function setStorageValue<T>(key: Key, updatedValue: T) {

@@ -22,7 +22,6 @@ type WalletActions = {
     dismiss: () => void
     update: UpdateNotification | undefined
   }
-
   connectWallet(): void
   getProvider(): BrowserProvider | null
   chooseWallet(wallet: Wallet | null): Promise<void>
@@ -73,7 +72,6 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
     })
   },
   initialize: (locale, themeType, networks) => {
-    if (get().onboard) return console.log('initialize: already initialized', get())
     const onboard = initOnboard(locale, themeType, networks)
     const wallet = get().onboard?.state.get().wallets?.[0]
     const provider = wallet && new BrowserProvider(wallet.provider)

@@ -15,7 +15,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const globalAlertHeight = useHeightResizeObserver(globalAlertRef)
 

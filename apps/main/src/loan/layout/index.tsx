@@ -16,7 +16,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 

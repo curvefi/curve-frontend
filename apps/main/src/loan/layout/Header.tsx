@@ -19,7 +19,7 @@ import { useWalletStore } from '@ui-kit/features/connect-wallet'
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

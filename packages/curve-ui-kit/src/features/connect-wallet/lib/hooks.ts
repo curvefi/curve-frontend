@@ -1,28 +1,31 @@
 import { useCallback } from 'react'
 import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
 import { useWalletStore } from '../store'
+import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 
 export { useSetChain, useSetLocale } from '@web3-onboard/react'
 
 export const useConnectWallet = () => {
-  const [{ wallet, connecting }, connect, disconnect] = useOnboardWallet()
+  const [{ wallet, connecting }, connectWallet, disconnectWallet] = useOnboardWallet()
+  const [walletName, setWalletName] = useLocalStorage('walletName')
+
   const chooseWallet = useWalletStore((s) => s.chooseWallet)
-  const onConnect: typeof connect = useCallback(
+  const connect: typeof connectWallet = useCallback(
     async (options) => {
-      const wallets = await connect(options)
+      const wallets = await connectWallet(options)
       chooseWallet(wallets[0])
       return wallets
     },
-    [chooseWallet, connect],
+    [chooseWallet, connectWallet],
   )
-  const onDisconnect: typeof disconnect = useCallback(
+  const disconnect: typeof disconnectWallet = useCallback(
     async (options) => {
-      const wallets = await disconnect(options)
+      const wallets = await disconnectWallet(options)
       chooseWallet(wallets[0])
       return wallets
     },
-    [disconnect, chooseWallet],
+    [disconnectWallet, chooseWallet],
   )
 
-  return [{ wallet, connecting }, onConnect, onDisconnect] as const
+  return { wallet, connecting, connect, disconnect, walletName, setWalletName }
 }
