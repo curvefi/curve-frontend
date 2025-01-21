@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfiguration = {
-  output: 'export',
   compiler: {
     styledComponents: true
   },
@@ -33,7 +32,6 @@ const nextConfiguration = {
       test: /\.svg$/,
       use: ['@svgr/webpack', 'url-loader']
     })
-
     return config
   },
   eslint: {
@@ -48,12 +46,11 @@ const nextConfiguration = {
     // !! WARN !!
     // ignoreBuildErrors: true,
   },
-  // todo: setup redirect when we get rid of {output: 'export'}
-  // redirects: async () => [{
-  //   source: '/',
-  //   destination: '/dex',
-  //   permanent: true
-  // }],
+  redirects: async () => [{
+    source: '/',
+    destination: '/dex',
+    permanent: true
+  }],
 }
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

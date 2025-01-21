@@ -43,7 +43,10 @@ const PageIntegrations = dynamic(() => import('@/dex/components/PageIntegrations
 const PageCompensation = dynamic(() => import('@/dex/components/PageCompensation/Page'), { ssr: false })
 const PageDisclaimer = dynamic(() => import('@/dex/components/PageDisclaimer/Page'), { ssr: false })
 
-const App: NextPage = () => {
+export const getServerSideProps = async () => ({ props: { server: await Promise.resolve('dex') } })
+
+const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = ({ server }) => {
+  server && console.log('server', server)
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
