@@ -10,7 +10,7 @@ describe('LlamaLend Markets', () => {
       fixture: 'lending-snapshots.json',
     }).as('snapshots')
     cy.viewport(...oneViewport())
-    cy.visit('/crvusd#/ethereum/beta-markets', {
+    cy.visit('localhost:3001/#/ethereum/beta-markets', {
       onBeforeLoad: (win) => {
         win.localStorage.clear()
         isDarkMode = checkIsDarkMode(win)
@@ -22,7 +22,7 @@ describe('LlamaLend Markets', () => {
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
     cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
-    cy.get('[data-testid="data-table-head"]').first().then(isInViewport).should('be.true')
+    cy.get('[data-testid="data-table-head"]').last().then(isInViewport).should('be.true')
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', 64)
   })
 
@@ -34,9 +34,9 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
-    const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.attr', 'stroke', green)
-    cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.attr', 'stroke', red)
+    const [green, red] = [isDarkMode ? 'rgb(50, 206, 121)' : 'rgb(22, 125, 74)', 'rgb(237, 36, 47)']
+    cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.css', 'stroke', green)
+    cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.css', 'stroke', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@snapshots.all`).then((calls1) => {
@@ -112,7 +112,7 @@ describe('LlamaLend Markets', () => {
       { toggle: 'borrowChart', element: 'line-graph-borrow' },
       { toggle: 'lendChart', element: 'line-graph-lend' },
     )
-    cy.get(`[data-testid="${element}"]`).scrollIntoView()
+    cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
     cy.get(`[data-testid="btn-visibility-settings"]`).click()
     cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()

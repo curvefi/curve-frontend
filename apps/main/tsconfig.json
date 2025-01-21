@@ -3,11 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"],
-      "@main/*": ["dex/*"],
-      "@loan/*": ["loan/*"],
-      "@lend/*": ["lend/*"],
-      "@dao/*": ["dao/*"],
+      "@main/*": ["*"],
       "@ui": ["../../../packages/ui/src/index.ts"],
       "@ui/*": ["../../../packages/ui/src/*"],
       "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],

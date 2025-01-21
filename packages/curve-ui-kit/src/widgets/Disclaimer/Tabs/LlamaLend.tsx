@@ -13,7 +13,7 @@ export const LlamaLend = () => (
 
       <Paragraph>
         {t`Users wishing to acquaint themselves with a broader range of general risk disclosures are encouraged to read the`}{' '}
-        <Link color="textSecondary" href="https://curve.fi/dex#/ethereum/disclaimer" target="_blank">
+        <Link color="textSecondary" href="https://curve.fi/#/ethereum/disclaimer" target="_blank">
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </Link>
         {t`. Users are also advised to review the public`}{' '}

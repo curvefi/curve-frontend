@@ -10,8 +10,14 @@
   "scripts": {
     "run:nodes": "node runHardhatNodes.js",
     "kill:nodes": "node killHardhatNodes.js",
-    "cy:open:e2e": "cypress open --browser chrome --e2e",
-    "cy:run:e2e": "wait-on http://localhost:3000 --timeout 1m && cypress run --browser chrome --e2e"
+    "cy:open:e2e:main": "CYPRESS_DAPP=main cypress open --browser chrome --e2e",
+    "cy:open:e2e:lend": "CYPRESS_DAPP=lend cypress open --browser chrome --e2e",
+    "cy:open:e2e:dao": "CYPRESS_DAPP=dao cypress open --browser chrome --e2e",
+    "cy:open:e2e:loan": "CYPRESS_DAPP=loan cypress open --browser chrome --e2e",
+    "cy:run:e2e:main": "wait-on http://localhost:3000 --timeout 1m && CYPRESS_DAPP=main cypress run --browser chrome --e2e",
+    "cy:run:e2e:loan": "wait-on http://localhost:3001 --timeout 1m && CYPRESS_DAPP=loan cypress run --browser chrome --e2e",
+    "cy:run:e2e:dao": "wait-on http://localhost:3002 --timeout 1m && CYPRESS_DAPP=dao cypress run --browser chrome --e2e",
+    "cy:run:e2e:lend": "wait-on http://localhost:3003 --timeout 1m && CYPRESS_DAPP=lend cypress run --browser chrome --e2e"
   },
   "devDependencies": {
     "@types/cypress": "^1.1.3",

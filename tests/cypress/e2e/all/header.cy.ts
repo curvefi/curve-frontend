@@ -1,11 +1,4 @@
-import {
-  AppPath,
-  checkIsDarkMode,
-  oneAppPath,
-  oneDesktopViewport,
-  oneMobileOrTabletViewport,
-  TABLET_BREAKPOINT,
-} from '@/support/ui'
+import { checkIsDarkMode, oneDesktopViewport, oneMobileOrTabletViewport, TABLET_BREAKPOINT } from '@/support/ui'
 
 const expectedMainNavHeight = 56
 const expectedSubNavHeight = 42 // 40 + 2px border
@@ -16,23 +9,21 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMaxWidth = 1536
 const scrollbarWidth = 15 // scrollbar in px for the test browser
 
-const mainAppUrl = 'http://localhost:3000/dex'
+const mainAppUrl = 'http://localhost:3000'
 
 describe('Header', () => {
   let viewport: readonly [number, number]
 
   describe('Desktop', () => {
     let isDarkMode: boolean // when running locally, the dark mode might be the default
-    let appPath: AppPath
 
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
-      appPath = oneAppPath()
-      cy.visit(appPath, {
+      cy.visit('/', {
         onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
-      waitIsLoaded(appPath)
+      waitIsLoaded()
     })
 
     it('should have the right size', () => {
@@ -75,7 +66,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['loan', 'dao'].includes(appPath)) {
+      if (['loan', 'dao'].includes(Cypress.env('APP'))) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum`)
@@ -87,14 +78,11 @@ describe('Header', () => {
   })
 
   describe('mobile or tablet', () => {
-    let appPath: AppPath
-
     beforeEach(() => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
-      appPath = oneAppPath()
-      cy.visit(`/${appPath}`)
-      waitIsLoaded(appPath)
+      cy.visit('/')
+      waitIsLoaded()
     })
 
     it('should have the right size', () => {
@@ -116,7 +104,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = appPath == 'dao' ? 0 : 1
+        const clickIndex = Cypress.env('APP') == 'dao' ? 0 : 1
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
@@ -140,7 +128,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['loan', 'dao'].includes(appPath)) {
+      if (['loan', 'dao'].includes(Cypress.env('APP'))) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
@@ -156,8 +144,8 @@ describe('Header', () => {
     })
   })
 
-  function waitIsLoaded(appPath: AppPath) {
-    const testId = appPath == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
+  function waitIsLoaded() {
+    const testId = Cypress.env('APP') == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
     cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
   }
 
