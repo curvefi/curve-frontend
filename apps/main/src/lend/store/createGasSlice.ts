@@ -1,16 +1,14 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@lend/store/useStore'
 import type { GasInfo } from '@lend/store/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { gweiToWai } from '@ui-kit/utils'
 import { httpFetcher, log } from '@lend/utils/helpers'
 import lendingApi from '@lend/lib/apiLending'
 import networks from '@lend/networks'
 import { Api, Provider } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -86,7 +84,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 42161) {
           // Arbitrum custom fee data
-          const provider = get().wallet.provider
+          const { provider } = useWalletStore.getState()
 
           if (provider) {
             const { customFeeData } = await lendingApi.helpers.fetchCustomGasFees(curve)
@@ -117,7 +115,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         if (parsedGasInfo) {
           get()[sliceKey].setStateByKeys(parsedGasInfo)
         } else {
-          const provider = get().wallet.provider
+          const { provider } = useWalletStore.getState()
           if (provider && chainId) {
             const parsedGasInfo = await parseGasInfo(curve, provider)
             if (parsedGasInfo) {

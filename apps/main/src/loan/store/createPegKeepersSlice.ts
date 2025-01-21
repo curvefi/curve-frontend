@@ -9,7 +9,7 @@ import crvusdjsApi from '@loan/lib/apiCrvusd'
 import { DEFAULT_FORM_STATUS } from '@loan/components/PagePegKeepers/utils'
 import { PEG_KEEPERS_ADDRESSES } from '@loan/constants'
 import { Curve, Provider } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

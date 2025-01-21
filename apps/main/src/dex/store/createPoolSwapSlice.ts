@@ -26,7 +26,7 @@ import {
   Pool,
   PoolData,
 } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

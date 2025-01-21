@@ -12,7 +12,7 @@ import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
 import networks from '@loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
 import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

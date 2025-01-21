@@ -12,6 +12,7 @@ import { CRVUSD_ADDRESS } from '@loan/constants'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import Tooltip from '@ui/Tooltip'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type UserPositionBannerProps = {
   className?: string
@@ -22,7 +23,7 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
   const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
   const crvUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvUsdRateLoading = useStore((state) => state.usdRates.loading)
-  const signerAddress = useStore((state) => state.wallet.onboard?.state.get().wallets?.[0]?.accounts?.[0]?.address)
+  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
   const userBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? ''])
   const crvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.crvUsdExchangeRate.fetchStatus)
 

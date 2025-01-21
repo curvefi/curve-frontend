@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import useStore from '@dao/store/useStore'
 import CurrentVotes from './CurrentVotes'
 import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const { getUserGaugeVoteWeights, userGaugeVoteWeightsMapper } = useStore((state) => state.user)

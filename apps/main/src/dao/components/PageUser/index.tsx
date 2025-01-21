@@ -12,7 +12,7 @@ import UserLocksTable from './UserLocksTable'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import SubNav from '@dao/components/SubNav'
 import { VeCrvHolder } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type UserPageProps = {
   routerParams: {

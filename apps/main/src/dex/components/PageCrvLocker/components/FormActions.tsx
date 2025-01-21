@@ -1,23 +1,23 @@
-import React, { useCallback } from 'react'
+import { ReactNode } from 'react'
 import { t } from '@lingui/macro'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormActions = ({
   haveSigner,
   loading,
   children,
-}: React.PropsWithChildren<{
+}: {
   haveSigner: boolean
   loading: boolean
-}>) => {
-  const setConnectState = useWalletStore((s) => s.setConnectState)
-  const connect = useCallback(() => setConnectState(), [setConnectState])
+  children?: ReactNode | undefined
+}) => {
+  const connectWallet = useWalletStore((s) => s.connectWallet)
   return (
     <>
       {!haveSigner && !loading ? (
-        <Button fillWidth size="large" variant="filled" onClick={connect}>
+        <Button fillWidth size="large" variant="filled" onClick={connectWallet}>
           {t`Connect Wallet`}
         </Button>
       ) : loading ? (

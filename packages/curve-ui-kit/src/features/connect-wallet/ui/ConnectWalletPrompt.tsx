@@ -1,7 +1,7 @@
 import { isLoading } from 'ui/src/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import ConnectWallet from 'ui/src/ConnectWalletPrompt'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type ConnectWalletPromptProps = {
   description: string

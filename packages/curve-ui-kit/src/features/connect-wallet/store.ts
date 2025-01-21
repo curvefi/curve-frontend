@@ -60,11 +60,8 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
     })
   },
   getProvider: () => {
-    const wallet = get().onboard?.state.get().wallets?.[0]
-    if (!wallet) {
-      return null
-    }
-    return new BrowserProvider(wallet.provider)
+    const { wallet } = get()
+    return wallet && new BrowserProvider(wallet.provider)
   },
   chooseWallet: async (wallet: Wallet | null) => {
     const storedProvider = get().provider
@@ -76,13 +73,12 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
     })
   },
   initialize: (locale, themeType, networks) => {
+    if (get().onboard) return console.log('initialize: already initialized', get())
     const onboard = initOnboard(locale, themeType, networks)
     const wallet = get().onboard?.state.get().wallets?.[0]
-    return set({
-      onboard,
-      wallet,
-      provider: wallet ? new BrowserProvider(wallet.provider) : null,
-    })
+    const provider = wallet && new BrowserProvider(wallet.provider)
+    console.log('initialize', { onboard, wallet, provider, existing: get() })
+    return set({ onboard, wallet, provider })
   },
 })
 

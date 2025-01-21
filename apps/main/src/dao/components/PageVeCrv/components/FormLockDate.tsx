@@ -23,7 +23,7 @@ import FieldDatePicker from '@dao/components/PageVeCrv/components/FieldDatePicke
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

@@ -42,7 +42,7 @@ import { useOneWayMarket } from '@lend/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Page: NextPage = () => {
   const params = useParams()

@@ -28,6 +28,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
   const curve = useStore((state) => state.curve)
   const connectState = useWalletStore((s) => s.connectState)
+  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -96,6 +97,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
         try {
           if (!walletState) throw new Error('unable to connect')
+          chooseWallet(walletState)
           setStorageValue('APP_CACHE', { walletName: walletState.label, timestamp: Date.now().toString() })
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
@@ -120,7 +122,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState],
+    [connect, chooseWallet, navigate, parsedParams, setChain, updateConnectState],
   )
 
   const handleDisconnectWallet = useCallback(

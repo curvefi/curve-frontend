@@ -2,7 +2,7 @@ import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import networks from '@lend/networks'
 import { ChainId, Provider } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,

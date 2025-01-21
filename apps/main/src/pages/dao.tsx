@@ -23,7 +23,7 @@ import Page from '@/dao/layout'
 import GlobalStyle from '@/dao/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -50,7 +50,7 @@ const App: NextPage = () => {
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const curve = useStore((state) => state.curve)
-  const onboard = useWalletStore((s) => s.onboard)
+  const wallet = useWalletStore((s) => s.wallet)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
@@ -111,17 +111,10 @@ const App: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (isSuccess(connectState) && curve && onboard) {
-      const updateUserDataIfReady = async () => {
-        const connectedWallets = onboard.state.get().wallets
-        if (connectedWallets.length > 0) {
-          updateUserData(curve, connectedWallets[0])
-        }
-      }
-
-      updateUserDataIfReady()
+    if (isSuccess(connectState) && curve && wallet) {
+      updateUserData(curve, wallet)
     }
-  }, [curve, connectState, updateUserData, onboard])
+  }, [curve, connectState, updateUserData, wallet])
 
   // initiate proposals list
   useEffect(() => {

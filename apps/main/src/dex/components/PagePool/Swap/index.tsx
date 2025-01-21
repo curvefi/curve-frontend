@@ -35,7 +35,7 @@ import TransferActions from '@main/components/PagePool/components/TransferAction
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { Balances, CurveApi, TokensMapper, PoolData, PoolAlert } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Swap = ({
   chainIdPoolId,

@@ -2,7 +2,7 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormActions = ({
   haveSigner,

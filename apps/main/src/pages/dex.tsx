@@ -26,7 +26,7 @@ import { getLocaleFromUrl } from '@/dex/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')

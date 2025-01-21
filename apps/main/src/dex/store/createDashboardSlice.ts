@@ -23,7 +23,7 @@ import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, slee
 import { shortenAccount } from '@ui/utils'
 import curvejsApi from '@main/lib/curvejs'
 import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

@@ -28,7 +28,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 

@@ -24,8 +24,7 @@ import type {
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 import useTokensMapper from '@main/hooks/useTokensMapper'
-import useStore from '@main/store/useStore'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export const useAddRewardToken = ({
   chainId,

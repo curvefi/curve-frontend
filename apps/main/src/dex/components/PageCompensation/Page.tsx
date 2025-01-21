@@ -16,7 +16,7 @@ import IconButton from '@ui/IconButton'
 import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Provider } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Page: NextPage = () => {
   const params = useParams()

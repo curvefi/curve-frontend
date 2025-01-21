@@ -10,7 +10,7 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import LoanFormConnect from '@loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { ChainId, Curve } from '@loan/types/loan.types'
 
 type Props = {

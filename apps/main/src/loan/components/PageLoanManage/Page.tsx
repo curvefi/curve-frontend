@@ -35,7 +35,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {

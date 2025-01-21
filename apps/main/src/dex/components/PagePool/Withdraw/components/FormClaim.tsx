@@ -18,7 +18,7 @@ import Stepper from '@ui/Stepper'
 import TransferActions from '@main/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, PoolData } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)

@@ -29,7 +29,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CollateralAlert, Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,

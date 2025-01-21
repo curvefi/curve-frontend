@@ -9,7 +9,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 interface Props {
   disabled: boolean

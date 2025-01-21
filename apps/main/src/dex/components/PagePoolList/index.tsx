@@ -17,7 +17,7 @@ import TableSettings from '@main/components/PagePoolList/components/TableSetting
 import TableRowNoResult from '@main/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@main/components/PagePoolList/components/PoolRow'
 import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const PoolList = ({
   rChainId,

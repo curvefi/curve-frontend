@@ -4,7 +4,7 @@ import { isValidAddress } from '@main/utils'
 import useStore from '@main/store/useStore'
 import dayjs from '@ui-kit/lib/dayjs'
 import { PoolDataCacheOrApi, Provider } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}

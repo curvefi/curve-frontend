@@ -24,7 +24,7 @@ import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
 import { getLocaleFromUrl } from '@/lend/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')

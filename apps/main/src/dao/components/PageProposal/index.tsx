@@ -25,7 +25,7 @@ import BackButton from '../BackButton'
 import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
 import { ProposalType } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type ProposalProps = {
   routerParams: {

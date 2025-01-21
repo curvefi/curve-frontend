@@ -18,7 +18,7 @@ import { AppPageContainer } from '@ui/AppPage'
 import DocumentHead from '@lend/layout/DocumentHead'
 import MarketList from '@lend/components/PageMarketList/index'
 import Settings from '@lend/layout/Settings'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 
 enum SEARCH {

@@ -10,7 +10,7 @@ import { DEFAULT_FORM_STATUS } from '@lend/components/PageVault/VaultClaim/utils
 import apiLending from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { Api, MarketClaimable } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -75,7 +75,6 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
     // steps
     fetchStepClaim: async (userActiveKey, api, market, type) => {
       const { provider } = useWalletStore.getState()
-
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

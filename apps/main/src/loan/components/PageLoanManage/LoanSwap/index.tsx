@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues, StepKey } from '@loan/components/PageLoanManage/LoanSwap/types'
 import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@loan/store/createLoanSwap'

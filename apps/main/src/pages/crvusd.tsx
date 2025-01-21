@@ -25,7 +25,7 @@ import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { QueryProvider } from '@ui/QueryProvider'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')

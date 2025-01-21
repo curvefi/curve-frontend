@@ -23,7 +23,7 @@ import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {

@@ -26,7 +26,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { Api, PageContentProps } from '@lend/types/lend.types'
 
 const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {

@@ -35,7 +35,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi, ChainId, Token, TokensMapper } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const QuickSwap = ({
   pageLoaded,

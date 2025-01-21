@@ -15,7 +15,7 @@ import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Page: NextPage = () => {
   const params = useParams()

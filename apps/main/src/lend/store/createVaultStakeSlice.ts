@@ -11,7 +11,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageV
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId, Api } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -103,8 +103,8 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
     // steps
     fetchStepApprove: async (activeKey, formType, api, market, formValues) => {
       const { provider } = useWalletStore.getState()
-
       if (!provider) return setMissingProvider(get()[sliceKey])
+
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))

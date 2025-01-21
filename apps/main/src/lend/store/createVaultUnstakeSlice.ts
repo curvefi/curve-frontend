@@ -11,7 +11,7 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageV
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId, Api } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null

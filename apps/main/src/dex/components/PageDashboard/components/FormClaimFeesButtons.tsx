@@ -9,7 +9,7 @@ import useStore from '@main/store/useStore'
 import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormClaimFeesButtons = ({
   activeKey,

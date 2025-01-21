@@ -6,7 +6,7 @@ import { Contract } from 'ethers'
 import produce from 'immer'
 
 import { SEVEN_DAYS } from '@dao/constants'
-import { getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, getWalletSignerEns, useWalletStore } from '@ui-kit/features/connect-wallet'
 import { contractVeCRV } from '@dao/store/contracts'
 import { abiVeCrv } from '@dao/store/abis'
 import {
@@ -28,7 +28,6 @@ import {
   UserProposalVotesSortBy,
   UserVoteData,
 } from '@dao/types/dao.types'
-import { getWalletSignerEns, useWalletStore } from '@ui-kit/features/connect-wallet/store'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

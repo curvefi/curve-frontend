@@ -1,4 +1,4 @@
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@lend/components/PageVault/VaultDepositMint/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'

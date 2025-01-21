@@ -24,7 +24,7 @@ import FieldLockedAmt from '@dao/components/PageVeCrv/components/FieldLockedAmt'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

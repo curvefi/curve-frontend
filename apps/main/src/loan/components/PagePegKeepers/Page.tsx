@@ -1,22 +1,18 @@
 import type { NextPage } from 'next'
-
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import { scrollToTop } from '@loan/utils/helpers'
 import usePageOnMount from '@loan/hooks/usePageOnMount'
-import useStore from '@loan/store/useStore'
-
 import Box from '@ui/Box'
 import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
 import DocumentHead from '@loan/layout/DocumentHead'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Settings from '@loan/layout/Settings'
 import PagePegKeepers from '@loan/components/PagePegKeepers'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Page: NextPage = () => {
   const params = useParams()

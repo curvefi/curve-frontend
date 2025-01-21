@@ -23,7 +23,7 @@ import Stepper from '@ui/Stepper'
 import TransferActions from '@main/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, Pool, PoolData } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet/store'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormDepositStake = ({
   chainIdPoolId,
