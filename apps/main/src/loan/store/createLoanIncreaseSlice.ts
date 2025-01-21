@@ -218,12 +218,17 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       const chainId = curve.chainId
       const { collateral, debt } = formValues
       const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
+
+      // re-fetch max
       const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
       get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
+
+      // re-fetch loan info
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists.loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
+
       if (activeKey === get()[sliceKey].activeKey) {
         get()[sliceKey].setStateByKeys({
           detailInfo: {},

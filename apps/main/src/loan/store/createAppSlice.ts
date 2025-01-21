@@ -98,7 +98,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
     useWalletStore.setState({ connectState: value })
-    console.log('connectState', value)
   },
   updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
     const { gas, loans, usdRates, ...state } = get()

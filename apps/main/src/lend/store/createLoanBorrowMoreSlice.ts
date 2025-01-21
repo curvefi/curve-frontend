@@ -243,16 +243,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       const { gas } = get()
       const sliceState = get()[sliceKey]
       const { provider } = useWalletStore.getState()
-
-      if (!provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...sliceState.formStatus,
-          step: '',
-          formProcessing: false,
-          error: 'error-invalid-provider',
-        })
-        return
-      }
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })

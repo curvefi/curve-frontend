@@ -24,5 +24,5 @@ export const useConnectWallet = () => {
     [disconnect, chooseWallet],
   )
 
-  return [{ wallet, connecting }, onConnect, onDisconnect]
+  return [{ wallet, connecting }, onConnect, onDisconnect] as const
 }

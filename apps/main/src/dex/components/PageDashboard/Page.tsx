@@ -13,7 +13,7 @@ import Dashboard from '@main/components/PageDashboard/index'
 import DocumentHead from '@main/layout/default/DocumentHead'
 import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
@@ -35,7 +35,7 @@ const Page: NextPage = () => {
       {!provider ? (
         <Box display="flex" fillWidth flexJustifyContent="center">
           <ConnectWalletWrapper>
-            <ConnectWallet
+            <ConnectWalletPrompt
               description="Connect wallet to view dashboard"
               connectText="Connect Wallet"
               loadingText="Connecting"

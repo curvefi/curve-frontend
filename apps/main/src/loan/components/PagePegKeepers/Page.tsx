@@ -7,7 +7,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { scrollToTop } from '@loan/utils/helpers'
 import usePageOnMount from '@loan/hooks/usePageOnMount'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import DocumentHead from '@loan/layout/DocumentHead'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Settings from '@loan/layout/Settings'
@@ -46,7 +46,7 @@ const Page: NextPage = () => {
           ) : (
             <Box display="flex" fillWidth>
               <ConnectWalletWrapper>
-                <ConnectWallet
+                <ConnectWalletPrompt
                   description="Connect wallet to view markets list"
                   connectText="Connect Wallet"
                   loadingText="Connecting"

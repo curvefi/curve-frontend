@@ -9,7 +9,7 @@ import usePageOnMount from '@main/hooks/usePageOnMount'
 import DocumentHead from '@main/layout/default/DocumentHead'
 import PoolCreation from '@main/components/PageCreatePool/index'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import { CurveApi } from '@main/types/main.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
@@ -30,7 +30,7 @@ const Page: NextPage = () => {
       {!provider ? (
         <Box display="flex" fillWidth>
           <ConnectWalletWrapper>
-            <ConnectWallet
+            <ConnectWalletPrompt
               description="Connect wallet to access pool creation"
               connectText="Connect Wallet"
               loadingText="Connecting"

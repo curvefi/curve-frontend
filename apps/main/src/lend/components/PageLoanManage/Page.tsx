@@ -37,7 +37,7 @@ import {
   ExpandIcon,
 } from '@ui/Chart/styles'
 import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import { useOneWayMarket } from '@lend/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -221,7 +221,7 @@ const Page: NextPage = () => {
         </>
       ) : (
         <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWallet
+          <ConnectWalletPrompt
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}

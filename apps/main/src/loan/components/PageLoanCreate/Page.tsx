@@ -32,7 +32,7 @@ import LoanInfoLlamma from '@loan/components/LoanInfoLlamma'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
@@ -224,7 +224,7 @@ const Page: NextPage = () => {
         </>
       ) : (
         <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWallet
+          <ConnectWalletPrompt
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}

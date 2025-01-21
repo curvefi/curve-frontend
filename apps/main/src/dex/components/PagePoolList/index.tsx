@@ -16,7 +16,7 @@ import TableHeadMobile from '@main/components/PagePoolList/components/TableHeadM
 import TableSettings from '@main/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@main/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@main/components/PagePoolList/components/PoolRow'
-import { ConnectWalletPrompt as ConnectWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const PoolList = ({
@@ -183,7 +183,7 @@ const PoolList = ({
 
       {!provider ? (
         <ConnectWalletWrapper>
-          <ConnectWallet
+          <ConnectWalletPrompt
             description={t`Connect wallet to view pool list`}
             connectText={t`Connect Wallet`}
             loadingText={t`Connecting`}
