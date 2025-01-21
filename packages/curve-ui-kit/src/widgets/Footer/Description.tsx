@@ -7,7 +7,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 
-import { RCLogoSM } from 'ui/src/images'
+import { RCLogoSM } from '@ui/images'
 
 const { IconSize, Spacing, FontWeight } = SizesAndSpaces
 

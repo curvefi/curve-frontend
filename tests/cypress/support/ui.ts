@@ -22,12 +22,8 @@ export const isInViewport = ($el: JQuery) => {
   const height = Cypress.$(cy.state('window')).height()!
   const width = Cypress.$(cy.state('window')).width()!
   const rect = $el[0].getBoundingClientRect()
-  return (
-    rect.top + rect.height / 2 > 0 &&
-    rect.top + rect.height / 2 < height &&
-    rect.left + rect.width / 2 > 0 &&
-    rect.left + rect.width / 2 < width
-  )
+  const [x, y] = [rect.left + rect.width / 2, rect.top + rect.height / 2]
+  return y > 0 && y < height && x > 0 && x < width
 }
 
 export const checkIsDarkMode = (win: Cypress.AUTWindow) => win.matchMedia('(prefers-color-scheme: dark)').matches

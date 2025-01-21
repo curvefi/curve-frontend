@@ -1,6 +1,6 @@
-import { isLoading } from 'ui/src/utils'
+import { isLoading } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import ConnectWallet from 'ui/src/ConnectWalletPrompt'
+import ConnectWallet from '@ui/ConnectWalletPrompt'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type ConnectWalletPromptProps = {
@@ -9,7 +9,7 @@ type ConnectWalletPromptProps = {
   loadingText: string
 }
 
-export const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({ description, connectText, loadingText }) => {
+export const ConnectWalletPrompt = ({ description, connectText, loadingText }: ConnectWalletPromptProps) => {
   const connectWallet = useWalletStore((s) => s.connectWallet)
   const connectState = useWalletStore((s) => s.connectState)
   const theme = useUserProfileStore((state) => state.theme)

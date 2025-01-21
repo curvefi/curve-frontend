@@ -1,9 +1,7 @@
 import type { AriaButtonProps } from 'react-aria'
-
 import * as React from 'react'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
-
 import Icon from 'ui/src/Icon/Icon'
 
 function Button(

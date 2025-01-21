@@ -77,7 +77,6 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
     const onboard = initOnboard(locale, themeType, networks)
     const wallet = get().onboard?.state.get().wallets?.[0]
     const provider = wallet && new BrowserProvider(wallet.provider)
-    console.log('initialize', { onboard, wallet, provider, existing: get() })
     return set({ onboard, wallet, provider })
   },
 })

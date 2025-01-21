@@ -35,7 +35,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const { rChainId } = useNetworkFromUrl()
 
   const setLocale = useUserProfileStore((state) => state.setLocale)
-  console.log('connectState', connectState)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
