@@ -4,6 +4,7 @@ import { formatNumber } from '@ui/utils/utilsFormat'
 import { useTheme } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
+import DistributionsChartTooltip from './DistributionsChartTooltip'
 
 const { FontSize } = SizesAndSpaces
 
@@ -57,7 +58,7 @@ const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> 
           axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
           tickFormatter={(value) => `$${formatNumber(value, { notation: 'compact' })}`}
         />
-        {/* <Tooltip content={RevenueDistributionsBarChartTooltip} cursor={{ opacity: 0.3 }} /> */}
+        <Tooltip content={DistributionsChartTooltip} cursor={{ opacity: 0.3 }} />
         <Bar dataKey="weeklyRevenue" label={false} fill={barColor} isAnimationActive={false}>
           {data?.epochs.map((entry, index) => <Cell key={`$cell-${index}`} fill={barColor} />)}
         </Bar>

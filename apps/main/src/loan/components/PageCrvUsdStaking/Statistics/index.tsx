@@ -6,8 +6,8 @@ import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
 import { useScrvUsdYield } from '@loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@loan/entities/scrvusdRevenue'
-import LineChart from './LineChart'
-import BarChart from './BarChart'
+import RevenueLineChart from './RevenueLineChart'
+import DistributionsBarChart from './DistributionsBarChart'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -47,8 +47,8 @@ const Statistics = () => {
         chartOptions={chartOptions}
         timeOptions={timeOptions}
       />
-      {activeChartOption.label === 'Savings Rate' && <LineChart data={yieldData ?? []} />}
-      {activeChartOption.label === 'Distributions' && <BarChart data={revenueData ?? null} />}
+      {activeChartOption.label === 'Savings Rate' && <RevenueLineChart data={yieldData ?? []} />}
+      {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
     </Card>
   )
 }

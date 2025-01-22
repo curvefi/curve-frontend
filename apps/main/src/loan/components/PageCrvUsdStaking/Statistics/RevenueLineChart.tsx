@@ -3,11 +3,10 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import CustomTooltip from './ChartTooltip'
-import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
+import RevenueChartTooltip from './RevenueChartTooltip'
 import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
 
-const { FontSize } = SizesAndSpaces
+const { FontSize, FontWeight } = SizesAndSpaces
 
 type Props = {
   data: ScrvUsdYieldWithAverages[]
@@ -67,7 +66,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           axisLine={false}
           dataKey={'proj_apy'}
         />
-        <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
+        <Tooltip content={RevenueChartTooltip} cursor={{ opacity: 0.3 }} />
         <Line
           type="monotone"
           dataKey="proj_apy"
@@ -106,9 +105,9 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           height={32}
           formatter={(value: keyof typeof labels) => labels[value].text}
           wrapperStyle={{
-            fontWeight: 'bold',
-            fontSize: 'var(--font-size-1)',
-            color: 'var(--page--text-color)',
+            fontWeight: FontWeight.Medium,
+            fontSize: FontSize.sm.desktop,
+            color: Text.TextColors.Secondary,
             paddingLeft: 24,
           }}
         />

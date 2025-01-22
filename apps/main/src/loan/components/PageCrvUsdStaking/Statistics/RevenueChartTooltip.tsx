@@ -3,8 +3,8 @@ import { TooltipProps } from 'recharts'
 import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
 import { useTheme } from '@mui/material/styles'
+import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -38,6 +38,16 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
   if (active && payload && payload.length) {
     const { timestamp, proj_apy, proj_apy_7d_avg, proj_apy_total_avg } = payload[0].payload
 
+    const unixTimestamp = toUTC(timestamp) * 1000
+    const formattedDate = new Intl.DateTimeFormat(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }).format(unixTimestamp)
+
     return (
       <Paper
         sx={{
@@ -48,7 +58,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
         }}
         elevation={2}
       >
-        <Typography variant="bodyMBold">{formatDateFromTimestamp(timestamp)}</Typography>
+        <Typography variant="bodyMBold">{formattedDate}</Typography>
         <Stack
           direction="column"
           sx={{
