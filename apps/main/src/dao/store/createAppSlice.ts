@@ -1,13 +1,10 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@dao/store/useStore'
-import type { ConnectState } from '@ui/utils'
-
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
-
 import { log } from '@ui-kit/lib'
 import { CurveApi, RouterProps, Wallet } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -21,6 +18,7 @@ export type LayoutHeight = {
 
 type SliceState = {
   curve: CurveApi | null
+  connectState: ConnectState
   isLoadingApi: boolean
   isLoadingCurve: boolean
   isMobile: boolean
@@ -33,7 +31,7 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
   updateShowScrollButton(scrollY: number): void
@@ -52,7 +50,6 @@ const DEFAULT_STATE = {
   isLoadingCurve: true,
   isPageVisible: true,
   loaded: false,
-  pageWidth: null,
   layoutHeight: {
     globalAlert: 0,
     mainNav: 0,
@@ -61,18 +58,15 @@ const DEFAULT_STATE = {
   },
   routerProps: null,
   showScrollButton: false,
-}
+  connectState: { status: '', stage: '' },
+} satisfies SliceState
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateConnectState: (
-    status: ConnectState['status'],
-    stage: ConnectState['stage'],
-    options?: ConnectState['options'],
-  ) => {
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
     const value = options ? { status, stage, options } : { status, stage }
-    useWalletStore.setState({ connectState: value })
+    set({ connectState: value })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId

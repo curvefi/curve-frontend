@@ -6,6 +6,7 @@ import Spinner from '../Spinner'
 
 import { LogoImg } from '../images'
 import { getBackgroundUrl } from 'ui/src/utils'
+import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 type ConnectWalletPromptProps = {
   connectWallet: () => void
@@ -13,7 +14,7 @@ type ConnectWalletPromptProps = {
   description: string
   connectText: string
   loadingText: string
-  theme: 'light' | 'dark'
+  theme: ThemeKey
 }
 
 const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({
@@ -22,33 +23,30 @@ const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({
   description,
   connectText,
   loadingText,
-  theme = 'light',
-}) => {
-  const BackgroundSvg = getBackgroundUrl(theme)
-  return (
-    <Wrapper>
-      <ImageWrapper>
-        <StyledBackground src={BackgroundSvg} alt="Curve Logo" />
-        <OverlayWrapper>
-          <CurveLogo src={LogoImg} alt="Curve Logo" />
-          <OverlayText>Enter Curve</OverlayText>
-        </OverlayWrapper>
-      </ImageWrapper>
-      <ContentWrapper>
-        <p>{description}</p>
-        {isLoading ? (
-          <Button disabled size="large" color="primary" endIcon={<Spinner isDisabled size={15} />}>
-            {loadingText}
-          </Button>
-        ) : (
-          <Button size="large" color="primary" onClick={connectWallet} data-testid="btn-connect-prompt">
-            {connectText}
-          </Button>
-        )}
-      </ContentWrapper>
-    </Wrapper>
-  )
-}
+  theme,
+}) => (
+  <Wrapper>
+    <ImageWrapper>
+      <StyledBackground src={getBackgroundUrl(theme)} alt="Curve Logo" />
+      <OverlayWrapper>
+        <CurveLogo src={LogoImg} alt="Curve Logo" />
+        <OverlayText>Enter Curve</OverlayText>
+      </OverlayWrapper>
+    </ImageWrapper>
+    <ContentWrapper>
+      <p>{description}</p>
+      {isLoading ? (
+        <Button disabled size="large" color="primary" endIcon={<Spinner isDisabled size={15} />}>
+          {loadingText}
+        </Button>
+      ) : (
+        <Button size="large" color="primary" onClick={connectWallet} data-testid="btn-connect-prompt">
+          {connectText}
+        </Button>
+      )}
+    </ContentWrapper>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;

@@ -9,7 +9,6 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 interface Props {
   disabled: boolean
@@ -19,16 +18,12 @@ interface Props {
 const CreatePoolButton = ({ disabled, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
-
   const deployPool = useStore((state) => state.createPool.deployPool)
   const { txStatus, txSuccess, txLink, poolId, errorMessage } = useStore((state) => state.createPool.transactionState)
-  const connectWallet = useWalletStore((s) => s.connectWallet)
-  const handleClick = async () => {
-    deployPool(curve)
-  }
+  const connectWallet = useStore((s) => s.updateConnectState)
 
   return !haveSigner ? (
-    <StyledButton variant="filled" onClick={connectWallet}>
+    <StyledButton variant="filled" onClick={() => connectWallet()}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (
@@ -40,7 +35,7 @@ const CreatePoolButton = ({ disabled, curve }: Props) => {
         </StyledAlertBox>
       )}
       {(txStatus === '' || txStatus === 'ERROR') && (
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => deployPool(curve)}>
           {t`Create Pool`}
         </StyledButton>
       )}

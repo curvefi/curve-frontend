@@ -18,8 +18,9 @@ import { AppPageContainer } from '@ui/AppPage'
 import DocumentHead from '@lend/layout/DocumentHead'
 import MarketList from '@lend/components/PageMarketList/index'
 import Settings from '@lend/layout/Settings'
-import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
+import { isLoading } from '@ui/utils'
 
 enum SEARCH {
   filter = 'filter',
@@ -43,6 +44,8 @@ const Page: NextPage = () => {
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
   const provider = useWalletStore((s) => s.provider)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 
@@ -137,10 +140,12 @@ const Page: NextPage = () => {
       ) : (
         <Box display="flex" fillWidth>
           <ConnectWalletWrapper>
-            <ConnectWallet
+            <ConnectWalletPrompt
               description="Connect wallet to view markets list"
               connectText="Connect Wallet"
               loadingText="Connecting"
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>
         </Box>

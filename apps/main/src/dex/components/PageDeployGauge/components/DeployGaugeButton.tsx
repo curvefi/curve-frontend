@@ -18,7 +18,6 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
 import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { ChainId, CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 interface Props {
   disabled: boolean
@@ -36,7 +35,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
     (state) => state.deployGauge,
   )
-  const connectWallet = useWalletStore((s) => s.connectWallet)
+  const connectWallet = useStore((s) => s.updateConnectState)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
@@ -89,7 +88,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
         </StyledSpinnerWrapper>
       ) // no signer
     ) : !haveSigner ? (
-      <StyledButton variant="filled" onClick={connectWallet}>
+      <StyledButton variant="filled" onClick={() => connectWallet()}>
         {t`Connect Wallet`}
       </StyledButton>
     ) : (
@@ -170,7 +169,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
       </StyledSpinnerWrapper>
     )
   ) : !haveSigner ? (
-    <StyledButton variant="filled" onClick={connectWallet}>
+    <StyledButton variant="filled" onClick={() => connectWallet()}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (

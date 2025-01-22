@@ -16,6 +16,8 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import useStore from '@/dex/store/useStore'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -24,6 +26,8 @@ const Page: NextPage = () => {
   const { curve, routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
   const provider = useWalletStore((s) => s.provider)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
 
   useEffect(() => {
     scrollToTop()
@@ -39,6 +43,8 @@ const Page: NextPage = () => {
               description="Connect wallet to view dashboard"
               connectText="Connect Wallet"
               loadingText="Connecting"
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>
         </Box>

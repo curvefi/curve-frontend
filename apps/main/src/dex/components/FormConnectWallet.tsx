@@ -6,7 +6,7 @@ import { isLoading } from '@ui/utils'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import { useCurve } from '@main/entities/curve'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import useStore from '@/dex/store/useStore'
 
 const FormConnectWallet = ({
   loading,
@@ -15,12 +15,12 @@ const FormConnectWallet = ({
   loading: boolean
 }>) => {
   const { data: curve } = useCurve()
-  const connectState = useWalletStore((s) => s.connectState)
-  const connectWallet = useWalletStore((s) => s.connectWallet)
+  const connectState = useStore((state) => state.connectState)
+  const connectWallet = useStore((s) => s.updateConnectState)
   return (
     <>
       {!isLoading(connectState) && !loading && !curve?.signerAddress ? (
-        <Button fillWidth size="large" variant="filled" onClick={connectWallet}>
+        <Button fillWidth size="large" variant="filled" onClick={() => connectWallet()}>
           {t`Connect Wallet`}
         </Button>
       ) : isLoading(connectState) || loading ? (

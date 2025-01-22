@@ -13,7 +13,6 @@ import { useHeightResizeObserver } from '@ui/hooks'
 import { t } from '@lingui/macro'
 import { Locale } from '@ui-kit/widgets/Header/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useConnectWallet()
@@ -22,7 +21,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const footerHeight = useHeightResizeObserver(footerRef)
 
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)

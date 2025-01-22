@@ -17,6 +17,7 @@ import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Provider } from '@main/types/main.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import useStore from '@/dex/store/useStore'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -25,7 +26,7 @@ const Page: NextPage = () => {
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
   const provider = useWalletStore((s) => s.provider)
-  const connectWallet = useWalletStore((s) => s.connectWallet)
+  const connectWallet = useStore((s) => s.updateConnectState)
   const [contracts, setContracts] = useState<EtherContract[]>([])
 
   const fetchData = useCallback(async (provider: Provider) => {
@@ -71,7 +72,7 @@ const Page: NextPage = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button fillWidth loading={!pageLoaded} size="large" variant="filled" onClick={connectWallet}>
+              <Button fillWidth loading={!pageLoaded} size="large" variant="filled" onClick={() => connectWallet()}>
                 {t`Connect Wallet`}
               </Button>
             </>

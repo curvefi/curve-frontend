@@ -354,7 +354,7 @@ const QuickSwap = ({
   useEffect(() => {
     const updatedSteps = getSteps(
       activeKey,
-      curve,
+      curve!,
       routesAndOutput,
       isReady ? formStatus : { ...formStatus, formProcessing: true },
       formValues,

@@ -12,7 +12,6 @@ import useLayoutHeight from '@main/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, Networks } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -23,7 +22,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)

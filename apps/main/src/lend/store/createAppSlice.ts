@@ -1,12 +1,11 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@lend/store/useStore'
-import type { ConnectState } from '@ui/utils'
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
 import isEqual from 'lodash/isEqual'
 import { prefetchMarkets } from '@lend/entities/chain/chain-query'
 import { Api, RouterProps, Wallet } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -14,6 +13,7 @@ export type StateKey = string
 
 type SliceState = {
   api: Api | null
+  connectState: ConnectState
   isLoadingApi: boolean
   isLoadingCurve: true
   isMobile: boolean
@@ -24,7 +24,7 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateApi(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -35,6 +35,7 @@ export interface AppSlice extends SliceState {
 
 const DEFAULT_STATE: SliceState = {
   api: null,
+  connectState: { status: '', stage: '' },
   isLoadingApi: true,
   isLoadingCurve: true,
   isMobile: false,
@@ -46,9 +47,9 @@ const DEFAULT_STATE: SliceState = {
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateConnectState: (status, stage, options) => {
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
     const value = options ? { status, stage, options } : { status, stage }
-    useWalletStore.setState({ connectState: value })
+    set({ connectState: value })
   },
   updateApi: async (api, prevApi, wallet) => {
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId

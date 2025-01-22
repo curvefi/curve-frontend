@@ -1,3 +1,5 @@
+import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+
 export const CDN_ROOT_URL = 'https://cdn.jsdelivr.net'
 export const CURVE_CDN_URL = `${CDN_ROOT_URL}/gh/curvefi`
 export const CURVE_ASSETS_URL = `${CURVE_CDN_URL}/curve-assets`
@@ -9,5 +11,5 @@ export const getImageBaseUrl = (blockchainId: string) =>
 
 export const getBlockchainIconUrl = (blockchainId: string) => `${CURVE_ASSETS_URL}/chains/${blockchainId}.png`
 
-export const getBackgroundUrl = (theme: 'light' | 'dark') =>
-  `${CURVE_ASSETS_URL}/branding/curve_illustration-${theme === 'light' ? 'light' : 'dark'}.svg`
+export const getBackgroundUrl = (theme: ThemeKey) =>
+  `${CURVE_ASSETS_URL}/branding/curve_illustration-${theme === 'dark' ? 'dark' : 'light'}.svg`

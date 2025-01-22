@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@main/store/useStore'
-import { ConnectState, getPageWidthClassName } from '@ui/utils'
+import { CONNECT_STAGE, ConnectState, getPageWidthClassName } from '@ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
@@ -13,7 +13,6 @@ import {
   RouterProps,
   Wallet,
 } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -29,6 +28,7 @@ export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'foot
 
 type GlobalState = {
   curve: CurveApi
+  connectState: ConnectState
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
   isLoadingApi: boolean
@@ -54,13 +54,12 @@ export interface GlobalSlice extends GlobalState {
   setNetworkConfigFromApi(curve: CurveApi): void
   setPageWidth: (pageWidth: number) => void
   updateConnectState(
-    status: ConnectState['status'],
-    stage: ConnectState['stage'],
+    status?: ConnectState['status'],
+    stage?: ConnectState['stage'],
     options?: ConnectState['options'],
   ): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
-  updateMaxSlippage(key: string, value: string | null): void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
@@ -72,9 +71,10 @@ export interface GlobalSlice extends GlobalState {
 
 const DEFAULT_STATE = {
   connectState: { status: '' as const, stage: '' },
-  curve: null,
+  curve: null!,
   hasDepositAndStake: {},
   hasRouter: {},
+  pageWidthPx: null,
   isMobile: false,
   isLoadingApi: false,
   isLoadingCurve: true,
@@ -95,9 +95,9 @@ const DEFAULT_STATE = {
   },
   routerProps: null,
   showScrollButton: false,
-}
+} satisfies GlobalState
 
-const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSlice => ({
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
@@ -145,13 +145,9 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       }),
     )
   },
-  updateConnectState: (
-    status: ConnectState['status'],
-    stage: ConnectState['stage'],
-    options?: ConnectState['options'],
-  ) => {
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
     const value = options ? { status, stage, options } : { status, stage }
-    useWalletStore.setState({ connectState: value })
+    set({ connectState: value })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const state = get()

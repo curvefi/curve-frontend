@@ -26,7 +26,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
   const api = useStore((state) => state.api)
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateApi = useStore((state) => state.updateApi)
   const chooseWallet = useWalletStore((s) => s.chooseWallet)
@@ -123,7 +123,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState],
+    [connect, navigate, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
   const handleDisconnectWallet = useCallback(

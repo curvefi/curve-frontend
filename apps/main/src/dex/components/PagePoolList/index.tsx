@@ -16,8 +16,8 @@ import TableHeadMobile from '@main/components/PagePoolList/components/TableHeadM
 import TableSettings from '@main/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@main/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@main/components/PagePoolList/components/PoolRow'
-import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { isLoading } from '@ui/utils'
 
 const PoolList = ({
   rChainId,
@@ -51,6 +51,8 @@ const PoolList = ({
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
   const provider = useWalletStore((s) => s.provider)
   const network = useStore((state) => state.networks.networks[rChainId])
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -187,6 +189,8 @@ const PoolList = ({
             description={t`Connect wallet to view pool list`}
             connectText={t`Connect Wallet`}
             loadingText={t`Connecting`}
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
           />
         </ConnectWalletWrapper>
       ) : (

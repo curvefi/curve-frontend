@@ -23,7 +23,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const setNetworkConfigs = useStore((state) => state.networks.setNetworkConfigs)
   const updateConnectState = useStore((state) => state.updateConnectState)

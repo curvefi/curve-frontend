@@ -4,13 +4,11 @@ import { BrowserProvider } from 'ethers'
 import type { NotificationType } from '@web3-onboard/core/dist/types'
 import { initOnboard } from './lib/init'
 import { devtools } from 'zustand/middleware'
-import { CONNECT_STAGE, ConnectState } from 'ui'
 
 type WalletState = {
   onboard: OnboardAPI | null
   provider: BrowserProvider | null
   wallet: Wallet | null
-  connectState: ConnectState
 }
 
 type WalletActions = {
@@ -22,7 +20,6 @@ type WalletActions = {
     dismiss: () => void
     update: UpdateNotification | undefined
   }
-  connectWallet(): void
   getProvider(): BrowserProvider | null
   chooseWallet(wallet: Wallet | null): Promise<void>
   initialize(...params: Parameters<typeof initOnboard>): void
@@ -34,19 +31,10 @@ const DEFAULT_STATE: WalletState = {
   onboard: null,
   provider: null,
   wallet: null,
-  connectState: { status: '', stage: '' },
 }
 
 const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
   ...DEFAULT_STATE,
-  connectWallet: () =>
-    set({
-      connectState: {
-        status: 'loading',
-        stage: CONNECT_STAGE.CONNECT_WALLET,
-        options: [''],
-      },
-    }),
   notify: (message, type = 'pending', autoDismiss) => {
     const { onboard } = get()
     if (!onboard) {

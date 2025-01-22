@@ -26,14 +26,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((s) => s.connectState)
   const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
 
   const setLocale = useUserProfileStore((state) => state.setLocale)
-
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
   const parsedParams = parseParams(params, chainIdNotRequired)

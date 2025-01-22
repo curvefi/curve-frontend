@@ -43,6 +43,7 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps } from '@lend/types/lend.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -63,6 +64,8 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useWalletStore((s) => s.provider)
 
@@ -225,6 +228,8 @@ const Page: NextPage = () => {
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
           />
         </Box>
       )}

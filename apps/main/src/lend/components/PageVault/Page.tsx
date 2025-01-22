@@ -29,11 +29,12 @@ import Tabs, { Tab } from '@ui/Tab'
 import Vault from '@lend/components/PageVault/index'
 import Box from '@ui/Box'
 import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
-import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps } from '@lend/types/lend.types'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -53,6 +54,8 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
   const provider = useWalletStore((s) => s.provider)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -176,10 +179,12 @@ const Page: NextPage = () => {
         </AppPageFormContainer>
       ) : (
         <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWallet
+          <ConnectWalletPrompt
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
           />
         </Box>
       )}
