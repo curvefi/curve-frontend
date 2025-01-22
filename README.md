@@ -24,9 +24,7 @@ yarn install
 1. Copy `.env.sample` from `/apps/(loan|main|lend)` and update environment variables:
 
 ```bash
-cp apps/loan/.env.sample apps/loan/.env.development.local
 cp apps/main/.env.sample apps/main/.env.development.local
-cp apps/lend/.env.sample apps/lend/.env.development.local
 ```
 
 2. Start development:
@@ -37,9 +35,7 @@ yarn dev
 
 Access the application in a web browser:
 
-- Main app: http://localhost:3000
-- crvUSD app: http://localhost:3001
-- Lend app: http://localhost:3003
+- http://localhost:3000
 
 ## Forked Mainnet
 

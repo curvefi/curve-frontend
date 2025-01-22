@@ -52,8 +52,8 @@
           "usdTotal": 46196.84
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-0/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-0/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-0/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-0/vault/withdraw"
         },
         "usdTotal": 143645.1,
         "ammBalances": {
@@ -115,8 +115,8 @@
           "usdTotal": 5225.04
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-1/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-1/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-1/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-1/vault/withdraw"
         },
         "usdTotal": 288099.7,
         "ammBalances": {
@@ -178,8 +178,8 @@
           "usdTotal": 74636.49
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-2/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-2/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-2/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-2/vault/withdraw"
         },
         "usdTotal": 691157.06,
         "ammBalances": {
@@ -251,8 +251,8 @@
           "usdTotal": 289595.64
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-3/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-3/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-3/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-3/vault/withdraw"
         },
         "usdTotal": 1220199.77,
         "ammBalances": {
@@ -314,8 +314,8 @@
           "usdTotal": 12634.52
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-4/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-4/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-4/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-4/vault/withdraw"
         },
         "usdTotal": 12634.52,
         "ammBalances": {
@@ -377,8 +377,8 @@
           "usdTotal": 0
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-5/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-5/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-5/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-5/vault/withdraw"
         },
         "usdTotal": 0,
         "ammBalances": {
@@ -440,8 +440,8 @@
           "usdTotal": 71263.04
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-6/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-6/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-6/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-6/vault/withdraw"
         },
         "usdTotal": 71263.04,
         "ammBalances": {
@@ -503,8 +503,8 @@
           "usdTotal": 192.75
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-7/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-7/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-7/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-7/vault/withdraw"
         },
         "usdTotal": 192.75,
         "ammBalances": {
@@ -576,8 +576,8 @@
           "usdTotal": 323809.42
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-8/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-8/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-8/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-8/vault/withdraw"
         },
         "usdTotal": 1449411.65,
         "ammBalances": {
@@ -639,8 +639,8 @@
           "usdTotal": 310260.32
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/ethereum/markets/one-way-market-9/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/ethereum/markets/one-way-market-9/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/ethereum/markets/one-way-market-9/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/ethereum/markets/one-way-market-9/vault/withdraw"
         },
         "usdTotal": 2056342.53,
         "ammBalances": {
@@ -702,8 +702,8 @@
           "usdTotal": 853580.17
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-0/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-0/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/fraxtal/markets/one-way-market-0/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/fraxtal/markets/one-way-market-0/vault/withdraw"
         },
         "usdTotal": 1570881.99,
         "ammBalances": {
@@ -765,8 +765,8 @@
           "usdTotal": 562408.76
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-1/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-1/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/fraxtal/markets/one-way-market-1/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/fraxtal/markets/one-way-market-1/vault/withdraw"
         },
         "usdTotal": 1618690.32,
         "ammBalances": {
@@ -828,8 +828,8 @@
           "usdTotal": 533210.43
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-2/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-2/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/fraxtal/markets/one-way-market-2/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/fraxtal/markets/one-way-market-2/vault/withdraw"
         },
         "usdTotal": 882123.96,
         "ammBalances": {
@@ -891,8 +891,8 @@
           "usdTotal": 615179.66
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-3/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-3/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/fraxtal/markets/one-way-market-3/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/fraxtal/markets/one-way-market-3/vault/withdraw"
         },
         "usdTotal": 625328.08,
         "ammBalances": {
@@ -952,8 +952,8 @@
           "usdTotal": 0
         },
         "lendingVaultUrls": {
-          "deposit": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-4/vault/deposit",
-          "withdraw": "https://lend.curve.fi/#/fraxtal/markets/one-way-market-4/vault/withdraw"
+          "deposit": "https://curve.fi/lend#/fraxtal/markets/one-way-market-4/vault/deposit",
+          "withdraw": "https://curve.fi/lend#/fraxtal/markets/one-way-market-4/vault/withdraw"
         },
         "usdTotal": 492.67,
         "ammBalances": {
