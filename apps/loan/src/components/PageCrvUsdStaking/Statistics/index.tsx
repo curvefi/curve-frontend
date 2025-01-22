@@ -7,6 +7,7 @@ import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
 import { useScrvUsdYield } from '@loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@loan/entities/scrvusdRevenue'
 import LineChart from './LineChart'
+import BarChart from './BarChart'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -22,8 +23,6 @@ const Statistics = () => {
   const [activeTimeOption, setActiveTimeOption] = useState(timeOptions[0])
   const { data: yieldData } = useScrvUsdYield({ timeOption: activeTimeOption })
   const { data: revenueData } = useScrvUsdRevenue({})
-
-  console.log(revenueData)
 
   return (
     <Card
@@ -48,7 +47,8 @@ const Statistics = () => {
         chartOptions={chartOptions}
         timeOptions={timeOptions}
       />
-      <LineChart data={yieldData ?? []} />
+      {activeChartOption.label === 'Savings Rate' && <LineChart data={yieldData ?? []} />}
+      {activeChartOption.label === 'Distributions' && <BarChart data={revenueData ?? null} />}
     </Card>
   )
 }

@@ -1,7 +1,7 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
-type ScrvUsdRevenueHistory = {
+type ScrvUsdRevenueHistoryFromApi = {
   strategy: string
   gain: string
   loss: string
@@ -13,11 +13,23 @@ type ScrvUsdRevenueHistory = {
   dt: string
 }
 
+type ScrvUsdRevenueHistory = {
+  strategy: string
+  gain: number
+  loss: number
+  current_debt: number
+  total_refunds: number
+  total_fees: number
+  protocol_fees: number
+  tx_hash: string
+  dt: string
+}
+
 type GetScrvUsdYieldResponse =
   | {
       count: number
       total_distributed: string
-      history: ScrvUsdRevenueHistory[]
+      history: ScrvUsdRevenueHistoryFromApi[]
     }
   | {
       detail: {
@@ -33,6 +45,13 @@ type Epoch = {
   endDate: string
   weeklyRevenue: number
   data: ScrvUsdRevenueHistory[]
+}
+
+export type ScrvUsdRevenue = {
+  count: number
+  total_distributed: number
+  epochs: Epoch[]
+  history: ScrvUsdRevenueHistory[]
 }
 
 const organizeDataIntoEpochs = (history: ScrvUsdRevenueHistory[]): Epoch[] => {
@@ -67,10 +86,9 @@ const organizeDataIntoEpochs = (history: ScrvUsdRevenueHistory[]): Epoch[] => {
       epochs.push(currentEpoch)
     }
 
-    // Add item to current epoch
     currentEpoch.data.push(item)
     // Add to weekly revenue (gain - loss)
-    currentEpoch.weeklyRevenue += (+item.gain - +item.loss) / 1e18
+    currentEpoch.weeklyRevenue += +item.gain - +item.loss
   })
 
   return epochs
@@ -90,19 +108,21 @@ export const _getScrvUsdRevenue = async () => {
     throw new Error(`Failed to fetch scrvUSD historical revenue data. ${data.detail[0].msg}`)
   }
 
+  const history = data.history.map((item) => ({
+    ...item,
+    gain: +item.gain / 1e18,
+    loss: +item.loss / 1e18,
+    current_debt: +item.current_debt / 1e18,
+    total_refunds: +item.total_refunds / 1e18,
+    total_fees: +item.total_fees / 1e18,
+    protocol_fees: +item.protocol_fees / 1e18,
+  }))
+
   const formattedData = {
     ...data,
     total_distributed: +data.total_distributed / 1e18,
-    epochs: organizeDataIntoEpochs(data.history),
-    history: data.history.map((item) => ({
-      ...item,
-      gain: +item.gain / 1e18,
-      loss: +item.loss / 1e18,
-      current_debt: +item.current_debt / 1e18,
-      total_refunds: +item.total_refunds / 1e18,
-      total_fees: +item.total_fees / 1e18,
-      protocol_fees: +item.protocol_fees / 1e18,
-    })),
+    epochs: organizeDataIntoEpochs(history),
+    history,
   }
 
   return formattedData

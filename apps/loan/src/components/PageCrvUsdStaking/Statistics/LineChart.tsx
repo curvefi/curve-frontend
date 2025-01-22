@@ -4,10 +4,9 @@ import { useTheme } from '@mui/material/styles'
 import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import CustomTooltip from './ChartTooltip'
-
 import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
+import { toUTC } from '../utils'
 
-// import LineChartCustomTooltip from './LineChartCustomTooltip'
 const { FontSize } = SizesAndSpaces
 
 type Props = {
@@ -16,7 +15,6 @@ type Props = {
 }
 
 const LineChartComponent = ({ data, height = 400 }: Props) => {
-  const yAxisWidth = 24
   const {
     design: { Color, Text },
   } = useTheme()
@@ -33,7 +31,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
   } as const
 
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <ResponsiveContainer width="100%" height={height} debounce={200}>
       <LineChart
         width={500}
         height={300}
@@ -41,7 +39,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         margin={{
           top: 16,
           right: 16,
-          left: 24,
+          left: undefined,
           bottom: 16,
         }}
       >
@@ -53,7 +51,14 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           axisLine={false}
           minTickGap={20}
           tickMargin={4}
-          tickFormatter={(unixTime) => formatDateFromTimestamp(unixTime)}
+          tickFormatter={(time) => {
+            const unix = toUTC(time as string | number) * 1000
+            return new Intl.DateTimeFormat(undefined, {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            }).format(unix)
+          }}
         />
         <YAxis
           tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
@@ -61,7 +66,6 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
           axisLine={false}
           dataKey={'proj_apy'}
-          width={yAxisWidth}
         />
         <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
         <Line
@@ -105,6 +109,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
             fontWeight: 'bold',
             fontSize: 'var(--font-size-1)',
             color: 'var(--page--text-color)',
+            paddingLeft: 24,
           }}
         />
       </LineChart>
