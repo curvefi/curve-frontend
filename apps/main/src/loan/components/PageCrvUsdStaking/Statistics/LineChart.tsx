@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import CustomTooltip from './ChartTooltip'
 import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
-import { toUTC } from '../utils'
+import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
 
 const { FontSize } = SizesAndSpaces
 

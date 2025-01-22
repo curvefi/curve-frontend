@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { formatNumber } from '@ui/utils/utilsFormat'
 import { useTheme } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { toUTC } from '../utils'
+import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
 
 const { FontSize } = SizesAndSpaces
 
