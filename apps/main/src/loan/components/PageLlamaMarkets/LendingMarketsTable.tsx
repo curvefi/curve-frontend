@@ -4,7 +4,6 @@ import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
 import { CompactUsdCell, LineGraphCell, PoolTitleCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
-import { LendingVault } from '@loan/entities/vaults'
 import {
   ColumnDef,
   createColumnHelper,
@@ -21,13 +20,14 @@ import {
   useVisibilitySettings,
   VisibilityGroup,
 } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { LlamaMarket } from '@loan/entities/llama-markets'
 
 const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
 
-const columnHelper = createColumnHelper<LendingVault>()
+const columnHelper = createColumnHelper<LlamaMarket>()
 
 /** Define a hidden column. */
-const hidden = (id: DeepKeys<LendingVault>) =>
+const hidden = (id: DeepKeys<LlamaMarket>) =>
   columnHelper.accessor(id, {
     filterFn: (row, columnId, filterValue) => !filterValue?.length || filterValue.includes(row.getValue(columnId)),
     meta: { hidden: true },
@@ -44,13 +44,13 @@ const columns = [
   }),
   columnHelper.accessor('rates.borrowApyPcent', {
     header: t`7D Borrow Rate`,
-    cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" showChart={isFeatureVisible(c, borrowChartId)} />,
+    cell: (c) => <LineGraphCell market={c.row.original} type="borrow" showChart={isFeatureVisible(c, borrowChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
   columnHelper.accessor('rates.lendApyPcent', {
     header: t`7D Supply Yield`,
-    cell: (c) => <LineGraphCell vault={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
+    cell: (c) => <LineGraphCell market={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
@@ -70,7 +70,7 @@ const columns = [
   hidden('blockchainId'),
   hidden('assets.collateral.symbol'),
   hidden('assets.borrowed.symbol'),
-] satisfies ColumnDef<LendingVault, any>[]
+] satisfies ColumnDef<LlamaMarket, any>[]
 
 const DEFAULT_SORT = [{ id: 'totalSupplied.usdTotal', desc: true }]
 
@@ -98,7 +98,7 @@ export const LendingMarketsTable = ({
   headerHeight,
 }: {
   onReload: () => void
-  data: LendingVault[]
+  data: LlamaMarket[]
   headerHeight: string
 }) => {
   const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()

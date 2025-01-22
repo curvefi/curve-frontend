@@ -1,4 +1,3 @@
-import { LendingVault } from '@loan/entities/vaults'
 import Stack from '@mui/material/Stack'
 import TokenIcons from '@loan/components/TokenIcons'
 import React, { useMemo } from 'react'
@@ -9,16 +8,17 @@ import { PoolBadges } from '@loan/components/PageLlamaMarkets/cells/PoolTitleCel
 import { PoolWarnings } from '@loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
 import { getImageBaseUrl } from '@ui/utils'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { LlamaMarket } from '@loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 
-export const PoolTitleCell = ({ getValue, row, table }: CellContext<LendingVault, LendingVault['assets']>) => {
+export const PoolTitleCell = ({ getValue, row, table }: CellContext<LlamaMarket, LlamaMarket['assets']>) => {
   const showCollateral = table.getColumn(cleanColumnId('assets.collateral.symbol'))!.getIsVisible()
   const coins = useMemo(() => {
     const { borrowed, collateral } = getValue()
     return showCollateral ? [collateral, borrowed] : [borrowed]
   }, [getValue, showCollateral])
-  const { blockchainId } = row.original
+  const { blockchainId, type } = row.original
   const imageBaseUrl = getImageBaseUrl(blockchainId)
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
@@ -28,7 +28,7 @@ export const PoolTitleCell = ({ getValue, row, table }: CellContext<LendingVault
         tokenAddresses={coins.map((c) => c.address)}
       />
       <Stack direction="column" gap={Spacing.xs}>
-        <PoolBadges blockchainId={blockchainId} />
+        <PoolBadges blockchainId={blockchainId} type={type} />
         <Typography variant="tableCellL">{coins.map((coin) => coin.symbol).join(' - ')}</Typography>
         <PoolWarnings />
       </Stack>

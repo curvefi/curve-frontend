@@ -1,5 +1,6 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { memoize } from 'lodash'
 
 export type AmmBalances = {
   ammBalanceBorrowed: number
@@ -8,16 +9,15 @@ export type AmmBalances = {
   ammBalanceCollateralUsd: number | null
 }
 
-export type LendingVaultAssets = {
+export type Assets = {
   borrowed: AssetDetails
   collateral: AssetDetails
 }
 
 export type AssetDetails = {
   symbol: string
-  decimals: number
+  decimals?: number
   address: string
-  blockchainId: string
   usdPrice: number | null
 }
 
@@ -61,7 +61,7 @@ export type VaultShares = {
   totalShares: number
 }
 
-type LendingVaultFromApi = {
+export type LendingVaultFromApi = {
   id: string
   name: string
   address: string
@@ -71,7 +71,7 @@ type LendingVaultFromApi = {
   rates: LendingRates
   gaugeAddress?: string
   gaugeRewards?: GaugeReward[]
-  assets: LendingVaultAssets
+  assets: Assets
   vaultShares: VaultShares
   totalSupplied: CoinValue
   borrowed: CoinValue
@@ -83,10 +83,6 @@ type LendingVaultFromApi = {
   registryId: 'oneway'
 }
 
-export type LendingVault = LendingVaultFromApi & {
-  utilizationPercent: number
-}
-
 type GetLendingVaultResponse = {
   data?: {
     lendingVaultData: LendingVaultFromApi[]
@@ -95,7 +91,7 @@ type GetLendingVaultResponse = {
   success: boolean
 }
 
-export const { useQuery: useLendingVaults, invalidate: invalidateLendingVaults } = queryFactory({
+export const { getQueryOptions: getLendingVaultOptions, invalidate: invalidateLendingVaults } = queryFactory({
   queryKey: () => ['lending-vaults-v3'] as const,
   queryFn: async () => {
     const response = await fetch('https://api.curve.fi/v1/getLendingVaults/all')

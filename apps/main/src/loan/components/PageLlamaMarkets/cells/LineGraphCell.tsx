@@ -1,5 +1,4 @@
-import { LendingSnapshot, useLendingSnapshots } from '@loan/entities/lending'
-import { LendingVault } from '@loan/entities/vaults'
+import { LendingSnapshot, useLendingSnapshots } from '@loan/entities/lending-snapshots'
 import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
@@ -10,6 +9,7 @@ import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import { meanBy } from 'lodash'
 import Box from '@mui/material/Box'
+import { LlamaMarket, LlamaMarketType } from '@loan/entities/llama-markets'
 
 const graphSize = { width: 172, height: 48 }
 
@@ -37,20 +37,23 @@ const calculateDomain =
  * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
  */
 export const LineGraphCell = ({
-  vault,
+  market,
   type,
   showChart,
 }: {
-  vault: LendingVault
+  market: LlamaMarket
   type: GraphType
   showChart: boolean // chart is hidden depending on the chart settings
 }) => {
-  const { data: snapshots, isLoading } = useLendingSnapshots({
-    blockchainId: vault.blockchainId,
-    contractAddress: vault.controllerAddress,
-  })
+  const { data: snapshots, isLoading } = useLendingSnapshots(
+    {
+      blockchainId: market.blockchainId,
+      contractAddress: market.controllerAddress,
+    },
+    market.type == LlamaMarketType.Pool,
+  )
   const { design } = useTheme()
-  const currentValue = vault.rates[`${type}ApyPcent`]
+  const currentValue = market.rates[type]
   const snapshotKey = `${type}_apy` as const
 
   const rate = useMemo(
