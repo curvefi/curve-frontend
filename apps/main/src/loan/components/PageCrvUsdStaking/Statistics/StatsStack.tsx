@@ -32,7 +32,12 @@ const StatsStack = () => {
         loading={revenueIsFetching}
         unit="dollar"
       />
-      {/* <StatsColumn title="Weekly Accumulated Revenue" value={data?.protocol_fees.toString() ?? ''} /> */}
+      <Metric
+        label="Weekly Accumulated Revenue"
+        value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue ?? 0}
+        loading={revenueIsFetching}
+        unit="dollar"
+      />
     </Stack>
   )
 }
