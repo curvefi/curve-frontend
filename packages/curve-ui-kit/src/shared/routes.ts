@@ -19,6 +19,7 @@ export const CRVUSD_ROUTES = {
   BETA_PAGE_MARKETS: '/beta-markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_DISCLAIMER: '/disclaimer',
+  PAGE_PEGKEEPERS: '/pegkeepers',
 }
 
 export const DAO_ROUTES = {
@@ -50,6 +51,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
       ...(isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` }] : []),
+      { route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
       { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
     ],
   },
