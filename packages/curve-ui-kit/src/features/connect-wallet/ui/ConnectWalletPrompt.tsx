@@ -56,7 +56,14 @@ export const ConnectWalletPrompt = ({
     </Box>
     <Stack gap={3} alignItems="center" width="100%" margin="0 auto">
       <Typography variant="bodyMRegular">{description}</Typography>
-      <Button size="large" color="primary" onClick={connectWallet} loading={isLoading} loadingPosition="start">
+      <Button
+        size="large"
+        color="primary"
+        onClick={connectWallet}
+        loading={isLoading}
+        loadingPosition="start"
+        data-testid={`btn-connect-prompt${isLoading ? '-loading' : ''}`}
+      >
         {isLoading ? loadingText : connectText}
       </Button>
     </Stack>
