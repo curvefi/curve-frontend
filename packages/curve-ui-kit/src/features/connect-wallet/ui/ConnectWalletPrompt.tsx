@@ -31,55 +31,35 @@ export const ConnectWalletPrompt = ({
       maxWidth: '50rem',
     }}
   >
-    <Box
-      sx={{
-        display: 'flex',
-        position: 'relative',
-        width: '100%',
-        flex: '1',
-      }}
-    >
+    <Box display="flex" position="relative" width="100%">
       <Box
         component="img"
         src={getBackgroundUrl(useUserProfileStore((state) => state.theme))}
         alt="Curve Logo"
-        sx={{
-          width: '1400px',
-          maxWidth: '100%',
-          height: '100%',
-          objectFit: 'contain',
-        }}
+        width="1400px"
+        maxWidth="100%"
+        height="100%"
+        sx={{ objectFit: 'contain' }}
       />
       <Stack
-        sx={{
-          position: 'absolute',
-          alignItems: 'center',
-          width: '100%',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
+        position="absolute"
+        alignItems="center"
+        width="100%"
+        top="50%"
+        left="50%"
+        sx={{ transform: 'translate(-50%, -50%)' }}
         spacing={3}
       >
         <CurveLogo src={LogoImg} alt="Curve Logo" />
         <Typography variant="headingXxl">Enter Curve</Typography>
       </Stack>
     </Box>
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 'var(--spacing-2)',
-        width: '100%',
-        margin: '0 auto',
-      }}
-    >
+    <Stack gap={3} alignItems="center" width="100%" margin="0 auto">
       <Typography variant="bodyMRegular">{description}</Typography>
       <Button size="large" color="primary" onClick={connectWallet} loading={isLoading} loadingPosition="start">
         {isLoading ? loadingText : connectText}
       </Button>
-    </Box>
+    </Stack>
   </Stack>
 )
 
