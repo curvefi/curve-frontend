@@ -1,6 +1,6 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
-import { memoize } from 'lodash'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { queryClient } from '@ui-kit/lib/api/query-client'
 
 export type MintMarketFromApi = {
   address: string
@@ -26,17 +26,21 @@ export type MintMarketFromApi = {
   }
 }
 
-// todo: move to a separate query
-const getSupportedChains = memoize(async () => {
-  const response = await fetch(`https://prices.curve.fi/v1/chains`)
-  const { data } = (await response.json()) as { data: { name: string }[] }
-  return data.map((chain) => chain.name)
+export const { getQueryOptions: getSupportedChainOptions } = queryFactory({
+  queryKey: () => ['mint-markets', 'supported-chains'] as const,
+  queryFn: async () => {
+    const response = await fetch(`https://prices.curve.fi/v1/chains`)
+    const { data } = (await response.json()) as { data: { name: string }[] }
+    return data.map((chain) => chain.name)
+  },
+  staleTime: '1d',
+  validationSuite: EmptyValidationSuite,
 })
 
 export const { getQueryOptions: getMintMarketOptions } = queryFactory({
   queryKey: () => ['mint-markets'] as const,
   queryFn: async () => {
-    const chains = await getSupportedChains()
+    const chains = await queryClient.fetchQuery(getSupportedChainOptions({}))
     return await Promise.all(
       chains.map(async (blockchainId) => {
         const response = await fetch(`https://prices.curve.fi/v1/crvusd/markets/${blockchainId}`)
@@ -45,5 +49,5 @@ export const { getQueryOptions: getMintMarketOptions } = queryFactory({
     )
   },
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}), // no arguments to validate
+  validationSuite: EmptyValidationSuite,
 })

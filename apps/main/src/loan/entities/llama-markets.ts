@@ -47,8 +47,8 @@ const convertLendingVault = ({
   type: LlamaMarketType.Pool,
 })
 
-const convertMintMarket = (mkt: MintMarketFromApi, blockchainId: string): LlamaMarket => {
-  const {
+const convertMintMarket = (
+  {
     address,
     collateral_token,
     stablecoin_token,
@@ -59,33 +59,31 @@ const convertMintMarket = (mkt: MintMarketFromApi, blockchainId: string): LlamaM
     collateral_amount,
     collateral_amount_usd,
     stablecoin_amount,
-  } = mkt
-  const result = {
-    blockchainId,
-    address,
-    controllerAddress: llamma,
-    assets: {
-      borrowed: { symbol: stablecoin_token.symbol, address, usdPrice: stablecoin_amount / total_debt },
-      collateral: {
-        symbol: collateral_token.symbol,
-        address: collateral_token.address,
-        usdPrice: collateral_amount_usd / collateral_amount,
-      },
+  }: MintMarketFromApi,
+  blockchainId: string,
+): LlamaMarket => ({
+  blockchainId,
+  address,
+  controllerAddress: llamma,
+  assets: {
+    borrowed: { symbol: stablecoin_token.symbol, address, usdPrice: stablecoin_amount / total_debt },
+    collateral: {
+      symbol: collateral_token.symbol,
+      address: collateral_token.address,
+      usdPrice: collateral_amount_usd / collateral_amount,
     },
-    utilizationPercent: total_debt / borrowable,
-    totalSupplied: {
-      total: collateral_amount,
-      usdTotal: collateral_amount_usd,
-    },
-    rates: {
-      lend: rate * 100,
-      borrow: rate * 100,
-    },
-    type: LlamaMarketType.Mint,
-  }
-  console.log(mkt, result)
-  return result
-}
+  },
+  utilizationPercent: total_debt / borrowable,
+  totalSupplied: {
+    total: collateral_amount,
+    usdTotal: collateral_amount_usd,
+  },
+  rates: {
+    lend: rate * 100,
+    borrow: rate * 100,
+  },
+  type: LlamaMarketType.Mint,
+})
 
 export const useLlamaMarkets = () =>
   useQueries({

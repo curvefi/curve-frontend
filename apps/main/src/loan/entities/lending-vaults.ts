@@ -1,5 +1,5 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { memoize } from 'lodash'
 
 export type AmmBalances = {
@@ -110,5 +110,5 @@ export const { getQueryOptions: getLendingVaultOptions, invalidate: invalidateLe
     }
   },
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}), // no arguments to validate
+  validationSuite: EmptyValidationSuite,
 })
