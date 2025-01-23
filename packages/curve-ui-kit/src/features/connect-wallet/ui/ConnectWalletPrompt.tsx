@@ -1,5 +1,13 @@
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import ConnectWallet from '@ui/ConnectWalletPrompt'
+import React from 'react'
+import { getBackgroundUrl } from '@ui/utils'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import { LogoImg } from '@ui/images'
+import { styled } from '@mui/material/styles'
+import NextImage from 'next/image'
+import Typography from '@mui/material/Typography'
 
 type ConnectWalletPromptProps = {
   description: string
@@ -16,15 +24,74 @@ export const ConnectWalletPrompt = ({
   connectWallet,
   isLoading,
 }: ConnectWalletPromptProps) => (
-  <ConnectWallet
-    connectWallet={connectWallet}
-    description={description}
-    connectText={connectText}
-    loadingText={loadingText}
-    isLoading={isLoading}
-    theme={useUserProfileStore((state) => state.theme)}
-  />
+  <Stack
+    padding={7}
+    sx={{
+      backgroundColor: 'var(--table--background-color)',
+      maxWidth: '50rem',
+    }}
+  >
+    <Box
+      sx={{
+        display: 'flex',
+        position: 'relative',
+        width: '100%',
+        flex: '1',
+      }}
+    >
+      <Box
+        component="img"
+        src={getBackgroundUrl(useUserProfileStore((state) => state.theme))}
+        alt="Curve Logo"
+        sx={{
+          width: '1400px',
+          maxWidth: '100%',
+          height: '100%',
+          objectFit: 'contain',
+        }}
+      />
+      <Stack
+        sx={{
+          position: 'absolute',
+          alignItems: 'center',
+          width: '100%',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+        spacing={3}
+      >
+        <CurveLogo src={LogoImg} alt="Curve Logo" />
+        <Typography variant="headingXxl">Enter Curve</Typography>
+      </Stack>
+    </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 'var(--spacing-2)',
+        width: '100%',
+        margin: '0 auto',
+      }}
+    >
+      <Typography variant="bodyMRegular">{description}</Typography>
+      <Button size="large" color="primary" onClick={connectWallet} loading={isLoading} loadingPosition="start">
+        {isLoading ? loadingText : connectText}
+      </Button>
+    </Box>
+  </Stack>
 )
+
+const CurveLogo = styled(NextImage)({
+  width: '3rem',
+  height: '3rem',
+  margin: '0 auto',
+  '@media (min-width: 43.75rem)': {
+    width: '5.5rem',
+    height: '5.5rem',
+  },
+})
 
 export const setMissingProvider = <T extends { step: string; formProcessing?: boolean; error: string }>(slice: {
   setStateByKey: (key: 'formStatus', value: T) => void
