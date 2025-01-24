@@ -39,10 +39,10 @@ export interface AppSlice extends SliceState {
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean): void
+  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
+  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
+  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>): void
+  resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
 const DEFAULT_STATE = {
@@ -134,7 +134,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     )
   },
 
-  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T) => {
     set(
       produce((state) => {
         const storedValues = state[sliceKey][key]
@@ -142,46 +142,33 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {
-            if (showLog) {
-              log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
-            }
             state[sliceKey][key] = parsedValue
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {
-            if (showLog) {
-              log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
-            }
             state[sliceKey][key] = parsedValue
           }
         }
       }),
     )
   },
-  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T) => {
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
         if (!isEqual(storedValue, value)) {
-          if (showLog) {
-            log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
-          }
           state[sliceKey][key] = value
         }
       }),
     )
   },
-  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T) => {
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
         produce((state) => {
-          const storedValue = state[sliceKey][key]
-          if (!isEqual(storedValue, value)) {
-            if (showLog) {
-              log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
-            }
+          if (!isEqual(state[sliceKey][key], value)) {
             state[sliceKey][key] = value
           }
         }),
