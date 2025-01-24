@@ -1,7 +1,7 @@
-import type { Chain } from "..";
-import { toUTC } from "../timestamp";
-import type * as Responses from "./responses";
-import type * as Models from "./models";
+import type { Chain } from '..'
+import { toUTC } from '../timestamp'
+import type * as Responses from './responses'
+import type * as Models from './models'
 
 export const parseGauge = (x: Responses.GetGaugeResponse): Models.Gauge => ({
   address: x.address,
@@ -33,60 +33,46 @@ export const parseGauge = (x: Responses.GetGaugeResponse): Models.Gauge => ({
   emissions: x.emissions,
   weight: BigInt(x.gauge_weight),
   weightDelta7d: x.gauge_weight_7d_delta ? x.gauge_weight_7d_delta : undefined,
-  weightDelta60d: x.gauge_weight_60d_delta
-    ? x.gauge_weight_60d_delta
-    : undefined,
+  weightDelta60d: x.gauge_weight_60d_delta ? x.gauge_weight_60d_delta : undefined,
   weightRelative: x.gauge_relative_weight,
-  weightRelativeDelta7d: x.gauge_relative_weight_7d_delta
-    ? x.gauge_relative_weight_7d_delta
-    : undefined,
-  weightRelativeDelta60d: x.gauge_relative_weight_60d_delta
-    ? x.gauge_relative_weight_60d_delta
-    : undefined,
+  weightRelativeDelta7d: x.gauge_relative_weight_7d_delta ? x.gauge_relative_weight_7d_delta : undefined,
+  weightRelativeDelta60d: x.gauge_relative_weight_60d_delta ? x.gauge_relative_weight_60d_delta : undefined,
   creationTx: x.creation_tx,
   creationDate: toUTC(x.creation_date),
   lastVoteTx: x.last_vote_tx ?? undefined,
   lastVoteDate: x.last_vote_date ? toUTC(x.last_vote_date) : undefined,
-});
+})
 
-export const parseVote = (
-  x: Responses.GetVotesResponse["votes"][number]
-): Models.GaugeVote => ({
+export const parseVote = (x: Responses.GetVotesResponse['votes'][number]): Models.GaugeVote => ({
   user: x.user,
   weight: x.weight,
   blockNumber: x.block_number,
   timestamp: toUTC(x.timestamp),
   tx: x.transaction,
-});
+})
 
-export const parseWeightHistory = (
-  x: Responses.GetWeightHistoryResponse["data"][number]
-): Models.WeightHistory => ({
+export const parseWeightHistory = (x: Responses.GetWeightHistoryResponse['data'][number]): Models.WeightHistory => ({
   killed: x.is_killed,
   weight: parseFloat(x.gauge_weight),
   weightRelative: parseFloat(x.gauge_relative_weight),
   emissions: parseFloat(x.emissions),
   epoch: x.epoch,
-});
+})
 
-export const parseDeployment = (
-  x: Responses.GetDeploymentResponse
-): Models.Deployment => ({
+export const parseDeployment = (x: Responses.GetDeploymentResponse): Models.Deployment => ({
   addressFrom: x.from_address,
   addressTo: x.to_address ?? undefined,
   calldata: x.calldata,
   calldataDecoded: x.decoded_calldata ?? undefined,
   blockNumber: x.block_number,
   timestamp: toUTC(x.dt),
-});
+})
 
-export const parseUserGaugeVote = (
-  x: Responses.GetUserGaugeVotesResponse["votes"][number]
-): Models.UserGaugeVote => ({
+export const parseUserGaugeVote = (x: Responses.GetUserGaugeVotesResponse['votes'][number]): Models.UserGaugeVote => ({
   gauge: x.gauge,
   gaugeName: x.gauge_name,
   weight: x.weight,
   blockNumber: x.block_number,
   timestamp: toUTC(x.timestamp),
   txHash: x.transaction,
-});
+})

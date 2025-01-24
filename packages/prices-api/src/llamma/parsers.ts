@@ -1,9 +1,7 @@
-import type * as Responses from "./responses";
-import type * as Models from "./models";
+import type * as Responses from './responses'
+import type * as Models from './models'
 
-export const parseEvents = (
-  x: Responses.GetLlammaEventsResponse["data"][number]
-): Models.LlammaEvent => ({
+export const parseEvents = (x: Responses.GetLlammaEventsResponse['data'][number]): Models.LlammaEvent => ({
   provider: x.provider,
   deposit: x.deposit
     ? {
@@ -21,11 +19,9 @@ export const parseEvents = (
   blockNumber: x.block_number,
   timestamp: x.timestamp,
   txHash: x.transaction_hash,
-});
+})
 
-export const parseTrades = (
-  x: Responses.GetLlammaTradesResponse["data"][number]
-): Models.LlammaTrade => ({
+export const parseTrades = (x: Responses.GetLlammaTradesResponse['data'][number]): Models.LlammaTrade => ({
   idSold: x.sold_id,
   idBought: x.bought_id,
   tokenSold: {
@@ -45,11 +41,9 @@ export const parseTrades = (
   blockNumber: x.block_number,
   timestamp: x.timestamp,
   txHash: x.transaction_hash,
-});
+})
 
-export const parseOHLC = (
-  x: Responses.GetLlammaOHLCResponse["data"][number]
-): Models.LlammaOHLC => ({
+export const parseOHLC = (x: Responses.GetLlammaOHLCResponse['data'][number]): Models.LlammaOHLC => ({
   time: x.time,
   open: x.open,
   close: x.close,
@@ -58,4 +52,4 @@ export const parseOHLC = (
   priceBase: x.base_price,
   priceOracle: x.oracle_price,
   volume: x.volume,
-});
+})

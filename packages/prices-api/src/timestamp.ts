@@ -8,19 +8,19 @@
  * toUTC("2024-01-01T00:00:00.123Z") // Returns 1704067200 (ignores ms)
  */
 export function toUTC(timestamp: string | number): number {
-  if (typeof timestamp === "number") {
-    return timestamp;
+  if (typeof timestamp === 'number') {
+    return timestamp
   }
 
-  const parsed = Number(timestamp);
+  const parsed = Number(timestamp)
   if (!Number.isNaN(parsed)) {
-    return parsed;
+    return parsed
   }
 
-  const [date, time] = timestamp.split("T");
-  const [year, month, day] = date.split("-").map(Number);
-  const [timeWithoutZ] = time.split("."); // Handle milliseconds by splitting on dot
-  const [hour, minute, second] = timeWithoutZ.split(":").map(Number);
+  const [date, time] = timestamp.split('T')
+  const [year, month, day] = date.split('-').map(Number)
+  const [timeWithoutZ] = time.split('.') // Handle milliseconds by splitting on dot
+  const [hour, minute, second] = timeWithoutZ.split(':').map(Number)
 
-  return Date.UTC(year, month - 1, day, hour, minute, second) / 1000;
+  return Date.UTC(year, month - 1, day, hour, minute, second) / 1000
 }

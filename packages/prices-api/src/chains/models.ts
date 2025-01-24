@@ -1,35 +1,29 @@
-import type { Chain } from "..";
+import type { Chain } from '..'
 
 export type ChainInfo = {
-  chain: string;
+  chain: string
   total: {
-    tvl: number;
-    tradingVolume24h: number;
-    tradingFee24h: number;
-    liquidityVolume24h: number;
-    liquidityFee24h: number;
-  };
-};
+    tvl: number
+    tradingVolume24h: number
+    tradingFee24h: number
+    liquidityVolume24h: number
+    liquidityFee24h: number
+  }
+}
 
-export const activityTypes = [
-  "crvusd",
-  "lending",
-  "pools",
-  "router",
-  "dao",
-] as const;
-export type ActivityType = (typeof activityTypes)[number];
+export const activityTypes = ['crvusd', 'lending', 'pools', 'router', 'dao'] as const
+export type ActivityType = (typeof activityTypes)[number]
 
 export type Activity = {
-  timestamp: number;
-  chain: Chain;
-  type: ActivityType;
-};
+  timestamp: number
+  chain: Chain
+  type: ActivityType
+}
 
 export type Transactions = Activity & {
-  transactions: number;
-};
+  transactions: number
+}
 
 export type Users = Activity & {
-  users: number;
-};
+  users: number
+}

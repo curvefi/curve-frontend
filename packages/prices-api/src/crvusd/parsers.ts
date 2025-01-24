@@ -1,10 +1,8 @@
-import { toUTC } from "../timestamp";
-import type * as Responses from "./responses";
-import type * as Models from "./models";
+import { toUTC } from '../timestamp'
+import type * as Responses from './responses'
+import type * as Models from './models'
 
-export const parseMarket = (
-  x: Responses.GetMarketsResponse["data"][number]
-): Models.Market => ({
+export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
   name: x.collateral_token.symbol,
   address: x.address,
   factory: x.factory_address,
@@ -28,11 +26,9 @@ export const parseMarket = (
     pending: x.pending_fees,
     collected: x.collected_fees,
   },
-});
+})
 
-export const parseSnapshot = (
-  x: Responses.GetSnapshotsResponse["data"][number]
-): Models.Snapshot => ({
+export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   timestamp: new Date(x.dt).getTime() / 1000,
   rate: x.rate,
   nLoans: x.n_loans,
@@ -47,11 +43,9 @@ export const parseSnapshot = (
   borrowable: x.borrowable,
   discountLiquidation: x.liquidation_discount,
   discountLoan: x.loan_discount,
-});
+})
 
-export const parseKeeper = (
-  x: Responses.GetKeepersResponse["keepers"][number]
-): Models.Keeper => ({
+export const parseKeeper = (x: Responses.GetKeepersResponse['keepers'][number]): Models.Keeper => ({
   address: x.address,
   pool: x.pool,
   poolAddress: x.pool_address,
@@ -62,30 +56,24 @@ export const parseKeeper = (
   active: x.active,
   totalDebt: x.total_debt,
   totalProfit: x.total_profit,
-});
+})
 
-export const parseSupply = (
-  x: Responses.GetSupplyResponse["data"][number]
-): Models.CrvUsdSupply => ({
+export const parseSupply = (x: Responses.GetSupplyResponse['data'][number]): Models.CrvUsdSupply => ({
   timestamp: toUTC(x.timestamp),
   market: x.market,
   supply: x.supply,
   borrowable: x.borrowable,
-});
+})
 
-export const parseUserMarkets = (
-  x: Responses.GetUserMarketsResponse
-): Models.UserMarkets =>
+export const parseUserMarkets = (x: Responses.GetUserMarketsResponse): Models.UserMarkets =>
   x.markets.map((market) => ({
     collateral: market.collateral,
     controller: market.controller,
     snapshotFirst: toUTC(market.first_snapshot),
     snapshotLast: toUTC(market.last_snapshot),
-  }));
+  }))
 
-export const parseUserMarketStats = (
-  x: Responses.GetUserMarketStatsResponse
-) => ({
+export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) => ({
   health: x.health,
   healthFull: x.health_full,
   n: x.n,
@@ -102,14 +90,13 @@ export const parseUserMarketStats = (
   oraclePrice: x.oracle_price,
   blockNumber: x.block_number,
   timestamp: toUTC(x.timestamp),
-});
+})
 
-export const parseUserMarketSnapshots = (
-  x: Responses.GetUserMarketSnapshotsResponse
-): Models.UserMarketSnapshots => x.data.map(parseUserMarketStats);
+export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>
+  x.data.map(parseUserMarketStats)
 
 export const parseUserCollateralEvents = (
-  x: Responses.GetUserCollateralEventsResponse
+  x: Responses.GetUserCollateralEventsResponse,
 ): Models.UserCollateralEvents => ({
   controller: x.controller,
   user: x.user,
@@ -142,4 +129,4 @@ export const parseUserCollateralEvents = (
     n2: y.n2,
     oraclePrice: y.oracle_price,
   })),
-});
+})

@@ -1,17 +1,13 @@
-import { toUTC } from "../timestamp";
-import type * as Responses from "./responses";
-import type * as Models from "./models";
+import { toUTC } from '../timestamp'
+import type * as Responses from './responses'
+import type * as Models from './models'
 
-export const parseSoftLiqRatio = (
-  x: Responses.GetSoftLiqRatiosResponse["data"][number]
-): Models.SoftLiqRatio => ({
+export const parseSoftLiqRatio = (x: Responses.GetSoftLiqRatiosResponse['data'][number]): Models.SoftLiqRatio => ({
   timestamp: toUTC(x.timestamp),
   proportion: x.proportion / 100,
-});
+})
 
-export const parseLiqsDetailed = (
-  x: Responses.GetLiqsDetailedResponse["data"][number]
-): Models.LiquidationDetails => ({
+export const parseLiqsDetailed = (x: Responses.GetLiqsDetailedResponse['data'][number]): Models.LiquidationDetails => ({
   timestamp: toUTC(x.dt),
   user: x.user,
   liquidator: x.liquidator,
@@ -25,10 +21,10 @@ export const parseLiqsDetailed = (
   n2: x.n2,
   tx: x.tx,
   block: x.block,
-});
+})
 
 export const parseLiqsAggregate = (
-  x: Responses.GetLiqsAggregateResponse["data"][number]
+  x: Responses.GetLiqsAggregateResponse['data'][number],
 ): Models.LiquidationAggregate => ({
   timestamp: toUTC(x.timestamp),
   selfCount: x.self_count,
@@ -36,11 +32,9 @@ export const parseLiqsAggregate = (
   selfValue: x.self_value,
   hardValue: x.hard_value,
   price: x.price,
-});
+})
 
-export const parseLiqOverview = (
-  x: Responses.GetLiqOverviewResponse
-): Models.LiqOverview => ({
+export const parseLiqOverview = (x: Responses.GetLiqOverviewResponse): Models.LiqOverview => ({
   softLiqUsers: x.soft_liquidation_users,
   liqablePositions: x.liquidatable_positions,
   liqableDebtUsd: x.liquidatable_pos_debt_usd,
@@ -49,11 +43,9 @@ export const parseLiqOverview = (
   medianHealth: x.median_health,
   avgHealth: x.average_health,
   collatRatio: x.collat_ratio,
-});
+})
 
-export const parseLiqLosses = (
-  x: Responses.GetLiqLossesResponse["data"][number]
-): Models.LiqLosses => ({
+export const parseLiqLosses = (x: Responses.GetLiqLossesResponse['data'][number]): Models.LiqLosses => ({
   timestamp: toUTC(x.timestamp),
   pctLossAverage: x.avg_pct_loss,
   pctLossMedian: x.median_pct_loss,
@@ -62,13 +54,13 @@ export const parseLiqLosses = (
   numTotalUsers: x.total_users,
   numUsersWithLosses: x.users_with_losses,
   ratio: x.ratio,
-});
+})
 
 export const parseLiqHealthDeciles = (
-  x: Responses.GetLiqHealthDecilesResponse["data"][number]
+  x: Responses.GetLiqHealthDecilesResponse['data'][number],
 ): Models.LiqHealthDecile => ({
   decile: x.health_decile,
   collateralUsdValue: x.collateral,
   debt: x.debt,
   stablecoin: x.stablecoin,
-});
+})
