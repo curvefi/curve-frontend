@@ -10,7 +10,6 @@ export const ROUTE = {
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
   PAGE_404: '/404',
-  PAGE_PEGKEEPERS: '/pegkeepers',
 }
 
 export const REFRESH_INTERVAL = {
