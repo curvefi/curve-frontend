@@ -7,12 +7,10 @@ import type {
   VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
-  LlammaControllerApiResponse,
-  LlammaControllerEvent,
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 import type { Address, Chain } from '@curvefi/prices-api'
-import { getOHLC, getTrades } from '@curvefi/prices-api/llamma'
+import { getOHLC, getTrades, getEvents } from '@curvefi/prices-api/llamma'
 
 import produce from 'immer'
 
@@ -25,7 +23,7 @@ type SliceState = {
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
   llammaTradesData: Awaited<ReturnType<typeof getTrades>>['trades']
-  llammaControllerData: LlammaControllerEvent[]
+  llammaControllerData: Awaited<ReturnType<typeof getEvents>>['events']
   chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
@@ -308,31 +306,34 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           )
         }
 
-        const controllerEventsRes = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`,
-        )
-        const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
+        const { events } = await getEvents({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          llamma: poolAddress as Address,
+          page: 1,
+          perPage: 100,
+        })
 
-        const formattedLiquidityEventsData = controllerEventsData.data.map((data) => ({
+        const formattedLiquidityEventsData = events.map((data) => ({
           ...data,
           deposit:
-            data.deposit === null
+            data.deposit === null || data.deposit === undefined
               ? null
               : {
                   ...data.deposit,
                   amount: data.deposit.amount,
                 },
           withdrawal:
-            data.withdrawal === null
+            data.withdrawal === null || data.withdrawal === undefined
               ? null
               : {
                   ...data.withdrawal,
-                  amount_borrowed: data.withdrawal.amount_borrowed,
-                  amount_collateral: data.withdrawal.amount_collateral,
+                  amount_borrowed: data.withdrawal.amountBorrowed,
+                  amount_collateral: data.withdrawal.amountCollateral,
                 },
         }))
 
-        if (controllerEventsData) {
+        if (events) {
           set(
             produce((state: State) => {
               state[sliceKey].llammaControllerData = formattedLiquidityEventsData

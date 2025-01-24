@@ -17,13 +17,9 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
   <>
     {coins &&
       llammaControllerData.map((transaction, index) => (
-        <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-          <LiquidityEvent
-            href={networks[chainId].scanTxPath(transaction.transaction_hash)}
-            rel="noopener"
-            target="_blank"
-          >
-            {transaction.deposit !== null && (
+        <TransactionRow key={`${transaction.txHash}-lp-${index}`}>
+          <LiquidityEvent href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+            {!!transaction.deposit && (
               <>
                 <Box flex flexColumn>
                   <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
@@ -47,15 +43,15 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                 </LiquidityEventRow>
               </>
             )}
-            {transaction.withdrawal !== null && (
+            {!!transaction.withdrawal && (
               <>
                 <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
                 <Box flex flexColumn margin="0 0 0 auto">
-                  {+transaction.withdrawal.amount_collateral !== 0 && (
+                  {+transaction.withdrawal.amountCollateral !== 0 && (
                     <LiquidityEventRow>
                       <Chip isBold isNumber>
-                        {formatNumber(transaction.withdrawal.amount_collateral, {
-                          ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
+                        {formatNumber(transaction.withdrawal.amountCollateral, {
+                          ...getFractionDigitsOptions(transaction.withdrawal.amountCollateral, 2),
                         })}
                       </Chip>
                       <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
@@ -67,11 +63,11 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       />
                     </LiquidityEventRow>
                   )}
-                  {+transaction.withdrawal.amount_borrowed !== 0 && (
+                  {+transaction.withdrawal.amountBorrowed !== 0 && (
                     <LiquidityEventRow>
                       <Chip isBold isNumber>
-                        {formatNumber(transaction.withdrawal.amount_borrowed, {
-                          ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
+                        {formatNumber(transaction.withdrawal.amountBorrowed, {
+                          ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
                         })}
                       </Chip>
                       <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
