@@ -50,6 +50,7 @@ This repository is organized as follows:
 - `/apps/lend`: Lend [React](https://react.dev/) application.
 - `/tests`: DApp tests
 - `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@ui-kit`
+- `/packages/prices-api`: Package for consuming the Prices API, mapped as `@curvefi/prices-api`
 
 ## Development Guide
 
