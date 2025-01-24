@@ -1,13 +1,13 @@
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import React from 'react'
 import { getBackgroundUrl } from '@ui/utils'
 import Button from '@mui/material/Button'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { LogoImg } from '@ui/images'
 import { styled } from '@mui/material/styles'
 import NextImage from 'next/image'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t } from '@lingui/macro'
 
 type ConnectWalletPromptProps = {
   description: string
@@ -26,35 +26,29 @@ export const ConnectWalletPrompt = ({
 }: ConnectWalletPromptProps) => (
   <Stack
     padding={7}
+    spacing={8}
+    width={SizesAndSpaces.MaxWidth.connectWallet}
+    maxWidth="100%"
     sx={{
       backgroundColor: 'var(--table--background-color)',
-      maxWidth: '50rem',
     }}
   >
-    <Box display="flex" position="relative" width="100%">
-      <Box
-        component="img"
-        src={getBackgroundUrl(useUserProfileStore((state) => state.theme))}
-        alt="Curve Logo"
-        width="1400px"
-        maxWidth="100%"
-        height="100%"
-        sx={{ objectFit: 'contain' }}
-      />
-      <Stack
-        position="absolute"
-        alignItems="center"
-        width="100%"
-        top="50%"
-        left="50%"
-        sx={{ transform: 'translate(-50%, -50%)' }}
-        spacing={3}
-      >
-        <CurveLogo src={LogoImg} alt="Curve Logo" />
-        <Typography variant="headingXxl">Enter Curve</Typography>
-      </Stack>
-    </Box>
-    <Stack gap={3} alignItems="center" width="100%" margin="0 auto">
+    <Stack
+      spacing={3}
+      paddingBlock={8}
+      alignItems="center"
+      justifyContent="center"
+      sx={{
+        backgroundImage: (t) => `url(${getBackgroundUrl(t.key)})`,
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <CurveLogo src={LogoImg} alt="Curve Logo" />
+      <Typography variant="headingXxl">{t`Enter Curve`}</Typography>
+    </Stack>
+    <Stack spacing={3} alignItems="center">
       <Typography variant="bodyMRegular">{description}</Typography>
       <Button
         size="large"
