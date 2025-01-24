@@ -1,4 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
@@ -9,7 +10,6 @@ import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
@@ -30,9 +30,30 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
         paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
         paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
+        height: '4rem',
         minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`, // 1px for the border
+        variants: [
+          {
+            props: { size: 'small' },
+            style: {
+              minHeight: SizesAndSpaces.Sizing.md,
+              padding: `0 ${SizesAndSpaces.Spacing.md} ${SizesAndSpaces.Spacing.sm}`,
+            },
+          },
+        ],
       },
       action: { alignContent: 'center', margin: 0 },
+      title: {
+        ...typography.headingSBold,
+        variants: [
+          {
+            props: { size: 'small' },
+            style: {
+              ...typography.headingXsBold,
+            },
+          },
+        ],
+      },
     },
   },
   MuiCardActions: {
