@@ -2,9 +2,13 @@ import cloneDeep from 'lodash/cloneDeep'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { CurveApi, ChainId, Pool, RewardsApy, Wallet } from '@main/types/main.types'
 
-export async function initCurveJs(chainId: ChainId, wallet: Wallet) {
+export async function initCurveJs(chainId: ChainId, wallet?: Wallet) {
   const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-  await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+  if (wallet) {
+    await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+  } else {
+    await curveApi.init('NoRPC', 'NoRPC', { chainId })
+  }
   return curveApi
 }
 

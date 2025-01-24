@@ -329,6 +329,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     },
     fetchBasePools: async (curve: CurveApi) => {
       const chainId = curve.chainId
+      if (curve.isNoRPC) return
       set(
         produce((state: State) => {
           state.pools.basePoolsLoading = true

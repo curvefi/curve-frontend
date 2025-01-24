@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
@@ -13,6 +13,7 @@ import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import AlertTitle from '@mui/material/AlertTitle'
+import { MAX_USD_VALUE } from 'ui'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -94,6 +95,14 @@ type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate
   copyValue: () => void
 }
 
+function runFormatter(value: number, formatter: (value: number) => string, abbreviate: boolean, symbol?: string) {
+  if (symbol === '$' && value > MAX_USD_VALUE) {
+    console.warn(`USD value is too large: ${value}`)
+    return `?`
+  }
+  return formatter(abbreviate ? abbreviateNumber(value) : value)
+}
+
 const MetricValue = ({
   value,
   formatter,
@@ -114,7 +123,10 @@ const MetricValue = ({
         )}
 
         <Typography variant={fontVariant} color="textPrimary">
-          {formatter(abbreviate ? abbreviateNumber(value) : value)}
+          {useMemo(
+            () => runFormatter(value, formatter, abbreviate, unit?.symbol),
+            [formatter, abbreviate, value, unit?.symbol],
+          )}
         </Typography>
 
         {abbreviate && (
