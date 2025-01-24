@@ -333,21 +333,6 @@ export type ActiveProposal = {
   startTimestamp: number
   endTimestamp: number
 }
-export type VeCrvFeeRes = {
-  fees_usd: number
-  timestamp: string
-}
-export type VeCrvFee = {
-  fees_usd: number
-  timestamp: number
-  date: string
-}
-
-export interface VeCrvFeesRes {
-  distributions: VeCrvFeeRes[]
-  page: number
-  count: number
-}
 
 export type VeCrvDailyLock = {
   day: string

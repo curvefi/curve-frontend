@@ -49,7 +49,7 @@ const VeCrcFees: React.FC = () => {
                         {item.timestamp > currentTime && <span> {t`(in progress)`}</span>}
                       </FeeDate>
                       <FeeData>
-                        {formatNumber(item.fees_usd, {
+                        {formatNumber(item.feesUsd, {
                           currency: 'USD',
                           notation: 'compact',
                         })}

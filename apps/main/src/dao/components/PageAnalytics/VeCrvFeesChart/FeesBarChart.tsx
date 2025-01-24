@@ -4,10 +4,10 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { formatNumber } from 'ui/src/utils'
 
 import FeesBarChartTooltip from './FeesBarChartTooltip'
-import { VeCrvFee } from '@dao/types/dao.types'
+import type { Distribution } from '@curvefi/prices-api/revenue'
 
 type FeesBarChartProps = {
-  data: VeCrvFee[]
+  data: Distribution[]
   height?: number
 }
 
