@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 
 import useStore from '@/dao/store/useStore'
-import { formatNumber, convertToLocaleTimestamp } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 
 import Box from '@ui/Box'
 import Spinner from '../../Spinner'
@@ -16,8 +16,6 @@ const VeCrcFees: React.FC = () => {
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
   const feesError = veCrvFees.fetchStatus === 'ERROR'
   const feesReady = veCrvFees.fetchStatus === 'SUCCESS'
-
-  const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
 
   useEffect(() => {
     if (veCrvFees.fees.length === 0 && !feesError) {
@@ -46,10 +44,10 @@ const VeCrcFees: React.FC = () => {
                     <FeeRow key={item.date}>
                       <FeeDate>
                         {item.date}
-                        {item.timestamp > currentTime && <span> {t`(in progress)`}</span>}
+                        {item.timestamp.getTime() > new Date().getTime() && <span> {t`(in progress)`}</span>}
                       </FeeDate>
                       <FeeData>
-                        {formatNumber(item.fees_usd, {
+                        {formatNumber(item.feesUsd, {
                           currency: 'USD',
                           notation: 'compact',
                         })}

@@ -4,10 +4,10 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { formatNumber } from 'ui/src/utils'
 
 import FeesBarChartTooltip from './FeesBarChartTooltip'
-import { VeCrvFee } from '@/dao/types/dao.types'
+import type { Distribution } from '@curvefi/prices-api/revenue'
 
 type FeesBarChartProps = {
-  data: VeCrvFee[]
+  data: Distribution[]
   height?: number
 }
 
@@ -34,7 +34,7 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => (
         allowDataOverflow={false}
       />
       <YAxis
-        dataKey="fees_usd"
+        dataKey="feesUsd"
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
@@ -42,7 +42,7 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => (
         tickCount={10}
       />
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
-      <Bar dataKey="fees_usd" label={false} fill={'var(--primary-400)'} isAnimationActive={false}>
+      <Bar dataKey="feesUsd" label={false} fill={'var(--primary-400)'} isAnimationActive={false}>
         {data.map((entry, index) => (
           <Cell key={`$cell-${index}`} fill={'var(--primary-400)'} />
         ))}
