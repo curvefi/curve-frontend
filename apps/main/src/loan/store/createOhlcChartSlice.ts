@@ -7,14 +7,12 @@ import type {
   VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
-  LlammaTradesApiResponse,
   LlammaControllerApiResponse,
-  LlammaTradeEvent,
   LlammaControllerEvent,
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 import type { Address, Chain } from '@curvefi/prices-api'
-import { getOHLC } from '@curvefi/prices-api/llamma'
+import { getOHLC, getTrades } from '@curvefi/prices-api/llamma'
 
 import produce from 'immer'
 
@@ -26,7 +24,7 @@ type SliceState = {
   volumeData: VolumeData[]
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
-  llammaTradesData: LlammaTradeEvent[]
+  llammaTradesData: Awaited<ReturnType<typeof getTrades>>['trades']
   llammaControllerData: LlammaControllerEvent[]
   chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
@@ -292,16 +290,15 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const tradesFetch = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_trades/${network}/${poolAddress}?page=1&per_page=100
-          `,
-        )
-        const lpTradesRes: LlammaTradesApiResponse = await tradesFetch.json()
-        const sortedData = lpTradesRes.data.sort((a: LlammaTradeEvent, b: LlammaTradeEvent) => {
-          const timestampA = new Date(a.timestamp).getTime()
-          const timestampB = new Date(b.timestamp).getTime()
-          return timestampB - timestampA
+        const { trades } = await getTrades({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          llamma: poolAddress as Address,
+          page: 1,
+          perPage: 100,
         })
+
+        const sortedData = trades.sort((a, b) => b.timestamp - a.timestamp)
 
         if (sortedData) {
           set(

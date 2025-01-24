@@ -17,10 +17,26 @@ export async function getEvents(endpoint: Endpoint, chain: Chain, llamma: string
   }
 }
 
-export async function getTrades(endpoint: Endpoint, chain: Chain, llamma: string, page: number, options?: Options) {
+type GetTradesParams = {
+  endpoint: Endpoint
+  chain: Chain
+  llamma: Address
+  page?: number
+  perPage?: number
+}
+
+export async function getTrades(
+  { endpoint, chain, llamma, page = 1, perPage = 10 }: GetTradesParams,
+  options?: Options,
+) {
   const host = await getHost(options)
+  const params = new URLSearchParams({
+    page: page.toString(),
+    per_page: perPage.toString(),
+  })
+
   const resp = await fetch<Responses.GetLlammaTradesResponse>(
-    `${host}/v1/${endpoint}/llamma_trades/${chain}/${llamma}?page=${page}&per_page=10`,
+    `${host}/v1/${endpoint}/llamma_trades/${chain}/${llamma}?${params.toString()}`,
   )
 
   return {
