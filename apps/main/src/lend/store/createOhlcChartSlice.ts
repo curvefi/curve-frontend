@@ -8,12 +8,10 @@ import type {
   VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
-  LlammaControllerApiResponse,
-  LlammaControllerEvent,
 } from 'ui/src/Chart/types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
-import { getOHLC, getTrades, type LlammaTrade } from '@curvefi/prices-api/llamma'
+import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
 
 import produce from 'immer'
 
@@ -52,7 +50,7 @@ type SliceState = {
     dataDisabled: boolean
   }
   lendTradesData: LlammaTrade[]
-  lendControllerData: LlammaControllerEvent[]
+  lendControllerData: LlammaEvent[]
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
   activityHidden: boolean
@@ -685,34 +683,18 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           )
         }
 
-        const controllerEventsRes = await fetch(
-          `https://prices.curve.fi/v1/lending/llamma_events/${network}/${poolAddress}?page=1&per_page=100`,
-        )
-        const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
+        const { events } = await getEvents({
+          endpoint: 'lending',
+          chain: network as Chain,
+          llamma: poolAddress as Address,
+          page: 1,
+          perPage: 100,
+        })
 
-        const formattedLiquidityEventsData = controllerEventsData.data.map((data) => ({
-          ...data,
-          deposit:
-            data.deposit === null
-              ? null
-              : {
-                  ...data.deposit,
-                  amount: data.deposit.amount,
-                },
-          withdrawal:
-            data.withdrawal === null
-              ? null
-              : {
-                  ...data.withdrawal,
-                  amount_borrowed: data.withdrawal.amount_borrowed,
-                  amount_collateral: data.withdrawal.amount_collateral,
-                },
-        }))
-
-        if (controllerEventsData) {
+        if (events) {
           set(
             produce((state: State) => {
-              state[sliceKey].lendControllerData = formattedLiquidityEventsData
+              state[sliceKey].lendControllerData = events
               state[sliceKey].activityFetchStatus = 'READY'
             }),
           )
