@@ -85,7 +85,7 @@ export const DesktopHeader = <TChainId extends number>({
           <Container>
             <PageTabs pages={pages} currentApp={currentApp} selectedApp={selectedApp} networkName={networkName} />
             <Box flexGrow={1} />
-            <Box display="flex" gap={3} alignItems="center">
+            <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
               <HeaderStats appStats={appStats} />
             </Box>
           </Container>
