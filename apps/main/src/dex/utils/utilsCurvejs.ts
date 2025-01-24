@@ -7,7 +7,7 @@ export async function initCurveJs(chainId: ChainId, wallet?: Wallet) {
   if (wallet) {
     await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
   } else {
-    await (curveApi.init as any)('NoRPC', { networkName: '', chainId }, { chainId })
+    await curveApi.init('NoRPC', 'NoRPC', { chainId })
   }
   return curveApi
 }
