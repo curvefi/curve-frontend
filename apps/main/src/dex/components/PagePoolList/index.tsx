@@ -51,7 +51,6 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const provider = useStore((state) => state.wallet.getProvider(''))
   const network = useStore((state) => state.networks.networks[rChainId])
 
   const [showDetail, setShowDetail] = useState('')
@@ -183,71 +182,61 @@ const PoolList = ({
         updatePath={updatePath}
       />
 
-      {!provider ? (
-        <ConnectWalletWrapper>
-          <ConnectWallet
-            description={t`Connect wallet to view pool list`}
-            connectText={t`Connect Wallet`}
-            loadingText={t`Connecting`}
+      <Table cellPadding={0} cellSpacing={0}>
+        {isXSmDown ? (
+          <TableHeadMobile showInPoolColumn={showInPoolColumn} />
+        ) : (
+          <TableHead
+            columnKeys={columnKeys}
+            isLite={isLite}
+            isReadyRewardsApy={!!rewardsApyMapper}
+            isReadyTvl={!!tvlMapper}
+            isReadyVolume={!!volumeMapper}
+            searchParams={searchParams}
+            tableLabels={tableLabels}
+            updatePath={updatePath}
           />
-        </ConnectWalletWrapper>
-      ) : (
-        <Table cellPadding={0} cellSpacing={0}>
-          {isXSmDown ? (
-            <TableHeadMobile showInPoolColumn={showInPoolColumn} />
-          ) : (
-            <TableHead
-              columnKeys={columnKeys}
-              isLite={isLite}
-              isReadyRewardsApy={!!rewardsApyMapper}
-              isReadyTvl={!!tvlMapper}
-              isReadyVolume={!!volumeMapper}
+        )}
+        <Tbody $borderBottom>
+          {isReadyWithApiData && formStatus.noResult ? (
+            <TableRowNoResult
+              colSpan={colSpan}
               searchParams={searchParams}
-              tableLabels={tableLabels}
+              signerAddress={signerAddress}
               updatePath={updatePath}
             />
+          ) : isReady && Array.isArray(result) ? (
+            <>
+              {result.map((poolId: string, index: number) => (
+                <PoolRow
+                  key={poolId}
+                  index={index}
+                  columnKeys={columnKeys}
+                  isLite={isLite}
+                  poolId={poolId}
+                  rChainId={rChainId}
+                  searchParams={searchParams}
+                  imageBaseUrl={network?.imageBaseUrl ?? ''}
+                  showInPoolColumn={showInPoolColumn}
+                  tableLabels={tableLabels}
+                  searchTermMapper={searchTermMapper}
+                  showDetail={showDetail}
+                  setShowDetail={setShowDetail}
+                  curve={curve}
+                />
+              ))}
+            </>
+          ) : (
+            <tr>
+              <td colSpan={colSpan}>
+                <SpinnerWrapper>
+                  <Spinner />
+                </SpinnerWrapper>
+              </td>
+            </tr>
           )}
-          <Tbody $borderBottom>
-            {isReadyWithApiData && formStatus.noResult ? (
-              <TableRowNoResult
-                colSpan={colSpan}
-                searchParams={searchParams}
-                signerAddress={signerAddress}
-                updatePath={updatePath}
-              />
-            ) : isReady && Array.isArray(result) ? (
-              <>
-                {result.map((poolId: string, index: number) => (
-                  <PoolRow
-                    key={poolId}
-                    index={index}
-                    columnKeys={columnKeys}
-                    isLite={isLite}
-                    poolId={poolId}
-                    rChainId={rChainId}
-                    searchParams={searchParams}
-                    imageBaseUrl={network?.imageBaseUrl ?? ''}
-                    showInPoolColumn={showInPoolColumn}
-                    tableLabels={tableLabels}
-                    searchTermMapper={searchTermMapper}
-                    showDetail={showDetail}
-                    setShowDetail={setShowDetail}
-                    curve={curve}
-                  />
-                ))}
-              </>
-            ) : (
-              <tr>
-                <td colSpan={colSpan}>
-                  <SpinnerWrapper>
-                    <Spinner />
-                  </SpinnerWrapper>
-                </td>
-              </tr>
-            )}
-          </Tbody>
-        </Table>
-      )}
+        </Tbody>
+      </Table>
     </>
   )
 }
