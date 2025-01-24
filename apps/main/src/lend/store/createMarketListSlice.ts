@@ -422,7 +422,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? Object.values(marketMapping) : cMarkets, shouldRefetch)),
       )
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
-      logSuccess(['market-list-slice', 'setFormValues'], sorted.result)
+      logSuccess(['market-list-slice', 'setFormValues'], sorted.result.length)
     },
 
     // slice helpers

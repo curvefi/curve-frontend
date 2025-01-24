@@ -1,17 +1,17 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@main/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { useNetworkFromUrl, useParsedParams } from '@main/utils/utilsRouter'
 import { getWalletChainId } from '@ui-kit/features/connect-wallet'
 import { initCurveJs } from '@main/utils/utilsCurvejs'
-import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import useStore from '@main/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@main/types/main.types'
@@ -48,8 +48,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
 
-          if (useWallet && wallet && chainId) {
-            const api = await initCurveJs(chainId, wallet)
+          if (chainId) {
+            const api = await initCurveJs(chainId, (useWallet && wallet) || undefined)
             setNetworkConfigs(api)
             updateCurveJs(api, prevCurveApi, wallet)
             updateConnectState('success', '')

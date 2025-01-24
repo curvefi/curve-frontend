@@ -4,10 +4,14 @@ import { BrowserProvider } from 'ethers'
 import type { NotificationType } from '@web3-onboard/core/dist/types'
 import { initOnboard } from './lib/init'
 import { devtools } from 'zustand/middleware'
+import type { Address } from 'abitype'
+import type { EIP1193Provider } from '@web3-onboard/common'
+import { logSuccess } from '@ui-kit/lib'
 
 type WalletState = {
   onboard: OnboardAPI | null
   provider: BrowserProvider | null
+  rpcProvider: EIP1193Provider | null
   wallet: Wallet | null
 }
 
@@ -30,6 +34,7 @@ export type WalletStore = WalletState & WalletActions
 const DEFAULT_STATE: WalletState = {
   onboard: null,
   provider: null,
+  rpcProvider: null,
   wallet: null,
 }
 
@@ -51,31 +56,38 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
     return wallet && new BrowserProvider(wallet.provider)
   },
   chooseWallet: async (wallet: Wallet | null) => {
-    const storedProvider = get().provider
-    const newProvider = wallet ? getWalletProvider(wallet) : null
-    if (storedProvider) await storedProvider.removeAllListeners()
-    return set({
-      wallet,
-      provider: newProvider,
-    })
+    const { provider, chooseWallet } = get()
+    await provider?.removeAllListeners()
+    return set(createProvider(wallet, chooseWallet))
   },
-  initialize: (locale, themeType, networks) => {
+  initialize: async (locale, themeType, networks) => {
+    const { chooseWallet } = get()
     const onboard = initOnboard(locale, themeType, networks)
-    const wallet = get().onboard?.state.get().wallets?.[0]
-    const provider = wallet && new BrowserProvider(wallet.provider)
-    return set({ onboard, wallet, provider })
+    const wallet = onboard.state.get().wallets?.[0]
+    return set({ onboard, ...createProvider(wallet, chooseWallet) })
   },
 })
 
 export const useWalletStore =
   process.env.NODE_ENV === 'development' ? create(devtools(walletStore)) : create(walletStore)
 
-function getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
+function getRpcProvider(wallet: Wallet): EIP1193Provider {
+  if ('isTrustWallet' in wallet.provider && window.ethereum) {
     // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
+    return window.ethereum as any // todo: why do we need any here?
+  }
+  if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
     return window.exodus.ethereum
   }
   return wallet.provider
+}
+
+function createProvider(wallet: Wallet | null | undefined, chooseWallet: (wallet: Wallet | null) => Promise<void>) {
+  if (!wallet) return { rpcProvider: null, wallet: null, provider: null }
+  const rpcProvider = getRpcProvider(wallet)
+  rpcProvider.on('accountsChanged', (newAccounts: Address[]) => {
+    logSuccess('accountsChanged', newAccounts)
+    return chooseWallet(newAccounts.length === 0 ? null : wallet)
+  })
+  return { rpcProvider, wallet, provider: new BrowserProvider(wallet.provider) }
 }

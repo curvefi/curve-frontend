@@ -7,7 +7,7 @@ import orderBy from 'lodash/orderBy'
 import uniq from 'lodash/uniq'
 
 import { NETWORK_TOKEN } from '@main/constants'
-import { log } from '@ui-kit/lib'
+import { log, LogStatus } from '@ui-kit/lib'
 import { weiToEther } from '@ui-kit/utils'
 import { Pool, UserBalancesMapper, PoolData, UsdRatesMapper } from '@main/types/main.types'
 
@@ -65,7 +65,7 @@ export function parseRouterRoutes(
         try {
           pool = getPool(route.poolId)
         } catch (error) {
-          log('routerBestRouteAndOutput missing poolName', route)
+          log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId)
         }
       }
 
