@@ -334,15 +334,6 @@ export type ActiveProposal = {
   endTimestamp: number
 }
 
-export type VeCrvDailyLock = {
-  day: string
-  amount: string
-}
-
-export interface VeCrvDailyLockRes {
-  locks: { day: string; amount: string }[]
-}
-
 export interface VeCrvHolder {
   user: string
   locked: number

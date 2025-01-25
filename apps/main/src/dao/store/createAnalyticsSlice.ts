@@ -2,21 +2,13 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 
 import produce from 'immer'
-import { formatUnits, formatEther, Contract } from 'ethers'
+import { formatEther, Contract } from 'ethers'
 import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
 import { abiVeCrv } from '@/dao/store/abis'
-import { convertToLocaleTimestamp, formatDateFromTimestamp } from 'ui/src/utils'
-import {
-  VeCrvDailyLock,
-  VeCrvDailyLockRes,
-  VeCrvHolder,
-  VeCrvHoldersRes,
-  FetchingState,
-  TopHoldersSortBy,
-  AllHoldersSortBy,
-} from '@/dao/types/dao.types'
+import { VeCrvHolder, VeCrvHoldersRes, FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
 import type { ContractRunner } from 'ethers/lib.commonjs/providers'
 import { type Distribution, getDistributions } from '@curvefi/prices-api/revenue'
+import { type LocksDaily, getLocksDaily } from '@curvefi/prices-api/dao'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -27,7 +19,7 @@ type SliceState = {
     fetchStatus: FetchingState
   }
   veCrvLocks: {
-    locks: VeCrvDailyLock[]
+    locks: LocksDaily[]
     fetchStatus: FetchingState
   }
   veCrvHolders: {
@@ -146,16 +138,10 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
       })
 
       try {
-        const veCrvLocksRes = await fetch('https://prices.curve.fi/v1/dao/locks/daily/365')
-        const data: VeCrvDailyLockRes = await veCrvLocksRes.json()
-
-        const formattedData = data.locks.map((lock) => ({
-          amount: Math.floor(+formatUnits(lock.amount, 18)),
-          day: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.day).getTime() / 1000)),
-        }))
+        const locks = await getLocksDaily(365)
 
         get()[sliceKey].setStateByKey('veCrvLocks', {
-          locks: formattedData,
+          locks: locks,
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
