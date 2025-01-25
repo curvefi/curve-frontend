@@ -38,7 +38,7 @@ export type Supply = {
 }
 
 export type Locker = {
-  user: Address
+  user: Address | `Others(${string})`
   locked: bigint
   weight: bigint
   weightRatio: number

@@ -1,5 +1,6 @@
 import { getHost, type Options } from '..'
 import { fetchJson as fetch } from '../fetch'
+import { paginate } from '../paginate'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
@@ -24,7 +25,19 @@ export async function getUserLocks(user: string, options?: Options) {
   return resp.locks.map(Parsers.parseUserLock)
 }
 
-export async function getLockers(top: number, options?: Options) {
+export async function getLockers(options?: Options) {
+  const host = await getHost(options)
+  const fs = (page: number) =>
+    fetch<Responses.GetLockersResponse>(`${host}v1/dao/lockers?pagination=1000&page=${page}`).then((resp) =>
+      resp.users.map(Parsers.parseLockers),
+    )
+
+  const lockers = await paginate(fs, 1, 100)
+
+  return lockers
+}
+
+export async function getLockersTop(top: number, options?: Options) {
   const host = await getHost(options)
   const resp = await fetch<Responses.GetLockersResponse>(`${host}/v1/dao/lockers/${top}`)
 

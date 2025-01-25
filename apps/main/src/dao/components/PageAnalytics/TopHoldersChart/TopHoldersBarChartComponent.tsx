@@ -5,10 +5,11 @@ import { shortenTokenAddress, formatNumber } from '@ui/utils'
 import { TOP_HOLDERS } from '@dao/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'
-import { VeCrvHolder, TopHoldersSortBy } from '@dao/types/dao.types'
+import type { TopHoldersSortBy } from '@dao/types/dao.types'
+import type { Locker } from '@curvefi/prices-api/dao'
 
 type TopHoldersBarChartProps = {
-  data: VeCrvHolder[]
+  data: Locker[]
   filter: TopHoldersSortBy
 }
 
@@ -77,7 +78,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={(value) =>
-              filter === 'weight_ratio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
+              filter === 'weightRatio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
             }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}
