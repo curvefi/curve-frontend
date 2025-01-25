@@ -28,7 +28,7 @@ export async function getUserLocks(user: string, options?: Options) {
 export async function getLockers(options?: Options) {
   const host = await getHost(options)
   const fs = (page: number) =>
-    fetch<Responses.GetLockersResponse>(`${host}v1/dao/lockers?pagination=1000&page=${page}`).then((resp) =>
+    fetch<Responses.GetLockersResponse>(`${host}/v1/dao/lockers?pagination=1000&page=${page}`).then((resp) =>
       resp.users.map(Parsers.parseLockers),
     )
 
