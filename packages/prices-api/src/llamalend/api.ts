@@ -1,4 +1,4 @@
-import { getHost, type Options, type Chain } from '..'
+import { getHost, type Address, type Options, type Chain } from '..'
 import { fetchJson as fetch } from '../fetch'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
@@ -18,10 +18,32 @@ export async function getMarkets(chain: Chain, options?: Options) {
   return resp.data.map(Parsers.parseMarket)
 }
 
-export async function getSnapshots(chain: Chain, marketController: string, options?: Options) {
+type GetSnapshotParams = {
+  chain: Chain
+  marketController: Address
+  fetchOnChain?: boolean
+  agg?: 'none' | 'day' | 'week'
+  start?: number
+  limit?: number
+  sortBy?: 'asc' | 'desc'
+}
+
+export async function getSnapshots(
+  { chain, marketController, fetchOnChain, agg, start, limit, sortBy }: GetSnapshotParams,
+  options?: Options,
+) {
   const host = await getHost(options)
+
+  const params = new URLSearchParams({
+    ...(fetchOnChain !== undefined && { fetch_on_chain: fetchOnChain.toString() }),
+    ...(agg && { agg }),
+    ...(start !== undefined && { start: start.toString() }),
+    ...(limit !== undefined && { limit: limit.toString() }),
+    ...(sortBy && { sort_by: sortBy === 'asc' ? 'DATE_ASC' : 'DATE_DESC' }),
+  })
+
   const resp = await fetch<Responses.GetSnapshotsResponse>(
-    `${host}/v1/lending/markets/${chain}/${marketController}/snapshots?fetch_on_chain=true&agg=day`,
+    `${host}/v1/lending/markets/${chain}/${marketController}/snapshots?${params.toString()}`,
   )
 
   return resp.data.map(Parsers.parseSnapshot)

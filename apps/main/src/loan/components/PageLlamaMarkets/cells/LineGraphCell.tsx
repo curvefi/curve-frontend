@@ -1,4 +1,4 @@
-import { LendingSnapshot, useLendingSnapshots } from '@loan/entities/lending'
+import { useLendingSnapshots } from '@loan/entities/lending'
 import { LendingVault } from '@loan/entities/vaults'
 import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
@@ -10,6 +10,7 @@ import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import { meanBy } from 'lodash'
 import Box from '@mui/material/Box'
+import type { Snapshot } from '@curvefi/prices-api/llamalend'
 
 const graphSize = { width: 172, height: 48 }
 
@@ -18,10 +19,10 @@ type GraphType = 'borrow' | 'lend'
 /**
  * Get the color for the line graph. Will be green if the last value is higher than the first, red if lower, and blue if equal.
  */
-function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType) {
+function getColor(design: DesignSystem, data: Snapshot[], type: GraphType) {
   if (!data.length) return undefined
-  const first = data[0][`${type}_apy`]
-  const last = data[data.length - 1][`${type}_apy`]
+  const first = data[0][`${type}Apy`]
+  const last = data[data.length - 1][`${type}Apy`]
   return design.Layer.Feedback[last === first ? 'Info' : last < first ? 'Error' : 'Success']
 }
 
@@ -51,7 +52,7 @@ export const LineGraphCell = ({
   })
   const { design } = useTheme()
   const currentValue = vault.rates[`${type}ApyPcent`]
-  const snapshotKey = `${type}_apy` as const
+  const snapshotKey = `${type}Apy` as const
 
   const rate = useMemo(
     () => (snapshots?.length ? meanBy(snapshots, (row) => row[snapshotKey]) : currentValue),
