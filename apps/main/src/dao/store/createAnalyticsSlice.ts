@@ -2,13 +2,13 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 
 import produce from 'immer'
-import { formatEther, Contract } from 'ethers'
+import { Contract } from 'ethers'
 import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
 import { abiVeCrv } from '@/dao/store/abis'
-import { VeCrvHolder, VeCrvHoldersRes, FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
+import { FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
 import type { ContractRunner } from 'ethers/lib.commonjs/providers'
 import { type Distribution, getDistributions } from '@curvefi/prices-api/revenue'
-import { type LocksDaily, getLocksDaily } from '@curvefi/prices-api/dao'
+import { type Locker, type LocksDaily, getLocksDaily, getLockers } from '@curvefi/prices-api/dao'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -23,14 +23,14 @@ type SliceState = {
     fetchStatus: FetchingState
   }
   veCrvHolders: {
-    topHolders: VeCrvHolder[]
-    allHolders: { [userAddress: string]: VeCrvHolder }
+    topHolders: Locker[]
+    allHolders: { [userAddress: string]: Locker }
     totalHolders: number
     canCreateVote: number
     totalValues: {
-      weight: number
-      locked: number
-      weight_ratio: number
+      weight: bigint
+      locked: bigint
+      weightRatio: number
     }
     fetchStatus: FetchingState
   }
@@ -40,9 +40,9 @@ type SliceState = {
     order: 'asc' | 'desc'
   }
   veCrvData: {
-    totalVeCrv: number
-    totalLockedCrv: number
-    totalCrv: number
+    totalVeCrv: bigint
+    totalLockedCrv: bigint
+    totalCrv: bigint
     lockedPercentage: number
     fetchStatus: FetchingState
   }
@@ -83,21 +83,21 @@ const DEFAULT_STATE: SliceState = {
     totalHolders: 0,
     canCreateVote: 0,
     totalValues: {
-      weight: 0,
-      locked: 0,
-      weight_ratio: 0,
+      weight: 0n,
+      locked: 0n,
+      weightRatio: 0,
     },
     fetchStatus: 'LOADING',
   },
-  topHoldersSortBy: 'weight_ratio',
+  topHoldersSortBy: 'weightRatio',
   allHoldersSortBy: {
-    key: 'weight_ratio',
+    key: 'weightRatio',
     order: 'desc',
   },
   veCrvData: {
-    totalVeCrv: 0,
-    totalLockedCrv: 0,
-    totalCrv: 0,
+    totalVeCrv: 0n,
+    totalLockedCrv: 0n,
+    totalCrv: 0n,
     lockedPercentage: 0,
     fetchStatus: 'LOADING',
   },
@@ -165,47 +165,24 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
       })
 
       try {
-        const pagination = 1000
-        let page = 1
-        let allHolders: { [address: string]: VeCrvHolder } = {}
-
-        while (true) {
-          const veCrvHoldersRes = await fetch(
-            `https://prices.curve.fi/v1/dao/lockers?pagination=${pagination}&page=${page}`,
-          )
-          const data: VeCrvHoldersRes = await veCrvHoldersRes.json()
-
-          data.locks.forEach((holder) => {
-            allHolders[holder.user.toLowerCase()] = {
-              ...holder,
-              locked: +holder.locked / 10 ** 18,
-              weight: +holder.weight / 10 ** 18,
-              weight_ratio: Number(holder.weight_ratio.replace('%', '')),
-            }
-          })
-
-          if (data.locks.length < pagination) {
-            break
-          }
-
-          page++
-        }
+        const lockers = await getLockers()
+        const allHolders = Object.fromEntries(lockers.map((holder) => [holder.user.toLowerCase(), holder]))
 
         const totalHolders = Object.keys(allHolders).length
         const canCreateVote = Object.values(allHolders).filter((holder) => holder.weight > 2500).length
 
         const topHolders = Object.values(allHolders)
-          .sort((a, b) => b.weight_ratio - a.weight_ratio)
+          .sort((a, b) => b.weightRatio - a.weightRatio)
           .slice(0, 100)
-          .filter((holder) => holder.weight_ratio > 0.3)
+          .filter((holder) => holder.weightRatio > 0.3)
 
         const totalValues = topHolders.reduce(
           (acc, item) => ({
             weight: acc.weight + item.weight,
             locked: acc.locked + item.locked,
-            weight_ratio: acc.weight_ratio + item.weight_ratio,
+            weightRatio: acc.weightRatio + item.weightRatio,
           }),
-          { weight: 0, locked: 0, weight_ratio: 0 },
+          { weight: 0n, locked: 0n, weightRatio: 0 },
         )
 
         get()[sliceKey].setStateByKey('veCrvHolders', {
@@ -239,7 +216,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
         produce((state) => {
           state[sliceKey].topHoldersSortBy = sortBy
           state[sliceKey].veCrvHolders.topHolders = [...topHolders].sort(
-            (a: VeCrvHolder, b: VeCrvHolder) => b[sortBy] - a[sortBy],
+            (a, b) => Number(b[sortBy]) - Number(a[sortBy]),
           )
         }),
       )
@@ -262,7 +239,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           }),
         )
       } else {
-        const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => b[sortBy] - a[sortBy])
+        const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => Number(b[sortBy]) - Number(a[sortBy]))
 
         set(
           produce((state) => {
@@ -275,9 +252,9 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
     },
     getVeCrvData: async (provider) => {
       get()[sliceKey].setStateByKey('veCrvData', {
-        totalVeCrv: 0,
-        totalLockedCrv: 0,
-        totalCrv: 0,
+        totalVeCrv: 0n,
+        totalLockedCrv: 0n,
+        totalCrv: 0n,
         lockedPercentage: 0,
         fetchStatus: 'LOADING',
       })
@@ -292,15 +269,12 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           veCrvContract.totalSupply(),
         ])
 
-        const formattedTotalLockedCrv = formatEther(totalLockedCrv)
-        const formattedTotalCrv = formatEther(totalCrv)
-        const formattedTotalVeCrv = formatEther(totalVeCrv)
-        const lockedPercentage = (+formattedTotalLockedCrv / +formattedTotalCrv) * 100
+        const lockedPercentage = (Number(totalLockedCrv) / Number(totalCrv)) * 100
 
         get()[sliceKey].setStateByKey('veCrvData', {
-          totalVeCrv: formattedTotalVeCrv,
-          totalLockedCrv: formattedTotalLockedCrv,
-          totalCrv: formattedTotalCrv,
+          totalVeCrv: BigInt(totalVeCrv),
+          totalLockedCrv: BigInt(totalLockedCrv),
+          totalCrv: BigInt(totalCrv),
           lockedPercentage: lockedPercentage,
           fetchStatus: 'SUCCESS',
         })

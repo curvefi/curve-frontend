@@ -5,10 +5,11 @@ import { shortenTokenAddress, formatNumber } from '@ui/utils'
 import { TOP_HOLDERS } from '@/dao/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'
-import { VeCrvHolder, TopHoldersSortBy } from '@/dao/types/dao.types'
+import type { TopHoldersSortBy } from '@/dao/types/dao.types'
+import type { Locker } from '@curvefi/prices-api/dao'
 
 type TopHoldersBarChartProps = {
-  data: VeCrvHolder[]
+  data: Locker[]
   filter: TopHoldersSortBy
 }
 
@@ -39,6 +40,12 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
     return user.length > 15 ? (shortenTokenAddress(user)?.toString() ?? user) : user
   }
 
+  const dataFormatted = data.map((x) => ({
+    ...x,
+    weight: Number(x.weight) / 10 ** 18,
+    locked: Number(x.locked) / 10 ** 18,
+  }))
+
   return (
     <ChartContainer height={height}>
       <ResponsiveContainer width="100%" height={height} debounce={200}>
@@ -46,7 +53,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
           layout="horizontal"
           width={500}
           height={height}
-          data={data}
+          data={dataFormatted}
           margin={{
             top: 16,
             right: 16,
@@ -77,7 +84,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={(value) =>
-              filter === 'weight_ratio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
+              filter === 'weightRatio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
             }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}
@@ -85,7 +92,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={filter} label={false} isAnimationActive={false}>
-            {data.map((entry, index) => (
+            {dataFormatted.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

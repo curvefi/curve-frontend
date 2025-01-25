@@ -4,10 +4,10 @@ import { t } from '@lingui/macro'
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils/'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Box from '@ui/Box'
-import { VeCrvHolder } from '@/dao/types/dao.types'
+import type { Locker } from '@curvefi/prices-api/dao'
 
 interface UserStatsProps {
-  veCrvHolder: VeCrvHolder
+  veCrvHolder: Locker
   holdersLoading: boolean
 }
 
@@ -20,7 +20,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         title={t`Total veCRV`}
         data={
           <MetricsColumnData>
-            {formatNumber(veCrvHolder.weight, { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(Number(veCrvHolder.weight) / 10 ** 18, { showDecimalIfSmallNumberOnly: true })}
           </MetricsColumnData>
         }
       />
@@ -29,7 +29,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         title={t`Locked CRV`}
         data={
           <MetricsColumnData>
-            {formatNumber(veCrvHolder.locked, { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(Number(veCrvHolder.locked) / 10 ** 18, { showDecimalIfSmallNumberOnly: true })}
           </MetricsColumnData>
         }
       />
@@ -38,8 +38,8 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         title={t`Unlock Time`}
         data={
           <MetricsColumnData>
-            {veCrvHolder.unlock_time
-              ? formatDateFromTimestamp(convertToLocaleTimestamp(new Date(veCrvHolder.unlock_time).getTime()))
+            {veCrvHolder.unlockTime
+              ? formatDateFromTimestamp(convertToLocaleTimestamp(veCrvHolder.unlockTime.getUTCTimestamp()))
               : 'N/A'}
           </MetricsColumnData>
         }
@@ -47,7 +47,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
       <MetricsComp
         loading={holdersLoading}
         title={t`Weight Ratio`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.weight_ratio)}%</MetricsColumnData>}
+        data={<MetricsColumnData>{formatNumber(veCrvHolder.weightRatio)}%</MetricsColumnData>}
       />
     </MetricsContainer>
   </Wrapper>

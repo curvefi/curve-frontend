@@ -39,7 +39,7 @@ export const parseSupply = (x: Responses.GetSupplyResponse['supply'][number]): M
   txHash: x.transaction_hash,
 })
 
-export const parseLockers = (x: Responses.GetLockersResponse['users'][number]): Models.Locker => ({
+export const parseLockers = (x: Responses.GetLockersTopResponse['users'][number]): Models.Locker => ({
   user: x.user,
   locked: BigInt(Math.round(parseFloat(x.locked))),
   weight: BigInt(Math.round(parseFloat(x.weight))),
