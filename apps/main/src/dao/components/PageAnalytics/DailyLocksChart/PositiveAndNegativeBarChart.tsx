@@ -4,10 +4,10 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLin
 import { formatNumber } from 'ui/src/utils'
 
 import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
-import { VeCrvDailyLock } from '@dao/types/dao.types'
+import { LocksDaily } from '@curvefi/prices-api/dao'
 
 type PositiveAndNegativeBarChartProps = {
-  data: VeCrvDailyLock[]
+  data: LocksDaily[]
   height?: number
 }
 
@@ -45,7 +45,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
       <ReferenceLine y={0} stroke="#000" opacity={0.3} />
       <Bar dataKey="amount" label={false} fill="#8884d8" isAnimationActive={false}>
         {data.map((entry, index) => (
-          <Cell key={`$cell-${index}`} fill={+entry.amount > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
+          <Cell key={`$cell-${index}`} fill={entry.amount > 0n ? 'var(--chart-green)' : 'var(--chart-red)'} />
         ))}
       </Bar>
     </BarChart>
