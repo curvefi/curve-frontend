@@ -29,7 +29,7 @@ export async function getLockers(options?: Options) {
   const host = await getHost(options)
   const fs = (page: number) =>
     fetch<Responses.GetLockersResponse>(`${host}/v1/dao/lockers?pagination=1000&page=${page}`).then((resp) =>
-      resp.users.map(Parsers.parseLockers),
+      resp.locks.map(Parsers.parseLockers),
     )
 
   const lockers = await paginate(fs, 1, 100)
@@ -39,7 +39,7 @@ export async function getLockers(options?: Options) {
 
 export async function getLockersTop(top: number, options?: Options) {
   const host = await getHost(options)
-  const resp = await fetch<Responses.GetLockersResponse>(`${host}/v1/dao/lockers/${top}`)
+  const resp = await fetch<Responses.GetLockersTopResponse>(`${host}/v1/dao/lockers/${top}`)
 
   return resp.users.map(Parsers.parseLockers)
 }
