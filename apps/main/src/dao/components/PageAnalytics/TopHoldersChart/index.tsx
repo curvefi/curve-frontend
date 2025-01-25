@@ -34,12 +34,12 @@ const TopLockers: React.FC = () => {
 
     const othersVeCrv = veCrvData.totalVeCrv - veCrvHolders.totalValues.weight
     const otherLockedCrv = veCrvData.totalLockedCrv - veCrvHolders.totalValues.locked
-    const othersWeightRatio = +(100 - veCrvHolders.totalValues.weight_ratio).toFixed(2)
+    const othersWeightRatio = +(100 - veCrvHolders.totalValues.weightRatio).toFixed(2)
 
     return {
       user: 'Others(<0.3%)' as `Others(${string})`,
-      weight: BigInt(Math.floor(othersVeCrv)) * BigInt(10 ** 18),
-      locked: BigInt(Math.floor(otherLockedCrv)) * BigInt(10 ** 18),
+      weight: othersVeCrv,
+      locked: otherLockedCrv,
       weightRatio: othersWeightRatio,
       unlockTime: 0,
     }
@@ -50,7 +50,7 @@ const TopLockers: React.FC = () => {
     veCrvData.totalVeCrv,
     veCrvHolders.totalValues.locked,
     veCrvHolders.totalValues.weight,
-    veCrvHolders.totalValues.weight_ratio,
+    veCrvHolders.totalValues.weightRatio,
   ])
 
   return (

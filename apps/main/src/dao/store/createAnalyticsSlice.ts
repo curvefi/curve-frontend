@@ -28,9 +28,9 @@ type SliceState = {
     totalHolders: number
     canCreateVote: number
     totalValues: {
-      weight: number
-      locked: number
-      weight_ratio: number
+      weight: bigint
+      locked: bigint
+      weightRatio: number
     }
     fetchStatus: FetchingState
   }
@@ -40,9 +40,9 @@ type SliceState = {
     order: 'asc' | 'desc'
   }
   veCrvData: {
-    totalVeCrv: number
-    totalLockedCrv: number
-    totalCrv: number
+    totalVeCrv: bigint
+    totalLockedCrv: bigint
+    totalCrv: bigint
     lockedPercentage: number
     fetchStatus: FetchingState
   }
@@ -83,9 +83,9 @@ const DEFAULT_STATE: SliceState = {
     totalHolders: 0,
     canCreateVote: 0,
     totalValues: {
-      weight: 0,
-      locked: 0,
-      weight_ratio: 0,
+      weight: 0n,
+      locked: 0n,
+      weightRatio: 0,
     },
     fetchStatus: 'LOADING',
   },
@@ -95,9 +95,9 @@ const DEFAULT_STATE: SliceState = {
     order: 'desc',
   },
   veCrvData: {
-    totalVeCrv: 0,
-    totalLockedCrv: 0,
-    totalCrv: 0,
+    totalVeCrv: 0n,
+    totalLockedCrv: 0n,
+    totalCrv: 0n,
     lockedPercentage: 0,
     fetchStatus: 'LOADING',
   },
@@ -261,9 +261,9 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
     },
     getVeCrvData: async (provider: any) => {
       get()[sliceKey].setStateByKey('veCrvData', {
-        totalVeCrv: 0,
-        totalLockedCrv: 0,
-        totalCrv: 0,
+        totalVeCrv: 0n,
+        totalLockedCrv: 0n,
+        totalCrv: 0n,
         lockedPercentage: 0,
         fetchStatus: 'LOADING',
       })
@@ -278,15 +278,12 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           veCrvContract.totalSupply(),
         ])
 
-        const formattedTotalLockedCrv = formatEther(totalLockedCrv)
-        const formattedTotalCrv = formatEther(totalCrv)
-        const formattedTotalVeCrv = formatEther(totalVeCrv)
-        const lockedPercentage = (+formattedTotalLockedCrv / +formattedTotalCrv) * 100
+        const lockedPercentage = (Number(totalLockedCrv) / Number(totalCrv)) * 100
 
         get()[sliceKey].setStateByKey('veCrvData', {
-          totalVeCrv: formattedTotalVeCrv,
-          totalLockedCrv: formattedTotalLockedCrv,
-          totalCrv: formattedTotalCrv,
+          totalVeCrv: BigInt(totalVeCrv),
+          totalLockedCrv: BigInt(totalLockedCrv),
+          totalCrv: BigInt(totalCrv),
           lockedPercentage: lockedPercentage,
           fetchStatus: 'SUCCESS',
         })
