@@ -40,6 +40,12 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
     return user.length > 15 ? (shortenTokenAddress(user)?.toString() ?? user) : user
   }
 
+  const dataFormatted = data.map((x) => ({
+    ...x,
+    weight: Number(x.weight) / 10 ** 18,
+    locked: Number(x.locked) / 10 ** 18,
+  }))
+
   return (
     <ChartContainer height={height}>
       <ResponsiveContainer width="100%" height={height} debounce={200}>
@@ -47,7 +53,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
           layout="horizontal"
           width={500}
           height={height}
-          data={data}
+          data={dataFormatted}
           margin={{
             top: 16,
             right: 16,
@@ -86,7 +92,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={filter} label={false} isAnimationActive={false}>
-            {data.map((entry, index) => (
+            {dataFormatted.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>
