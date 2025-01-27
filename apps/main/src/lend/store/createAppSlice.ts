@@ -47,9 +47,8 @@ const DEFAULT_STATE: SliceState = {
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
-    const value = options ? { status, stage, options } : { status, stage }
-    set({ connectState: value })
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
+    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateApi: async (api, prevApi, wallet) => {
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId

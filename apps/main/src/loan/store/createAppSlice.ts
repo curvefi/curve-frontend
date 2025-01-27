@@ -92,9 +92,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       updateGlobalStoreByKey('dailyVolume', 'NaN')
     }
   },
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
-    const value = options ? { status, stage, options } : { status, stage }
-    set({ connectState: value })
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
+    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
     const { gas, loans, usdRates, ...state } = get()

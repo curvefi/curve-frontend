@@ -145,9 +145,8 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       }),
     )
   },
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
-    const value = options ? { status, stage, options } : { status, stage }
-    set({ connectState: value })
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
+    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const state = get()
