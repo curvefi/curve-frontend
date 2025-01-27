@@ -29,7 +29,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
 })
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
-  timestamp: new Date(x.dt).getTime() / 1000,
+  timestamp: toUTC(x.dt),
   rate: x.rate,
   nLoans: x.n_loans,
   minted: x.minted,

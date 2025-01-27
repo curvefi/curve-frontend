@@ -16,7 +16,7 @@ export type LocksDaily = {
 export type UserLock = {
   timestamp: Date
   amount: bigint
-  unlockTime: number
+  unlockTime: Date
   lockType: 'CREATE_LOCK' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
   lockedBalance: bigint
   txHash: string

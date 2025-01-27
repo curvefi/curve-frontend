@@ -31,13 +31,13 @@ export type Pool = {
 }
 
 export type Volume = {
-  timestamp: number
+  timestamp: Date
   volume: number
   fees: number
 }
 
 export type Tvl = {
-  timestamp: number
+  timestamp: Date
   tvlUSD: number
   balances: number[]
   tokenPrices: number[]

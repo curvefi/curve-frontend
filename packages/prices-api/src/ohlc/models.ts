@@ -1,5 +1,5 @@
 export type OHLC = {
-  time: number
+  time: Date
   open: number
   close: number
   high: number

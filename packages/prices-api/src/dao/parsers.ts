@@ -18,7 +18,7 @@ export const parseLocksDaily = (x: Responses.GetLocksDailyResponse['locks'][numb
 export const parseUserLock = (x: Responses.GetUserLocksResponse['locks'][number]): Models.UserLock => ({
   timestamp: toUTC(x.dt),
   amount: BigInt(Math.round(parseFloat(x.amount))),
-  unlockTime: x.unlock_time,
+  unlockTime: toUTC(x.unlock_time),
   lockType: x.lock_type as Models.UserLock['lockType'],
   lockedBalance: BigInt(Math.round(parseFloat(x.locked_balance))),
   txHash: x.transaction_hash,

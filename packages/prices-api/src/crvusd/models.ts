@@ -27,7 +27,7 @@ export type Market = {
 }
 
 export type Snapshot = {
-  timestamp: number
+  timestamp: Date
   rate: number
   nLoans: number
   minted: number

@@ -16,7 +16,7 @@ export type LlammaEvent = {
   deposit?: Deposit | null
   withdrawal?: Withdrawal | null
   blockNumber: number
-  timestamp: number
+  timestamp: Date
   txHash: Address
 }
 
@@ -38,12 +38,12 @@ export type LlammaTrade = {
   feeX: number
   feeY: number
   blockNumber: number
-  timestamp: number
+  timestamp: Date
   txHash: Address
 }
 
 export type LlammaOHLC = {
-  time: number
+  time: Date
   open: number
   close: number
   high: number
