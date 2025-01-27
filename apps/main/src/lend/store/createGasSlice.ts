@@ -84,7 +84,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 42161) {
           // Arbitrum custom fee data
-          const { provider } = useWallet.state
+          const { provider } = useWallet.getState()
 
           if (provider) {
             const { customFeeData } = await lendingApi.helpers.fetchCustomGasFees(curve)
@@ -98,7 +98,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 10) {
           // Optimism
-          const { provider } = useWallet.state
+          const { provider } = useWallet.getState()
 
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider)
@@ -115,7 +115,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         if (parsedGasInfo) {
           get()[sliceKey].setStateByKeys(parsedGasInfo)
         } else {
-          const { provider } = useWallet.state
+          const { provider } = useWallet.getState()
           if (provider && chainId) {
             const parsedGasInfo = await parseGasInfo(curve, provider)
             if (parsedGasInfo) {

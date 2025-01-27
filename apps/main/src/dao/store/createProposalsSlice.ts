@@ -337,7 +337,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
       const { curve } = get()
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
 
@@ -434,7 +434,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const { curve } = get()
       const voteIdKey = `${voteId}-${voteType}`
 
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       const fetchGasInfo = get().gas.fetchGasInfo
 
       if (!curve || !provider) return

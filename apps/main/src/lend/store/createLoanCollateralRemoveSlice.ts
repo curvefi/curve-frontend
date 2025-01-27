@@ -141,7 +141,7 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
     fetchStepDecrease: async (activeKey, api, market) => {
       const { gas, markets, user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(get()[sliceKey])
 

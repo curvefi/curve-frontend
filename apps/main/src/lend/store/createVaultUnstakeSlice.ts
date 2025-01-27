@@ -100,7 +100,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
 
     // steps
     fetchStepUnstake: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

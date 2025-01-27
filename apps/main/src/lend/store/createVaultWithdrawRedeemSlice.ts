@@ -131,7 +131,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
     // steps
     fetchStepWithdrawRedeem: async (activeKey, formType: FormType, api, market, formValues, vaultShares) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

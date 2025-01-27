@@ -133,7 +133,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
 
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -159,7 +159,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
 
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

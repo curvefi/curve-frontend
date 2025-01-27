@@ -195,7 +195,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
     fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage) => {
       const { gas } = get()
       const sliceState = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -231,7 +231,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
     fetchStepRepay: async (activeKey, api, market, formValues, maxSlippage) => {
       const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

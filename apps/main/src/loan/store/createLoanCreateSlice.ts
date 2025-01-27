@@ -366,7 +366,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -402,7 +402,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       maxSlippage: string,
     ) => {
       const chainId = curve.chainId
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

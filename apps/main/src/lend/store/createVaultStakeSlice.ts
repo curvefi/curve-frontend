@@ -102,7 +102,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
     // steps
     fetchStepApprove: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -126,7 +126,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       }
     },
     fetchStepStake: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

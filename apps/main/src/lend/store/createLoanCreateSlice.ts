@@ -261,7 +261,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
     fetchStepApprove: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
       const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -296,7 +296,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(get()[sliceKey])
       if (n === null) return

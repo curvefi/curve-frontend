@@ -107,7 +107,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       const { gas, ...state } = get()
       let { formStatus, ...sliceState } = get()[sliceKey]
 
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return { hash: '', error: 'no provider' }
 
       const signer = await provider.getSigner()

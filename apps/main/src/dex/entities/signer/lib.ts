@@ -4,7 +4,7 @@ import useStore from '@main/store/useStore'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 export const useSignerAddress = (): { data: Address | undefined } => {
-  const { wallet } = useWallet.state
+  const { wallet } = useWallet.getState()
   const signerAddress = wallet?.accounts?.[0]?.address
   return { data: signerAddress }
 }

@@ -144,7 +144,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
     },
     fetchStepRepay: async (activeKey, curve, llamma, formValues, maxSlippage) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

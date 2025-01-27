@@ -108,8 +108,8 @@ const App: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (isSuccess(connectState) && curve && useWallet.state.wallet) {
-      updateUserData(curve, useWallet.state.wallet)
+    if (isSuccess(connectState) && curve && useWallet.getState().wallet) {
+      updateUserData(curve, useWallet.getState().wallet)
     }
   }, [curve, connectState, updateUserData])
 

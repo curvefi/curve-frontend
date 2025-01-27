@@ -49,7 +49,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       const {
         networks: { networks },
       } = get()
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       log('fetchGasInfo', chainId)
 
       try {
@@ -115,7 +115,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           curve.setCustomFeeData(customFeeData)
         } else if (chainId === 252 || chainId === 8453) {
           // TODO: remove this hardcode value once it api is fixed
-          const { provider } = useWallet.state
+          const { provider } = useWallet.getState()
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
@@ -128,7 +128,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 10) {
           // TODO: remove this hardcode value once it api is fixed
-          const { provider } = useWallet.state
+          const { provider } = useWallet.getState()
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
@@ -144,7 +144,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         if (parsedGasInfo) {
           get()[sliceKey].setStateByKeys(parsedGasInfo)
         } else {
-          const { provider } = useWallet.state
+          const { provider } = useWallet.getState()
           if (provider && chainId) {
             const parsedGasInfo = await parseGasInfo(curve, provider, networks)
             if (parsedGasInfo) {

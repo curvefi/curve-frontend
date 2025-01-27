@@ -332,7 +332,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
       const { pools, gas } = get()
       const { claimableFees, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       const { chainId } = curve
@@ -375,7 +375,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         gas,
         [sliceKey]: { formValues, ...sliceState },
       } = get()
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update form

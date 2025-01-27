@@ -169,7 +169,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       })
     },
     getUserEns: async (userAddress: string) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
 
       if (!provider) {
         console.error("Can't fetch ens, no provider available")

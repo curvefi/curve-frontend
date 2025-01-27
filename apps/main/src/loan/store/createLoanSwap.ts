@@ -238,7 +238,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -271,7 +271,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

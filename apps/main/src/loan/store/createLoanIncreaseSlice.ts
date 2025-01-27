@@ -177,7 +177,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
 
     // steps
     fetchStepApprove: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -205,7 +205,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchStepIncrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

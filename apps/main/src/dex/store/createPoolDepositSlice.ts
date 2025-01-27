@@ -370,7 +370,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       return resp
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -406,7 +406,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepDeposit: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -451,7 +451,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepDepositStake: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -494,7 +494,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepStakeApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -528,7 +528,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepStake: async (activeKey, curve, poolData, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

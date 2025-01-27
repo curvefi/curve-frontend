@@ -26,12 +26,17 @@ type UseConnectWallet = {
     provider: BrowserProvider | null
     signerAddress: Address | undefined
   }
-  state: {
-    onboard: OnboardAPI | null
-    provider: BrowserProvider | null
-    wallet: Wallet | null
-  }
+  getState: () => typeof state
   initialize(...params: Parameters<typeof initOnboard>): void
+}
+
+let onboard: OnboardAPI | null = null
+const state: {
+  provider: BrowserProvider | null
+  wallet: Wallet | null
+} = {
+  provider: null,
+  wallet: null,
 }
 
 export const useWallet: UseConnectWallet = () => {
@@ -42,8 +47,8 @@ export const useWallet: UseConnectWallet = () => {
     storedWalletName || getFromLocalStorage<{ walletName: string }>('curve-app-cache')?.walletName || null
 
   useEffect(() => {
-    useWallet.state.wallet = wallet
-    useWallet.state.provider = wallet && new BrowserProvider(getRpcProvider(wallet))
+    state.wallet = wallet
+    state.provider = wallet && new BrowserProvider(getRpcProvider(wallet))
   }, [wallet])
 
   const signerAddress = wallet?.accounts?.[0]?.address
@@ -54,23 +59,18 @@ export const useWallet: UseConnectWallet = () => {
     disconnect,
     walletName,
     setWalletName,
-    provider: useWallet.state.provider,
+    provider: useWallet.getState().provider,
     signerAddress,
   }
 }
-useWallet.initialize = (...params) => (useWallet.state.onboard = initOnboard(...params))
-useWallet.state = {
-  onboard: null,
-  provider: null,
-  wallet: null,
-}
+useWallet.initialize = (...params) => (onboard = initOnboard(...params))
+useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
 
 export const notify = (
   message: string,
   type: NotificationType,
   autoDismiss?: number,
 ): { dismiss: () => void; update: UpdateNotification | undefined } => {
-  const { onboard } = useWallet.state
   if (!onboard) {
     throw new Error('Onboard not initialized')
   }

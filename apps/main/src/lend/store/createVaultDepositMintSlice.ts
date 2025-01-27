@@ -137,7 +137,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
 
     // steps
     fetchStepApprove: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -162,7 +162,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       }
     },
     fetchStepDepositMint: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

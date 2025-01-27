@@ -74,7 +74,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
 
     // steps
     fetchStepClaim: async (userActiveKey, api, market, type) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

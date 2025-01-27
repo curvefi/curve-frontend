@@ -418,7 +418,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       return resp
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -460,7 +460,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchStepWithdraw: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -514,7 +514,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchStepUnstake: async (activeKey, curve, poolData, formValues) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -549,7 +549,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchStepClaim: async (activeKey, curve, poolData) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

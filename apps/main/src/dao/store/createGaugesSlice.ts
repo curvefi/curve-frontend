@@ -362,7 +362,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
       const curve = get().curve
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       const { getUserGaugeVoteWeights } = get().user
 
       if (!curve) return

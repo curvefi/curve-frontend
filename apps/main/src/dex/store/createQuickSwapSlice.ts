@@ -426,7 +426,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       sliceState.setStateByKey('formStatus', {
@@ -468,7 +468,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

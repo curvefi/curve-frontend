@@ -241,7 +241,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
     fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
       const { gas } = get()
       const sliceState = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -274,7 +274,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
     fetchStepIncrease: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
       const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(get()[sliceKey])
 

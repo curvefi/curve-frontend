@@ -104,7 +104,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
 
     // step
     fetchStepApprove: async (curve: Curve, llamma: Llamma, maxSlippage: string) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -127,7 +127,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       return resp
     },
     fetchStepLiquidate: async (curve: Curve, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
-      const { provider } = useWallet.state
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
