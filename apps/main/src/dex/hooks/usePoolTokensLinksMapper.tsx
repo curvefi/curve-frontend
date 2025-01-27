@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChainId, PoolDataCacheOrApi } from '@main/types/main.types'
+import { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getAppRoot } from '@ui-kit/shared/routes'
 
 enum Pool {

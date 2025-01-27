@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import type { Address } from 'viem'
-import type { AddRewardFormValues } from '@main/features/add-gauge-reward-token/types'
+import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemDistributor, SubTitle } from './styled'
 
 export const DistributorInput: React.FC<{ disabled: boolean }> = ({ disabled }) => {

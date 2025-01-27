@@ -1,8 +1,8 @@
 import React from 'react'
 import { t } from '@lingui/macro'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
-import { CONNECT_STAGE } from '@lend/constants'
+import { CONNECT_STAGE } from '@/lend/constants'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 

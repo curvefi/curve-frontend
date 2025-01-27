@@ -1,4 +1,4 @@
-import { LendingVault } from '@loan/entities/vaults'
+import { LendingVault } from '@/loan/entities/vaults'
 import { formatNumber } from '@ui/utils'
 import { CellContext } from '@tanstack/react-table'
 

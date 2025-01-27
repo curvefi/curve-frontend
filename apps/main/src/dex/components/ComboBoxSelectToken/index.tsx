@@ -1,4 +1,4 @@
-import type { EndsWith } from '@main/components/ComboBoxSelectToken/types'
+import type { EndsWith } from '@/dex/components/ComboBoxSelectToken/types'
 
 import Fuse from 'fuse.js'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -6,15 +6,15 @@ import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
 
-import { delayAction } from '@main/utils'
-import useStore from '@main/store/useStore'
+import { delayAction } from '@/dex/utils'
+import useStore from '@/dex/store/useStore'
 
-import ComboBox from '@main/components/ComboBoxSelectToken/ComboBox'
-import ComboBoxSelectedToken from '@main/components/ComboBoxSelectToken/ComboBoxSelectedToken'
-import ComboBoxSelectedTokenButton from '@main/components/ComboBoxSelectToken/ComboBoxSelectedTokenButton'
+import ComboBox from '@/dex/components/ComboBoxSelectToken/ComboBox'
+import ComboBoxSelectedToken from '@/dex/components/ComboBoxSelectToken/ComboBoxSelectedToken'
+import ComboBoxSelectedTokenButton from '@/dex/components/ComboBoxSelectToken/ComboBoxSelectedTokenButton'
 import ModalDialog from '@ui/Dialog'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { Token } from '@main/types/main.types'
+import { Token } from '@/dex/types/main.types'
 
 const ComboBoxTokens = ({
   disabled,

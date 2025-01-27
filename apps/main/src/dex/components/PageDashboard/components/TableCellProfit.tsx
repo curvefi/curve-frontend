@@ -1,10 +1,10 @@
-import type { WalletPoolData, SortId } from '@main/components/PageDashboard/types'
+import type { WalletPoolData, SortId } from '@/dex/components/PageDashboard/types'
 
 import React, { useMemo } from 'react'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import { DetailText, Info } from '@main/components/PageDashboard/components/TableRow'
+import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 
 type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & {
   sortBy: SortId

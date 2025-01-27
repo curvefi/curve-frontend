@@ -1,8 +1,8 @@
 import type { DateValue } from '@internationalized/date'
-import type { FormType as LockFormType } from '@main/components/PageCrvLocker/types'
+import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import type { ExchangeRate, FormValues, Route, SearchedParams } from '@main/components/PageRouterSwap/types'
-import type { FormValues as PoolSwapFormValues } from '@main/components/PagePool/Swap/types'
+import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
+import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import countBy from 'lodash/countBy'
 import dayjs from '@ui-kit/lib/dayjs'
 import chunk from 'lodash/chunk'
@@ -16,19 +16,19 @@ import {
   parseBaseProfit,
   separateCrvProfit,
   separateCrvReward,
-} from '@main/utils/utilsCurvejs'
+} from '@/dex/utils/utilsCurvejs'
 import { BN } from '@ui/utils'
-import { claimButtonsKey } from '@main/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@main/utils'
-import { httpFetcher } from '@main/lib/utils'
+import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
+import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
+import { httpFetcher } from '@/dex/lib/utils'
 import {
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
   _parseRoutesAndOutput,
-} from '@main/utils/utilsSwap'
+} from '@/dex/utils/utilsSwap'
 import { log } from '@ui-kit/lib/logging'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import {
   CurveApi,
   ChainId,
@@ -44,7 +44,7 @@ import {
   PoolData,
   UsdRatesMapper,
   EstimatedGas,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {

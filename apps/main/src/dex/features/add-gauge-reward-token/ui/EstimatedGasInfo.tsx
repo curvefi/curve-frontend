@@ -1,8 +1,8 @@
 import React from 'react'
-import { useAddRewardTokenFormContext } from '@main/features/add-gauge-reward-token/lib'
-import { useEstimateGasAddRewardToken } from '@main/entities/gauge'
-import DetailInfoEstGas from '@main/components/DetailInfoEstGas'
-import { ChainId } from '@main/types/main.types'
+import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
+import { useEstimateGasAddRewardToken } from '@/dex/entities/gauge'
+import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import { ChainId } from '@/dex/types/main.types'
 
 export const EstimatedGasInfo: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const {

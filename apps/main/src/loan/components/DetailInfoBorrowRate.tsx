@@ -5,7 +5,7 @@ import isUndefined from 'lodash/isUndefined'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { LoanParameter } from '@loan/types/loan.types'
+import { LoanParameter } from '@/loan/types/loan.types'
 
 interface Props {
   parameters: LoanParameter | undefined

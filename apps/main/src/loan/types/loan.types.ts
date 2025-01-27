@@ -9,8 +9,8 @@ import type { WalletState } from '@web3-onboard/core'
 import type stablecoinApi from '@curvefi/stablecoin-api'
 import type lendingApi from '@curvefi/lending-api'
 import type { BaseConfig } from '@ui/utils'
-import curvejsApi from '@loan/lib/apiCrvusd'
-import { TITLE } from '@loan/constants'
+import curvejsApi from '@/loan/lib/apiCrvusd'
+import { TITLE } from '@/loan/constants'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = 1

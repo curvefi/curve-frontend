@@ -3,20 +3,20 @@ import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zeroAddress } from 'viem'
-import { addGaugeRewardTokenValidationSuite } from '@main/features/add-gauge-reward-token/model'
-import type { AddRewardFormValues, AddRewardTokenProps } from '@main/features/add-gauge-reward-token/types'
+import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'
+import type { AddRewardFormValues, AddRewardTokenProps } from '@/dex/features/add-gauge-reward-token/types'
 import {
   DistributorInput,
   EstimatedGasInfo,
   FormActions,
   TokenSelector,
-} from '@main/features/add-gauge-reward-token/ui'
-import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@main/entities/gauge'
-import { useSignerAddress } from '@main/entities/signer'
+} from '@/dex/features/add-gauge-reward-token/ui'
+import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
+import { useSignerAddress } from '@/dex/entities/signer'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
-import AlertFormError from '@main/components/AlertFormError'
-import useStore from '@main/store/useStore'
+import AlertFormError from '@/dex/components/AlertFormError'
+import useStore from '@/dex/store/useStore'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import TxInfoBar from '@ui/TxInfoBar'
 

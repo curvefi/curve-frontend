@@ -1,4 +1,4 @@
-import type { Amount } from '@main/components/PagePool/utils'
+import type { Amount } from '@/dex/components/PagePool/utils'
 
 export type StepKey = 'APPROVAL' | 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE' | ''
 export type FormType = 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE'

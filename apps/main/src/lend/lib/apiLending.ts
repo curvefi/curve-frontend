@@ -1,16 +1,16 @@
-import type { LiqRange } from '@lend/store/types'
+import type { LiqRange } from '@/lend/store/types'
 import type { StepStatus } from '@ui/Stepper/types'
 
 import PromisePool from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 
-import { INVALID_ADDRESS } from '@lend/constants'
-import { fulfilledValue, getErrorMessage, log } from '@lend/utils/helpers'
+import { INVALID_ADDRESS } from '@/lend/constants'
+import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
 import { BN, shortenAccount } from '@ui/utils'
-import networks from '@lend/networks'
+import networks from '@/lend/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { USE_API } from '@lend/shared/config'
+import { USE_API } from '@/lend/shared/config'
 import {
   ChainId,
   Api,
@@ -45,7 +45,7 @@ import {
   UserMarketBalances,
   FutureRates,
   Wallet,
-} from '@lend/types/lend.types'
+} from '@/lend/types/lend.types'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {

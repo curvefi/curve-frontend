@@ -6,15 +6,15 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useStore from '@/dex/store/useStore'
 
-import DocumentHead from '@main/layout/default/DocumentHead'
-import PoolCreation from '@main/components/PageCreatePool/index'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import PoolCreation from '@/dex/components/PageCreatePool/index'
 import Box from '@ui/Box'
-import ConnectWallet from '@main/components/ConnectWallet'
-import { CurveApi } from '@main/types/main.types'
+import ConnectWallet from '@/dex/components/ConnectWallet'
+import { CurveApi } from '@/dex/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

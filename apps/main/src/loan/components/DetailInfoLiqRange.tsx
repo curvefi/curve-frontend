@@ -1,4 +1,4 @@
-import type { LiqRangeSliderIdx } from '@loan/store/types'
+import type { LiqRangeSliderIdx } from '@/loan/store/types'
 
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
@@ -9,10 +9,10 @@ import { formatNumber } from '@ui/utils'
 import { Chip } from '@ui/Typography'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
-import ChartLiquidationRange from '@loan/components/ChartLiquidationRange'
+import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
 import Icon from '@ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { HealthMode, LoanDetails, UserLoanDetails } from '@loan/types/loan.types'
+import { HealthMode, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 
 const DetailInfoLiqRange = ({
   bands: newBands,

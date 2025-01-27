@@ -1,15 +1,15 @@
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 import {
   CategoryDataRow,
   SummaryDataTitle,
   SummaryData,
   SummaryDataPlaceholder,
-} from '@main/components/PageCreatePool/Summary/styles'
-import { POOL_PRESETS } from '@main/components/PageCreatePool/constants'
+} from '@/dex/components/PageCreatePool/Summary/styles'
+import { POOL_PRESETS } from '@/dex/components/PageCreatePool/constants'
 
 const PoolPresetSummary = () => {
   const { i18n } = useLingui()

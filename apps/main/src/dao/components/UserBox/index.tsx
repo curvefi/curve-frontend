@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import UserInformation from './UserInformation'
-import { SnapshotVotingPower, ActiveProposal } from '@dao/types/dao.types'
+import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 
 type Props = {
   children?: React.ReactNode

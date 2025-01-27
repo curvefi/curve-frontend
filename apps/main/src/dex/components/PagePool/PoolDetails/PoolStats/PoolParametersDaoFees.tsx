@@ -5,7 +5,7 @@ import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 
 import { Chip } from '@ui/Typography'
 import { Item } from '@ui/Items'
-import { StyledInformationSquare16 } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
+import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 
 type AdminFee = string | number | undefined
 

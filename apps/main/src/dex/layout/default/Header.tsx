@@ -1,17 +1,17 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE, ROUTE } from '@main/constants'
+import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { useParamsFromUrl, useRestPartialPathname } from '@main/utils/utilsRouter'
+import { useParamsFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
-import useLayoutHeight from '@main/hooks/useLayoutHeight'
+import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, Networks } from '@main/types/main.types'
+import { ChainId, Networks } from '@/dex/types/main.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 

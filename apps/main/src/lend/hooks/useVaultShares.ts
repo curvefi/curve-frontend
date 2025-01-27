@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@ui/utils'
-import { useTokenUsdRate } from '@lend/entities/token'
-import { useOneWayMarket } from '@lend/entities/chain'
-import { ChainId } from '@lend/types/lend.types'
+import { useTokenUsdRate } from '@/lend/entities/token'
+import { useOneWayMarket } from '@/lend/entities/chain'
+import { ChainId } from '@/lend/types/lend.types'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data

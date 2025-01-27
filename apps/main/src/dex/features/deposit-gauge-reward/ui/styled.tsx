@@ -1,6 +1,6 @@
 import InputProvider from '@ui/InputComp'
 import styled from 'styled-components'
-import TokenComboBox from '@main/components/ComboBoxSelectToken'
+import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 
 export const StyledInputProvider = styled(InputProvider)`
   width: 100%;

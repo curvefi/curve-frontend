@@ -1,4 +1,4 @@
-import type { FilterKey, FormValues } from '@loan/components/PageIntegrations/types'
+import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
 
@@ -7,19 +7,19 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
 
-import { ROUTE } from '@loan/constants'
+import { ROUTE } from '@/loan/constants'
 import { breakpoints } from '@ui/utils'
-import { getPath } from '@loan/utils/utilsRouter'
+import { getPath } from '@/loan/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
-import networks, { networksIdMapper } from '@loan/networks'
-import useStore from '@loan/store/useStore'
+import networks, { networksIdMapper } from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
 
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
-import { ChainId, NetworkEnum } from '@loan/types/loan.types'
+import { ChainId, NetworkEnum } from '@/loan/types/loan.types'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({

@@ -1,4 +1,4 @@
-import { ChainId, NetworkConfig, CurrencyReservesToken, TokensMapper } from '@main/types/main.types'
+import { ChainId, NetworkConfig, CurrencyReservesToken, TokensMapper } from '@/dex/types/main.types'
 
 export interface CurrencyReservesProps {
   cr: CurrencyReservesToken | undefined

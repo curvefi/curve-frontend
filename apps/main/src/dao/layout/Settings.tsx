@@ -1,4 +1,4 @@
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import styled, { keyframes } from 'styled-components'
 
 import Button from '@ui/Button'

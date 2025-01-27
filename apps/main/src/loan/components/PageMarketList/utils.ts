@@ -1,6 +1,6 @@
-import type { SearchParams, SearchTermsResult } from '@loan/components/PageMarketList/types'
+import type { SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
 import type { SearchTermsFuseResult } from '@ui-kit/utils'
-import { CollateralData } from '@loan/types/loan.types'
+import { CollateralData } from '@/loan/types/loan.types'
 
 export const DEFAULT_SEARCH_PARAMS: SearchParams = {
   sortBy: 'totalBorrowed',

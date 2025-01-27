@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import { t } from '@lingui/macro'
 
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-import { txIsConfirming, txIsSuccess, txIsLoading } from '@loan/components/PageCrvUsdStaking/utils'
+import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 
 import {
   Wrapper,

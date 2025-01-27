@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { rewardsApyCrvText } from '@main/utils/utilsCurvejs'
+import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import Box from '@ui/Box'
-import { RewardCrv } from '@main/types/main.types'
+import { RewardCrv } from '@/dex/types/main.types'
 
 type Props = {
   crv?: RewardCrv[]

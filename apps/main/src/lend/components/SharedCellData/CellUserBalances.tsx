@@ -3,7 +3,7 @@ import type { ChipProps } from '@ui/Typography/types'
 import React from 'react'
 
 import { formatNumber } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import Chip from '@ui/Typography/Chip'
 
