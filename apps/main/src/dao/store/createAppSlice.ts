@@ -64,9 +64,8 @@ const DEFAULT_STATE = {
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options) => {
-    const value = options ? { status, stage, options } : { status, stage }
-    set({ connectState: value })
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
+    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
