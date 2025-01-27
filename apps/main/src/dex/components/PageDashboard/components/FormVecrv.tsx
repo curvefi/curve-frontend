@@ -23,7 +23,7 @@ import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -41,7 +41,7 @@ const FormVecrv = () => {
   const dashboardVecrvInfo = useStore((state) => state.dashboard.vecrvInfo[activeKey])
   const formStatus = useStore((state) => state.dashboard.formStatus)
   const setFormStatusVecrv = useStore((state) => state.dashboard.setFormStatusVecrv)
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const fetchStepWithdraw = useStore((state) => state.dashboard.fetchStepWithdrawVecrv)
   const network = useStore((state) => curve && state.networks.networks[curve.chainId])
 

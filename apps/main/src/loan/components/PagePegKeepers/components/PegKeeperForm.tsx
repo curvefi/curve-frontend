@@ -10,7 +10,7 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import LoanFormConnect from '@loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ChainId, Curve } from '@loan/types/loan.types'
 
 type Props = {
@@ -25,7 +25,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const curve = useStore((state) => state.curve)
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
 
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

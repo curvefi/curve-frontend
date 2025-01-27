@@ -1,4 +1,4 @@
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@lend/components/PageVault/VaultDepositMint/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -39,7 +39,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultDepositMint.fetchStepApprove)
   const fetchStepDepositMint = useStore((state) => state.vaultDepositMint.fetchStepDepositMint)
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.vaultDepositMint.setFormValues)
   const resetState = useStore((state) => state.vaultDepositMint.resetState)
 

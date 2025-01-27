@@ -4,12 +4,12 @@ import { isValidAddress } from '@main/utils'
 import useStore from '@main/store/useStore'
 import dayjs from '@ui-kit/lib/dayjs'
 import { PoolDataCacheOrApi, Provider } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
   const curve = useStore((state) => state.curve)
-  const walletProvider = useWalletStore((s) => s.provider)
+  const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
   const { rpcUrl } = useStore((state) => curve && state.networks.networks[curve.chainId]) ?? {}

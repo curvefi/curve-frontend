@@ -29,7 +29,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CollateralAlert, Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,
@@ -58,7 +58,7 @@ const LoanCreate = ({
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)

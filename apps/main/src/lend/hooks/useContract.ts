@@ -2,7 +2,7 @@ import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 import networks from '@lend/networks'
 import { ChainId, Provider } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
@@ -10,7 +10,7 @@ const useAbiGaugeTotalSupply = (
   jsonModuleName: string,
   contractAddress: string | undefined,
 ) => {
-  const walletProvider = useWalletStore((s) => s.provider)
+  const { provider: walletProvider } = useWallet()
 
   const [contract, setContract] = useState<Contract | null>(null)
 

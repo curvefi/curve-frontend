@@ -21,7 +21,7 @@ import {
   SortDirection,
   TransactionState,
 } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -367,13 +367,13 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
       const curve = get().curve
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       const { getUserGaugeVoteWeights } = get().user
 
       if (!curve) return
 
       const address = gaugeAddress.toLowerCase()
-      const { notify } = useWalletStore.getState()
+      const { notify } = useWallet.state
       const { dismiss: dismissConfirm } = notify(t`Please confirm cast vote.`, 'pending')
 
       set(

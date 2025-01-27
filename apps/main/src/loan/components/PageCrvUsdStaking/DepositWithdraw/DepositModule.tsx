@@ -17,10 +17,10 @@ import {
   StyledIcon,
   StyledInputComp,
 } from './styles'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const DepositModule = () => {
-  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
+  const { signerAddress } = useWallet()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 

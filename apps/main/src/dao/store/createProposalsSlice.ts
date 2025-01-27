@@ -23,7 +23,7 @@ import {
   TransactionState,
   UserProposalVoteResData,
 } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -337,7 +337,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
       const { curve } = get()
-      const { provider, notify } = useWalletStore.getState()
+      const { provider, notify } = useWallet.state
 
       const fetchGasInfo = get().gas.fetchGasInfo
 
@@ -434,7 +434,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const { curve } = get()
       const voteIdKey = `${voteId}-${voteType}`
 
-      const { provider, notify } = useWalletStore.getState()
+      const { provider, notify } = useWallet.state
       const fetchGasInfo = get().gas.fetchGasInfo
 
       if (!curve || !provider) return

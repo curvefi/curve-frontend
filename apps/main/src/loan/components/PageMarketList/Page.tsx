@@ -17,7 +17,7 @@ import DocumentHead from '@loan/layout/DocumentHead'
 import CollateralList from '@loan/components/PageMarketList/index'
 import Settings from '@loan/layout/Settings'
 import TableStats from '@loan/components/PageMarketList/components/TableStats'
-import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
 
@@ -36,7 +36,7 @@ const Page: NextPage = () => {
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)

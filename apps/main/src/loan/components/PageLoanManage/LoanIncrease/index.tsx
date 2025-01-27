@@ -34,7 +34,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import AlertFormError from '@loan/components/AlertFormError'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -59,7 +59,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const init = useStore((state) => state.loanIncrease.init)
   const fetchStepApprove = useStore((state) => state.loanIncrease.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanIncrease.fetchStepIncrease)
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanIncrease.resetState)

@@ -12,7 +12,7 @@ import { _getMaxActiveKey } from '@lend/store/createVaultDepositMintSlice'
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId, Api, FutureRates } from '@lend/types/lend.types'
-import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -131,7 +131,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
     // steps
     fetchStepWithdrawRedeem: async (activeKey, formType: FormType, api, market, formValues, vaultShares) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

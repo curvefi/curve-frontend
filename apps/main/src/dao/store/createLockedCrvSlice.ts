@@ -21,7 +21,7 @@ import {
   FnStepApproveResponse,
   FnStepResponse,
 } from '@dao/types/dao.types'
-import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -163,7 +163,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       return resp
     },
     fetchStepApprove: async (activeKey, curve, rFormType, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
@@ -196,7 +196,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepCreate: async (activeKey, curve, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       if (formValues.lockedAmt && formValues.utcDate && formValues.days) {
@@ -229,7 +229,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
           // re-fetch data
           const fetchedVecrvInfo = await get()[sliceKey].fetchVecrvInfo(curve)
-          const { wallet } = useWalletStore.getState()
+          const { wallet } = useWallet.state
           if (wallet) {
             get().user.updateUserData(curve, wallet)
           }
@@ -242,7 +242,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepIncreaseCrv: async (activeKey, curve, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -273,7 +273,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
           // re-fetch data
           get()[sliceKey].fetchVecrvInfo(curve)
-          const { wallet } = useWalletStore.getState()
+          const { wallet } = useWallet.state
           if (wallet) {
             get().user.updateUserData(curve, wallet)
           }
@@ -283,7 +283,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepIncreaseTime: async (activeKey, curve, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -314,7 +314,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
           // re-fetch data
           get()[sliceKey].fetchVecrvInfo(curve)
-          const { wallet } = useWalletStore.getState()
+          const { wallet } = useWallet.state
           if (wallet) {
             get().user.updateUserData(curve, wallet)
           }

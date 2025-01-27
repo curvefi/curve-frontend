@@ -6,7 +6,7 @@ import { Contract } from 'ethers'
 import produce from 'immer'
 
 import { SEVEN_DAYS } from '@dao/constants'
-import { getWalletSignerAddress, getWalletSignerEns, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
 import { contractVeCRV } from '@dao/store/contracts'
 import { abiVeCrv } from '@dao/store/abis'
 import {
@@ -169,7 +169,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       })
     },
     getUserEns: async (userAddress: string) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
 
       if (!provider) {
         console.error("Can't fetch ens, no provider available")

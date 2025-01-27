@@ -16,7 +16,7 @@ import IconButton from '@ui/IconButton'
 import Settings from '@main/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Provider } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/dex/store/useStore'
 
 const Page: NextPage = () => {
@@ -25,7 +25,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)
   const [contracts, setContracts] = useState<EtherContract[]>([])
 

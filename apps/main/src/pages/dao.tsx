@@ -22,7 +22,7 @@ import Page from '@/dao/layout'
 import GlobalStyle from '@/dao/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -49,12 +49,10 @@ const App: NextPage = () => {
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const curve = useStore((state) => state.curve)
-  const wallet = useWalletStore((s) => s.wallet)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
   const setLocale = useUserProfileStore((state) => state.setLocale)
-  const initializeWallet = useWalletStore((s) => s.initialize)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -86,7 +84,7 @@ const App: NextPage = () => {
     })()
     setLocale(parsedLocale)
     updateAppLocale(parsedLocale)
-    initializeWallet(locale, theme, networks)
+    useWallet.initialize(locale, theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -110,10 +108,10 @@ const App: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (isSuccess(connectState) && curve && wallet) {
-      updateUserData(curve, wallet)
+    if (isSuccess(connectState) && curve && useWallet.state.wallet) {
+      updateUserData(curve, useWallet.state.wallet)
     }
-  }, [curve, connectState, updateUserData, wallet])
+  }, [curve, connectState, updateUserData])
 
   // initiate proposals list
   useEffect(() => {

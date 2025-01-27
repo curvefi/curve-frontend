@@ -27,7 +27,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -48,7 +48,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const init = useStore((state) => state.loanCollateralDecrease.init)
   const fetchStepDecrease = useStore((state) => state.loanCollateralDecrease.fetchStepDecrease)
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanCollateralDecrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanCollateralDecrease.setStateByKey)
   const resetState = useStore((state) => state.loanCollateralDecrease.resetState)

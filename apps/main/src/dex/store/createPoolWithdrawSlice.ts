@@ -21,7 +21,7 @@ import {
   FnStepApproveResponse,
   FnStepResponse,
 } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -419,7 +419,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       return resp
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -461,7 +461,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchStepWithdraw: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -515,7 +515,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchStepUnstake: async (activeKey, curve, poolData, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -550,7 +550,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchStepClaim: async (activeKey, curve, poolData) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
 
-import { useConnectWallet, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
+import { useWallet, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 import { UserProfileHeader } from './Header'
@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const Home = ({ onClose }: Props) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const walletAddress = getWalletSignerAddress(wallet)
 
   return (

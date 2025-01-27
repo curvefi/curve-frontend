@@ -7,7 +7,7 @@ import { httpFetcher } from '@main/lib/utils'
 import { log } from '@ui-kit/lib/logging'
 import api from '@main/lib/curvejs'
 import { CurveApi, NetworkConfig, Provider, GasInfo } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -49,7 +49,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       const {
         networks: { networks },
       } = get()
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       log('fetchGasInfo', chainId)
 
       try {
@@ -115,7 +115,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           curve.setCustomFeeData(customFeeData)
         } else if (chainId === 252 || chainId === 8453) {
           // TODO: remove this hardcode value once it api is fixed
-          const { provider } = useWalletStore.getState()
+          const { provider } = useWallet.state
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
@@ -128,7 +128,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 10) {
           // TODO: remove this hardcode value once it api is fixed
-          const { provider } = useWalletStore.getState()
+          const { provider } = useWallet.state
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
@@ -144,7 +144,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         if (parsedGasInfo) {
           get()[sliceKey].setStateByKeys(parsedGasInfo)
         } else {
-          const { provider } = useWalletStore.getState()
+          const { provider } = useWallet.state
           if (provider && chainId) {
             const parsedGasInfo = await parseGasInfo(curve, provider, networks)
             if (parsedGasInfo) {

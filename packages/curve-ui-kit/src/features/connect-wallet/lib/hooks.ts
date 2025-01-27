@@ -1,20 +1,97 @@
-import { useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
-import { useWalletStore } from '../store'
 import { getFromLocalStorage, useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
+import { BrowserProvider } from 'ethers'
+import type {
+  ConnectOptions,
+  DisconnectOptions,
+  NotificationType,
+  WalletState as Wallet,
+} from '@web3-onboard/core/dist/types'
+import type { EIP1193Provider } from '@web3-onboard/common'
+import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
+import { Address } from '@ui-kit/utils'
 
 export { useSetChain, useSetLocale } from '@web3-onboard/react'
 
-export const useConnectWallet = () => {
+type UseConnectWallet = {
+  (): {
+    wallet: Wallet | null
+    connecting: boolean
+    connect: (options?: ConnectOptions) => Promise<Wallet[]>
+    disconnect: (wallet: DisconnectOptions) => Promise<Wallet[]>
+    walletName: string | null
+    setWalletName: Dispatch<SetStateAction<string | null>>
+    provider: BrowserProvider | null
+    signerAddress: Address | undefined
+  }
+  state: {
+    onboard: OnboardAPI | null
+    provider: BrowserProvider | null
+    wallet: Wallet | null
+  }
+  initialize(...params: Parameters<typeof initOnboard>): void
+  notify(
+    message: string,
+    type: NotificationType,
+    autoDismiss?: number,
+  ): {
+    dismiss: () => void
+    update: UpdateNotification | undefined
+  }
+}
+
+export const useWallet: UseConnectWallet = () => {
   const [{ wallet, connecting }, connect, disconnect] = useOnboardWallet()
-  const [storedWalletName, setWalletName] = useLocalStorage('walletName')
+  const [storedWalletName, setWalletName] = useLocalStorage<string | null>('walletName')
   // todo: remove this after a while. It tries to read the walletName from the old cache
-  const walletName = storedWalletName || getFromLocalStorage<{ walletName: string }>('curve-app-cache')?.walletName
+  const walletName =
+    storedWalletName || getFromLocalStorage<{ walletName: string }>('curve-app-cache')?.walletName || null
 
-  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   useEffect(() => {
-    chooseWallet(wallet)
-  }, [chooseWallet, wallet])
+    useWallet.state.wallet = wallet
+    useWallet.state.provider = wallet && new BrowserProvider(getRpcProvider(wallet))
+  }, [wallet])
 
-  return { wallet, connecting, connect, disconnect, walletName, setWalletName }
+  const signerAddress = wallet?.accounts?.[0]?.address
+  return {
+    wallet,
+    connecting,
+    connect,
+    disconnect,
+    walletName,
+    setWalletName,
+    provider: useWallet.state.provider,
+    signerAddress,
+  }
+}
+useWallet.initialize = (...params) => (useWallet.state.onboard = initOnboard(...params))
+useWallet.state = {
+  onboard: null,
+  provider: null,
+  wallet: null,
+}
+
+useWallet.notify = (message, type = 'pending', autoDismiss) => {
+  const { onboard } = useWallet.state
+  if (!onboard) {
+    throw new Error('Onboard not initialized')
+  }
+  return onboard.state.actions.customNotification({
+    type,
+    message,
+    ...(typeof autoDismiss !== 'undefined' && { autoDismiss }),
+  })
+}
+
+function getRpcProvider(wallet: Wallet): EIP1193Provider {
+  if ('isTrustWallet' in wallet.provider && window.ethereum) {
+    // unable to connect to curvejs with wallet.provider
+    return window.ethereum as any // todo: why do we need any here?
+  }
+  if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
+    return window.exodus.ethereum
+  }
+  return wallet.provider
 }

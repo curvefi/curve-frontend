@@ -30,7 +30,7 @@ import {
   FnStepApproveResponse,
   FnStepResponse,
 } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -366,7 +366,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       return resp
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -402,7 +402,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepDeposit: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -447,7 +447,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepDepositStake: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -490,7 +490,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepStakeApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -524,7 +524,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepStake: async (activeKey, curve, poolData, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

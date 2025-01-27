@@ -26,7 +26,7 @@ import {
   Pool,
   PoolData,
 } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -94,7 +94,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
         return storedIgnoreExchangeRateCheck
       } else {
-        const provider = useWalletStore.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
+        const provider = useWallet.state.provider || new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
           const json = await import('@main/components/PagePool/abis/stored_rates.json').then((module) => module.default)
@@ -346,7 +346,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       return resp
     },
     fetchStepApprove: async (activeKey, curve, pool, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       const storedActiveKey = get()[sliceKey].activeKey
@@ -381,7 +381,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       }
     },
     fetchStepSwap: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

@@ -8,7 +8,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@loan/components/PageLoanManage/utils'
 import networks from '@loan/networks'
 import { ChainId, Curve, Llamma, UserWalletBalances } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -105,7 +105,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
 
     // step
     fetchStepApprove: async (curve: Curve, llamma: Llamma, maxSlippage: string) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -128,7 +128,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       return resp
     },
     fetchStepLiquidate: async (curve: Curve, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.state
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

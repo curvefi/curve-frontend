@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
-import { getWalletChainId, useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { getNetworkFromUrl } from '@dao/utils/utilsRouter'
 import { useHeightResizeObserver } from '@ui/hooks'
 import useStore from '@dao/store/useStore'
@@ -15,7 +15,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const globalAlertHeight = useHeightResizeObserver(globalAlertRef)
 

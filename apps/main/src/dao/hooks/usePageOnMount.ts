@@ -6,7 +6,7 @@ import { useCallback, useEffect } from 'react'
 import {
   getWalletChainId,
   getWalletSignerAddress,
-  useConnectWallet,
+  useWallet,
   useSetChain,
   useSetLocale,
 } from '@ui-kit/features/connect-wallet'
@@ -18,16 +18,15 @@ import networks from '@dao/networks'
 import useStore from '@dao/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
   const connectState = useStore((s) => s.connectState)
-  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -95,7 +94,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          chooseWallet(walletState)
           setWalletName(walletState.label)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
@@ -120,7 +118,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, chooseWallet, navigate, parsedParams, setChain, updateConnectState, setWalletName],
+    [connect, navigate, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
   const handleDisconnectWallet = useCallback(

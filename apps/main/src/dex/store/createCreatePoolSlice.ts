@@ -30,7 +30,7 @@ import {
 } from '@main/components/PageCreatePool/constants'
 import { isTricrypto } from '@main/components/PageCreatePool/utils'
 import { CurveApi, ChainId } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type SliceState = {
   navigationIndex: number
@@ -793,7 +793,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         },
         networks: { networks },
       } = get()
-      const { notify: notifyNotification } = useWalletStore.getState()
+      const { notify: notifyNotification } = useWallet
 
       let dismissNotificationHandler
 

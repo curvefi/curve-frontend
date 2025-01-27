@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@lingui/macro'
 
 import Box from '@ui/Box'
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal, row }: Props) => {
-  const { wallet, connect } = useConnectWallet()
+  const { wallet, connect } = useWallet()
   return (
     <Wrapper className={className}>
       {wallet ? (

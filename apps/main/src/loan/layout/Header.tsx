@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@loan/constants'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@loan/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@loan/networks'
 import useLayoutHeight from '@loan/hooks/useLayoutHeight'
 import useStore from '@loan/store/useStore'
@@ -18,7 +18,7 @@ import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@loa
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

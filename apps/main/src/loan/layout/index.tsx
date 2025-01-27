@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@loan/constants'
 import { layoutHeightKeys } from '@loan/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@loan/utils/utilsRouter'
-import { getWalletChainId, useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@loan/hooks/useLayoutHeight'
 import useStore from '@loan/store/useStore'
@@ -15,7 +15,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 

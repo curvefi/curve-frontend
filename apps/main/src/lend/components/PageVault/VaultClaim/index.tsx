@@ -22,7 +22,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { Api, MarketClaimable, PageContentProps } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -30,7 +30,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const formStatus = useStore((state) => state.vaultClaim.formStatus)
   const claimable = useStore((state) => state.vaultClaim.claimable[userActiveKey])
   const fetchStepClaim = useStore((state) => state.vaultClaim.fetchStepClaim)
-  const notifyNotification = useWalletStore((s) => s.notify)
+  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.vaultClaim.setFormValues)
   const resetState = useStore((state) => state.vaultClaim.resetState)
 

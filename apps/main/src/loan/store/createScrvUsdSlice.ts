@@ -9,7 +9,7 @@ import networks from '@loan/networks'
 import { Contract } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { FetchStatus, TransactionStatus } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -323,7 +323,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       depositApprove: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider, notify } = useWallet.state
         const approveInfinite = get()[sliceKey].approveInfinite
 
         // TODO: check so curve always is set when approving
@@ -381,7 +381,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       deposit: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider, notify } = useWallet.state
 
         if (!lendApi || !curve || !provider) return
 
@@ -436,7 +436,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       withdraw: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider, notify } = useWallet.state
 
         if (!lendApi || !curve || !provider) return
 
@@ -491,7 +491,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       redeem: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider, notify } = useWallet.state
 
         if (!lendApi || !curve || !provider) return
 
@@ -594,7 +594,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const signerAddress = useWalletStore.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.state.wallet?.accounts?.[0]?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = get().lendApi
@@ -621,7 +621,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchUserBalances: async () => {
-      const signerAddress = useWalletStore.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.state.wallet?.accounts?.[0]?.address.toLowerCase()
       const lendApi = get().lendApi
 
       if (!lendApi || !signerAddress) return
