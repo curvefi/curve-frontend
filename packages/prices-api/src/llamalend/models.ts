@@ -58,7 +58,7 @@ export type Snapshot = {
   collateralBalanceUsd: number
   borrowedBalance: number
   borrowedBalanceUsd: number
-  timestamp: number
+  timestamp: Date
   discountLiquidation: number
   discountLoan: number
 }
@@ -67,8 +67,8 @@ export type Snapshot = {
 export type UserMarkets = {
   name: string
   controller: Address
-  snapshotFirst: number
-  snapshotLast: number
+  snapshotFirst: Date
+  snapshotLast: Date
 }[]
 
 export type UserMarketStats = {
@@ -87,7 +87,7 @@ export type UserMarketStats = {
   collateralUp: number
   oraclePrice: number
   blockNumber: number
-  timestamp: number
+  timestamp: Date
 }
 
 export type UserMarketSnapshots = UserMarketStats[]
@@ -103,7 +103,7 @@ export type UserCollateralEvents = {
   totalBorrowed: number
   totalBorrowedPrecise: string
   events: {
-    timestamp: number
+    timestamp: Date
     txHash: Address
     type: 'Borrow' | 'Deposit'
     user: Address

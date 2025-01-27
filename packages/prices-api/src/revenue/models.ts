@@ -11,14 +11,14 @@ export type ChainTopPoolRevenue = {
 }
 
 export type CrvUsdWeekly = {
-  timestamp: number
+  timestamp: Date
   controller: Address
   collateral: string
   feesUsd: number
 }
 
 export type PoolsWeekly = {
-  timestamp: number
+  timestamp: Date
   chain: Chain
   feesUsd: number
 }
@@ -31,12 +31,12 @@ export type Cushion = {
 }
 
 export type Distribution = {
-  timestamp: number
+  timestamp: Date
   feesUsd: number
 }
 
 export type CowSwapSettlement = {
-  timestamp: number
+  timestamp: Date
   coin: {
     lpToken: boolean
     symbol: string

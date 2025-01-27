@@ -8,12 +8,12 @@ export type Event = {
   assets: bigint
   supply: bigint
   blockNumber: number
-  timestamp: number
+  timestamp: Date
   txHash: Address
 }
 
 export type Yield = {
-  timestamp: number
+  timestamp: Date
   assets: number
   supply: number
   apyProjected: string
@@ -28,11 +28,11 @@ export type Revenue = {
   feesTotal: bigint
   feesProtocol: bigint
   txHash: Address
-  timestamp: number
+  timestamp: Date
 }
 
 export type Statistics = {
-  lastUpdated: number
+  lastUpdated: Date
   lastUpdatedBlock: number
   aprProjected: number
   supply: number

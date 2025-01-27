@@ -54,7 +54,7 @@ export type PriceHistogram = {
 }
 
 export type CrvUsdSupply = {
-  timestamp: number
+  timestamp: Date
   market: string
   supply: number
   borrowable: number
@@ -77,8 +77,8 @@ export type Keeper = {
 export type UserMarkets = {
   collateral: string
   controller: string
-  snapshotFirst: number
-  snapshotLast: number
+  snapshotFirst: Date
+  snapshotLast: Date
 }[]
 
 export type UserMarketStats = {
@@ -97,7 +97,7 @@ export type UserMarketStats = {
   collateralUp: number
   oraclePrice: number
   blockNumber: number
-  timestamp: number
+  timestamp: Date
 }
 
 export type UserMarketSnapshots = UserMarketStats[]
@@ -111,8 +111,8 @@ export type UserCollateralEvents = {
   totalBorrowed: number
   totalBorrowedPrecise: string
   events: {
-    timestamp: number
-    txHash: string
+    timestamp: Date
+    txHash: Address
     type: 'Borrow' | 'Deposit'
     user: Address
     collateralChange: number

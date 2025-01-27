@@ -31,16 +31,16 @@ export type Gauge = {
   weightRelativeDelta7d?: number
   weightRelativeDelta60d?: number
   creationTx: Address
-  creationDate: number
+  creationDate: Date
   lastVoteTx?: Address
-  lastVoteDate?: number
+  lastVoteDate?: Date
 }
 
 export type GaugeVote = {
   user: Address
   weight: number
   blockNumber: number
-  timestamp: number
+  timestamp: Date
   tx: Address
 }
 
@@ -58,11 +58,11 @@ export type Deployment = {
   calldata: string
   calldataDecoded?: string
   blockNumber: number
-  timestamp: number
+  timestamp: Date
 }
 
 export type UserGaugeVote = {
-  timestamp: number
+  timestamp: Date
   gauge: Address
   gaugeName: string
   weight: number

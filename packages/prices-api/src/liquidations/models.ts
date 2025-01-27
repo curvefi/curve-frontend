@@ -1,12 +1,12 @@
 import type { Address } from '..'
 
 export type SoftLiqRatio = {
-  timestamp: number
+  timestamp: Date
   proportion: number
 }
 
 export type LiquidationDetails = {
-  timestamp: number
+  timestamp: Date
   user: Address
   liquidator: Address
   self: boolean
@@ -22,7 +22,7 @@ export type LiquidationDetails = {
 }
 
 export type LiquidationAggregate = {
-  timestamp: number
+  timestamp: Date
   selfCount: number
   hardCount: number
   selfValue: number
@@ -42,7 +42,7 @@ export type LiqOverview = {
 }
 
 export type LiqLosses = {
-  timestamp: number
+  timestamp: Date
   pctLossMedian: number
   pctLossAverage: number
   absoluteLossMedian: number

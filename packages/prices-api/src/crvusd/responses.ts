@@ -126,7 +126,7 @@ export type GetUserCollateralEventsResponse = {
   data: [
     {
       dt: string
-      transaction_hash: string
+      transaction_hash: Address
       type: 'Borrow' | 'Deposit'
       user: Address
       collateral_change: number
