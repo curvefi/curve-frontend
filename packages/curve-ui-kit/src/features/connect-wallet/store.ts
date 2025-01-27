@@ -11,11 +11,15 @@ import { logSuccess } from '@ui-kit/lib'
 type WalletState = {
   onboard: OnboardAPI | null
   provider: BrowserProvider | null
-  rpcProvider: EIP1193Provider | null
+  cleanup: (() => Promise<void>) | null // removes listeners from provider
   wallet: Wallet | null
 }
 
 type WalletActions = {
+  /**
+   * Sends a message via the onboard notification system.
+   * Note: This should be migrated to mui.
+   */
   notify(
     message: string,
     type: NotificationType,
@@ -24,8 +28,13 @@ type WalletActions = {
     dismiss: () => void
     update: UpdateNotification | undefined
   }
-  getProvider(): BrowserProvider | null
+  /**
+   * Set a new wallet as current, listening for account changes
+   */
   chooseWallet(wallet: Wallet | null): Promise<void>
+  /**
+   * Initialize the onboard instance
+   */
   initialize(...params: Parameters<typeof initOnboard>): void
 }
 
@@ -34,7 +43,7 @@ export type WalletStore = WalletState & WalletActions
 const DEFAULT_STATE: WalletState = {
   onboard: null,
   provider: null,
-  rpcProvider: null,
+  cleanup: null,
   wallet: null,
 }
 
@@ -51,13 +60,9 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
       ...(typeof autoDismiss !== 'undefined' && { autoDismiss }),
     })
   },
-  getProvider: () => {
-    const { wallet } = get()
-    return wallet && new BrowserProvider(wallet.provider)
-  },
   chooseWallet: async (wallet: Wallet | null) => {
-    const { provider, chooseWallet } = get()
-    await provider?.removeAllListeners()
+    const { cleanup, chooseWallet } = get()
+    cleanup?.()
     return set(createProvider(wallet, chooseWallet))
   },
   initialize: async (locale, themeType, networks) => {
@@ -85,9 +90,15 @@ function getRpcProvider(wallet: Wallet): EIP1193Provider {
 function createProvider(wallet: Wallet | null | undefined, chooseWallet: (wallet: Wallet | null) => Promise<void>) {
   if (!wallet) return { rpcProvider: null, wallet: null, provider: null }
   const rpcProvider = getRpcProvider(wallet)
-  rpcProvider.on('accountsChanged', (newAccounts: Address[]) => {
+  const handler = (newAccounts: Address[]) => {
     logSuccess('accountsChanged', newAccounts)
     return chooseWallet(newAccounts.length === 0 ? null : wallet)
-  })
-  return { rpcProvider, wallet, provider: new BrowserProvider(wallet.provider) }
+  }
+  rpcProvider.on('accountsChanged', handler)
+  const provider = new BrowserProvider(wallet.provider)
+  const cleanup = async () => {
+    rpcProvider.removeListener('accountsChanged', handler)
+    await provider?.removeAllListeners()
+  }
+  return { cleanup, wallet, provider }
 }
