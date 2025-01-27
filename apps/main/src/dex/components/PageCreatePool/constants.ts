@@ -244,7 +244,7 @@ export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => ({
   },
   a: {
     min: 1,
-    max: 5000,
+    max: 20000,
   },
   maExpTime: {
     min: 60,
