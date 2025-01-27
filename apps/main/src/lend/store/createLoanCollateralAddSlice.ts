@@ -10,8 +10,7 @@ import { _parseActiveKey } from '@lend/utils/helpers'
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { Api } from '@lend/types/lend.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -5,17 +5,21 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { getWalletSignerAddress, useWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
+import {
+  getWalletChainId,
+  getWalletSignerAddress,
+  useSetChain,
+  useSetLocale,
+  useWallet,
+} from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@main/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { useNetworkFromUrl, useParsedParams } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@ui-kit/features/connect-wallet'
 import { initCurveJs } from '@main/utils/utilsCurvejs'
 import useStore from '@main/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()

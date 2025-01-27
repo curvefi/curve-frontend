@@ -1,12 +1,11 @@
-import type { DeploymentType, GaugeType } from '@main/components/PageDeployGauge/types'
+import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@main/components/PageDeployGauge/types'
 import type { ContractTransactionResponse } from 'ethers'
-import type { PoolType, PoolTypes } from '@main/components/PageDeployGauge/types'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@main/store/useStore'
 import produce from 'immer'
 import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@main/utils'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { ChainId, CurveApi } from '@main/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type NetworkWithFactory = {

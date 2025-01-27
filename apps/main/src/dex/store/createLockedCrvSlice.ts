@@ -21,8 +21,7 @@ import {
   FnStepEstGasApprovalResponse,
   FnStepResponse,
 } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

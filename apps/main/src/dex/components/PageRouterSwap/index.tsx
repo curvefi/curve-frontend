@@ -1,11 +1,15 @@
-import type { FormStatus, RoutesAndOutput, StepKey } from '@main/components/PageRouterSwap/types'
-import type { FormValues, SearchedParams } from '@main/components/PageRouterSwap/types'
+import type {
+  FormStatus,
+  FormValues,
+  RoutesAndOutput,
+  SearchedParams,
+  StepKey,
+} from '@main/components/PageRouterSwap/types'
 import type { Params } from 'react-router'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
-import React, { useEffect, useCallback, useState, useRef, useMemo } from 'react'
-import { NETWORK_TOKEN } from '@main/constants'
-import { REFRESH_INTERVAL } from '@main/constants'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@main/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { getTokensMapperStr } from '@main/store/createTokensSlice'
@@ -34,7 +38,7 @@ import TokenComboBox from '@main/components/ComboBoxSelectToken'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { CurveApi, ChainId, Token, TokensMapper } from '@main/types/main.types'
+import { ChainId, CurveApi, Token, TokensMapper } from '@main/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const QuickSwap = ({

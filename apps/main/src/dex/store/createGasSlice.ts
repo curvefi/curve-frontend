@@ -6,7 +6,7 @@ import { Chain, gweiToWai } from '@ui-kit/utils'
 import { httpFetcher } from '@main/lib/utils'
 import { log } from '@ui-kit/lib/logging'
 import api from '@main/lib/curvejs'
-import { CurveApi, NetworkConfig, Provider, GasInfo } from '@main/types/main.types'
+import { CurveApi, GasInfo, NetworkConfig, Provider } from '@main/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

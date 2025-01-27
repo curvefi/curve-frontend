@@ -14,8 +14,7 @@ import { getTokenName } from '@loan/utils/utilsLoan'
 import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
 import networks from '@loan/networks'
 import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

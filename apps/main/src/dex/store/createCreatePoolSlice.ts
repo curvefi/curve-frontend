@@ -29,7 +29,7 @@ import {
   TOKEN_H,
 } from '@main/components/PageCreatePool/constants'
 import { isTricrypto } from '@main/components/PageCreatePool/utils'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { ChainId, CurveApi } from '@main/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type SliceState = {

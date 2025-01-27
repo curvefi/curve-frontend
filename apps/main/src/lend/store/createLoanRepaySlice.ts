@@ -6,14 +6,13 @@ import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@lend/compo
 import cloneDeep from 'lodash/cloneDeep'
 
 import { DEFAULT_FORM_EST_GAS } from '@lend/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES, DEFAULT_FORM_STATUS, _parseValues } from '@lend/components/PageLoanManage/LoanRepay/utils'
+import { _parseValues, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageLoanManage/LoanRepay/utils'
 import { FormError } from '@lend/components/AlertFormError'
 import { _parseActiveKey } from '@lend/utils/helpers'
 import apiLending, { helpers } from '@lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { Api, UserLoanState } from '@lend/types/lend.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -3,9 +3,8 @@ import styled from 'styled-components'
 
 import { CONNECT_STAGE, ROUTE } from '@main/constants'
 import { useNetworkFromUrl } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import useLayoutHeight from '@main/hooks/useLayoutHeight'
 import useStore from '@main/store/useStore'
 

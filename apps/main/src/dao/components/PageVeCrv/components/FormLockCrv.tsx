@@ -1,4 +1,4 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@dao/components/PageVeCrv/types'
+import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@dao/components/PageVeCrv/types'
 import type { Step } from '@ui/Stepper/types'
 
 import { t } from '@lingui/macro'

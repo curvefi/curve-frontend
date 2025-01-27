@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey, LoadMaxAmount } from '@main/components/PagePool/Deposit/types'
+import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@main/components/PagePool/Deposit/types'
 import type { Slippage, TransferProps } from '@main/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'

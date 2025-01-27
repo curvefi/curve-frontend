@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey } from '@lend/components/PageVault/VaultUnstake/types'
+import type { FormStatus, FormValues, StepKey } from '@lend/components/PageVault/VaultUnstake/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'

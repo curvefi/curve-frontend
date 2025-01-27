@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, FormDetailInfo } from '@loan/components/PageLoanManage/LoanDeleverage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@loan/components/PageLoanManage/LoanDeleverage/types'
 import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 

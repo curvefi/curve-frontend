@@ -16,8 +16,8 @@ import useTitleMapper from '@lend/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
@@ -31,18 +31,17 @@ import Tabs, { Tab } from '@ui/Tab'
 import Box from '@ui/Box'
 import ChartOhlcWrapper from '@lend/components/ChartOhlcWrapper'
 import {
-  PriceAndTradesExpandedContainer,
-  PriceAndTradesExpandedWrapper,
   ExpandButton,
   ExpandIcon,
+  PriceAndTradesExpandedContainer,
+  PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
 import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
-import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useOneWayMarket } from '@lend/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps } from '@lend/types/lend.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {

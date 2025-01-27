@@ -1,7 +1,7 @@
 import { SubNavItem } from '@dao/components/SubNav/types'
 
 import styled from 'styled-components'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@dao/store/useStore'

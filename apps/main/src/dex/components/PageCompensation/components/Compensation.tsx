@@ -14,7 +14,7 @@ import Button from '@ui/Button'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, ChainId, Provider } from '@main/types/main.types'
+import { ChainId, CurveApi, Provider } from '@main/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const Compensation = ({

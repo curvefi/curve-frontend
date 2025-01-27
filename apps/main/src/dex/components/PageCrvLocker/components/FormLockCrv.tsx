@@ -1,4 +1,4 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@main/components/PageCrvLocker/types'
+import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@main/components/PageCrvLocker/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'

@@ -6,9 +6,9 @@ import { useCallback, useEffect } from 'react'
 import {
   getWalletChainId,
   getWalletSignerAddress,
-  useWallet,
   useSetChain,
   useSetLocale,
+  useWallet,
 } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL } from '@dao/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
@@ -18,7 +18,6 @@ import networks from '@dao/networks'
 import useStore from '@dao/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()

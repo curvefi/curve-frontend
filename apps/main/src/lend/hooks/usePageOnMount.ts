@@ -7,7 +7,6 @@ import { useCallback, useEffect } from 'react'
 import {
   getWalletChainId,
   getWalletSignerAddress,
-  useWallet,
   useSetChain,
   useSetLocale,
   useWallet,

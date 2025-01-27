@@ -7,8 +7,7 @@ import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@loan/
 import networks from '@loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
 import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -19,9 +19,8 @@ import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@main/utils/utilsSwap'
 import { getChainSignerActiveKey, sleep } from '@main/utils'
 import curvejsApi from '@main/lib/curvejs'
-import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@main/types/main.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

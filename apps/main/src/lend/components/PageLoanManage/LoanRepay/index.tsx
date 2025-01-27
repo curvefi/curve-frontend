@@ -1,5 +1,5 @@
 import type { FormEstGas } from '@lend/components/PageLoanManage/types'
-import type { FormValues, FormStatus, StepKey } from '@lend/components/PageLoanManage/LoanRepay/types'
+import type { FormStatus, FormValues, StepKey } from '@lend/components/PageLoanManage/LoanRepay/types'
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -7,7 +7,7 @@ import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@lend/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES, _parseValues } from '@lend/components/PageLoanManage/LoanRepay/utils'
+import { _parseValues, DEFAULT_FORM_VALUES } from '@lend/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@lend/constants'
 import { _showNoLoanFound } from '@lend/utils/helpers'
 import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
@@ -35,7 +35,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, HealthMode } from '@lend/types/lend.types'
+import { Api, HealthMode, PageContentProps } from '@lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
