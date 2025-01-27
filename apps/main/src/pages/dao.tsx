@@ -53,6 +53,7 @@ const App: NextPage = () => {
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
   const setLocale = useUserProfileStore((state) => state.setLocale)
+  const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -108,10 +109,10 @@ const App: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (isSuccess(connectState) && curve && useWallet.getState().wallet) {
-      updateUserData(curve, useWallet.getState().wallet)
+    if (isSuccess(connectState) && curve && wallet) {
+      updateUserData(curve, wallet)
     }
-  }, [curve, connectState, updateUserData])
+  }, [curve, connectState, updateUserData, wallet])
 
   // initiate proposals list
   useEffect(() => {
