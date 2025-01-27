@@ -3,7 +3,7 @@ import { PaletteOptions } from '@mui/material'
 
 export const createPalette = (
   mode: 'light' | 'dark',
-  { Layer, Color, Feedback, Text: { TextColors } }: DesignSystem,
+  { Layer, Color, Text: { TextColors } }: DesignSystem,
 ): PaletteOptions => ({
   mode,
   primary: { main: Color.Primary[500] },

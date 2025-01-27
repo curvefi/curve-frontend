@@ -206,6 +206,8 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+      // sonic
+      '0x38dd6b3c096c8cbe649fa0039cc144f333be8e61': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x38dd6b3c096c8cbe649fa0039cc144f333be8e61&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x38dd6b3c096c8cbe649fa0039cc144f333be8e61&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0x11cdb42b0eb46d95f990bedd4695a6e3fa034978&outputChainId=13&outputToken=0xd533a949740bb3306d119cc777fa900ba034cd52' }]), // CrossCurve xCRV
     }
 
     if (poolAddress) {
