@@ -42,5 +42,5 @@ export type Locker = {
   locked: bigint
   weight: bigint
   weightRatio: number
-  unlockTime: number
+  unlockTime: Date
 }

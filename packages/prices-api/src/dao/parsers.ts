@@ -44,5 +44,5 @@ export const parseLockers = (x: Responses.GetLockersResponse['users'][number]): 
   locked: BigInt(Math.round(parseFloat(x.locked))),
   weight: BigInt(Math.round(parseFloat(x.weight))),
   weightRatio: parseFloat(x.weight_ratio.slice(0, -1)),
-  unlockTime: x.unlock_time,
+  unlockTime: toUTC(x.unlock_time),
 })
