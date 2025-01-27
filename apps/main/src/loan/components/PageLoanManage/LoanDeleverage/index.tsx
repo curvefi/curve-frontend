@@ -45,7 +45,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -68,7 +68,6 @@ const LoanDeleverage = ({
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -134,7 +133,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
+    [activeKey, collateralName, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

@@ -9,9 +9,9 @@ import type {
   NotificationType,
   WalletState as Wallet,
 } from '@web3-onboard/core/dist/types'
-import type { EIP1193Provider } from '@web3-onboard/common'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { Address } from '@ui-kit/utils'
+import { getRpcProvider } from './utils/wallet-helpers'
 
 export { useSetChain, useSetLocale } from '@web3-onboard/react'
 
@@ -32,14 +32,6 @@ type UseConnectWallet = {
     wallet: Wallet | null
   }
   initialize(...params: Parameters<typeof initOnboard>): void
-  notify(
-    message: string,
-    type: NotificationType,
-    autoDismiss?: number,
-  ): {
-    dismiss: () => void
-    update: UpdateNotification | undefined
-  }
 }
 
 export const useWallet: UseConnectWallet = () => {
@@ -73,7 +65,11 @@ useWallet.state = {
   wallet: null,
 }
 
-useWallet.notify = (message, type = 'pending', autoDismiss) => {
+export const notify = (
+  message: string,
+  type: NotificationType,
+  autoDismiss?: number,
+): { dismiss: () => void; update: UpdateNotification | undefined } => {
   const { onboard } = useWallet.state
   if (!onboard) {
     throw new Error('Onboard not initialized')
@@ -83,15 +79,4 @@ useWallet.notify = (message, type = 'pending', autoDismiss) => {
     message,
     ...(typeof autoDismiss !== 'undefined' && { autoDismiss }),
   })
-}
-
-function getRpcProvider(wallet: Wallet): EIP1193Provider {
-  if ('isTrustWallet' in wallet.provider && window.ethereum) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum as any // todo: why do we need any here?
-  }
-  if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
 }

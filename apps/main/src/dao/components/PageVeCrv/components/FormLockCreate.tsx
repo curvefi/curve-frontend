@@ -24,7 +24,7 @@ import FieldLockedAmt from '@dao/components/PageVeCrv/components/FieldLockedAmt'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -37,7 +37,6 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const formValues = useStore((state) => state.lockedCrv.formValues)
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.lockedCrv.fetchStepCreate)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -105,7 +104,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       await fetchStepApprove(activeKey, curve, rFormType, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification, rFormType],
+    [fetchStepApprove, rFormType],
   )
 
   const handleBtnClickCreate = useCallback(
@@ -123,7 +122,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [fetchStepCreate, notifyNotification],
+    [fetchStepCreate],
   )
 
   const getSteps = useCallback(

@@ -36,7 +36,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, HealthMode, PageContentProps } from '@lend/types/lend.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -55,7 +55,6 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
   const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanRepay.setFormValues)
   const resetState = useStore((state) => state.loanRepay.resetState)
 
@@ -118,7 +117,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
+    [activeKey, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -246,7 +245,6 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
       expectedBorrowed?.totalBorrowed,
       fetchStepApprove,
       handleBtnClickPay,
-      notifyNotification,
       state,
       userBalances,
     ],

@@ -23,7 +23,7 @@ import FieldDatePicker from '@dao/components/PageVeCrv/components/FieldDatePicke
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -34,7 +34,6 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
   const formValues = useStore((state) => state.lockedCrv.formValues)
-  const notifyNotification = useWallet.notify
   const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
 
@@ -127,7 +126,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchStepIncreaseTime],
+    [fetchStepIncreaseTime],
   )
 
   const getSteps = useCallback(

@@ -19,7 +19,7 @@ import FieldLockedAmt from '@dao/components/PageVeCrv/components/FieldLockedAmt'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -30,7 +30,6 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
   const formValues = useStore((state) => state.lockedCrv.formValues)
-  const notifyNotification = useWallet.notify
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepIncreaseCrv = useStore((state) => state.lockedCrv.fetchStepIncreaseCrv)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
@@ -56,7 +55,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       await fetchStepApprove(activeKey, curve, rFormType, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification, rFormType],
+    [fetchStepApprove, rFormType],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -71,7 +70,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepIncreaseCrv, notifyNotification],
+    [fetchStepIncreaseCrv],
   )
 
   const getSteps = useCallback(

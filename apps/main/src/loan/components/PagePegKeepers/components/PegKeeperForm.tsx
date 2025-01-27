@@ -12,6 +12,7 @@ import LoanFormConnect from '@loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ChainId, Curve } from '@loan/types/loan.types'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 type Props = {
   rChainId: ChainId
@@ -25,7 +26,6 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const curve = useStore((state) => state.curve)
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
-  const notifyNotification = useWallet.notify
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
 
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
@@ -49,7 +49,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
         if (notify && typeof notify.dismiss === 'function') notify.dismiss()
       }
     },
-    [fetchUpdate, notifyNotification, poolName, rChainId],
+    [fetchUpdate, poolName, rChainId],
   )
 
   // onMount

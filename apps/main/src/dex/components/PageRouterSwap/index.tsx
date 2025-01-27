@@ -39,7 +39,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CurveApi, Token, TokensMapper } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const QuickSwap = ({
   pageLoaded,
@@ -71,7 +71,6 @@ const QuickSwap = ({
   const formValues = useStore((state) => state.quickSwap.formValues)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const notifyNotification = useWallet.notify
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isHideSmallPools = useStore((state) => state.poolList.formValues.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
@@ -182,7 +181,7 @@ const QuickSwap = ({
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
+    [activeKey, fetchStepSwap, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -291,7 +290,7 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps],
+    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, steps],
   )
 
   const fetchData = useCallback(() => {

@@ -34,7 +34,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import AlertFormError from '@loan/components/AlertFormError'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -59,7 +59,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const init = useStore((state) => state.loanIncrease.init)
   const fetchStepApprove = useStore((state) => state.loanIncrease.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanIncrease.fetchStepIncrease)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanIncrease.resetState)
@@ -136,7 +135,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, reset],
+    [activeKey, fetchStepIncrease, reset],
   )
 
   const getSteps = useCallback(
@@ -212,7 +211,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [healthMode, notifyNotification, fetchStepApprove, handleBtnClickBorrow],
+    [healthMode, fetchStepApprove, handleBtnClickBorrow],
   )
 
   // onMount

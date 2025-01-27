@@ -35,7 +35,7 @@ import TransferActions from '@main/components/PagePool/components/TransferAction
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const Swap = ({
   chainIdPoolId,
@@ -77,7 +77,6 @@ const Swap = ({
   const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
-  const notifyNotification = useWallet.notify
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -143,7 +142,7 @@ const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
+    [activeKey, fetchStepSwap, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -227,7 +226,7 @@ const Swap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [fetchStepApprove, handleSwapClick, notifyNotification],
+    [fetchStepApprove, handleSwapClick],
   )
 
   const fetchData = useCallback(() => {

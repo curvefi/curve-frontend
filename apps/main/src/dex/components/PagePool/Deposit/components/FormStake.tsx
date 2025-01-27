@@ -19,7 +19,7 @@ import Stepper from '@ui/Stepper'
 import TransferActions from '@main/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, Pool, PoolData } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -34,7 +34,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
@@ -60,7 +59,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       await fetchStepApprove(activeKey, curve, 'STAKE', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleStakeClick = useCallback(
@@ -75,7 +74,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepStake, notifyNotification, network],
+    [fetchStepStake, network],
   )
 
   const getSteps = useCallback(

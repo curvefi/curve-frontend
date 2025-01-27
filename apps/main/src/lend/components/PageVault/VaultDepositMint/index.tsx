@@ -1,4 +1,4 @@
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@lend/components/PageVault/VaultDepositMint/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -39,7 +39,6 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultDepositMint.fetchStepApprove)
   const fetchStepDepositMint = useStore((state) => state.vaultDepositMint.fetchStepDepositMint)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.vaultDepositMint.setFormValues)
   const resetState = useStore((state) => state.vaultDepositMint.resetState)
 
@@ -98,7 +97,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, borrowed_token?.symbol, fetchStepDepositMint, notifyNotification, reset],
+    [activeKey, borrowed_token?.symbol, fetchStepDepositMint, reset],
   )
 
   const getSteps = useCallback(
@@ -150,7 +149,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickDeposit, notifyNotification],
+    [fetchStepApprove, handleBtnClickDeposit],
   )
 
   // onMount

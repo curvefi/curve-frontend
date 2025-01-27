@@ -1,4 +1,4 @@
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@lend/components/PageVault/VaultWithdrawRedeem/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -46,7 +46,6 @@ const VaultWithdrawRedeem = ({
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepWithdrawRedeem = useStore((state) => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
   const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
 
@@ -117,7 +116,7 @@ const VaultWithdrawRedeem = ({
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, notifyNotification, reset],
+    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, reset],
   )
 
   const getSteps = useCallback(

@@ -27,7 +27,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -48,7 +48,6 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const init = useStore((state) => state.loanCollateralDecrease.init)
   const fetchStepDecrease = useStore((state) => state.loanCollateralDecrease.fetchStepDecrease)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanCollateralDecrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanCollateralDecrease.setStateByKey)
   const resetState = useStore((state) => state.loanCollateralDecrease.resetState)
@@ -111,7 +110,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepDecrease, network, notifyNotification, reset],
+    [activeKey, fetchStepDecrease, network, reset],
   )
 
   const stepsObj = useCallback(

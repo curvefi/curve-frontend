@@ -21,7 +21,7 @@ import Stepper from '@ui/Stepper'
 import TransferActions from '@main/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, PoolData } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const FormDeposit = ({
   chainIdPoolId,
@@ -50,7 +50,6 @@ const FormDeposit = ({
   const slippage = useStore((state) => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepApprove)
   const fetchStepDeposit = useStore((state) => state.poolDeposit.fetchStepDeposit)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
@@ -91,7 +90,7 @@ const FormDeposit = ({
       await fetchStepApprove(activeKey, curve, 'DEPOSIT', poolData.pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleDepositClick = useCallback(
@@ -107,7 +106,7 @@ const FormDeposit = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDeposit, notifyNotification, network],
+    [fetchStepDeposit, network],
   )
 
   const getSteps = useCallback(

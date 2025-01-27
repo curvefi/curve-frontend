@@ -32,7 +32,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps, UserLoanState } from '@lend/types/lend.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -48,7 +48,6 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
   const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
-  const notifyNotification = useWallet.notify
   const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
@@ -158,7 +157,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances],
+    [fetchStepApprove, fetchStepLiquidate, params, reset, userBalances],
   )
 
   // onMount

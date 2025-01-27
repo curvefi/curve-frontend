@@ -33,7 +33,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, HealthMode, PageContentProps } from '@lend/types/lend.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -60,7 +60,6 @@ const LoanBorrowMore = ({
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
@@ -123,7 +122,7 @@ const LoanBorrowMore = ({
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues],
+    [activeKey, fetchStepIncrease, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -249,14 +248,7 @@ const LoanBorrowMore = ({
       }
       return stepsKey.map((k) => stepsObj[k])
     },
-    [
-      expectedCollateral?.totalCollateral,
-      userLoanDetails?.state,
-      userBalances,
-      notifyNotification,
-      fetchStepApprove,
-      handleBtnClickBorrow,
-    ],
+    [expectedCollateral?.totalCollateral, userLoanDetails?.state, userBalances, fetchStepApprove, handleBtnClickBorrow],
   )
 
   // onMount

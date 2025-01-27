@@ -7,14 +7,12 @@ import {
   TokenState,
 } from '@main/components/PageCreatePool/types'
 import type { ContractTransactionResponse } from 'ethers'
-
 import type { GetState, SetState } from 'zustand'
 import produce from 'immer'
 import { BigNumber } from 'bignumber.js'
 import { t } from '@lingui/macro'
-
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 import type { State } from '@main/store/useStore'
-
 import {
   CRYPTOSWAP,
   POOL_PRESETS,
@@ -30,7 +28,6 @@ import {
 } from '@main/components/PageCreatePool/constants'
 import { isTricrypto } from '@main/components/PageCreatePool/utils'
 import { ChainId, CurveApi } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type SliceState = {
   navigationIndex: number
@@ -793,7 +790,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         },
         networks: { networks },
       } = get()
-      const { notify: notifyNotification } = useWallet
 
       let dismissNotificationHandler
 

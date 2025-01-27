@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues, StepKey } from '@loan/components/PageLoanManage/LoanSwap/types'
 import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@loan/store/createLoanSwap'
@@ -50,12 +50,10 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const fetchMaxSwappable = useStore((state) => state.loanSwap.fetchMaxSwappable)
   const fetchStepApprove = useStore((state) => state.loanSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.loanSwap.fetchStepSwap)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.loanSwap.setFormValues)
   const setStateByKey = useStore((state) => state.loanSwap.setStateByKey)
   const resetState = useStore((state) => state.loanSwap.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -134,7 +132,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, detailInfo.amount, fetchStepSwap, notifyNotification, rChainId, reset],
+    [activeKey, detailInfo.amount, fetchStepSwap, rChainId, reset],
   )
 
   const getSteps = useCallback(
@@ -190,7 +188,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap, notifyNotification],
+    [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap],
   )
 
   // onMount

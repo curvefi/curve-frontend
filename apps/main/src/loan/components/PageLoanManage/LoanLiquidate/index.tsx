@@ -25,7 +25,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma, UserWalletBalances } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -42,7 +42,6 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
   const fetchStepApprove = useStore((state) => state.loanLiquidate.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanLiquidate.fetchStepLiquidate)
-  const notifyNotification = useWallet.notify
   const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
   const resetState = useStore((state) => state.loanLiquidate.resetState)
 
@@ -154,7 +153,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset],
+    [fetchStepApprove, fetchStepLiquidate, params, reset],
   )
 
   // onMount

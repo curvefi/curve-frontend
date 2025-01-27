@@ -29,7 +29,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CollateralAlert, Curve, Llamma } from '@loan/types/loan.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,
@@ -58,7 +58,6 @@ const LoanCreate = ({
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const notifyNotification = useWallet.notify
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
@@ -129,7 +128,7 @@ const LoanCreate = ({
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepCreate, network, notifyNotification],
+    [activeKey, fetchStepCreate, network],
   )
 
   const getSteps = useCallback(
@@ -220,7 +219,7 @@ const LoanCreate = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleClickCreate, healthMode, notifyNotification],
+    [fetchStepApprove, handleClickCreate, healthMode],
   )
 
   // onMount

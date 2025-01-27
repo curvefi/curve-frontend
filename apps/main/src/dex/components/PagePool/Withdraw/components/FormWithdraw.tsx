@@ -32,7 +32,7 @@ import TransferActions from '@main/components/PagePool/components/TransferAction
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@main/components/PagePool/components/WarningModal'
 import { CurveApi, Pool, PoolData } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -58,7 +58,6 @@ const FormWithdraw = ({
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
-  const notifyNotification = useWallet.notify
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
@@ -96,7 +95,7 @@ const FormWithdraw = ({
       await fetchStepApprove(activeKey, curve, 'WITHDRAW', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleWithdrawClick = useCallback(
@@ -112,7 +111,7 @@ const FormWithdraw = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, network],
+    [fetchStepWithdraw, network],
   )
 
   const getSteps = useCallback(

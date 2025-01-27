@@ -15,7 +15,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
 import { ChainId, CurveApi, Provider } from '@main/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
 
 const Compensation = ({
   rChainId,
@@ -40,7 +40,6 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const notifyNotification = useWallet.notify
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const networks = useStore((state) => state.networks.networks)
 
@@ -77,7 +76,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, notifyNotification, fetchGasInfo, provider, networks],
+    [curve, fetchGasInfo, provider, networks],
   )
 
   // reset
