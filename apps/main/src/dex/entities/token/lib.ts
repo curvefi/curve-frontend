@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
-import useTokensMapper from '@main/hooks/useTokensMapper'
-import useStore from '@main/store/useStore'
-import { useChainId } from '@main/entities/chain'
-import { Token } from '@main/types/main.types'
+import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import useStore from '@/dex/store/useStore'
+import { useChainId } from '@/dex/entities/chain'
+import { Token } from '@/dex/types/main.types'
 
 export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | undefined)[] } => {
   const { data: chainId } = useChainId()

@@ -1,5 +1,5 @@
 import type { Address } from 'viem'
-import { ChainId, PoolData } from '@main/types/main.types'
+import { ChainId, PoolData } from '@/dex/types/main.types'
 
 export interface ManageGaugeProps {
   pool: PoolData

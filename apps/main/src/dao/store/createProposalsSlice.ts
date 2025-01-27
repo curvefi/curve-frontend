@@ -1,9 +1,9 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
+import type { State } from '@/dao/store/useStore'
 
-import networks from '@dao/networks'
-import { SEVEN_DAYS, TOP_HOLDERS } from '@dao/constants'
-import { helpers } from '@dao/lib/curvejs'
+import networks from '@/dao/networks'
+import { SEVEN_DAYS, TOP_HOLDERS } from '@/dao/constants'
+import { helpers } from '@/dao/lib/curvejs'
 
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
@@ -22,7 +22,7 @@ import {
   ProposalListFilter,
   SortByFilterProposals,
   SortDirection,
-} from '@dao/types/dao.types'
+} from '@/dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

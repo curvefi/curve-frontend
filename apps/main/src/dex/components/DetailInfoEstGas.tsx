@@ -3,14 +3,14 @@ import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-import { NETWORK_TOKEN } from '@main/constants'
+import { NETWORK_TOKEN } from '@/dex/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { useCurve } from '@main/entities/curve'
-import { ChainId, EstimatedGas } from '@main/types/main.types'
+import { useCurve } from '@/dex/entities/curve'
+import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 
 export type StepProgress = {
   active: number

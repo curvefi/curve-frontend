@@ -1,7 +1,7 @@
 import { t } from '@lingui/macro'
 
-import networks from '@loan/networks'
-import { Curve } from '@loan/types/loan.types'
+import networks from '@/loan/networks'
+import { Curve } from '@/loan/types/loan.types'
 
 interface CustomError extends Error {
   data?: { message: string }

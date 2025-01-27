@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import Button from '@ui/Button'
 import TextCaption from '@ui/TextCaption'

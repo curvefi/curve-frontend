@@ -1,4 +1,4 @@
-import type { ExchangeRate } from '@main/components/PageRouterSwap/types'
+import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
 
 import { t } from '@lingui/macro'
 import styled from 'styled-components'

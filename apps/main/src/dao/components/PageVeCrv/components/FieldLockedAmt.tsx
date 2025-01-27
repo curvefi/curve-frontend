@@ -1,4 +1,4 @@
-import type { FormType, VecrvInfo } from '@dao/components/PageVeCrv/types'
+import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'

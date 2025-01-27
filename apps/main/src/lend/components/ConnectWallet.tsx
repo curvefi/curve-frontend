@@ -1,7 +1,7 @@
 import { isLoading } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
-import { CONNECT_STAGE } from '@lend/constants'
+import { CONNECT_STAGE } from '@/lend/constants'
 
 import ConnectWalletPrompt from '@ui/ConnectWalletPrompt'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'

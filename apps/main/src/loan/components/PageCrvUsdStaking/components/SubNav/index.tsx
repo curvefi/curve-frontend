@@ -1,4 +1,4 @@
-import { SubNavItem } from '@loan/components/PageCrvUsdStaking/components/SubNav/types'
+import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNav/types'
 
 import styled from 'styled-components'
 

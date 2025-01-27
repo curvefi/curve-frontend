@@ -5,10 +5,10 @@ import { t } from '@lingui/macro'
 
 import { formatNumber } from '@ui/utils'
 
-import { StyledInpChip } from '@lend/components/PageLoanManage/styles'
-import { FieldsTitle } from '@lend/components/SharedFormStyles/FieldsWrapper'
+import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
+import { FieldsTitle } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import InpChipUsdRate from '@lend/components/InpChipUsdRate'
+import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 
 import Box from '@ui/Box'
 

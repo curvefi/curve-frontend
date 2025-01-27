@@ -1,4 +1,4 @@
-import type { LiqRange, LiqRangeSliderIdx } from '@lend/store/types'
+import type { LiqRange, LiqRangeSliderIdx } from '@/lend/store/types'
 
 import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'

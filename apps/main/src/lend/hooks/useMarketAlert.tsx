@@ -2,7 +2,7 @@ import type { TooltipProps } from '@ui/Tooltip/types'
 
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
-import { AlertType, ChainId } from '@lend/types/lend.types'
+import { AlertType, ChainId } from '@/lend/types/lend.types'
 
 export type MarketAlert = TooltipProps & {
   alertType: AlertType

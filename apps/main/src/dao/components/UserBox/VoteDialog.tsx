@@ -1,15 +1,15 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { formatNumber } from '@ui/utils'
 
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import AlertBox from '@ui/AlertBox'
-import PendingTx from '@dao/components/UserBox/PendingTx'
-import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@dao/types/dao.types'
+import PendingTx from '@/dao/components/UserBox/PendingTx'
+import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 
 type Props = {
   userAddress: string

@@ -1,5 +1,5 @@
-import { TokenParams } from '@lend/entities/token'
-import { queryTokenUsdRate } from '@lend/entities/token/api'
+import { TokenParams } from '@/lend/entities/token'
+import { queryTokenUsdRate } from '@/lend/entities/token/api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { tokenValidationSuite } from './validation'
 

@@ -1,18 +1,18 @@
 import type { NextPage } from 'next'
-import type { DetailInfoTypes } from '@lend/components/PageLoanManage/types'
+import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { REFRESH_INTERVAL } from '@lend/constants'
-import { _getSelectedTab } from '@lend/components/PageLoanManage/utils'
-import { helpers } from '@lend/lib/apiLending'
-import { scrollToTop } from '@lend/utils/helpers'
-import networks from '@lend/networks'
-import usePageOnMount from '@lend/hooks/usePageOnMount'
-import useStore from '@lend/store/useStore'
-import useTitleMapper from '@lend/hooks/useTitleMapper'
+import { REFRESH_INTERVAL } from '@/lend/constants'
+import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
+import { helpers } from '@/lend/lib/apiLending'
+import { scrollToTop } from '@/lend/utils/helpers'
+import networks from '@/lend/networks'
+import usePageOnMount from '@/lend/hooks/usePageOnMount'
+import useStore from '@/lend/store/useStore'
+import useTitleMapper from '@/lend/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -22,26 +22,26 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@lend/layout/DocumentHead'
-import DetailsMarket from '@lend/components/DetailsMarket'
-import DetailsUserLoan from '@lend/components/DetailsUser/components/DetailsUserLoan'
-import LoanMange from '@lend/components/PageLoanManage/index'
-import PageTitleBorrowSupplyLinks from '@lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import DocumentHead from '@/lend/layout/DocumentHead'
+import DetailsMarket from '@/lend/components/DetailsMarket'
+import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
+import LoanMange from '@/lend/components/PageLoanManage/index'
+import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import Tabs, { Tab } from '@ui/Tab'
 import Box from '@ui/Box'
-import ChartOhlcWrapper from '@lend/components/ChartOhlcWrapper'
+import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import {
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
   ExpandButton,
   ExpandIcon,
 } from '@ui/Chart/styles'
-import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
-import ConnectWallet from '@lend/components/ConnectWallet'
-import { useOneWayMarket } from '@lend/entities/chain'
+import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
+import ConnectWallet from '@/lend/components/ConnectWallet'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps } from '@lend/types/lend.types'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
 
 const Page: NextPage = () => {
   const params = useParams()

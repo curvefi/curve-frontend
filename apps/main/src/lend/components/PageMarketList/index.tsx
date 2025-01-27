@@ -1,19 +1,19 @@
-import type { PageMarketList, TableLabel } from '@lend/components/PageMarketList/types'
+import type { PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'
 
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { FilterType } from '@lend/components/PageMarketList/utils'
-import { _getActiveKey } from '@lend/store/createMarketListSlice'
-import useStore from '@lend/store/useStore'
+import { FilterType } from '@/lend/components/PageMarketList/utils'
+import { _getActiveKey } from '@/lend/store/createMarketListSlice'
+import useStore from '@/lend/store/useStore'
 
-import { REFRESH_INTERVAL } from '@lend/constants'
+import { REFRESH_INTERVAL } from '@/lend/constants'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import MarketListNoResult from '@lend/components/PageMarketList/components/MarketListNoResult'
-import MarketListItemContent from '@lend/components/PageMarketList/components/MarketListItemContent'
-import TableSettings from '@lend/components/PageMarketList/components/TableSettings/TableSettings'
+import MarketListNoResult from '@/lend/components/PageMarketList/components/MarketListNoResult'
+import MarketListItemContent from '@/lend/components/PageMarketList/components/MarketListItemContent'
+import TableSettings from '@/lend/components/PageMarketList/components/TableSettings/TableSettings'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
-import { useOneWayMarketMapping } from '@lend/entities/chain'
+import { useOneWayMarketMapping } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const MarketList = (pageProps: PageMarketList) => {

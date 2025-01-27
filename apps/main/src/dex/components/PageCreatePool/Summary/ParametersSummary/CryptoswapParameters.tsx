@@ -1,14 +1,14 @@
 import { t } from '@lingui/macro'
-import useStore from '@main/store/useStore'
-import { isTricrypto } from '@main/components/PageCreatePool/utils'
+import useStore from '@/dex/store/useStore'
+import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import {
   CategoryDataRow,
   ExtraMarginRow,
   SummaryDataTitle,
   SummaryData,
   SummaryDataPlaceholder,
-} from '@main/components/PageCreatePool/Summary/styles'
-import { ChainId } from '@main/types/main.types'
+} from '@/dex/components/PageCreatePool/Summary/styles'
+import { ChainId } from '@/dex/types/main.types'
 
 type Props = {
   chainId: ChainId

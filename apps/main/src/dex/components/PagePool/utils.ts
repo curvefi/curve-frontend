@@ -1,5 +1,5 @@
-import { shortenTokenName } from '@main/utils'
-import { Balances } from '@main/types/main.types'
+import { shortenTokenName } from '@/dex/utils'
+import { Balances } from '@/dex/types/main.types'
 
 export type Amount = {
   value: string

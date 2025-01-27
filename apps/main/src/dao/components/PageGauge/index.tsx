@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import Box from '@ui/Box'
-import GaugeWeightHistoryChart from '@dao/components/Charts/GaugeWeightHistoryChart'
+import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
 import GaugeHeader from './GaugeHeader'
 import GaugeMetrics from './GaugeMetrics'
 import GaugeVotesTable from './GaugeVotesTable'

@@ -3,16 +3,16 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { breakpoints, formatNumber } from '@ui/utils'
-import networks from '@loan/networks'
-import useStore from '@loan/store/useStore'
+import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
 
-import AlertFormError from '@loan/components/AlertFormError'
+import AlertFormError from '@/loan/components/AlertFormError'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
-import { ChainId, Curve } from '@loan/types/loan.types'
+import { ChainId, Curve } from '@/loan/types/loan.types'
 
 type Props = {
   rChainId: ChainId
