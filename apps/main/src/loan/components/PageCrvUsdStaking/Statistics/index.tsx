@@ -1,6 +1,6 @@
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Card, CardHeader, Box } from '@mui/material'
+import { Stack, Card, CardHeader, Box } from '@mui/material'
 import { useState } from 'react'
 import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
@@ -8,6 +8,7 @@ import { useScrvUsdYield } from '@loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@loan/entities/scrvusdRevenue'
 import RevenueLineChart from './RevenueLineChart'
 import DistributionsBarChart from './DistributionsBarChart'
+import AdvancedDetails from './AdvancedDetails'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -25,31 +26,41 @@ const Statistics = () => {
   const { data: revenueData } = useScrvUsdRevenue({})
 
   return (
-    <Card
-      sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        width: '100%',
-        maxWidth: MaxWidth.statistics,
-      }}
-    >
-      <CardHeader
-        title="Statistics"
-        sx={{ padding: `0 ${Spacing.md.desktop} ${Spacing.sm.desktop}`, alignItems: 'end' }}
-      />
-      <Box sx={{ padding: Spacing.md }}>
-        <StatsStack />
-      </Box>
-      <ChartHeader
-        activeChartOption={activeChartOption}
-        setActiveChartOption={setActiveChartOption}
-        activeTimeOption={activeTimeOption}
-        setActiveTimeOption={setActiveTimeOption}
-        chartOptions={chartOptions}
-        timeOptions={timeOptions}
-      />
-      {activeChartOption.label === 'Savings Rate' && <RevenueLineChart data={yieldData ?? []} />}
-      {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
-    </Card>
+    <Stack direction="column" spacing={0}>
+      <Card
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          width: '100%',
+          maxWidth: MaxWidth.statistics,
+        }}
+      >
+        <CardHeader
+          title="Statistics"
+          sx={{
+            padding: {
+              mobile: `${Spacing.lg.mobile} ${Spacing.md.mobile} ${Spacing.sm.mobile}`,
+              tablet: `${Spacing.lg.tablet} ${Spacing.md.tablet} ${Spacing.sm.tablet}`,
+              desktop: `${Spacing.lg.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
+            },
+            alignItems: 'end',
+          }}
+        />
+        <Box sx={{ padding: Spacing.md }}>
+          <StatsStack />
+        </Box>
+        <ChartHeader
+          activeChartOption={activeChartOption}
+          setActiveChartOption={setActiveChartOption}
+          activeTimeOption={activeTimeOption}
+          setActiveTimeOption={setActiveTimeOption}
+          chartOptions={chartOptions}
+          timeOptions={timeOptions}
+        />
+        {activeChartOption.label === 'Savings Rate' && <RevenueLineChart data={yieldData ?? []} />}
+        {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
+      </Card>
+      <AdvancedDetails />
+    </Stack>
   )
 }
 

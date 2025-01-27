@@ -30,11 +30,29 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
         paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
         paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        height: '4rem',
-        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`, // 1px for the border
+        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`,
+        variants: [
+          {
+            props: { size: 'small' }, // todo: currently not working, applying styles inline
+            style: {
+              minHeight: SizesAndSpaces.Sizing.md.desktop,
+              padding: `0 ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
+            },
+          },
+        ],
       },
       action: { alignContent: 'center', margin: 0 },
-      title: { ...typography.headingSBold },
+      title: {
+        ...typography.headingSBold,
+        variants: [
+          {
+            props: { size: 'small' },
+            style: {
+              ...typography.headingXsBold,
+            },
+          },
+        ],
+      },
     },
   },
   MuiCardActions: {

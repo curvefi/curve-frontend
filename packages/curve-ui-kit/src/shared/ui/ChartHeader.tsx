@@ -57,9 +57,14 @@ const ChartHeader = ({
           <Icon name="Maximize" size={20} />
         </IconButton>
       </ToggleButtonGroup>
-      <Select value={activeTimeOption} onChange={handleTimeOption} size="small" sx={{ width: '100px' }}>
+      <Select
+        value={activeTimeOption}
+        onChange={handleTimeOption}
+        size="small"
+        sx={{ width: '100px', textTransform: 'uppercase' }}
+      >
         {timeOptions.map((option) => (
-          <MenuItem value={option} key={option}>
+          <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
             {option}
           </MenuItem>
         ))}
