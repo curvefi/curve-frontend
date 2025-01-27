@@ -115,3 +115,4 @@ export const logQuery = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.
 export const logMutation = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.MUTATION, ...args)
 export const logError = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.ERROR, ...args)
 export const logSuccess = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.SUCCESS, ...args)
+export const logInfo = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.INFO, ...args)

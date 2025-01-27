@@ -6,7 +6,7 @@ import { initOnboard } from './lib/init'
 import { devtools } from 'zustand/middleware'
 import type { Address } from 'abitype'
 import type { EIP1193Provider } from '@web3-onboard/common'
-import { logSuccess } from '@ui-kit/lib'
+import { logInfo } from '@ui-kit/lib'
 
 type WalletState = {
   onboard: OnboardAPI | null
@@ -61,7 +61,8 @@ const walletStore: StateCreator<WalletStore> = (set, get): WalletStore => ({
     })
   },
   chooseWallet: async (wallet: Wallet | null) => {
-    const { cleanup, chooseWallet } = get()
+    const { cleanup, chooseWallet, wallet: oldWallet } = get()
+    if (oldWallet === wallet) return // avoid double calls when updated via the useConnectWallet hook
     cleanup?.()
     return set(createProvider(wallet, chooseWallet))
   },
@@ -91,7 +92,7 @@ function createProvider(wallet: Wallet | null | undefined, chooseWallet: (wallet
   if (!wallet) return { rpcProvider: null, wallet: null, provider: null }
   const rpcProvider = getRpcProvider(wallet)
   const handler = (newAccounts: Address[]) => {
-    logSuccess('accountsChanged', newAccounts)
+    logInfo('accountsChanged', newAccounts)
     return chooseWallet(newAccounts.length === 0 ? null : wallet)
   }
   rpcProvider.on('accountsChanged', handler)
