@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTheme } from '@mui/material/styles'
 import { Stack } from '@mui/material'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
@@ -9,6 +10,10 @@ import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
 import { Duration } from '../../themes/design/0_primitives'
 import { shortenTokenAddress } from 'ui/src/utils/'
+import { t } from 'i18next'
+import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 type ComponentSize = 'S' | 'M' | 'L'
 
@@ -16,7 +21,6 @@ type ActionInfoProps = {
   label: string
   address: string
   linkAddress: string
-  copyText: string
   size?: ComponentSize
 }
 
@@ -32,7 +36,10 @@ const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingS
   L: 'headingSBold',
 }
 
-const ActionInfo = ({ label, address, linkAddress, copyText, size = 'S' }: ActionInfoProps) => {
+const ActionInfo = ({ label, address, linkAddress, size = 'S' }: ActionInfoProps) => {
+  const {
+    design: { Button },
+  } = useTheme()
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
   const copyValue = () => {
@@ -45,21 +52,28 @@ const ActionInfo = ({ label, address, linkAddress, copyText, size = 'S' }: Actio
       <Typography variant={labelSize[size]} color="textTertiary">
         {label}
       </Typography>
-      <Stack direction="row" alignItems="center" gap={1}>
-        <Typography variant={addressSize[size]} color="textPrimary">
+      <Stack direction="row" alignItems="center">
+        <Typography variant={addressSize[size]} color="textPrimary" sx={{ marginRight: Spacing.sm }}>
           {shortenTokenAddress(address)}
         </Typography>
-        <IconButton onClick={copyValue}>
-          <Icon name="Copy" size={20} />
+        <IconButton size="small" onClick={copyValue} sx={{ svg: { color: Button.Primary.Default.Fill } }}>
+          <Icon name="Copy" size={24} />
         </IconButton>
-        <Link href={linkAddress} target="_blank" rel="noopener">
-          <Icon name="ArrowUpRight" size={20} />
-        </Link>
+        <IconButton
+          component={Link}
+          href={linkAddress}
+          target="_blank"
+          rel="noopener"
+          size="small"
+          sx={{ svg: { color: Button.Primary.Default.Fill } }}
+        >
+          <Icon name="ArrowUpRight" size={24} />
+        </IconButton>
       </Stack>
 
       <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
-          <AlertTitle>{copyText}</AlertTitle>
+          <AlertTitle>{t`Copied to clipboard!`}</AlertTitle>
           {address}
         </Alert>
       </Snackbar>
