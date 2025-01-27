@@ -6,7 +6,7 @@ import * as Parsers from './parsers'
 export type Endpoint = 'crvusd' | 'lending'
 
 export async function getEvents(endpoint: Endpoint, chain: Chain, llamma: string, page: number, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetLlammaEventsResponse>(
     `${host}/v1/${endpoint}/llamma_events/${chain}/${llamma}?page=${page}&per_page=10`,
   )
@@ -18,7 +18,7 @@ export async function getEvents(endpoint: Endpoint, chain: Chain, llamma: string
 }
 
 export async function getTrades(endpoint: Endpoint, chain: Chain, llamma: string, page: number, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetLlammaTradesResponse>(
     `${host}/v1/${endpoint}/llamma_trades/${chain}/${llamma}?page=${page}&per_page=10`,
   )
@@ -30,7 +30,7 @@ export async function getTrades(endpoint: Endpoint, chain: Chain, llamma: string
 }
 
 export async function getOHLC(endpoint: Endpoint, chain: Chain, llamma: string, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
 
   const end = Math.floor(new Date().getTime() / 1000)
   const start = end - 10 * 24 * 60 * 60 // Subtract 1 month worth of seconds.

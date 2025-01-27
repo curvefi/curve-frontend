@@ -2,12 +2,12 @@
  * Options for making API requests
  * @example
  * const options: Options = {
- *   host: Promise.resolve("http://localhost:3000"), // Custom host for local testing
+ *   host: "http://localhost:3000", // Custom host for local testing
  *   signal: new AbortController().signal // For request cancellation
  * }
  */
 export type Options = {
-  host?: Promise<string>
+  host?: string
   signal?: AbortSignal
 }
 
@@ -16,10 +16,9 @@ export type Options = {
  * @param options - Optional configuration options
  * @returns Promise that resolves to the host URL
  * @example
- * const host = await getHost() // "https://prices.curve.fi"
+ * const host = getHost() // "https://prices.curve.fi"
  */
-export const getHost = (options?: Options): Required<Options>['host'] =>
-  options?.host ?? Promise.resolve('https://prices.curve.fi')
+export const getHost = (options?: Options): Required<Options>['host'] => options?.host ?? 'https://prices.curve.fi'
 
 /**
  * List of supported blockchain networks

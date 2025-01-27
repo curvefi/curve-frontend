@@ -11,7 +11,7 @@ export async function getProposals(
   status: Models.ProposalStatus,
   options?: Options,
 ) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetProposalsResponse>(
     `${host}/v1/dao/proposals?pagination=10&page=${page}&search_string=${search}&type_filter=${type}&status_filter=${status}`,
   )
@@ -23,7 +23,7 @@ export async function getProposals(
 }
 
 export async function getProposal(proposalId: number, proposalType: Models.ProposalType, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetProposalDetailsResponse>(
     `${host}/v1/dao/proposals/details/${proposalType}/${proposalId}`,
   )
@@ -33,7 +33,7 @@ export async function getProposal(proposalId: number, proposalType: Models.Propo
 
 export async function getUserProposalVotes(user: string, options?: Options) {
   try {
-    const host = await getHost(options)
+    const host = getHost(options)
     const resp = await fetch<Responses.GetUserProposalVotes>(
       `${host}/v1/dao/proposals/votes/user/${user}?pagination=100&page=1`,
     )

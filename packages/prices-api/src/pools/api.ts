@@ -4,7 +4,7 @@ import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
 export async function getPools(chain: Chain, page: number = 1, perPage: number = 9999, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetPoolsResponse>(`${host}/v1/chains/${chain}?page=${page}&per_page=${perPage}`)
 
   return {
@@ -15,14 +15,14 @@ export async function getPools(chain: Chain, page: number = 1, perPage: number =
 }
 
 export async function getPool(chain: Chain, poolAddr: string, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetPoolResponse>(`${host}/v1/pools/${chain}/${poolAddr}`)
 
   return Parsers.parsePool(resp)
 }
 
 export async function getVolume(chain: Chain, poolAddr: string, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
 
   const range = 120 * 60 * 1000
   const end = Math.floor(new Date().getTime() / 1000)
@@ -36,7 +36,7 @@ export async function getVolume(chain: Chain, poolAddr: string, options?: Option
 }
 
 export async function getTvl(chain: Chain, poolAddr: string, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
 
   const range = 120 * 60 * 1000
   const end = Math.floor(new Date().getTime() / 1000)

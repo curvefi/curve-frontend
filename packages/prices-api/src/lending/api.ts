@@ -6,7 +6,7 @@ import * as Parsers from './parsers'
 export type Endpoint = 'crvusd' | 'lending'
 
 export async function getLoanDistribution(endpoint: Endpoint, chain: Chain, controller: string, options?: Options) {
-  const host = await getHost(options)
+  const host = getHost(options)
   const resp = await fetch<Responses.GetLoanDistributionResponse>(
     `${host}/v1/${endpoint}/markets/${chain}/${controller}/loans/distribution`,
   )
