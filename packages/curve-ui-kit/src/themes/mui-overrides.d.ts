@@ -9,6 +9,7 @@ declare module '@mui/material/styles' {
   // allow configuration using `createTheme()`
   interface ThemeOptions {
     design?: DesignSystem & { options: DesignOptions }
+    key?: ThemeKey
   }
 
   interface TypeText {
