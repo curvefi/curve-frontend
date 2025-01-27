@@ -1,5 +1,5 @@
 import { isLoading } from '@ui/utils'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 import ConnectWalletPrompt from '@ui/ConnectWalletPrompt'

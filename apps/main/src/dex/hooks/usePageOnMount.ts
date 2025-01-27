@@ -7,15 +7,15 @@ import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@main/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@main/utils/storage'
-import { useNetworkFromUrl, useParsedParams } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@main/store/createWalletSlice'
-import { initCurveJs } from '@main/utils/utilsCurvejs'
-import useStore from '@main/store/useStore'
+import { getStorageValue, setStorageValue } from '@/dex/utils/storage'
+import { useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRouter'
+import { getWalletChainId } from '@/dex/store/createWalletSlice'
+import { initCurveJs } from '@/dex/utils/utilsCurvejs'
+import useStore from '@/dex/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@main/types/main.types'
+import { ChainId, PageProps, Wallet } from '@/dex/types/main.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()

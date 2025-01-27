@@ -1,9 +1,9 @@
-import type { CurrencyReservesProps } from '@main/components/PagePool/PoolDetails/CurrencyReserves/types'
+import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
-import { shortenTokenAddress } from '@main/utils'
-import { StyledStats } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
+import { shortenTokenAddress } from '@/dex/utils'
+import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import Chip from '@ui/Typography/Chip'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
@@ -11,7 +11,7 @@ import Icon from '@ui/Icon'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TextEllipsis from '@ui/TextEllipsis'
 import TooltipButton from '@ui/Tooltip'
-import TokenIcon from '@main/components/TokenIcon'
+import TokenIcon from '@/dex/components/TokenIcon'
 
 const CurrencyReservesContent = ({
   cr,

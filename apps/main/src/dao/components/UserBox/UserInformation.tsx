@@ -2,14 +2,14 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { shortenTokenAddress, formatNumber } from '@ui/utils'
 
 import { TooltipIcon } from '@ui/Tooltip'
 import Loader from 'ui/src/Loader/Loader'
 import InternalLink from '@ui/Link/InternalLink'
 import Box from '@ui/Box'
-import { SnapshotVotingPower, ActiveProposal } from '@dao/types/dao.types'
+import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 
 type Props = {
   noLink?: boolean

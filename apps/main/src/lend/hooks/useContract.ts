@@ -1,9 +1,9 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 
-import networks from '@lend/networks'
-import useStore from '@lend/store/useStore'
-import { ChainId, Provider } from '@lend/types/lend.types'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
+import { ChainId, Provider } from '@/lend/types/lend.types'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
@@ -18,7 +18,7 @@ const useAbiGaugeTotalSupply = (
   const getContract = useCallback(
     async (jsonModuleName: string, contractAddress: string, provider: Provider | JsonRpcProvider) => {
       try {
-        const abi = await import(`@lend/abis/${jsonModuleName}.json`).then((module) => module.default.abi)
+        const abi = await import(`@/lend/abis/${jsonModuleName}.json`).then((module) => module.default.abi)
 
         if (!abi) {
           console.error('cannot find abi')

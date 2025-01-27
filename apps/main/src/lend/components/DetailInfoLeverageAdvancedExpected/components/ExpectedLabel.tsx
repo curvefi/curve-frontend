@@ -1,11 +1,11 @@
-import type { DetailInfoLeverageExpectedProps } from '@lend/components/DetailInfoLeverageAdvancedExpected/types'
+import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 
 import React from 'react'
 import styled from 'styled-components'
 
-import { format } from '@lend/components/DetailInfoLeverageAdvancedExpected/utils'
+import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 
-import { DetailsButton } from '@lend/components/DetailInfoLeverageAdvancedExpected'
+import { DetailsButton } from '@/lend/components/DetailInfoLeverageAdvancedExpected'
 import Icon from '@ui/Icon'
 import Loader from '@ui/Loader'
 

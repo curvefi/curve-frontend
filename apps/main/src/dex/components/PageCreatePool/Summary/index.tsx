@@ -1,17 +1,17 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
-import { checkFormReady } from '@main/components/PageCreatePool/utils'
+import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 
-import ConfirmModal from '@main/components/PageCreatePool/ConfirmModal'
+import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
 import Box from '@ui/Box'
-import PoolTypeSummary from '@main/components/PageCreatePool/Summary/PoolTypeSummary'
-import TokensInPoolSummary from '@main/components/PageCreatePool/Summary/TokensInPoolSummary'
-import ParametersSummary from '@main/components/PageCreatePool/Summary/ParametersSummary'
-import PoolInfoSummary from '@main/components/PageCreatePool/Summary/PoolInfoSummary'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
+import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
+import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
+import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
   imageBaseUrl: string

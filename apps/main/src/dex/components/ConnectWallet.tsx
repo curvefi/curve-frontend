@@ -1,5 +1,5 @@
 import { isLoading } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 import ConnectWalletPrompt from '@ui/ConnectWalletPrompt'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'

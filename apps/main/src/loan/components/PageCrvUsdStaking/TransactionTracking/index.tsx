@@ -1,4 +1,4 @@
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import DepositTracking from './DepositTracking'
 import WithdrawTracking from './WithdrawTracking'

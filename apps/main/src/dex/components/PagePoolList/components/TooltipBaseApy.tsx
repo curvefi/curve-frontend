@@ -5,7 +5,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
-import { RewardBase, PoolData, PoolDataCache } from '@main/types/main.types'
+import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 const TooltipBaseApy = ({
   baseApy,

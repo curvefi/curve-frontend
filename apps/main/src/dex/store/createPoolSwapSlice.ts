@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
-import type { EstimatedGas as FormEstGas } from '@main/components/PagePool/types'
-import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@main/components/PagePool/Swap/types'
-import type { RoutesAndOutput, RoutesAndOutputModal } from '@main/components/PageRouterSwap/types'
+import type { State } from '@/dex/store/useStore'
+import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
+import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@/dex/components/PagePool/Swap/types'
+import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
 import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import {
@@ -10,11 +10,11 @@ import {
   DEFAULT_EXCHANGE_OUTPUT,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@main/components/PagePool/Swap/utils'
-import { NETWORK_TOKEN } from '@main/constants'
-import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@main/utils/utilsSwap'
-import curvejsApi from '@main/lib/curvejs'
+} from '@/dex/components/PagePool/Swap/utils'
+import { NETWORK_TOKEN } from '@/dex/constants'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import curvejsApi from '@/dex/lib/curvejs'
 import {
   Balances,
   CurveApi,
@@ -25,7 +25,7 @@ import {
   FnStepEstGasApprovalResponse,
   FnStepApproveResponse,
   FnStepResponse,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -97,7 +97,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         if (!provider) return false
 
         try {
-          const json = await import('@main/components/PagePool/abis/stored_rates.json').then((module) => module.default)
+          const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then((module) => module.default)
           const iface = new Interface(json)
           const contract = new Contract(pool.address, iface.format(), provider)
           const storedRates = await contract.stored_rates()

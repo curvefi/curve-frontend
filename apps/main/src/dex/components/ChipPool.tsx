@@ -5,8 +5,8 @@ import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { copyToClipboard } from '@main/lib/utils'
-import { shortenTokenAddress } from '@main/utils'
+import { copyToClipboard } from '@/dex/lib/utils'
+import { shortenTokenAddress } from '@/dex/utils'
 
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'

@@ -1,15 +1,15 @@
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { INVALID_ADDRESS } from '@lend/constants'
+import { INVALID_ADDRESS } from '@/lend/constants'
 
-import { SubTitle } from '@lend/components/DetailsMarket/styles'
+import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
-import ChipInactive from '@lend/components/ChipInactive'
-import DetailInfoAddressLookup from '@lend/components/DetailsMarket/components/DetailInfoAddressLookup'
-import TokenLabel from '@lend/components/TokenLabel'
-import { PageContentProps } from '@lend/types/lend.types'
+import ChipInactive from '@/lend/components/ChipInactive'
+import DetailInfoAddressLookup from '@/lend/components/DetailsMarket/components/DetailInfoAddressLookup'
+import TokenLabel from '@/lend/components/TokenLabel'
+import { PageContentProps } from '@/lend/types/lend.types'
 
 type ContractItems = { label: string | React.ReactNode; address: string | undefined; invalidText?: string }[]
 

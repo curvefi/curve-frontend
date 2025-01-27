@@ -3,8 +3,8 @@ import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
 
-import useStore from '@dao/store/useStore'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import useStore from '@/dao/store/useStore'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 type GaugeListColumnsProps = {
   gaugeData: GaugeFormattedData

@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { useEffect } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import CurrentVotes from './CurrentVotes'
-import ConnectWallet from '@dao/components/ConnectWallet'
+import ConnectWallet from '@/dao/components/ConnectWallet'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const { getUserGaugeVoteWeights, userGaugeVoteWeightsMapper } = useStore((state) => state.user)

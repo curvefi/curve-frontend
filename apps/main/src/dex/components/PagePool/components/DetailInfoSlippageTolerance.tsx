@@ -1,4 +1,4 @@
-import type { AdvancedSettingsProps } from '@main/components/AdvancedSettings'
+import type { AdvancedSettingsProps } from '@/dex/components/AdvancedSettings'
 
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { formatNumber } from '@ui/utils'
 
 import DetailInfo from '@ui/DetailInfo'
-import AdvancedSettings from '@main/components/AdvancedSettings'
+import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import Icon from '@ui/Icon'
 
 const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => (

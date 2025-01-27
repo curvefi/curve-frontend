@@ -6,13 +6,13 @@ import { useLocation, useNavigate, useParams, useSearchParams } from 'react-rout
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@loan/utils/helpers'
-import usePageOnMount from '@loan/hooks/usePageOnMount'
-import useStore from '@loan/store/useStore'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
 
 import { ExternalLink } from '@ui/Link'
-import DocumentHead from '@loan/layout/DocumentHead'
-import IntegrationsComp from '@loan/components/PageIntegrations/index'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import IntegrationsComp from '@/loan/components/PageIntegrations/index'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const Page: NextPage = () => {
