@@ -20,7 +20,7 @@ export type LlamaMarket = {
     usdTotal: number
   }
   rates: {
-    lend?: number // apy %
+    lend?: number // apy %, only for pools
     borrow: number // apy %
   }
   type: LlamaMarketType
