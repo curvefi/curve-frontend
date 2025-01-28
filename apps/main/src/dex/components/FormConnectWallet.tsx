@@ -2,11 +2,11 @@ import { t } from '@lingui/macro'
 import React from 'react'
 
 import { isLoading } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useCurve } from '@main/entities/curve'
+import { useCurve } from '@/dex/entities/curve'
 
 const FormConnectWallet = ({
   loading,

@@ -6,15 +6,15 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useStore from '@/dex/store/useStore'
 
-import Dashboard from '@main/components/PageDashboard/index'
-import DocumentHead from '@main/layout/default/DocumentHead'
-import Settings from '@main/layout/default/Settings'
+import Dashboard from '@/dex/components/PageDashboard/index'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import Settings from '@/dex/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import ConnectWallet from '@main/components/ConnectWallet'
+import ConnectWallet from '@/dex/components/ConnectWallet'
 import Box from '@ui/Box'
 
 const Page: NextPage = () => {

@@ -1,4 +1,4 @@
-import type { FormStatus as Fs } from '@loan/components/PageLoanManage/types'
+import type { FormStatus as Fs } from '@/loan/components/PageLoanManage/types'
 
 export type FormValues = {
   maxSlippage: string

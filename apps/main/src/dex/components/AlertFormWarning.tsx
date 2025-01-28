@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 
 import AlertBox from '@ui/AlertBox'
-import { AlertType } from '@main/types/main.types'
+import { AlertType } from '@/dex/types/main.types'
 
 const ALERT_FORM_WARNING_KEYS = {
   'warning-exchange-rate-low': 'warning-exchange-rate-low',

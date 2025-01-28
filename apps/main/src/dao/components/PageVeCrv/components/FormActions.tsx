@@ -1,7 +1,7 @@
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'

@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import type {
   FilterKey,
   FormStatus,
@@ -8,16 +8,16 @@ import type {
   SearchParams,
   SearchTermsResult,
   SortKey,
-} from '@main/components/PagePoolList/types'
+} from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
-import type { ValueMapperCached } from '@main/store/createCacheSlice'
+import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
 
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
 
-import { SEARCH_TERM } from '@main/hooks/useSearchTermMapper'
-import { parseSearchTermResults } from '@main/components/PagePoolList/utils'
+import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
+import { parseSearchTermResults } from '@/dex/components/PagePoolList/utils'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'
 import {
   ChainId,
@@ -28,7 +28,7 @@ import {
   TvlMapper,
   UserPoolListMapper,
   VolumeMapper,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

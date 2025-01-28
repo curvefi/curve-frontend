@@ -1,12 +1,12 @@
-import type { ComboBoxSelectGaugeProps } from '@dao/components/ComboBoxSelectGauge/types'
+import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
-import SelectGaugeListItem from '@dao/components/ComboBoxSelectGauge/ComboBoxListItem'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import SelectGaugeListItem from '@/dao/components/ComboBoxSelectGauge/ComboBoxListItem'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 const SelectGaugeListChunk = ({
   testId,

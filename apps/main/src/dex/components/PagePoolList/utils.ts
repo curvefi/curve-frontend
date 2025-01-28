@@ -1,5 +1,5 @@
 import type { SearchTermsFuseResult } from '@ui-kit/utils'
-import type { SearchTermsResult } from '@main/components/PagePoolList/types'
+import type { SearchTermsResult } from '@/dex/components/PagePoolList/types'
 
 export enum COLUMN_KEYS {
   'inPool' = 'inPool',

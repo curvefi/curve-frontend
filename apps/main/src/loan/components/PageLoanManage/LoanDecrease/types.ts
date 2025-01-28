@@ -1,5 +1,5 @@
-import type { FormDetailInfo as Di, FormStatus as Fs } from '@loan/components/PageLoanManage/types'
-import { LiqRange } from '@loan/types/loan.types'
+import type { FormDetailInfo as Di, FormStatus as Fs } from '@/loan/components/PageLoanManage/types'
+import { LiqRange } from '@/loan/types/loan.types'
 
 export type FormValues = {
   debt: string

@@ -1,24 +1,24 @@
 import type { NextPage } from 'next'
-import type { FormType } from '@main/components/PageCrvLocker/types'
+import type { FormType } from '@/dex/components/PageCrvLocker/types'
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { ROUTE } from '@main/constants'
-import { getPath } from '@main/utils/utilsRouter'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
+import { ROUTE } from '@/dex/constants'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useStore from '@/dex/store/useStore'
 
 import Box, { BoxHeader } from '@ui/Box'
-import DocumentHead from '@main/layout/default/DocumentHead'
-import FormCrvLocker from '@main/components/PageCrvLocker/index'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
 import IconButton from '@ui/IconButton'
-import Settings from '@main/layout/default/Settings'
+import Settings from '@/dex/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { CurveApi } from '@main/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 
 const Page: NextPage = () => {
   const params = useParams()

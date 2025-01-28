@@ -1,5 +1,5 @@
-import type { PoolListTableLabel } from '@main/components/PagePoolList/types'
-import type { SortKey } from '@main/components/PagePoolList/types'
+import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
+import type { SortKey } from '@/dex/components/PagePoolList/types'
 
 import { t } from '@lingui/macro'
 import React from 'react'

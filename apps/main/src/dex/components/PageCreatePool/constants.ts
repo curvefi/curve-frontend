@@ -1,8 +1,8 @@
-import type { ImplementationId } from '@main/components/PageCreatePool/types'
+import type { ImplementationId } from '@/dex/components/PageCreatePool/types'
 import BigNumber from 'bignumber.js'
 
 import { t } from '@lingui/macro'
-import { NativeToken } from '@main/types/main.types'
+import { NativeToken } from '@/dex/types/main.types'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'
@@ -244,7 +244,7 @@ export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => ({
   },
   a: {
     min: 1,
-    max: 5000,
+    max: 20000,
   },
   maExpTime: {
     min: 60,

@@ -1,10 +1,10 @@
-import type { SearchParams } from '@main/components/PagePoolList/types'
+import type { SearchParams } from '@/dex/components/PagePoolList/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 
 import Checkbox from '@ui/Checkbox'
-import { PoolData } from '@main/types/main.types'
+import { PoolData } from '@/dex/types/main.types'
 
 const TableCheckboxHideSmallPools = ({
   searchParams,

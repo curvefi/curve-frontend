@@ -1,16 +1,16 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { GasInfo } from '@loan/store/types'
+import type { State } from '@/loan/store/useStore'
+import type { GasInfo } from '@/loan/store/types'
 
 import { JsonRpcProvider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { gweiToWai } from '@ui-kit/utils'
 import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
-import { httpFetcher } from '@loan/utils/helpers'
+import { httpFetcher } from '@/loan/utils/helpers'
 import { log } from '@ui-kit/lib/logging'
-import networks from '@loan/networks'
-import { ChainId, Curve } from '@loan/types/loan.types'
+import networks from '@/loan/networks'
+import { ChainId, Curve } from '@/loan/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
