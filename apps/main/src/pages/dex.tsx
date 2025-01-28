@@ -160,7 +160,6 @@ const App: NextPage = () => {
 
   const SubRoutes = (
     <>
-      <Route path=":network" element={<PageSwap />} />
       <Route path=":network/dashboard" element={<PageDashboard />} />
       <Route path=":network/locker" element={<PageLockedCrv />} />
       <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
@@ -213,7 +212,7 @@ const App: NextPage = () => {
                           path="/disclaimer"
                           element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
                         />
-                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
+                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} />} />
                         <Route path="404" element={<Page404 />} />
                         <Route path="*" element={<Page404 />} />
                       </Routes>
