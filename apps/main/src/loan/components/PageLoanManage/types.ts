@@ -1,5 +1,5 @@
 import { Params } from 'react-router'
-import { ChainId, Curve, Llamma, TitleMapper } from '@loan/types/loan.types'
+import { ChainId, Curve, Llamma, TitleMapper } from '@/loan/types/loan.types'
 
 export type DetailInfoTypes = 'user' | 'llamma'
 

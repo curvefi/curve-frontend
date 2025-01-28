@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { formatNumber } from '@ui/utils'
 import { t } from '@lingui/macro'
 import Box from '@ui/Box'
-import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Tooltip from '@ui/Tooltip'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 

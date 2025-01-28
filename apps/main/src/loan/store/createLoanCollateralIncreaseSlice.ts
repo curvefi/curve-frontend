@@ -1,17 +1,17 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormStatus, FormValues } from '@loan/components/PageLoanManage/CollateralIncrease/types'
-import type { FormDetailInfo, FormEstGas } from '@loan/components/PageLoanManage/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@loan/components/PageLoanManage/utils'
-import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
-import networks from '@loan/networks'
+} from '@/loan/components/PageLoanManage/utils'
+import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import networks from '@/loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
-import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

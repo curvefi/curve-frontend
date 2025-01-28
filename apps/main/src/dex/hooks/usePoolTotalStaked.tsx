@@ -1,9 +1,9 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { isValidAddress } from '@main/utils'
-import useStore from '@main/store/useStore'
+import { isValidAddress } from '@/dex/utils'
+import useStore from '@/dex/store/useStore'
 import dayjs from '@ui-kit/lib/dayjs'
-import { PoolDataCacheOrApi, Provider } from '@main/types/main.types'
+import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
@@ -24,7 +24,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const getContract = useCallback(
     async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
-        const abi = await import(`@main/components/PagePool/abis/${contract}.json`).then((module) => module.default.abi)
+        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then((module) => module.default.abi)
         const iface = new Interface(abi)
         return new Contract(address, iface.format(), provider)
       } catch (error) {

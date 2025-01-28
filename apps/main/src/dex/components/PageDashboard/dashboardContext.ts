@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
-import { DashboardDataMapper, FormValues } from '@main/components/PageDashboard/types'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { DashboardDataMapper, FormValues } from '@/dex/components/PageDashboard/types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type DashboardContextType = {
   activeKey: string

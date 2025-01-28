@@ -1,9 +1,9 @@
-import type { Balances, EtherContract, VestedTotals } from '@main/components/PageCompensation/types'
+import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
 
 import React from 'react'
 
-import Compensation from '@main/components/PageCompensation/components/Compensation'
-import { CurveApi, ChainId, Provider } from '@main/types/main.types'
+import Compensation from '@/dex/components/PageCompensation/components/Compensation'
+import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 
 const Compensations = ({
   poolId,

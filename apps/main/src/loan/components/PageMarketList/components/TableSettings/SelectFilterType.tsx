@@ -1,14 +1,14 @@
-import type { SearchParams, TableLabel } from '@loan/components/PageMarketList/types'
+import type { SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@loan/constants'
-import useStore from '@loan/store/useStore'
+import { TITLE } from '@/loan/constants'
+import useStore from '@/loan/store/useStore'
 
 import TableSortSelect from '@ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@ui/TableSort/TableSortSelectMobile'
-import { TitleMapper } from '@loan/types/loan.types'
+import { TitleMapper } from '@/loan/types/loan.types'
 
 const SelectFilterType = ({
   someLoanExists,

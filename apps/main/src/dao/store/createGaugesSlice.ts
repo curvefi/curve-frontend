@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
+import type { State } from '@/dao/store/useStore'
 import Fuse from 'fuse.js'
 import produce from 'immer'
 import { t } from '@lingui/macro'
@@ -20,7 +20,7 @@ import {
   SortByFilterGaugesKeys,
   SortDirection,
   TransactionState,
-} from '@dao/types/dao.types'
+} from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

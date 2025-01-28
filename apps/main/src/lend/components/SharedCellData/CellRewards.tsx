@@ -5,15 +5,15 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { buttonOutlinedStyles } from '@ui/Button/styles'
-import useStore from '@lend/store/useStore'
-import useSupplyTotalApr from '@lend/hooks/useSupplyTotalApr'
+import useStore from '@/lend/store/useStore'
+import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
-import ChipInactive from '@lend/components/ChipInactive'
-import CellRewardsTooltip from '@lend/components/SharedCellData/CellRewardsTooltip'
+import ChipInactive from '@/lend/components/ChipInactive'
+import CellRewardsTooltip from '@/lend/components/SharedCellData/CellRewardsTooltip'
 import Icon from '@ui/Icon'
-import { ChainId } from '@lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 
 const CellRewards = ({
   className = '',

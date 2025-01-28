@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
-import StatsBanner from '@loan/components/PageCrvUsdStaking/StatsBanner'
-import DepositWithdraw from '@loan/components/PageCrvUsdStaking/DepositWithdraw'
-import UserInformation from '@loan/components/PageCrvUsdStaking/UserInformation'
-import UserPositionBanner from '@loan/components/PageCrvUsdStaking/UserPositionBanner'
+import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
+import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
+import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
+import UserPositionBanner from '@/loan/components/PageCrvUsdStaking/UserPositionBanner'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {

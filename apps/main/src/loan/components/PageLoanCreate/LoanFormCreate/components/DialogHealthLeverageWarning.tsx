@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import { HealthMode } from '@loan/types/loan.types'
+import { HealthMode } from '@/loan/types/loan.types'
 
 function DialogHealthLeverageWarning({
   confirmed,

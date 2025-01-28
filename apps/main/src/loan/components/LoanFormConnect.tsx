@@ -1,9 +1,9 @@
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import { CONNECT_STAGE } from '@loan/constants'
+import { CONNECT_STAGE } from '@/loan/constants'
 import { isLoading } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'

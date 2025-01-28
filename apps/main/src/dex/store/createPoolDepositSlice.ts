@@ -1,15 +1,15 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
-import type { Amount } from '@main/components/PagePool/utils'
-import { getAmountsError, parseAmountsForAPI } from '@main/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@main/components/PagePool/types'
+import type { State } from '@/dex/store/useStore'
+import type { Amount } from '@/dex/components/PagePool/utils'
+import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import type {
   FormLpTokenExpected,
   FormStatus,
   FormType,
   FormValues,
   LoadMaxAmount,
-} from '@main/components/PagePool/Deposit/types'
+} from '@/dex/components/PagePool/Deposit/types'
 
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
@@ -18,13 +18,13 @@ import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@main/components/PagePool/Deposit/utils'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@main/components/PagePool'
-import { NETWORK_TOKEN } from '@main/constants'
-import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
-import { isBonus, isHighSlippage } from '@main/utils'
-import { getUserPoolActiveKey } from '@main/store/createUserSlice'
-import curvejsApi from '@main/lib/curvejs'
+} from '@/dex/components/PagePool/Deposit/utils'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import { NETWORK_TOKEN } from '@/dex/constants'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { isBonus, isHighSlippage } from '@/dex/utils'
+import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
+import curvejsApi from '@/dex/lib/curvejs'
 import {
   Balances,
   ChainId,
@@ -34,7 +34,7 @@ import {
   FnStepResponse,
   Pool,
   PoolData,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

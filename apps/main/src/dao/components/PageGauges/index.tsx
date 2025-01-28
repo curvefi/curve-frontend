@@ -1,10 +1,10 @@
-import { SubNavItem } from '@dao/components/SubNav/types'
+import { SubNavItem } from '@/dao/components/SubNav/types'
 
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 import Box from '@ui/Box'
@@ -12,7 +12,7 @@ import Box from '@ui/Box'
 import GaugesList from './GaugeList'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 import GaugeVoting from './GaugeVoting'
-import SubNav from '@dao/components/SubNav'
+import SubNav from '@/dao/components/SubNav'
 
 const Gauges = () => {
   const { isMdUp } = useStore((state) => state.layout)

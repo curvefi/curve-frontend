@@ -1,10 +1,10 @@
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import type { GetState, SetState } from 'zustand'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
 
 import campaigns from '@external-rewards'
-import { ChainId } from '@main/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

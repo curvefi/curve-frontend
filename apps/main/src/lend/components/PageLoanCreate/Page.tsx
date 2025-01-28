@@ -4,13 +4,13 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { t } from '@lingui/macro'
 
-import { REFRESH_INTERVAL } from '@lend/constants'
-import { helpers } from '@lend/lib/apiLending'
-import { scrollToTop } from '@lend/utils/helpers'
-import networks from '@lend/networks'
-import usePageOnMount from '@lend/hooks/usePageOnMount'
-import useStore from '@lend/store/useStore'
-import useTitleMapper from '@lend/hooks/useTitleMapper'
+import { REFRESH_INTERVAL } from '@/lend/constants'
+import { helpers } from '@/lend/lib/apiLending'
+import { scrollToTop } from '@/lend/utils/helpers'
+import networks from '@/lend/networks'
+import usePageOnMount from '@/lend/hooks/usePageOnMount'
+import useStore from '@/lend/store/useStore'
+import useTitleMapper from '@/lend/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -20,11 +20,11 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@lend/layout/DocumentHead'
-import LoanCreate from '@lend/components/PageLoanCreate/index'
-import DetailsMarket from '@lend/components/DetailsMarket'
-import PageTitleBorrowSupplyLinks from '@lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import ChartOhlcWrapper from '@lend/components/ChartOhlcWrapper'
+import DocumentHead from '@/lend/layout/DocumentHead'
+import LoanCreate from '@/lend/components/PageLoanCreate/index'
+import DetailsMarket from '@/lend/components/DetailsMarket'
+import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import {
   ExpandButton,
   ExpandIcon,
@@ -32,12 +32,12 @@ import {
   PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
 import Box from '@ui/Box'
-import CampaignRewardsBanner from '@lend/components/CampaignRewardsBanner'
+import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { useOneWayMarket } from '@lend/entities/chain'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps } from '@lend/types/lend.types'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
 import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {

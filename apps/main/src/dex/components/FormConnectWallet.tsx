@@ -5,7 +5,7 @@ import { isLoading } from '@ui/utils'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useCurve } from '@main/entities/curve'
+import { useCurve } from '@/dex/entities/curve'
 import useStore from '@/dex/store/useStore'
 
 const FormConnectWallet = ({

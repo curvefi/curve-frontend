@@ -1,19 +1,19 @@
 import type { LpLiquidityEventsData, PricesApiCoin } from '@ui/Chart/types'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import {
   convertFullTime,
   convertTime,
   convertTimeAgo,
-} from '@main/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+} from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import Box from '@ui/Box'
-import TokenIcon from '@main/components/TokenIcon'
+import TokenIcon from '@/dex/components/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 import type React from 'react'
-import { ChainId } from '@main/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 
 const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
   lpEventsData,

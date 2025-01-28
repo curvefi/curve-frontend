@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
+import type { State } from '@/loan/store/useStore'
 
 import cloneDeep from 'lodash/cloneDeep'
 

@@ -1,18 +1,18 @@
-import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 
 import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
-import { SubTitle } from '@loan/components/LoanInfoLlamma/styles'
-import DetailsBandsChart from '@loan/components/LoanInfoLlamma/components/DetailsBandsChart'
-import DetailsInfo from '@loan/components/LoanInfoLlamma/components/DetailsInfo'
-import DetailInfoAddressLookup from '@loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
-import LoanInfoParameters from '@loan/components/LoanInfoLlamma/LoanInfoParameters'
-import PoolInfoData from '@loan/components/ChartOhlcWrapper'
+import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
+import DetailsBandsChart from '@/loan/components/LoanInfoLlamma/components/DetailsBandsChart'
+import DetailsInfo from '@/loan/components/LoanInfoLlamma/components/DetailsInfo'
+import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
+import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
+import PoolInfoData from '@/loan/components/ChartOhlcWrapper'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId' | 'titleMapper'> {

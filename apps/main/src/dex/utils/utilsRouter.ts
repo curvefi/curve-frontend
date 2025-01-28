@@ -1,10 +1,10 @@
 import type { Params } from 'react-router'
 
-import { MAIN_ROUTE, ROUTE } from '@main/constants'
+import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import { DEFAULT_LOCALES, Locale, parseLocale } from '@ui-kit/lib/i18n'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import { useMemo } from 'react'
-import { NetworkEnum, RouterParams } from '@main/types/main.types'
+import { NetworkEnum, RouterParams } from '@/dex/types/main.types'
 
 export function getPath({ locale, network }: Params, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)

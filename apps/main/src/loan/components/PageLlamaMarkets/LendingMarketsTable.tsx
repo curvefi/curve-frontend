@@ -4,7 +4,7 @@ import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
 import { CompactUsdCell, LineGraphCell, PoolTitleCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
-import { LendingVault } from '@loan/entities/vaults'
+import { LendingVault } from '@/loan/entities/vaults'
 import {
   ColumnDef,
   createColumnHelper,
@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { LendingMarketsFilters } from '@loan/components/PageLlamaMarkets/LendingMarketsFilters'
+import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import {

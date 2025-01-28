@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { getPath } from '@dao/utils/utilsRouter'
+import { getPath } from '@/dao/utils/utilsRouter'
 
 import { InternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'

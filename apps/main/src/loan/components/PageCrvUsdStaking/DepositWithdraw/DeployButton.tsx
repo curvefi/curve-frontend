@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import styled from 'styled-components'
 
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import Button from '@ui/Button'
 import { useWallet } from '@ui-kit/features/connect-wallet'

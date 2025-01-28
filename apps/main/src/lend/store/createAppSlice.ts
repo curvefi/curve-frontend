@@ -1,11 +1,11 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
+import type { State } from '@/lend/store/useStore'
 import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
 import isEqual from 'lodash/isEqual'
-import { prefetchMarkets } from '@lend/entities/chain/chain-query'
-import { Api, RouterProps, Wallet } from '@lend/types/lend.types'
+import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
+import { Api, RouterProps, Wallet } from '@/lend/types/lend.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

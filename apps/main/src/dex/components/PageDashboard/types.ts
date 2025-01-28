@@ -1,5 +1,5 @@
-import { SORT_ID } from '@main/components/PageDashboard/utils'
-import { ChainId, RewardsApy, PoolData } from '@main/types/main.types'
+import { SORT_ID } from '@/dex/components/PageDashboard/utils'
+import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 
 type UserBaseProfit = {
   day: string

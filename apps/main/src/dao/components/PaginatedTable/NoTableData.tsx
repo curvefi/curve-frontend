@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import Box from '@ui/Box'
-import ErrorMessage from '@dao/components/ErrorMessage'
+import ErrorMessage from '@/dao/components/ErrorMessage'
 
 type NoTableDataProps = {
   height: string

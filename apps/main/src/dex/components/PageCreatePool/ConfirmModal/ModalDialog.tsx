@@ -7,7 +7,7 @@ import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'

@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
+import type { State } from '@/loan/store/useStore'
 
-import { sleep } from '@loan/utils/helpers'
-import { CollateralDataCacheMapper } from '@loan/types/loan.types'
+import { sleep } from '@/loan/utils/helpers'
+import { CollateralDataCacheMapper } from '@/loan/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

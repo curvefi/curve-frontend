@@ -1,4 +1,4 @@
-import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '@lend/components/PageMarketList/types'
+import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '@/lend/components/PageMarketList/types'
 
 import React, { useCallback } from 'react'
 import styled from 'styled-components'

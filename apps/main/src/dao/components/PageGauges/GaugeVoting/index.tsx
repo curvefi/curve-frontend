@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useEffect } from 'react'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import CurrentVotes from './CurrentVotes'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { isLoading } from '@ui/utils'

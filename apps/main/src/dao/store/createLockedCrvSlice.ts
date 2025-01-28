@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
-import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@dao/components/PageVeCrv/types'
+import type { State } from '@/dao/store/useStore'
+import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 
-import networks from '@dao/networks'
+import networks from '@/dao/networks'
 import cloneDeep from 'lodash/cloneDeep'
 
 import {
@@ -10,7 +10,7 @@ import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   DEFAULT_USER_LOCKED_CRV_INFO,
-} from '@dao/components/PageVeCrv/utils'
+} from '@/dao/components/PageVeCrv/utils'
 
 import { formatNumber, shortenAccount } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
@@ -20,7 +20,7 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
-} from '@dao/types/dao.types'
+} from '@/dao/types/dao.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

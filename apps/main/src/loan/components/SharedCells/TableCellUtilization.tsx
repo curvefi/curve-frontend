@@ -1,5 +1,5 @@
 import { formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 type Props = {
   collateralId: string

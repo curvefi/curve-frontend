@@ -2,19 +2,19 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { TITLE } from '@loan/constants'
+import { TITLE } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
-import { HealthColorText } from '@loan/components/LoanInfoUser/styles'
-import AlertSoftLiquidation from '@loan/components/LoanInfoUser/components/AlertSoftLiquidation'
-import UserInfoDebt from '@loan/components/LoanInfoUser/components/UserInfoDebt'
+import { HealthColorText } from '@/loan/components/LoanInfoUser/styles'
+import AlertSoftLiquidation from '@/loan/components/LoanInfoUser/components/AlertSoftLiquidation'
+import UserInfoDebt from '@/loan/components/LoanInfoUser/components/UserInfoDebt'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
-import UserInfoLiquidationRange from '@loan/components/LoanInfoUser/components/UserInfoLiquidationRange'
-import UserInfoLoss from '@loan/components/LoanInfoUser/components/UserInfoLoss'
-import UserInfoLlammaBalances from '@loan/components/LoanInfoUser/components/UserInfoLlammaBalances'
+import UserInfoLiquidationRange from '@/loan/components/LoanInfoUser/components/UserInfoLiquidationRange'
+import UserInfoLoss from '@/loan/components/LoanInfoUser/components/UserInfoLoss'
+import UserInfoLlammaBalances from '@/loan/components/LoanInfoUser/components/UserInfoLlammaBalances'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Llamma, HealthMode, TitleKey, TitleMapper } from '@loan/types/loan.types'
+import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/loan/types/loan.types'
 
 const UserInfos = ({
   llammaId,

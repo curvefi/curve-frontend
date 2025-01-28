@@ -1,22 +1,22 @@
-import type { PageCollateralList, TableLabel } from '@loan/components/PageMarketList/types'
+import type { PageCollateralList, TableLabel } from '@/loan/components/PageMarketList/types'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { REFRESH_INTERVAL, TITLE } from '@loan/constants'
+import { REFRESH_INTERVAL, TITLE } from '@/loan/constants'
 import { breakpoints } from '@ui/utils'
-import { getActiveKey } from '@loan/store/createCollateralListSlice'
-import usePageVisibleInterval from '@loan/hooks/usePageVisibleInterval'
-import useStore from '@loan/store/useStore'
-import useTitleMapper from '@loan/hooks/useTitleMapper'
+import { getActiveKey } from '@/loan/store/createCollateralListSlice'
+import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
+import useStore from '@/loan/store/useStore'
+import useTitleMapper from '@/loan/hooks/useTitleMapper'
 
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody, Tr } from '@ui/Table'
-import TableHead from '@loan/components/PageMarketList/components/TableHead/TableHead'
-import TableHeadMobile from '@loan/components/PageMarketList/components/TableHead/TableHeadMobile'
-import TableRowNoResult from '@loan/components/PageMarketList/components/TableRow/TableRowNoResult'
-import TableRowResult from '@loan/components/PageMarketList/components/TableRow/TableRowResult'
-import TableSettings from '@loan/components/PageMarketList/components/TableSettings/TableSettings'
+import TableHead from '@/loan/components/PageMarketList/components/TableHead/TableHead'
+import TableHeadMobile from '@/loan/components/PageMarketList/components/TableHead/TableHeadMobile'
+import TableRowNoResult from '@/loan/components/PageMarketList/components/TableRow/TableRowNoResult'
+import TableRowResult from '@/loan/components/PageMarketList/components/TableRow/TableRowResult'
+import TableSettings from '@/loan/components/PageMarketList/components/TableSettings/TableSettings'
 
 const CollateralList = (pageProps: PageCollateralList) => {
   const { pageLoaded, rChainId, searchParams, updatePath } = pageProps
