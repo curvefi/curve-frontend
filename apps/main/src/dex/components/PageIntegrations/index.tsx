@@ -1,19 +1,16 @@
 import type { FormValues } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
-
 import { useFocusRing } from '@react-aria/focus'
 import { Trans } from '@lingui/macro'
 import Image from 'next/image'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
-
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import useStore from '@/dex/store/useStore'
-
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'

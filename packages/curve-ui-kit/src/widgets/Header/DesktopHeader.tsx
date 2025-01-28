@@ -16,7 +16,7 @@ import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { useState } from 'react'
 import { AppName } from '@ui-kit/shared/routes'
 import { t } from '@lingui/macro'
-import GlobalBanner from 'ui/src/Banner'
+import GlobalBanner from '@ui/Banner'
 import { isBeta, isCypress } from '@ui-kit/utils'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress

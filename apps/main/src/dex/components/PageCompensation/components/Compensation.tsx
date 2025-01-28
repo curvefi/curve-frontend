@@ -15,6 +15,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Compensation = ({
   rChainId,
@@ -39,7 +40,7 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const networks = useStore((state) => state.networks.networks)
 

@@ -21,7 +21,7 @@ type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProp
 const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const navigate = useNavigate()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

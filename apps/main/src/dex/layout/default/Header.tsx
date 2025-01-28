@@ -17,7 +17,7 @@ type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerPro
 
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

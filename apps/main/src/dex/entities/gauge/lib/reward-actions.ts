@@ -24,13 +24,13 @@ import type {
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import useStore from '@/dex/store/useStore'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 export const useAddRewardToken = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string, Error, AddRewardMutation> => {
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const { tokensMapper } = useTokensMapper(chainId)
 
   return useMutation({
@@ -71,7 +71,7 @@ export const useDepositRewardApprove = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string[], Error, DepositRewardApproveMutation> => {
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const { tokensMapper } = useTokensMapper(chainId)
 
   return useMutation({
@@ -109,7 +109,7 @@ export const useDepositReward = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string, Error, DepositRewardMutation> => {
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const { tokensMapper } = useTokensMapper(chainId)
 
   return useMutation({

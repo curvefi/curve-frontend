@@ -10,19 +10,20 @@ import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 import { t } from '@lingui/macro'
 import {
-  ProposalType,
-  PricesProposalResponseData,
-  ProposalData,
-  PricesProposalsResponse,
-  PricesProposalResponse,
-  ProposalMapper,
-  UserProposalVoteResData,
   FetchingState,
-  TransactionState,
+  PricesProposalResponse,
+  PricesProposalResponseData,
+  PricesProposalsResponse,
+  ProposalData,
   ProposalListFilter,
+  ProposalMapper,
+  ProposalType,
   SortByFilterProposals,
   SortDirection,
+  TransactionState,
+  UserProposalVoteResData,
 } from '@/dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -336,16 +337,13 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
       const { curve } = get()
-      const provider = get().wallet.getProvider('')
-      const notifyNotification = get().wallet.notifyNotification
-      const fetchGasInfo = get().gas.fetchGasInfo
+      const { provider, notify } = useWalletStore.getState()
 
-      let dismissNotificationHandler
+      const fetchGasInfo = get().gas.fetchGasInfo
 
       if (!curve || !provider) return
 
-      const notifyPendingMessage = t`Please confirm to cast vote.`
-      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+      const { dismiss: dismissConfirm } = notify(t`Please confirm to cast vote.`, 'pending')
       get()[sliceKey].setStateByKey('voteTxMapper', {
         ...get()[sliceKey].voteTxMapper,
         [voteIdKey]: {
@@ -356,7 +354,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         },
       })
 
-      dismissNotificationHandler = dismissConfirm
+      let dismissNotificationHandler = dismissConfirm
 
       try {
         await fetchGasInfo(curve)
@@ -380,7 +378,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
           dismissConfirm()
           const deployingNotificationMessage = t`Casting vote...`
-          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
           get()[sliceKey].setStateByKey('voteTxMapper', {
@@ -405,7 +403,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
           dismissDeploying()
           const successNotificationMessage = t`Vote casted successfully!`
-          notifyNotification(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success', 15000)
 
           // get new user votes list from api
           const userAddress = get().user.userAddress
@@ -436,16 +434,12 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const { curve } = get()
       const voteIdKey = `${voteId}-${voteType}`
 
-      const provider = get().wallet.getProvider('')
-      const notifyNotification = get().wallet.notifyNotification
+      const { provider, notify } = useWalletStore.getState()
       const fetchGasInfo = get().gas.fetchGasInfo
-
-      let dismissNotificationHandler
 
       if (!curve || !provider) return
 
-      const notifyPendingMessage = t`Please confirm to execute proposal.`
-      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+      const { dismiss: dismissConfirm } = notify(t`Please confirm to execute proposal.`, 'pending')
       get()[sliceKey].setStateByKey('executeTxMapper', {
         ...get()[sliceKey].executeTxMapper,
         [voteIdKey]: {
@@ -456,7 +450,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         },
       })
 
-      dismissNotificationHandler = dismissConfirm
+      let dismissNotificationHandler = dismissConfirm
 
       try {
         await fetchGasInfo(curve)
@@ -480,7 +474,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
           dismissConfirm()
           const deployingNotificationMessage = t`Executing proposal...`
-          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
           get()[sliceKey].setStateByKey('executeTxMapper', {
@@ -497,7 +491,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`
-          notifyNotification(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success', 15000)
 
           // update proposal executed status, forcing api to update by providing a transaction hash
           await get()[sliceKey].getProposal(voteId, voteType, true, transactionHash)

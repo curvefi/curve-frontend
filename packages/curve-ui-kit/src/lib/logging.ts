@@ -55,7 +55,9 @@ function argToString(i: unknown, max = 200, trailing = 3) {
   return str.replaceAll('%', '%%')
 }
 
-export function log(key: string | QueryKey | MutationKey | string[], status?: LogStatus | unknown, ...args: unknown[]) {
+type LogKey = string | QueryKey | MutationKey | string[]
+
+export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[]) {
   if (process.env.NODE_ENV !== 'development') return
 
   const timestamp = new Date().toISOString()
@@ -109,7 +111,8 @@ export function log(key: string | QueryKey | MutationKey | string[], status?: Lo
   logMethod(status)(format, ...styles)
 }
 
-export const logQuery = (key: QueryKey, ...args: unknown[]) => log(key, LogStatus.QUERY, ...args)
-export const logMutation = (key: MutationKey, ...args: unknown[]) => log(key, LogStatus.MUTATION, ...args)
-export const logError = (key: QueryKey | MutationKey, ...args: unknown[]) => log(key, LogStatus.ERROR, ...args)
-export const logSuccess = (key: QueryKey | MutationKey, ...args: unknown[]) => log(key, LogStatus.SUCCESS, ...args)
+export const logQuery = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.QUERY, ...args)
+export const logMutation = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.MUTATION, ...args)
+export const logError = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.ERROR, ...args)
+export const logSuccess = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.SUCCESS, ...args)
+export const logInfo = (key: LogKey, ...args: unknown[]) => log(key, LogStatus.INFO, ...args)

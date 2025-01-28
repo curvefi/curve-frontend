@@ -2,7 +2,7 @@ import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
 import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
 import { RefObject } from 'react'
 import { AppName } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from 'ui/src/Banner/GlobalBanner'
+import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
 
