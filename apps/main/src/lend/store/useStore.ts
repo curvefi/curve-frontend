@@ -13,7 +13,9 @@ import createMarketsSlice, { MarketsSlice } from '@/lend/store/createMarketsSlic
 import createUserSlice, { UserSlice } from '@/lend/store/createUserSlice'
 import createMarketListSlice, { MarketListSlice } from '@/lend/store/createMarketListSlice'
 import createLoanCreate, { LoanCreateSlice } from '@/lend/store/createLoanCreateSlice'
-import createLoanCollateralRemoveSlice, { LoanCollateralRemoveSlice } from '@/lend/store/createLoanCollateralRemoveSlice'
+import createLoanCollateralRemoveSlice, {
+  LoanCollateralRemoveSlice,
+} from '@/lend/store/createLoanCollateralRemoveSlice'
 import createLoanCollateralAddSlice, { LoanCollateralAddSlice } from '@/lend/store/createLoanCollateralAddSlice'
 import createLoanRepaySlice, { LoanRepaySlice } from '@/lend/store/createLoanRepaySlice'
 import createLoanBorrowMoreSlice, { LoanBorrowMoreSlice } from '@/lend/store/createLoanBorrowMoreSlice'
