@@ -1,8 +1,7 @@
 import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@/loan/entities/lending-vaults'
 import { useQueries } from '@tanstack/react-query'
-import { getMintMarketOptions, MintMarketFromApi } from '@/loan/entities/mint-markets'
+import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
-import useStore from '@/loan/store/useStore'
 
 export enum LlamaMarketType {
   Mint = 'mint',
@@ -59,7 +58,8 @@ const convertMintMarket = (
     debt_ceiling,
     collateral_amount,
     collateral_amount_usd,
-  }: MintMarketFromApi,
+    stablecoin_price,
+  }: MintMarket,
   blockchainId: string,
 ): LlamaMarket => ({
   blockchainId,
@@ -69,8 +69,7 @@ const convertMintMarket = (
     borrowed: {
       symbol: stablecoin_token.symbol,
       address: stablecoin_token.address,
-      // todo: get rate from the API
-      usdPrice: Number(useStore.getState().usdRates.tokens[stablecoin_token.address] ?? 1),
+      usdPrice: stablecoin_price,
       blockchainId,
     },
     collateral: {

@@ -1,8 +1,11 @@
-import { queryFactory } from '@ui-kit/lib/model/query'
+import { ContractParams, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { queryClient } from '@ui-kit/lib/api/query-client'
+import uniq from 'lodash/uniq'
+import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
+import { getCoinPriceOptions, getCoinPrices } from '@/loan/entities/usd-prices'
 
-export type MintMarketFromApi = {
+type MintMarketFromApi = {
   address: string
   factory_address: string
   llamma: string
@@ -26,6 +29,10 @@ export type MintMarketFromApi = {
   }
 }
 
+export type MintMarket = MintMarketFromApi & {
+  stablecoin_price: number
+}
+
 export const { getQueryOptions: getSupportedChainOptions } = queryFactory({
   queryKey: () => ['mint-markets', 'supported-chains'] as const,
   queryFn: async () => {
@@ -37,6 +44,23 @@ export const { getQueryOptions: getSupportedChainOptions } = queryFactory({
   validationSuite: EmptyValidationSuite,
 })
 
+/**
+ * Note: The API does not provide stablecoin prices, fetch them separately and add them to the data.
+ * I requested benber86 to add stablecoin prices to the API, but it may take some time.
+ */
+async function addStableCoinPrices({ chain, data }: { chain: string; data: MintMarketFromApi[] }) {
+  const stablecoinAddresses = uniq(data.map((market) => market.stablecoin_token.address))
+  const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
+  console.log({ stablecoinPrices, stablecoinAddresses })
+  return {
+    chain,
+    data: data.map((market) => ({
+      ...market,
+      stablecoin_price: stablecoinPrices[market.stablecoin_token.address],
+    })),
+  }
+}
+
 export const { getQueryOptions: getMintMarketOptions } = queryFactory({
   queryKey: () => ['mint-markets'] as const,
   queryFn: async () => {
@@ -44,7 +68,8 @@ export const { getQueryOptions: getMintMarketOptions } = queryFactory({
     return await Promise.all(
       chains.map(async (blockchainId) => {
         const response = await fetch(`https://prices.curve.fi/v1/crvusd/markets/${blockchainId}`)
-        return (await response.json()) as { chain: string; data: MintMarketFromApi[] }
+        const data = (await response.json()) as { chain: string; data: MintMarketFromApi[] }
+        return await addStableCoinPrices(data)
       }),
     )
   },
