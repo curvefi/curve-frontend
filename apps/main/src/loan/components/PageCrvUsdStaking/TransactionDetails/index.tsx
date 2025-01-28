@@ -14,6 +14,7 @@ import Loader from '@ui/Loader'
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type TransactionDetailsProps = {
   className?: string
@@ -21,13 +22,11 @@ type TransactionDetailsProps = {
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const onboardInstance = useStore((state) => state.wallet.onboard)
-  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
-  // const maxSlippage = useStore((state) => state.maxSlippage)
+  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
   const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
     (state) => state.scrvusd,
   )
-  const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
+  const fetchStatus = useStore((state) => state.scrvusd.estGas.fetchStatus)
   const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(signerAddress ?? ''))
 
   const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)

@@ -14,6 +14,8 @@ import { getTokenName } from '@/loan/utils/utilsLoan'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import networks from '@/loan/networks'
 import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -151,46 +153,38 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
 
     // steps
     fetchStepDecrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'REMOVE',
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'REMOVE',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
+      const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
+      get()[sliceKey].fetchMaxRemovable(chainId, llamma)
+      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+      if (!loanExists.loanExists) {
+        get().loans.resetUserDetailsState(llamma)
+      }
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        get()[sliceKey].setStateByKeys({
+          detailInfo: {},
+          formEstGas: {},
+          formValues: DEFAULT_FORM_VALUES,
+          formStatus: {
+            ...get()[sliceKey].formStatus,
+            error: resp.error,
+            isInProgress: false,
+            isComplete: !resp.error,
+            step: '',
+          },
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
-        const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
-
-        // re-fetch max removable
-        get()[sliceKey].fetchMaxRemovable(chainId, llamma)
-
-        // re-fetch loan info
-        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-        if (!loanExists.loanExists) {
-          get().loans.resetUserDetailsState(llamma)
-        }
-
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKeys({
-            detailInfo: {},
-            formEstGas: {},
-            formValues: DEFAULT_FORM_VALUES,
-            formStatus: {
-              ...get()[sliceKey].formStatus,
-              error: resp.error,
-              isInProgress: false,
-              isComplete: !resp.error,
-              step: '',
-            },
-          })
-
-          return resp
-        }
+        return resp
       }
     },
 

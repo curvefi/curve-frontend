@@ -10,6 +10,8 @@ import { _parseActiveKey } from '@/lend/utils/helpers'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { Api } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -138,11 +140,11 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
     // steps
     fetchStepDecrease: async (activeKey, api, market) => {
-      const { gas, markets, wallet, user } = get()
+      const { gas, markets, user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
 
-      if (!provider) return
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {

@@ -9,6 +9,7 @@ import crvusdjsApi from '@/loan/lib/apiCrvusd'
 import { DEFAULT_FORM_STATUS } from '@/loan/components/PagePegKeepers/utils'
 import { PEG_KEEPERS_ADDRESSES } from '@/loan/constants'
 import { Curve, Provider } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -42,7 +43,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
     ...DEFAULT_STATE,
 
     fetchDetails: async (provider) => {
-      const { wallet, ...state } = get()
+      const state = get()
       let { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
@@ -85,7 +86,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       }
     },
     fetchEstCallerProfit: async (provider, pegKeeperAddress) => {
-      const { wallet, ...state } = get()
+      const state = get()
       let { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
@@ -103,10 +104,10 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       }
     },
     fetchUpdate: async (curve, pegKeeperAddress) => {
-      const { gas, wallet, ...state } = get()
+      const { gas, ...state } = get()
       let { formStatus, ...sliceState } = get()[sliceKey]
 
-      const provider = wallet.getProvider('')
+      const { provider } = useWalletStore.getState()
       if (!provider) return { hash: '', error: 'no provider' }
 
       const signer = await provider.getSigner()

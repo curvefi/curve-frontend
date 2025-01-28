@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const Home = ({ onClose }: Props) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const walletAddress = getWalletSignerAddress(wallet)
 
   return (
