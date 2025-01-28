@@ -1,9 +1,8 @@
-import { ContractParams, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import uniq from 'lodash/uniq'
-import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
-import { getCoinPriceOptions, getCoinPrices } from '@/loan/entities/usd-prices'
+import { getCoinPrices } from '@/loan/entities/usd-prices'
 
 type MintMarketFromApi = {
   address: string

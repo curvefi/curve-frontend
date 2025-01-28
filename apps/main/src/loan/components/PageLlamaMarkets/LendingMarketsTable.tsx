@@ -53,6 +53,7 @@ const columns = [
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,
