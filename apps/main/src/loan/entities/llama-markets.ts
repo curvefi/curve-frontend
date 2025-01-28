@@ -2,6 +2,7 @@ import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@/loan/enti
 import { useQueries } from '@tanstack/react-query'
 import { getMintMarketOptions, MintMarketFromApi } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
+import useStore from '@/loan/store/useStore'
 
 export enum LlamaMarketType {
   Mint = 'mint',
@@ -19,7 +20,7 @@ export type LlamaMarket = {
     usdTotal: number
   }
   rates: {
-    lend: number // apy %
+    lend?: number // apy %
     borrow: number // apy %
   }
   type: LlamaMarketType
@@ -55,10 +56,9 @@ const convertMintMarket = (
     llamma,
     rate,
     total_debt,
-    borrowable,
+    debt_ceiling,
     collateral_amount,
     collateral_amount_usd,
-    stablecoin_amount,
   }: MintMarketFromApi,
   blockchainId: string,
 ): LlamaMarket => ({
@@ -66,20 +66,27 @@ const convertMintMarket = (
   address,
   controllerAddress: llamma,
   assets: {
-    borrowed: { symbol: stablecoin_token.symbol, address, usdPrice: stablecoin_amount / total_debt },
+    borrowed: {
+      symbol: stablecoin_token.symbol,
+      address: stablecoin_token.address,
+      // todo: get rate from the API
+      usdPrice: Number(useStore.getState().usdRates.tokens[stablecoin_token.address] ?? 1),
+      blockchainId,
+    },
     collateral: {
       symbol: collateral_token.symbol,
       address: collateral_token.address,
       usdPrice: collateral_amount_usd / collateral_amount,
+      blockchainId,
     },
   },
-  utilizationPercent: total_debt / borrowable,
+  utilizationPercent: (100 * total_debt) / debt_ceiling,
   totalSupplied: {
+    // todo: do we want to see collateral or borrowable?
     total: collateral_amount,
     usdTotal: collateral_amount_usd,
   },
   rates: {
-    lend: rate * 100,
     borrow: rate * 100,
   },
   type: LlamaMarketType.Mint,

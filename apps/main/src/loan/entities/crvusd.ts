@@ -1,5 +1,5 @@
-import { PoolParams, PoolQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
-import { poolValidationSuite } from '@ui-kit/lib/model/query/pool-validation'
+import { ContractParams, PoolParams, PoolQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 
 type CrvUsdSnapshotFromApi = {
   rate: number
@@ -35,10 +35,13 @@ type CrvUsdSnapshotsFromApi = {
   data: CrvUsdSnapshotFromApi[]
 }
 
-export const _getCrvUsdSnapshots = async ({ chainId, poolId }: PoolQuery): Promise<CrvUsdSnapshotsFromApi> => {
-  const url = `https://prices.curve.fi/v1/crvusd/markets/${chainId}/${poolId}/snapshots`
+export const _getCrvUsdSnapshots = async ({
+  blockchainId,
+  contractAddress,
+}: ContractParams): Promise<CrvUsdSnapshotFromApi[]> => {
+  const url = `https://prices.curve.fi/v1/crvusd/markets/${blockchainId}/${contractAddress}/snapshots`
   const response = await fetch(url)
-  const { data } = (await response.json()) as { data?: CrvUsdSnapshotsFromApi }
+  const { data } = (await response.json()) as CrvUsdSnapshotsFromApi
   if (!data) {
     throw new Error('Failed to fetch crvUSD snapshots')
   }
@@ -46,8 +49,8 @@ export const _getCrvUsdSnapshots = async ({ chainId, poolId }: PoolQuery): Promi
 }
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
-  queryKey: (params: PoolParams) => [...rootKeys.pool(params), 'crvUsdSnapshots'] as const,
+  queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'crvUsd', 'snapshots'] as const,
   queryFn: _getCrvUsdSnapshots,
   staleTime: '1d',
-  validationSuite: poolValidationSuite,
+  validationSuite: contractValidationSuite,
 })

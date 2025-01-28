@@ -17,6 +17,7 @@ export type AssetDetails = {
   symbol: string
   decimals?: number
   address: string
+  blockchainId: string
   usdPrice: number | null
 }
 
