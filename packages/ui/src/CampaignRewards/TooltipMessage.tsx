@@ -55,11 +55,10 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
       )}
       <TooltipParagraph>{getDescription()}</TooltipParagraph>
       <TooltipDisclaimer>
-        Points are project dependent, please check with the token issuer to make sure you have taken all the necessary
-        actions to earn points.
+        External rewards are project dependent, always check with the token issuer to make sure you have taken all the necessary actions to benefit from their rewards program.
       </TooltipDisclaimer>
       <ExternalLink $noStyles href={dashboardLink}>
-        Learn more
+        Go to issuer
       </ExternalLink>
     </TooltipWrapper>
   )
