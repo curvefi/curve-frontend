@@ -10,7 +10,7 @@ import Icon from 'ui/src/Icon'
 const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool
 
-  const hasMultiplier = !!multiplier && multiplier !== ''
+  const hasMultiplier = !!multiplier
 
   return (
     <Tooltip
