@@ -4,7 +4,6 @@ import { Api } from '@/lend/types/lend.types'
 
 export * from './utilsGasPrices'
 export * from './utilsRouter'
-export * from './utilsStorage'
 
 interface CustomError extends Error {
   data?: { message: string }

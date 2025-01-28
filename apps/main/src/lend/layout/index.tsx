@@ -15,7 +15,7 @@ import { Locale } from '@ui-kit/widgets/Header/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const elHeight = useHeightResizeObserver(globalAlertRef)
   const footerRef = useRef<HTMLDivElement>(null)

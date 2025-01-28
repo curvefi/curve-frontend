@@ -1,11 +1,9 @@
 import type { FormValues, FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanDecrease/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
@@ -16,7 +14,6 @@ import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
@@ -32,6 +29,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -54,7 +52,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
 
   const fetchStepApprove = useStore((state) => state.loanDecrease.fetchStepApprove)
   const fetchStepDecrease = useStore((state) => state.loanDecrease.fetchStepDecrease)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanDecrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanDecrease.setStateByKey)
   const resetState = useStore((state) => state.loanDecrease.resetState)

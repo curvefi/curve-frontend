@@ -20,6 +20,8 @@ import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { getChainSignerActiveKey, sleep } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -425,9 +427,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const provider = state.wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       sliceState.setStateByKey('formStatus', {
         ...sliceState.formStatus,
@@ -468,9 +469,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const provider = state.wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,

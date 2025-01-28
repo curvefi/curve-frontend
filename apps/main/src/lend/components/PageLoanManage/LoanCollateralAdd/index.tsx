@@ -1,10 +1,8 @@
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import { NOFITY_MESSAGE } from '@/lend/constants'
@@ -14,7 +12,6 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/lend/components/AlertFormError'
@@ -29,6 +26,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { Api, PageContentProps } from '@/lend/types/lend.types'
 
 const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
@@ -44,7 +42,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const fetchStepApprove = useStore((state) => state.loanCollateralAdd.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanCollateralAdd.fetchStepIncrease)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanCollateralAdd.setFormValues)
   const resetState = useStore((state) => state.loanCollateralAdd.resetState)
 

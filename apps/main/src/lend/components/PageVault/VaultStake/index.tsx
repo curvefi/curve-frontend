@@ -1,15 +1,13 @@
-import type { FormValues, FormStatus, StepKey } from '@/lend/components/PageVault/VaultStake/types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultStake/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/lend/components/AlertFormError'
@@ -34,7 +32,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultStake.fetchStepApprove)
   const fetchStepStake = useStore((state) => state.vaultStake.fetchStepStake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultStake.setFormValues)
   const resetState = useStore((state) => state.vaultStake.resetState)
 
