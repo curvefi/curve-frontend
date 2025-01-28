@@ -10,7 +10,7 @@ import Icon from 'ui/src/Icon'
 const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool
 
-  const isPoints = rewardsPool.tags.includes('points')
+  const hasMultiplier = !!multiplier && multiplier !== ''
 
   return (
     <Tooltip
@@ -21,7 +21,7 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
-        {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}`}</Multiplier>}
+        {hasMultiplier && <Multiplier highContrast={highContrast}>{`${multiplier}`}</Multiplier>}
         {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
       </Container>
     </Tooltip>
