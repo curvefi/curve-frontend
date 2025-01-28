@@ -3365,6 +3365,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@curvefi/prices-api@workspace:packages/prices-api":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/prices-api@workspace:packages/prices-api"
+  dependencies:
+    eslint: "npm:*"
+    eslint-config-custom: "npm:*"
+    typescript: "npm:*"
+  peerDependencies:
+    typescript: "*"
+  languageName: unknown
+  linkType: soft
+
 "@curvefi/stablecoin-api@npm:^1.5.8":
   version: 1.5.8
   resolution: "@curvefi/stablecoin-api@npm:1.5.8"
