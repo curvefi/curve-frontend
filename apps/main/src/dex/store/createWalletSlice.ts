@@ -1,13 +1,13 @@
 import type { CustomNotification, NotificationType } from '@web3-onboard/core/dist/types'
 import type { GetState, SetState } from 'zustand'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 
 import { BrowserProvider, ethers } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { CONNECT_STAGE } from '@main/constants'
-import { Provider, Wallet } from '@main/types/main.types'
+import { CONNECT_STAGE } from '@/dex/constants'
+import { Provider, Wallet } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

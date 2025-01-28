@@ -1,5 +1,5 @@
 import React from 'react'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import TokenIconComp, { type TokenIconProps } from '@ui/Token/TokenIcon'
 

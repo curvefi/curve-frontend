@@ -1,5 +1,5 @@
 import { MAIN_ROUTE as MAIN_ROUTES } from '@main/constants'
-import { MAIN_ROUTE as LOAN_ROUTES } from '@loan/constants'
+import { MAIN_ROUTE as LOAN_ROUTES } from '@/loan/constants'
 import { MAIN_ROUTE as LEND_ROUTES } from '@lend/constants'
 import { MAIN_ROUTE as DAO_ROUTES } from '@dao/constants'
 import { getAppRoot } from 'curve-ui-kit/src/shared/routes'

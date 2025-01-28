@@ -1,11 +1,11 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
+import type { State } from '@/loan/store/useStore'
 
 import { PromisePool } from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { log } from '@ui-kit/lib/logging'
-import networks from '@loan/networks'
+import networks from '@/loan/networks'
 import {
   CollateralData,
   Curve,
@@ -15,7 +15,7 @@ import {
   LoanPriceInfo,
   UserLoanDetails,
   UserWalletBalances,
-} from '@loan/types/loan.types'
+} from '@/loan/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,4 +1,4 @@
-import type { FormStatus, MarketListMapper, SearchTermResult } from '@lend/components/PageMarketList/types'
+import type { FormStatus, MarketListMapper, SearchTermResult } from '@/lend/components/PageMarketList/types'
 
 import sortBy from 'lodash/sortBy'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'

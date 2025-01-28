@@ -5,17 +5,17 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 
 import Button from '@ui/Button'
 import ChartWrapper from '@ui/Chart'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
-import PoolActivity from '@lend/components/ChartOhlcWrapper/PoolActivity'
+import PoolActivity from '@/lend/components/ChartOhlcWrapper/PoolActivity'
 import TextCaption from '@ui/TextCaption'
 import AlertBox from '@ui/AlertBox'
-import { useOneWayMarket } from '@lend/entities/chain'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {

@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
-import type { FormType, FormEstGas, FormStatus, FormValues, VecrvInfo } from '@main/components/PageCrvLocker/types'
+import type { State } from '@/dex/store/useStore'
+import type { FormType, FormEstGas, FormStatus, FormValues, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -9,10 +9,10 @@ import {
   DEFAULT_USER_LOCKED_CRV_INFO,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_EST_GAS,
-} from '@main/components/PageCrvLocker/utils'
+} from '@/dex/components/PageCrvLocker/utils'
 
 import { formatNumber, shortenAccount } from '@ui/utils'
-import curvejsApi from '@main/lib/curvejs'
+import curvejsApi from '@/dex/lib/curvejs'
 import dayjs from '@ui-kit/lib/dayjs'
 import {
   CurveApi,
@@ -20,7 +20,7 @@ import {
   FnStepEstGasApprovalResponse,
   FnStepApproveResponse,
   FnStepResponse,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

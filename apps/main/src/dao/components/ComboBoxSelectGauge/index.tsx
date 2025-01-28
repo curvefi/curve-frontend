@@ -1,4 +1,4 @@
-import type { EndsWith } from '@dao/components/ComboBoxSelectGauge/types'
+import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
 
 import Fuse from 'fuse.js'
 import React, { useCallback, useState } from 'react'
@@ -6,14 +6,14 @@ import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import { t } from '@lingui/macro'
 
-import { delayAction } from '@dao/utils'
-import useStore from '@dao/store/useStore'
-import networks from '@dao/networks'
+import { delayAction } from '@/dao/utils'
+import useStore from '@/dao/store/useStore'
+import networks from '@/dao/networks'
 
-import ComboBox from '@dao/components/ComboBoxSelectGauge/ComboBox'
-import ComboBoxSelectedGaugeButton from '@dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
+import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
+import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import ModalDialog from '@ui/Dialog'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 const ComboBoxGauges = ({
   disabled,

@@ -1,6 +1,5 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { memoize } from 'lodash'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 
 export type AmmBalances = {
   ammBalanceBorrowed: number

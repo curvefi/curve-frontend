@@ -4,10 +4,10 @@ import { t } from '@lingui/macro'
 import { formatNumber } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 
-import { StyledInformationSquare16 } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
+import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import Chip from '@ui/Typography/Chip'
 import Item from '@ui/Items/Item'
-import { PoolData } from '@main/types/main.types'
+import { PoolData } from '@/dex/types/main.types'
 
 const PoolParametersA: React.FC<{ parameters: PoolData['parameters'] }> = ({ parameters }) => {
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}

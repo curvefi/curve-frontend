@@ -1,14 +1,14 @@
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
-import TokenIcons from '@loan/components/TokenIcons'
+import TokenIcons from '@/loan/components/TokenIcons'
 import React, { useMemo } from 'react'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
-import { PoolBadges } from '@loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolBadges'
-import { PoolWarnings } from '@loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
+import { PoolBadges } from '@/loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolBadges'
+import { PoolWarnings } from '@/loan/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
 import { getImageBaseUrl } from '@ui/utils'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
-import { LlamaMarket } from '@loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 

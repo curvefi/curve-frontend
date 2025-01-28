@@ -1,6 +1,6 @@
-import type { FormStatus, FormValues } from '@lend/components/PageVault/VaultUnstake/types'
+import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultUnstake/types'
 
-import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,

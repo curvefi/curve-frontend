@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 
 import Box from '@ui/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import { TitleMapper } from '@loan/types/loan.types'
+import { TitleMapper } from '@/loan/types/loan.types'
 
 const useTitleMapper = (): TitleMapper => ({
   isInMarket: { title: '' },

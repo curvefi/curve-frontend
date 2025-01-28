@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 import Box from '@ui/Box'
 import Spinner from '@ui/Spinner'

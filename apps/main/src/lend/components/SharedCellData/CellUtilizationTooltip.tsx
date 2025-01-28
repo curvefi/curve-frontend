@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { useMemo } from 'react'
 
 import { formatNumber } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId } from '@lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 
 type Props = {
   className?: string

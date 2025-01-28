@@ -1,6 +1,6 @@
-import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@loan/entities/lending-vaults'
+import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@/loan/entities/lending-vaults'
 import { useQueries } from '@tanstack/react-query'
-import { getMintMarketOptions, MintMarketFromApi } from '@loan/entities/mint-markets'
+import { getMintMarketOptions, MintMarketFromApi } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 
 export enum LlamaMarketType {

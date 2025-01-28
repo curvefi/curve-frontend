@@ -3,19 +3,19 @@ import type {
   PoolListTableLabel,
   SearchParams,
   SearchTermMapper,
-} from '@main/components/PagePoolList/types'
-import { ROUTE } from '@main/constants'
-import TableRowMobile from '@main/components/PagePoolList/components/TableRowMobile'
-import TableRow, { TableRowProps } from '@main/components/PagePoolList/components/TableRow'
+} from '@/dex/components/PagePoolList/types'
+import { ROUTE } from '@/dex/constants'
+import TableRowMobile from '@/dex/components/PagePoolList/components/TableRowMobile'
+import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
 import React, { FunctionComponent, useCallback, useMemo } from 'react'
-import useStore from '@main/store/useStore'
-import { getUserActiveKey } from '@main/store/createUserSlice'
+import useStore from '@/dex/store/useStore'
+import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
-import useCampaignRewardsMapper from '@main/hooks/useCampaignRewardsMapper'
-import { parseSearchTermMapper } from '@main/hooks/useSearchTermMapper'
+import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
+import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 interface PoolRowProps {
   poolId: string

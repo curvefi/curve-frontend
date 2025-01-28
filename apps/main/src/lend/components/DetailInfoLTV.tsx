@@ -4,8 +4,8 @@ import { t } from '@lingui/macro'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 import DetailInfo from '@ui/DetailInfo'
-import { useTokenUsdRate, useTokenUsdRates } from '@lend/entities/token'
-import { useChainId } from '@lend/entities/chain'
+import { useTokenUsdRate, useTokenUsdRates } from '@/lend/entities/token'
+import { useChainId } from '@/lend/entities/chain'
 
 type Amount = { amount: string; address: string }
 

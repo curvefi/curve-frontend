@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { LlamaMarketType } from '@loan/entities/llama-markets'
+import { LlamaMarketType } from '@/loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 

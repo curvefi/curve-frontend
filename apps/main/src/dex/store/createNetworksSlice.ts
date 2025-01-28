@@ -1,12 +1,12 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import { Chain } from '@ui-kit/utils'
-import { DEFAULT_NETWORK_CONFIG } from '@main/constants'
+import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import type { ChainOption } from '@ui-kit/features/switch-chain'
 import curve from '@curvefi/api'
 import sortBy from 'lodash/sortBy'
-import { CurveApi, ChainId, NetworkConfig, NetworkAliases, NativeToken, Networks } from '@main/types/main.types'
+import { CurveApi, ChainId, NetworkConfig, NetworkAliases, NativeToken, Networks } from '@/dex/types/main.types'
 import { getAppRoot } from '@ui-kit/shared/routes'
 
 type StateKey = keyof typeof DEFAULT_STATE

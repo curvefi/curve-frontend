@@ -1,4 +1,4 @@
-import type { Slippage } from '@main/components/PagePool/types'
+import type { Slippage } from '@/dex/components/PagePool/types'
 
 import React, { useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'

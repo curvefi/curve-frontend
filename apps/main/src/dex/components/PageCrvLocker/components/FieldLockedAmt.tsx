@@ -1,4 +1,4 @@
-import type { FormType, VecrvInfo } from '@main/components/PageCrvLocker/types'
+import type { FormType, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 
 import { t } from '@lingui/macro'
 import React from 'react'

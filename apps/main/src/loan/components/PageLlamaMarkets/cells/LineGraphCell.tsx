@@ -1,4 +1,5 @@
-import { LendingSnapshot, useLendingSnapshots } from '@loan/entities/lending-snapshots'
+import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending-snapshots'
+import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
@@ -9,7 +10,6 @@ import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import { meanBy } from 'lodash'
 import Box from '@mui/material/Box'
-import { LlamaMarket, LlamaMarketType } from '@loan/entities/llama-markets'
 
 const graphSize = { width: 172, height: 48 }
 

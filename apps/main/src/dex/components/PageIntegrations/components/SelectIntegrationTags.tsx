@@ -1,4 +1,4 @@
-import type { FormStatus } from '@main/components/PageIntegrations/types'
+import type { FormStatus } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationTag } from '@ui/Integration/types'
 
 import React from 'react'

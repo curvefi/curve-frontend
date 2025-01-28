@@ -1,5 +1,5 @@
-import type { LiqRange, LiqRangeSliderIdx } from '@loan/store/types'
-import type { FormDetailInfoSharedProps } from '@loan/components/PageLoanCreate/types'
+import type { LiqRange, LiqRangeSliderIdx } from '@/loan/store/types'
+import type { FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 
 import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'

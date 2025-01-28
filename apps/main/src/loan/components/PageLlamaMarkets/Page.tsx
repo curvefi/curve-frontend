@@ -1,16 +1,16 @@
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { LendTableTitle } from '@loan/components/PageLlamaMarkets/LendTableTitle'
-import { LendingMarketsTable } from '@loan/components/PageLlamaMarkets/LendingMarketsTable'
-import { LendTableFooter } from '@loan/components/PageLlamaMarkets/LendTableFooter'
-import { invalidateLendingVaults } from '@loan/entities/lending-vaults'
-import DocumentHead from '@loan/layout/DocumentHead'
+import { LendTableTitle } from '@/loan/components/PageLlamaMarkets/LendTableTitle'
+import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
+import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
+import { invalidateLendingVaults } from '@/loan/entities/lending-vaults'
+import DocumentHead from '@/loan/layout/DocumentHead'
 import { t } from '@lingui/macro'
 import React from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
-import useStore from '@loan/store/useStore'
-import { useLlamaMarkets } from '@loan/entities/llama-markets'
+import useStore from '@/loan/store/useStore'
+import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 
 const onReload = () => invalidateLendingVaults({})
 

@@ -1,5 +1,5 @@
-import PoolRewardsCrv from '@main/components/PoolRewardsCrv'
-import { RewardsApy, PoolData, PoolDataCache } from '@main/types/main.types'
+import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type Prop = {
   isHighlight: boolean

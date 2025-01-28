@@ -1,17 +1,17 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
-import type { Amount } from '@main/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@main/components/PagePool/types'
-import type { FormStatus, FormType, FormValues } from '@main/components/PagePool/Withdraw/types'
-import type { LoadMaxAmount } from '@main/components/PagePool/Deposit/types'
+import type { State } from '@/dex/store/useStore'
+import type { Amount } from '@/dex/components/PagePool/utils'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
+import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
+import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import curvejsApi from '@main/lib/curvejs'
-import { DEFAULT_SLIPPAGE } from '@main/components/PagePool'
-import { parseAmountsForAPI } from '@main/components/PagePool/utils'
-import { isBonus, isHighSlippage, shortenTokenAddress } from '@main/utils'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@main/components/PagePool/Withdraw/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
+import { isBonus, isHighSlippage, shortenTokenAddress } from '@/dex/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
 import {
   CurveApi,
   ChainId,
@@ -20,7 +20,7 @@ import {
   FnStepEstGasApprovalResponse,
   FnStepApproveResponse,
   FnStepResponse,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

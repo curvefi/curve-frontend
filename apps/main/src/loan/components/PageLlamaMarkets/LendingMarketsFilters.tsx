@@ -5,10 +5,10 @@ import { capitalize } from 'lodash'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import Typography from '@mui/material/Typography'
 import { t } from '@lingui/macro'
-import { MultiSelectFilter } from '@loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
+import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { formatNumber, getImageBaseUrl } from '@ui/utils'
 import TokenIcon from '../TokenIcon'
-import { MinimumSliderFilter } from '@loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces

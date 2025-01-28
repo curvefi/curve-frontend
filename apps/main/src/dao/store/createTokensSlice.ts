@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
+import type { State } from '@/dao/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { LARGE_APY } from '@main/constants'
+import { LARGE_APY } from '@/dex/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 import { Chip } from '@ui/Typography'
-import ChipVolatileBaseApy from '@main/components/PagePoolList/components/ChipVolatileBaseApy'
+import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import TooltipBaseApy from '@main/components/PagePoolList/components/TooltipBaseApy'
-import { RewardBase, PoolData, PoolDataCache } from '@main/types/main.types'
+import TooltipBaseApy from '@/dex/components/PagePoolList/components/TooltipBaseApy'
+import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type Props = {
   base: RewardBase | undefined

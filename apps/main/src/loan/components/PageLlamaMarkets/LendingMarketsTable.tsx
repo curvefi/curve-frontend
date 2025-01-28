@@ -4,6 +4,7 @@ import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
 import { CompactUsdCell, LineGraphCell, PoolTitleCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 import {
   ColumnDef,
   createColumnHelper,
@@ -12,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { LendingMarketsFilters } from '@loan/components/PageLlamaMarkets/LendingMarketsFilters'
+import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import {
@@ -20,7 +21,6 @@ import {
   useVisibilitySettings,
   VisibilityGroup,
 } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
-import { LlamaMarket } from '@loan/entities/llama-markets'
 
 const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
 
@@ -42,13 +42,13 @@ const columns = [
     cell: PoolTitleCell,
     size: ColumnWidth.lg,
   }),
-  columnHelper.accessor('rates.borrowApyPcent', {
+  columnHelper.accessor('rates.borrow', {
     header: t`7D Borrow Rate`,
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" showChart={isFeatureVisible(c, borrowChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
-  columnHelper.accessor('rates.lendApyPcent', {
+  columnHelper.accessor('rates.lend', {
     header: t`7D Supply Yield`,
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
     meta: { type: 'numeric' },

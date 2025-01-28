@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { useCallback, useEffect } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import ProposalsFilters from './components/ProposalsFilters'
 import Proposal from './Proposal'
@@ -14,8 +14,8 @@ import SearchInput from '@ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Icon from '@ui/Icon'
-import ErrorMessage from '@dao/components/ErrorMessage'
-import { ProposalListFilter, SortByFilterProposals } from '@dao/types/dao.types'
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import { ProposalListFilter, SortByFilterProposals } from '@/dao/types/dao.types'
 
 const Proposals = () => {
   const {

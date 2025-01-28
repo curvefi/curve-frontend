@@ -5,7 +5,7 @@ import {
   SwapType,
   TokenId,
   TokenState,
-} from '@main/components/PageCreatePool/types'
+} from '@/dex/components/PageCreatePool/types'
 import type { ContractTransactionResponse } from 'ethers'
 
 import type { GetState, SetState } from 'zustand'
@@ -13,7 +13,7 @@ import produce from 'immer'
 import { BigNumber } from 'bignumber.js'
 import { t } from '@lingui/macro'
 
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 
 import {
   CRYPTOSWAP,
@@ -27,9 +27,9 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
-} from '@main/components/PageCreatePool/constants'
-import { isTricrypto } from '@main/components/PageCreatePool/utils'
-import { CurveApi, ChainId } from '@main/types/main.types'
+} from '@/dex/components/PageCreatePool/constants'
+import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type SliceState = {
   navigationIndex: number
