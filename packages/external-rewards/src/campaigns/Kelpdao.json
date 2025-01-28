@@ -1,8 +1,8 @@
 {
-  "campaignName": "Kelp Miles",
+  "campaignName": "Kernel Points",
   "platform": "Kelp DAO",
   "description": "Points for providing liquidity",
-  "platformImageId": "kelpdao.png",
+  "platformImageId": "kelpdao-kernels.png",
   "dashboardLink": "https://kelpdao.xyz/dashboard/",
   "pools": [
     {
