@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { shortenAccount } from '@ui/utils'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import { SpinnerWrapper } from '@ui/Spinner'
 

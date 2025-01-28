@@ -2,16 +2,16 @@ import { useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
-import { TOP_HOLDERS } from '@dao/constants'
+import { TOP_HOLDERS } from '@/dao/constants'
 
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils/'
 
-import PaginatedTable from '@dao/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@dao/components/PaginatedTable/TableRow'
-import { GaugeVote, GaugeVotesSortBy } from '@dao/types/dao.types'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
+import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 
 interface GaugeVotesTableProps {
   gaugeAddress: string

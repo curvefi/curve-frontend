@@ -2,10 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import Box from '@ui/Box'
-import InpChipUsdRate from '@lend/components/InpChipUsdRate'
+import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import TextCaption from '@ui/TextCaption'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 

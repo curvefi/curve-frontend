@@ -12,14 +12,14 @@ import {
   useSetLocale,
   useWalletStore,
 } from '@ui-kit/features/connect-wallet'
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@lend/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/lend/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getNetworkFromUrl, parseParams } from '@lend/utils/utilsRouter'
-import { helpers } from '@lend/lib/apiLending'
-import networks, { networksIdMapper } from '@lend/networks'
-import useStore from '@lend/store/useStore'
+import { getNetworkFromUrl, parseParams } from '@/lend/utils/utilsRouter'
+import { helpers } from '@/lend/lib/apiLending'
+import networks, { networksIdMapper } from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@lend/types/lend.types'
+import { ChainId, PageProps, Wallet } from '@/lend/types/lend.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()

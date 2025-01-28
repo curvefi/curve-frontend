@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useEffect, useState } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import Box from '@ui/Box'
 import UserStats from './UserStats'
@@ -10,8 +10,8 @@ import UserHeader from './UserHeader'
 import UserProposalVotesTable from './UserProposalVotesTable'
 import UserLocksTable from './UserLocksTable'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
-import SubNav from '@dao/components/SubNav'
-import { VeCrvHolder } from '@dao/types/dao.types'
+import SubNav from '@/dao/components/SubNav'
+import { VeCrvHolder } from '@/dao/types/dao.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type UserPageProps = {

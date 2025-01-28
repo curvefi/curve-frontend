@@ -1,17 +1,17 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
-import type { FormStatus, FormValues } from '@lend/components/PageVault/VaultWithdrawRedeem/types'
+import type { State } from '@/lend/store/useStore'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
-import { DEFAULT_FORM_EST_GAS } from '@lend/components/PageLoanManage/utils'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageVault/VaultWithdrawRedeem/utils'
-import { _getMaxActiveKey } from '@lend/store/createVaultDepositMintSlice'
-import apiLending, { helpers } from '@lend/lib/apiLending'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
+import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
+import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api, FutureRates } from '@lend/types/lend.types'
+import { ChainId, Api, FutureRates } from '@/lend/types/lend.types'
 import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

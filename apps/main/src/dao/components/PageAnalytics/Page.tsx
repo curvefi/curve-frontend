@@ -5,11 +5,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils'
-import { scrollToTop } from '@dao/utils'
-import usePageOnMount from '@dao/hooks/usePageOnMount'
+import { scrollToTop } from '@/dao/utils'
+import usePageOnMount from '@/dao/hooks/usePageOnMount'
 
-import Analytics from '@dao/components/PageAnalytics/index'
-import DocumentHead from '@dao/layout/DocumentHead'
+import Analytics from '@/dao/components/PageAnalytics/index'
+import DocumentHead from '@/dao/layout/DocumentHead'
 
 const Page: NextPage = () => {
   const params = useParams()

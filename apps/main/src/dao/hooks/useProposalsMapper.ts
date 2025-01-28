@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 const useProposalsMapper = () => {
   const cached = useStore((state) => state.storeCache.cacheProposalsMapper)

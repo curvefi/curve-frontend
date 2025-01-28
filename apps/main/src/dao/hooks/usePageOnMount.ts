@@ -10,14 +10,14 @@ import {
   useSetChain,
   useSetLocale,
 } from '@ui-kit/features/connect-wallet'
-import { CONNECT_STAGE, REFRESH_INTERVAL } from '@dao/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/dao/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getNetworkFromUrl, parseParams } from '@dao/utils/utilsRouter'
-import { helpers } from '@dao/lib/curvejs'
-import networks from '@dao/networks'
-import useStore from '@dao/store/useStore'
+import { getNetworkFromUrl, parseParams } from '@/dao/utils/utilsRouter'
+import { helpers } from '@/dao/lib/curvejs'
+import networks from '@/dao/networks'
+import useStore from '@/dao/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@dao/types/dao.types'
+import { ChainId, PageProps, Wallet } from '@/dao/types/dao.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {

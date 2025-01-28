@@ -1,14 +1,14 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { DetailsMapper, FormStatus } from '@loan/components/PagePegKeepers/types'
+import type { State } from '@/loan/store/useStore'
+import type { DetailsMapper, FormStatus } from '@/loan/components/PagePegKeepers/types'
 
 import PromisePool from '@supercharge/promise-pool'
 import { ethers } from 'ethers'
-import crvusdjsApi from '@loan/lib/apiCrvusd'
+import crvusdjsApi from '@/loan/lib/apiCrvusd'
 
-import { DEFAULT_FORM_STATUS } from '@loan/components/PagePegKeepers/utils'
-import { PEG_KEEPERS_ADDRESSES } from '@loan/constants'
-import { Curve, Provider } from '@loan/types/loan.types'
+import { DEFAULT_FORM_STATUS } from '@/loan/components/PagePegKeepers/utils'
+import { PEG_KEEPERS_ADDRESSES } from '@/loan/constants'
+import { Curve, Provider } from '@/loan/types/loan.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

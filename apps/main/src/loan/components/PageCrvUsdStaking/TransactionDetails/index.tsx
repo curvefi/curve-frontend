@@ -2,18 +2,18 @@ import styled from 'styled-components'
 import { useState } from 'react'
 import { t } from '@lingui/macro'
 
-import useStore from '@loan/store/useStore'
-import useEstimateGasConversion from '@loan/hooks/useEstimateGasConversion'
+import useStore from '@/loan/store/useStore'
+import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
 import { formatNumber } from '@ui/utils'
-import { isLoading, isReady } from '@loan/components/PageCrvUsdStaking/utils'
+import { isLoading, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 
-import Switch from '@loan/components/PageCrvUsdStaking/components/Switch'
-import DetailInfoSlippageTolerance from '@loan/components/DetailInfoSlippageTolerance'
-import FieldValue from '@loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
+import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
+import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
+import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type TransactionDetailsProps = {

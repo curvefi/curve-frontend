@@ -1,4 +1,4 @@
-import { copyToClipboard } from '@dao/utils'
+import { copyToClipboard } from '@/dao/utils'
 
 import TooltipButton from '@ui/Tooltip'
 import Icon from '@ui/Icon'

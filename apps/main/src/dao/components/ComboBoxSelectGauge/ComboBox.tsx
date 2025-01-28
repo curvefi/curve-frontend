@@ -1,4 +1,4 @@
-import type { ComboBoxSelectGaugeProps } from '@dao/components/ComboBoxSelectGauge/types'
+import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 
 import React, { useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -6,19 +6,19 @@ import chunk from 'lodash/chunk'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import { RCEditClear } from '@ui/images'
 import { StyledInput } from '@ui/InputComp/styles'
 import Box from '@ui/Box/Box'
-import ComboBoxListChunk from '@dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
+import ComboBoxListChunk from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import InputProvider from '@ui/InputComp/InputProvider'
 import Popover from '@ui/Popover/Popover'
 import Spinner from '@ui/Spinner'
 import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 const ComboBox = ({
   testId,

@@ -3,8 +3,8 @@ import styled from 'styled-components'
 
 import TableHeader from './TableHeader'
 import Pagination from './Pagination'
-import Spinner from '@dao/components/Spinner'
-import ErrorMessage from '@dao/components/ErrorMessage'
+import Spinner from '@/dao/components/Spinner'
+import ErrorMessage from '@/dao/components/ErrorMessage'
 import Box from '@ui/Box'
 import NoTableData from './NoTableData'
 

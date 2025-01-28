@@ -2,7 +2,7 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 const FormActions = ({
   haveSigner,

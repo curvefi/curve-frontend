@@ -1,11 +1,11 @@
-import type { SummaryProps } from '@lend/components/AlertLoanSummary/types'
+import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { format } from '@lend/components/AlertLoanSummary/utils'
+import { format } from '@/lend/components/AlertLoanSummary/utils'
 
-import Item from '@lend/components/AlertLoanSummary/components/Item'
+import Item from '@/lend/components/AlertLoanSummary/components/Item'
 
 const SummaryPartial = ({
   title,

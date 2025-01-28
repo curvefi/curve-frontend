@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import {
   StyledStats,
@@ -10,7 +10,7 @@ import {
   SummarySpinnerWrapper,
   SummaryTitle,
   tooltipProps,
-} from '@main/components/PageDashboard/components/Summary'
+} from '@/dex/components/PageDashboard/components/Summary'
 import Chip from '@ui/Typography/Chip'
 import Stats from '@ui/Stats'
 import Spinner from '@ui/Spinner'

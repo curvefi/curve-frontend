@@ -1,24 +1,24 @@
-import type { TableRowProps } from '@loan/components/PageMarketList/types'
+import type { TableRowProps } from '@/loan/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@loan/constants'
+import { TITLE } from '@/loan/constants'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
 import { Tr, CellInPool } from '@ui/Table'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import TokenLabel from '@loan/components/TokenLabel'
+import TokenLabel from '@/loan/components/TokenLabel'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
-import TableCellUtilization from '@loan/components/SharedCells/TableCellUtilization'
-import TableCellRate from '@loan/components/SharedCells/TableCellRate'
-import TableCellTotalCollateral from '@loan/components/SharedCells/TableCellTotalCollateral'
-import TableCellUser from '@loan/components/SharedCells/TableCellUser'
-import { TitleKey, TitleMapper } from '@loan/types/loan.types'
+import TableCellUtilization from '@/loan/components/SharedCells/TableCellUtilization'
+import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
+import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
+import TableCellUser from '@/loan/components/SharedCells/TableCellUser'
+import { TitleKey, TitleMapper } from '@/loan/types/loan.types'
 
 const TableRowMobile = ({
   className = '',

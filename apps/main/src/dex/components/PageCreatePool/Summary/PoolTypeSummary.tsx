@@ -1,9 +1,9 @@
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
-import { CRYPTOSWAP } from '@main/components/PageCreatePool/constants'
+import { CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 
 import Box from '@ui/Box'
 import {
@@ -12,7 +12,7 @@ import {
   SummaryDataPlaceholder,
   SummaryCategoryTitle,
   StyledCheckmark,
-} from '@main/components/PageCreatePool/Summary/styles'
+} from '@/dex/components/PageCreatePool/Summary/styles'
 
 const PoolTypeSummary = () => {
   const {

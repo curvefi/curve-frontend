@@ -1,9 +1,9 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@loan/components/PageLoanCreate/types'
-import type { LiqRange, LiqRangesMapper } from '@loan/store/types'
-import type { MaxRecvLeverage } from '@loan/components/PageLoanCreate/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/loan/components/PageLoanCreate/types'
+import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
+import type { MaxRecvLeverage } from '@/loan/components/PageLoanCreate/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -11,11 +11,11 @@ import {
   DEFAULT_DETAIL_INFO_LEVERAGE,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@loan/components/PageLoanCreate/utils'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
-import networks from '@loan/networks'
-import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
+} from '@/loan/components/PageLoanCreate/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import networks from '@/loan/networks'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 

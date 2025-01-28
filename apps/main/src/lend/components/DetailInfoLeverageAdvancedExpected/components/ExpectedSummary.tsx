@@ -1,10 +1,10 @@
-import type { DetailInfoLeverageExpectedProps } from '@lend/components/DetailInfoLeverageAdvancedExpected/types'
-import type { BreakdownItem } from '@lend/components/DetailInfoLeverageAdvancedExpected/types'
+import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
+import type { BreakdownItem } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 
 import React from 'react'
 import styled from 'styled-components'
 
-import { format } from '@lend/components/DetailInfoLeverageAdvancedExpected/utils'
+import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 
 import Icon from '@ui/Icon'
 

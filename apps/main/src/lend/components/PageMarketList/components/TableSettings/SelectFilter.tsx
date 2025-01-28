@@ -1,10 +1,10 @@
-import type { SearchParams } from '@lend/components/PageMarketList/types'
+import type { SearchParams } from '@/lend/components/PageMarketList/types'
 
 import React from 'react'
 import { Item } from 'react-stately'
 import { t } from '@lingui/macro'
 
-import { Filter } from '@lend/components/PageMarketList/utils'
+import { Filter } from '@/lend/components/PageMarketList/utils'
 import Select from '@ui/Select'
 
 type ListItem = { id: string; displayName: string }

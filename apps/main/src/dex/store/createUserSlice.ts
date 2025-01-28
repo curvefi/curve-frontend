@@ -1,13 +1,13 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 
 import { shortenAccount } from '@ui/utils'
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { fulfilledValue, isValidAddress } from '@main/utils'
-import curvejsApi from '@main/lib/curvejs'
-import { Balances, CurveApi, ChainId, UserPoolListMapper } from '@main/types/main.types'
+import { fulfilledValue, isValidAddress } from '@/dex/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import { Balances, CurveApi, ChainId, UserPoolListMapper } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

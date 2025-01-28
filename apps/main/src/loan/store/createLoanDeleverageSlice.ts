@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormDetailInfo, FormStatus, FormValues } from '@loan/components/PageLoanManage/LoanDeleverage/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -9,10 +9,10 @@ import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@loan/components/PageLoanManage/LoanDeleverage/utils'
-import { DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import networks from '@loan/networks'
-import { ChainId, Curve, Llamma, UserLoanDetails } from '@loan/types/loan.types'
+} from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
+import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import networks from '@/loan/networks'
+import { ChainId, Curve, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 

@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { formatNumber, shortenTokenAddress } from '@ui/utils'
 import { calculateUserPowerStale } from './utils'
 
 import Box from '@ui/Box'
-import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
-import ComboBoxSelectGauge from '@dao/components/ComboBoxSelectGauge'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
 import InternalLink from '@ui/Link/InternalLink'
 import AlertBox from '@ui/AlertBox'
 

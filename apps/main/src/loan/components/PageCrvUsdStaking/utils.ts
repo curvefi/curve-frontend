@@ -1,4 +1,4 @@
-import { FetchStatus, TransactionStatus } from '@loan/types/loan.types'
+import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 
 export const isReady = (status: FetchStatus) => status === 'success'
 export const isLoading = (status: FetchStatus) => status === 'loading'

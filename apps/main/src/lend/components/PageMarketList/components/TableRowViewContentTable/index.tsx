@@ -1,16 +1,16 @@
-import type { TableProps } from '@lend/components/PageMarketList/types'
+import type { TableProps } from '@/lend/components/PageMarketList/types'
 
 import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import Box from '@ui/Box'
 import Table, { Tbody, Th } from '@ui/Table'
-import TableHead from '@lend/components/PageMarketList/components/TableRowViewContentTable/TableHead'
-import TableRowContainer from '@lend/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
+import TableHead from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableHead'
+import TableRowContainer from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
 import TextCaption from '@ui/TextCaption'
 
 const MarketListTable = ({

@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
-import networks from '@dao/networks'
+import networks from '@/dao/networks'
 
 import { ExternalLink } from '@ui/Link'
 import Box from '@ui/Box'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@dao/types/dao.types'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData

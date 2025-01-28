@@ -2,11 +2,11 @@ import { t } from '@lingui/macro'
 import React from 'react'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { ChainId, FutureRates } from '@lend/types/lend.types'
+import { ChainId, FutureRates } from '@/lend/types/lend.types'
 
 const DetailInfoRate = ({
   rChainId,

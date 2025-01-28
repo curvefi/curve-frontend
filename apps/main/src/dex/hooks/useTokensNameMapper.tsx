@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import useStore from '@main/store/useStore'
-import { ChainId } from '@main/types/main.types'
+import useStore from '@/dex/store/useStore'
+import { ChainId } from '@/dex/types/main.types'
 
 const useTokensNameMapper = (rChainId: ChainId | '') => {
   const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId] ?? {})
