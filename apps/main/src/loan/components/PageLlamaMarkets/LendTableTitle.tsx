@@ -6,15 +6,14 @@ import { t } from '@lingui/macro'
 import Typography from '@mui/material/Typography'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
-// size is hardcoded in the figma design
-const Img = <Image src={LlamaSunglasses} alt="Llama with sunglasses" width={339} height={276} priority={false} />
+const imgSize = { width: 339, height: 276 } // size is hardcoded in the figma design
 
 const { MinWidth, MaxWidth, Spacing } = SizesAndSpaces
 
 export const LendTableTitle = () => (
   <Box minWidth={MinWidth.tableHeader} sx={(t) => ({ backgroundColor: t.design.Layer[3].Fill })}>
     <Box maxWidth={MaxWidth.tableTitle} paddingBlock={Spacing.lg} display="flex" gap={Spacing.sm} marginInline="auto">
-      {Img}
+      <Image src={LlamaSunglasses} alt="Llama with sunglasses" {...imgSize} priority={false} />
       <Box display="flex" flexDirection="column" gap={Spacing.sm} flexGrow={1}>
         <InvertTheme>
           <Box padding={Spacing.lg} sx={(t) => ({ backgroundColor: t.design.Layer.Highlight.Fill })}>
