@@ -11,13 +11,15 @@ const paletteMode = (theme: ThemeKey, options: DesignOptions) =>
 const generateTheme = (theme: ThemeKey, options: DesignOptions = {}): Theme => {
   const design = DesignSystem[theme](options)
   const typography = createTypography(design)
+  const components = createComponents(design, typography)
+  console.log(components?.MuiChip)
   return createMuiTheme({
     ...basicMuiTheme,
     key: theme,
     design: { ...design, options },
     palette: createPalette(paletteMode(theme, options), design),
     typography,
-    components: createComponents(design, typography),
+    components: components,
     shape: { borderRadius: 0 },
     cssVariables: true,
     shadows: Array(25).fill('none') as Shadows,
