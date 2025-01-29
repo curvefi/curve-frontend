@@ -422,15 +422,19 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
-          baselinePriceArray.push({
-            time: item.time.getUTCTimestamp(),
-            base_price: item.basePrice,
-          })
+          if (item.basePrice) {
+            baselinePriceArray.push({
+              time: item.time.getUTCTimestamp(),
+              base_price: item.basePrice,
+            })
+          }
 
-          oraclePriceArray.push({
-            time: item.time.getUTCTimestamp(),
-            value: item.oraclePrice,
-          })
+          if (item.oraclePrice) {
+            oraclePriceArray.push({
+              time: item.time.getUTCTimestamp(),
+              value: item.oraclePrice,
+            })
+          }
 
           ohlcDataArray.push({
             time: item.time.getUTCTimestamp(),
@@ -504,15 +508,19 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
-          baselinePriceArray.push({
-            time: item.time.getUTCTimestamp(),
-            base_price: item.basePrice,
-          })
+          if (item.basePrice) {
+            baselinePriceArray.push({
+              time: item.time.getUTCTimestamp(),
+              base_price: item.basePrice,
+            })
+          }
 
-          oraclePriceArray.push({
-            time: item.time.getUTCTimestamp(),
-            value: item.oraclePrice,
-          })
+          if (item.oraclePrice) {
+            oraclePriceArray.push({
+              time: item.time.getUTCTimestamp(),
+              value: item.oraclePrice,
+            })
+          }
 
           ohlcDataArray.push({
             time: item.time.getUTCTimestamp(),
