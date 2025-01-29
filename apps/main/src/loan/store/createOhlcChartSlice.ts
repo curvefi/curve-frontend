@@ -138,7 +138,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           volumeArray = [
             ...volumeArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
@@ -147,7 +147,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselinePriceArray = [
             ...baselinePriceArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               base_price: item.priceBase,
             },
           ]
@@ -155,7 +155,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           oraclePriceArray = [
             ...oraclePriceArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               value: item.priceOracle,
             },
           ]
@@ -163,7 +163,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           ohlcDataArray = [
             ...ohlcDataArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               open: item.open,
               close: item.close,
               high: item.high,
@@ -186,7 +186,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].oraclePriceData = oraclePriceArray
             state[sliceKey].baselinePriceData = baselinePriceArray
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
-            state[sliceKey].lastFetchEndTime = ohlc[0].time.getTime() / 1000
+            state[sliceKey].lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartFetchStatus = 'READY'
           }),
         )
@@ -229,7 +229,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           volumeArray = [
             ...volumeArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
@@ -238,7 +238,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselinePriceArray = [
             ...baselinePriceArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               base_price: item.priceBase,
             },
           ]
@@ -246,7 +246,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           oraclePriceArray = [
             ...oraclePriceArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               value: item.priceOracle,
             },
           ]
@@ -254,7 +254,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           ohlcDataArray = [
             ...ohlcDataArray,
             {
-              time: (item.time.getTime() / 1000) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               open: item.open,
               close: item.close,
               high: item.high,
@@ -270,7 +270,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].oraclePriceData = [...oraclePriceArray, ...get()[sliceKey].oraclePriceData]
             state[sliceKey].baselinePriceData = [...baselinePriceArray, ...get()[sliceKey].baselinePriceData]
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
-            state[sliceKey].lastFetchEndTime = ohlc[0].time.getTime() / 1000
+            state[sliceKey].lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
           }),
         )
       } catch (error) {

@@ -237,23 +237,23 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         for (const item of ohlc) {
           volumeArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             value: item.volume,
             color: item.open < item.close ? '#26a69982' : '#ef53507e',
           })
 
           baselinePriceArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             base_price: item.priceBase,
           })
 
           oraclePriceArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             value: item.priceOracle,
           })
 
           ohlcDataArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             open: item.open,
             close: item.close,
             high: item.high,
@@ -273,7 +273,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc.data = ohlcDataArray
             state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 298
-            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = ohlc[0].time.getTime() / 1000
+            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
             state[sliceKey].chartLlammaOhlc.volumeData = volumeArray
             state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
@@ -326,23 +326,23 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         for (const item of ohlc) {
           volumeArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             value: item.volume,
             color: item.open < item.close ? '#26a69982' : '#ef53507e',
           })
 
           baselinePriceArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             base_price: item.priceBase,
           })
 
           oraclePriceArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             value: item.priceOracle,
           })
 
           ohlcDataArray.push({
-            time: (item.time.getTime() / 1000) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             open: item.open,
             close: item.close,
             high: item.high,
@@ -356,7 +356,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           oracleData: oraclePriceArray,
           baselineData: baselinePriceArray,
           refetchingCapped: ohlcDataArray.length < 299,
-          lastFetchEndTime: ohlc[0].time.getTime() / 1000,
+          lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
         }
       } catch (error) {
         set(
