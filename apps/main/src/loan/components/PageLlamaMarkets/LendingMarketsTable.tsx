@@ -67,7 +67,7 @@ const columns = [
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
-  // following columns are used to configure and filter tanstack, but they are displayed together in MarketTitleCell
+  // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden('blockchainId'),
   hidden('assets.collateral.symbol'),
   hidden('assets.borrowed.symbol'),
