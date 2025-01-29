@@ -26,6 +26,7 @@ import YieldFi from './YieldFi.json'
 import Babylon from './Babylon.json'
 import Vnx from './Vnx.json'
 import Hourglass from './Hourglass.json'
+import Fx from './Fx.json'
 
 export {
   DLCLink,
@@ -56,4 +57,5 @@ export {
   Babylon,
   Vnx,
   Hourglass,
+  Fx,
 }

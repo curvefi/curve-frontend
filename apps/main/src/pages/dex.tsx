@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useParams } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import 'focus-visible'
 import { i18n } from '@lingui/core'
@@ -157,10 +157,19 @@ const App: NextPage = () => {
     isPageVisible,
   )
 
+  /**
+   * Lazily use useParams() to preserve network parameter during redirects.
+   * Using Navigate instead of direct component rendering ensures proper
+   * menu highlighting via isActive state.
+   */
+  const RootRedirect = () => {
+    const { network } = useParams()
+    return <Navigate to={`/${network ?? 'ethereum'}/pools`} />
+  }
+
   const SubRoutes = (
     <>
-      <Route path=":network" element={<PageSwap />} />
-      <Route path=":network/dashboard" element={<PageDashboard />} />
+      <Route path=":network" element={<RootRedirect />} />
       <Route path=":network/locker" element={<PageLockedCrv />} />
       <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
       <Route path=":network/create-pool" element={<PageCreatePool />} />
@@ -212,7 +221,7 @@ const App: NextPage = () => {
                           path="/disclaimer"
                           element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
                         />
-                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
+                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} />} />
                         <Route path="404" element={<Page404 />} />
                         <Route path="*" element={<Page404 />} />
                       </Routes>
