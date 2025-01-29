@@ -28,8 +28,9 @@ export const ConnectWalletPrompt = ({
     padding={7}
     spacing={8}
     width={SizesAndSpaces.MaxWidth.connectWallet}
-    maxWidth="100%"
+    maxWidth="90vw"
     sx={{
+      // note: not using mui colors as the color needs to match the background image and we don't have one for chad
       backgroundColor: 'var(--table--background-color)',
     }}
   >
