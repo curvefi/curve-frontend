@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { LendTableTitle } from '@/loan/components/PageLlamaMarkets/LendTableTitle'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { invalidateLendingVaults } from '@/loan/entities/lending-vaults'
@@ -26,7 +25,6 @@ export const PageLlamaMarkets = () => {
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
       <DocumentHead title={t`Llamalend Markets`} />
-      <LendTableTitle />
       {data ? (
         <LendingMarketsTable onReload={onReload} data={data} headerHeight={headerHeight} />
       ) : (
