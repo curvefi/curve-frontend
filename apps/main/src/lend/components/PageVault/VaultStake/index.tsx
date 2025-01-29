@@ -71,7 +71,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
       const { amount } = formValues
 
       const notifyMessage = t`stake ${amount} vault shares`
-      const notify = notify(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepStake(payloadActiveKey, rFormType, api, market, formValues)
@@ -82,7 +82,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepStake, reset],
   )
@@ -111,10 +111,10 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of vault shares`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, rFormType, api, market, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         STAKE: {

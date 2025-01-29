@@ -95,7 +95,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const handleBtnClickRemove = useCallback(
     async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
       const notifyMessage = t`Please confirm removal of ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notify(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -108,7 +108,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepDecrease, network, reset],
   )

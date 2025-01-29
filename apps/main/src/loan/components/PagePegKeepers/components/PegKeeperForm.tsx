@@ -36,7 +36,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
       setTxInfoBar(null)
 
       const notifyMessage = t`Please confirm update ${poolName} pool`
-      const notify = notify(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchUpdate(curve, pegKeeperAddress)
 
       if (isSubscribed.current && resp) {
@@ -45,7 +45,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
         }
 
-        if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+        if (notification && typeof notification.dismiss === 'function') notification.dismiss()
       }
     },
     [fetchUpdate, poolName, rChainId],

@@ -94,7 +94,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -115,7 +115,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
@@ -182,10 +182,10 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         REPAY: {

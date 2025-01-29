@@ -99,7 +99,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
       const chainId = curve.chainId
       const notifyMessage = t`Please confirm depositing ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notify(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -111,7 +111,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepIncrease, reset],
   )
@@ -140,10 +140,10 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${llamma.collateralSymbol}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         ADD: {

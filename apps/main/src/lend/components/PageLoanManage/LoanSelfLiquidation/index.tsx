@@ -109,10 +109,10 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${market.borrowed_token.symbol}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(api, market, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         SELF_LIQUIDATE: {
@@ -121,7 +121,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
           type: 'action',
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
           onClick: async () => {
-            const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
+            const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
             const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)
 
             if (isSubscribed.current && resp && resp.hash && !resp.loanExists && !resp.error) {
@@ -142,7 +142,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
               )
             }
             if (resp?.error) setTxInfoBar(null)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
       }

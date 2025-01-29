@@ -69,7 +69,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
 
   const handleBtnClickRemove = useCallback(
     async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
-      const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -84,7 +84,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepDecrease, network, updateFormValues],
   )

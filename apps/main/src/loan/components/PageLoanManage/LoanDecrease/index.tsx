@@ -109,7 +109,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       const notifyMessage = isFullRepay
         ? t`Please approve full repay.`
         : t`Please approve a repayment of ${debt} ${getTokenName(llamma).stablecoin}.`
-      const notify = notify(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -131,7 +131,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepDecrease, navigate, params, rChainId, reset],
   )
@@ -159,10 +159,10 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${getTokenName(llamma).stablecoin}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         PAY: {

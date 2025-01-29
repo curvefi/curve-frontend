@@ -99,7 +99,7 @@ const VaultWithdrawRedeem = ({
         notifyMessage = t`a full withdraw of ${vaultShares} vault shares`
       }
 
-      const notify = notify(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
       const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues, vaultShares)
 
@@ -114,7 +114,7 @@ const VaultWithdrawRedeem = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, reset],
   )

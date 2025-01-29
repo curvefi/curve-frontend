@@ -120,7 +120,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             } ${llamma.collateralSymbol}.`
           : t`Please confirm borrowing of ${formValues.debt} ${getTokenName(llamma).stablecoin}.`
 
-      const notify = notify(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
 
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
@@ -133,7 +133,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepIncrease, reset],
   )
@@ -163,10 +163,10 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${formValues.collateral}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         BORROW: {

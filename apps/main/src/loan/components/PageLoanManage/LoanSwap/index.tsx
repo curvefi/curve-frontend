@@ -111,7 +111,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       const { item1Name } = getItemsName(llamma, formValues)
       const swapAmount = formValues.item1 === '' ? detailInfo.amount : formValues.item1
       const notifyMessage = t`Please confirm swapping ${swapAmount} ${item1Name} at max ${maxSlippage} slippage.`
-      const notify = notify(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
 
       const resp = await fetchStepSwap(
         payloadActiveKey,
@@ -130,7 +130,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, detailInfo.amount, fetchStepSwap, rChainId, reset],
   )
@@ -163,10 +163,10 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
             const { item1Name } = getItemsName(llamma, formValues)
             const swapAmount = formValues.item1 === '' ? detailInfo.amount : formValues.item1
             const notifyMessage = t`Please approve spending your ${item1Name}.`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(activeKey, curve, llamma, { ...formValues, item1: swapAmount }, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         SWAP: {

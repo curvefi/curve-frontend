@@ -102,7 +102,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       maxSlippage: string,
       isLeverage: boolean,
     ) => {
-      const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepCreate(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -110,7 +110,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepCreate, rChainId],
   )
@@ -172,10 +172,10 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}.`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         CREATE: {

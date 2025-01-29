@@ -106,7 +106,7 @@ const LoanBorrowMore = ({
     ) => {
       const { chainId } = api
 
-      const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -120,7 +120,7 @@ const LoanBorrowMore = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepIncrease, updateFormValues],
   )
@@ -185,10 +185,10 @@ const LoanBorrowMore = ({
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         BORROW_MORE: {

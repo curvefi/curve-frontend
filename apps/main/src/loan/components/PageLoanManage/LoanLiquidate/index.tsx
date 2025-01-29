@@ -101,10 +101,10 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${getTokenName(llamma).stablecoin}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(curve, llamma, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         LIQUIDATE: {
@@ -115,7 +115,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
           onClick: async () => {
             const stablecoinName = getTokenName(llamma).stablecoin
             const notifyMessage = t`Please confirm ${stablecoinName} self-liquidation at max ${maxSlippage}% slippage.`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
 
@@ -138,7 +138,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
                 />,
               )
             }
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
       }

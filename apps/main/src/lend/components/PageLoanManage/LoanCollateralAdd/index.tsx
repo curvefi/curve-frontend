@@ -64,7 +64,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
     async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
       const { chainId } = api
 
-      const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -73,7 +73,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => updateFormValues({}, true)} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [activeKey, fetchStepIncrease, updateFormValues],
   )
@@ -120,10 +120,10 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${market.collateral_token.symbol}`
-            const notify = notify(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
           },
         },
         ADD: {

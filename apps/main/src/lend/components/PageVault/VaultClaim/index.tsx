@@ -64,7 +64,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
 
       const amount = type === 'crv' ? `${crv} CRV` : _getRewardsAmount(rewards)
       const notifyMessage = t`claim rewards ${amount}`
-      const notify = notify(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
@@ -80,7 +80,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
     },
     [fetchStepClaim, reset, userActiveKey],
   )
