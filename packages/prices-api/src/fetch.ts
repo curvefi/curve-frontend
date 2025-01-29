@@ -19,30 +19,22 @@ export class FetchError extends Error {
  * @throws Error if the fetch fails or returns a non-2xx status code.
  */
 export async function fetchJson<T>(url: string, body?: Record<string, unknown>, signal?: AbortSignal): Promise<T> {
-  try {
-    const resp = await fetch(url, {
-      method: body ? 'POST' : 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      signal,
-    })
+  const resp = await fetch(url, {
+    method: body ? 'POST' : 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+    signal,
+  })
 
-    if (!resp.ok) {
-      // Make the promise be rejected if we didn't get a 2xx response
-      throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
-    } else {
-      const json = (await resp.json()) as T
+  if (!resp.ok) {
+    // Make the promise be rejected if we didn't get a 2xx response
+    throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
+  } else {
+    const json = (await resp.json()) as T
 
-      return json
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      throw err
-    }
-
-    throw new Error(`Unknown fetch error`)
+    return json
   }
 }
