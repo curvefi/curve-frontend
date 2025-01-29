@@ -36,7 +36,7 @@ const poolTypeNames: Record<LlamaMarketType, () => string> = {
 }
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */
-export const PoolBadges = ({ blockchainId, type }: { blockchainId: string; type: LlamaMarketType }) => (
+export const MarketBadges = ({ blockchainId, type }: { blockchainId: string; type: LlamaMarketType }) => (
   <Stack direction="row" gap={Spacing.sm}>
     <Badge compact>
       <ChainIcon blockchainId={blockchainId} size="md" />

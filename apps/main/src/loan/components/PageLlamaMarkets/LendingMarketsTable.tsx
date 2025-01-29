@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
-import { CompactUsdCell, LineGraphCell, PoolTitleCell, UtilizationCell } from './cells'
+import { CompactUsdCell, LineGraphCell, MarketTitleCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import {
@@ -39,7 +39,7 @@ const [borrowChartId, lendChartId] = ['borrowChart', 'lendChart']
 const columns = [
   columnHelper.accessor('assets', {
     header: t`Collateral • Borrow`,
-    cell: PoolTitleCell,
+    cell: MarketTitleCell,
     size: ColumnWidth.lg,
   }),
   columnHelper.accessor('rates.borrow', {
@@ -67,7 +67,7 @@ const columns = [
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
-  // following columns are used to configure and filter tanstack, but they are displayed together in PoolTitleCell
+  // following columns are used to configure and filter tanstack, but they are displayed together in MarketTitleCell
   hidden('blockchainId'),
   hidden('assets.collateral.symbol'),
   hidden('assets.borrowed.symbol'),

@@ -8,4 +8,4 @@ const { Spacing } = SizesAndSpaces
  * Displays warnings for a pool, such as deprecated pools or pools with collateral corrosion.
  * Note: for now, this component is an empty placeholder to keep the design correct, it does not display any warnings.
  */
-export const PoolWarnings = () => <Stack direction="row" gap={Spacing.sm} sx={{ height: 20 }}></Stack>
+export const MarketWarnings = () => <Stack direction="row" gap={Spacing.sm} sx={{ height: 20 }}></Stack>
