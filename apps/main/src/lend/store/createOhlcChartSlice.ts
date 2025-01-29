@@ -15,6 +15,7 @@ import type {
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 import type { Address, Chain } from '@curvefi/prices-api'
+import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
 
 import produce from 'immer'
@@ -405,17 +406,16 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       const checkSummedController = getAddress(controller)
 
       try {
-        const oracleOhlcDataFetch = await fetch(
-          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
-        )
-        const oracleOhlcResponse = await oracleOhlcDataFetch.json()
+        const { pools, ohlc } = await getOracle({
+          chain: network as Chain,
+          controller: checkSummedController as Address,
+          interval,
+          units: timeUnit as OHLCTimeUnit,
+          start,
+          end,
+        })
 
-        // detail appears when no curve oracle pools can be found in the api
-        if (oracleOhlcResponse.detail) {
-          throw new Error(oracleOhlcResponse.detail)
-        }
-
-        if (oracleOhlcResponse.data?.length === 0) {
+        if (ohlc.length === 0) {
           throw new Error('No oracle OHLC data found. Data may be unavailable for this pool.')
         }
 
@@ -423,23 +423,19 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
-        for (const item of oracleOhlcResponse.data) {
-          if (item.base_price) {
-            baselinePriceArray.push({
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              base_price: item.base_price,
-            })
-          }
+        for (const item of ohlc) {
+          baselinePriceArray.push({
+            time: item.time.getUTCTimestamp(),
+            base_price: item.basePrice,
+          })
 
-          if (item.oracle_price) {
-            oraclePriceArray.push({
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              value: item.oracle_price,
-            })
-          }
+          oraclePriceArray.push({
+            time: item.time.getUTCTimestamp(),
+            value: item.oraclePrice,
+          })
 
           ohlcDataArray.push({
-            time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             open: item.open,
             close: item.close,
             high: item.high,
@@ -451,17 +447,17 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc.data = ohlcDataArray
             state[sliceKey].chartOraclePoolOhlc.collateralToken = {
-              address: oracleOhlcResponse.oracle_pools[0].collateral_address,
-              symbol: oracleOhlcResponse.oracle_pools[0].collateral_symbol,
+              address: pools[0].collateralAddress,
+              symbol: pools[0].collateralSymbol,
             }
             state[sliceKey].chartOraclePoolOhlc.borrowedToken = {
-              address: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_address,
-              symbol: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_symbol,
+              address: pools[pools.length - 1].borrowedAddress,
+              symbol: pools[pools.length - 1].borrowedSymbol,
             }
             state[sliceKey].chartOraclePoolOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartOraclePoolOhlc.baselinePriceData = baselinePriceArray
             state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
-            state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = oracleOhlcResponse.data[0].time
+            state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'READY'
           }),
         )
@@ -496,32 +492,32 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       const checkSummedController = getAddress(controller)
 
       try {
-        const oracleOhlcDataFetch = await fetch(
-          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
-        )
-        const oracleOhlcResponse = await oracleOhlcDataFetch.json()
+        const { pools, ohlc } = await getOracle({
+          chain: network as Chain,
+          controller: checkSummedController as Address,
+          interval,
+          units: timeUnit as OHLCTimeUnit,
+          start,
+          end,
+        })
 
         let baselinePriceArray: LlamaBaselinePriceData[] = []
         let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
-        for (const item of oracleOhlcResponse.data) {
-          if (item.base_price) {
-            baselinePriceArray.push({
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              base_price: item.base_price,
-            })
-          }
+        for (const item of ohlc) {
+          baselinePriceArray.push({
+            time: item.time.getUTCTimestamp(),
+            base_price: item.basePrice,
+          })
 
-          if (item.oracle_price) {
-            oraclePriceArray.push({
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              value: item.oracle_price,
-            })
-          }
+          oraclePriceArray.push({
+            time: item.time.getUTCTimestamp(),
+            value: item.oraclePrice,
+          })
 
           ohlcDataArray.push({
-            time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+            time: item.time.getUTCTimestamp(),
             open: item.open,
             close: item.close,
             high: item.high,
@@ -534,14 +530,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           oracleData: oraclePriceArray,
           baselineData: baselinePriceArray,
           refetchingCapped: ohlcDataArray.length < 299,
-          lastFetchEndTime: oracleOhlcResponse.data[0].time,
+          lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
           collateralToken: {
-            address: oracleOhlcResponse.oracle_pools[0].collateral_address,
-            symbol: oracleOhlcResponse.oracle_pools[0].collateral_symbol,
+            address: pools[0].collateralAddress,
+            symbol: pools[0].collateralSymbol,
           },
           borrowedToken: {
-            address: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_address,
-            symbol: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_symbol,
+            address: pools[pools.length - 1].borrowedAddress,
+            symbol: pools[pools.length - 1].borrowedSymbol,
           },
         }
       } catch (error) {
