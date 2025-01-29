@@ -48,7 +48,6 @@ const columns = [
     id: borrowChartId,
     header: t`7D Borrow Rate Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
-    meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
   columnHelper.accessor('rates.lend', {
@@ -62,7 +61,6 @@ const columns = [
     id: lendChartId,
     header: t`7D Supply Yield Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
-    meta: { type: 'numeric' },
     size: ColumnWidth.md,
     sortUndefined: 'last',
   }),
