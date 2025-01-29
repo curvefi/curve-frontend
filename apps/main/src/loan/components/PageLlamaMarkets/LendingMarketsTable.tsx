@@ -49,6 +49,7 @@ const columns = [
     header: t`7D Borrow Rate Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
     size: ColumnWidth.md,
+    enableSorting: false,
   }),
   columnHelper.accessor('rates.lend', {
     header: t`7D Avg Supply Yield`,
@@ -63,6 +64,7 @@ const columns = [
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
     size: ColumnWidth.md,
     sortUndefined: 'last',
+    enableSorting: false,
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,
