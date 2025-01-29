@@ -13,7 +13,6 @@ import type {
   LlammaTradeEvent,
   LlammaControllerEvent,
 } from 'ui/src/Chart/types'
-import type { UTCTimestamp } from 'lightweight-charts'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
@@ -21,7 +20,6 @@ import { getOHLC } from '@curvefi/prices-api/llamma'
 import produce from 'immer'
 
 import networks from '@/lend/networks'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { ChainId } from '@/lend/types/lend.types'
 
 type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
