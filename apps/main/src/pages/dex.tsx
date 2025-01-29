@@ -171,6 +171,7 @@ const App: NextPage = () => {
   const SubRoutes = (
     <>
       <Route path=":network" element={<RootRedirect />} />
+      <Route path=":network/dashboard" element={<PageDashboard />} />
       <Route path=":network/locker" element={<PageLockedCrv />} />
       <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
       <Route path=":network/create-pool" element={<PageCreatePool />} />
