@@ -84,7 +84,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepDecrease, network, updateFormValues],
   )

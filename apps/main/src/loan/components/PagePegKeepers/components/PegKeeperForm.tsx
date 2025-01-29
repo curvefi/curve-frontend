@@ -45,7 +45,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
         }
 
-        if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+        notification?.dismiss()
       }
     },
     [fetchUpdate, poolName, rChainId],

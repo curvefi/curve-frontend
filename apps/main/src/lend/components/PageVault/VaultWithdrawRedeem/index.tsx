@@ -114,7 +114,7 @@ const VaultWithdrawRedeem = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, reset],
   )

@@ -111,7 +111,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           />,
         )
       }
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepIncrease, reset],
   )
@@ -143,7 +143,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         ADD: {

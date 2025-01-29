@@ -80,7 +80,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepUnstake, reset],
   )

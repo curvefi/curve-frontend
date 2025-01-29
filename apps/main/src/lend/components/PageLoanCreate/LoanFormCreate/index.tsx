@@ -110,7 +110,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepCreate, rChainId],
   )
@@ -175,7 +175,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         CREATE: {

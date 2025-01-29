@@ -108,7 +108,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
           />,
         )
       }
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepDecrease, network, reset],
   )

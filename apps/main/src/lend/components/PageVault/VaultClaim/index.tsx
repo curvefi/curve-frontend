@@ -80,7 +80,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [fetchStepClaim, reset, userActiveKey],
   )

@@ -115,7 +115,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
@@ -185,7 +185,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         REPAY: {

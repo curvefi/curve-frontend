@@ -130,7 +130,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
           />,
         )
       }
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, detailInfo.amount, fetchStepSwap, rChainId, reset],
   )
@@ -166,7 +166,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(activeKey, curve, llamma, { ...formValues, item1: swapAmount }, maxSlippage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         SWAP: {

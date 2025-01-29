@@ -112,7 +112,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(api, market, maxSlippage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         SELF_LIQUIDATE: {
@@ -142,7 +142,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
               )
             }
             if (resp?.error) setTxInfoBar(null)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
       }

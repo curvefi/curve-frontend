@@ -131,7 +131,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           />,
         )
       }
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepDecrease, navigate, params, rChainId, reset],
   )
@@ -162,7 +162,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         PAY: {

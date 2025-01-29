@@ -82,7 +82,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepStake, reset],
   )
@@ -114,7 +114,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, rFormType, api, market, formValues)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         STAKE: {

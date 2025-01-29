@@ -73,7 +73,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => updateFormValues({}, true)} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepIncrease, updateFormValues],
   )
@@ -123,7 +123,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         ADD: {

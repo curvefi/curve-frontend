@@ -95,7 +95,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, borrowed_token?.symbol, fetchStepDepositMint, reset],
   )
@@ -127,7 +127,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, rFormType, api, market, formValues)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         DEPOSIT_MINT: {

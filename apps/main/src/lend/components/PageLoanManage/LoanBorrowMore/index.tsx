@@ -120,7 +120,7 @@ const LoanBorrowMore = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepIncrease, updateFormValues],
   )
@@ -188,7 +188,7 @@ const LoanBorrowMore = ({
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         BORROW_MORE: {

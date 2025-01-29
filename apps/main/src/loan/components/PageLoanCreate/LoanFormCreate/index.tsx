@@ -126,7 +126,7 @@ const LoanCreate = ({
         const TxDescription = <Trans>Transaction complete.</Trans>
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
-      if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+      notification?.dismiss()
     },
     [activeKey, fetchStepCreate, network],
   )
@@ -164,7 +164,7 @@ const LoanCreate = ({
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         CREATE: {

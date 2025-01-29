@@ -104,7 +104,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
             const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(curve, llamma, maxSlippage)
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
         LIQUIDATE: {
@@ -138,7 +138,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
                 />,
               )
             }
-            if (notification && typeof notification.dismiss === 'function') notification.dismiss()
+            notification?.dismiss()
           },
         },
       }
