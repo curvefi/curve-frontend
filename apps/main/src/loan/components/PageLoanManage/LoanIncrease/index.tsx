@@ -34,7 +34,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import AlertFormError from '@/loan/components/AlertFormError'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -120,7 +120,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             } ${llamma.collateralSymbol}.`
           : t`Please confirm borrowing of ${formValues.debt} ${getTokenName(llamma).stablecoin}.`
 
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notify = notify(notifyMessage, 'pending')
 
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
@@ -163,7 +163,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${formValues.collateral}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notify = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()

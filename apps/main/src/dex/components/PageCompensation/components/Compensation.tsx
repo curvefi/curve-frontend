@@ -15,7 +15,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const Compensation = ({
   rChainId,
@@ -56,7 +56,7 @@ const Compensation = ({
     async (activeKey: string, contract: EtherContract['contract'], balance: number) => {
       if (!curve) return
       const notifyMessage = t`Please confirm claim ${balance} compensation.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
 
       try {
         setStep('claiming')

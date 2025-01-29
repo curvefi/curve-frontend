@@ -33,7 +33,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -106,7 +106,7 @@ const LoanBorrowMore = ({
     ) => {
       const { chainId } = api
 
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notify = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -185,7 +185,7 @@ const LoanBorrowMore = ({
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notify = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()

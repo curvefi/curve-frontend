@@ -29,7 +29,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CollateralAlert, Curve, Llamma } from '@/loan/types/loan.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,
@@ -119,7 +119,7 @@ const LoanCreate = ({
       maxSlippage: string,
     ) => {
       const notifyMessage = t`Please confirm deposit of ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notify = notify(notifyMessage, 'pending')
       const resp = await fetchStepCreate(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -161,7 +161,7 @@ const LoanCreate = ({
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${llamma.collateralSymbol}.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notify = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()

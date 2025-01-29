@@ -23,7 +23,7 @@ import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@/dex/types/main.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -61,7 +61,7 @@ const FormVecrv = () => {
   const handleBtnClickWithdraw = useCallback(
     async (activeKey: string, curve: CurveApi, lockedAmount: string) => {
       const notifyMessage = t`Please confirm withdraw of ${lockedAmount} CRV.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
       if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress && network) {

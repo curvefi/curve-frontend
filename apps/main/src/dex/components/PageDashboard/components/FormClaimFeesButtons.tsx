@@ -9,7 +9,7 @@ import useStore from '@/dex/store/useStore'
 import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormClaimFeesButtons = ({
   activeKey,
@@ -61,7 +61,7 @@ const FormClaimFeesButtons = ({
 
       const { scanTxPath } = network
       const notifyMessage = t`Please approve claim veCRV rewards.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
 
       // loading state
       setClaimingKey(key)

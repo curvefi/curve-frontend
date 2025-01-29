@@ -24,7 +24,7 @@ import type {
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 export const useAddRewardToken = ({
   chainId,
@@ -37,7 +37,7 @@ export const useAddRewardToken = ({
     onSuccess: (resp, { rewardTokenId }) => {
       if (resp) {
         const txDescription = t`Added reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notifyNotification(txDescription, 'success')
+        notify(txDescription, 'success')
       }
 
       return Promise.all([
@@ -47,7 +47,7 @@ export const useAddRewardToken = ({
     },
     onError: (error) => {
       console.error('Error adding reward:', error)
-      notifyNotification(t`Failed to add reward token`, 'error')
+      notify(t`Failed to add reward token`, 'error')
     },
   })
 }
@@ -77,7 +77,7 @@ export const useDepositRewardApprove = ({
     onSuccess: (resp, { rewardTokenId, amount }) => {
       if (resp) {
         const notifyMessage = t`Approve spending ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notifyNotification(notifyMessage, 'success', 15000)
+        notify(notifyMessage, 'success', 15000)
       }
       return queryClient.invalidateQueries({
         queryKey: keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }),
@@ -85,7 +85,7 @@ export const useDepositRewardApprove = ({
     },
     onError: (error) => {
       console.error('Error approving deposit reward:', error)
-      notifyNotification(t`Failed to approve deposit reward`, 'error', 15000)
+      notify(t`Failed to approve deposit reward`, 'error', 15000)
     },
   })
 }
@@ -114,13 +114,13 @@ export const useDepositReward = ({
     onSuccess: (resp, { rewardTokenId }) => {
       if (resp) {
         const txDescription = t`Deposited reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notifyNotification(txDescription, 'success', 15000)
+        notify(txDescription, 'success', 15000)
       }
       return queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
     },
     onError: (error) => {
       console.error('Error depositing reward:', error)
-      notifyNotification(t`Failed to deposit reward`, 'error', 15000)
+      notify(t`Failed to deposit reward`, 'error', 15000)
     },
   })
 }
