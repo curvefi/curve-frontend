@@ -23,6 +23,8 @@ import networks from '@/lend/networks'
 import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { ChainId } from '@/lend/types/lend.types'
 
+type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
+
 type SliceState = {
   chartLlammaOhlc: {
     data: LpPriceOhlcDataFormatted[]
@@ -221,7 +223,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           chain: network as Chain,
           llamma: poolAddress as Address,
           interval,
-          units: timeUnit as Parameters<typeof getOHLC>[0]['units'],
+          units: timeUnit as OHLCTimeUnit,
           start,
           end,
         })
@@ -314,7 +316,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           chain: network as Chain,
           llamma: poolAddress as Address,
           interval,
-          units: timeUnit as Parameters<typeof getOHLC>[0]['units'],
+          units: timeUnit as OHLCTimeUnit,
           start,
           end,
         })

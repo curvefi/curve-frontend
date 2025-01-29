@@ -12,7 +12,6 @@ import type {
   LlammaTradeEvent,
   LlammaControllerEvent,
 } from 'ui/src/Chart/types'
-import type { UTCTimestamp } from 'lightweight-charts'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOHLC } from '@curvefi/prices-api/llamma'
 
@@ -20,6 +19,8 @@ import produce from 'immer'
 
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
+
+type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type SliceState = {
   chartOhlcData: LpPriceOhlcDataFormatted[]
@@ -124,7 +125,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           chain: network as Chain,
           llamma: poolAddress as Address,
           interval,
-          units: timeUnit as Parameters<typeof getOHLC>[0]['units'],
+          units: timeUnit as OHLCTimeUnit,
           start,
           end,
         })
@@ -215,7 +216,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           chain: network as Chain,
           llamma: poolAddress as Address,
           interval,
-          units: timeUnit as Parameters<typeof getOHLC>[0]['units'],
+          units: timeUnit as OHLCTimeUnit,
           start,
           end,
         })
