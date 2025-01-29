@@ -244,12 +244,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
           baselinePriceArray.push({
             time: item.time.getUTCTimestamp(),
-            base_price: item.priceBase,
+            base_price: item.basePrice,
           })
 
           oraclePriceArray.push({
             time: item.time.getUTCTimestamp(),
-            value: item.priceOracle,
+            value: item.oraclePrice,
           })
 
           ohlcDataArray.push({
@@ -333,12 +333,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
           baselinePriceArray.push({
             time: item.time.getUTCTimestamp(),
-            base_price: item.priceBase,
+            base_price: item.basePrice,
           })
 
           oraclePriceArray.push({
             time: item.time.getUTCTimestamp(),
-            value: item.priceOracle,
+            value: item.oraclePrice,
           })
 
           ohlcDataArray.push({
