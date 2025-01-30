@@ -48,7 +48,7 @@ export type LlammaOHLC = {
   close: number
   high: number
   low: number
-  priceBase: number
-  priceOracle: number
+  basePrice: number
+  oraclePrice: number
   volume: number
 }
