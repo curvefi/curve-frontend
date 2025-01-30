@@ -9,7 +9,7 @@ import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
 const invert = (color: DesignSystem['Color']) => color.Neutral[50]
 
-const { Sizing, IconSize } = SizesAndSpaces
+const { Sizing, Spacing, IconSize } = SizesAndSpaces
 
 type ChipSizeDefinition = { font: TypographyVariantKey; height: Responsive }
 
@@ -43,6 +43,7 @@ export const defineMuiChip = (
       borderColor: 'transparent',
       borderRadius: Chips.BorderRadius.NonClickable,
       color: TextColors.Primary,
+      ...handleBreakpoints({ paddingInline: Spacing.xs }),
     },
   },
   variants: [
@@ -84,36 +85,30 @@ export const defineMuiChip = (
       },
     },
 
-    // this is the "hover" state for chips in the design system
+    // 'clickable' is the "Chip" in the design system
     {
       props: { clickable: true },
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
         cursor: 'pointer',
+        '&:has(.MuiChip-icon)': { ...handleBreakpoints({ paddingInline: Spacing.sm }) },
         '&:hover': {
           backgroundColor: Chips.Hover.Fill,
           color: Chips.Hover.Label,
           '& .MuiChip-deleteIcon': {
-            // stroke: Chips.Hover.Label,
             fill: Chips.Hover.Label,
           },
         },
       },
     },
 
-    ...Object.entries(chipSizes).map(([size, { font, height }]) => ({
+    ...Object.entries(chipSizes).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes },
-      style: {
-        ...typography[font],
-        ...handleBreakpoints({ height }),
-      },
+      style: { ...typography[font], ...handleBreakpoints(rest) },
     })),
-    ...Object.entries(chipSizeClickable).map(([size, { font, height }]) => ({
+    ...Object.entries(chipSizeClickable).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes, clickable: true },
-      style: {
-        ...(font && typography[font]),
-        ...(height && handleBreakpoints({ height })),
-      },
+      style: { ...(font && typography[font]), ...handleBreakpoints(rest) },
     })),
   ],
 })
