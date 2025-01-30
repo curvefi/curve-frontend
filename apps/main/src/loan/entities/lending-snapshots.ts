@@ -1,6 +1,7 @@
 import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
-import { memoize } from 'lodash'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 
 type LendingSnapshotFromApi = {
   rate: number
@@ -38,17 +39,21 @@ type LendingSnapshotsFromApi = {
   data: LendingSnapshot[]
 }
 
-// todo: move to a separate query
-const getSupportedChains = memoize(async () => {
-  const response = await fetch(`https://prices.curve.fi/v1/lending/chains`)
-  const { data } = (await response.json()) as { data: string[] }
-  return data
+export const { getQueryOptions: getSupportedChainOptions } = queryFactory({
+  queryKey: () => ['lending-snapshots', 'supported-chains'] as const,
+  queryFn: async () => {
+    const response = await fetch(`https://prices.curve.fi/v1/lending/chains`)
+    const { data } = (await response.json()) as { data: string[] }
+    return data
+  },
+  staleTime: '1d',
+  validationSuite: EmptyValidationSuite,
 })
 
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshot[]> => {
-    const chains = await getSupportedChains()
+    const chains = await queryClient.fetchQuery(getSupportedChainOptions({}))
     if (!chains.includes(blockchainId)) return [] // backend gives 404 for optimism
 
     const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots?agg=none`

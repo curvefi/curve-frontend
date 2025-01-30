@@ -30,3 +30,5 @@ export const createValidationSuite = <T extends object, TGroupName extends strin
     only(fieldsList)
     validationGroup(data)
   })
+
+export const EmptyValidationSuite = createValidationSuite(() => {})
