@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { fn } from '@storybook/test'
-import { ChipProps } from '@mui/material/Chip'
+import type { ChipProps } from '@mui/material/Chip'
 
 type ChipStoryProps = {
   color: ChipProps['color']

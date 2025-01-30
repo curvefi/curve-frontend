@@ -1,26 +1,18 @@
+import '@mui/material/Chip'
+
+export type ChipColors = 'active' | 'alert' | 'default' | 'highlight' | 'warning' | 'accent' | 'inactive'
+type DisabledChipColors = 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
+
+type NewChipColorOverrides = { [key in ChipColors]: true }
+type DisabledChipColorsOverrides = { [key in DisabledChipColors]: false }
+
+type ChipSizes = 'extraSmall' | 'small' | 'medium' | 'large' | 'extraLarge'
+type ChipSizeOverrides = { [key in ChipSizes]: true }
+
 declare module '@mui/material/Chip' {
-  export interface ChipPropsColorOverrides {
-    // used both for badges and chips
-    active: true
+  export interface ChipPropsColorOverrides extends NewChipColorOverrides, DisabledChipColorsOverrides {}
 
-    // colors usually for badges
-    alert: true
-    default: true
-    highlight: true
-    warning: true
-    accent: true
-
-    // colors usually for chips
-    inactive: true
-  }
-
-  export interface ChipPropsSizeOverrides {
-    extraSmall: true
-    small: true
-    medium: true
-    large: true
-    extraLarge: true
-  }
+  export interface ChipPropsSizeOverrides extends ChipSizeOverrides {}
 
   export interface ChipPropsVariantOverrides {
     filled: false

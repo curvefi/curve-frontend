@@ -1,5 +1,5 @@
 import type { Components } from '@mui/material'
-import type { ChipProps } from '@mui/material/Chip'
+import type { ChipProps } from '@mui/material/Chip/Chip'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { Grays } from '@ui-kit/themes/design/0_primitives'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -13,7 +13,9 @@ const { Sizing, IconSize } = SizesAndSpaces
 
 type ChipSizeDefinition = { font: TypographyVariantKey; height: Responsive }
 
-const chipSizes: Record<ChipProps['size'], ChipSizeDefinition> = {
+type ChipSizes = NonNullable<ChipProps['size']>
+
+const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
   extraSmall: { font: 'bodyXsBold', height: IconSize.md },
   small: { font: 'buttonXs', height: IconSize.md },
   medium: { font: 'buttonXs', height: Sizing.md },
@@ -22,7 +24,7 @@ const chipSizes: Record<ChipProps['size'], ChipSizeDefinition> = {
 }
 
 // overrides for clickable chips
-const chipSizeClickable: Record<ChipProps['size'], Partial<ChipSizeDefinition>> = {
+const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
   extraSmall: {},
   small: { height: Sizing.md },
   medium: { font: 'buttonS' },
@@ -100,14 +102,14 @@ export const defineMuiChip = (
     },
 
     ...Object.entries(chipSizes).map(([size, { font, height }]) => ({
-      props: { size: size as ChipProps['size'] },
+      props: { size: size as ChipSizes },
       style: {
         ...typography[font],
         ...handleBreakpoints({ height }),
       },
     })),
     ...Object.entries(chipSizeClickable).map(([size, { font, height }]) => ({
-      props: { size: size as ChipProps['size'], clickable: true },
+      props: { size: size as ChipSizes, clickable: true },
       style: {
         ...(font && typography[font]),
         ...(height && handleBreakpoints({ height })),
