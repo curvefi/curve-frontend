@@ -1,4 +1,4 @@
-declare module '@mui/material/Chip/Chip' {
+declare module '@mui/material/Chip' {
   export interface ChipPropsColorOverrides {
     // used both for badges and chips
     active: true
@@ -23,8 +23,6 @@ declare module '@mui/material/Chip/Chip' {
   }
 
   export interface ChipPropsVariantOverrides {
-    badge: true
-    chip: true
     filled: false
     outlined: false
   }

@@ -45,7 +45,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-  MuiChip: defineMuiChip(design),
+  MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
   },
