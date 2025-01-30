@@ -2100,8 +2100,12 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 
   if (resp.priceImpact === 'N/A') return resp
 
-  if (+resp.priceImpact > 0 && +slippage > 0) {
-    resp.isHighPriceImpact = +resp.priceImpact > +slippage
+  // Convert both values to numbers and get absolute value of price impact
+  const priceImpactNum = Math.abs(+resp.priceImpact)
+  const slippageNum = +slippage
+
+  if (slippageNum > 0) {
+    resp.isHighPriceImpact = priceImpactNum > slippageNum
   }
   return resp
 }
