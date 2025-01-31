@@ -10,6 +10,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import useStore from '@/loan/store/useStore'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 const onReload = () => invalidateLendingVaults({})
 
@@ -22,6 +24,7 @@ export const PageLlamaMarkets = () => {
   const { data, isFetching, isError } = useLlamaMarkets() // todo: show errors and loading state
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
+  usePageOnMount(useParams(), useLocation(), useNavigate()) // required for connecting wallet
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
       <DocumentHead title={t`Llamalend Markets`} />
