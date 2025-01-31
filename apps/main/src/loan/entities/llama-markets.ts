@@ -2,6 +2,7 @@ import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@/loan/enti
 import { useQueries } from '@tanstack/react-query'
 import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
+import { t } from '@lingui/macro'
 
 export enum LlamaMarketType {
   Mint = 'mint',
@@ -23,6 +24,15 @@ export type LlamaMarket = {
     borrow: number // apy %
   }
   type: LlamaMarketType
+  hasPoints: boolean
+  isCollateralEroded: boolean
+  leverage: number
+  deprecatedMessage?: string
+}
+
+const DEPRECATED_LLAMAS: Record<string, () => string> = {
+  '0x136e783846ef68C8Bd00a3369F787dF8d683a696': () =>
+    t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
 }
 
 const convertLendingVault = ({
@@ -45,6 +55,10 @@ const convertLendingVault = ({
     borrow: rates.borrowApyPcent,
   },
   type: LlamaMarketType.Pool,
+  // todo: implement the following
+  hasPoints: false,
+  leverage: 0,
+  isCollateralEroded: false,
 })
 
 const convertMintMarket = (
@@ -89,6 +103,11 @@ const convertMintMarket = (
     borrow: rate * 100,
   },
   type: LlamaMarketType.Mint,
+  deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
+  // todo: implement the following
+  hasPoints: true,
+  leverage: 11,
+  isCollateralEroded: true,
 })
 
 export const useLlamaMarkets = () =>

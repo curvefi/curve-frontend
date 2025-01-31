@@ -1,42 +1,52 @@
 import Stack from '@mui/material/Stack'
+import Chip from '@mui/material/Chip'
 import { t } from '@lingui/macro'
-import React, { ReactNode } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Typography from '@mui/material/Typography'
-import { LlamaMarketType } from '@/loan/entities/llama-markets'
+import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
+import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import IconButton from '@ui/IconButton'
+import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
+import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { useTheme } from '@mui/material/styles'
+import Tooltip from '@mui/material/Tooltip'
 
 const { Spacing } = SizesAndSpaces
-
-/** Display a single badge for a pool. */
-const Badge = ({ children, compact }: { children: ReactNode; compact?: boolean }) => (
-  <Typography
-    variant="buttonXs"
-    sx={(t) => ({
-      border: `1px solid ${t.design.Layer[1].Outline}`,
-      alignContent: 'center',
-      ...(compact
-        ? {
-            paddingInline: '1px',
-            height: 22, // not ideal to hardcode, but if left out the badge becomes 24px somehow
-          }
-        : {
-            paddingInline: '6px', // hardcoded from figma
-            paddingBlock: Spacing.xxs, // xs in figma but content is 12px there instead of 14px
-          }),
-    })}
-  >
-    {children}
-  </Typography>
-)
 
 const poolTypeNames: Record<LlamaMarketType, () => string> = {
   [LlamaMarketType.Pool]: () => t`Pool`,
   [LlamaMarketType.Mint]: () => t`Mint`,
 }
 
+function useFavoriteMarket(address: string) {
+  const [favorites, setFavorites] = useLocalStorage<string[]>('favoriteMarkets', [])
+  const isFavorite = useMemo(() => favorites.includes(address), [favorites, address])
+  const toggleFavorite = useCallback(
+    () => (isFavorite ? setFavorites(favorites.filter((id) => id !== address)) : setFavorites([...favorites, address])),
+    [favorites, isFavorite, address, setFavorites],
+  )
+  return [isFavorite, toggleFavorite] as const
+}
+
 /** Displays badges for a pool, such as the chain icon and the pool type. */
-export const MarketBadges = ({ blockchainId, type }: { blockchainId: string; type: LlamaMarketType }) => (
-  <Stack direction="row" gap={Spacing.sm}>
-    <Badge>{poolTypeNames[type]()}</Badge>
-  </Stack>
-)
+export const MarketBadges = ({ market: { address, hasPoints, type, leverage } }: { market: LlamaMarket }) => {
+  const [isFavorite, toggleFavorite] = useFavoriteMarket(address)
+  const iconsColor = useTheme().design.Text.TextColors.Highlight
+  return (
+    <Stack direction="row" gap={Spacing.sm} alignItems="center">
+      <Chip size="small" color="default" label={poolTypeNames[type]()} />
+      {leverage > 0 && <Chip size="small" color="highlight" label={t`🔥 ${leverage}x leverage`} />}
+
+      {hasPoints && (
+        <Tooltip title={t`This pool has points`} placement="top">
+          <PointsIcon htmlColor={iconsColor} />
+        </Tooltip>
+      )}
+
+      {/* TODO: show only on hover on mobile */}
+      <IconButton size="x-small" onClick={toggleFavorite}>
+        <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
+      </IconButton>
+    </Stack>
+  )
+}

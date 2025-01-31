@@ -10,18 +10,15 @@ import { TokenPair } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleC
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketTitleCell = ({ row, table }: CellContext<LlamaMarket, LlamaMarket['assets']>) => {
-  const { blockchainId, assets, type } = row.original
-  return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center">
-      <TokenPair blockchainId={blockchainId} assets={assets} />
-      <Stack direction="column" gap={Spacing.xs}>
-        <MarketBadges blockchainId={blockchainId} type={type} />
-        <Typography variant="tableCellL">
-          {assets.borrowed.symbol} - {assets.collateral.symbol}
-        </Typography>
-        <MarketWarnings />
-      </Stack>
+export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => (
+  <Stack direction="row" gap={Spacing.sm} alignItems="center">
+    <TokenPair blockchainId={market.blockchainId} assets={market.assets} />
+    <Stack direction="column" gap={Spacing.xs}>
+      <MarketBadges market={market} />
+      <Typography variant="tableCellL">
+        {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}
+      </Typography>
+      <MarketWarnings market={market} />
     </Stack>
-  )
-}
+  </Stack>
+)
