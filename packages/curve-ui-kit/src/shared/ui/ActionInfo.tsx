@@ -6,11 +6,11 @@ import IconButton from '@mui/material/IconButton'
 import Icon from 'ui/src/Icon'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
-import { Duration } from '../../themes/design/0_primitives'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { shortenTokenAddress } from 'ui/src/utils/'
-import { t } from 'i18next'
-import { useSwitch } from '../../hooks/useSwitch'
-import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
+import { t } from '@lingui/macro'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
