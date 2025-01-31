@@ -47,7 +47,7 @@ export const ConnectWalletPrompt = ({
       }}
     >
       <CurveLogo src={LogoImg} alt="Curve Logo" />
-      <Typography variant="headingXxl">{t`Enter Curve`}</Typography>
+      <Typography variant="headingXxl">{t`The Front Page of DeFi`}</Typography>
     </Stack>
     <Stack spacing={3} alignItems="center">
       <Typography variant="bodyMRegular">{description}</Typography>
