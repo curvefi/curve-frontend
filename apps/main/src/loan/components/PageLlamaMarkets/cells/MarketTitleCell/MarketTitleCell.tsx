@@ -10,7 +10,8 @@ import { TokenPair } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleC
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { t } from '@lingui/macro'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
-import { MarketLink } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketLink'
+import { Link as RouterLink } from 'react-router-dom'
+import MuiLink from '@mui/material/Link'
 
 const { Spacing } = SizesAndSpaces
 
@@ -25,9 +26,13 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
     <Stack direction="column" gap={Spacing.xs}>
       <MarketBadges market={market} />
       <Typography component={Stack} variant="tableCellL" sx={showIconOnHover} direction="row" gap={2}>
-        <MarketLink market={market}>
+        <MuiLink
+          color="inherit"
+          underline="hover"
+          {...(market.url.startsWith('http') ? { href: market.url } : { component: RouterLink, to: market.url })}
+        >
           {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}
-        </MarketLink>
+        </MuiLink>
         <CopyIconButton
           label={t`Copy market address`}
           copyText={market.address}

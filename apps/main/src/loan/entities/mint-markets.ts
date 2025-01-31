@@ -50,7 +50,6 @@ export const { getQueryOptions: getSupportedChainOptions } = queryFactory({
 async function addStableCoinPrices({ chain, data }: { chain: string; data: MintMarketFromApi[] }) {
   const stablecoinAddresses = uniq(data.map((market) => market.stablecoin_token.address))
   const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
-  console.log({ stablecoinPrices, stablecoinAddresses })
   return {
     chain,
     data: data.map((market) => ({

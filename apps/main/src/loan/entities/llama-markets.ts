@@ -3,6 +3,7 @@ import { useQueries } from '@tanstack/react-query'
 import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@lingui/macro'
+import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 
 export enum LlamaMarketType {
   Mint = 'mint',
@@ -24,6 +25,7 @@ export type LlamaMarket = {
     borrow: number // apy %
   }
   type: LlamaMarketType
+  url: string
   hasPoints: boolean
   isCollateralEroded: boolean
   leverage: number
@@ -44,10 +46,10 @@ const convertLendingVault = ({
   rates,
   borrowed,
 }: LendingVaultFromApi): LlamaMarket => ({
-  blockchainId: blockchainId,
-  address: address,
-  controllerAddress: controllerAddress,
-  assets: assets,
+  blockchainId,
+  address,
+  controllerAddress,
+  assets,
   utilizationPercent: (100 * borrowed.usdTotal) / totalSupplied.usdTotal,
   totalSupplied: totalSupplied,
   rates: {
@@ -55,6 +57,7 @@ const convertLendingVault = ({
     borrow: rates.borrowApyPcent,
   },
   type: LlamaMarketType.Pool,
+  url: `${APP_LINK.lend.root}#/${blockchainId}${LEND_ROUTES.PAGE_MARKETS}/${address}/create`,
   // todo: implement the following
   hasPoints: false,
   leverage: 0,
@@ -104,6 +107,7 @@ const convertMintMarket = (
   },
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
+  url: `/${blockchainId}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateral_token.symbol}/create`,
   // todo: implement the following
   hasPoints: false,
   leverage: 0,
