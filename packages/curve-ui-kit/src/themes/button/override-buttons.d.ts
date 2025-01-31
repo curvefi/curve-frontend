@@ -1,5 +1,15 @@
 import { DesignSystem } from './design'
 
+declare module '@mui/material/IconButton' {
+  export interface IconButtonPropsSizeOverrides {
+    extraSmall: true
+  }
+
+  export interface IconButtonClasses {
+    sizeExtraSmall: string
+  }
+}
+
 declare module '@mui/material/Button' {
   type Buttons = Omit<DesignSystem['Button'], 'Focus_Outline'>
   type ButtonColors = {

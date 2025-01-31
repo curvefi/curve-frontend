@@ -44,7 +44,7 @@ export const MarketBadges = ({ market: { address, hasPoints, type, leverage } }:
         </Tooltip>
       )}
 
-      <IconButton size="small" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
+      <IconButton size="extraSmall" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
         <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
       </IconButton>
     </Stack>
