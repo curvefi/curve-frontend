@@ -13,6 +13,7 @@ const generateTheme = (theme: ThemeKey, options: DesignOptions = {}): Theme => {
   const typography = createTypography(design)
   return createMuiTheme({
     ...basicMuiTheme,
+    key: theme,
     design: { ...design, options },
     palette: createPalette(paletteMode(theme, options), design),
     typography,

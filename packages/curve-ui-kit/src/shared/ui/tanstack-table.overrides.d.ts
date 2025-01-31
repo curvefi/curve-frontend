@@ -10,9 +10,4 @@ declare module '@tanstack/table-core' {
     hidden?: boolean
     variant?: TypographyVariantKey
   }
-
-  /** Tanstack only supports hiding the whole column, but we want to hide features inside the column */
-  interface VisibilityTableState {
-    featureVisibility: VisibilityState
-  }
 }

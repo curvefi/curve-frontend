@@ -9,6 +9,7 @@ import useStore from '@/dex/store/useStore'
 import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormClaimFeesButtons = ({
   activeKey,
@@ -29,7 +30,7 @@ const FormClaimFeesButtons = ({
   const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
   const formProcessing = useStore((state) => state.dashboard.formStatus.formProcessing)
   const fetchStepClaimFees = useStore((state) => state.dashboard.fetchStepClaimFees)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}

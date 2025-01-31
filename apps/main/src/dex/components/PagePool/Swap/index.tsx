@@ -35,6 +35,7 @@ import TransferActions from '@/dex/components/PagePool/components/TransferAction
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { Balances, CurveApi, TokensMapper, PoolData, PoolAlert } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Swap = ({
   chainIdPoolId,
@@ -76,7 +77,7 @@ const Swap = ({
   const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)

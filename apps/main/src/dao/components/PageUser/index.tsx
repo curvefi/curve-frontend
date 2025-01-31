@@ -12,6 +12,7 @@ import UserLocksTable from './UserLocksTable'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import SubNav from '@/dao/components/SubNav'
 import { VeCrvHolder } from '@/dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type UserPageProps = {
   routerParams: {
@@ -25,7 +26,7 @@ const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) =
     getVeCrvHolders,
   } = useStore((state) => state.analytics)
   const { getUserEns, userMapper } = useStore((state) => state.user)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const [activeNavKey, setNavKey] = useState('proposals')
 
   const navItems = [

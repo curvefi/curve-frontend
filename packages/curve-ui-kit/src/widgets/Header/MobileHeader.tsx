@@ -14,7 +14,7 @@ import { MobileTopBar } from './MobileTopBar'
 import { useLocation } from 'react-router-dom'
 import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
 import { t } from '@lingui/macro'
-import GlobalBanner from 'ui/src/Banner'
+import GlobalBanner from '@ui/Banner'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

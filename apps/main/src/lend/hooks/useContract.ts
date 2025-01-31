@@ -1,9 +1,8 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
-
 import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
 import { ChainId, Provider } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
@@ -11,7 +10,7 @@ const useAbiGaugeTotalSupply = (
   jsonModuleName: string,
   contractAddress: string | undefined,
 ) => {
-  const getProvider = useStore((state) => state.wallet.getProvider)
+  const walletProvider = useWalletStore((s) => s.provider)
 
   const [contract, setContract] = useState<Contract | null>(null)
 
@@ -38,14 +37,14 @@ const useAbiGaugeTotalSupply = (
   useEffect(() => {
     if (rChainId) {
       const provider = signerRequired
-        ? getProvider('')
-        : getProvider('') || new JsonRpcProvider(networks[rChainId].rpcUrl)
+        ? walletProvider
+        : walletProvider || new JsonRpcProvider(networks[rChainId].rpcUrl)
 
       if (jsonModuleName && contractAddress && provider) {
         ;(async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()
       }
     }
-  }, [contractAddress, getContract, getProvider, jsonModuleName, rChainId, signerRequired])
+  }, [contractAddress, getContract, walletProvider, jsonModuleName, rChainId, signerRequired])
 
   return contract
 }

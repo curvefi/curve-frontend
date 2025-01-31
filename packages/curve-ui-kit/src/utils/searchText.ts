@@ -29,7 +29,7 @@ export function groupSearchTerms(searchText: string) {
 // should only return results if pool/market have all searched tokens
 function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
   const fuse = new Fuse<T>(datas, {
-    ignoreLocation: false,
+    ignoreLocation: true,
     includeMatches: true,
     minMatchCharLength: 2,
     threshold: 0.01,

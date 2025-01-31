@@ -78,11 +78,11 @@ export const TableFilters = ({
   return (
     <Stack paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
       <Grid container spacing={Column_Spacing}>
-        <Grid size={{ tablet: 6, mobile: 12 }}>
+        <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid container size={{ tablet: 6, mobile: 12 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
+        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}

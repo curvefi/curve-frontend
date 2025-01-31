@@ -7,6 +7,7 @@ import produce from 'immer'
 import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@/dex/utils'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type NetworkWithFactory = {
   chainId: ChainId
@@ -181,7 +182,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       const { poolAddress, lpTokenAddress, sidechainGauge, currentSidechain } = get().deployGauge
       const chainId = curve.chainId
       const fetchGasInfo = get().gas.fetchGasInfo
-      const notifyNotification = get().wallet.notifyNotification
+      const { notify: notifyNotification } = useWalletStore.getState()
       const tokenAddress = sidechainGauge ? lpTokenAddress : poolAddress
       const shortenAddress = shortenTokenAddress(tokenAddress)
 

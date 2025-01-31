@@ -84,6 +84,7 @@ const TableSettings = ({
           searchText={searchParams.searchText}
           handleInputChange={(val) => updatePath({ searchText: val })}
           handleClose={() => updatePath({ searchText: '' })}
+          testId="search-pools"
         />
       </div>
 

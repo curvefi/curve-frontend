@@ -9,6 +9,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   searchText: string
   handleInputChange(val: string): void
   handleClose(): void
+  testId?: string
 }
 
 function SearchListInput({ className = '', searchText, handleInputChange, handleClose, ...inputProps }: Props) {

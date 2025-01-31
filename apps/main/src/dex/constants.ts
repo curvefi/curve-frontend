@@ -1,4 +1,5 @@
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -42,13 +43,6 @@ export const REFRESH_INTERVAL = {
 export const TIME_FRAMES = {
   WEEK: 7 * 24 * 60 * 60,
   MONTH: 30 * 24 * 60 * 60,
-} as const
-
-export const CONNECT_STAGE = {
-  CONNECT_API: 'api',
-  CONNECT_WALLET: 'connect-wallet',
-  DISCONNECT_WALLET: 'disconnect-wallet',
-  SWITCH_NETWORK: 'switch-network',
 } as const
 
 export const DEFAULT_NETWORK_CONFIG = {

@@ -1,9 +1,6 @@
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
-
-import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/dex/constants'
@@ -11,7 +8,6 @@ import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
 import useStore from '@/dex/store/useStore'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody } from '@ui/Table'
 import TableHead from '@/dex/components/PagePoolList/components/TableHead'
@@ -19,7 +15,6 @@ import TableHeadMobile from '@/dex/components/PagePoolList/components/TableHeadM
 import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@/dex/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
-import ConnectWallet from '@/dex/components/ConnectWallet'
 
 const PoolList = ({
   rChainId,

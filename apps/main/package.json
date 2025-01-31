@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@curvefi/api": "^2.66.1",
-    "@curvefi/lending-api": "^2.4.1",
+    "@curvefi/lending-api": "^2.4.2",
     "@curvefi/stablecoin-api": "^1.5.8",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",

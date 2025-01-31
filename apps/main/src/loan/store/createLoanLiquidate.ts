@@ -8,6 +8,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import { ChainId, Curve, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -103,69 +105,57 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
 
     // step
     fetchStepApprove: async (curve: Curve, llamma: Llamma, maxSlippage: string) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'APPROVAL',
-        })
-
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const resp = await networks[chainId].api.loanLiquidate.approve(provider, llamma)
-
-        const updatedFormStatus: FormStatus = {
-          ...get()[sliceKey].formStatus,
-          isApproved: !resp.error,
-          step: '',
-          isInProgress: !resp.error,
-          error: resp.error,
-        }
-
-        get()[sliceKey].setStateByKey('formStatus', updatedFormStatus)
-        get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
-
-        return resp
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const resp = await networks[chainId].api.loanLiquidate.approve(provider, llamma)
+      const updatedFormStatus: FormStatus = {
+        ...get()[sliceKey].formStatus,
+        isApproved: !resp.error,
+        step: '',
+        isInProgress: !resp.error,
+        error: resp.error,
       }
+      get()[sliceKey].setStateByKey('formStatus', updatedFormStatus)
+      get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
+      return resp
     },
     fetchStepLiquidate: async (curve: Curve, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'LIQUIDATE',
-        })
-
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
-        const resp = await liquidateFn(provider, llamma, maxSlippage)
-
-        // re-fetch loan info
-        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-        if (!loanExists.loanExists) {
-          get().loans.resetUserDetailsState(llamma)
-        }
-
-        get()[sliceKey].setStateByKeys({
-          formEstGas: DEFAULT_FORM_EST_GAS,
-          formStatus: {
-            ...get()[sliceKey].formStatus,
-            isInProgress: false,
-            isComplete: !resp.error,
-            step: '',
-            error: resp.error,
-          },
-          liquidationAmt: '',
-        })
-
-        return { ...resp, loanExists: loanExists.loanExists }
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'LIQUIDATE',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
+      const resp = await liquidateFn(provider, llamma, maxSlippage)
+      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+      if (!loanExists.loanExists) {
+        get().loans.resetUserDetailsState(llamma)
       }
+      get()[sliceKey].setStateByKeys({
+        formEstGas: DEFAULT_FORM_EST_GAS,
+        formStatus: {
+          ...get()[sliceKey].formStatus,
+          isInProgress: false,
+          isComplete: !resp.error,
+          step: '',
+          error: resp.error,
+        },
+        liquidationAmt: '',
+      })
+      return { ...resp, loanExists: loanExists.loanExists }
     },
 
     // slice helpers

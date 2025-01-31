@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { LlamaMarketType } from '@/loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,13 +30,17 @@ const Badge = ({ children, compact }: { children: ReactNode; compact?: boolean }
   </Typography>
 )
 
+const poolTypeNames: Record<LlamaMarketType, () => string> = {
+  [LlamaMarketType.Pool]: () => t`Pool`,
+  [LlamaMarketType.Mint]: () => t`Mint`,
+}
+
 /** Displays badges for a pool, such as the chain icon and the pool type. */
-export const PoolBadges = ({ blockchainId }: { blockchainId: string }) => (
+export const PoolBadges = ({ blockchainId, type }: { blockchainId: string; type: LlamaMarketType }) => (
   <Stack direction="row" gap={Spacing.sm}>
     <Badge compact>
       <ChainIcon blockchainId={blockchainId} size="md" />
     </Badge>
-    {/* TODO: We should display 'Mint' for some pools but what is the logic? */}
-    <Badge>{t`Pool`}</Badge>
+    <Badge>{poolTypeNames[type]()}</Badge>
   </Stack>
 )

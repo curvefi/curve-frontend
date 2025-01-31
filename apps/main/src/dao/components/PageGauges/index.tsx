@@ -16,7 +16,7 @@ import SubNav from '@/dao/components/SubNav'
 
 const Gauges = () => {
   const { isMdUp } = useStore((state) => state.layout)
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const userAddress = wallet?.accounts[0].address
 
   const [navSelection, setNavSelection] = useState('gaugeList')
