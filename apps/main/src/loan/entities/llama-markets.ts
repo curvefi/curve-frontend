@@ -105,9 +105,9 @@ const convertMintMarket = (
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
   // todo: implement the following
-  hasPoints: true,
-  leverage: 11,
-  isCollateralEroded: true,
+  hasPoints: false,
+  leverage: 0,
+  isCollateralEroded: false,
 })
 
 export const useLlamaMarkets = () =>

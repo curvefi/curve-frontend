@@ -5,11 +5,12 @@ import React, { useCallback, useMemo } from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
-import IconButton from '@ui/IconButton'
+import IconButton from '@mui/material/IconButton'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
+import { DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -43,8 +44,7 @@ export const MarketBadges = ({ market: { address, hasPoints, type, leverage } }:
         </Tooltip>
       )}
 
-      {/* TODO: show only on hover on mobile */}
-      <IconButton size="x-small" onClick={toggleFavorite}>
+      <IconButton size="small" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
         <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
       </IconButton>
     </Stack>
