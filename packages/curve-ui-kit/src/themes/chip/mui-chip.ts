@@ -36,10 +36,9 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
 /**
  * Defines the MuiChip component.
  * In Figma we have two different components "Badge" and "Chip" that are implemented here.
- * - Figma's Badge component is the clickable MuiChip.
- * - Figma's Chip active color is implemented as "highlight" color. "active" is the color used in Figma's Chip component.
- * - The MuiBadge component is attached to another component, so it cannot be used to implement the "badge" from Figma.
- * - We do not use the "variant" prop for now.
+ * - Figma's Badge component is the clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
+ * - As we share colors between components, Figma's Chip active color is implemented as "selected" color. inactive is "unselected"
+ * - We do not use the "variant" prop (at the time of writing).
  */
 export const defineMuiChip = (
   { Chips, Color, Text: { TextColors }, Layer }: DesignSystem,
@@ -52,6 +51,7 @@ export const defineMuiChip = (
       borderColor: 'transparent',
       borderRadius: Chips.BorderRadius.NonClickable,
       color: TextColors.Primary,
+      backgroundColor: 'transparent',
       ...handleBreakpoints({ paddingInline: Spacing.xs }),
     },
   },
@@ -69,10 +69,18 @@ export const defineMuiChip = (
     { props: { color: 'active' }, style: { backgroundColor: Color.Secondary[400], color: invertPrimary(Color) } },
     { props: { color: 'warning' }, style: { backgroundColor: Color.Tertiary[200] } },
     { props: { color: 'accent' }, style: { backgroundColor: Layer.Highlight.Fill, color: invertPrimary(Color) } },
+    {
+      props: { color: 'highlight' },
+      style: {
+        borderColor: Layer.Highlight.Outline,
+        color: TextColors.Highlight,
+        backgroundColor: invertPrimary(Color),
+      },
+    },
 
     // chip colors taken from design system variables
     {
-      props: { color: 'highlight' },
+      props: { color: 'selected' },
       style: {
         backgroundColor: Chips.Current.Fill,
         color: Chips.Current.Label,
@@ -83,7 +91,7 @@ export const defineMuiChip = (
       },
     },
     {
-      props: { color: 'inactive' },
+      props: { color: 'unselected' },
       style: {
         color: Chips.Default.Label,
         backgroundColor: Chips.Default.Fill,

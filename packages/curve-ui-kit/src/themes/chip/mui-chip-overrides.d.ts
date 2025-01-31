@@ -1,6 +1,6 @@
 import '@mui/material/Chip'
 
-export type ChipColors = 'active' | 'alert' | 'default' | 'highlight' | 'warning' | 'accent' | 'inactive'
+export type ChipColors = 'active' | 'alert' | 'default' | 'highlight' | 'warning' | 'accent' | 'selected' | 'unselected'
 type DisabledChipColors = 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 
 type NewChipColorOverrides = { [key in ChipColors]: true }

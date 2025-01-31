@@ -55,7 +55,7 @@ const meta: Meta<typeof ChipStories> = {
     },
     color: {
       control: 'select',
-      options: ['alert', 'default', 'active', 'highlight', 'warning', 'accent', 'inactive'],
+      options: ['alert', 'default', 'active', 'highlight', 'warning', 'accent', 'selected', 'unselected'],
       description: 'The color of the component',
     },
     variant: {
@@ -76,7 +76,7 @@ export const HighlightBadge: StoryObj<typeof ChipStories> = { args: { color: 'hi
 export const WarningBadge: StoryObj<typeof ChipStories> = { args: { color: 'warning' } }
 export const AccentBadge: StoryObj<typeof ChipStories> = { args: { color: 'accent' } }
 
-export const InactiveChip: StoryObj<typeof ChipStories> = { args: { clickable: true, color: 'inactive' } }
-export const HighlightChip: StoryObj<typeof ChipStories> = { args: { clickable: true, color: 'highlight' } }
+export const UnselectedChip: StoryObj<typeof ChipStories> = { args: { clickable: true, color: 'unselected' } }
+export const SelectedChip: StoryObj<typeof ChipStories> = { args: { clickable: true, color: 'selected' } }
 
 export default meta
