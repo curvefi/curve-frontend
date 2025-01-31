@@ -696,7 +696,16 @@ const loanCreate = {
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
-      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+      resp.error = _detailInfoRespErrorMessage(
+        healthFullResp,
+        healthNotFullResp,
+        futureRatesResp,
+        bandsResp,
+        pricesResp,
+        routesResp,
+        expectedCollateralResp,
+        priceImpactResp,
+      )
 
       return resp
     } catch (error) {
@@ -1218,7 +1227,17 @@ const loanRepay = {
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
-      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+      resp.error = _detailInfoRespErrorMessage(
+        healthFullResp,
+        healthNotFullResp,
+        futureRatesResp,
+        bandsResp,
+        pricesResp,
+        routesResp,
+        expectedBorrowedResp,
+        repayIsFullResp,
+        repayIsAvailableResp,
+      )
       return resp
     } catch (error) {
       console.error(error)
@@ -2110,16 +2129,15 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
   return resp
 }
 
-function _detailInfoRespErrorMessage(
-  futureRatesResp: PromiseSettledResult<{ borrowApr: string; lendApr: string; borrowApy: string; lendApy: string }>,
-  bandsResp: PromiseSettledResult<[number, number]>,
-) {
+function _detailInfoRespErrorMessage(...args: PromiseSettledResult<any>[]) {
   let errorMessage = ''
 
-  if (futureRatesResp.status === 'rejected') {
-    errorMessage = futureRatesResp.reason.message
-  } else if (bandsResp.status === 'rejected') {
-    errorMessage = bandsResp.reason.message
+  // Check each argument for rejection status
+  for (const arg of args) {
+    if (arg?.status === 'rejected') {
+      errorMessage = arg.reason.message
+      break // Return first error encountered
+    }
   }
 
   return errorMessage
