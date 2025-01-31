@@ -18,7 +18,6 @@ import Hinkal from './Hinkal.json'
 import Inception from './Inception.json'
 import TurtleTotems from './TurtleTotems.json'
 import LevelMoney from './LevelMoney.json'
-import Corn from './Corn.json'
 import XPoints from './XPoints.json'
 import MindNetwork from './MindNetwork.json'
 import DTrinity from './DTrinity.json'
@@ -49,7 +48,6 @@ export {
   Inception,
   TurtleTotems,
   LevelMoney,
-  Corn,
   XPoints,
   MindNetwork,
   DTrinity,

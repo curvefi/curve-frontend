@@ -97,16 +97,15 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
         variant="tableHeaderS"
       >
         {flexRender(column.columnDef.header, header.getContext())}
-        {canSort && (
-          <ArrowDownIcon
-            sx={{
-              ...(sort === 'asc' && { transform: `rotate(180deg)` }),
-              verticalAlign: 'text-bottom',
-              fontSize: sort ? 20 : 0,
-              transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
-            }}
-          />
-        )}
+        <ArrowDownIcon
+          sx={{
+            ...(sort === 'asc' && { transform: `rotate(180deg)` }),
+            verticalAlign: 'text-bottom',
+            fontSize: sort ? 20 : 0,
+            transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
+            visibility: canSort ? 'visible' : 'hidden', // render it invisible to avoid layout shift
+          }}
+        />
       </Typography>
     )
   )
