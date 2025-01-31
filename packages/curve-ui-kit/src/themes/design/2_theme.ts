@@ -199,7 +199,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Chips = {
     BorderRadius: {
       Clickable: 0,
-      NonClickable: '16px',
+      NonClickable: '100px',
     },
     Default: {
       Label: Text.TextColors.Secondary,
@@ -538,7 +538,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   const Chips = {
     BorderRadius: {
       Clickable: 0,
-      NonClickable: '16px',
+      NonClickable: '100px',
     },
     Default: {
       Label: Text.TextColors.Secondary,

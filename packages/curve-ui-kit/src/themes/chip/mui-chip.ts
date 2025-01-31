@@ -7,7 +7,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
-const invert = (color: DesignSystem['Color']) => color.Neutral[50]
+// note: the design system is using inverted themes for this color, there is no semantic colors for the clickable chips.
+const invertPrimary = (color: DesignSystem['Color']) => color.Neutral[50]
 
 const { Sizing, Spacing, IconSize } = SizesAndSpaces
 
@@ -32,6 +33,14 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
   extraLarge: { height: Sizing.xl },
 }
 
+/**
+ * Defines the MuiChip component.
+ * In Figma we have two different components "Badge" and "Chip" that are implemented here.
+ * - Figma's Badge component is the "Chip" clickable version.
+ * - Figma's Chip active color is implemented as "highlight" color. "active" is the color used in Figma's Chip component.
+ * - The MuiBadge component is attached to another component, so it cannot be used to implement the "badge" from Figma.
+ * - We do not use the "variant" prop for now.
+ */
 export const defineMuiChip = (
   { Chips, Color, Text: { TextColors }, Layer }: DesignSystem,
   typography: TypographyOptions,
@@ -57,15 +66,15 @@ export const defineMuiChip = (
       style: { borderColor: Layer[1].Outline },
     },
 
-    { props: { color: 'active' }, style: { backgroundColor: Color.Secondary[400], color: invert(Color) } },
+    { props: { color: 'active' }, style: { backgroundColor: Color.Secondary[400], color: invertPrimary(Color) } },
     { props: { color: 'warning' }, style: { backgroundColor: Color.Tertiary[200] } },
-    { props: { color: 'accent' }, style: { backgroundColor: Layer.Highlight.Fill, color: invert(Color) } },
+    { props: { color: 'accent' }, style: { backgroundColor: Layer.Highlight.Fill, color: invertPrimary(Color) } },
 
     // chip colors taken from design system variables
     {
       props: { color: 'highlight' },
       style: {
-        backgroundColor: invert(Color) || Chips.Current.Fill,
+        backgroundColor: invertPrimary(Color) || Chips.Current.Fill,
         color: Chips.Current.Label,
         borderColor: Chips.Current.Outline,
         '& .MuiChip-deleteIcon': {
