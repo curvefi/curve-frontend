@@ -25,8 +25,8 @@ const meta: Meta<typeof ActionInfo> = {
   },
   args: {
     label: 'Contract',
-    address: '0x1234567890abcdef1234567890abcdef12345678',
-    linkAddress: 'https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678',
+    address: '0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    linkAddress: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
     size: 'small',
   },
 }
