@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { shortenTokenAddress } from 'ui/src/utils/'
-import { t } from '@lingui/macro'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -20,6 +19,7 @@ type ActionInfoProps = {
   label: string
   address: string
   linkAddress: string
+  copiedText: string
   size?: ComponentSize
 }
 
@@ -35,7 +35,7 @@ const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingS
   large: 'headingSBold',
 }
 
-const ActionInfo = ({ label, address, linkAddress, size = 'small' }: ActionInfoProps) => {
+const ActionInfo = ({ label, address, linkAddress, size = 'small', copiedText }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
@@ -44,7 +44,7 @@ const ActionInfo = ({ label, address, linkAddress, size = 'small' }: ActionInfoP
   }
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
+    <Stack direction="row" alignItems="center" gap={Spacing.md} justifyContent="space-between">
       <Typography variant={labelSize[size]} color="textTertiary">
         {label}
       </Typography>
@@ -62,7 +62,7 @@ const ActionInfo = ({ label, address, linkAddress, size = 'small' }: ActionInfoP
 
       <Snackbar open={isOpen} onClose={close} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
-          <AlertTitle>{t`Copied to clipboard!`}</AlertTitle>
+          <AlertTitle>{copiedText}</AlertTitle>
           {address}
         </Alert>
       </Snackbar>

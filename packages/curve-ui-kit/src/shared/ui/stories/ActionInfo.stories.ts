@@ -24,7 +24,7 @@ const meta: Meta<typeof ActionInfo> = {
     },
   },
   args: {
-    label: 'Contract Address',
+    label: 'Contract',
     address: '0x1234567890abcdef1234567890abcdef12345678',
     linkAddress: 'https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678',
     size: 'small',
@@ -53,14 +53,6 @@ export const Medium: Story = {
 export const Large: Story = {
   args: {
     size: 'large',
-  },
-}
-
-export const CustomLabel: Story = {
-  args: {
-    label: 'Pool Address',
-    address: '0xabcdef1234567890abcdef1234567890abcdef12',
-    linkAddress: 'https://etherscan.io/address/0xabcdef1234567890abcdef1234567890abcdef12',
   },
 }
 
