@@ -16,10 +16,15 @@ const { Spacing } = SizesAndSpaces
 type ComponentSize = 'small' | 'medium' | 'large'
 
 type ActionInfoProps = {
+  // Label displayed on the left side
   label: string
+  // Address to display and copy
   address: string
+  // URL to navigate to when clicking the external link button
   linkAddress: string
+  // Message displayed in the snackbar when the address is copied
   copiedText: string
+  // Size of the component
   size?: ComponentSize
 }
 
@@ -35,7 +40,7 @@ const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingS
   large: 'headingSBold',
 }
 
-const ActionInfo = ({ label, address, linkAddress, size = 'small', copiedText }: ActionInfoProps) => {
+const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
