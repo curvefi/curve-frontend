@@ -36,7 +36,7 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
 /**
  * Defines the MuiChip component.
  * In Figma we have two different components "Badge" and "Chip" that are implemented here.
- * - Figma's Badge component is the clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
+ * - Figma's Badge component is the non-clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
  * - As we share colors between components, Figma's Chip active color is implemented as "selected" color. inactive is "unselected"
  * - We do not use the "variant" prop (at the time of writing).
  */
