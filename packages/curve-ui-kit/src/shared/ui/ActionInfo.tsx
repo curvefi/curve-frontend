@@ -45,7 +45,7 @@ const ActionInfo = ({ label, address, linkAddress, size = 'small', copiedText }:
 
   return (
     <Stack direction="row" alignItems="center" gap={Spacing.md} justifyContent="space-between">
-      <Typography variant={labelSize[size]} color="textTertiary">
+      <Typography variant={labelSize[size]} color="textSecondary">
         {label}
       </Typography>
       <Stack direction="row" alignItems="center">
