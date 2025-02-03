@@ -3,7 +3,8 @@ import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
-import Icon from 'ui/src/Icon'
+import ContentCopy from '@mui/icons-material/ContentCopy'
+import CallMade from '@mui/icons-material/CallMade'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -58,10 +59,10 @@ const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }
           {shortenTokenAddress(address)}
         </Typography>
         <IconButton size="small" onClick={copyValue} color="primary">
-          <Icon name="Copy" size={24} />
+          <ContentCopy />
         </IconButton>
         <IconButton component={Link} href={linkAddress} target="_blank" rel="noopener" size="small" color="primary">
-          <Icon name="ArrowUpRight" size={24} />
+          <CallMade />
         </IconButton>
       </Stack>
 
