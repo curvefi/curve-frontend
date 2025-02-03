@@ -62,6 +62,7 @@ export const TableFilters = ({
   learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
+  collapsible,
   children,
 }: {
   title: string
@@ -70,6 +71,7 @@ export const TableFilters = ({
   onReload: () => void
   visibilityGroups: VisibilityGroup[]
   toggleVisibility: (columnId: string) => void
+  collapsible: ReactNode
   children: ReactNode
 }) => {
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
@@ -100,8 +102,13 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
+        <Grid size={{ mobile: 12 }}>
+          <Stack direction="row" justifyContent="space-between">
+            {children}
+          </Stack>
+        </Grid>
       </Grid>
-      <Collapse in={filterExpanded}>{filterExpanded != null && children}</Collapse>
+      <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
         <TableVisibilitySettingsPopover
@@ -132,7 +139,7 @@ export function useColumnFilters() {
       ]),
     [setColumnFilters],
   )
-  const columnFiltersById = columnFilters.reduce(
+  const columnFiltersById: Record<string, unknown> = columnFilters.reduce(
     (acc, filter) => ({
       ...acc,
       [filter.id]: filter.value,

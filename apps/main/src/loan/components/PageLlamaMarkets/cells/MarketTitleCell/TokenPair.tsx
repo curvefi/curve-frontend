@@ -8,7 +8,7 @@ import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReactNode } from 'react'
 import type { SxProps, Theme } from '@mui/material/styles'
 
-type TokenPairProps = Pick<LlamaMarket, 'assets' | 'blockchainId'>
+type TokenPairProps = Pick<LlamaMarket, 'assets' | 'chain'>
 
 const { IconSize } = SizesAndSpaces
 
@@ -20,18 +20,18 @@ const TooltipBox = ({ title, children, sx }: { title: string; children: ReactNod
   </Box>
 )
 
-const TokenBox = ({ coin: { address, blockchainId, symbol }, sx }: { coin: AssetDetails; sx: SxProps<Theme> }) => (
+const TokenBox = ({ coin: { address, chain, symbol }, sx }: { coin: AssetDetails; sx: SxProps<Theme> }) => (
   <TooltipBox title={symbol} sx={sx}>
-    <TokenIcon imageBaseUrl={getImageBaseUrl(blockchainId)} address={address} token={symbol} />
+    <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} address={address} token={symbol} />
   </TooltipBox>
 )
 
-export const TokenPair = ({ blockchainId, assets: { borrowed, collateral } }: TokenPairProps) => (
+export const TokenPair = ({ chain, assets: { borrowed, collateral } }: TokenPairProps) => (
   <Box sx={{ position: 'relative', width: IconSize.xxl, height: IconSize.xxl }}>
     <TokenBox coin={borrowed} sx={{ top: '30%', left: '30%' }} />
     <TokenBox coin={collateral} sx={{ bottom: '30%', right: '30%' }} />
-    <TooltipBox title={blockchainId} sx={{ top: '0%', right: '0%' }}>
-      <ChainIcon size="xs" blockchainId={blockchainId} />
+    <TooltipBox title={chain} sx={{ top: '0%', right: '0%' }}>
+      <ChainIcon size="xs" blockchainId={chain} />
     </TooltipBox>
   </Box>
 )

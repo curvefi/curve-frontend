@@ -22,7 +22,7 @@ const showIconOnHover = {
 
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => (
   <Stack direction="row" gap={Spacing.sm} alignItems="center">
-    <TokenPair blockchainId={market.blockchainId} assets={market.assets} />
+    <TokenPair chain={market.chain} assets={market.assets} />
     <Stack direction="column" gap={Spacing.xs}>
       <MarketBadges market={market} />
       <Typography component={Stack} variant="tableCellL" sx={showIconOnHover} direction="row" gap={2}>

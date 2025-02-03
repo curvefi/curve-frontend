@@ -17,6 +17,10 @@ import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/Lendin
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useVisibilitySettings, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import Chip from '@mui/material/Chip'
+import { FavoriteHeartIcon, HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
+import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 
 const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
 
@@ -72,25 +76,27 @@ const columns = [
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
-  columnHelper.accessor('totalSupplied.usdTotal', {
+  columnHelper.accessor('liquidityUsd', {
     header: () => t`Available Liquidity`,
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden('blockchainId'),
+  hidden('chain'),
   hidden('assets.collateral.symbol'),
   hidden('assets.borrowed.symbol'),
+  hidden('isFavorite'),
+  hidden('hasPoints'),
 ] satisfies ColumnDef<LlamaMarket, any>[]
 
-const DEFAULT_SORT = [{ id: 'totalSupplied.usdTotal', desc: true }]
+const DEFAULT_SORT = [{ id: 'liquidityUsd', desc: true }]
 
 const DEFAULT_VISIBILITY: VisibilityGroup[] = [
   {
     label: t`Markets`,
     options: [
-      { label: t`Available Liquidity`, id: 'totalSupplied.usdTotal', active: true },
+      { label: t`Available Liquidity`, id: 'liquidityUsd', active: true },
       { label: t`Utilization`, id: 'utilizationPercent', active: true },
     ],
   },
@@ -144,8 +150,11 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
+          collapsible={
+            <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+          }
         >
-          <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+          <MarketsFilterChips columnFiltersById={columnFiltersById} setColumnFilter={setColumnFilter} />
         </TableFilters>
       </DataTable>
     </Stack>

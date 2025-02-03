@@ -11,6 +11,7 @@ type MintMarketFromApi = Market
 
 export type MintMarket = MintMarketFromApi & {
   stablecoin_price: number
+  chain: Chain
 }
 
 /**
@@ -20,13 +21,11 @@ export type MintMarket = MintMarketFromApi & {
 async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMarketFromApi[] }) {
   const stablecoinAddresses = uniq(data.map((market) => market.stablecoinToken.address))
   const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
-  return {
+  return data.map((market) => ({
+    ...market,
     chain,
-    data: data.map((market) => ({
-      ...market,
-      stablecoin_price: stablecoinPrices[market.stablecoinToken.address],
-    })),
-  }
+    stablecoin_price: stablecoinPrices[market.stablecoinToken.address],
+  }))
 }
 
 export const { getQueryOptions: getMintMarketOptions } = queryFactory({
