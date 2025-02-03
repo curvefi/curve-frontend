@@ -10,7 +10,7 @@ import useStore from '@/dex/store/useStore'
 import { scrollToTop } from '@/dex/utils'
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import Transfer from '@/dex/components/PagePool/index'
-import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
 
@@ -28,7 +28,7 @@ const Page: NextPage = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
   const network = useStore((state) => state.networks.networks[rChainId])
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)

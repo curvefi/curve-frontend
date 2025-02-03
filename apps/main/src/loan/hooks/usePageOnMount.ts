@@ -7,10 +7,9 @@ import { useCallback, useEffect } from 'react'
 import {
   getWalletChainId,
   getWalletSignerAddress,
-  useConnectWallet,
   useSetChain,
   useSetLocale,
-  useWalletStore,
+  useWallet,
 } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
@@ -22,12 +21,11 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@/loan/types/loan.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
 
   const connectState = useStore((state) => state.connectState)
-  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const curve = useStore((state) => state.curve)
   const { lendApi, updateLendApi } = useStore((state) => state)
   const updateConnectState = useStore((state) => state.updateConnectState)
@@ -45,7 +43,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await chooseWallet(wallet)
           const prevCurveApi = curve
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -62,7 +59,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, chooseWallet, wallet],
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet],
   )
 
   const handleConnectLendApi = useCallback(
@@ -70,7 +67,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await chooseWallet(wallet)
           const prevApi = lendApi ?? null
           updateGlobalStoreByKey('isLoadingLendApi', true)
           const apiNew = await initLendApi(chainId, useWallet ? wallet : null)
@@ -86,7 +82,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [chooseWallet, wallet, lendApi, updateGlobalStoreByKey, updateLendApi, updateConnectState],
+    [wallet, lendApi, updateGlobalStoreByKey, updateLendApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(

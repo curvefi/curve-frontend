@@ -1,11 +1,15 @@
-import type { FormStatus, RoutesAndOutput, StepKey } from '@/dex/components/PageRouterSwap/types'
-import type { FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
+import type {
+  FormStatus,
+  FormValues,
+  RoutesAndOutput,
+  SearchedParams,
+  StepKey,
+} from '@/dex/components/PageRouterSwap/types'
 import type { Params } from 'react-router'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
-import React, { useEffect, useCallback, useState, useRef, useMemo } from 'react'
-import { NETWORK_TOKEN } from '@/dex/constants'
-import { REFRESH_INTERVAL } from '@/dex/constants'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { getTokensMapperStr } from '@/dex/store/createTokensSlice'
@@ -34,8 +38,8 @@ import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { CurveApi, ChainId, Token, TokensMapper } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ChainId, CurveApi, Token, TokensMapper } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const QuickSwap = ({
   pageLoaded,
@@ -67,7 +71,6 @@ const QuickSwap = ({
   const formValues = useStore((state) => state.quickSwap.formValues)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isHideSmallPools = useStore((state) => state.poolList.formValues.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
@@ -160,7 +163,7 @@ const QuickSwap = ({
       const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${
         isExpectedToAmount ? toAmountOutput : toAmount
       } ${toToken} at max slippage ${maxSlippage}%.`
-      const { dismiss } = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      const { dismiss } = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
@@ -178,7 +181,7 @@ const QuickSwap = ({
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
+    [activeKey, fetchStepSwap, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -210,7 +213,7 @@ const QuickSwap = ({
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromToken}.`
-            const { dismiss } = notifyNotification(notifyMessage, 'pending')
+            const { dismiss } = notify(notifyMessage, 'pending')
             await fetchStepApprove(activeKey, curve, formValues, searchedParams, globalMaxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
@@ -287,7 +290,7 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps],
+    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, steps],
   )
 
   const fetchData = useCallback(() => {

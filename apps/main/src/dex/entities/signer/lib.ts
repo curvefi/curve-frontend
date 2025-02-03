@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
 import useStore from '@/dex/store/useStore'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 export const useSignerAddress = (): { data: Address | undefined } => {
-  const { wallet } = useWalletStore.getState()
+  const { wallet } = useWallet.getState()
   const signerAddress = wallet?.accounts?.[0]?.address
   return { data: signerAddress }
 }

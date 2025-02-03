@@ -1,4 +1,4 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/dex/components/PageCrvLocker/types'
+import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dex/components/PageCrvLocker/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
@@ -21,7 +21,7 @@ import FieldLockedAmt from '@/dex/components/PageCrvLocker/components/FieldLocke
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -34,7 +34,6 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const formValues = useStore((state) => state.lockedCrv.formValues)
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.lockedCrv.fetchStepCreate)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
   const network = useStore((state) => state.networks.networks[rChainId])
 
@@ -97,11 +96,11 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const handleBtnClickApproval = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your CRV.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, rFormType, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification, rFormType],
+    [fetchStepApprove, rFormType],
   )
 
   const handleBtnClickCreate = useCallback(
@@ -109,7 +108,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       if (formValues.utcDate) {
         const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm locking ${formatNumber(formValues.lockedAmt)} CRV until ${localUtcDate}.`
-        const { dismiss } = notifyNotification(notifyMessage, 'pending')
+        const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -119,7 +118,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [fetchStepCreate, notifyNotification, network],
+    [fetchStepCreate, network],
   )
 
   const getSteps = useCallback(

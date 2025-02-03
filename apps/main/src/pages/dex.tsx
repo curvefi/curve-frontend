@@ -25,7 +25,7 @@ import { getLocaleFromUrl } from '@/dex/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -60,7 +60,6 @@ const App: NextPage = () => {
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const network = useStore((state) => state.networks.networks[chainId])
-  const initializeWallet = useWalletStore((s) => s.initialize)
 
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
@@ -106,7 +105,7 @@ const App: NextPage = () => {
     ;(async () => {
       const networks = await fetchNetworks()
 
-      initializeWallet(locale, theme, networks)
+      useWallet.initialize(locale, theme, networks)
 
       const handleVisibilityChange = () => {
         updateGlobalStoreByKey('isPageVisible', !document.hidden)

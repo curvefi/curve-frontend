@@ -20,8 +20,8 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
   extraSmall: { font: 'bodyXsBold', height: IconSize.md },
   small: { font: 'buttonXs', height: IconSize.md },
   medium: { font: 'buttonXs', height: Sizing.md },
-  large: { font: 'headingSBold', height: Sizing.md },
-  extraLarge: { font: 'buttonM', height: Sizing.xl },
+  large: { font: 'buttonM', height: Sizing.md },
+  extraLarge: { font: 'headingSBold', height: Sizing.xl },
 }
 
 // overrides for clickable chips
@@ -36,7 +36,7 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
 /**
  * Defines the MuiChip component.
  * In Figma we have two different components "Badge" and "Chip" that are implemented here.
- * - Figma's Badge component is the clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
+ * - Figma's Badge component is the non-clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
  * - As we share colors between components, Figma's Chip active color is implemented as "selected" color. inactive is "unselected"
  * - We do not use the "variant" prop (at the time of writing).
  */
@@ -121,11 +121,11 @@ export const defineMuiChip = (
 
     ...Object.entries(chipSizes).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes },
-      style: { ...typography[font], ...handleBreakpoints(rest) },
+      style: handleBreakpoints({ ...typography[font], ...rest }),
     })),
     ...Object.entries(chipSizeClickable).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes, clickable: true },
-      style: { ...(font && typography[font]), ...handleBreakpoints(rest) },
+      style: handleBreakpoints({ ...(font && typography[font]), ...rest }),
     })),
   ],
 })

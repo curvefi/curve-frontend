@@ -50,7 +50,7 @@ export const parseOHLC = (x: Responses.GetLlammaOHLCResponse['data'][number]): M
   close: x.close,
   high: x.high,
   low: x.low,
-  priceBase: x.base_price,
-  priceOracle: x.oracle_price,
+  basePrice: x.base_price,
+  oraclePrice: x.oracle_price,
   volume: x.volume,
 })

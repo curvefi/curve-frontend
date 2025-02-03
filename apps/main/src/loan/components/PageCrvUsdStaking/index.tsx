@@ -8,7 +8,7 @@ import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
 import UserPositionBanner from '@/loan/components/PageCrvUsdStaking/UserPositionBanner'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const {
@@ -21,8 +21,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
     stakingModule,
   } = useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
-  const provider = useWalletStore((s) => s.provider)
-  const signerAddress = useWalletStore((s) => s.wallet)?.accounts?.[0]?.address
+  const { signerAddress, provider } = useWallet()
   const chainId = useStore((state) => state.curve?.chainId)
   const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
   const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()

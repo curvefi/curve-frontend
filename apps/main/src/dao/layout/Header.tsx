@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/dao/constants'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { _parseRouteAndIsActive, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/dao/networks'
 import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
 import useStore from '@/dao/store/useStore'
@@ -18,7 +18,7 @@ import { ChainId } from '@/dao/types/dao.types'
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

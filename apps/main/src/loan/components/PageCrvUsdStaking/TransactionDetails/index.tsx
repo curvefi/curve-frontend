@@ -14,7 +14,7 @@ import Loader from '@ui/Loader'
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type TransactionDetailsProps = {
   className?: string
@@ -22,7 +22,7 @@ type TransactionDetailsProps = {
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
+  const { signerAddress } = useWallet()
   const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
     (state) => state.scrvusd,
   )

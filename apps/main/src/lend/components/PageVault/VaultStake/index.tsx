@@ -1,4 +1,4 @@
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultStake/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -32,7 +32,6 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultStake.fetchStepApprove)
   const fetchStepStake = useStore((state) => state.vaultStake.fetchStepStake)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultStake.setFormValues)
   const resetState = useStore((state) => state.vaultStake.resetState)
 
@@ -72,7 +71,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
       const { amount } = formValues
 
       const notifyMessage = t`stake ${amount} vault shares`
-      const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepStake(payloadActiveKey, rFormType, api, market, formValues)
@@ -83,9 +82,9 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepStake, notifyNotification, reset],
+    [activeKey, fetchStepStake, reset],
   )
 
   const getSteps = useCallback(
@@ -112,10 +111,10 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of vault shares`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, rFormType, api, market, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         STAKE: {
@@ -137,7 +136,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickStake, notifyNotification],
+    [fetchStepApprove, handleBtnClickStake],
   )
 
   // onMount
