@@ -45,7 +45,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -109,7 +109,7 @@ const LoanDeleverage = ({
       const fTokenName = `${collateral} ${collateralName}`
       const notifyMessage = t`Please approve deleverage with ${fTokenName} at ${maxSlippage}% max slippage.`
 
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {

@@ -39,7 +39,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CurveApi, Token, TokensMapper } from '@/dex/types/main.types'
-import { notify as notifyNotification } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const QuickSwap = ({
   pageLoaded,
@@ -163,7 +163,7 @@ const QuickSwap = ({
       const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${
         isExpectedToAmount ? toAmountOutput : toAmount
       } ${toToken} at max slippage ${maxSlippage}%.`
-      const { dismiss } = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      const { dismiss } = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
@@ -213,7 +213,7 @@ const QuickSwap = ({
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromToken}.`
-            const { dismiss } = notifyNotification(notifyMessage, 'pending')
+            const { dismiss } = notify(notifyMessage, 'pending')
             await fetchStepApprove(activeKey, curve, formValues, searchedParams, globalMaxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
