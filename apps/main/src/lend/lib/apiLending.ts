@@ -2130,5 +2130,5 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 }
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
-  return args.find((a) => a.status == 'rejected')?.reason.message
+  return (args.find((a) => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
 }
