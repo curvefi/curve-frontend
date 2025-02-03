@@ -7,10 +7,9 @@ import { useCallback, useEffect } from 'react'
 import {
   getWalletChainId,
   getWalletSignerAddress,
-  useConnectWallet,
   useSetChain,
   useSetLocale,
-  useWalletStore,
+  useWallet,
 } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/lend/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
@@ -22,14 +21,13 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@/lend/types/lend.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
   const api = useStore((state) => state.api)
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateApi = useStore((state) => state.updateApi)
-  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const setLocale = useUserProfileStore((state) => state.setLocale)
   const walletChainId = getWalletChainId(wallet)
@@ -41,7 +39,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await chooseWallet(wallet)
           const prevApi = api ?? null
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -58,7 +55,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [chooseWallet, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
+    [wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(

@@ -23,8 +23,7 @@ import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, slee
 import { shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -333,7 +332,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
       const { pools, gas } = get()
       const { claimableFees, ...sliceState } = get()[sliceKey]
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       const { chainId } = curve
@@ -376,7 +375,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         gas,
         [sliceKey]: { formValues, ...sliceState },
       } = get()
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update form

@@ -5,26 +5,29 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
+import {
+  getWalletChainId,
+  getWalletSignerAddress,
+  useSetChain,
+  useSetLocale,
+  useWallet,
+} from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRouter'
-import { getWalletChainId } from '@ui-kit/features/connect-wallet'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'
 import useStore from '@/dex/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
-  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const setNetworkConfigs = useStore((state) => state.networks.setNetworkConfigs)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
@@ -103,7 +106,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          chooseWallet(walletState)
           setWalletName(walletState.label)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
@@ -130,7 +132,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     },
     [
       connect,
-      chooseWallet,
       navigate,
       networks,
       parsedParams.rChainId,

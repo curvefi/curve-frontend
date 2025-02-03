@@ -10,8 +10,7 @@ import { _parseActiveKey } from '@/lend/utils/helpers'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { Api } from '@/lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -129,7 +128,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
     fetchStepApprove: async (activeKey, api, market, formValues) => {
       const { gas } = get()
       const sliceState = get()[sliceKey]
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -155,7 +154,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
     fetchStepIncrease: async (activeKey, api, market, formValues) => {
       const { gas, markets, user } = get()
       const sliceState = get()[sliceKey]
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(sliceState)
 

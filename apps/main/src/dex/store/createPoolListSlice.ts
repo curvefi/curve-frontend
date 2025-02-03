@@ -133,10 +133,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     },
     filterBySearchText: (searchTerm, poolDatas, highlightResult = true) => {
       const { ...sliceState } = get()[sliceKey]
-
-      // special search case for aUSD₮
-      searchTerm = searchTerm.replace(/ausdt/gi, 'aUSD₮')
-
       const { addressesResult, tokensResult } = searchByText(
         searchTerm,
         poolDatas,

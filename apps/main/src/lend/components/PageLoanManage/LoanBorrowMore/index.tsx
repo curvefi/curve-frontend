@@ -32,8 +32,8 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, HealthMode } from '@/lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -60,7 +60,6 @@ const LoanBorrowMore = ({
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
@@ -107,7 +106,7 @@ const LoanBorrowMore = ({
     ) => {
       const { chainId } = api
 
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -121,9 +120,9 @@ const LoanBorrowMore = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues],
+    [activeKey, fetchStepIncrease, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -186,10 +185,10 @@ const LoanBorrowMore = ({
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         BORROW_MORE: {
@@ -249,14 +248,7 @@ const LoanBorrowMore = ({
       }
       return stepsKey.map((k) => stepsObj[k])
     },
-    [
-      expectedCollateral?.totalCollateral,
-      userLoanDetails?.state,
-      userBalances,
-      notifyNotification,
-      fetchStepApprove,
-      handleBtnClickBorrow,
-    ],
+    [expectedCollateral?.totalCollateral, userLoanDetails?.state, userBalances, fetchStepApprove, handleBtnClickBorrow],
   )
 
   // onMount

@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@curvefi/api": "^2.66.2",
-    "@curvefi/lending-api": "^2.4.4",
+    "@curvefi/lending-api": "^2.4.5",
     "@curvefi/stablecoin-api": "^1.5.9",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
@@ -39,7 +39,7 @@
     "ethers": "^6.13.4",
     "external-rewards": "*",
     "focus-visible": "5.2.0",
-    "fuse.js": "^6.6.2",
+    "fuse.js": "^7.1.0",
     "immer": "^9.0.12",
     "lightweight-charts": "4.1.2",
     "lodash": "4.17.21",

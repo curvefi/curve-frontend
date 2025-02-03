@@ -3352,16 +3352,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:^2.4.4":
-  version: 2.4.4
-  resolution: "@curvefi/lending-api@npm:2.4.4"
+"@curvefi/lending-api@npm:^2.4.5":
+  version: 2.4.5
+  resolution: "@curvefi/lending-api@npm:2.4.5"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.7"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.10.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/74c73a949b30f295c04fc3b9ad908ed1c960d16f65d3bcd0f0f99d8ea6d289bb368241c46793b494bf5cfabb47fa642b10d44751ba9c534c0d10959e3108cfbf
+  checksum: 10c0/fc2aa460aba5a82f7b837583d74b4240aec45a162c228a76fac6c74efe4112777c99c1eaedb8073a9a66547848667396ec4cd645ce53e947ff5c3800eb6216af
   languageName: node
   linkType: hard
 
@@ -18518,10 +18518,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fuse.js@npm:^6.6.2":
-  version: 6.6.2
-  resolution: "fuse.js@npm:6.6.2"
-  checksum: 10c0/c2fe4f234f516e9ea83b06f06f8f3c8b7117f51aa75bbccd052eed0c0423364bf1e360ffbf29cadae8ef6aa39476b7961eaf9d07bed779cea5c83d62b34e2df9
+"fuse.js@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "fuse.js@npm:7.1.0"
+  checksum: 10c0/c0d1b1d192a4bdf3eade897453ddd28aff96b70bf3e49161a45880f9845ebaee97265595db633776700a5bcf8942223c752754a848d70c508c3c9fd997faad1e
   languageName: node
   linkType: hard
 
@@ -21233,7 +21233,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:^2.66.2"
-    "@curvefi/lending-api": "npm:^2.4.4"
+    "@curvefi/lending-api": "npm:^2.4.5"
     "@curvefi/stablecoin-api": "npm:^1.5.9"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
@@ -21258,7 +21258,7 @@ __metadata:
     ethers: "npm:^6.13.4"
     external-rewards: "npm:*"
     focus-visible: "npm:5.2.0"
-    fuse.js: "npm:^6.6.2"
+    fuse.js: "npm:^7.1.0"
     immer: "npm:^9.0.12"
     lightweight-charts: "npm:4.1.2"
     lodash: "npm:4.17.21"
