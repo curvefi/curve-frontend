@@ -16,7 +16,7 @@ type ChipStoryProps = {
 const sizes = ['extraSmall', 'small', 'medium', 'large', 'extraLarge'] satisfies ChipProps['size'][]
 
 const ChipStories = ({ clickable, color, variant }: ChipStoryProps) => (
-  <Stack spacing={6} flexGrow={0} marginBlock={8}>
+  <Stack spacing={7} flexGrow={0} marginBlock={9}>
     <Typography variant="headingXxl">
       {clickable ? 'Chips' : 'Badges'}: {color} color
     </Typography>

@@ -121,11 +121,11 @@ export const defineMuiChip = (
 
     ...Object.entries(chipSizes).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes },
-      style: { ...typography[font], ...handleBreakpoints(rest) },
+      style: handleBreakpoints({ ...typography[font], ...rest }),
     })),
     ...Object.entries(chipSizeClickable).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes, clickable: true },
-      style: { ...(font && typography[font]), ...handleBreakpoints(rest) },
+      style: handleBreakpoints({ ...(font && typography[font]), ...rest }),
     })),
   ],
 })
