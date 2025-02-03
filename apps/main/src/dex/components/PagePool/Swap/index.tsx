@@ -6,7 +6,7 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_EXCHANGE_OUTPUT, DEFAULT_EST_GAS, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
+import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
@@ -34,8 +34,8 @@ import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
-import { Balances, CurveApi, TokensMapper, PoolData, PoolAlert } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const Swap = ({
   chainIdPoolId,
@@ -77,7 +77,6 @@ const Swap = ({
   const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -127,7 +126,7 @@ const Swap = ({
     ) => {
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -143,7 +142,7 @@ const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
+    [activeKey, fetchStepSwap, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -180,7 +179,7 @@ const Swap = ({
           content: isApprove ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
-            const { dismiss } = notifyNotification(notifyMessage, 'pending')
+            const { dismiss } = notify(notifyMessage, 'pending')
             await fetchStepApprove(actionActiveKey, curve, poolData.pool, formValues, maxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
@@ -227,7 +226,7 @@ const Swap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [fetchStepApprove, handleSwapClick, notifyNotification],
+    [fetchStepApprove, handleSwapClick],
   )
 
   const fetchData = useCallback(() => {

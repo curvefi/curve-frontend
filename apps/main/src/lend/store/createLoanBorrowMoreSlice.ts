@@ -11,16 +11,15 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import {
+  _parseValues,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-  _parseValues,
 } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api } from '@/lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { Api, ChainId } from '@/lend/types/lend.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -242,7 +241,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
     fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
       const { gas } = get()
       const sliceState = get()[sliceKey]
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -275,7 +274,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
     fetchStepIncrease: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
       const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
 
       if (!provider) return setMissingProvider(get()[sliceKey])
 

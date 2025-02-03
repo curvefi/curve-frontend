@@ -1,9 +1,15 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import type { Amount } from '@/dex/components/PagePool/utils'
+import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
-import type { FormLpTokenExpected, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
-import type { FormType, FormStatus, FormValues } from '@/dex/components/PagePool/Deposit/types'
+import type {
+  FormLpTokenExpected,
+  FormStatus,
+  FormType,
+  FormValues,
+  LoadMaxAmount,
+} from '@/dex/components/PagePool/Deposit/types'
 
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
@@ -15,23 +21,21 @@ import {
 } from '@/dex/components/PagePool/Deposit/utils'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import { NETWORK_TOKEN } from '@/dex/constants'
-import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import curvejsApi from '@/dex/lib/curvejs'
 import {
   Balances,
-  CurveApi,
   ChainId,
+  CurveApi,
+  FnStepApproveResponse,
+  FnStepEstGasApprovalResponse,
+  FnStepResponse,
   Pool,
   PoolData,
-  FnStepEstGasApprovalResponse,
-  FnStepApproveResponse,
-  FnStepResponse,
 } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -366,7 +370,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       return resp
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -402,7 +406,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepDeposit: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -447,7 +451,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepDepositStake: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -490,7 +494,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepStakeApprove: async (activeKey, curve, formType, pool, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -524,7 +528,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchStepStake: async (activeKey, curve, poolData, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

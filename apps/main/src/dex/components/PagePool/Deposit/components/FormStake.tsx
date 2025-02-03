@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
-import type { FormValues, FormStatus, StepKey } from '@/dex/components/PagePool/Deposit/types'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
@@ -19,7 +19,7 @@ import Stepper from '@ui/Stepper'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -34,7 +34,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
@@ -56,17 +55,17 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const handleApproveClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'STAKE', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleStakeClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
       const notifyMessage = t`Please confirm staking of ${formValues.lpToken} LP Tokens`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -75,7 +74,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepStake, notifyNotification, network],
+    [fetchStepStake, network],
   )
 
   const getSteps = useCallback(

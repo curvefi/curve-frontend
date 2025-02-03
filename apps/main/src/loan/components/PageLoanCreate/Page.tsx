@@ -17,8 +17,8 @@ import useTitleMapper from '@/loan/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentHeader,
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
@@ -32,10 +32,9 @@ import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
@@ -61,7 +60,7 @@ const Page: NextPage = () => {
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)

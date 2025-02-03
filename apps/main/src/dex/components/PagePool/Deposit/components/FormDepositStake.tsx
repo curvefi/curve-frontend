@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
-import type { FormValues, FormStatus, StepKey, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
 import { amountsDescription, tokensDescription } from '@/dex/components/PagePool/utils'
@@ -23,7 +23,7 @@ import Stepper from '@ui/Stepper'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormDepositStake = ({
   chainIdPoolId,
@@ -53,7 +53,6 @@ const FormDepositStake = ({
   const slippage = useStore((state) => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore((state) => state.poolDeposit.fetchStepDepositStake)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const network = useStore((state) => state.networks.networks[rChainId])
@@ -90,18 +89,18 @@ const FormDepositStake = ({
   const handleApproveClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'DEPOSIT_STAKE', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleDepositStakeClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm deposit and staking of ${tokenText} LP Tokens at max ${maxSlippage}% slippage.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDepositStake(activeKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -110,7 +109,7 @@ const FormDepositStake = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDepositStake, notifyNotification, network],
+    [fetchStepDepositStake, network],
   )
 
   const getSteps = useCallback(

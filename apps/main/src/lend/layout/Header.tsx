@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/lend/constants'
 import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { useTvl } from '@/lend/entities/chain'
@@ -21,7 +21,7 @@ type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProp
 const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const navigate = useNavigate()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

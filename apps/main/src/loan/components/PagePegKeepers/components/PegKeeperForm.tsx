@@ -10,8 +10,8 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { ChainId, Curve } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 type Props = {
   rChainId: ChainId
@@ -25,7 +25,6 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const curve = useStore((state) => state.curve)
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
 
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
@@ -37,7 +36,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
       setTxInfoBar(null)
 
       const notifyMessage = t`Please confirm update ${poolName} pool`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchUpdate(curve, pegKeeperAddress)
 
       if (isSubscribed.current && resp) {
@@ -46,10 +45,10 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
         }
 
-        if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+        notification?.dismiss()
       }
     },
-    [fetchUpdate, notifyNotification, poolName, rChainId],
+    [fetchUpdate, poolName, rChainId],
   )
 
   // onMount

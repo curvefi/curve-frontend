@@ -29,7 +29,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CollateralAlert, Curve, Llamma } from '@/loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,
@@ -58,7 +58,6 @@ const LoanCreate = ({
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
@@ -120,16 +119,16 @@ const LoanCreate = ({
       maxSlippage: string,
     ) => {
       const notifyMessage = t`Please confirm deposit of ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepCreate(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const TxDescription = <Trans>Transaction complete.</Trans>
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepCreate, network, notifyNotification],
+    [activeKey, fetchStepCreate, network],
   )
 
   const getSteps = useCallback(
@@ -162,10 +161,10 @@ const LoanCreate = ({
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${llamma.collateralSymbol}.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         CREATE: {
@@ -220,7 +219,7 @@ const LoanCreate = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleClickCreate, healthMode, notifyNotification],
+    [fetchStepApprove, handleClickCreate, healthMode],
   )
 
   // onMount
