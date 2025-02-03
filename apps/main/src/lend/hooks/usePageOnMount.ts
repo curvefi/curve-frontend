@@ -2,7 +2,6 @@ import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
-
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import {
@@ -11,32 +10,28 @@ import {
   useConnectWallet,
   useSetChain,
   useSetLocale,
+  useWalletStore,
 } from '@ui-kit/features/connect-wallet'
-
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@lend/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/lend/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@lend/utils/utilsStorage'
-import { getNetworkFromUrl, parseParams } from '@lend/utils/utilsRouter'
-import { helpers } from '@lend/lib/apiLending'
-import networks, { networksIdMapper } from '@lend/networks'
-import useStore from '@lend/store/useStore'
+import { getNetworkFromUrl, parseParams } from '@/lend/utils/utilsRouter'
+import { helpers } from '@/lend/lib/apiLending'
+import networks, { networksIdMapper } from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@lend/types/lend.types'
+import { ChainId, PageProps, Wallet } from '@/lend/types/lend.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const [{ wallet }, connect, disconnect] = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
-
   const api = useStore((state) => state.api)
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateApi = useStore((state) => state.updateApi)
-  const updateProvider = useStore((state) => state.wallet.updateProvider)
+  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-
   const setLocale = useUserProfileStore((state) => state.setLocale)
-
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
   const parsedParams = parseParams(params, chainIdNotRequired)
@@ -46,7 +41,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await updateProvider(wallet)
+          await chooseWallet(wallet)
           const prevApi = api ?? null
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -63,14 +58,14 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [updateProvider, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
+    [chooseWallet, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(
     async (options: ConnectState['options']) => {
       if (options) {
         const [walletName] = options
-        let walletState: Wallet | null = null
+        let walletState: Wallet | null
 
         if (walletName) {
           // If found label in localstorage, after 30s if not connected, reconnect with modal
@@ -95,7 +90,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             walletState = walletStates[0]
           } catch (error) {
             // if failed to get walletState due to timeout, show connect modal.
-            setStorageValue('APP_CACHE', { walletName: '', timestamp: '' })
+            setWalletName(null)
             ;[walletState] = await connect()
           }
         } else {
@@ -104,7 +99,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setStorageValue('APP_CACHE', { walletName: walletState.label, timestamp: Date.now().toString() })
+          setWalletName(walletState.label)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
             const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
@@ -124,24 +119,24 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           }
         } catch (error) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-          setStorageValue('APP_CACHE', { walletName: '', timestamp: '' })
+          setWalletName(null)
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState],
+    [connect, navigate, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
   const handleDisconnectWallet = useCallback(
     async (wallet: Wallet) => {
       try {
         await disconnect(wallet)
-        setStorageValue('APP_CACHE', { walletName: '', timestamp: '' })
+        setWalletName(null)
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
       } catch (error) {
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState],
+    [disconnect, parsedParams.rChainId, updateConnectState, setWalletName],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -184,7 +179,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         navigate(`${parsedParams.rLocalePathname}/ethereum${ROUTE.PAGE_MARKETS}`)
       } else {
         updateGlobalStoreByKey('routerProps', { params, location, navigate })
-        const walletName = getStorageValue('APP_CACHE')?.walletName ?? ''
         if (walletName) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {

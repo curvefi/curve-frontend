@@ -1,4 +1,4 @@
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 export const useCurve = () => {
   const curve = useStore((state) => state.curve)

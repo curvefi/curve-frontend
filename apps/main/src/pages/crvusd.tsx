@@ -3,14 +3,12 @@ import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
 import { i18n } from '@lingui/core'
-import 'intersection-observer'
 import 'focus-visible'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
-import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import GlobalStyle from '@/loan/globalStyle'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import Page from '@/loan/layout/index'
@@ -26,6 +24,7 @@ import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { QueryProvider } from '@ui/QueryProvider'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -54,8 +53,7 @@ const App: NextPage = () => {
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
-
+  const initializeWallet = useWalletStore((s) => s.initialize)
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
 
@@ -89,10 +87,7 @@ const App: NextPage = () => {
       dynamicActivate(parsedLocale, data)
     })()
 
-    // init onboard
-    const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-    updateWalletStateByKey('onboard', onboardInstance)
-
+    initializeWallet(locale, theme, networks)
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)

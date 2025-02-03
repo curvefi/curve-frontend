@@ -1,6 +1,6 @@
-import { FormStatus, FormValues } from '@lend/components/PageLoanManage/LoanBorrowMore/types'
-import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@lend/components/PageLoanManage/utils'
-import { _parseStepTokensList } from '@lend/utils/helpers'
+import { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanBorrowMore/types'
+import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import { _parseStepTokensList } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {

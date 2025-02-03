@@ -1,24 +1,24 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@loan/constants'
-import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@loan/utils/utilsRouter'
+import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
+import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/loan/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
-import networks, { visibleNetworksList } from '@loan/networks'
-import useLayoutHeight from '@loan/hooks/useLayoutHeight'
-import useStore from '@loan/store/useStore'
+import networks, { visibleNetworksList } from '@/loan/networks'
+import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
+import useStore from '@/loan/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@loan/types/loan.types'
+import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@/loan/types/loan.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

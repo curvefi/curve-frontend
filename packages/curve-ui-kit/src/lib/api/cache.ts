@@ -6,7 +6,7 @@ export const queryCache = new QueryCache({
     logError(query.queryKey, error, error.message)
   },
   onSuccess: (data, query) => {
-    logSuccess(query.queryKey, data ? { data } : '')
+    logSuccess(query.queryKey, ...[data ? [data] : []])
   },
 })
 

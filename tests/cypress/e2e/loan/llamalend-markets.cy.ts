@@ -38,8 +38,8 @@ describe('LlamaLend Markets', () => {
 
   it('should show graphs', () => {
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.attr', 'stroke', green)
-    cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.attr', 'stroke', red)
+    cy.get('[data-testid="line-graph-lend"] path').first().should('have.attr', 'stroke', green)
+    cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@snapshots.all`).then((calls1) => {

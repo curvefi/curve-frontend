@@ -1,23 +1,23 @@
 import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { CONNECT_STAGE, ROUTE } from '@main/constants'
-import { useNetworkFromUrl } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@main/store/createWalletSlice'
+import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
+import { useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { getWalletChainId } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
 import { useConnectWallet } from '@ui-kit/features/connect-wallet'
-import useLayoutHeight from '@main/hooks/useLayoutHeight'
-import useStore from '@main/store/useStore'
+import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
+import useStore from '@/dex/store/useStore'
 
-import Header from '@main/layout/default/Header'
+import Header from '@/dex/layout/default/Header'
 import { Locale } from '@ui-kit/widgets/Header/types'
 import { t } from '@lingui/macro'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { layoutHeightKeys } from '@main/store/createGlobalSlice'
+import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 

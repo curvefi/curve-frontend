@@ -2,6 +2,7 @@ import { detect, fromUrl, fromNavigator } from '@lingui/detect-locale'
 import BigNumber from 'bignumber.js'
 import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
+import { MAX_USD_VALUE } from './utilsConstants'
 
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })
 export const BN = BigNumber
@@ -140,6 +141,10 @@ export function formatNumber(val: number | string | undefined | null, options?: 
 }
 
 function _formatNumber(val: string | number, options: NumberFormatOptions) {
+  if (options.currency === 'USD' && Number(val) > MAX_USD_VALUE) {
+    console.warn(`USD value is too large: ${val}`)
+    return `?`
+  }
   return new Intl.NumberFormat(localeDetected, options).format(
     options.style === 'percent' ? Number(val) / 100 : Number(val),
   )

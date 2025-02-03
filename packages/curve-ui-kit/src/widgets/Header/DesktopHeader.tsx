@@ -16,7 +16,7 @@ import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { useState } from 'react'
 import { AppName } from '@ui-kit/shared/routes'
 import { t } from '@lingui/macro'
-import GlobalBanner from 'ui/src/Banner'
+import GlobalBanner from '@ui/Banner'
 import { isBeta, isCypress } from '@ui-kit/utils'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
@@ -85,7 +85,7 @@ export const DesktopHeader = <TChainId extends number>({
           <Container>
             <PageTabs pages={pages} currentApp={currentApp} selectedApp={selectedApp} networkName={networkName} />
             <Box flexGrow={1} />
-            <Box display="flex" gap={3} alignItems="center">
+            <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
               <HeaderStats appStats={appStats} />
             </Box>
           </Container>

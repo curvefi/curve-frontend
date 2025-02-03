@@ -1,29 +1,30 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@main/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getStorageValue, setStorageValue } from '@main/utils/storage'
-import { useNetworkFromUrl, useParsedParams } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@main/store/createWalletSlice'
-import { initCurveJs } from '@main/utils/utilsCurvejs'
-import { isFailure, isLoading, isSuccess } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import { useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRouter'
+import { getWalletChainId } from '@ui-kit/features/connect-wallet'
+import { initCurveJs } from '@/dex/utils/utilsCurvejs'
+import useStore from '@/dex/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@main/types/main.types'
+import { ChainId, PageProps, Wallet } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const [{ wallet }, connect, disconnect] = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
   const [_, setChain] = useSetChain()
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
+  const chooseWallet = useWalletStore((s) => s.chooseWallet)
   const setNetworkConfigs = useStore((state) => state.networks.setNetworkConfigs)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
@@ -47,8 +48,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
 
-          if (useWallet && wallet && chainId) {
-            const api = await initCurveJs(chainId, wallet)
+          if (chainId) {
+            const api = await initCurveJs(chainId, (useWallet && wallet) || undefined)
             setNetworkConfigs(api)
             updateCurveJs(api, prevCurveApi, wallet)
             updateConnectState('success', '')
@@ -93,7 +94,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             walletState = walletStates[0]
           } catch (error) {
             // if failed to get walletState due to timeout, show connect modal.
-            setStorageValue('APP_CACHE', { walletName: '', timestamp: '' })
+            setWalletName(null)
             ;[walletState] = await connect()
           }
         } else {
@@ -102,7 +103,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setStorageValue('APP_CACHE', { walletName: walletState.label, timestamp: Date.now().toString() })
+          chooseWallet(walletState)
+          setWalletName(walletState.label)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
             const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
@@ -122,12 +124,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           }
         } catch (error) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-          setStorageValue('APP_CACHE', { walletName: '', timestamp: '' })
+          setWalletName(null)
         }
       }
     },
     [
       connect,
+      chooseWallet,
       navigate,
       networks,
       parsedParams.rChainId,
@@ -135,6 +138,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       parsedParams.restFullPathname,
       setChain,
       updateConnectState,
+      setWalletName,
     ],
   )
 
@@ -142,13 +146,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     async (wallet: Wallet) => {
       try {
         await disconnect(wallet)
-        setStorageValue('APP_CACHE', { walletName: '', timestamp: '' })
+        setWalletName(null)
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
       } catch (error) {
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState],
+    [disconnect, parsedParams.rChainId, updateConnectState, setWalletName],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -199,7 +203,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         navigate(`${parsedParams.rLocalePathname}/ethereum${ROUTE.PAGE_SWAP}`)
       } else {
         updateGlobalStoreByKey('routerProps', { params, location, navigate })
-        const walletName = getStorageValue('APP_CACHE')?.walletName ?? ''
         if (walletName) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {

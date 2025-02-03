@@ -9,8 +9,8 @@
  * business logic and data fetching.
  */
 
-import { AddRewardQuery, DepositRewardApproveQuery, DepositRewardQuery } from '@main/entities/gauge/types'
-import useStore from '@main/store/useStore'
+import { AddRewardQuery, DepositRewardApproveQuery, DepositRewardQuery } from '@/dex/entities/gauge/types'
+import useStore from '@/dex/store/useStore'
 
 export const mutateAddRewardToken = async ({
   poolId,

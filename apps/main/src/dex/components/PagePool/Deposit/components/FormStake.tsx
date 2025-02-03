@@ -1,24 +1,25 @@
 import type { ReactNode } from 'react'
-import type { FormValues, FormStatus, StepKey } from '@main/components/PagePool/Deposit/types'
-import type { TransferProps } from '@main/components/PagePool/types'
+import type { FormValues, FormStatus, StepKey } from '@/dex/components/PagePool/Deposit/types'
+import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import BigNumber from 'bignumber.js'
-import { DEFAULT_ESTIMATED_GAS } from '@main/components/PagePool'
+import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { formatNumber } from '@ui/utils'
-import useStore from '@main/store/useStore'
-import { FieldsWrapper } from '@main/components/PagePool/styles'
-import AlertFormError from '@main/components/AlertFormError'
+import useStore from '@/dex/store/useStore'
+import { FieldsWrapper } from '@/dex/components/PagePool/styles'
+import AlertFormError from '@/dex/components/AlertFormError'
 import AlertBox from '@ui/AlertBox'
-import DetailInfoExpectedApy from '@main/components/PagePool/components/DetailInfoExpectedApy'
-import DetailInfoEstGas from '@main/components/DetailInfoEstGas'
-import FieldLpToken from '@main/components/PagePool/components/FieldLpToken'
+import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
+import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
 import Stepper from '@ui/Stepper'
-import TransferActions from '@main/components/PagePool/components/TransferActions'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, Pool, PoolData } from '@main/types/main.types'
+import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -33,7 +34,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))

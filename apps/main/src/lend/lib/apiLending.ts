@@ -1,16 +1,16 @@
-import type { LiqRange } from '@lend/store/types'
+import type { LiqRange } from '@/lend/store/types'
 import type { StepStatus } from '@ui/Stepper/types'
 
 import PromisePool from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 
-import { INVALID_ADDRESS } from '@lend/constants'
-import { fulfilledValue, getErrorMessage, log } from '@lend/utils/helpers'
+import { INVALID_ADDRESS } from '@/lend/constants'
+import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
 import { BN, shortenAccount } from '@ui/utils'
-import networks from '@lend/networks'
+import networks from '@/lend/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { USE_API } from '@lend/shared/config'
+import { USE_API } from '@/lend/shared/config'
 import {
   ChainId,
   Api,
@@ -45,7 +45,7 @@ import {
   UserMarketBalances,
   FutureRates,
   Wallet,
-} from '@lend/types/lend.types'
+} from '@/lend/types/lend.types'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {
@@ -696,7 +696,16 @@ const loanCreate = {
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
-      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+      resp.error = _detailInfoRespErrorMessage(
+        healthFullResp,
+        healthNotFullResp,
+        futureRatesResp,
+        bandsResp,
+        pricesResp,
+        routesResp,
+        expectedCollateralResp,
+        priceImpactResp,
+      )
 
       return resp
     } catch (error) {
@@ -1218,7 +1227,17 @@ const loanRepay = {
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
-      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+      resp.error = _detailInfoRespErrorMessage(
+        healthFullResp,
+        healthNotFullResp,
+        futureRatesResp,
+        bandsResp,
+        pricesResp,
+        routesResp,
+        expectedBorrowedResp,
+        repayIsFullResp,
+        repayIsAvailableResp,
+      )
       return resp
     } catch (error) {
       console.error(error)
@@ -2100,23 +2119,16 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 
   if (resp.priceImpact === 'N/A') return resp
 
-  if (+resp.priceImpact > 0 && +slippage > 0) {
-    resp.isHighPriceImpact = +resp.priceImpact > +slippage
+  // Convert both values to numbers and get absolute value of price impact
+  const priceImpactNum = Math.abs(+resp.priceImpact)
+  const slippageNum = +slippage
+
+  if (slippageNum > 0) {
+    resp.isHighPriceImpact = priceImpactNum > slippageNum
   }
   return resp
 }
 
-function _detailInfoRespErrorMessage(
-  futureRatesResp: PromiseSettledResult<{ borrowApr: string; lendApr: string; borrowApy: string; lendApy: string }>,
-  bandsResp: PromiseSettledResult<[number, number]>,
-) {
-  let errorMessage = ''
-
-  if (futureRatesResp.status === 'rejected') {
-    errorMessage = futureRatesResp.reason.message
-  } else if (bandsResp.status === 'rejected') {
-    errorMessage = bandsResp.reason.message
-  }
-
-  return errorMessage
+function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
+  return (args.find((a) => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
 }

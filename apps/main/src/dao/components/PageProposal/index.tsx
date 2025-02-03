@@ -2,12 +2,12 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useEffect, useMemo } from 'react'
 
-import useStore from '@dao/store/useStore'
-import { copyToClipboard } from '@dao/utils'
+import useStore from '@/dao/store/useStore'
+import { copyToClipboard } from '@/dao/utils'
 import { breakpoints } from '@ui/utils'
 
-import useProposalsMapper from '@dao/hooks/useProposalsMapper'
-import useProposalMapper from '@dao/hooks/useProposalMapper'
+import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
+import useProposalMapper from '@/dao/hooks/useProposalMapper'
 
 import IconButton from '@ui/IconButton'
 import Tooltip from '@ui/Tooltip'
@@ -19,12 +19,13 @@ import Voters from './Voters'
 import UserBox from '../UserBox'
 import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import ErrorMessage from '@dao/components/ErrorMessage'
-import { MetricsTitle } from '@dao/components/MetricsComp'
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import { MetricsTitle } from '@/dao/components/MetricsComp'
 import BackButton from '../BackButton'
 import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
-import { ProposalType } from '@dao/types/dao.types'
+import { ProposalType } from '@/dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type ProposalProps = {
   routerParams: {
@@ -34,7 +35,7 @@ type ProposalProps = {
 
 const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(
     (state) => state.proposals,
   )

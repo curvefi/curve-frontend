@@ -1,12 +1,10 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
-import type { ConnectState } from '@ui/utils'
-
+import type { State } from '@/dao/store/useStore'
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
-
 import { log } from '@ui-kit/lib'
-import { CurveApi, RouterProps, Wallet } from '@dao/types/dao.types'
+import { CurveApi, RouterProps, Wallet } from '@/dao/types/dao.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -19,8 +17,8 @@ export type LayoutHeight = {
 }
 
 type SliceState = {
-  connectState: ConnectState
   curve: CurveApi | null
+  connectState: ConnectState
   isLoadingApi: boolean
   isLoadingCurve: boolean
   isMobile: boolean
@@ -33,27 +31,25 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean): void
+  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
+  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
+  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>): void
+  resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
 const DEFAULT_STATE = {
-  connectState: { status: '', stage: '' } as ConnectState,
   curve: null,
   isMobile: false,
   isLoadingApi: false,
   isLoadingCurve: true,
   isPageVisible: true,
   loaded: false,
-  pageWidth: null,
   layoutHeight: {
     globalAlert: 0,
     mainNav: 0,
@@ -62,18 +58,14 @@ const DEFAULT_STATE = {
   },
   routerProps: null,
   showScrollButton: false,
-}
+  connectState: { status: '', stage: '' },
+} satisfies SliceState
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateConnectState: (
-    status: ConnectState['status'],
-    stage: ConnectState['stage'],
-    options?: ConnectState['options'],
-  ) => {
-    const value = options ? { status, stage, options } : { status, stage }
-    get().updateGlobalStoreByKey('connectState', value)
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
+    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
@@ -134,7 +126,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     )
   },
 
-  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T) => {
     set(
       produce((state) => {
         const storedValues = state[sliceKey][key]
@@ -142,46 +134,33 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {
-            if (showLog) {
-              log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
-            }
             state[sliceKey][key] = parsedValue
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {
-            if (showLog) {
-              log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
-            }
             state[sliceKey][key] = parsedValue
           }
         }
       }),
     )
   },
-  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T) => {
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
         if (!isEqual(storedValue, value)) {
-          if (showLog) {
-            log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
-          }
           state[sliceKey][key] = value
         }
       }),
     )
   },
-  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T) => {
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
         produce((state) => {
-          const storedValue = state[sliceKey][key]
-          if (!isEqual(storedValue, value)) {
-            if (showLog) {
-              log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
-            }
+          if (!isEqual(state[sliceKey][key], value)) {
             state[sliceKey][key] = value
           }
         }),

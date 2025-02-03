@@ -1,8 +1,8 @@
-import type { TokenState } from '@main/components/PageCreatePool/types'
+import type { TokenState } from '@/dex/components/PageCreatePool/types'
 import { t } from '@lingui/macro'
-import { shortenTokenAddress } from '@main/utils'
+import { shortenTokenAddress } from '@/dex/utils'
 import styled from 'styled-components'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import Icon from '@ui/Icon'
 import {
   CategoryDataRow,
@@ -11,8 +11,8 @@ import {
   SummaryData,
   SummaryDataPlaceholder,
   AddressLink,
-} from '@main/components/PageCreatePool/Summary/styles'
-import { ChainId } from '@main/types/main.types'
+} from '@/dex/components/PageCreatePool/Summary/styles'
+import { ChainId } from '@/dex/types/main.types'
 
 type Props = {
   chainId: ChainId

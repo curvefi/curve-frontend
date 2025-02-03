@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
 
-import AdvancedSettings from '@lend/components/AdvancedSettings'
+import AdvancedSettings from '@/lend/components/AdvancedSettings'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 

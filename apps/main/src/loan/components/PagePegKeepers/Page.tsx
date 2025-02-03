@@ -1,21 +1,20 @@
 import type { NextPage } from 'next'
-
 import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@loan/utils/helpers'
-import usePageOnMount from '@loan/hooks/usePageOnMount'
-import useStore from '@loan/store/useStore'
-
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import Box from '@ui/Box'
-import ConnectWallet from '@loan/components/ConnectWallet'
-import DocumentHead from '@loan/layout/DocumentHead'
+import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
+import DocumentHead from '@/loan/layout/DocumentHead'
 import ExternalLink from '@ui/Link/ExternalLink'
-import Settings from '@loan/layout/Settings'
-import PagePegKeepers from '@loan/components/PagePegKeepers'
+import Settings from '@/loan/layout/Settings'
+import PagePegKeepers from '@/loan/components/PagePegKeepers'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import useStore from '@/loan/store/useStore'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -24,7 +23,9 @@ const Page: NextPage = () => {
   const { routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
 
   useEffect(() => {
     scrollToTop()
@@ -49,10 +50,12 @@ const Page: NextPage = () => {
           ) : (
             <Box display="flex" fillWidth>
               <ConnectWalletWrapper>
-                <ConnectWallet
+                <ConnectWalletPrompt
                   description="Connect wallet to view markets list"
                   connectText="Connect Wallet"
                   loadingText="Connecting"
+                  connectWallet={() => connectWallet()}
+                  isLoading={isLoading(connectState)}
                 />
               </ConnectWalletWrapper>
             </Box>

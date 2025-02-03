@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import type {
   FetchingStatus,
   LpLiquidityEventsApiResponse,
@@ -26,11 +26,11 @@ import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
 
-import { INVALID_ADDRESS } from '@main/constants'
-import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@main/utils'
+import { INVALID_ADDRESS } from '@/dex/constants'
+import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
 import { log } from '@ui-kit/lib/logging'
 import { convertToLocaleTimestamp } from '@ui/Chart/utils'
-import curvejsApi from '@main/lib/curvejs'
+import curvejsApi from '@/dex/lib/curvejs'
 import {
   CurveApi,
   ChainId,
@@ -50,7 +50,7 @@ import {
   PoolDataCacheMapper,
   TvlMapper,
   VolumeMapper,
-} from '@main/types/main.types'
+} from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -329,6 +329,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     },
     fetchBasePools: async (curve: CurveApi) => {
       const chainId = curve.chainId
+      if (curve.isNoRPC) return
       set(
         produce((state: State) => {
           state.pools.basePoolsLoading = true

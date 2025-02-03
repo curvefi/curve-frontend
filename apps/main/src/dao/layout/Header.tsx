@@ -1,24 +1,24 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE } from '@dao/constants'
-import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@dao/utils/utilsRouter'
+import { CONNECT_STAGE } from '@/dao/constants'
+import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { _parseRouteAndIsActive, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
-import networks, { visibleNetworksList } from '@dao/networks'
-import useLayoutHeight from '@dao/hooks/useLayoutHeight'
-import useStore from '@dao/store/useStore'
+import networks, { visibleNetworksList } from '@/dao/networks'
+import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
+import useStore from '@/dao/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@dao/types/dao.types'
+import { ChainId } from '@/dao/types/dao.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

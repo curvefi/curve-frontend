@@ -1,17 +1,17 @@
-import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@main/components/PagePoolList/types'
+import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/dex/components/PagePoolList/types'
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 import { breakpoints } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import SearchListInput from '@ui/SearchInput/SearchListInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
-import TableCheckboxHideSmallPools from '@main/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
-import { ChainId, PoolData } from '@main/types/main.types'
+import TableCheckboxHideSmallPools from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
+import { ChainId, PoolData } from '@/dex/types/main.types'
 
 type Props = {
   isReady: boolean
@@ -84,6 +84,7 @@ const TableSettings = ({
           searchText={searchParams.searchText}
           handleInputChange={(val) => updatePath({ searchText: val })}
           handleClose={() => updatePath({ searchText: '' })}
+          testId="search-pools"
         />
       </div>
 

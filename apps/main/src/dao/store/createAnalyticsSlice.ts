@@ -1,10 +1,10 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
+import type { State } from '@/dao/store/useStore'
 
 import produce from 'immer'
 import { formatUnits, formatEther, Contract } from 'ethers'
-import { contractVeCRV, contractCrv } from '@dao/store/contracts'
-import { abiVeCrv } from '@dao/store/abis'
+import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
+import { abiVeCrv } from '@/dao/store/abis'
 import { convertToLocaleTimestamp, formatDateFromTimestamp } from 'ui/src/utils'
 import {
   VeCrvFeeRes,
@@ -17,7 +17,8 @@ import {
   FetchingState,
   TopHoldersSortBy,
   AllHoldersSortBy,
-} from '@dao/types/dao.types'
+} from '@/dao/types/dao.types'
+import type { ContractRunner } from 'ethers/lib.commonjs/providers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -67,7 +68,7 @@ export type AnalyticsSlice = {
     getVeCrvHolders(): Promise<void>
     setTopHoldersSortBy(sortBy: TopHoldersSortBy): void
     setAllHoldersSortBy(sortBy: AllHoldersSortBy): void
-    getVeCrvData(provider: any): Promise<void>
+    getVeCrvData(provider: ContractRunner): Promise<void>
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -308,7 +309,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
         )
       }
     },
-    getVeCrvData: async (provider: any) => {
+    getVeCrvData: async (provider) => {
       get()[sliceKey].setStateByKey('veCrvData', {
         totalVeCrv: 0,
         totalLockedCrv: 0,

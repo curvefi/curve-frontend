@@ -1,12 +1,14 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormDetailInfo, FormStatus, FormValues } from '@loan/components/PageLoanManage/LoanSwap/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanSwap/types'
 
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@loan/components/PageLoanManage/utils'
-import networks from '@loan/networks'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
+import networks from '@/loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
-import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -237,33 +239,30 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const approveFn = networks[chainId].api.swap.approve
+      const resp = await approveFn(activeKey, provider, llamma, formValues)
+      if (activeKey === get()[sliceKey].activeKey) {
         get()[sliceKey].setStateByKey('formStatus', {
           ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'APPROVAL',
+          isApproved: !resp.error,
+          step: '',
+          formProcessing: !resp.error,
+          error: resp.error,
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const approveFn = networks[chainId].api.swap.approve
-        const resp = await approveFn(activeKey, provider, llamma, formValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, formValues.item1, maxSlippage)
 
-        if (activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKey('formStatus', {
-            ...get()[sliceKey].formStatus,
-            isApproved: !resp.error,
-            step: '',
-            formProcessing: !resp.error,
-            error: resp.error,
-          })
-
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, formValues.item1, maxSlippage)
-
-          return resp
-        }
+        return resp
       }
     },
     fetchStepSwap: async (
@@ -273,51 +272,48 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'SWAP',
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'SWAP',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const swapFn = networks[chainId].api.swap.swap
+      const resp = await swapFn(activeKey, provider, llamma, formValues, maxSlippage)
+      if (activeKey === get()[sliceKey].activeKey) {
+        // re-fetch loan info
+        get().loans.fetchLoanDetails(curve, llamma)
+
+        // reset form
+        const updatedFormValues = {
+          ...DEFAULT_FORM_VALUES,
+          item1Key: formValues.item1Key,
+          item2Key: formValues.item2Key,
+        }
+
+        // re-fetch max
+        get()[sliceKey].fetchMaxSwappable(chainId, llamma, updatedFormValues)
+
+        get()[sliceKey].setStateByKeys({
+          activeKey: getSwapActiveKey(llamma, updatedFormValues),
+          detailInfo: {},
+          formEstGas: {},
+          formValues: updatedFormValues,
+          formStatus: {
+            ...get()[sliceKey].formStatus,
+            error: resp.error,
+            isInProgress: false,
+            isComplete: !resp.error,
+            step: '',
+          },
+          maxSwappable: {},
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const swapFn = networks[chainId].api.swap.swap
-        const resp = await swapFn(activeKey, provider, llamma, formValues, maxSlippage)
-
-        if (activeKey === get()[sliceKey].activeKey) {
-          // re-fetch loan info
-          get().loans.fetchLoanDetails(curve, llamma)
-
-          // reset form
-          const updatedFormValues = {
-            ...DEFAULT_FORM_VALUES,
-            item1Key: formValues.item1Key,
-            item2Key: formValues.item2Key,
-          }
-
-          // re-fetch max
-          get()[sliceKey].fetchMaxSwappable(chainId, llamma, updatedFormValues)
-
-          get()[sliceKey].setStateByKeys({
-            activeKey: getSwapActiveKey(llamma, updatedFormValues),
-            detailInfo: {},
-            formEstGas: {},
-            formValues: updatedFormValues,
-            formStatus: {
-              ...get()[sliceKey].formStatus,
-              error: resp.error,
-              isInProgress: false,
-              isComplete: !resp.error,
-              step: '',
-            },
-            maxSwappable: {},
-          })
-
-          return resp
-        }
+        return resp
       }
     },
 

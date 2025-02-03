@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import type {
   FormEstGas,
   FormStatus,
@@ -7,19 +7,21 @@ import type {
   RoutesAndOutput,
   RoutesAndOutputModal,
   SearchedParams,
-} from '@main/components/PageRouterSwap/types'
+} from '@/dex/components/PageRouterSwap/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import orderBy from 'lodash/orderBy'
 
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@main/components/PageRouterSwap/utils'
-import { NETWORK_TOKEN } from '@main/constants'
-import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@main/utils/utilsSwap'
-import { getChainSignerActiveKey, sleep } from '@main/utils'
-import curvejsApi from '@main/lib/curvejs'
-import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@main/types/main.types'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/dex/components/PageRouterSwap/utils'
+import { NETWORK_TOKEN } from '@/dex/constants'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import { getChainSignerActiveKey, sleep } from '@/dex/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -425,9 +427,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const provider = state.wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       sliceState.setStateByKey('formStatus', {
         ...sliceState.formStatus,
@@ -468,9 +469,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const provider = state.wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,

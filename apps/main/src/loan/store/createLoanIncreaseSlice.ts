@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormStatus, FormValues } from '@loan/components/PageLoanManage/LoanIncrease/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -9,10 +9,12 @@ import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@loan/components/PageLoanManage/utils'
-import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
-import networks from '@loan/networks'
-import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
+} from '@/loan/components/PageLoanManage/utils'
+import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import networks from '@/loan/networks'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -176,7 +178,8 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
 
     // steps
     fetchStepApprove: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,
@@ -184,70 +187,64 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
         step: 'APPROVAL',
       })
 
-      if (provider) {
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const { collateral } = formValues
-        const approveFn = networks[chainId].api.loanIncrease.approve
-        const resp = await approveFn(activeKey, provider, llamma, collateral)
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const { collateral } = formValues
+      const approveFn = networks[chainId].api.loanIncrease.approve
+      const resp = await approveFn(activeKey, provider, llamma, collateral)
+      if (activeKey === get()[sliceKey].activeKey) {
+        get()[sliceKey].setStateByKey('formStatus', {
+          ...get()[sliceKey].formStatus,
+          isApproved: !resp.error,
+          step: '',
+          formProcessing: !resp.error,
+          error: resp.error,
+        })
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
 
-        if (activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKey('formStatus', {
-            ...get()[sliceKey].formStatus,
-            isApproved: !resp.error,
-            step: '',
-            formProcessing: !resp.error,
-            error: resp.error,
-          })
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
-
-          return resp
-        }
+        return resp
       }
     },
     fetchStepIncrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'BORROW',
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'BORROW',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const { collateral, debt } = formValues
+      const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
+
+      // re-fetch max
+      const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
+      get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
+
+      // re-fetch loan info
+      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+      if (!loanExists.loanExists) {
+        get().loans.resetUserDetailsState(llamma)
+      }
+
+      if (activeKey === get()[sliceKey].activeKey) {
+        get()[sliceKey].setStateByKeys({
+          detailInfo: {},
+          formEstGas: {},
+          maxRecv: {},
+          formStatus: {
+            ...get()[sliceKey].formStatus,
+            error: resp.error,
+            isInProgress: false,
+            isComplete: !resp.error,
+            step: '',
+          },
+          formValues: DEFAULT_FORM_VALUES,
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const { collateral, debt } = formValues
-        const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
-        const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
-
-        // re-fetch max
-        get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
-
-        // re-fetch loan info
-        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-        if (!loanExists.loanExists) {
-          get().loans.resetUserDetailsState(llamma)
-        }
-
-        if (activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKeys({
-            detailInfo: {},
-            formEstGas: {},
-            maxRecv: {},
-            formStatus: {
-              ...get()[sliceKey].formStatus,
-              error: resp.error,
-              isInProgress: false,
-              isComplete: !resp.error,
-              step: '',
-            },
-            formValues: DEFAULT_FORM_VALUES,
-          })
-
-          return resp
-        }
+        return resp
       }
     },
 

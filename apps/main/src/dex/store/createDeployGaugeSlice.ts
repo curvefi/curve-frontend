@@ -1,12 +1,13 @@
-import type { DeploymentType, GaugeType } from '@main/components/PageDeployGauge/types'
+import type { DeploymentType, GaugeType } from '@/dex/components/PageDeployGauge/types'
 import type { ContractTransactionResponse } from 'ethers'
-import type { PoolType, PoolTypes } from '@main/components/PageDeployGauge/types'
+import type { PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import produce from 'immer'
 import { t } from '@lingui/macro'
-import { shortenTokenAddress } from '@main/utils'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { shortenTokenAddress } from '@/dex/utils'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type NetworkWithFactory = {
   chainId: ChainId
@@ -181,7 +182,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       const { poolAddress, lpTokenAddress, sidechainGauge, currentSidechain } = get().deployGauge
       const chainId = curve.chainId
       const fetchGasInfo = get().gas.fetchGasInfo
-      const notifyNotification = get().wallet.notifyNotification
+      const { notify: notifyNotification } = useWalletStore.getState()
       const tokenAddress = sidechainGauge ? lpTokenAddress : poolAddress
       const shortenAddress = shortenTokenAddress(tokenAddress)
 

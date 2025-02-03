@@ -7,7 +7,7 @@ import type { WalletState } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import { TITLE } from '@lend/constants'
+import { TITLE } from '@/lend/constants'
 import { ethers } from 'ethers'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'

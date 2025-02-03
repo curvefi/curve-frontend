@@ -9,7 +9,8 @@ export type HeaderStatsProps = {
 export const HeaderStats: FunctionComponent<HeaderStatsProps> = ({ appStats }) =>
   appStats?.map(({ label, value }) => (
     <Box key={label} display="inline-flex" alignItems="baseline">
-      <Typography variant="bodyMRegular" color="grey.600">
+      {/* add ellipsis*/}
+      <Typography variant="bodyMRegular" color="grey.600" sx={{ whiteSpace: 'nowrap' }}>
         {label}:
       </Typography>
       &nbsp;

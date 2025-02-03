@@ -3,13 +3,12 @@ import { LiqudityDataProps } from './types'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import networks from '@loan/networks'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import { getImageBaseUrl } from '@loan/utils/utilsCurvejs'
-import { convertFullTime, convertTime, convertTimeAgo } from '@loan/components/ChartOhlcWrapper/utils'
+import networks from '@/loan/networks'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 
 import Box from '@ui/Box'
-import TokenIcon from '@loan/components/TokenIcon'
+import TokenIcon from '@/loan/components/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
@@ -88,7 +87,9 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
             )}
           </LiquidityEvent>
           <TimestampColumn>
-            <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+            <Tooltip
+              tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
+            >
               {convertTimeAgo(transaction.timestamp)}
             </Tooltip>
           </TimestampColumn>

@@ -1,5 +1,5 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
+import type { State } from '@/lend/store/useStore'
 import type {
   FilterTypeKey,
   FormStatus,
@@ -7,22 +7,22 @@ import type {
   SearchParams,
   SearchTermResult,
   TableSettings,
-} from '@lend/components/PageMarketList/types'
+} from '@/lend/components/PageMarketList/types'
 
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
 import uniqBy from 'lodash/uniqBy'
 
-import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@lend/components/PageMarketList/utils'
-import { SEARCH_TERM } from '@lend/hooks/useSearchTermMapper'
-import { TITLE } from '@lend/constants'
-import { getTotalApr } from '@lend/utils/utilsRewards'
-import { helpers } from '@lend/lib/apiLending'
+import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/lend/components/PageMarketList/utils'
+import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
+import { TITLE } from '@/lend/constants'
+import { getTotalApr } from '@/lend/utils/utilsRewards'
+import { helpers } from '@/lend/lib/apiLending'
 import { searchByText } from '@ui-kit/utils'
-import { sleep } from '@lend/utils/helpers'
-import networks from '@lend/networks'
-import { getTokenUsdRateQueryData } from '@lend/entities/token'
+import { sleep } from '@/lend/utils/helpers'
+import networks from '@/lend/networks'
+import { getTokenUsdRateQueryData } from '@/lend/entities/token'
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { logQuery, logSuccess } from '@ui-kit/lib'
@@ -35,7 +35,7 @@ import {
   MarketsRewardsMapper,
   Order,
   TitleKey,
-} from '@lend/types/lend.types'
+} from '@/lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -422,7 +422,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? Object.values(marketMapping) : cMarkets, shouldRefetch)),
       )
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
-      logSuccess(['market-list-slice', 'setFormValues'], sorted.result)
+      logSuccess(['market-list-slice', 'setFormValues'], sorted.result.length)
     },
 
     // slice helpers

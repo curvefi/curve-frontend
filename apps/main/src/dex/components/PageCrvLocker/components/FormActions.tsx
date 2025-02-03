@@ -1,25 +1,23 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import { t } from '@lingui/macro'
-
-import useStore from '@main/store/useStore'
-
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
+import useStore from '@/dex/store/useStore'
 
 const FormActions = ({
   haveSigner,
   loading,
   children,
-}: React.PropsWithChildren<{
+}: {
   haveSigner: boolean
   loading: boolean
-}>) => {
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-
+  children?: ReactNode | undefined
+}) => {
+  const connectWallet = useStore((s) => s.updateConnectState)
   return (
     <>
       {!haveSigner && !loading ? (
-        <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
+        <Button fillWidth size="large" variant="filled" onClick={() => connectWallet()}>
           {t`Connect Wallet`}
         </Button>
       ) : loading ? (

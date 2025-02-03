@@ -7,8 +7,8 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { Chip } from '@ui/Typography'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Icon from '@ui/Icon'
-import ChipInactive from '@main/components/ChipInactive'
-import { RewardsApy, PoolData, PoolDataCache } from '@main/types/main.types'
+import ChipInactive from '@/dex/components/ChipInactive'
+import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 const PoolRewardsCrv = ({
   isHighlight,

@@ -1,10 +1,9 @@
 import { t } from '@lingui/macro'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api } from '@lend/types/lend.types'
+import { Api } from '@/lend/types/lend.types'
 
 export * from './utilsGasPrices'
 export * from './utilsRouter'
-export * from './utilsStorage'
 
 interface CustomError extends Error {
   data?: { message: string }

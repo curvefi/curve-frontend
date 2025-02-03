@@ -1,28 +1,28 @@
-import type { FormStatus } from '@lend/components/PageVault/VaultClaim/types'
+import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 import type { Step } from '@ui/Stepper/types'
-import type { RewardType } from '@lend/components/PageVault/VaultClaim/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
-import useStore from '@lend/store/useStore'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
+import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Spinner from '@ui/Spinner'
 import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import Stats from '@ui/Stats'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, PageContentProps, MarketClaimable } from '@lend/types/lend.types'
+import { Api, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -30,7 +30,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const formStatus = useStore((state) => state.vaultClaim.formStatus)
   const claimable = useStore((state) => state.vaultClaim.claimable[userActiveKey])
   const fetchStepClaim = useStore((state) => state.vaultClaim.fetchStepClaim)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultClaim.setFormValues)
   const resetState = useStore((state) => state.vaultClaim.resetState)
 

@@ -1,16 +1,18 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
-import type { FormStatus } from '@lend/components/PageLoanManage/LoanSelfLiquidation/types'
+import type { State } from '@/lend/store/useStore'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
+import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { FormWarning } from '@lend/components/AlertFormWarning'
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@lend/components/PageLoanManage/utils'
-import apiLending from '@lend/lib/apiLending'
+import { FormWarning } from '@/lend/components/AlertFormWarning'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import apiLending from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, FutureRates } from '@lend/types/lend.types'
+import { Api, FutureRates } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -129,11 +131,11 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
     // step
     fetchStepApprove: async (api, market, maxSlippage) => {
-      const { gas, wallet } = get()
+      const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
 
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
@@ -155,11 +157,11 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       }
     },
     fetchStepLiquidate: async (api, market, liquidationAmt, maxSlippage) => {
-      const { gas, markets, wallet, user } = get()
+      const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
 
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {

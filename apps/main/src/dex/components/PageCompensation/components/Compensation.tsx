@@ -1,20 +1,21 @@
-import type { EtherContract } from '@main/components/PageCompensation/types'
+import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useState } from 'react'
 import numbro from 'numbro'
 import styled from 'styled-components'
-import { copyToClipboard } from '@main/lib/utils'
-import { getErrorMessage, shortenTokenAddress } from '@main/utils'
-import curvejsApi from '@main/lib/curvejs'
-import useStore from '@main/store/useStore'
-import { StyledIconButton } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
-import AlertFormError from '@main/components/AlertFormError'
+import { copyToClipboard } from '@/dex/lib/utils'
+import { getErrorMessage, shortenTokenAddress } from '@/dex/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import useStore from '@/dex/store/useStore'
+import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import AlertFormError from '@/dex/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, ChainId, Provider } from '@main/types/main.types'
+import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const Compensation = ({
   rChainId,
@@ -39,7 +40,7 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const networks = useStore((state) => state.networks.networks)
 

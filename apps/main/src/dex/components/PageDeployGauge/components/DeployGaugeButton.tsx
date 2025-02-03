@@ -1,23 +1,23 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE } from '@main/constants'
-import useStore from '@main/store/useStore'
-import { curveProps } from '@main/lib/utils'
-import { useNetworkFromUrl } from '@main/utils/utilsRouter'
-import { shortenTokenAddress } from '@main/utils'
+import { CONNECT_STAGE } from '@/dex/constants'
+import useStore from '@/dex/store/useStore'
+import { curveProps } from '@/dex/lib/utils'
+import { useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { shortenTokenAddress } from '@/dex/utils'
 import {
-  TWOCOINCRYPTOSWAP,
-  TWOCOINCRYPTOSWAPNG,
-  THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
-} from '@main/components/PageDeployGauge/constants'
+  THREECOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAPNG,
+} from '@/dex/components/PageDeployGauge/constants'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
-import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
 
 interface Props {
   disabled: boolean
@@ -35,7 +35,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
     (state) => state.deployGauge,
   )
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
+  const connectWallet = useStore((s) => s.updateConnectState)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
@@ -88,7 +88,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
         </StyledSpinnerWrapper>
       ) // no signer
     ) : !haveSigner ? (
-      <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
+      <StyledButton variant="filled" onClick={() => connectWallet()}>
         {t`Connect Wallet`}
       </StyledButton>
     ) : (
@@ -169,7 +169,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
       </StyledSpinnerWrapper>
     )
   ) : !haveSigner ? (
-    <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
+    <StyledButton variant="filled" onClick={() => connectWallet()}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (

@@ -1,15 +1,15 @@
 import Grid from '@mui/material/Grid2'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import React, { useMemo } from 'react'
-import { LendingVault } from '@loan/entities/vaults'
 import { capitalize } from 'lodash'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import Typography from '@mui/material/Typography'
 import { t } from '@lingui/macro'
-import { MultiSelectFilter } from '@loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
+import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { formatNumber, getImageBaseUrl } from '@ui/utils'
 import TokenIcon from '../TokenIcon'
-import { MinimumSliderFilter } from '@loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 
@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
  * Displays a token with its icon and symbol.
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
-const Token = ({ symbol, data, field }: { symbol: string; data: LendingVault[]; field: 'collateral' | 'borrowed' }) => {
+const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; field: 'collateral' | 'borrowed' }) => {
   const { blockchainId, address } = useMemo(
     () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
     [data, field, symbol],
@@ -40,7 +40,7 @@ export const LendingMarketsFilters = ({
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
-  data: LendingVault[]
+  data: LlamaMarket[]
 }) => (
   <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
     <Grid size={{ mobile: 12, tablet: 4 }}>

@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { ROUTE } from '@main/constants'
+import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils'
-import { getPath } from '@main/utils/utilsRouter'
-import { shortenTokenAddress } from '@main/utils'
-import useStore from '@main/store/useStore'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { shortenTokenAddress } from '@/dex/utils'
+import useStore from '@/dex/store/useStore'
 
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import Box from '@ui/Box'
-import PoolAlertCustomMessage from '@main/components/PoolAlertCustomMessage'
-import { PoolAlert } from '@main/types/main.types'
+import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
+import { PoolAlert } from '@/dex/types/main.types'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
   const params = useStore((state) => state.routerProps?.params)
@@ -206,6 +206,8 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+      // sonic
+      '0x38dd6b3c096c8cbe649fa0039cc144f333be8e61': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x38dd6b3c096c8cbe649fa0039cc144f333be8e61&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x38dd6b3c096c8cbe649fa0039cc144f333be8e61&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0x11cdb42b0eb46d95f990bedd4695a6e3fa034978&outputChainId=13&outputToken=0xd533a949740bb3306d119cc777fa900ba034cd52' }]), // CrossCurve xCRV
     }
 
     if (poolAddress) {

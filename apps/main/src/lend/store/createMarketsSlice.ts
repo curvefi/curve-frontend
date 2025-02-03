@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
-import { getErrorMessage } from '@lend/utils/helpers'
-import apiLending from '@lend/lib/apiLending'
+import type { State } from '@/lend/store/useStore'
+import { getErrorMessage } from '@/lend/utils/helpers'
+import apiLending from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   ChainId,
@@ -18,7 +18,7 @@ import {
   MarketsTotalCollateralValueMapper,
   MarketsRewardsMapper,
   MarketDetailsView,
-} from '@lend/types/lend.types'
+} from '@/lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,27 +1,27 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE } from '@lend/constants'
-import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@lend/utils/utilsRouter'
+import { CONNECT_STAGE } from '@/lend/constants'
+import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
-import networks, { visibleNetworksList } from '@lend/networks'
-import useStore from '@lend/store/useStore'
-import { useTvl } from '@lend/entities/chain'
+import networks, { visibleNetworksList } from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
+import { useTvl } from '@/lend/entities/chain'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/material/styles'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId } from '@lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useConnectWallet()
   const navigate = useNavigate()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

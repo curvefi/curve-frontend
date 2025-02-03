@@ -1,9 +1,9 @@
-import type { EstimatedGas as FormEstGas } from '@main/components/PagePool/types'
-import type { ExchangeOutput, FormStatus, FormValues } from '@main/components/PagePool/Swap/types'
+import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
+import type { ExchangeOutput, FormStatus, FormValues } from '@/dex/components/PagePool/Swap/types'
 
 import sortBy from 'lodash/sortBy'
 import cloneDeep from 'lodash/cloneDeep'
-import { Token, TokensMapper, PoolDataCacheOrApi } from '@main/types/main.types'
+import { Token, TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 export const DEFAULT_EST_GAS: FormEstGas = {
   estimatedGas: 0,

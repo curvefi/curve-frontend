@@ -1,5 +1,5 @@
 import type { IDict, IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
-import type { SearchParams as PoolListSearchParams } from '@main/components/PagePoolList/types'
+import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'

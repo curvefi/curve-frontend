@@ -274,6 +274,7 @@ export const SizesAndSpaces = {
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
     footer: '96rem', // 1536px
+    connectWallet: '50rem', // 800px
     statistics: '59.5rem', // 952px - "statistics" might not be the best name
   },
   MaxHeight: {

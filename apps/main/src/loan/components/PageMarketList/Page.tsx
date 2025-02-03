@@ -1,27 +1,25 @@
 import type { NextPage } from 'next'
-import type { SearchParams } from '@loan/components/PageMarketList/types'
-
+import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { t } from '@lingui/macro'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-
-import { DEFAULT_SEARCH_PARAMS } from '@loan/components/PageMarketList/utils'
-import { ROUTE, TITLE } from '@loan/constants'
+import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
+import { ROUTE, TITLE } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
-import { getPath } from '@loan/utils/utilsRouter'
-import { scrollToTop } from '@loan/utils/helpers'
-import usePageOnMount from '@loan/hooks/usePageOnMount'
-import useSearchTermMapper from '@loan/hooks/useSearchTermMapper'
-import useTitleMapper from '@loan/hooks/useTitleMapper'
-import useStore from '@loan/store/useStore'
-
-import DocumentHead from '@loan/layout/DocumentHead'
-import CollateralList from '@loan/components/PageMarketList/index'
-import Settings from '@loan/layout/Settings'
-import TableStats from '@loan/components/PageMarketList/components/TableStats'
-import ConnectWallet from '@loan/components/ConnectWallet'
+import { getPath } from '@/loan/utils/utilsRouter'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
+import useTitleMapper from '@/loan/hooks/useTitleMapper'
+import useStore from '@/loan/store/useStore'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import CollateralList from '@/loan/components/PageMarketList/index'
+import Settings from '@/loan/layout/Settings'
+import TableStats from '@/loan/components/PageMarketList/components/TableStats'
+import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
+import { isLoading } from '@ui/utils'
 
 enum SEARCH {
   sortBy = 'sortBy',
@@ -38,10 +36,12 @@ const Page: NextPage = () => {
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
 
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)
@@ -111,10 +111,12 @@ const Page: NextPage = () => {
       ) : (
         <Box display="flex" fillWidth>
           <ConnectWalletWrapper>
-            <ConnectWallet
+            <ConnectWalletPrompt
               description="Connect wallet to view markets list"
               connectText="Connect Wallet"
               loadingText="Connecting"
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>
         </Box>

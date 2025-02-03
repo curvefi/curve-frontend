@@ -1,14 +1,14 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import useStore from '@main/store/useStore'
-import { curveProps } from '@main/lib/utils'
+import useStore from '@/dex/store/useStore'
+import { curveProps } from '@/dex/lib/utils'
 
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'
-import InfoLinkBar from '@main/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { CurveApi } from '@main/types/main.types'
+import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { CurveApi } from '@/dex/types/main.types'
 
 interface Props {
   disabled: boolean
@@ -18,17 +18,12 @@ interface Props {
 const CreatePoolButton = ({ disabled, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
-
   const deployPool = useStore((state) => state.createPool.deployPool)
   const { txStatus, txSuccess, txLink, poolId, errorMessage } = useStore((state) => state.createPool.transactionState)
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-
-  const handleClick = async () => {
-    deployPool(curve)
-  }
+  const connectWallet = useStore((s) => s.updateConnectState)
 
   return !haveSigner ? (
-    <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
+    <StyledButton variant="filled" onClick={() => connectWallet()}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (
@@ -40,7 +35,7 @@ const CreatePoolButton = ({ disabled, curve }: Props) => {
         </StyledAlertBox>
       )}
       {(txStatus === '' || txStatus === 'ERROR') && (
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => deployPool(curve)}>
           {t`Create Pool`}
         </StyledButton>
       )}

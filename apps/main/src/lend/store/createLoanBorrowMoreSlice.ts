@@ -1,24 +1,26 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@lend/components/PageLoanManage/types'
+import type { State } from '@/lend/store/useStore'
+import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
   FormValues,
-} from '@lend/components/PageLoanManage/LoanBorrowMore/types'
+} from '@/lend/components/PageLoanManage/LoanBorrowMore/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import { DEFAULT_FORM_EST_GAS } from '@lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   _parseValues,
-} from '@lend/components/PageLoanManage/LoanBorrowMore/utils'
-import { _parseActiveKey } from '@lend/utils/helpers'
-import apiLending, { helpers } from '@lend/lib/apiLending'
+} from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
+import { _parseActiveKey } from '@/lend/utils/helpers'
+import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api } from '@lend/types/lend.types'
+import { ChainId, Api } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -238,11 +240,10 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
 
     // steps
     fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
-      const { gas, wallet } = get()
+      const { gas } = get()
       const sliceState = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
@@ -272,11 +273,11 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       }
     },
     fetchStepIncrease: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
-      const { gas, markets, wallet, user } = get()
+      const { gas, markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
 
-      if (!provider) return
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // loading
       sliceState.setStateByKey('formStatus', {

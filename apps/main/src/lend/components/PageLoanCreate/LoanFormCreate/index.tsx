@@ -1,41 +1,42 @@
-import type { FormEstGas, FormStatus, FormValues, StepKey } from '@lend/components/PageLoanCreate/types'
+import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@lend/components/PageLoanManage/utils'
-import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@lend/constants'
+import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
 import { formatNumber } from '@ui/utils'
-import { getLoanManagePathname } from '@lend/utils/utilsRouter'
-import { helpers } from '@lend/lib/apiLending'
-import { _parseValue, DEFAULT_FORM_VALUES } from '@lend/components/PageLoanCreate/utils'
+import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import { helpers } from '@/lend/lib/apiLending'
+import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { useNavigate, useParams } from 'react-router-dom'
-import networks from '@lend/networks'
-import useMarketAlert from '@lend/hooks/useMarketAlert'
+import networks from '@/lend/networks'
+import useMarketAlert from '@/lend/hooks/useMarketAlert'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
-import { FieldsWrapper } from '@lend/components/SharedFormStyles/FieldsWrapper'
+import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
-import AlertLoanSummary from '@lend/components/AlertLoanSummary'
-import AlertFormError from '@lend/components/AlertFormError'
+import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
+import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import DetailInfo from '@lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
-import DialogFormWarning from '@lend/components/DialogFormWarning'
-import InpToken from '@lend/components/InpToken'
-import InpTokenBorrow from '@lend/components/InpTokenBorrow'
+import DetailInfo from '@/lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
+import DialogFormWarning from '@/lend/components/DialogFormWarning'
+import InpToken from '@/lend/components/InpToken'
+import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
 import LinkButton from '@ui/LinkButton'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
-import MarketParameters from '@lend/components/DetailsMarket/components/MarketParameters'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
+import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import Stepper from '@ui/Stepper'
 import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, HealthMode } from '@lend/types/lend.types'
+import { Api, PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps
@@ -56,7 +57,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)

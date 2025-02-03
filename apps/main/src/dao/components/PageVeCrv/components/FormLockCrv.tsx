@@ -1,24 +1,25 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@dao/components/PageVeCrv/types'
+import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/dao/components/PageVeCrv/types'
 import type { Step } from '@ui/Stepper/types'
 
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_EST_GAS } from '@dao/components/PageVeCrv/utils'
-import { REFRESH_INTERVAL } from '@dao/constants'
+import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
+import { REFRESH_INTERVAL } from '@/dao/constants'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import networks from '@dao/networks'
-import usePageVisibleInterval from '@dao/hooks/usePageVisibleInterval'
-import useStore from '@dao/store/useStore'
+import networks from '@/dao/networks'
+import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
+import useStore from '@/dao/store/useStore'
 
-import AlertFormError from '@dao/components/AlertFormError'
-import FormActions from '@dao/components/PageVeCrv/components/FormActions'
-import DetailInfoEstGas from '@dao/components/DetailInfoEstGas'
-import FieldLockedAmt from '@dao/components/PageVeCrv/components/FieldLockedAmt'
+import AlertFormError from '@/dao/components/AlertFormError'
+import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
+import FieldLockedAmt from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi } from '@dao/types/dao.types'
+import { CurveApi } from '@/dao/types/dao.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -29,7 +30,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
   const formValues = useStore((state) => state.lockedCrv.formValues)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepIncreaseCrv = useStore((state) => state.lockedCrv.fetchStepIncreaseCrv)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)

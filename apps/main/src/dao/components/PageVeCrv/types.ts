@@ -1,5 +1,5 @@
 import { DateValue } from '@react-types/calendar'
-import { CurveApi, ChainId, EstimatedGas } from '@dao/types/dao.types'
+import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date'
 export type StepKey = 'APPROVE' | 'CREATE_LOCK' | 'INCREASE_CRV' | 'INCREASE_TIME' | 'APPROVAL' | 'WITHDRAW' | ''

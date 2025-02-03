@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import UserInformation from './UserInformation'
-import { SnapshotVotingPower, ActiveProposal } from '@dao/types/dao.types'
+import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 
 type Props = {
   children?: React.ReactNode
@@ -17,12 +17,7 @@ type Props = {
 }
 
 const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal, row }: Props) => {
-  const [{ wallet }, connect] = useConnectWallet()
-
-  const handleConnectWallet = async () => {
-    await connect()
-  }
-
+  const { wallet, connect } = useConnectWallet()
   return (
     <Wrapper className={className}>
       {wallet ? (
@@ -37,7 +32,7 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower, active
       ) : (
         <ConnectMessage>
           <p>{t`Please connect a wallet to see user information.`}</p>
-          <StyledButton variant="outlined" onClick={handleConnectWallet}>
+          <StyledButton variant="outlined" onClick={() => connect()}>
             {t`Connect Wallet`}
           </StyledButton>
         </ConnectMessage>

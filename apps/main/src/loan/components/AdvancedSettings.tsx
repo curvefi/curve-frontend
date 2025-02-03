@@ -5,9 +5,9 @@ import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { delayAction } from '@loan/utils/helpers'
+import { delayAction } from '@/loan/utils/helpers'
 import { formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import { Chip } from '@ui/Typography'
 import { Radio, RadioGroup } from '@ui/Radio'

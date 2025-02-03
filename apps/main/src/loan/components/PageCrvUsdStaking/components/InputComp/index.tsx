@@ -9,7 +9,7 @@ import Box from 'ui/src/Box'
 import Loader from '@ui/Loader'
 import Button from 'ui/src/Button'
 
-import NumberField from '@loan/components/PageCrvUsdStaking/components/InputComp/NumberField'
+import NumberField from '@/loan/components/PageCrvUsdStaking/components/InputComp/NumberField'
 
 type InputCompProps = {
   walletBalance: string

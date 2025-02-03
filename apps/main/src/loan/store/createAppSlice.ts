@@ -1,23 +1,23 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { ConnectState } from '@ui/utils'
+import type { State } from '@/loan/store/useStore'
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 
 import produce from 'immer'
 
 import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
-import { httpFetcher, log } from '@loan/utils/helpers'
+import { httpFetcher, log } from '@/loan/utils/helpers'
 import isEqual from 'lodash/isEqual'
-import networks from '@loan/networks'
-import { Curve, LendApi, RouterProps, Wallet } from '@loan/types/loan.types'
+import networks from '@/loan/networks'
+import { Curve, LendApi, RouterProps, Wallet } from '@/loan/types/loan.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  connectState: ConnectState
   curve: Curve | null
+  connectState: ConnectState
   lendApi: LendApi | null
   crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
   dailyVolume: number | null
@@ -35,7 +35,7 @@ export interface AppSlice extends SliceState {
   getContract(jsonModuleName: string, contractAddress: string, provider: ContractRunner): Promise<ethers.Contract | null>
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
   fetchDailyVolume(): Promise<void>
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
   updateLendApi(lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
@@ -47,8 +47,8 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  connectState: { status: '' as const, stage: '' },
   curve: null,
+  connectState: { status: '', stage: '' },
   lendApi: null,
   crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
   dailyVolume: null,
@@ -66,7 +66,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
   getContract: async (jsonModuleName, contractAddress, provider) => {
     try {
-      const abi = await import(`@loan/abis/${jsonModuleName}.json`).then((module) => module.default)
+      const abi = await import(`@/loan/abis/${jsonModuleName}.json`).then((module) => module.default)
 
       if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
 
@@ -92,13 +92,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       updateGlobalStoreByKey('dailyVolume', 'NaN')
     }
   },
-  updateConnectState: (
-    status: ConnectState['status'],
-    stage: ConnectState['stage'],
-    options?: ConnectState['options'],
-  ) => {
-    const value = options ? { status, stage, options } : { status, stage }
-    get().updateGlobalStoreByKey('connectState', value)
+  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
+    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
     const { gas, loans, usdRates, ...state } = get()

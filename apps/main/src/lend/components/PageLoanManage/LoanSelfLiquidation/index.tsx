@@ -1,5 +1,5 @@
-import type { FormStatus, StepKey } from '@lend/components/PageLoanManage/LoanSelfLiquidation/types'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
+import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -7,31 +7,32 @@ import { t, Trans } from '@lingui/macro'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { NOFITY_MESSAGE } from '@lend/constants'
-import { _showNoLoanFound } from '@lend/utils/helpers'
+import { NOFITY_MESSAGE } from '@/lend/constants'
+import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getCollateralListPathname } from '@lend/utils/utilsRouter'
+import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
-import { helpers } from '@lend/lib/apiLending'
-import useStore from '@lend/store/useStore'
-import networks from '@lend/networks'
+import { helpers } from '@/lend/lib/apiLending'
+import useStore from '@/lend/store/useStore'
+import networks from '@/lend/networks'
 
 import AlertBox from '@ui/AlertBox'
-import AlertFormWarning from '@lend/components/AlertFormWarning'
-import AlertFormError from '@lend/components/AlertFormError'
-import AlertNoLoanFound from '@lend/components/AlertNoLoanFound'
-import AlertSummary from '@lend/components/AlertLoanSummary'
-import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
-import DetailInfoSlippageTolerance from '@lend/components/DetailInfoSlippageTolerance'
-import DetailInfoRate from '@lend/components/DetailInfoRate'
+import AlertFormWarning from '@/lend/components/AlertFormWarning'
+import AlertFormError from '@/lend/components/AlertFormError'
+import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
+import AlertSummary from '@/lend/components/AlertLoanSummary'
+import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
+import DetailInfoSlippageTolerance from '@/lend/components/DetailInfoSlippageTolerance'
+import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import InputReadOnly from '@ui/InputReadOnly'
 import InternalLink from '@ui/Link/InternalLink'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, UserLoanState } from '@lend/types/lend.types'
+import { Api, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -47,7 +48,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
   const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)

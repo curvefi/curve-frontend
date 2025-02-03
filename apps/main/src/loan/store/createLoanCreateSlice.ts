@@ -1,9 +1,9 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@loan/components/PageLoanCreate/types'
-import type { LiqRange, LiqRangesMapper } from '@loan/store/types'
-import type { MaxRecvLeverage } from '@loan/components/PageLoanCreate/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/loan/components/PageLoanCreate/types'
+import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
+import type { MaxRecvLeverage } from '@/loan/components/PageLoanCreate/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -11,11 +11,13 @@ import {
   DEFAULT_DETAIL_INFO_LEVERAGE,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@loan/components/PageLoanCreate/utils'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
-import networks from '@loan/networks'
-import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
+} from '@/loan/components/PageLoanCreate/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import networks from '@/loan/networks'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -361,34 +363,31 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'APPROVAL',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const { collateral } = formValues
+      const approveFn = networks[chainId].api.loanCreate.approve
+      const resp = await approveFn(activeKey, provider, llamma, isLeverage, collateral)
+      if (resp.activeKey === get()[sliceKey].activeKey) {
         get()[sliceKey].setStateByKey('formStatus', {
           ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'APPROVAL',
+          isApproved: !resp.error,
+          step: '',
+          formProcessing: !resp.error,
+          error: resp.error,
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const { collateral } = formValues
-        const approveFn = networks[chainId].api.loanCreate.approve
-        const resp = await approveFn(activeKey, provider, llamma, isLeverage, collateral)
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, formValues, maxSlippage)
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKey('formStatus', {
-            ...get()[sliceKey].formStatus,
-            isApproved: !resp.error,
-            step: '',
-            formProcessing: !resp.error,
-            error: resp.error,
-          })
-
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, formValues, maxSlippage)
-
-          return resp
-        }
+        return resp
       }
     },
     fetchStepCreate: async (
@@ -400,52 +399,50 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       maxSlippage: string,
     ) => {
       const chainId = curve.chainId
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'CREATE',
-        })
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'CREATE',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const { collateral, debt, n } = formValues
+      if (n !== null) {
+        const createFn = networks[chainId].api.loanCreate.create
+        const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
 
-        await get().gas.fetchGasInfo(curve)
-        const { collateral, debt, n } = formValues
-        if (n !== null) {
-          const createFn = networks[chainId].api.loanCreate.create
-          const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
+        if (resp.activeKey === get()[sliceKey].activeKey) {
+          get()[sliceKey].setStateByKeys({
+            liqRanges: {},
+            liqRangesMapper: {},
+          })
 
-          if (resp.activeKey === get()[sliceKey].activeKey) {
-            get()[sliceKey].setStateByKeys({
-              liqRanges: {},
-              liqRangesMapper: {},
-            })
+          // re-fetch loan info
+          const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
 
-            // re-fetch loan info
-            const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-            if (!loanExists.loanExists) {
-              get().loans.resetUserDetailsState(llamma)
-            }
-
-            // reset form values
-            const updatedFormValues = DEFAULT_FORM_VALUES
-            get()[sliceKey].setStateByKeys({
-              ...getCreateLoanActiveKey(llamma, updatedFormValues, isLeverage, maxSlippage),
-              isEditLiqRange: false,
-              formStatus: {
-                ...get()[sliceKey].formStatus,
-                error: resp.error,
-                isInProgress: false,
-                isComplete: !resp.error,
-                step: '',
-              },
-              formValues: updatedFormValues,
-              maxRecv: {},
-            })
-
-            return { ...resp, loanExists: loanExists.loanExists }
+          if (!loanExists.loanExists) {
+            get().loans.resetUserDetailsState(llamma)
           }
+
+          // reset form values
+          const updatedFormValues = DEFAULT_FORM_VALUES
+          get()[sliceKey].setStateByKeys({
+            ...getCreateLoanActiveKey(llamma, updatedFormValues, isLeverage, maxSlippage),
+            isEditLiqRange: false,
+            formStatus: {
+              ...get()[sliceKey].formStatus,
+              error: resp.error,
+              isInProgress: false,
+              isComplete: !resp.error,
+              step: '',
+            },
+            formValues: updatedFormValues,
+            maxRecv: {},
+          })
+
+          return { ...resp, loanExists: loanExists.loanExists }
         }
       }
     },

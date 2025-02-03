@@ -3,15 +3,16 @@ import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { ROUTE } from '@main/constants'
-import { getPath } from '@main/utils/utilsRouter'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
-import { scrollToTop } from '@main/utils'
-import DocumentHead from '@main/layout/default/DocumentHead'
-import Transfer from '@main/components/PagePool/index'
-import ConnectWallet from '@main/components/ConnectWallet'
+import { ROUTE } from '@/dex/constants'
+import { getPath } from '@/dex/utils/utilsRouter'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useStore from '@/dex/store/useStore'
+import { scrollToTop } from '@/dex/utils'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import Transfer from '@/dex/components/PagePool/index'
+import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -27,8 +28,10 @@ const Page: NextPage = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const provider = useWalletStore((s) => s.provider)
   const network = useStore((state) => state.networks.networks[rChainId])
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
 
@@ -62,10 +65,12 @@ const Page: NextPage = () => {
       {!provider ? (
         <Box display="flex" fillWidth>
           <ConnectWalletWrapper>
-            <ConnectWallet
+            <ConnectWalletPrompt
               description={t`Connect wallet to view pool`}
               connectText={t`Connect Wallet`}
               loadingText={t`Connecting`}
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>
         </Box>

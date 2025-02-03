@@ -1,35 +1,33 @@
-import type { FormValues, FormStatus, StepKey } from '@loan/components/PageLoanManage/LoanSwap/types'
-import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanSwap/types'
+import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@loan/store/createLoanSwap'
-import { DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import { DEFAULT_WALLET_BALANCES } from '@loan/components/LoanInfoUser/utils'
-import { curveProps } from '@loan/utils/helpers'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/loan/store/createLoanSwap'
+import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
+import { curveProps } from '@/loan/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
-import networks from '@loan/networks'
-import useStore from '@loan/store/useStore'
-
-import { StyledInpChip } from '@loan/components/PageLoanManage/styles'
+import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
+import { StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import Box from '@ui/Box'
 import DetailInfoComp from '@ui/DetailInfo'
-import DetailInfoEstimateGas from '@loan/components/DetailInfoEstimateGas'
-import DetailInfoSlippageTolerance from '@loan/components/DetailInfoSlippageTolerance'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { getItemsName } from '@loan/components/PageLoanManage/LoanSwap/utils'
-import AlertFormError from '@loan/components/AlertFormError'
+import { getItemsName } from '@/loan/components/PageLoanManage/LoanSwap/utils'
+import AlertFormError from '@/loan/components/AlertFormError'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@loan/types/loan.types'
+import { Curve, Llamma } from '@/loan/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -52,7 +50,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const fetchMaxSwappable = useStore((state) => state.loanSwap.fetchMaxSwappable)
   const fetchStepApprove = useStore((state) => state.loanSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.loanSwap.fetchStepSwap)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanSwap.setFormValues)
   const setStateByKey = useStore((state) => state.loanSwap.setStateByKey)
   const resetState = useStore((state) => state.loanSwap.resetState)

@@ -1,31 +1,29 @@
-import type { FormValues, FormStatus, StepKey } from '@lend/components/PageVault/VaultDepositMint/types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultDepositMint/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
-
-import { _getMaxActiveKey, _isDeposit } from '@lend/store/createVaultDepositMintSlice'
+import { _getMaxActiveKey, _isDeposit } from '@/lend/store/createVaultDepositMintSlice'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
-import useMarketAlert from '@lend/hooks/useMarketAlert'
-import useStore from '@lend/store/useStore'
-
-import { StyledDetailInfoWrapper, StyledInpChip } from '@lend/components/PageLoanManage/styles'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useMarketAlert from '@/lend/hooks/useMarketAlert'
+import useStore from '@/lend/store/useStore'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
+import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
-import DetailInfoRate from '@lend/components/DetailInfoRate'
-import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
+import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import InpChipUsdRate from '@lend/components/InpChipUsdRate'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, PageContentProps } from '@lend/types/lend.types'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -41,7 +39,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultDepositMint.fetchStepApprove)
   const fetchStepDepositMint = useStore((state) => state.vaultDepositMint.fetchStepDepositMint)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultDepositMint.setFormValues)
   const resetState = useStore((state) => state.vaultDepositMint.resetState)
 

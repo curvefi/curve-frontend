@@ -2,25 +2,25 @@ import { t } from '@lingui/macro'
 import Image from 'next/image'
 import BigNumber from 'bignumber.js'
 
-import useStore from '@loan/store/useStore'
-import { isLoading } from '@loan/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
 import Box from '@ui/Box'
 import {
+  ErrorText,
   InputLabel,
+  InputSelectorText,
   InputWrapper,
   SelectorBox,
   StyledIcon,
   StyledInputComp,
-  InputSelectorText,
-  ErrorText,
 } from './styles'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const DepositModule = () => {
-  const onboardInstance = useStore((state) => state.wallet.onboard)
-  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
+  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 

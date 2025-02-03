@@ -1,33 +1,31 @@
-import type { FormStatus, StepKey } from '@loan/components/PageLoanManage/LoanLiquidate/types'
-import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
+import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t, Trans } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
-import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@loan/store/createLoanLiquidate'
-import { DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import { curveProps } from '@loan/utils/helpers'
+import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
+import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { curveProps } from '@/loan/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getCollateralListPathname } from '@loan/utils/utilsRouter'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
-import networks from '@loan/networks'
-
-import AlertFormWarning from '@loan/components/AlertFormWarning'
-import AlertFormError from '@loan/components/AlertFormError'
+import useStore from '@/loan/store/useStore'
+import networks from '@/loan/networks'
+import AlertFormWarning from '@/loan/components/AlertFormWarning'
+import AlertFormError from '@/loan/components/AlertFormError'
 import AlertInfoSelfLiquidation from '@ui/AlertBox/AlertInfoSelfLiquidation'
-import DetailInfoEstimateGas from '@loan/components/DetailInfoEstimateGas'
-import DetailInfoSlippageTolerance from '@loan/components/DetailInfoSlippageTolerance'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import InputReadOnly from '@ui/InputReadOnly'
 import InternalLink from '@ui/Link/InternalLink'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma, UserWalletBalances } from '@loan/types/loan.types'
+import { Curve, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -44,7 +42,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
   const fetchStepApprove = useStore((state) => state.loanLiquidate.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanLiquidate.fetchStepLiquidate)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
   const resetState = useStore((state) => state.loanLiquidate.resetState)
 

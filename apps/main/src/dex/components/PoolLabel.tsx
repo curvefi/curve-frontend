@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@main/store/useStore'
-import usePoolAlert from '@main/hooks/usePoolAlert'
-import useTokenAlert from '@main/hooks/useTokenAlert'
+import useStore from '@/dex/store/useStore'
+import usePoolAlert from '@/dex/hooks/usePoolAlert'
+import useTokenAlert from '@/dex/hooks/useTokenAlert'
 
 import { Chip } from '@ui/Typography'
 import AlertBox from '@ui/AlertBox'
 import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
 import Box from '@ui/Box'
-import ChipPool from '@main/components/ChipPool'
-import ChipToken from '@main/components/ChipToken'
-import TokenIcons from '@main/components/TokenIcons'
-import TableCellReferenceAsset from '@main/components/PagePoolList/components/TableCellReferenceAsset'
-import { PoolData, PoolDataCache } from '@main/types/main.types'
+import ChipPool from '@/dex/components/ChipPool'
+import ChipToken from '@/dex/components/ChipToken'
+import TokenIcons from '@/dex/components/TokenIcons'
+import TableCellReferenceAsset from '@/dex/components/PagePoolList/components/TableCellReferenceAsset'
+import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type PoolListProps = {
   quickViewValue?: string | React.ReactNode | null

@@ -1,37 +1,35 @@
-import type { FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormValues, FormStatus, StepKey, PageLoanCreateProps } from '@loan/components/PageLoanCreate/types'
+import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues, PageLoanCreateProps, StepKey } from '@/loan/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t, Trans } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
-import { DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE, hasDeleverage } from '@loan/components/PageLoanManage/utils'
-import { DEFAULT_WALLET_BALANCES } from '@loan/components/LoanInfoUser/utils'
-import { DEFAULT_FORM_STATUS } from '@loan/store/createLoanCollateralIncreaseSlice'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE, hasDeleverage } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
+import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import { formatNumber } from '@ui/utils'
-import { getLoanManagePathname } from '@loan/utils/utilsRouter'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
-import { curveProps } from '@loan/utils/helpers'
-import networks from '@loan/networks'
-import useStore from '@loan/store/useStore'
-
-import { StyledInpChip } from '@loan/components/PageLoanManage/styles'
+import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
+import { curveProps } from '@/loan/utils/helpers'
+import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
+import { StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@loan/components/AlertFormError'
+import AlertFormError from '@/loan/components/AlertFormError'
 import Box from '@ui/Box'
-import DetailInfo from '@loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
-import DialogHealthWarning from '@loan/components/DialogHealthWarning'
+import DetailInfo from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
+import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import LinkButton from '@ui/LinkButton'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
-import LoanInfoParameters from '@loan/components/LoanInfoLlamma/LoanInfoParameters'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import DialogHealthLeverageWarning from '@loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
+import DialogHealthLeverageWarning from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma, CollateralAlert } from '@loan/types/loan.types'
+import { CollateralAlert, Curve, Llamma } from '@/loan/types/loan.types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,
@@ -60,7 +58,7 @@ const LoanCreate = ({
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)

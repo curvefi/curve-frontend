@@ -1,28 +1,26 @@
-import type { FormValues, FormStatus, StepKey } from '@lend/components/PageVault/VaultStake/types'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultStake/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
-import useStore from '@lend/store/useStore'
-
-import { StyledDetailInfoWrapper, StyledInpChip } from '@lend/components/PageLoanManage/styles'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
+import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
-import DetailInfoCrvIncentives from '@lend/components/DetailInfoCrvIncentives'
-import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
+import DetailInfoCrvIncentives from '@/lend/components/DetailInfoCrvIncentives'
+import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import InpChipVaultSharesUsdRate from '@lend/components/InpChipVaultShareUsdRate'
+import InpChipVaultSharesUsdRate from '@/lend/components/InpChipVaultShareUsdRate'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, PageContentProps } from '@lend/types/lend.types'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
 
 const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -34,7 +32,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultStake.fetchStepApprove)
   const fetchStepStake = useStore((state) => state.vaultStake.fetchStepStake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultStake.setFormValues)
   const resetState = useStore((state) => state.vaultStake.resetState)
 

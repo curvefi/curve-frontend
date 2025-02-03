@@ -1,15 +1,16 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
-import type { FormStatus, RewardType } from '@lend/components/PageVault/VaultClaim/types'
+import type { State } from '@/lend/store/useStore'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
+import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
-import { DEFAULT_FORM_STATUS } from '@lend/components/PageVault/VaultClaim/utils'
-import apiLending from '@lend/lib/apiLending'
+import { DEFAULT_FORM_STATUS } from '@/lend/components/PageVault/VaultClaim/utils'
+import apiLending from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, MarketClaimable } from '@lend/types/lend.types'
+import { Api, MarketClaimable } from '@/lend/types/lend.types'
+import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -73,9 +74,8 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
 
     // steps
     fetchStepClaim: async (userActiveKey, api, market, type) => {
-      const provider = get().wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWalletStore.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       const step = type === 'crv' ? 'CLAIM_CRV' : 'CLAIM_REWARDS'

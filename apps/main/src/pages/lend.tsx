@@ -7,10 +7,8 @@ import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
-import 'intersection-observer'
 import 'focus-visible'
 import { HashRouter } from 'react-router-dom'
-import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/lend/globalStyle'
@@ -25,6 +23,7 @@ import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
 import { getLocaleFromUrl } from '@/lend/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -41,10 +40,9 @@ const App: NextPage = () => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
-
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
+  const initializeWallet = useWalletStore((s) => s.initialize)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -77,8 +75,7 @@ const App: NextPage = () => {
     })()
 
     // init onboard
-    const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-    updateWalletStateByKey('onboard', onboardInstance)
+    initializeWallet(locale, theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)

@@ -1,25 +1,20 @@
-import type { ColumnKeys, PagePoolList, SearchParams } from '@main/components/PagePoolList/types'
-
-import { t } from '@lingui/macro'
+import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
-import { COLUMN_KEYS } from '@main/components/PagePoolList/utils'
-import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@main/store/createPoolListSlice'
-import { REFRESH_INTERVAL } from '@main/constants'
-import usePageVisibleInterval from '@main/hooks/usePageVisibleInterval'
-import useStore from '@main/store/useStore'
-import { getUserActiveKey } from '@main/store/createUserSlice'
-import useCampaignRewardsMapper from '@main/hooks/useCampaignRewardsMapper'
-
+import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
+import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
+import { REFRESH_INTERVAL } from '@/dex/constants'
+import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
+import useStore from '@/dex/store/useStore'
+import { getUserActiveKey } from '@/dex/store/createUserSlice'
+import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody } from '@ui/Table'
-import TableHead from '@main/components/PagePoolList/components/TableHead'
-import TableHeadMobile from '@main/components/PagePoolList/components/TableHeadMobile'
-import TableSettings from '@main/components/PagePoolList/components/TableSettings/TableSettings'
-import TableRowNoResult from '@main/components/PagePoolList/components/TableRowNoResult'
-import { PoolRow } from '@main/components/PagePoolList/components/PoolRow'
-import ConnectWallet from '@main/components/ConnectWallet'
+import TableHead from '@/dex/components/PagePoolList/components/TableHead'
+import TableHeadMobile from '@/dex/components/PagePoolList/components/TableHeadMobile'
+import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
+import TableRowNoResult from '@/dex/components/PagePoolList/components/TableRowNoResult'
+import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
 
 const PoolList = ({
   rChainId,
@@ -51,7 +46,6 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const provider = useStore((state) => state.wallet.getProvider(''))
   const network = useStore((state) => state.networks.networks[rChainId])
 
   const [showDetail, setShowDetail] = useState('')
@@ -183,71 +177,61 @@ const PoolList = ({
         updatePath={updatePath}
       />
 
-      {!provider ? (
-        <ConnectWalletWrapper>
-          <ConnectWallet
-            description={t`Connect wallet to view pool list`}
-            connectText={t`Connect Wallet`}
-            loadingText={t`Connecting`}
+      <Table cellPadding={0} cellSpacing={0}>
+        {isXSmDown ? (
+          <TableHeadMobile showInPoolColumn={showInPoolColumn} />
+        ) : (
+          <TableHead
+            columnKeys={columnKeys}
+            isLite={isLite}
+            isReadyRewardsApy={!!rewardsApyMapper}
+            isReadyTvl={!!tvlMapper}
+            isReadyVolume={!!volumeMapper}
+            searchParams={searchParams}
+            tableLabels={tableLabels}
+            updatePath={updatePath}
           />
-        </ConnectWalletWrapper>
-      ) : (
-        <Table cellPadding={0} cellSpacing={0}>
-          {isXSmDown ? (
-            <TableHeadMobile showInPoolColumn={showInPoolColumn} />
-          ) : (
-            <TableHead
-              columnKeys={columnKeys}
-              isLite={isLite}
-              isReadyRewardsApy={!!rewardsApyMapper}
-              isReadyTvl={!!tvlMapper}
-              isReadyVolume={!!volumeMapper}
+        )}
+        <Tbody $borderBottom>
+          {isReadyWithApiData && formStatus.noResult ? (
+            <TableRowNoResult
+              colSpan={colSpan}
               searchParams={searchParams}
-              tableLabels={tableLabels}
+              signerAddress={signerAddress}
               updatePath={updatePath}
             />
+          ) : isReady && Array.isArray(result) ? (
+            <>
+              {result.map((poolId: string, index: number) => (
+                <PoolRow
+                  key={poolId}
+                  index={index}
+                  columnKeys={columnKeys}
+                  isLite={isLite}
+                  poolId={poolId}
+                  rChainId={rChainId}
+                  searchParams={searchParams}
+                  imageBaseUrl={network?.imageBaseUrl ?? ''}
+                  showInPoolColumn={showInPoolColumn}
+                  tableLabels={tableLabels}
+                  searchTermMapper={searchTermMapper}
+                  showDetail={showDetail}
+                  setShowDetail={setShowDetail}
+                  curve={curve}
+                />
+              ))}
+            </>
+          ) : (
+            <tr>
+              <td colSpan={colSpan}>
+                <SpinnerWrapper>
+                  <Spinner />
+                </SpinnerWrapper>
+              </td>
+            </tr>
           )}
-          <Tbody $borderBottom>
-            {isReadyWithApiData && formStatus.noResult ? (
-              <TableRowNoResult
-                colSpan={colSpan}
-                searchParams={searchParams}
-                signerAddress={signerAddress}
-                updatePath={updatePath}
-              />
-            ) : isReady && Array.isArray(result) ? (
-              <>
-                {result.map((poolId: string, index: number) => (
-                  <PoolRow
-                    key={poolId}
-                    index={index}
-                    columnKeys={columnKeys}
-                    isLite={isLite}
-                    poolId={poolId}
-                    rChainId={rChainId}
-                    searchParams={searchParams}
-                    imageBaseUrl={network?.imageBaseUrl ?? ''}
-                    showInPoolColumn={showInPoolColumn}
-                    tableLabels={tableLabels}
-                    searchTermMapper={searchTermMapper}
-                    showDetail={showDetail}
-                    setShowDetail={setShowDetail}
-                    curve={curve}
-                  />
-                ))}
-              </>
-            ) : (
-              <tr>
-                <td colSpan={colSpan}>
-                  <SpinnerWrapper>
-                    <Spinner />
-                  </SpinnerWrapper>
-                </td>
-              </tr>
-            )}
-          </Tbody>
-        </Table>
-      )}
+        </Tbody>
+      </Table>
     </>
   )
 }

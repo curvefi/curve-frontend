@@ -10,7 +10,7 @@
  * allowing components to easily access and manipulate gauge-related data.
  */
 
-import * as models from '@main/entities/gauge/model'
+import * as models from '@/dex/entities/gauge/model'
 import { useCombinedQueries } from '@ui-kit/lib/queries'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 

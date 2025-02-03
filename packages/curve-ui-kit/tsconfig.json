@@ -10,6 +10,8 @@
     "resolveJsonModule": true,
     "baseUrl": "./src",
     "paths": {
+      "@ui": ["../../../packages/ui/src/index.ts"],
+      "@ui/*": ["../../../packages/ui/src/*"],
       "@ui-kit/*": ["./*"]
     }
   },

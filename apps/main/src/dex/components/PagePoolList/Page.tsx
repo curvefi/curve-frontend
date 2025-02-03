@@ -1,22 +1,22 @@
 import type { NextPage } from 'next'
-import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@main/components/PagePoolList/types'
+import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { ROUTE } from '@main/constants'
+import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils/responsive'
-import { getPath } from '@main/utils/utilsRouter'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useSearchTermMapper from '@main/hooks/useSearchTermMapper'
-import useStore from '@main/store/useStore'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
+import useStore from '@/dex/store/useStore'
 
-import DocumentHead from '@main/layout/default/DocumentHead'
-import PoolList from '@main/components/PagePoolList/index'
-import Settings from '@main/layout/default/Settings'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import PoolList from '@/dex/components/PagePoolList/index'
+import Settings from '@/dex/layout/default/Settings'
 
 enum SEARCH {
   filter = 'filter',

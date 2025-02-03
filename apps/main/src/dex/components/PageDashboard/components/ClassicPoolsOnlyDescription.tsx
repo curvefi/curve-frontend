@@ -1,9 +1,9 @@
 import { Fragment } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { ExternalLink } from '@ui/Link'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 const ClassicPoolsOnlyDescription = () => {
   const { rChainId, signerAddress } = useDashboardContext()
