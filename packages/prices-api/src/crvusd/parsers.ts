@@ -5,20 +5,20 @@ import type * as Models from './models'
 export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
   name: x.collateral_token.symbol,
   address: x.address,
-  factory: x.factory_address,
+  factoryAddress: x.factory_address,
   llamma: x.llamma,
   rate: x.rate,
   borrowed: x.total_debt,
   borrowable: x.borrowable,
-  collateral: x.collateral_amount,
-  collateralUsd: x.collateral_amount_usd,
+  collateralAmount: x.collateral_amount,
+  collateralAmountUsd: x.collateral_amount_usd,
   debtCeiling: x.debt_ceiling,
   loans: x.n_loans,
-  tokenCollateral: {
+  collateralToken: {
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
   },
-  tokenStablecoin: {
+  stablecoinToken: {
     symbol: x.stablecoin_token.symbol,
     address: x.stablecoin_token.address,
   },

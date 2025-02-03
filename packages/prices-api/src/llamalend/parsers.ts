@@ -27,11 +27,11 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   borrowedBalance: parseFloat(x.borrowed_balance),
   collateralBalanceUsd: parseFloat(x.collateral_balance_usd),
   borrowedBalanceUsd: parseFloat(x.borrowed_balance_usd),
-  tokenCollateral: {
+  collateralToken: {
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
   },
-  tokenBorrowed: {
+  borrowedToken: {
     symbol: x.borrowed_token.symbol,
     address: x.borrowed_token.address,
   },

@@ -79,7 +79,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
       <MinimumSliderFilter
-        field="totalSupplied.usdTotal"
+        field="liquidityUsd"
         title={t`Min Liquidity`}
         format={(value) => formatNumber(value, { currency: 'USD' })}
         {...props}

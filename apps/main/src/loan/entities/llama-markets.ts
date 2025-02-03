@@ -1,4 +1,4 @@
-import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@/loan/entities/lending-vaults'
+import { getLendingVaultOptions, LendingVault } from '@/loan/entities/lending-vaults'
 import { useQueries } from '@tanstack/react-query'
 import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
@@ -10,16 +10,25 @@ export enum LlamaMarketType {
   Pool = 'pool',
 }
 
+export type Assets = {
+  borrowed: AssetDetails
+  collateral: AssetDetails
+}
+
+export type AssetDetails = {
+  symbol: string
+  address: string
+  blockchainId: string
+  usdPrice: number | null
+}
+
 export type LlamaMarket = {
   blockchainId: string
   address: string
   controllerAddress: string
   assets: Assets
   utilizationPercent: number
-  totalSupplied: {
-    total: number
-    usdTotal: number
-  }
+  liquidityUsd: number
   rates: {
     lend?: number // apy %, only for pools
     borrow: number // apy %
@@ -38,26 +47,40 @@ const DEPRECATED_LLAMAS: Record<string, () => string> = {
 }
 
 const convertLendingVault = ({
-  controllerAddress,
-  blockchainId,
-  totalSupplied,
-  assets,
-  address,
-  rates,
-  borrowed,
-}: LendingVaultFromApi): LlamaMarket => ({
-  blockchainId,
-  address,
-  controllerAddress,
-  assets,
-  utilizationPercent: (100 * borrowed.usdTotal) / totalSupplied.usdTotal,
-  totalSupplied: totalSupplied,
-  rates: {
-    lend: rates.lendApyPcent,
-    borrow: rates.borrowApyPcent,
+  controller,
+  chain,
+  totalAssetsUsd,
+  totalDebtUsd,
+  vault,
+  collateralToken,
+  collateralBalance,
+  collateralBalanceUsd,
+  borrowedToken,
+  borrowedBalance,
+  borrowedBalanceUsd,
+  apyBorrow,
+  apyLend,
+}: LendingVault): LlamaMarket => ({
+  blockchainId: chain,
+  address: vault,
+  controllerAddress: controller,
+  assets: {
+    borrowed: {
+      ...borrowedToken,
+      usdPrice: borrowedBalanceUsd / borrowedBalance,
+      blockchainId: chain,
+    },
+    collateral: {
+      ...collateralToken,
+      blockchainId: chain,
+      usdPrice: collateralBalanceUsd / collateralBalance,
+    },
   },
+  utilizationPercent: (100 * totalDebtUsd) / totalAssetsUsd,
+  liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
+  rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Pool,
-  url: `${APP_LINK.lend.root}#/${blockchainId}${LEND_ROUTES.PAGE_MARKETS}/${address}/create`,
+  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
   // todo: implement the following
   hasPoints: false,
   leverage: 0,
@@ -67,14 +90,14 @@ const convertLendingVault = ({
 const convertMintMarket = (
   {
     address,
-    collateral_token,
-    stablecoin_token,
+    collateralToken,
+    collateralAmount,
+    collateralAmountUsd,
+    stablecoinToken,
     llamma,
     rate,
-    total_debt,
-    debt_ceiling,
-    collateral_amount,
-    collateral_amount_usd,
+    borrowed,
+    debtCeiling,
     stablecoin_price,
   }: MintMarket,
   blockchainId: string,
@@ -84,30 +107,25 @@ const convertMintMarket = (
   controllerAddress: llamma,
   assets: {
     borrowed: {
-      symbol: stablecoin_token.symbol,
-      address: stablecoin_token.address,
+      symbol: stablecoinToken.symbol,
+      address: stablecoinToken.address,
       usdPrice: stablecoin_price,
       blockchainId,
     },
     collateral: {
-      symbol: collateral_token.symbol,
-      address: collateral_token.address,
-      usdPrice: collateral_amount_usd / collateral_amount,
+      symbol: collateralToken.symbol,
+      address: collateralToken.address,
+      usdPrice: collateralAmountUsd / collateralAmount,
       blockchainId,
     },
   },
-  utilizationPercent: (100 * total_debt) / debt_ceiling,
-  totalSupplied: {
-    // todo: do we want to see collateral or borrowable?
-    total: collateral_amount,
-    usdTotal: collateral_amount_usd,
-  },
-  rates: {
-    borrow: rate * 100,
-  },
+  utilizationPercent: (100 * borrowed) / debtCeiling,
+  // todo: do we want to see collateral or borrowable?
+  liquidityUsd: collateralAmountUsd,
+  rates: { borrow: rate },
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-  url: `/${blockchainId}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateral_token.symbol}/create`,
+  url: `/${blockchainId}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralToken.symbol}/create`,
   // todo: implement the following
   hasPoints: false,
   leverage: 0,
@@ -120,9 +138,7 @@ export const useLlamaMarkets = () =>
     combine: ([lendingVaults, mintMarkets]): PartialQueryResult<LlamaMarket[]> => ({
       ...combineQueriesMeta([lendingVaults, mintMarkets]),
       data: [
-        ...(lendingVaults.data?.lendingVaultData ?? [])
-          .filter((vault) => vault.totalSupplied.usdTotal)
-          .map(convertLendingVault),
+        ...(lendingVaults.data ?? []).filter((vault) => vault.totalAssetsUsd).map(convertLendingVault),
         ...(mintMarkets.data ?? []).flatMap(({ chain, data }) => data.map((i) => convertMintMarket(i, chain))),
       ],
     }),

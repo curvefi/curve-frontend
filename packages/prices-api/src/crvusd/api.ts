@@ -1,14 +1,19 @@
 import { getHost, type Options, type Chain } from '..'
-import { fetchJson as fetch } from '../fetch'
+import { fetchJson as fetch, paramsToString } from '../fetch'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
-export async function getMarkets(chain: Chain, page: number, options?: Options) {
+export async function getMarkets(
+  chain: Chain,
+  params: {
+    page?: number
+    per_page?: number
+    fetch_on_chain?: boolean
+  } = { fetch_on_chain: true },
+  options?: Options,
+) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetMarketsResponse>(
-    `${host}/v1/crvusd/markets/${chain}?fetch_on_chain=true&page=${page}&per_page=10`,
-  )
-
+  const resp = await fetch<Responses.GetMarketsResponse>(`${host}/v1/crvusd/markets/${chain}?${paramsToString(params)}`)
   return resp.data.map(Parsers.parseMarket)
 }
 

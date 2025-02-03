@@ -29,11 +29,11 @@ export type Market = {
   collateralBalanceUsd: number
   borrowedBalance: number // Collateral (like crvUSD)
   borrowedBalanceUsd: number
-  tokenCollateral: {
+  collateralToken: {
     symbol: string
     address: Address
   }
-  tokenBorrowed: {
+  borrowedToken: {
     symbol: string
     address: Address
   }

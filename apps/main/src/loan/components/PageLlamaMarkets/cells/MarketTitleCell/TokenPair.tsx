@@ -1,11 +1,10 @@
-import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { AssetDetails, LlamaMarket } from '@/loan/entities/llama-markets'
 import { getImageBaseUrl } from '@ui/utils'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import TokenIcon from '@/loan/components/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { AssetDetails } from '@/loan/entities/lending-vaults'
 import { ReactNode } from 'react'
 import type { SxProps, Theme } from '@mui/material/styles'
 

@@ -1,3 +1,6 @@
+export const paramsToString = (params: Record<string, string | number | boolean>) =>
+  new URLSearchParams(Object.entries(params).map(([key, value]) => [key, encodeURIComponent(value)])).toString()
+
 export class FetchError extends Error {
   constructor(
     public status: number,
@@ -32,9 +35,6 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
   if (!resp.ok) {
     // Make the promise be rejected if we didn't get a 2xx response
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
-  } else {
-    const json = (await resp.json()) as T
-
-    return json
   }
+  return (await resp.json()) as T
 }

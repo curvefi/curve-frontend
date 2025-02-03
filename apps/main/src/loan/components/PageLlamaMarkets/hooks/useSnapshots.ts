@@ -1,6 +1,6 @@
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending-snapshots'
-import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd'
+import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
 import { useMemo } from 'react'
 import { meanBy } from 'lodash'
 
@@ -29,7 +29,7 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
     ? {
         snapshots: poolSnapshots ?? null,
         isLoading: poolIsLoading,
-        snapshotKey: `${type}_apy` as const,
+        snapshotKey: `${type}Apy` as const,
       }
     : {
         snapshots: (showMintGraph && mintSnapshots) || null,
