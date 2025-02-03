@@ -19,19 +19,23 @@ const chartOptions: ChartOption[] = [
 
 const timeOptions: TimeOption[] = ['1d', '1w', '1m']
 
-const Statistics = () => {
+type StatisticsProps = {
+  isChartExpanded: boolean
+  toggleChartExpanded: () => void
+}
+
+const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) => {
   const [activeChartOption, setActiveChartOption] = useState(chartOptions[0])
   const [activeTimeOption, setActiveTimeOption] = useState(timeOptions[0])
   const { data: yieldData } = useScrvUsdYield({ timeOption: activeTimeOption })
   const { data: revenueData } = useScrvUsdRevenue({})
 
   return (
-    <Stack direction="column" spacing={0}>
+    <Stack width="100%" maxWidth={isChartExpanded ? '100%' : MaxWidth.statistics} direction="column" spacing={0}>
       <Card
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,
           width: '100%',
-          maxWidth: MaxWidth.statistics,
         }}
       >
         <CardHeader title="Statistics" />
@@ -39,6 +43,8 @@ const Statistics = () => {
           <StatsStack />
         </Box>
         <ChartHeader
+          isChartExpanded={isChartExpanded}
+          toggleChartExpanded={toggleChartExpanded}
           activeChartOption={activeChartOption}
           setActiveChartOption={setActiveChartOption}
           activeTimeOption={activeTimeOption}

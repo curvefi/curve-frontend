@@ -17,6 +17,8 @@ export type ChartOption = {
 }
 
 type ChartHeaderProps = {
+  isChartExpanded: boolean
+  toggleChartExpanded: () => void
   chartOptions: ChartOption[]
   timeOptions: TimeOption[]
   activeChartOption: ChartOption
@@ -26,6 +28,8 @@ type ChartHeaderProps = {
 }
 
 const ChartHeader = ({
+  isChartExpanded,
+  toggleChartExpanded,
   chartOptions,
   timeOptions,
   activeChartOption,
@@ -53,8 +57,8 @@ const ChartHeader = ({
             {option.label}
           </ToggleButton>
         ))}
-        <IconButton size="small">
-          <Icon name="Maximize" size={20} />
+        <IconButton size="small" onClick={toggleChartExpanded}>
+          <Icon name={isChartExpanded ? 'Minimize' : 'Maximize'} size={20} />
         </IconButton>
       </ToggleButtonGroup>
       <Select
