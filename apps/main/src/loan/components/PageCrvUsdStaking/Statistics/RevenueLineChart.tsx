@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles'
 import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from './RevenueChartTooltip'
-import { toUTC } from '@/loan/components/PageCrvUsdStaking/utils'
+import { toUTC } from '@curvefi/prices-api/timestamp'
 
 const { FontSize, FontWeight } = SizesAndSpaces
 
@@ -51,7 +51,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           minTickGap={20}
           tickMargin={4}
           tickFormatter={(time) => {
-            const unix = toUTC(time as string | number) * 1000
+            const unix = toUTC(time as string | number)
             return new Intl.DateTimeFormat(undefined, {
               day: '2-digit',
               month: '2-digit',

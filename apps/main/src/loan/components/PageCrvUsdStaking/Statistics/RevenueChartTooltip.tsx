@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
-import { toUTC } from '@/loan/components/PageCrvUsdStaking/utils'
+import { toUTC } from '@curvefi/prices-api/timestamp'
 
 const { Spacing } = SizesAndSpaces
 
@@ -38,7 +38,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
   if (active && payload && payload.length) {
     const { timestamp, proj_apy, proj_apy_7d_avg, proj_apy_total_avg } = payload[0].payload
 
-    const unixTimestamp = toUTC(timestamp) * 1000
+    const unixTimestamp = toUTC(timestamp)
     const formattedDate = new Intl.DateTimeFormat(undefined, {
       month: 'short',
       day: 'numeric',
