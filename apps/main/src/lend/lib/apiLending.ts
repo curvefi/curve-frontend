@@ -2129,16 +2129,6 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
   return resp
 }
 
-function _detailInfoRespErrorMessage(...args: PromiseSettledResult<any>[]) {
-  let errorMessage = ''
-
-  // Check each argument for rejection status
-  for (const arg of args) {
-    if (arg?.status === 'rejected') {
-      errorMessage = arg.reason.message
-      break // Return first error encountered
-    }
-  }
-
-  return errorMessage
+function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
+  return args.find((a) => a.status == 'rejected')?.reason.message
 }
