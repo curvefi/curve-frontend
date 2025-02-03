@@ -27,8 +27,8 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   MuiCardHeader: {
     styleOverrides: {
       root: {
-        paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
-        paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
+        padding: `${SizesAndSpaces.Spacing.lg.desktop} ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
+        alignItems: 'flex-end',
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
         minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`,
         variants: [
@@ -36,7 +36,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
             props: { size: 'small' }, // todo: currently not working, applying styles inline
             style: {
               minHeight: SizesAndSpaces.Sizing.md.desktop,
-              padding: `0 ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
+              padding: `${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
             },
           },
         ],

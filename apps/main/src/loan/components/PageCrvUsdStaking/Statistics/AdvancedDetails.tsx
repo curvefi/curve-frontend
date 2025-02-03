@@ -11,11 +11,6 @@ const AdvancedDetails = () => (
       title={t`Advanced Details`}
       slotProps={{ title: { variant: 'small' }, root: { variant: 'small' } }}
       sx={{
-        padding: {
-          mobile: `${Spacing.lg.mobile} ${Spacing.md.mobile} ${Spacing.sm.mobile}`,
-          tablet: `${Spacing.lg.tablet} ${Spacing.md.tablet} ${Spacing.sm.tablet}`,
-          desktop: `${Spacing.lg.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
-        },
         alignItems: 'end',
       }}
     />

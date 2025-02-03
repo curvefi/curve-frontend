@@ -34,17 +34,7 @@ const Statistics = () => {
           maxWidth: MaxWidth.statistics,
         }}
       >
-        <CardHeader
-          title="Statistics"
-          sx={{
-            padding: {
-              mobile: `${Spacing.lg.mobile} ${Spacing.md.mobile} ${Spacing.sm.mobile}`,
-              tablet: `${Spacing.lg.tablet} ${Spacing.md.tablet} ${Spacing.sm.tablet}`,
-              desktop: `${Spacing.lg.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
-            },
-            alignItems: 'end',
-          }}
-        />
+        <CardHeader title="Statistics" />
         <Box sx={{ padding: Spacing.md }}>
           <StatsStack />
         </Box>
