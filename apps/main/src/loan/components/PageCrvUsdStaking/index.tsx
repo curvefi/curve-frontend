@@ -8,6 +8,7 @@ import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
 import UserPositionBanner from '@/loan/components/PageCrvUsdStaking/UserPositionBanner'
+import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {

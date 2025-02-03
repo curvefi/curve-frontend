@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui/utils/utilsFormat'
-import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
+import { toUTC } from '@/loan/components/PageCrvUsdStaking/utils'
 
 const { Spacing } = SizesAndSpaces
 

@@ -2,8 +2,8 @@ import { Stack } from '@mui/material'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-import { useScrvUsdYield } from '@loan/entities/scrvusdYield'
-import { useScrvUsdRevenue } from '@loan/entities/scrvusdRevenue'
+import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
+import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,10 +1,10 @@
-import type { ScrvUsdYieldWithAverages } from '@loan/entities/scrvusdYield'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from './RevenueChartTooltip'
-import { toUTC } from '@loan/components/PageCrvUsdStaking/utils'
+import { toUTC } from '@/loan/components/PageCrvUsdStaking/utils'
 
 const { FontSize, FontWeight } = SizesAndSpaces
 
