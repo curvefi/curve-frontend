@@ -25,7 +25,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -42,7 +42,6 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
   const fetchStepApprove = useStore((state) => state.loanLiquidate.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanLiquidate.fetchStepLiquidate)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
   const resetState = useStore((state) => state.loanLiquidate.resetState)
 
@@ -102,10 +101,10 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${getTokenName(llamma).stablecoin}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(curve, llamma, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         LIQUIDATE: {
@@ -116,7 +115,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
           onClick: async () => {
             const stablecoinName = getTokenName(llamma).stablecoin
             const notifyMessage = t`Please confirm ${stablecoinName} self-liquidation at max ${maxSlippage}% slippage.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
 
@@ -139,7 +138,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
                 />,
               )
             }
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
       }
@@ -154,7 +153,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset],
+    [fetchStepApprove, fetchStepLiquidate, params, reset],
   )
 
   // onMount

@@ -19,8 +19,8 @@ import useTitleMapper from '@/loan/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
@@ -35,7 +35,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import { ConnectWalletPrompt, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { isLoading } from '@ui/utils'
 
@@ -59,7 +59,7 @@ const Page: NextPage = () => {
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 

@@ -2,12 +2,7 @@ import type { LpLiquidityEventsData, PricesApiCoin } from '@ui/Chart/types'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import useStore from '@/dex/store/useStore'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import {
-  convertFullTime,
-  convertTime,
-  convertTimeAgo,
-} from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 import Box from '@ui/Box'
 import TokenIcon from '@/dex/components/TokenIcon'
 import { Chip } from '@ui/Typography'
@@ -89,7 +84,9 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
               )}
             </LpEvent>
             <TimestampColumn>
-              <Tooltip tooltip={`${convertTime(transaction.time)} ${convertFullTime(transaction.time)}`}>
+              <Tooltip
+                tooltip={`${convertTime(transaction.time)} ${convertDate(transaction.time).toLocaleDateString()}`}
+              >
                 {convertTimeAgo(transaction.time)}
               </Tooltip>
             </TimestampColumn>

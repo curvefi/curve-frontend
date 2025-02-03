@@ -4,8 +4,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import networks from '@/lend/networks'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/lend/components/ChartOhlcWrapper/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 
 import Box from '@ui/Box'
 import TokenIcon from '@/lend/components/TokenIcon'
@@ -90,7 +89,9 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
               )}
             </LiquidityEvent>
             <TimestampColumn>
-              <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+              <Tooltip
+                tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
+              >
                 {convertTimeAgo(transaction.timestamp)}
               </Tooltip>
             </TimestampColumn>

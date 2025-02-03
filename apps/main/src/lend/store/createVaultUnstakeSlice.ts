@@ -10,8 +10,8 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultUnstake/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api } from '@/lend/types/lend.types'
-import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Api, ChainId } from '@/lend/types/lend.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -100,7 +100,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
 
     // steps
     fetchStepUnstake: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

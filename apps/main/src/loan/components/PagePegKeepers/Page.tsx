@@ -7,12 +7,11 @@ import { breakpoints } from '@ui/utils/responsive'
 import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import DocumentHead from '@/loan/layout/DocumentHead'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Settings from '@/loan/layout/Settings'
 import PagePegKeepers from '@/loan/components/PagePegKeepers'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 import useStore from '@/loan/store/useStore'
 import { isLoading } from '@ui/utils'
 
@@ -23,7 +22,7 @@ const Page: NextPage = () => {
   const { routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
 

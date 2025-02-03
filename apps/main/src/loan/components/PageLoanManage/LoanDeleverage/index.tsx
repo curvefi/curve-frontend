@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, FormDetailInfo } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
@@ -45,7 +45,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -68,7 +68,6 @@ const LoanDeleverage = ({
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -110,7 +109,7 @@ const LoanDeleverage = ({
       const fTokenName = `${collateral} ${collateralName}`
       const notifyMessage = t`Please approve deleverage with ${fTokenName} at ${maxSlippage}% max slippage.`
 
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -134,7 +133,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
+    [activeKey, collateralName, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

@@ -23,7 +23,7 @@ import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
 import { getLocaleFromUrl } from '@/lend/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -42,7 +42,6 @@ const App: NextPage = () => {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
-  const initializeWallet = useWalletStore((s) => s.initialize)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -75,7 +74,7 @@ const App: NextPage = () => {
     })()
 
     // init onboard
-    initializeWallet(locale, theme, networks)
+    useWallet.initialize(locale, theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)

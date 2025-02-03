@@ -4,29 +4,28 @@ import type {
   TimeOptions,
   FetchingStatus,
   LpPriceOhlcDataFormatted,
-  LlammaOhlcApiResponse,
   VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
-  LlammaTradesApiResponse,
   LlammaControllerApiResponse,
-  LlammaTradeEvent,
   LlammaControllerEvent,
 } from 'ui/src/Chart/types'
-import type { UTCTimestamp } from 'lightweight-charts'
+import type { Address, Chain } from '@curvefi/prices-api'
+import { getOHLC, getTrades, type LlammaTrade } from '@curvefi/prices-api/llamma'
 
 import produce from 'immer'
 
 import networks from '@/loan/networks'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { ChainId } from '@/loan/types/loan.types'
+
+type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type SliceState = {
   chartOhlcData: LpPriceOhlcDataFormatted[]
   volumeData: VolumeData[]
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
-  llammaTradesData: LlammaTradeEvent[]
+  llammaTradesData: LlammaTrade[]
   llammaControllerData: LlammaControllerEvent[]
   chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
@@ -119,21 +118,26 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const llamaOhlcFetch = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
-        )
-        const llamaOhlcResponse: LlammaOhlcApiResponse = await llamaOhlcFetch.json()
+        const ohlc = await getOHLC({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          llamma: poolAddress as Address,
+          interval,
+          units: timeUnit as OHLCTimeUnit,
+          start,
+          end,
+        })
 
         let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
         let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
-        for (const item of llamaOhlcResponse.data) {
+        for (const item of ohlc) {
           volumeArray = [
             ...volumeArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
@@ -142,23 +146,23 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselinePriceArray = [
             ...baselinePriceArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              base_price: item.base_price,
+              time: item.time.getUTCTimestamp(),
+              base_price: item.basePrice,
             },
           ]
 
           oraclePriceArray = [
             ...oraclePriceArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              value: item.oracle_price,
+              time: item.time.getUTCTimestamp(),
+              value: item.oraclePrice,
             },
           ]
 
           ohlcDataArray = [
             ...ohlcDataArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               open: item.open,
               close: item.close,
               high: item.high,
@@ -181,7 +185,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].oraclePriceData = oraclePriceArray
             state[sliceKey].baselinePriceData = baselinePriceArray
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
-            state[sliceKey].lastFetchEndTime = llamaOhlcResponse.data[0].time
+            state[sliceKey].lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartFetchStatus = 'READY'
           }),
         )
@@ -205,21 +209,26 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const llammaOhlcFetch = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
-        )
-        const llammaOhlcResponse: LlammaOhlcApiResponse = await llammaOhlcFetch.json()
+        const ohlc = await getOHLC({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          llamma: poolAddress as Address,
+          interval,
+          units: timeUnit as OHLCTimeUnit,
+          start,
+          end,
+        })
 
         let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
         let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
-        for (const item of llammaOhlcResponse.data) {
+        for (const item of ohlc) {
           volumeArray = [
             ...volumeArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
@@ -228,23 +237,23 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselinePriceArray = [
             ...baselinePriceArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              base_price: item.base_price,
+              time: item.time.getUTCTimestamp(),
+              base_price: item.basePrice,
             },
           ]
 
           oraclePriceArray = [
             ...oraclePriceArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              value: item.oracle_price,
+              time: item.time.getUTCTimestamp(),
+              value: item.oraclePrice,
             },
           ]
 
           ohlcDataArray = [
             ...ohlcDataArray,
             {
-              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              time: item.time.getUTCTimestamp(),
               open: item.open,
               close: item.close,
               high: item.high,
@@ -260,7 +269,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].oraclePriceData = [...oraclePriceArray, ...get()[sliceKey].oraclePriceData]
             state[sliceKey].baselinePriceData = [...baselinePriceArray, ...get()[sliceKey].baselinePriceData]
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
-            state[sliceKey].lastFetchEndTime = llammaOhlcResponse.data[0].time
+            state[sliceKey].lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
           }),
         )
       } catch (error) {
@@ -282,16 +291,15 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const tradesFetch = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_trades/${network}/${poolAddress}?page=1&per_page=100
-          `,
-        )
-        const lpTradesRes: LlammaTradesApiResponse = await tradesFetch.json()
-        const sortedData = lpTradesRes.data.sort((a: LlammaTradeEvent, b: LlammaTradeEvent) => {
-          const timestampA = new Date(a.timestamp).getTime()
-          const timestampB = new Date(b.timestamp).getTime()
-          return timestampB - timestampA
+        const { trades } = await getTrades({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          llamma: poolAddress as Address,
+          page: 1,
+          perPage: 100,
         })
+
+        const sortedData = trades.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
 
         if (sortedData) {
           set(

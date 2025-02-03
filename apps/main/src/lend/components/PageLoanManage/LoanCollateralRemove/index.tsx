@@ -27,7 +27,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
 
 const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
@@ -43,7 +43,6 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
   const resetState = useStore((state) => state.loanCollateralRemove.resetState)
 
@@ -70,7 +69,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
 
   const handleBtnClickRemove = useCallback(
     async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -85,9 +84,9 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepDecrease, network, notifyNotification, updateFormValues],
+    [activeKey, fetchStepDecrease, network, updateFormValues],
   )
 
   const stepsObj = useCallback(
