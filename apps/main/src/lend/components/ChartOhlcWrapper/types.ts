@@ -1,5 +1,6 @@
-import type { LlammaControllerEvent, LlammaTradeEvent } from '@ui/Chart/types'
+import type { LlammaControllerEvent } from '@ui/Chart/types'
 import { ChainId } from '@/lend/types/lend.types'
+import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 
 export type LendingMarketTokens = {
   borrowedToken: {
@@ -25,7 +26,7 @@ export interface LiquidityDataProps {
 }
 
 export interface TradesDataProps {
-  lendTradesData: LlammaTradeEvent[]
+  lendTradesData: LlammaTrade[]
   chainId: ChainId
 }
 
