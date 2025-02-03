@@ -16,7 +16,7 @@ const DetailInfoPriceImpact = ({
 }) => {
   const formattedPriceImpact = useMemo(() => {
     if (priceImpact === 'N/A') return 'N/A'
-    if (+priceImpact > 0) return `≈${formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}`
+    if (!isNaN(+priceImpact)) return `≈${formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}`
     return ''
   }, [priceImpact])
 
