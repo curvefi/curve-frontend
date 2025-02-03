@@ -20,8 +20,8 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
   extraSmall: { font: 'bodyXsBold', height: IconSize.md },
   small: { font: 'buttonXs', height: IconSize.md },
   medium: { font: 'buttonXs', height: Sizing.md },
-  large: { font: 'headingSBold', height: Sizing.md },
-  extraLarge: { font: 'buttonM', height: Sizing.xl },
+  large: { font: 'buttonM', height: Sizing.md },
+  extraLarge: { font: 'headingSBold', height: Sizing.xl },
 }
 
 // overrides for clickable chips
