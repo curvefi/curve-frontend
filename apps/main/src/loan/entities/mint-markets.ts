@@ -28,11 +28,11 @@ async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMa
   }))
 }
 
-export const { getQueryOptions: getMintMarketOptions } = queryFactory({
-  queryKey: () => ['mint-markets'] as const,
+export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
+  queryKey: () => ['mint-markets-v2'] as const,
   queryFn: async () => {
     const chains = await queryClient.fetchQuery(getSupportedChainOptions({}))
-    return await Promise.all(
+    const allMarkets = await Promise.all(
       // todo: create separate query for the loop, so it can be cached separately
       chains.map(async (blockchainId) => {
         const chain = blockchainId as Chain
@@ -40,6 +40,7 @@ export const { getQueryOptions: getMintMarketOptions } = queryFactory({
         return await addStableCoinPrices({ chain, data })
       }),
     )
+    return allMarkets.flat()
   },
   staleTime: '5m',
   validationSuite: EmptyValidationSuite,

@@ -37,6 +37,7 @@ export type Market = {
     symbol: string
     address: Address
   }
+  leverage: number
 }
 
 export type MarketPair = { long?: Market; short?: Market }

@@ -114,10 +114,12 @@ export const LendingMarketsTable = ({
   onReload,
   data,
   headerHeight,
+  isError,
 }: {
   onReload: () => void
   data: LlamaMarket[]
   headerHeight: string
+  isError: boolean
 }) => {
   const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
   const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(DEFAULT_VISIBILITY)
@@ -142,7 +144,12 @@ export const LendingMarketsTable = ({
         maxWidth: MaxWidth.table,
       }}
     >
-      <DataTable table={table} headerHeight={headerHeight} rowHeight="3xl" emptyText={t`No markets found`}>
+      <DataTable
+        table={table}
+        headerHeight={headerHeight}
+        rowHeight="3xl"
+        emptyText={isError ? t`Could not load markets` : t`No markets found`}
+      >
         <TableFilters
           title={t`Llamalend Markets`}
           subtitle={t`Select a market to view more details`}

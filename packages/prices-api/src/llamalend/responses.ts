@@ -38,6 +38,7 @@ export type GetMarketsResponse = {
       symbol: string
       address: Address
     }
+    leverage: number
   }[]
 }
 

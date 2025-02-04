@@ -12,8 +12,16 @@ import useStore from '@/loan/store/useStore'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { invalidateMintMarkets } from '@/loan/entities/mint-markets'
 
-const onReload = () => invalidateLendingVaults({})
+/**
+ * Reloads the lending vaults and mint markets.
+ * Note: It does not reload the snapshots (for now).
+ */
+const onReload = () => {
+  invalidateLendingVaults({})
+  invalidateMintMarkets({})
+}
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
@@ -21,17 +29,17 @@ const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
  * Page for displaying the lending markets table.
  */
 export const PageLlamaMarkets = () => {
-  const { data, isFetching, isError } = useLlamaMarkets() // todo: show errors and loading state
+  const { data, isLoading, isError } = useLlamaMarkets() // todo: show errors and loading state
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
   usePageOnMount(useParams(), useLocation(), useNavigate()) // required for connecting wallet
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
       <DocumentHead title={t`Llamalend Markets`} />
-      {data ? (
-        <LendingMarketsTable onReload={onReload} data={data} headerHeight={headerHeight} />
-      ) : (
+      {isLoading ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
+      ) : (
+        <LendingMarketsTable onReload={onReload} data={data ?? []} headerHeight={headerHeight} isError={isError} />
       )}
       <LendTableFooter />
     </Box>

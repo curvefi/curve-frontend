@@ -8,7 +8,7 @@ import { Chain } from '@curvefi/prices-api'
 export type LendingVault = Market & { chain: Chain }
 
 export const { getQueryOptions: getLendingVaultOptions, invalidate: invalidateLendingVaults } = queryFactory({
-  queryKey: () => ['lending-vaults-v3'] as const,
+  queryKey: () => ['lending-vaults-v4'] as const,
   queryFn: async (): Promise<LendingVault[]> => {
     const chains = await queryClient.fetchQuery(getSupportedLendingChainOptions({}))
     const markets = await Promise.all(

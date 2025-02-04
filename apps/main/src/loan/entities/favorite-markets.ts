@@ -4,8 +4,8 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { useCallback, useMemo } from 'react'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
-  queryKey: () => ['lending-vaults-v3'] as const,
-  queryFn: async (): Promise<string[]> => getFromLocalStorage<string[]>('favoriteMarkets') ?? [],
+  queryKey: () => ['favorite-markets'] as const,
+  queryFn: async () => getFromLocalStorage<string[]>('favoriteMarkets') ?? [],
   staleTime: '5m',
   validationSuite: EmptyValidationSuite,
 })

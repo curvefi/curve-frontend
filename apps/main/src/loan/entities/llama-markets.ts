@@ -6,6 +6,8 @@ import { t } from '@lingui/macro'
 import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@curvefi/prices-api'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
+import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
+import { CampaignRewardsPool } from '@ui/CampaignRewards/types'
 
 export enum LlamaMarketType {
   Mint = 'mint',
@@ -32,12 +34,12 @@ export type LlamaMarket = {
   utilizationPercent: number
   liquidityUsd: number
   rates: {
-    lend?: number // apy %, only for pools
+    lend: number | null // apy %, only for pools
     borrow: number // apy %
   }
   type: LlamaMarketType
   url: string
-  hasPoints: boolean
+  rewards: PoolRewards | null
   isCollateralEroded: boolean
   isFavorite: boolean
   leverage: number
@@ -64,8 +66,10 @@ const convertLendingVault = (
     borrowedBalanceUsd,
     apyBorrow,
     apyLend,
+    leverage,
   }: LendingVault,
   favoriteMarkets: Set<string>,
+  campaigns: Record<string, PoolRewards>,
 ): LlamaMarket => ({
   chain,
   address: vault,
@@ -88,10 +92,9 @@ const convertLendingVault = (
   type: LlamaMarketType.Pool,
   url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
   isFavorite: favoriteMarkets.has(vault),
-  // todo: implement the following
-  hasPoints: false,
-  leverage: 0,
-  isCollateralEroded: false,
+  rewards: campaigns[vault.toLowerCase()] ?? null,
+  leverage,
+  isCollateralEroded: false, // todo
 })
 
 const convertMintMarket = (
@@ -109,6 +112,7 @@ const convertMintMarket = (
     chain,
   }: MintMarket,
   favoriteMarkets: Set<string>,
+  campaigns: Record<string, PoolRewards>,
 ): LlamaMarket => ({
   chain,
   address,
@@ -130,31 +134,34 @@ const convertMintMarket = (
   utilizationPercent: (100 * borrowed) / debtCeiling,
   // todo: do we want to see collateral or borrowable?
   liquidityUsd: collateralAmountUsd,
-  rates: { borrow: rate },
+  rates: { borrow: rate, lend: null },
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
   url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralToken.symbol}/create`,
   isFavorite: favoriteMarkets.has(address),
-  // todo: implement the following
-  hasPoints: false,
+  rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,
-  isCollateralEroded: false,
+  isCollateralEroded: false, // todo
 })
 
 export const useLlamaMarkets = () =>
   useQueries({
-    queries: [getLendingVaultOptions({}), getMintMarketOptions({}), getFavoriteMarketOptions({})],
-    combine: ([lendingVaults, mintMarkets, favoriteMarkets]): PartialQueryResult<LlamaMarket[]> => {
+    queries: [
+      getLendingVaultOptions({}),
+      getMintMarketOptions({}),
+      getCampaignsOptions({}),
+      getFavoriteMarketOptions({}),
+    ],
+    combine: ([lendingVaults, mintMarkets, campaigns, favoriteMarkets]): PartialQueryResult<LlamaMarket[]> => {
       const favoriteMarketsSet = new Set(favoriteMarkets.data)
+      const campaignData = campaigns.data ?? {}
       return {
         ...combineQueriesMeta([lendingVaults, mintMarkets, favoriteMarkets]),
         data: [
           ...(lendingVaults.data ?? [])
             .filter((vault) => vault.totalAssetsUsd)
-            .map((vault) => convertLendingVault(vault, favoriteMarketsSet)),
-          ...(mintMarkets.data ?? []).flatMap((markets) =>
-            markets.map((market) => convertMintMarket(market, favoriteMarketsSet)),
-          ),
+            .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaignData)),
+          ...(mintMarkets.data ?? []).map((market) => convertMintMarket(market, favoriteMarketsSet, campaignData)),
         ],
       }
     },

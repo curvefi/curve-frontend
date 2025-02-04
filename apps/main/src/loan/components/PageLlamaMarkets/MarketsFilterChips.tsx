@@ -18,8 +18,8 @@ export const MarketsFilterChips = ({
   console.log(columnFiltersById)
   const isFavoriteFiltered = columnFiltersById['isFavorite']
   const toggleFilterFavorite = () => setColumnFilter('isFavorite', !isFavoriteFiltered)
-  const hasPointsFiltered = columnFiltersById['hasPoints']
-  const toggleHasPoints = () => setColumnFilter('hasPoints', !hasPointsFiltered)
+  const rewardsFiltered = columnFiltersById['hasPoints']
+  const toggleRewards = () => setColumnFilter('rewards', !rewardsFiltered)
   const showMintMarkets = columnFiltersById['type'] !== LlamaMarketType.Mint
   const toggleShowMintMarkets = () => setColumnFilter('type', showMintMarkets ? undefined : LlamaMarketType.Mint)
   const showPoolMarkets = columnFiltersById['type'] !== LlamaMarketType.Pool
@@ -38,8 +38,8 @@ export const MarketsFilterChips = ({
         <Chip
           clickable
           label={t`Points`}
-          color={hasPointsFiltered ? 'selected' : 'unselected'}
-          onClick={toggleHasPoints}
+          color={rewardsFiltered ? 'selected' : 'unselected'}
+          onClick={toggleRewards}
           icon={<PointsIcon />}
         />
       </Stack>

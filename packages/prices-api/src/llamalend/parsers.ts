@@ -35,6 +35,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: x.borrowed_token.symbol,
     address: x.borrowed_token.address,
   },
+  leverage: x.leverage,
 })
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
