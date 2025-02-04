@@ -28,3 +28,31 @@ export function toUTC(timestamp: string | number): Date {
 
   return new Date(utcTimestamp)
 }
+
+const ONE_DAY_IN_SECONDS = 24 * 60 * 60
+
+type TimeRangeParams = {
+  end?: number
+  start?: number
+  daysRange?: number
+}
+
+/**
+ * Get start and end unix timestamps for a time range for the prices API.
+ * @param params - Configuration object
+ * @returns Object with start and end timestamps
+ * @example
+ * getTimeRange() // {end: <now>, start: <now - 10 days>}
+ * getTimeRange({ end: 1704067200 }) // {end: 1704067200, start: 1703203200}
+ * getTimeRange({ end: 1704067200, start: 1703203200 }) // {end: 1704067200, start: 1703203200}
+ * getTimeRange({ daysRange: 30 }) // {end: <now>, start: <now - 30 days>}
+ */
+export function getTimeRange({ end, start, daysRange = 10 }: TimeRangeParams = {}) {
+  end ??= Math.floor(Date.now() / 1000)
+  start ??= end - daysRange * ONE_DAY_IN_SECONDS
+
+  return {
+    end,
+    start,
+  }
+}

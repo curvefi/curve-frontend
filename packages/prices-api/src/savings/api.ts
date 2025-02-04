@@ -1,5 +1,6 @@
 import { getHost, type Options } from '..'
 import { fetchJson as fetch } from '../fetch'
+import { getTimeRange } from '../timestamp'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
@@ -23,8 +24,7 @@ export async function getEvents(page: number, options?: Options) {
 export async function getYield(options?: Options) {
   const host = getHost(options)
 
-  const end = Math.floor(Date.now() / 1000)
-  const start = end - 10 * 24 * 60 * 60 // Subtract 1 month worth of seconds.
+  const { start, end } = getTimeRange({ daysRange: 10 })
 
   const resp = await fetch<Responses.GetYieldResponse>(
     `${host}/v1/crvusd/savings/yield?agg_number=1&agg_units=hour&start=${start}&end=${end}`,
