@@ -49,7 +49,7 @@ const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight
       sx={(t) => ({
         marginBlock: 0,
         height: Sizing[rowHeight],
-        borderColor: '1px solid' + t.design.Layer[1].Outline,
+        border: `1px solid${t.design.Layer[1].Outline}`,
         [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
         [`&:hover .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
       })}

@@ -27,7 +27,7 @@ export function CopyIconButton({
             showAlert()
           }}
         >
-          <CopyIcon />
+          <CopyIcon color="primary" />
         </IconButton>
       </Tooltip>
 
