@@ -57,7 +57,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
 }
 
 // should return any pool/market that have any of the searched addresses
-function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens: string[]; other: string[] }) {
+function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens: string[]; other?: string[] }) {
   let uniqueResults: { tokens: SearchTermsFuseResult<T>; other: SearchTermsFuseResult<T> } = { tokens: [], other: [] }
 
   if (keys.tokens) {
@@ -101,7 +101,7 @@ export function searchByText<T>(
   searchText: string,
   datas: T[],
   tokenKeys: string[],
-  addressKeys: { tokens: string[]; other: string[] },
+  addressKeys: { tokens: string[]; other?: string[] },
 ) {
   const { addresses, tokens } = groupSearchTerms(searchText)
 

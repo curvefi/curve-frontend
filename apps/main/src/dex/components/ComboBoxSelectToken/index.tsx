@@ -15,6 +15,8 @@ import ComboBoxSelectedTokenButton from '@/dex/components/ComboBoxSelectToken/Co
 import ModalDialog from '@ui/Dialog'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Token } from '@/dex/types/main.types'
+import { searchByText } from '@ui-kit/utils'
+import uniqBy from 'lodash/uniqBy'
 
 const ComboBoxTokens = ({
   disabled,
@@ -137,14 +139,8 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
 `
 
 function _filter(filterValue: string, endsWith: EndsWith, tokens: Token[]) {
-  const fuse = new Fuse<Token>(tokens, {
-    ignoreLocation: true,
-    threshold: 0.01,
-    keys: ['symbol', 'address'],
-  })
-
-  const result = fuse.search(filterValue)
-
+  const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
+  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
   if (result.length > 0) {
     return result.map((r) => r.item)
   } else {
