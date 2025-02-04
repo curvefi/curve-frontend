@@ -1,4 +1,4 @@
-import { Components } from '@mui/material/styles'
+import type { Components } from '@mui/material'
 import { DesignSystem } from './design'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { InfoCircledIcon } from '@ui-kit/shared/icons/InfoCircledIcon'
