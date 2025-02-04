@@ -23,7 +23,7 @@ export async function getEvents(page: number, options?: Options) {
 export async function getYield(options?: Options) {
   const host = getHost(options)
 
-  const end = Math.floor(new Date().getTime() / 1000)
+  const end = Math.floor(Date.now() / 1000)
   const start = end - 10 * 24 * 60 * 60 // Subtract 1 month worth of seconds.
 
   const resp = await fetch<Responses.GetYieldResponse>(

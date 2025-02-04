@@ -7,7 +7,7 @@ export async function getOHLC(chain: Chain, poolAddr: string, tokenMain: string,
   const host = getHost(options)
 
   const range = 120 * 60 * 1000
-  const end = Math.floor(new Date().getTime() / 1000)
+  const end = Math.floor(Date.now() / 1000)
   const start = Math.floor(end - range)
 
   const url =

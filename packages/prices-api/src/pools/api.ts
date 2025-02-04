@@ -25,7 +25,7 @@ export async function getVolume(chain: Chain, poolAddr: string, options?: Option
   const host = getHost(options)
 
   const range = 120 * 60 * 1000
-  const end = Math.floor(new Date().getTime() / 1000)
+  const end = Math.floor(Date.now() / 1000)
   const start = Math.floor(end - range)
 
   const resp = await fetch<Responses.GetVolumeResponse>(
@@ -39,7 +39,7 @@ export async function getTvl(chain: Chain, poolAddr: string, options?: Options) 
   const host = getHost(options)
 
   const range = 120 * 60 * 1000
-  const end = Math.floor(new Date().getTime() / 1000)
+  const end = Math.floor(Date.now() / 1000)
   const start = Math.floor(end - range)
 
   const resp = await fetch<Responses.GetTvlResponse>(

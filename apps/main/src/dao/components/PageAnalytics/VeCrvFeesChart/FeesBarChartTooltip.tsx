@@ -23,7 +23,7 @@ const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ acti
             {date ? (
               <TooltipData>
                 {date}
-                {timestamp.getTime() > new Date().getTime() && <strong> {t`(in progress)`}</strong>}
+                {timestamp.getTime() > Date.now() && <strong> {t`(in progress)`}</strong>}
               </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>

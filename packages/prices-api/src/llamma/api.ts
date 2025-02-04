@@ -77,7 +77,7 @@ export async function getOHLC(
 ) {
   const host = getHost(options)
 
-  end ??= Math.floor(new Date().getTime() / 1000)
+  end ??= Math.floor(Date.now() / 1000)
   start ??= end - 10 * 24 * 60 * 60 // Subtract 1 month worth of seconds.
 
   const params = new URLSearchParams({
