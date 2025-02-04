@@ -16,6 +16,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
+import { t } from '@lingui/macro'
 
 const {
   Spacing,
@@ -59,6 +60,7 @@ export const TableFilters = ({
   title,
   subtitle,
   onReload,
+  onResetFilters,
   learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
@@ -69,6 +71,7 @@ export const TableFilters = ({
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
+  onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
   toggleVisibility: (columnId: string) => void
   collapsible: ReactNode
@@ -105,6 +108,9 @@ export const TableFilters = ({
         <Grid size={{ mobile: 12 }}>
           <Stack direction="row" justifyContent="space-between">
             {children}
+            <Button color="ghost" size="small" onClick={onResetFilters}>
+              {t`Reset Filters`}
+            </Button>
           </Stack>
         </Grid>
       </Grid>
@@ -147,5 +153,7 @@ export function useColumnFilters() {
     {},
   )
 
-  return [columnFilters, columnFiltersById, setColumnFilter] as const
+  const resetFilters = useCallback(() => setColumnFilters([]), [setColumnFilters])
+
+  return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
 }

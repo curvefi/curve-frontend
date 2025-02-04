@@ -24,7 +24,7 @@ export const LendingMarketsTable = ({
   headerHeight: string
   isError: boolean
 }) => {
-  const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters()
   const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(DEFAULT_VISIBILITY)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
@@ -60,6 +60,7 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
+          onResetFilters={resetFilters}
           collapsible={
             <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
           }
