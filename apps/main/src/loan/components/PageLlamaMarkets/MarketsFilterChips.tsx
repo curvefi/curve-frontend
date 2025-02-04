@@ -1,4 +1,3 @@
-import Chip from '@mui/material/Chip'
 import { t } from '@lingui/macro'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
@@ -7,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useCallback } from 'react'
-import { createSvgIcon } from '@mui/material/utils'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 
 const { Spacing } = SizesAndSpaces
 
@@ -58,27 +57,6 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
   return [marketTypes, toggles] as const
 }
 
-const FilterChip = ({
-  label,
-  selected,
-  toggle,
-  icon: Icon,
-}: {
-  label: string
-  selected: boolean
-  toggle: () => void
-  icon?: ReturnType<typeof createSvgIcon>
-}) => (
-  <Chip
-    clickable
-    label={label}
-    color={selected ? 'selected' : 'unselected'}
-    onDelete={selected ? toggle : undefined}
-    onClick={toggle}
-    icon={Icon && <Icon />}
-  />
-)
-
 export const MarketsFilterChips = (props: ColumnFilterProps) => {
   const [favorites, toggleFavorites] = useToggleFilter('isFavorite', props)
   const [rewards, toggleRewards] = useToggleFilter('rewards', props)
@@ -87,12 +65,12 @@ export const MarketsFilterChips = (props: ColumnFilterProps) => {
   return (
     <Stack direction="row" gap={Spacing.lg}>
       <Stack direction="row" gap="4px">
-        <FilterChip label={t`Favorites`} selected={favorites} toggle={toggleFavorites} icon={HeartIcon} />
-        <FilterChip label={t`Rewards`} selected={rewards} toggle={toggleRewards} icon={PointsIcon} />
+        <SelectableChip label={t`Favorites`} selected={favorites} toggle={toggleFavorites} icon={<HeartIcon />} />
+        <SelectableChip label={t`Rewards`} selected={rewards} toggle={toggleRewards} icon={<PointsIcon />} />
       </Stack>
       <Stack direction="row" gap="4px">
-        <FilterChip label={t`Mint Markets`} selected={marketTypes.Mint} toggle={toggleMarkets.Mint} />
-        <FilterChip label={t`Lend Markets`} selected={marketTypes.Pool} toggle={toggleMarkets.Pool} />
+        <SelectableChip label={t`Mint Markets`} selected={marketTypes.Mint} toggle={toggleMarkets.Mint} />
+        <SelectableChip label={t`Lend Markets`} selected={marketTypes.Pool} toggle={toggleMarkets.Pool} />
       </Stack>
     </Stack>
   )

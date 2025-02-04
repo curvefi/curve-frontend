@@ -1,7 +1,7 @@
 import type { Components } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip/Chip'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { Grays, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Grays } from '@ui-kit/themes/design/0_primitives'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
@@ -108,9 +108,6 @@ export const defineMuiChip = (
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
         cursor: 'pointer',
-        '& .MuiChip-deleteIcon': {
-          transition: `fill ${TransitionFunction}`,
-        },
         '&:has(.MuiChip-icon)': { ...handleBreakpoints({ paddingInline: Spacing.sm }) },
         '&:hover': {
           borderColor: 'transparent',

@@ -20,6 +20,11 @@ const poolTypeNames: Record<LlamaMarketType, () => string> = {
   [LlamaMarketType.Mint]: () => t`Mint`,
 }
 
+const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
+  [LlamaMarketType.Pool]: () => t`Lend markets allow you to earn interest on your assets.`,
+  [LlamaMarketType.Mint]: () => t`Mint markets allow you to borrow assets against your collateral.`,
+}
+
 const getRewardsDescription = ({ action, description, multiplier }: PoolRewards) =>
   `${multiplier}x: ${
     {
@@ -35,7 +40,9 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
   const iconsColor = useTheme().design.Text.TextColors.Highlight
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
-      <Chip size="small" color="default" label={poolTypeNames[type]()} />
+      <Tooltip title={poolTypeTooltips[type]()}>
+        <Chip size="small" color="default" label={poolTypeNames[type]()} />
+      </Tooltip>
 
       {leverage > 0 && (
         <Tooltip title={t`How much you can leverage your position`}>
@@ -49,9 +56,11 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
         </Tooltip>
       )}
 
-      <IconButton size="extraSmall" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
-        <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
-      </IconButton>
+      <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
+        <IconButton size="extraSmall" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
+          <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
+        </IconButton>
+      </Tooltip>
     </Stack>
   )
 }
