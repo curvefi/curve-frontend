@@ -30,7 +30,7 @@ export const TokenPair = ({ chain, assets: { borrowed, collateral } }: TokenPair
   <Box sx={{ position: 'relative', width: IconSize.xxl, height: IconSize.xxl }}>
     <TokenBox coin={borrowed} sx={{ top: '30%', left: '30%' }} />
     <TokenBox coin={collateral} sx={{ bottom: '30%', right: '30%' }} />
-    <TooltipBox title={chain} sx={{ top: '0%', right: '0%' }}>
+    <TooltipBox title={chain} sx={{ top: '0%', left: '0%' }}>
       <ChainIcon size="xs" blockchainId={chain} />
     </TooltipBox>
   </Box>

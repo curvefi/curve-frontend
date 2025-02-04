@@ -7,11 +7,10 @@ import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@curvefi/prices-api'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
 import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
-import { CampaignRewardsPool } from '@ui/CampaignRewards/types'
 
 export enum LlamaMarketType {
-  Mint = 'mint',
-  Pool = 'pool',
+  Mint = 'Mint',
+  Pool = 'Pool', // todo: rename to Lend
 }
 
 export type Assets = {

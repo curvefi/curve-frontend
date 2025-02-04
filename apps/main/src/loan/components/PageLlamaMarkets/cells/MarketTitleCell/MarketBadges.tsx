@@ -16,7 +16,7 @@ import { PoolRewards } from '@/loan/entities/campaigns'
 const { Spacing } = SizesAndSpaces
 
 const poolTypeNames: Record<LlamaMarketType, () => string> = {
-  [LlamaMarketType.Pool]: () => t`Pool`,
+  [LlamaMarketType.Pool]: () => t`Lend`,
   [LlamaMarketType.Mint]: () => t`Mint`,
 }
 
@@ -36,6 +36,7 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
       <Chip size="small" color="default" label={poolTypeNames[type]()} />
+
       {leverage > 0 && (
         <Tooltip title={t`How much you can leverage your position`}>
           <Chip size="small" color="highlight" label={t`🔥 ${leverage.toPrecision(2)}x leverage`} />
