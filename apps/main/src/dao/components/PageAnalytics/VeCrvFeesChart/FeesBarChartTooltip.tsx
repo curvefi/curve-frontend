@@ -18,23 +18,17 @@ const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ acti
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
-            {
-              <TooltipData>
-                {formatDateFromTimestamp(timestamp.getUTCTimestamp())}
-                {timestamp.getTime() > Date.now() && <strong> {t`(in progress)`}</strong>}
-              </TooltipData>
-            }
+            <TooltipData>
+              {formatDateFromTimestamp(timestamp.getUTCTimestamp())}
+              {timestamp.getTime() > Date.now() && <strong> {t`(in progress)`}</strong>}
+            </TooltipData>
           </TooltipColumn>
         </Box>
 
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
-            {feesUsd ? (
-              <TooltipData>{formatNumber(feesUsd, { currency: 'USD', notation: 'compact' })}</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>{formatNumber(feesUsd, { currency: 'USD', notation: 'compact' })}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>
