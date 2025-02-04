@@ -135,25 +135,6 @@ export interface LpTradeToken {
   event_index: number
 }
 
-export interface LlammaControllerEvent {
-  provider: string
-  deposit: {
-    amount: string
-    n1: number
-    n2: number
-  } | null
-  withdrawal: { amount_borrowed: string; amount_collateral: string } | null
-  block_number: number
-  timestamp: number
-  transaction_hash: string
-}
-
-export interface LlammaControllerApiResponse {
-  chain: string
-  address: string
-  data: LlammaControllerEvent[]
-}
-
 export type LiquidationRange = { value: number; time: UTCTimestamp }
 
 export type LlammaLiquididationRange = {
