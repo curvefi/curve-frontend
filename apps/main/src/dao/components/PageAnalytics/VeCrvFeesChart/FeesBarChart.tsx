@@ -1,7 +1,7 @@
 import React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-import { formatDateFromTimestamp, formatNumber } from 'ui/src/utils'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from 'ui/src/utils'
 
 import FeesBarChartTooltip from './FeesBarChartTooltip'
 import type { Distribution } from '@curvefi/prices-api/revenue'
@@ -28,7 +28,7 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => (
       <XAxis
         dataKey="timestamp"
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickFormatter={(value: Date) => `${formatDateFromTimestamp(value.getUTCTimestamp())}`}
+        tickFormatter={(value: Date) => `${formatDateFromTimestamp(convertToLocaleTimestamp(value.getUTCTimestamp()))}`}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         minTickGap={20}
