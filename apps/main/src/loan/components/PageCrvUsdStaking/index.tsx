@@ -102,6 +102,7 @@ const MainContainer = styled.div<{ mobileBreakpoint: string; isChartExpanded: bo
   flex-direction: ${({ isChartExpanded }) => (isChartExpanded ? 'column' : 'row')};
   justify-content: center;
   gap: var(--spacing-3);
+  padding: ${({ isChartExpanded }) => (isChartExpanded ? 'var(--spacing-3)' : '0')};
   @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
     flex-direction: column;
   }
