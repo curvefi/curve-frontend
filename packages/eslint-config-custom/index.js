@@ -7,14 +7,19 @@ module.exports = {
     '@next/next/no-img-element': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'unused-imports/no-unused-imports': 'warn',
+
+    // rule to enforce that imports are only allowed from certain paths
     'import/no-restricted-paths': [
       'error',
       {
-        basePath: '../../apps/main/src',
-        zones: ['dex', 'dao', 'lend', 'loan'].map((from, _, targets) => ({
-          from,
-          target: targets.filter((a) => a !== from),
-        })),
+        basePath: '../..',
+        // this syntax is confusing: 'target' is importing, 'from' is imported
+        zones: [
+          { target: 'packages', from: 'apps' },
+          ...['dex', 'dao', 'lend', 'loan']
+            .map((app) => `apps/main/src/${app}`)
+            .map((from, _, paths) => ({ target: paths.filter((path) => path !== from), from })),
+        ],
       },
     ],
   },
