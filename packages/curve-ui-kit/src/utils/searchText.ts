@@ -1,5 +1,7 @@
 import { get, isEqualWith, uniqWith } from 'lodash'
 import Fuse, { FuseResult } from 'fuse.js'
+import type { EndsWith } from 'main/src/dex/components/ComboBoxSelectToken/types'
+import uniqBy from 'lodash/uniqBy'
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
@@ -112,5 +114,15 @@ export function searchByText<T>(
   return {
     tokensResult: [...tokensResult, ...addressesResult.tokens],
     addressesResult: addressesResult.other,
+  }
+}
+
+export function filterTokens<T extends { address: string }>(filterValue: string, tokens: T[], endsWith: EndsWith): T[] {
+  const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
+  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
+  if (result.length > 0) {
+    return result.map((r) => r.item)
+  } else {
+    return tokens.filter((item) => endsWith(item.address, filterValue))
   }
 }

@@ -1,22 +1,16 @@
-import type { EndsWith } from '@/dex/components/ComboBoxSelectToken/types'
-
-import Fuse from 'fuse.js'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
-
 import { delayAction } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
-
 import ComboBox from '@/dex/components/ComboBoxSelectToken/ComboBox'
 import ComboBoxSelectedToken from '@/dex/components/ComboBoxSelectToken/ComboBoxSelectedToken'
 import ComboBoxSelectedTokenButton from '@/dex/components/ComboBoxSelectToken/ComboBoxSelectedTokenButton'
 import ModalDialog from '@ui/Dialog'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Token } from '@/dex/types/main.types'
-import { searchByText } from '@ui-kit/utils'
-import uniqBy from 'lodash/uniqBy'
+import { filterTokens } from '@ui-kit/utils'
 
 const ComboBoxTokens = ({
   disabled,
@@ -57,7 +51,7 @@ const ComboBoxTokens = ({
   const handleInpChange = useCallback(
     (filterValue: string, tokens: Token[] | undefined) => {
       setStateByKey('filterValue', filterValue)
-      const result = filterValue && tokens && tokens.length > 0 ? _filter(filterValue, endsWith, tokens) : tokens
+      const result = filterValue && tokens && tokens.length > 0 ? filterTokens(filterValue, tokens, endsWith) : tokens
       setResult(result)
     },
     [endsWith, setStateByKey],
@@ -135,17 +129,7 @@ const ComboBoxTokens = ({
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   height: 100%;
   border: 0.5px solid var(--input_button--border-color);
-  box-shadow: inset -2px -2px 0px 0.25px var(--box--primary--shadow-color);
+  box-shadow: inset -2px -2px 0 0.25px var(--box--primary--shadow-color);
 `
-
-function _filter(filterValue: string, endsWith: EndsWith, tokens: Token[]) {
-  const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
-  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
-  if (result.length > 0) {
-    return result.map((r) => r.item)
-  } else {
-    return tokens.filter((item) => endsWith(item.address, filterValue))
-  }
-}
 
 export default ComboBoxTokens
