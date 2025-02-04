@@ -11,7 +11,7 @@ export type PoolRewards = {
 }
 
 export const { getQueryOptions: getCampaignsOptions } = queryFactory({
-  queryKey: () => ['external-rewards-v1'] as const,
+  queryKey: () => ['external-rewards', 'v1'] as const,
   queryFn: async (): Promise<Record<string, PoolRewards>> =>
     Object.fromEntries(
       campaigns.flatMap(({ pools }: CampaignRewardsItem) =>

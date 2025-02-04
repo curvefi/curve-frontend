@@ -17,12 +17,19 @@ export async function getMarkets(
   return resp.data.map(Parsers.parseMarket)
 }
 
-export async function getSnapshots(chain: Chain, marketAddr: string, options?: Options) {
+export async function getSnapshots(
+  chain: Chain,
+  marketAddr: string,
+  params: {
+    agg?: string
+    fetch_on_chain?: boolean
+  } = { fetch_on_chain: true, agg: 'day' },
+  options?: Options,
+) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetSnapshotsResponse>(
-    `${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots?fetch_on_chain=true&agg=day`,
+    `${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots?${paramsToString(params)}`,
   )
-
   return resp.data.map(Parsers.parseSnapshot)
 }
 
