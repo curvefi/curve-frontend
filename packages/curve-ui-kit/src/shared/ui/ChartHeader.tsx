@@ -20,7 +20,8 @@ type ChartHeaderProps = {
   isChartExpanded: boolean
   toggleChartExpanded: () => void
   chartOptions: ChartOption[]
-  timeOptions: TimeOption[]
+  // set timeOptions to show select dropdown
+  timeOptions?: TimeOption[]
   activeChartOption: ChartOption
   setActiveChartOption: (newChartOption: ChartOption) => void
   activeTimeOption: TimeOption
@@ -61,18 +62,20 @@ const ChartHeader = ({
           <Icon name={isChartExpanded ? 'Minimize' : 'Maximize'} size={20} />
         </IconButton>
       </ToggleButtonGroup>
-      <Select
-        value={activeTimeOption}
-        onChange={handleTimeOption}
-        size="small"
-        sx={{ width: '100px', textTransform: 'uppercase' }}
-      >
-        {timeOptions.map((option) => (
-          <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
+      {timeOptions && (
+        <Select
+          value={activeTimeOption}
+          onChange={handleTimeOption}
+          size="small"
+          sx={{ width: '100px', textTransform: 'uppercase' }}
+        >
+          {timeOptions.map((option) => (
+            <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
     </Stack>
   )
 }

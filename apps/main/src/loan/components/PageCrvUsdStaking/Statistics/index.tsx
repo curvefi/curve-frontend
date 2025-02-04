@@ -50,7 +50,6 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
           activeTimeOption={activeTimeOption}
           setActiveTimeOption={setActiveTimeOption}
           chartOptions={chartOptions}
-          timeOptions={timeOptions}
         />
         {activeChartOption.label === 'Savings Rate' && <RevenueLineChart data={yieldData ?? []} />}
         {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
