@@ -1,6 +1,5 @@
-import { isEqualWith, uniqWith } from 'lodash'
-import Fuse from 'fuse.js'
-import FuseResult = Fuse.FuseResult
+import { get, isEqualWith, uniqWith } from 'lodash'
+import Fuse, { FuseResult } from 'fuse.js'
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
@@ -26,13 +25,24 @@ export function groupSearchTerms(searchText: string) {
     }, defaultGrouped)
 }
 
+/**
+ * Helper function to replace all '₮' with 'T' in the data.
+ * Officially ₮ is the symbol of the Mongolian Tugrik, but it is misused by Tether.
+ */
+const cleanValue = <T>(term: T): T =>
+  (Array.isArray(term) ? term.map(cleanValue) : typeof term === 'string' ? term.replace(/₮/g, 'T') : term) as T
+
 // should only return results if pool/market have all searched tokens
 function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
+  const hasTether = searchTerms.some((term) => term.includes('₮')) // allow searching for Tether-only with '₮'
   const fuse = new Fuse<T>(datas, {
     ignoreLocation: true,
+    ignoreDiacritics: true,
+    isCaseSensitive: false,
     includeMatches: true,
     minMatchCharLength: 2,
     threshold: 0.01,
+    ...(!hasTether && { getFn: (obj: T, path: string | string[]) => cleanValue(get(obj, path)) }),
     keys,
   })
 
@@ -59,7 +69,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
       keys: keys.tokens,
     })
 
-    let results: Fuse.FuseResult<T>[] = []
+    let results: FuseResult<T>[] = []
     searchTerms.forEach((term) => {
       results = [...results, ...fuse.search(term)]
     })
@@ -76,7 +86,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
       keys: keys.other,
     })
 
-    let results: Fuse.FuseResult<T>[] = []
+    let results: FuseResult<T>[] = []
     searchTerms.forEach((term) => {
       results = [...results, ...fuse.search(term)]
     })
