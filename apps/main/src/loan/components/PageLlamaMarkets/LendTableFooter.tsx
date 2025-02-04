@@ -40,7 +40,7 @@ export const LendTableFooter = () => (
         <Typography variant="headingSBold" textAlign="center">{t`Why Use Llamalend?`}</Typography>
       </Grid>
       <GridItem title={t`Efficient collateral`} icon={SoftLiquidationIcon}>
-        {t`Llamalend is powered by the cutting edge LLAMA liquidation engine.`}{' '}
+        {t`Llamalend is powered by the cutting edge LLAMMA liquidation engine.`}{' '}
         {t`Soft - liquidations convert your collateral when in the collateral erosion zone to protect your from liquidations, ultimately letting improve your capital efficiency.`}
       </GridItem>
       <GridItem title={t`High Security by Design`} icon={SignIcon}>
