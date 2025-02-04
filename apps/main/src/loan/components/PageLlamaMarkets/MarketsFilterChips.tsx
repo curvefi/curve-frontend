@@ -40,7 +40,7 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
       setColumnFilter(
         'type',
         !filter || filter.includes(type)
-          ? Object.values(LlamaMarketType).filter((f) => f !== type)
+          ? (filter ?? Object.values(LlamaMarketType)).filter((f) => f !== type)
           : [...(filter || []), type],
       )
     },
@@ -74,7 +74,7 @@ const FilterChip = ({
     label={label}
     color={selected ? 'selected' : 'unselected'}
     onDelete={selected ? toggle : undefined}
-    onClick={selected ? undefined : toggle}
+    onClick={toggle}
     icon={Icon && <Icon />}
   />
 )
