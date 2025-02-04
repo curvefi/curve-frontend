@@ -4,30 +4,26 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@ui/utils/utilsFormat'
+import { formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
 
 import Box from '@ui/Box'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 
-type Payload = Distribution & { date: string }
-
 const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
-    const { date, feesUsd, timestamp } = payload[0].payload as Payload
+    const { feesUsd, timestamp } = payload[0].payload as Distribution
 
     return (
       <TooltipWrapper>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
-            {date ? (
+            {
               <TooltipData>
-                {date}
+                {formatDateFromTimestamp(timestamp.getUTCTimestamp())}
                 {timestamp.getTime() > Date.now() && <strong> {t`(in progress)`}</strong>}
               </TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            }
           </TooltipColumn>
         </Box>
 

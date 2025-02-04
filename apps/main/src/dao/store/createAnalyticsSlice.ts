@@ -22,7 +22,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   veCrvFees: {
-    fees: (Distribution & { date: string })[]
+    fees: Distribution[]
     veCrvTotalFees: number
     fetchStatus: FetchingState
   }
@@ -123,14 +123,10 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
 
       try {
         const distributions = await getDistributions()
-        const feesFormatted = distributions.map((dist) => ({
-          ...dist,
-          date: formatDateFromTimestamp(dist.timestamp.getUTCTimestamp()),
-        }))
-        const totalFees = feesFormatted.reduce((acc, item) => acc + item.feesUsd, 0)
+        const totalFees = distributions.reduce((acc, item) => acc + item.feesUsd, 0)
 
         get()[sliceKey].setStateByKey('veCrvFees', {
-          fees: feesFormatted,
+          fees: distributions,
           veCrvTotalFees: totalFees,
           fetchStatus: 'SUCCESS',
         })

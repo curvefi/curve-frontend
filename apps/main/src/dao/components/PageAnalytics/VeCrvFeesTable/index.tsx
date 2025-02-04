@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 
 import useStore from '@/dao/store/useStore'
-import { formatNumber } from '@ui/utils'
+import { formatDateFromTimestamp, formatNumber } from '@ui/utils'
 
 import Box from '@ui/Box'
 import Spinner from '../../Spinner'
@@ -41,9 +41,9 @@ const VeCrcFees: React.FC = () => {
               <>
                 <FeesContainer>
                   {veCrvFees.fees.map((item) => (
-                    <FeeRow key={item.date}>
+                    <FeeRow key={item.timestamp.getTime()}>
                       <FeeDate>
-                        {item.date}
+                        {formatDateFromTimestamp(item.timestamp.getUTCTimestamp())}
                         {item.timestamp.getTime() > Date.now() && <span> {t`(in progress)`}</span>}
                       </FeeDate>
                       <FeeData>
