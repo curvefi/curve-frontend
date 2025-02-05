@@ -77,7 +77,10 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
           )}
           <DepositWithdraw />
           {!isChartExpanded && (
-            <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
+            <Stack width="100%">
+              {!isUserScrvUsdBalanceZero && <UserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
+              <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
+            </Stack>
           )}
         </Stack>
       </MainContainer>

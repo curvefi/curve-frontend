@@ -54,6 +54,9 @@ export type ScrvUsdRevenue = {
   history: ScrvUsdRevenueHistory[]
 }
 
+/**
+ * Separate the revenue in epochs (to display bars containing up to 7 days each)
+ */
 const organizeDataIntoEpochs = (history: ScrvUsdRevenueHistory[]): Epoch[] => {
   // Sort history by date
   const sortedHistory = [...history].sort((a, b) => new Date(a.dt).getTime() - new Date(b.dt).getTime())

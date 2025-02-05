@@ -5,8 +5,15 @@ import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { toUTC } from '@curvefi/prices-api/timestamp'
-
+import { formatDate } from '@ui/utils/utilsFormat'
 const { Spacing } = SizesAndSpaces
+
+// replicates recharts legend component line to illustrate price line pattern and color
+const LegendLine = ({ color, dash }: { color: string; dash?: string }) => (
+  <svg width="20" height="2">
+    <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash} />
+  </svg>
+)
 
 const DataSet = ({
   label,
@@ -21,9 +28,7 @@ const DataSet = ({
 }) => (
   <Stack direction="row" justifyContent="space-between" alignItems="center">
     <Stack direction="row" spacing={2} alignItems="center">
-      <svg width="20" height="2">
-        <line x1="0" y1="1" x2="20" y2="1" stroke={lineColor} strokeWidth={2} strokeDasharray={dash} />
-      </svg>
+      <LegendLine color={lineColor} dash={dash} />
       <Typography variant="bodySRegular">{label}</Typography>
     </Stack>
     <Typography variant="bodySBold">{value}</Typography>
@@ -38,22 +43,15 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
   if (active && payload && payload.length) {
     const { timestamp, proj_apy, proj_apy_7d_avg, proj_apy_total_avg } = payload[0].payload
 
-    const unixTimestamp = toUTC(timestamp)
-    const formattedDate = new Intl.DateTimeFormat(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }).format(unixTimestamp)
+    const date = toUTC(timestamp)
+    const formattedDate = formatDate(date, 'long')
 
     return (
       <Paper
         sx={{
           backgroundColor: (theme) => theme.design.Layer[3].Fill,
           padding: Spacing.md,
-          width: '20.5rem',
+          width: '20.5rem', // fixed width to cap maximum width of tooltip
           maxWidth: '100vw',
         }}
         elevation={2}

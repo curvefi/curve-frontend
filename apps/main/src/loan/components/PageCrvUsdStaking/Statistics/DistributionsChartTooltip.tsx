@@ -3,7 +3,7 @@ import { TooltipProps } from 'recharts'
 import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui/utils/utilsFormat'
+import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
 import { toUTC } from '@curvefi/prices-api/timestamp'
 
 const { Spacing } = SizesAndSpaces
@@ -19,15 +19,8 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
   if (active && payload && payload.length) {
     const { endDate, weeklyRevenue } = payload[0].payload
 
-    const unixTimestamp = toUTC(endDate)
-    const formattedDate = new Intl.DateTimeFormat(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }).format(unixTimestamp)
+    const date = toUTC(endDate)
+    const formattedDate = formatDate(date, 'long')
 
     return (
       <Paper

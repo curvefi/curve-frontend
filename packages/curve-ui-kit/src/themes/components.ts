@@ -24,23 +24,16 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       disableRipple: true,
     },
   },
-  MuiCard: {
-    styleOverrides: {
-      root: {
-        boxShadow: 'none',
-      },
-    },
-  },
   MuiCardHeader: {
     styleOverrides: {
       root: {
         padding: `${SizesAndSpaces.Spacing.lg.desktop} ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
         alignItems: 'flex-end',
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`,
+        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`, // 1px to account for border
         variants: [
           {
-            props: { size: 'small' }, // todo: currently not working, applying styles inline
+            props: { size: 'small' },
             style: {
               minHeight: SizesAndSpaces.Sizing.md.desktop,
               padding: `${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,

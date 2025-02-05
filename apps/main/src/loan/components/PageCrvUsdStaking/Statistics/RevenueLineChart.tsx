@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
 import { t } from '@lingui/macro'
+import { formatDate } from '@ui/utils/utilsFormat'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from './RevenueChartTooltip'
 import { toUTC } from '@curvefi/prices-api/timestamp'
@@ -20,6 +21,12 @@ type Props = {
   setActiveTimeOption: (event: React.MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
 }
 
+const labels = {
+  proj_apy: { text: t`APR`, dash: 'none' },
+  proj_apy_7d_avg: { text: t`7-day MA APR`, dash: '2 2' },
+  proj_apy_total_avg: { text: t`Average APR`, dash: '4 4' },
+} as const
+
 const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption, setActiveTimeOption }: Props) => {
   const {
     design: { Color, Text },
@@ -29,12 +36,6 @@ const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption,
   const averageLineColor = Color.Tertiary[400]
   const sevenDayAverageLineColor = Color.Secondary[500]
   const mainLineColor = Color.Primary[500]
-
-  const labels = {
-    proj_apy: { text: t`APR`, dash: 'none' },
-    proj_apy_7d_avg: { text: t`7-day MA APR`, dash: '2 2' },
-    proj_apy_total_avg: { text: t`Average APR`, dash: '4 4' },
-  } as const
 
   return (
     <Stack width="100%" direction="column" spacing={0}>
@@ -58,12 +59,8 @@ const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption,
             minTickGap={20}
             tickMargin={4}
             tickFormatter={(time) => {
-              const unix = toUTC(time as string | number)
-              return new Intl.DateTimeFormat(undefined, {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              }).format(unix)
+              const date = toUTC(time as string | number)
+              return formatDate(date)
             }}
           />
           <YAxis
