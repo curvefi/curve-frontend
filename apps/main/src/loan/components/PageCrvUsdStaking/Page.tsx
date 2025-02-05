@@ -62,9 +62,6 @@ const HeaderContainer = styled.div<{ mobileBreakpoint: string }>`
   align-items: center;
   padding: var(--spacing-3);
   gap: var(--spacing-3);
-  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
-    padding: var(--spacing-3);
-  }
 `
 
 const Description = styled.p``

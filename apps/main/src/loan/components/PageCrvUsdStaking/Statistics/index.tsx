@@ -31,7 +31,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
   const { data: revenueData } = useScrvUsdRevenue({})
 
   return (
-    <Stack width="100%" maxWidth={isChartExpanded ? '100%' : MaxWidth.statistics} direction="column" spacing={0}>
+    <Stack width="100%" maxWidth={isChartExpanded ? '100%' : MaxWidth.section} direction="column" spacing={0}>
       <Card
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,

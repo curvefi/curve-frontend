@@ -12,6 +12,9 @@ import DepositModule from '@/loan/components/PageCrvUsdStaking/DepositWithdraw/D
 import WithdrawModule from '@/loan/components/PageCrvUsdStaking/DepositWithdraw/WithdrawModule'
 import DeployButton from '@/loan/components/PageCrvUsdStaking/DepositWithdraw/DeployButton'
 import TransactionTracking from '@/loan/components/PageCrvUsdStaking/TransactionTracking'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 type DepositWithdrawProps = {
   className?: string
@@ -111,7 +114,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 29rem;
+  max-width: ${MaxWidth.actionCard};
   width: 100%;
 `
 

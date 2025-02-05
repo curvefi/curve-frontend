@@ -8,6 +8,10 @@ import { formatNumber } from '@ui/utils'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import Tooltip from '@ui/Tooltip'
+import { Sizing, Greens } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 type StatsBannerProps = {
   className?: string
@@ -95,9 +99,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
-  background-color: #d4f7e3;
-  border: 1px solid #1fa25e;
+  margin: 0 auto;
+  background-color: ${Greens[100]};
+  border: 1px solid ${Greens[500]};
   align-self: flex-start;
+  max-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section}); // action card + gap + section
 `
 
 const StatsTitleWrapper = styled.div`

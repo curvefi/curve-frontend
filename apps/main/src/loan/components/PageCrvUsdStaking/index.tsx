@@ -11,6 +11,8 @@ import UserPositionBanner from '@/loan/components/PageCrvUsdStaking/UserPosition
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { Stack } from '@mui/material'
+import { Sizing } from '@ui-kit/themes/design/0_primitives'
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
@@ -65,16 +67,21 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   return (
     <Wrapper>
       <MainContainer isChartExpanded={isChartExpanded} mobileBreakpoint={mobileBreakpoint}>
-        {isChartExpanded && <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />}
-        <StyledDepositWithdraw mobileBreakpoint={mobileBreakpoint} />
-        {/* {isUserScrvUsdBalanceZero ? (
-          <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} />
-        ) : (
-          <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />
-        )} */}
-        {!isChartExpanded && <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />}
+        {isUserScrvUsdBalanceZero && <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} />}
+        <Stack justifyContent="center" direction="row" gap={Sizing[200]}>
+          {isChartExpanded && (
+            <Stack>
+              <UserPositionBanner mobileBreakpoint={mobileBreakpoint} />
+              <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
+            </Stack>
+          )}
+          <DepositWithdraw />
+          {!isChartExpanded && (
+            <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
+          )}
+        </Stack>
       </MainContainer>
-      <StyledUserInformation />
+      <UserInformation />
     </Wrapper>
   )
 }
@@ -90,11 +97,11 @@ const Wrapper = styled.div`
     padding: 0 var(--spacing-3);
   }
   @media (min-width: 43.75rem) {
-    padding: 0 var(--spacing-4);
+    padding: 0 var(--spacing-3);
   }
   // 79.5rem === var(--width)
   @media (min-width: 79.5rem) {
-    padding: 0;
+    padding: 0 var(--spacing-3);
   }
 `
 
@@ -104,13 +111,12 @@ const MainContainer = styled.div<{ mobileBreakpoint: string; isChartExpanded: bo
   justify-content: center;
   gap: var(--spacing-3);
   padding: ${({ isChartExpanded }) => (isChartExpanded ? 'var(--spacing-3)' : '0')};
-  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
-    flex-direction: column;
-  }
+  flex-direction: column;
 `
 
 const StyledStatsBanner = styled(StatsBanner)<{ mobileBreakpoint: string }>`
-  max-width: 309px;
+  width: 100%;
+  max-width: 100%;
   @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
     max-width: 100%;
   }
@@ -118,21 +124,6 @@ const StyledStatsBanner = styled(StatsBanner)<{ mobileBreakpoint: string }>`
 
 const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: string }>`
   margin: var(--spacing-3) 0 auto var(--spacing-3);
-  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
-    margin-left: 0;
-    order: 1;
-  }
-`
-
-const StyledDepositWithdraw = styled(DepositWithdraw)<{ mobileBreakpoint: string }>`
-  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
-    order: 2;
-    margin: var(--spacing-3) auto auto;
-  }
-`
-
-const StyledUserInformation = styled(UserInformation)`
-  order: 3;
 `
 
 export default CrvUsdStaking
