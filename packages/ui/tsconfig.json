@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@lingui/macro": ["../../curve-ui-kit/src/lib/i18n.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "../../packages/curve-ui-kit/**/*.d.ts"],

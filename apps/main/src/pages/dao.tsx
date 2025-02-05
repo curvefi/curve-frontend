@@ -4,17 +4,12 @@ import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import 'focus-visible'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getLocaleFromUrl } from '@/dao/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@ui/utils'
-import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
@@ -23,9 +18,8 @@ import GlobalStyle from '@/dao/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-
-i18n.load({ en: messagesEn })
-i18n.activate('en')
+import { shouldForwardProp } from '@ui/styled-containers'
+import { StyleSheetManager } from 'styled-components'
 
 const Page404 = dynamic(() => import('@/dao/components/Page404/Page'), { ssr: false })
 const PageDao = dynamic(() => import('@/dao/components/PageProposals/Page'), { ssr: false })
@@ -77,14 +71,7 @@ const App: NextPage = () => {
 
     // init locale
     const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-      dynamicActivate(parsedLocale, data)
-    })()
-    setLocale(parsedLocale)
-    updateAppLocale(parsedLocale)
+    setLocale(rLocale?.value ?? 'en')
     useWallet.initialize(locale, theme, networks)
 
     const handleVisibilityChange = () => {
@@ -159,7 +146,7 @@ const App: NextPage = () => {
       <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
-            <I18nProvider i18n={i18n}>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
               <AriaI18nProvider locale={locale}>
                 <OverlayProvider>
                   <Page>
@@ -188,7 +175,7 @@ const App: NextPage = () => {
                   <GlobalStyle />
                 </OverlayProvider>
               </AriaI18nProvider>
-            </I18nProvider>
+            </StyleSheetManager>
           </HashRouter>
         )}
       </ThemeProvider>

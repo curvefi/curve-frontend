@@ -12,13 +12,13 @@ import {
   useWallet,
 } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
-import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
 import { initCurveJs, initLendApi } from '@/loan/utils/utilsCurvejs'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@/loan/types/loan.types'
+import { updateAppLocale } from '@ui-kit/lib/i18n'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
@@ -258,10 +258,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (isSuccess(connectState)) {
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
-        ;(async () => {
-          let data = await import(`@/locales/${rLocale}/messages`)
-          dynamicActivate(rLocale, data)
-        })()
         setLocale(rLocale)
         updateAppLocale(rLocale)
         updateWalletLocale(rLocale)
