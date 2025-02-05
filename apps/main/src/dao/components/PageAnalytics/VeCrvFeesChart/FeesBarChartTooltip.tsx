@@ -4,7 +4,7 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
+import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
 
 import Box from '@ui/Box'
 import type { Distribution } from '@curvefi/prices-api/revenue'
@@ -19,7 +19,7 @@ const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ acti
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
             <TooltipData>
-              {formatDateFromTimestamp(convertToLocaleTimestamp(timestamp.getUTCTimestamp()))}
+              {formatDate(timestamp)}
               {timestamp.getTime() > Date.now() && <strong> {t`(in progress)`}</strong>}
             </TooltipData>
           </TooltipColumn>
