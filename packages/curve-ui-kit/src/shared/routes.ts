@@ -29,6 +29,7 @@ export const DAO_ROUTES = {
   PAGE_VECRV: '/vecrv',
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
+  DISCUSSION: 'https://gov.curve.fi/',
 }
 
 export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
@@ -68,6 +69,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
       { route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
       { route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
       { route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
+      { route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
   },
 }
