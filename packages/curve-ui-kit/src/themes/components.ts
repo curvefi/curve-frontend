@@ -24,6 +24,13 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       disableRipple: true,
     },
   },
+  MuiCard: {
+    styleOverrides: {
+      root: {
+        boxShadow: 'none',
+      },
+    },
+  },
   MuiCardHeader: {
     styleOverrides: {
       root: {

@@ -1,9 +1,10 @@
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import Stack from '@mui/material/Stack'
-import ButtonGroup from '@mui/material/ButtonGroup'
-import Button from '@mui/material/Button'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import ToggleButton from '@mui/material/ToggleButton'
 import { t } from '@lingui/macro'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from './RevenueChartTooltip'
@@ -14,9 +15,12 @@ const { FontSize, FontWeight, Spacing } = SizesAndSpaces
 type Props = {
   data: ScrvUsdYieldWithAverages[]
   height?: number
+  timeOptions: TimeOption[]
+  activeTimeOption: TimeOption
+  setActiveTimeOption: (event: React.MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
 }
 
-const LineChartComponent = ({ data, height = 400 }: Props) => {
+const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption, setActiveTimeOption }: Props) => {
   const {
     design: { Color, Text },
   } = useTheme()
@@ -36,7 +40,6 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
     <Stack width="100%" direction="column" spacing={0}>
       <ResponsiveContainer width="100%" height={height} debounce={200}>
         <LineChart
-          width={500}
           height={300}
           data={data}
           margin={{
@@ -50,7 +53,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           <XAxis
             dataKey="timestamp"
             tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
-            tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
+            tickLine={false}
             axisLine={false}
             minTickGap={20}
             tickMargin={4}
@@ -66,7 +69,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           <YAxis
             tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
             tickFormatter={(value) => `${value.toFixed(0)}%`}
-            tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
+            tickLine={false}
             axisLine={false}
             dataKey={'proj_apy'}
           />
@@ -111,8 +114,8 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
               fontWeight: FontWeight.Medium,
               fontSize: FontSize.sm.desktop,
               color: Text.TextColors.Secondary,
-              paddingTop: 8,
-              paddingLeft: 24,
+              paddingTop: Spacing.sm.desktop,
+              paddingLeft: Spacing.lg.desktop,
             }}
           />
         </LineChart>
@@ -121,19 +124,15 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         direction="row"
         justifyContent="flex-end"
         alignItems="center"
-        sx={{ margin: `-${Spacing.lg} ${Spacing.md} 0 0` }}
+        sx={{ margin: `-2.75rem ${Spacing.lg.desktop} 0 0` }}
       >
-        <ButtonGroup>
-          <Button size="small" variant="text">
-            1d
-          </Button>
-          <Button size="small" variant="text">
-            1w
-          </Button>
-          <Button size="small" variant="text">
-            1m
-          </Button>
-        </ButtonGroup>
+        <ToggleButtonGroup exclusive value={activeTimeOption} onChange={setActiveTimeOption}>
+          {timeOptions.map((option) => (
+            <ToggleButton value={option} key={option} size="extraSmall">
+              {option}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
       </Stack>
     </Stack>
   )

@@ -8,7 +8,7 @@ import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 const { Spacing } = SizesAndSpaces
 
 const StatsStack = () => {
-  const { data: yieldData, error: yieldError, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1d' })
+  const { data: yieldData, error: yieldError, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1y' })
   const { data: revenueData, error: revenueError, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
 
   return (

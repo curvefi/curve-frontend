@@ -8,7 +8,7 @@ import networks from '@/loan/networks'
 const { Spacing } = SizesAndSpaces
 
 const AdvancedDetails = () => (
-  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }} elevation={0}>
     <CardHeader
       size="small"
       title={t`Advanced Details`}

@@ -17,7 +17,7 @@ const chartOptions: ChartOption[] = [
   { activeTitle: 'Historical Distributions', label: 'Distributions' },
 ]
 
-const timeOptions: TimeOption[] = ['1d', '1w', '1m']
+const timeOptions: TimeOption[] = ['1m', '6m', '1y']
 
 type StatisticsProps = {
   isChartExpanded: boolean
@@ -35,7 +35,6 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
       <Card
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,
-          width: '100%',
         }}
       >
         <CardHeader title="Statistics" />
@@ -51,7 +50,14 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
           setActiveTimeOption={setActiveTimeOption}
           chartOptions={chartOptions}
         />
-        {activeChartOption.label === 'Savings Rate' && <RevenueLineChart data={yieldData ?? []} />}
+        {activeChartOption.label === 'Savings Rate' && (
+          <RevenueLineChart
+            data={yieldData ?? []}
+            timeOptions={timeOptions}
+            activeTimeOption={activeTimeOption}
+            setActiveTimeOption={(_, newValue) => newValue && setActiveTimeOption(newValue)}
+          />
+        )}
         {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
       </Card>
       <AdvancedDetails />

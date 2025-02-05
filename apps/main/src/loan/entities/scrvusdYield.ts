@@ -21,21 +21,28 @@ type GetScrvUsdYieldResponse = {
 }
 
 export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
-  const timeOptionCalc = {
-    '1d': 300 * 24 * 60 * 60 * 1000,
-    '1w': 300 * 24 * 60 * 60 * 7 * 1000,
-    '1m': 300 * 24 * 60 * 60 * 30 * 1000,
+  // calcs starting timestamp
+  const timeOptionCalc: Record<TimeOption, number> = {
+    '1m': 30 * 24 * 60 * 60 * 1000, // 30 days
+    '6m': 180 * 24 * 60 * 60 * 1000, // 180 days
+    '1y': 365 * 24 * 60 * 60 * 1000, // 365 days
   }
-  const aggNumbers = {
-    '1d': 1,
-    '1w': 7,
-    '1m': 30,
+  // sets number of aggregations
+  const aggNumbers: Record<TimeOption, number> = {
+    '1m': 4,
+    '6m': 16,
+    '1y': 32,
+  }
+  const timeUnit: Record<TimeOption, string> = {
+    '1m': 'hour',
+    '6m': 'hour',
+    '1y': 'hour',
   }
 
   const startTimestamp = Math.floor((Date.now() - timeOptionCalc[params.timeOption]) / 1000)
   const endTimestamp = Math.floor(Date.now() / 1000)
 
-  const url = `https://prices.curve.fi/v1/crvusd/savings/yield?agg_number=${aggNumbers[params.timeOption]}&agg_units=day&start=${startTimestamp}&end=${endTimestamp}`
+  const url = `https://prices.curve.fi/v1/crvusd/savings/yield?agg_number=${aggNumbers[params.timeOption]}&agg_units=${timeUnit[params.timeOption]}&start=${startTimestamp}&end=${endTimestamp}`
   const response = await fetch(url)
   const { data, detail } = (await response.json()) as GetScrvUsdYieldResponse
 
