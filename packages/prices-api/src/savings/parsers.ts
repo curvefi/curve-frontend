@@ -1,4 +1,4 @@
-import { toUTC } from '../timestamp'
+import { toDate } from '../timestamp'
 import type * as Responses from './responses'
 import type * as Models from './models'
 
@@ -10,12 +10,12 @@ export const parseEvent = (x: Responses.GetEventsResponse['events'][number]): Mo
   assets: BigInt(x.assets),
   supply: BigInt(x.shares),
   blockNumber: x.block_number,
-  timestamp: toUTC(x.timestamp),
+  timestamp: toDate(x.timestamp),
   txHash: x.transaction_hash,
 })
 
 export const parseYield = (x: Responses.GetYieldResponse['data'][number]): Models.Yield => ({
-  timestamp: toUTC(x.timestamp),
+  timestamp: toDate(x.timestamp),
   assets: x.assets,
   supply: x.supply,
   apyProjected: x.proj_apy,
@@ -30,11 +30,11 @@ export const parseRevenue = (x: Responses.GetRevenueResponse['history'][number])
   feesTotal: BigInt(x.total_fees),
   feesProtocol: BigInt(x.protocol_fees),
   txHash: x.tx_hash,
-  timestamp: toUTC(x.dt),
+  timestamp: toDate(x.dt),
 })
 
 export const parseStatistics = (x: Responses.GetStatisticsResponse): Models.Statistics => ({
-  lastUpdated: toUTC(x.last_updated),
+  lastUpdated: toDate(x.last_updated),
   lastUpdatedBlock: x.last_updated_block,
   aprProjected: x.proj_apr,
   supply: x.supply,

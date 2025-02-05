@@ -1,5 +1,5 @@
 import { chains, type Chain } from '..'
-import { toUTC } from '../timestamp'
+import { toDate } from '../timestamp'
 import type * as Responses from './responses'
 import type * as Models from './models'
 
@@ -21,7 +21,7 @@ export const parseTxs = (x: Responses.GetTransactionsResponse): Models.Transacti
   x.data.flatMap((data) =>
     data.transactions.map((tx) => ({
       chain: data.chain,
-      timestamp: toUTC(tx.timestamp),
+      timestamp: toDate(tx.timestamp),
       type: tx.type,
       transactions: tx.transactions,
     })),
@@ -31,7 +31,7 @@ export const parseUsers = (x: Responses.GetUsersResponse): Models.Users[] =>
   x.data.flatMap((data) =>
     data.users.map((tx) => ({
       chain: data.chain,
-      timestamp: toUTC(tx.timestamp),
+      timestamp: toDate(tx.timestamp),
       type: tx.type,
       users: tx.users,
     })),
