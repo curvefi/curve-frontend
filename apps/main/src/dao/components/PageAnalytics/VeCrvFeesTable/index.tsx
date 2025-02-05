@@ -44,7 +44,7 @@ const VeCrcFees: React.FC = () => {
                     <FeeRow key={item.timestamp.getTime()}>
                       <FeeDate>
                         {formatDate(item.timestamp)}
-                        {item.timestamp.getTime() > Date.now() && <span> {t`(in progress)`}</span>}
+                        {item.timestamp > new Date() && <span> {t`(in progress)`}</span>}
                       </FeeDate>
                       <FeeData>
                         {formatNumber(item.feesUsd, {
