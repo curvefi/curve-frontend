@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils/'
+import { formatNumber, formatDate } from '@ui/utils/'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Box from '@ui/Box'
 import type { Locker } from '@curvefi/prices-api/dao'
@@ -37,11 +37,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         loading={holdersLoading}
         title={t`Unlock Time`}
         data={
-          <MetricsColumnData>
-            {veCrvHolder.unlockTime
-              ? formatDateFromTimestamp(convertToLocaleTimestamp(veCrvHolder.unlockTime.getUTCTimestamp()))
-              : 'N/A'}
-          </MetricsColumnData>
+          <MetricsColumnData>{veCrvHolder.unlockTime ? formatDate(veCrvHolder.unlockTime) : 'N/A'}</MetricsColumnData>
         }
       />
       <MetricsComp

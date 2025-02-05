@@ -3,7 +3,7 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
+import { formatNumber, formatDate } from '@ui/utils'
 
 import Box from '@ui/Box'
 import type { Locker } from '@curvefi/prices-api/dao'
@@ -39,9 +39,7 @@ const TopHoldersBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = (
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>
             {unlockTime ? (
-              <TooltipData>
-                {formatDateFromTimestamp(convertToLocaleTimestamp(unlockTime.getUTCTimestamp()))}
-              </TooltipData>
+              <TooltipData>{formatDate(unlockTime)}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 
 import useStore from '@/dao/store/useStore'
 
-import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
+import { shortenTokenAddress, formatNumber, formatDate } from '@ui/utils'
 import { TOP_HOLDERS } from '@/dao/constants'
 
 import PaginatedTable, { Column } from '@/dao/components/PaginatedTable'
@@ -63,9 +63,7 @@ const TopHoldersTable: React.FC = () => {
             <TableData
               className={allHoldersSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {holder.unlockTime
-                ? formatDateFromTimestamp(convertToLocaleTimestamp(holder.unlockTime.getUTCTimestamp()))
-                : 'N/A'}
+              {holder.unlockTime ? formatDate(holder.unlockTime) : 'N/A'}
             </TableData>
           </TableRowWrapper>
         )}
