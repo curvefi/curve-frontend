@@ -115,7 +115,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
           minHeight: 'xs',
           minWidth: 'sm',
           paddingBlock: 'xs',
-          paddingInline: 'md',
+          paddingInline: 'sm',
           fontSize: 'sm',
           lineHeight: 'sm',
         }),
