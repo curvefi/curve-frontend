@@ -9,7 +9,6 @@ import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import 'focus-visible'
 import { HashRouter } from 'react-router-dom'
-import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/lend/globalStyle'
@@ -24,6 +23,7 @@ import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
 import { getLocaleFromUrl } from '@/lend/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -40,8 +40,6 @@ const App: NextPage = () => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
-
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
 
@@ -76,8 +74,7 @@ const App: NextPage = () => {
     })()
 
     // init onboard
-    const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-    updateWalletStateByKey('onboard', onboardInstance)
+    useWallet.initialize(locale, theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)

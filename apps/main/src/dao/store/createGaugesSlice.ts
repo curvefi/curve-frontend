@@ -7,20 +7,21 @@ import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@ui/utils'
 import {
   CurveGaugeResponse,
-  PricesGaugeOverviewResponse,
+  FetchingState,
+  GaugeCurveApiDataMapper,
   GaugeFormattedData,
   GaugeMapper,
-  GaugeCurveApiDataMapper,
-  GaugeVotesResponse,
   GaugeVotesMapper,
-  GaugeWeightHistoryData,
-  FetchingState,
-  TransactionState,
-  SortByFilterGaugesKeys,
-  SortByFilterGauges,
-  SortDirection,
+  GaugeVotesResponse,
   GaugeVotesSortBy,
+  GaugeWeightHistoryData,
+  PricesGaugeOverviewResponse,
+  SortByFilterGauges,
+  SortByFilterGaugesKeys,
+  SortDirection,
+  TransactionState,
 } from '@/dao/types/dao.types'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -160,15 +161,12 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const response = await fetch(`https://api.curve.fi/v1/getAllGauges`)
         const data: CurveGaugeResponse = await response.json()
 
-        const gaugeDataMapper: GaugeCurveApiDataMapper = Object.entries(data.data).reduce(
-          (acc, [poolId, gaugeData]) => {
-            if (gaugeData.gauge) {
-              acc[gaugeData.gauge.toLowerCase()] = gaugeData
-            }
-            return acc
-          },
-          {} as GaugeCurveApiDataMapper,
-        )
+        const gaugeDataMapper: GaugeCurveApiDataMapper = Object.values(data.data).reduce((acc, gaugeData) => {
+          if (gaugeData.gauge) {
+            acc[gaugeData.gauge.toLowerCase()] = gaugeData
+          }
+          return acc
+        }, {} as GaugeCurveApiDataMapper)
 
         set(
           produce(get(), (state) => {
@@ -271,8 +269,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       const { gaugeMapper, gaugeListSortBy } = get()[sliceKey]
       const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
       const gaugeData = gaugeMapper ?? cacheGaugeMapper
-      const sortedGauges = sortGauges(gaugeData, gaugeListSortBy)
-      return sortedGauges
+      return sortGauges(gaugeData, gaugeListSortBy)
     },
     setGauges: (searchValue: string) => {
       const { selectFilteredSortedGauges } = get()[sliceKey]
@@ -311,8 +308,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         set(
           produce((state) => {
-            const reversedEntries = [...votes].reverse()
-            state[sliceKey].gaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
         )
@@ -366,18 +362,13 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
       const curve = get().curve
-      const provider = get().wallet.getProvider('')
+      const { provider } = useWallet.getState()
       const { getUserGaugeVoteWeights } = get().user
 
       if (!curve) return
 
       const address = gaugeAddress.toLowerCase()
-      const notifyNotification = get().wallet.notifyNotification
-      let dismissNotificationHandler
-
-      const notifyPendingMessage = t`Please confirm cast vote.`
-      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-      dismissNotificationHandler = dismissConfirm
+      const { dismiss: dismissConfirm } = notify(t`Please confirm cast vote.`, 'pending')
 
       set(
         produce(get(), (state) => {
@@ -404,8 +395,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         dismissConfirm()
 
         const loadingNotificationMessage = t`Casting vote...`
-        const { dismiss: dismissLoading } = notifyNotification(loadingNotificationMessage, 'pending')
-        dismissNotificationHandler = dismissLoading
+        const { dismiss: dismissLoading } = notify(loadingNotificationMessage, 'pending')
 
         await provider!.waitForTransaction(res)
 
@@ -420,7 +410,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         )
         dismissLoading()
         const successNotificationMessage = t`Succesfully cast vote!`
-        notifyNotification(successNotificationMessage, 'success', 15000)
+        notify(successNotificationMessage, 'success', 15000)
 
         await getUserGaugeVoteWeights(userAddress, true)
 

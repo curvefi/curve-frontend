@@ -1,10 +1,9 @@
-import type { FormValues, FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanSwap/types'
+import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanSwap/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
+import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/loan/store/createLoanSwap'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
@@ -14,7 +13,6 @@ import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import { StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import Box from '@ui/Box'
 import DetailInfoComp from '@ui/DetailInfo'
@@ -52,12 +50,10 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const fetchMaxSwappable = useStore((state) => state.loanSwap.fetchMaxSwappable)
   const fetchStepApprove = useStore((state) => state.loanSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.loanSwap.fetchStepSwap)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanSwap.setFormValues)
   const setStateByKey = useStore((state) => state.loanSwap.setStateByKey)
   const resetState = useStore((state) => state.loanSwap.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -115,7 +111,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       const { item1Name } = getItemsName(llamma, formValues)
       const swapAmount = formValues.item1 === '' ? detailInfo.amount : formValues.item1
       const notifyMessage = t`Please confirm swapping ${swapAmount} ${item1Name} at max ${maxSlippage} slippage.`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
 
       const resp = await fetchStepSwap(
         payloadActiveKey,
@@ -134,9 +130,9 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, detailInfo.amount, fetchStepSwap, notifyNotification, rChainId, reset],
+    [activeKey, detailInfo.amount, fetchStepSwap, rChainId, reset],
   )
 
   const getSteps = useCallback(
@@ -167,10 +163,10 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
             const { item1Name } = getItemsName(llamma, formValues)
             const swapAmount = formValues.item1 === '' ? detailInfo.amount : formValues.item1
             const notifyMessage = t`Please approve spending your ${item1Name}.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(activeKey, curve, llamma, { ...formValues, item1: swapAmount }, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         SWAP: {
@@ -192,7 +188,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap, notifyNotification],
+    [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap],
   )
 
   // onMount

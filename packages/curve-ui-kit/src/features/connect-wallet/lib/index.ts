@@ -1,4 +1,2 @@
-export { connectWalletLocales } from './locales'
-export { useConnectWallet, useSetChain, useSetLocale } from '@web3-onboard/react'
-export { initOnboard } from './init'
-export { getWalletSignerAddress, getWalletChainId, getWalletProvider } from './utils/wallet-helpers'
+export { useWallet, useSetChain, useSetLocale, notify } from './hooks'
+export { getWalletSignerAddress, getWalletChainId, getWalletSignerEns } from './utils/wallet-helpers'

@@ -4,9 +4,8 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import networks from '@/loan/networks'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/loan/components/ChartOhlcWrapper/utils'
 
 import Box from '@ui/Box'
 import TokenIcon from '@/loan/components/TokenIcon'
@@ -17,13 +16,9 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
   <>
     {coins &&
       llammaControllerData.map((transaction, index) => (
-        <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-          <LiquidityEvent
-            href={networks[chainId].scanTxPath(transaction.transaction_hash)}
-            rel="noopener"
-            target="_blank"
-          >
-            {transaction.deposit !== null && (
+        <TransactionRow key={`${transaction.txHash}-lp-${index}`}>
+          <LiquidityEvent href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+            {!!transaction.deposit && (
               <>
                 <Box flex flexColumn>
                   <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
@@ -47,15 +42,15 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                 </LiquidityEventRow>
               </>
             )}
-            {transaction.withdrawal !== null && (
+            {!!transaction.withdrawal && (
               <>
                 <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
                 <Box flex flexColumn margin="0 0 0 auto">
-                  {+transaction.withdrawal.amount_collateral !== 0 && (
+                  {+transaction.withdrawal.amountCollateral !== 0 && (
                     <LiquidityEventRow>
                       <Chip isBold isNumber>
-                        {formatNumber(transaction.withdrawal.amount_collateral, {
-                          ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
+                        {formatNumber(transaction.withdrawal.amountCollateral, {
+                          ...getFractionDigitsOptions(transaction.withdrawal.amountCollateral, 2),
                         })}
                       </Chip>
                       <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
@@ -67,11 +62,11 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       />
                     </LiquidityEventRow>
                   )}
-                  {+transaction.withdrawal.amount_borrowed !== 0 && (
+                  {+transaction.withdrawal.amountBorrowed !== 0 && (
                     <LiquidityEventRow>
                       <Chip isBold isNumber>
-                        {formatNumber(transaction.withdrawal.amount_borrowed, {
-                          ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
+                        {formatNumber(transaction.withdrawal.amountBorrowed, {
+                          ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
                         })}
                       </Chip>
                       <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
@@ -88,7 +83,9 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
             )}
           </LiquidityEvent>
           <TimestampColumn>
-            <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+            <Tooltip
+              tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
+            >
               {convertTimeAgo(transaction.timestamp)}
             </Tooltip>
           </TimestampColumn>

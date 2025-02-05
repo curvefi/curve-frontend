@@ -9,6 +9,7 @@ import networks from '@/loan/networks'
 import { Contract } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -322,7 +323,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       depositApprove: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const provider = get().wallet.provider
+        const { provider } = useWallet.getState()
         const approveInfinite = get()[sliceKey].approveInfinite
 
         // TODO: check so curve always is set when approving
@@ -331,12 +332,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const chainId = curve.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
-        const notifyNotification = get().wallet.notifyNotification
-        let dismissNotificationHandler
-
-        const notifyPendingMessage = t`Please confirm to approve ${amount} crvUSD.`
-        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-        dismissNotificationHandler = dismissConfirm
+        let dismissNotificationHandler = notify(t`Please confirm to approve ${amount} crvUSD.`, 'pending').dismiss
         await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('approveDepositTransaction', {
@@ -353,11 +349,9 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash[0]),
             errorMessage: '',
           })
-          dismissConfirm()
+          dismissNotificationHandler()
 
-          const deployingNotificationMessage = t`Approving ${amount} crvUSD...`
-          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
-          dismissNotificationHandler = dismissDeploying
+          dismissNotificationHandler = notify(t`Approving ${amount} crvUSD...`, 'pending').dismiss
 
           await provider.waitForTransaction(transactionHash[0])
 
@@ -366,11 +360,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash[0]),
             errorMessage: '',
           })
-          dismissDeploying()
+          dismissNotificationHandler()
           get()[sliceKey].checkApproval.depositApprove(amount)
 
           const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
-          notifyNotification(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success', 15000)
 
           return true
         } catch (error) {
@@ -387,19 +381,15 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       deposit: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const provider = get().wallet.provider
+        const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
         const chainId = curve.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
-        const notifyNotification = get().wallet.notifyNotification
-        let dismissNotificationHandler
 
-        const notifyPendingMessage = t`Please confirm to deposit ${amount} crvUSD.`
-        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-        dismissNotificationHandler = dismissConfirm
+        let dismissNotificationHandler = notify(t`Please confirm to deposit ${amount} crvUSD.`, 'pending').dismiss
         await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('depositTransaction', {
@@ -416,11 +406,9 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash),
             errorMessage: '',
           })
-          dismissConfirm()
+          dismissNotificationHandler()
 
-          const deployingNotificationMessage = t`Depositing ${amount} crvUSD...`
-          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
-          dismissNotificationHandler = dismissDeploying
+          dismissNotificationHandler = notify(t`Depositing ${amount} crvUSD...`, 'pending').dismiss
 
           await provider.waitForTransaction(transactionHash)
 
@@ -429,12 +417,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash),
             errorMessage: '',
           })
-          dismissDeploying()
+          dismissNotificationHandler()
           get()[sliceKey].fetchUserBalances()
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully deposited ${amount} crvUSD!`
-          notifyNotification(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success', 15000)
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('depositTransaction', {
@@ -448,19 +436,14 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       withdraw: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const provider = get().wallet.provider
+        const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
         const chainId = curve.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
-        const notifyNotification = get().wallet.notifyNotification
-        let dismissNotificationHandler
-
-        const notifyPendingMessage = t`Please confirm to withdraw ${amount} scrvUSD.`
-        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-        dismissNotificationHandler = dismissConfirm
+        let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
         await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -477,11 +460,10 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash),
             errorMessage: '',
           })
-          dismissConfirm()
+          dismissNotificationHandler()
 
           const deployingNotificationMessage = t`Withdrawing ${amount} scrvUSD...`
-          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
-          dismissNotificationHandler = dismissDeploying
+          dismissNotificationHandler = notify(deployingNotificationMessage, 'pending').dismiss
 
           await provider.waitForTransaction(transactionHash)
 
@@ -490,12 +472,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash),
             errorMessage: '',
           })
-          dismissDeploying()
+          dismissNotificationHandler()
           get()[sliceKey].fetchUserBalances()
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
-          notifyNotification(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success', 15000)
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -509,19 +491,15 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       redeem: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const provider = get().wallet.provider
+        const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
         const chainId = curve.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
-        const notifyNotification = get().wallet.notifyNotification
-        let dismissNotificationHandler
 
-        const notifyPendingMessage = t`Please confirm to withdraw ${amount} scrvUSD.`
-        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-        dismissNotificationHandler = dismissConfirm
+        let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
         await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -540,11 +518,9 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash),
             errorMessage: '',
           })
-          dismissConfirm()
+          dismissNotificationHandler()
 
-          const deployingNotificationMessage = t`Withdrawing ${amount} scrvUSD...`
-          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
-          dismissNotificationHandler = dismissDeploying
+          dismissNotificationHandler = notify(t`Withdrawing ${amount} scrvUSD...`, 'pending').dismiss
 
           await provider.waitForTransaction(transactionHash)
 
@@ -553,12 +529,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: networks[chainId].scanTxPath(transactionHash),
             errorMessage: '',
           })
-          dismissDeploying()
+          dismissNotificationHandler()
           get()[sliceKey].fetchUserBalances()
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
-          notifyNotification(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success', 15000)
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -618,8 +594,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const onboardInstance = get().wallet.onboard
-      const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = get().lendApi
@@ -646,8 +621,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchUserBalances: async () => {
-      const onboardInstance = get().wallet.onboard
-      const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
       const lendApi = get().lendApi
 
       if (!lendApi || !signerAddress) return

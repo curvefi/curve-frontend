@@ -12,7 +12,6 @@ import delay from 'lodash/delay'
 import 'focus-visible'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
-import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { getLocaleFromUrl } from '@/dao/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@ui/utils'
 import { messages as messagesEn } from '@/locales/en/messages.js'
@@ -23,6 +22,7 @@ import Page from '@/dao/layout'
 import GlobalStyle from '@/dao/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -43,19 +43,17 @@ const App: NextPage = () => {
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
   const updateUserData = useStore((state) => state.user.updateUserData)
   const getProposals = useStore((state) => state.proposals.getProposals)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const curve = useStore((state) => state.curve)
-  const onboard = useStore((state) => state.wallet.onboard)
   const isPageVisible = useStore((state) => state.isPageVisible)
-
   const theme = useUserProfileStore((state) => state.theme)
   const locale = useUserProfileStore((state) => state.locale)
   const setLocale = useUserProfileStore((state) => state.setLocale)
+  const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -87,10 +85,7 @@ const App: NextPage = () => {
     })()
     setLocale(parsedLocale)
     updateAppLocale(parsedLocale)
-
-    // init onboard
-    const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-    updateWalletStoreByKey('onboard', onboardInstance)
+    useWallet.initialize(locale, theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -114,17 +109,10 @@ const App: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (isSuccess(connectState) && curve && onboard) {
-      const updateUserDataIfReady = async () => {
-        const connectedWallets = onboard.state.get().wallets
-        if (connectedWallets.length > 0) {
-          updateUserData(curve, connectedWallets[0])
-        }
-      }
-
-      updateUserDataIfReady()
+    if (isSuccess(connectState) && curve && wallet) {
+      updateUserData(curve, wallet)
     }
-  }, [curve, connectState, updateUserData, onboard])
+  }, [curve, connectState, updateUserData, wallet])
 
   // initiate proposals list
   useEffect(() => {

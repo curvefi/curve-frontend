@@ -33,11 +33,12 @@ import {
 } from '@ui/Chart/styles'
 import Box from '@ui/Box'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
-import ConnectWallet from '@/lend/components/ConnectWallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Api, PageContentProps } from '@/lend/types/lend.types'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -55,7 +56,9 @@ const Page: NextPage = () => {
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
+  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
@@ -186,10 +189,12 @@ const Page: NextPage = () => {
         </>
       ) : (
         <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWallet
+          <ConnectWalletPrompt
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
           />
         </Box>
       )}

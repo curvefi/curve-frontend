@@ -1,20 +1,20 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import type { Address } from 'viem'
+import { isAddress } from 'viem'
 import type { VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type {
+  DashboardDataMapper,
+  DashboardDatasMapper,
   FormStatus,
   FormValues,
   Order,
   SortId,
   WalletPoolData,
-  DashboardDatasMapper,
-  DashboardDataMapper,
 } from '@/dex/components/PageDashboard/types'
 
 import { PromisePool } from '@supercharge/promise-pool'
-import { isAddress } from 'viem'
 import orderBy from 'lodash/orderBy'
 
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
@@ -22,7 +22,8 @@ import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormC
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
 import { shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
-import { CurveApi, ChainId, PoolDataMapper, FnStepResponse } from '@/dex/types/main.types'
+import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -329,11 +330,10 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
     // steps
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
-      const { pools, gas, wallet } = get()
+      const { pools, gas } = get()
       const { claimableFees, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       const { chainId } = curve
 
@@ -373,12 +373,10 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     fetchStepWithdrawVecrv: async (activeKey, curve, walletAddress) => {
       const {
         gas,
-        wallet,
         [sliceKey]: { formValues, ...sliceState },
       } = get()
-      const provider = wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update form
       let cFormStatus: FormStatus = {

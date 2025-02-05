@@ -18,7 +18,6 @@ import Hinkal from './Hinkal.json'
 import Inception from './Inception.json'
 import TurtleTotems from './TurtleTotems.json'
 import LevelMoney from './LevelMoney.json'
-import Corn from './Corn.json'
 import XPoints from './XPoints.json'
 import MindNetwork from './MindNetwork.json'
 import DTrinity from './DTrinity.json'
@@ -26,6 +25,7 @@ import YieldFi from './YieldFi.json'
 import Babylon from './Babylon.json'
 import Vnx from './Vnx.json'
 import Hourglass from './Hourglass.json'
+import Fx from './Fx.json'
 
 export {
   DLCLink,
@@ -48,7 +48,6 @@ export {
   Inception,
   TurtleTotems,
   LevelMoney,
-  Corn,
   XPoints,
   MindNetwork,
   DTrinity,
@@ -56,4 +55,5 @@ export {
   Babylon,
   Vnx,
   Hourglass,
+  Fx,
 }

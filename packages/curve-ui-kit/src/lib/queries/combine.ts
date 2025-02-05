@@ -9,7 +9,7 @@ import {
 } from './types'
 
 /** Combines the metadata of multiple queries into a single object. */
-const combineQueriesMeta = <T extends QueryOptionsArray>(
+export const combineQueriesMeta = <T extends QueryOptionsArray>(
   results: QueryResultsArray<T>,
 ): Omit<CombinedQueriesResult<T>, 'data'> => ({
   isLoading: results.some((result) => result.isLoading),

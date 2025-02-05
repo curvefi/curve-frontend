@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { useParamsFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
-import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/dex/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
@@ -17,7 +17,7 @@ type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerPro
 
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const [{ wallet }] = useConnectWallet()
+  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')

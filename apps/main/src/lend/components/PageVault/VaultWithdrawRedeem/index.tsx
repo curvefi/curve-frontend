@@ -1,9 +1,8 @@
+import { notify } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { helpers } from '@/lend/lib/apiLending'
@@ -11,7 +10,6 @@ import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { _isWithdraw } from '@/lend/store/createVaultWithdrawRedeemSlice'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/lend/components/AlertFormError'
@@ -48,7 +46,6 @@ const VaultWithdrawRedeem = ({
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepWithdrawRedeem = useStore((state) => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
   const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
 
@@ -102,7 +99,7 @@ const VaultWithdrawRedeem = ({
         notifyMessage = t`a full withdraw of ${vaultShares} vault shares`
       }
 
-      const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
       const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues, vaultShares)
 
@@ -117,9 +114,9 @@ const VaultWithdrawRedeem = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, notifyNotification, reset],
+    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, reset],
   )
 
   const getSteps = useCallback(

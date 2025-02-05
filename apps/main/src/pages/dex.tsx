@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useParams } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import 'focus-visible'
 import { i18n } from '@lingui/core'
@@ -10,7 +10,6 @@ import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
-import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/dex/globalStyle'
@@ -26,6 +25,7 @@ import { getLocaleFromUrl } from '@/dex/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi } from '@/dex/types/main.types'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -59,7 +59,6 @@ const App: NextPage = () => {
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
   const network = useStore((state) => state.networks.networks[chainId])
 
   const theme = useUserProfileStore((state) => state.theme)
@@ -106,9 +105,7 @@ const App: NextPage = () => {
     ;(async () => {
       const networks = await fetchNetworks()
 
-      // init onboard
-      const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-      updateWalletStoreByKey('onboard', onboardInstance)
+      useWallet.initialize(locale, theme, networks)
 
       const handleVisibilityChange = () => {
         updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -160,9 +157,19 @@ const App: NextPage = () => {
     isPageVisible,
   )
 
+  /**
+   * Lazily use useParams() to preserve network parameter during redirects.
+   * Using Navigate instead of direct component rendering ensures proper
+   * menu highlighting via isActive state.
+   */
+  const RootRedirect = () => {
+    const { network } = useParams()
+    return <Navigate to={`/${network ?? 'ethereum'}/pools`} />
+  }
+
   const SubRoutes = (
     <>
-      <Route path=":network" element={<PageSwap />} />
+      <Route path=":network" element={<RootRedirect />} />
       <Route path=":network/dashboard" element={<PageDashboard />} />
       <Route path=":network/locker" element={<PageLockedCrv />} />
       <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
@@ -215,7 +222,7 @@ const App: NextPage = () => {
                           path="/disclaimer"
                           element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
                         />
-                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
+                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} />} />
                         <Route path="404" element={<Page404 />} />
                         <Route path="*" element={<Page404 />} />
                       </Routes>

@@ -1,11 +1,9 @@
-import type { FormValues, FormStatus, StepKey } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
+import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { ReactNode } from 'react'
-import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
-
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
@@ -15,7 +13,6 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/loan/components/AlertFormError'
@@ -31,6 +28,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -51,7 +49,6 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
   const fetchStepApprove = useStore((state) => state.loanCollateralIncrease.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanCollateralIncrease.fetchStepIncrease)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanCollateralIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanCollateralIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanCollateralIncrease.resetState)
@@ -102,7 +99,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
       const chainId = curve.chainId
       const notifyMessage = t`Please confirm depositing ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -114,9 +111,9 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, reset],
+    [activeKey, fetchStepIncrease, reset],
   )
 
   const getSteps = useCallback(
@@ -143,10 +140,10 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${llamma.collateralSymbol}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         ADD: {
@@ -191,7 +188,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickAdd, healthMode, notifyNotification],
+    [fetchStepApprove, handleBtnClickAdd, healthMode],
   )
 
   // onMount

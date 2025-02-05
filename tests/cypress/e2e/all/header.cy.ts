@@ -75,7 +75,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['loan', 'dao'].includes(appPath)) {
+      if (['crvusd', 'dao'].includes(appPath)) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum`)
@@ -116,7 +116,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = appPath == 'dao' ? 0 : 1
+        const clickIndex = ['dex', 'dao'].includes(appPath) ? 0 : 1
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
@@ -140,7 +140,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['loan', 'dao'].includes(appPath)) {
+      if (['crvusd', 'dao'].includes(appPath)) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
@@ -157,7 +157,12 @@ describe('Header', () => {
   })
 
   function waitIsLoaded(appPath: AppPath) {
-    const testId = appPath == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
+    const testId = {
+      dao: 'proposal-title',
+      crvusd: 'btn-connect-prompt',
+      lend: 'btn-connect-prompt',
+      dex: 'inp-search-pools',
+    }[appPath || 'dex']
     cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
   }
 

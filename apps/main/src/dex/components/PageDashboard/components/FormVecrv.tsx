@@ -23,6 +23,7 @@ import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -40,7 +41,6 @@ const FormVecrv = () => {
   const dashboardVecrvInfo = useStore((state) => state.dashboard.vecrvInfo[activeKey])
   const formStatus = useStore((state) => state.dashboard.formStatus)
   const setFormStatusVecrv = useStore((state) => state.dashboard.setFormStatusVecrv)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepWithdraw = useStore((state) => state.dashboard.fetchStepWithdrawVecrv)
   const network = useStore((state) => curve && state.networks.networks[curve.chainId])
 
@@ -61,7 +61,7 @@ const FormVecrv = () => {
   const handleBtnClickWithdraw = useCallback(
     async (activeKey: string, curve: CurveApi, lockedAmount: string) => {
       const notifyMessage = t`Please confirm withdraw of ${lockedAmount} CRV.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
       if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress && network) {
@@ -79,7 +79,7 @@ const FormVecrv = () => {
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, setFormStatusVecrv, walletAddress, network],
+    [fetchStepWithdraw, setFormStatusVecrv, walletAddress, network],
   )
 
   const getSteps = useCallback(

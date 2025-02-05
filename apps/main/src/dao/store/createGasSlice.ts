@@ -7,7 +7,8 @@ import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { httpFetcher } from '@/dao/utils'
 import { log } from '@ui-kit/lib'
 import networks from '@/dao/networks'
-import { CurveApi, Provider, GasInfo } from '@/dao/types/dao.types'
+import { CurveApi, GasInfo, Provider } from '@/dao/types/dao.types'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -69,7 +70,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         if (parsedGasInfo) {
           get()[sliceKey].setStateByKeys(parsedGasInfo)
         } else {
-          const provider = get().wallet.getProvider('')
+          const { provider } = useWallet.getState()
           if (provider && chainId) {
             const parsedGasInfo = await parseGasInfo(curve, provider)
             if (parsedGasInfo) {

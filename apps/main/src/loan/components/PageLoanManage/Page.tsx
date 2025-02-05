@@ -19,8 +19,8 @@ import useTitleMapper from '@/loan/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
@@ -35,8 +35,9 @@ import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import ConnectWallet from '@/loan/components/ConnectWallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -56,7 +57,9 @@ const Page: NextPage = () => {
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
+  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
@@ -227,10 +230,12 @@ const Page: NextPage = () => {
         </>
       ) : (
         <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWallet
+          <ConnectWalletPrompt
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
           />
         </Box>
       )}

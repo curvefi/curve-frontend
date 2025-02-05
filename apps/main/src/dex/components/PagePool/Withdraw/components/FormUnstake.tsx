@@ -14,6 +14,7 @@ import TransferActions from '@/dex/components/PagePool/components/TransferAction
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -25,7 +26,6 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const formStatus = useStore((state) => state.poolWithdraw.formStatus)
   const formValues = useStore((state) => state.poolWithdraw.formValues)
   const fetchStepUnstake = useStore((state) => state.poolWithdraw.fetchStepUnstake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
@@ -47,7 +47,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const handleUnstakeClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -56,7 +56,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepUnstake, notifyNotification, network],
+    [fetchStepUnstake, network],
   )
 
   const getSteps = useCallback(

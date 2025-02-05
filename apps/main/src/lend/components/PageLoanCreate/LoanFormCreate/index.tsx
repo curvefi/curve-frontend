@@ -35,7 +35,8 @@ import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps
@@ -56,7 +57,6 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
@@ -102,7 +102,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       maxSlippage: string,
       isLeverage: boolean,
     ) => {
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepCreate(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -110,9 +110,9 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepCreate, notifyNotification, rChainId],
+    [activeKey, fetchStepCreate, rChainId],
   )
 
   const getSteps = useCallback(
@@ -172,10 +172,10 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         CREATE: {
@@ -234,14 +234,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [
-      expectedCollateral?.totalCollateral,
-      fetchStepApprove,
-      handleClickCreate,
-      notifyNotification,
-      userBalances,
-      userDetails?.state,
-    ],
+    [expectedCollateral?.totalCollateral, fetchStepApprove, handleClickCreate, userBalances, userDetails?.state],
   )
 
   // onMount

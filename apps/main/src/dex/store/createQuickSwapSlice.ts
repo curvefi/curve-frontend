@@ -19,7 +19,8 @@ import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { getChainSignerActiveKey, sleep } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
-import { CurveApi, TokensMapper, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
+import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@/dex/types/main.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -425,9 +426,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const provider = state.wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       sliceState.setStateByKey('formStatus', {
         ...sliceState.formStatus,
@@ -468,9 +468,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const state = get()
       const sliceState = state[sliceKey]
 
-      const provider = state.wallet.getProvider(sliceKey)
-
-      if (!provider) return
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,

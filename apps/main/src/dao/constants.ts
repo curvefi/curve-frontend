@@ -1,4 +1,5 @@
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
@@ -8,13 +9,6 @@ export const ROUTE = {
   PAGE_VECRV_ADJUST_CRV: '/vecrv/adjust_crv',
   PAGE_VECRV_ADJUST_DATE: '/vecrv/adjust_date',
   PAGE_404: '/404',
-} as const
-
-export const CONNECT_STAGE = {
-  CONNECT_API: 'api',
-  CONNECT_WALLET: 'connect-wallet',
-  DISCONNECT_WALLET: 'disconnect-wallet',
-  SWITCH_NETWORK: 'switch-network',
 } as const
 
 export const REFRESH_INTERVAL = {

@@ -5,6 +5,7 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 
 import { XIcon } from '@ui-kit/shared/icons/XIcon'
 import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
@@ -142,6 +143,11 @@ export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>
         label: t`Dune Analytics`,
         href: 'https://dune.com/mrblock_buidl/Curve.fi',
         icon: <DuneIcon />,
+      },
+      {
+        label: t`API Status`,
+        href: 'https://statuspage.freshping.io/59335-CurveAPI',
+        icon: <MonitorHeartOutlinedIcon />,
       },
     ],
   },

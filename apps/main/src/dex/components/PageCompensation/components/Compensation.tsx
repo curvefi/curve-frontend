@@ -14,7 +14,8 @@ import Button from '@ui/Button'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
+import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const Compensation = ({
   rChainId,
@@ -39,7 +40,6 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const networks = useStore((state) => state.networks.networks)
 
@@ -56,7 +56,7 @@ const Compensation = ({
     async (activeKey: string, contract: EtherContract['contract'], balance: number) => {
       if (!curve) return
       const notifyMessage = t`Please confirm claim ${balance} compensation.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
 
       try {
         setStep('claiming')
@@ -76,7 +76,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, notifyNotification, fetchGasInfo, provider, networks],
+    [curve, fetchGasInfo, provider, networks],
   )
 
   // reset

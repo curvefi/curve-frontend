@@ -32,6 +32,7 @@ import TransferActions from '@/dex/components/PagePool/components/TransferAction
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -57,7 +58,6 @@ const FormWithdraw = ({
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
@@ -91,18 +91,18 @@ const FormWithdraw = ({
   const handleApproveClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'WITHDRAW', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleWithdrawClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -111,7 +111,7 @@ const FormWithdraw = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, network],
+    [fetchStepWithdraw, network],
   )
 
   const getSteps = useCallback(

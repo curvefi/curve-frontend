@@ -1,4 +1,4 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/dex/components/PageCrvLocker/types'
+import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dex/components/PageCrvLocker/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@lingui/macro'
@@ -20,6 +20,7 @@ import FieldDatePicker from '@/dex/components/PageCrvLocker/components/FieldDate
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { CurveApi } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -30,7 +31,6 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
   const formValues = useStore((state) => state.lockedCrv.formValues)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
   const network = useStore((state) => state.networks.networks[rChainId])
@@ -112,7 +112,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       if (formValues.utcDate) {
         const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm changing unlock date to ${localUtcDate}.`
-        const { dismiss } = notifyNotification(notifyMessage, 'pending')
+        const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -122,7 +122,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchStepIncreaseTime, network],
+    [fetchStepIncreaseTime, network],
   )
 
   const getSteps = useCallback(

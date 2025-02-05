@@ -1,16 +1,15 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
-
 import useStore from '@/dao/store/useStore'
 import { formatNumber } from '@ui/utils'
 import { t } from '@lingui/macro'
-
 import Box from '@ui/Box'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Tooltip from '@ui/Tooltip'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const CrvStats: React.FC = () => {
-  const provider = useStore((state) => state.wallet.getProvider(''))
+  const { provider } = useWallet()
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
   const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)
   const crv = usdRatesMapper.crv

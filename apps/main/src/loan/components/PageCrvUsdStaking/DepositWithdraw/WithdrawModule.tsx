@@ -9,18 +9,18 @@ import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
 import Box from '@ui/Box'
 import {
+  ErrorText,
   InputLabel,
+  InputSelectorText,
   InputWrapper,
   SelectorBox,
   StyledIcon,
   StyledInputComp,
-  InputSelectorText,
-  ErrorText,
 } from './styles'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const WithdrawModule: React.FC = () => {
-  const onboardInstance = useStore((state) => state.wallet.onboard)
-  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
+  const { signerAddress } = useWallet()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 

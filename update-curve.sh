@@ -1,12 +1,5 @@
-cd apps/dao
-yarn add @curvefi/api
-cd ../../apps/lend
-yarn add @curvefi/lending-api
-cd ../../apps/loan
-yarn add @curvefi/lending-api
-yarn add @curvefi/stablecoin-api
-cd ../../apps/main
-yarn add @curvefi/api
+cd apps/main
+yarn add @curvefi/api @curvefi/lending-api @curvefi/lending-api @curvefi/stablecoin-api
 cd ../..
 git add .
 git commit -m "chore: update Curve API dependencies"

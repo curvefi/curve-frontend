@@ -13,6 +13,7 @@ import {
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import networks from '@/loan/networks'
 import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -169,7 +170,8 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
 
     // steps
     fetchStepApprove: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,
@@ -177,66 +179,60 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
         step: 'APPROVAL',
       })
 
-      if (provider) {
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const { debt, isFullRepay } = formValues
-        const approveFn = networks[chainId].api.loanDecrease.approve
-        const resp = await approveFn(activeKey, provider, llamma, debt, isFullRepay)
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const { debt, isFullRepay } = formValues
+      const approveFn = networks[chainId].api.loanDecrease.approve
+      const resp = await approveFn(activeKey, provider, llamma, debt, isFullRepay)
+      if (activeKey === get()[sliceKey].activeKey) {
+        get()[sliceKey].setStateByKey('formStatus', {
+          ...get()[sliceKey].formStatus,
+          isApproved: !resp.error,
+          step: '',
+          formProcessing: !resp.error,
+          error: resp.error,
+        })
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
 
-        if (activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKey('formStatus', {
-            ...get()[sliceKey].formStatus,
-            isApproved: !resp.error,
-            step: '',
-            formProcessing: !resp.error,
-            error: resp.error,
-          })
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
-
-          return resp
-        }
+        return resp
       }
     },
     fetchStepDecrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
 
-      if (provider) {
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        isInProgress: true,
+        step: 'PAY',
+      })
+      await get().gas.fetchGasInfo(curve)
+      const chainId = curve.chainId
+      const repayFn = networks[chainId].api.loanDecrease.repay
+      const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
+      if (activeKey === get()[sliceKey].activeKey) {
+        // re-fetch loan info
+        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+
+        if (!loanExists.loanExists) {
+          get().loans.resetUserDetailsState(llamma)
+        }
+
         get()[sliceKey].setStateByKey('formStatus', {
           ...get()[sliceKey].formStatus,
-          isInProgress: true,
-          step: 'PAY',
+          error: resp.error,
+          isInProgress: false,
+          isComplete: resp.error ? '' : true,
+          step: '',
         })
 
-        await get().gas.fetchGasInfo(curve)
-        const chainId = curve.chainId
-        const repayFn = networks[chainId].api.loanDecrease.repay
-        const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
+        get()[sliceKey].setStateByKeys({
+          detailInfo: {},
+          formEstGas: {},
+          formValues: DEFAULT_FORM_VALUES,
+        })
 
-        if (activeKey === get()[sliceKey].activeKey) {
-          // re-fetch loan info
-          const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-          if (!loanExists.loanExists) {
-            get().loans.resetUserDetailsState(llamma)
-          }
-
-          get()[sliceKey].setStateByKey('formStatus', {
-            ...get()[sliceKey].formStatus,
-            error: resp.error,
-            isInProgress: false,
-            isComplete: resp.error ? '' : true,
-            step: '',
-          })
-
-          get()[sliceKey].setStateByKeys({
-            detailInfo: {},
-            formEstGas: {},
-            formValues: DEFAULT_FORM_VALUES,
-          })
-
-          return { ...resp, loanExists: loanExists.loanExists }
-        }
+        return { ...resp, loanExists: loanExists.loanExists }
       }
     },
 

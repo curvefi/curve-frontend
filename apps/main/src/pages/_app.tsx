@@ -1,4 +1,5 @@
 import '@/globals.css'
+import '@/global-extensions'
 import type { AppProps } from 'next/app'
 import { memo } from 'react'
 

@@ -1,5 +1,5 @@
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import type { FormValues, FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanRepay/types'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -7,7 +7,7 @@ import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES, _parseValues } from '@/lend/components/PageLoanManage/LoanRepay/utils'
+import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
@@ -35,7 +35,8 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -54,7 +55,6 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
   const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanRepay.setFormValues)
   const resetState = useStore((state) => state.loanRepay.resetState)
 
@@ -94,7 +94,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -115,9 +115,9 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
+    [activeKey, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -182,10 +182,10 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         REPAY: {
@@ -245,7 +245,6 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
       expectedBorrowed?.totalBorrowed,
       fetchStepApprove,
       handleBtnClickPay,
-      notifyNotification,
       state,
       userBalances,
     ],

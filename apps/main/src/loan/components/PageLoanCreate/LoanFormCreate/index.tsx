@@ -1,11 +1,9 @@
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
-import type { FormValues, FormStatus, StepKey, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
+import type { FormStatus, FormValues, PageLoanCreateProps, StepKey } from '@/loan/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t, Trans } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE, hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
@@ -15,7 +13,6 @@ import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { curveProps } from '@/loan/utils/helpers'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import { StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
@@ -31,7 +28,8 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma, CollateralAlert } from '@/loan/types/loan.types'
+import { CollateralAlert, Curve, Llamma } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanCreate = ({
   collateralAlert,
@@ -60,7 +58,6 @@ const LoanCreate = ({
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
@@ -122,16 +119,16 @@ const LoanCreate = ({
       maxSlippage: string,
     ) => {
       const notifyMessage = t`Please confirm deposit of ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepCreate(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const TxDescription = <Trans>Transaction complete.</Trans>
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepCreate, network, notifyNotification],
+    [activeKey, fetchStepCreate, network],
   )
 
   const getSteps = useCallback(
@@ -164,10 +161,10 @@ const LoanCreate = ({
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${llamma.collateralSymbol}.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, isLeverage, llamma, formValues, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         CREATE: {
@@ -222,7 +219,7 @@ const LoanCreate = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleClickCreate, healthMode, notifyNotification],
+    [fetchStepApprove, handleClickCreate, healthMode],
   )
 
   // onMount

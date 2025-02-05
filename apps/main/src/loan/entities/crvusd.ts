@@ -1,53 +1,20 @@
-import { PoolParams, PoolQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
-import { poolValidationSuite } from '@ui-kit/lib/model/query/pool-validation'
+import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
+import { getSnapshots } from '@curvefi/prices-api/crvusd'
+import { Chain } from '@curvefi/prices-api'
+import type { Snapshot } from '@curvefi/prices-api/crvusd/models'
 
-type CrvUsdSnapshotFromApi = {
-  rate: number
-  borrow_apy: number
-  lend_apy: number
-  liquidation_discount: number
-  loan_discount: number
-  n_loans: number
-  price_oracle: number
-  amm_price: number
-  base_price: number
-  total_debt: number
-  total_assets: number
-  total_debt_usd: number
-  total_assets_usd: number
-  minted: number
-  redeemed: number
-  minted_usd: number
-  redeemed_usd: number
-  min_band: number
-  max_band: number
-  collateral_balance: number
-  borrowed_balance: number
-  collateral_balance_usd: number
-  borrowed_balance_usd: number
-  sum_debt_squared: number
-  timestamp: string
-}
-
-type CrvUsdSnapshotsFromApi = {
-  chain: string
-  market_id: number
-  data: CrvUsdSnapshotFromApi[]
-}
-
-export const _getCrvUsdSnapshots = async ({ chainId, poolId }: PoolQuery): Promise<CrvUsdSnapshotsFromApi> => {
-  const url = `https://prices.curve.fi/v1/crvusd/markets/${chainId}/${poolId}/snapshots`
-  const response = await fetch(url)
-  const { data } = (await response.json()) as { data?: CrvUsdSnapshotsFromApi }
-  if (!data) {
-    throw new Error('Failed to fetch crvUSD snapshots')
-  }
-  return data
-}
+export type CrvUsdSnapshot = Snapshot
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
-  queryKey: (params: PoolParams) => [...rootKeys.pool(params), 'crvUsdSnapshots'] as const,
-  queryFn: _getCrvUsdSnapshots,
-  staleTime: '1d',
-  validationSuite: poolValidationSuite,
+  queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'crvUsd', 'snapshots'] as const,
+  queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<CrvUsdSnapshot[]> => {
+    const snapshots = await getSnapshots(blockchainId as Chain, contractAddress)
+    return snapshots.map((snapshot) => ({
+      ...snapshot,
+      rate: snapshot.rate * 100, // Convert to percentage for consistency with lending snapshots
+    }))
+  },
+  staleTime: '10m',
+  validationSuite: contractValidationSuite,
 })
