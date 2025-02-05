@@ -16,7 +16,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
     <BarChart
       width={500}
       height={300}
-      data={data.map((x) => ({ ...x, amount: Number(x.amount) / 10 ** 18 }))}
+      data={data.map((x) => ({ ...x, amount: x.amount.fromWei() }))}
       margin={{
         top: 16,
         right: 20,

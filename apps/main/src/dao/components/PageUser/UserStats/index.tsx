@@ -20,7 +20,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         title={t`Total veCRV`}
         data={
           <MetricsColumnData>
-            {formatNumber(Number(veCrvHolder.weight) / 10 ** 18, { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(veCrvHolder.weight.fromWei(), { showDecimalIfSmallNumberOnly: true })}
           </MetricsColumnData>
         }
       />
@@ -29,7 +29,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         title={t`Locked CRV`}
         data={
           <MetricsColumnData>
-            {formatNumber(Number(veCrvHolder.locked) / 10 ** 18, { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(veCrvHolder.locked.fromWei(), { showDecimalIfSmallNumberOnly: true })}
           </MetricsColumnData>
         }
       />
