@@ -4,7 +4,7 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
+import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
 
 import Box from '@ui/Box'
 import type { LocksDaily } from '@curvefi/prices-api/dao'
@@ -18,7 +18,7 @@ const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameT
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
-            <TooltipData>{formatDateFromTimestamp(convertToLocaleTimestamp(day.getUTCTimestamp()))}</TooltipData>
+            <TooltipData>{formatDate(day)}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>

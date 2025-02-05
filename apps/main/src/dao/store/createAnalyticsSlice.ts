@@ -141,7 +141,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
         const locks = await getLocksDaily(365)
 
         get()[sliceKey].setStateByKey('veCrvLocks', {
-          locks: locks,
+          locks,
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
