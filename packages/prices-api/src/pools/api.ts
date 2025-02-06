@@ -1,5 +1,6 @@
 import { getHost, type Options, type Chain } from '..'
 import { fetchJson as fetch } from '../fetch'
+import { getTimeRange } from '../timestamp'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
@@ -24,9 +25,7 @@ export async function getPool(chain: Chain, poolAddr: string, options?: Options)
 export async function getVolume(chain: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
 
-  const range = 120 * 60 * 1000
-  const end = Math.floor(new Date().getTime() / 1000)
-  const start = Math.floor(end - range)
+  const { start, end } = getTimeRange({ daysRange: 90 })
 
   const resp = await fetch<Responses.GetVolumeResponse>(
     `${host}/v1/volume/usd/${chain}/${poolAddr}?` + `interval=day&` + `start=${start}&` + `end=${end}`,
@@ -38,9 +37,7 @@ export async function getVolume(chain: Chain, poolAddr: string, options?: Option
 export async function getTvl(chain: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
 
-  const range = 120 * 60 * 1000
-  const end = Math.floor(new Date().getTime() / 1000)
-  const start = Math.floor(end - range)
+  const { start, end } = getTimeRange({ daysRange: 90 })
 
   const resp = await fetch<Responses.GetTvlResponse>(
     `${host}/v1/snapshots/${chain}/${poolAddr}/tvl?` + `interval=day&` + `start=${start}&` + `end=${end}`,

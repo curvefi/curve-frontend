@@ -25,7 +25,7 @@ const CrvStats: React.FC = () => {
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 
-  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].fees_usd, veCrvData.totalVeCrv, crv)
+  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv, crv)
 
   const loading = Boolean(provider && veCrvLoading)
   return (

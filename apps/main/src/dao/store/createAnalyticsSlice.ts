@@ -7,9 +7,6 @@ import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
 import { abiVeCrv } from '@/dao/store/abis'
 import { convertToLocaleTimestamp, formatDateFromTimestamp } from 'ui/src/utils'
 import {
-  VeCrvFeeRes,
-  VeCrvFee,
-  VeCrvFeesRes,
   VeCrvDailyLock,
   VeCrvDailyLockRes,
   VeCrvHolder,
@@ -19,12 +16,13 @@ import {
   AllHoldersSortBy,
 } from '@/dao/types/dao.types'
 import type { ContractRunner } from 'ethers/lib.commonjs/providers'
+import { type Distribution, getDistributions } from '@curvefi/prices-api/revenue'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   veCrvFees: {
-    fees: VeCrvFee[]
+    fees: Distribution[]
     veCrvTotalFees: number
     fetchStatus: FetchingState
   }
@@ -124,31 +122,11 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
       })
 
       try {
-        let page = 1
-        const pagination = 100
-        let results: VeCrvFeeRes[] = []
-
-        while (true) {
-          const veCrvFeesRes = await fetch(
-            `https://prices.curve.fi/v1/dao/fees/distributions?page=${page}&per_page=${pagination}`,
-          )
-          const data: VeCrvFeesRes = await veCrvFeesRes.json()
-          results = results.concat(data.distributions)
-          if (data.distributions.length < pagination) {
-            break
-          }
-          page++
-        }
-
-        const feesFormatted: VeCrvFee[] = results.map((item) => ({
-          ...item,
-          timestamp: convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000),
-          date: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)),
-        }))
-        const totalFees = feesFormatted.reduce((acc, item) => acc + item.fees_usd, 0)
+        const distributions = await getDistributions()
+        const totalFees = distributions.reduce((acc, item) => acc + item.feesUsd, 0)
 
         get()[sliceKey].setStateByKey('veCrvFees', {
-          fees: feesFormatted,
+          fees: distributions,
           veCrvTotalFees: totalFees,
           fetchStatus: 'SUCCESS',
         })
