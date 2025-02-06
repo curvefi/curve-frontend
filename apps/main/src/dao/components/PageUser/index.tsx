@@ -11,7 +11,7 @@ import UserProposalVotesTable from './UserProposalVotesTable'
 import UserLocksTable from './UserLocksTable'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import SubNav from '@/dao/components/SubNav'
-import { VeCrvHolder } from '@/dao/types/dao.types'
+import type { Locker } from '@curvefi/prices-api/dao'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type UserPageProps = {
@@ -42,12 +42,12 @@ const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) =
   const holdersLoading = fetchStatus === 'LOADING'
   const holdersError = fetchStatus === 'ERROR'
 
-  const veCrvHolder: VeCrvHolder = allHolders[userAddress] || {
+  const veCrvHolder: Locker = allHolders[userAddress] || {
     user: rUserAddress,
-    locked: 0,
-    unlock_time: 0,
-    weight: 0,
-    weight_ratio: 0,
+    locked: 0n,
+    weight: 0n,
+    weightRatio: 0,
+    unlockTime: null,
   }
 
   useEffect(() => {

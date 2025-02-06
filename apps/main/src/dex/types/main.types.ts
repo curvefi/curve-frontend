@@ -292,6 +292,7 @@ export interface PoolAlert extends TooltipProps {
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
+  isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
   message: string | React.ReactNode
 }

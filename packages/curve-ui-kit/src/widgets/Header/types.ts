@@ -16,6 +16,7 @@ export type AppPage = {
 export type AppRoute = {
   route: string
   label: () => string // lazy evaluation for translations
+  target?: '_self' | '_blank' // note this is only used for external routes
 }
 
 export type AppRoutes = {

@@ -190,14 +190,6 @@ export function formatNumberWithPrecision(value: number, precisionDigits: number
   return _formatNumber(value, opts)
 }
 
-export const formatDateFromTimestamp = (unixTime: number) => {
-  const date = new Date(unixTime * 1000)
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = String(date.getFullYear()).slice(-2)
-  return `${day}/${month}/${year}`
-}
-
 export const formatDate = (date: Date, variant: 'short' | 'long' = 'short') => {
   if (variant === 'short') {
     // example: 31/01/25 adjusted for local timezone
@@ -218,6 +210,11 @@ export const formatDate = (date: Date, variant: 'short' | 'long' = 'short') => {
       hour12: true,
     }).format(date)
   }
+}
+
+export const formatDateFromTimestamp = (unixTime: number) => {
+  const date = new Date(unixTime * 1000)
+  return formatDate(date)
 }
 
 export const convertToLocaleTimestamp = (unixTime: number) => unixTime - new Date().getTimezoneOffset() * 60
