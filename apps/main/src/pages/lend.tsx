@@ -58,13 +58,6 @@ const App: NextPage = () => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-    })()
-
     // init onboard
     useWallet.initialize(locale, theme, networks)
 

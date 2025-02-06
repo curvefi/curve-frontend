@@ -7,7 +7,7 @@
  * Their source code, however, always passes all given props back to the caller (at this moment).
  * The components seem to work fine, but the types are broken.
  *
- * TODO Refactor or replace components to render their own children instead of passing them.
+ * TODO Refactor components to render their own children, or replace with MUI
  */
 declare module '@react-types/select' {
   import {
