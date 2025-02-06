@@ -61,7 +61,7 @@ const TopLockers: React.FC = () => {
             selectedKey={topHoldersSortBy}
             minWidth="9rem"
             items={TOP_HOLDERS_FILTERS}
-            onSelectionChange={(sortBy) => setTopHoldersSortBy(sortBy as TopHoldersSortBy)}
+            onSelectionChange={setTopHoldersSortBy}
           />
         </Box>
       </TitleRow>

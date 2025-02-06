@@ -92,7 +92,7 @@ const Proposals = () => {
               items={PROPOSAL_FILTERS}
               selectedKey={activeFilter}
               minWidth="9rem"
-              onSelectionChange={(key) => setActiveFilter(key as ProposalListFilter)}
+              onSelectionChange={setActiveFilter}
             />
             <StyledProposalsFilters
               filters={PROPOSAL_FILTERS}

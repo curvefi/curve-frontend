@@ -27,9 +27,7 @@ const SandwichMenu: React.FC<SandwichMenuProps> = ({ className, onItemClick }) =
       <StyledSandwichButton {...buttonProps} ref={buttonRef} isOpen={state.isOpen}>
         <Icon name="OverflowMenuVertical" size={24} aria-label="Menu" />
       </StyledSandwichButton>
-      {state.isOpen && (
-        <SandwichMenuPopover isOpen={true} onClose={state.close} triggerRef={buttonRef} onItemClick={onItemClick} />
-      )}
+      {state.isOpen && <SandwichMenuPopover onClose={state.close} triggerRef={buttonRef} onItemClick={onItemClick} />}
     </Wrapper>
   )
 }

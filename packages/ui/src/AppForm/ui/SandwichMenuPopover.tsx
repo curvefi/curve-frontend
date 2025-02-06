@@ -10,7 +10,6 @@ type SandwichMenuItem = {
 }
 
 interface SandwichMenuPopoverProps {
-  isOpen: boolean
   onClose: () => void
   triggerRef: React.RefObject<HTMLButtonElement>
   onItemClick: (key: string) => void
@@ -18,14 +17,11 @@ interface SandwichMenuPopoverProps {
 
 const menuItems: SandwichMenuItem[] = [{ id: 'manage-gauge', name: 'Gauge Management' }]
 
-const SandwichMenuPopover: React.FC<SandwichMenuPopoverProps> = ({ isOpen, onClose, onItemClick, triggerRef }) => {
+const SandwichMenuPopover: React.FC<SandwichMenuPopoverProps> = ({ onClose, onItemClick, triggerRef }) => {
   const popoverRef = useRef<HTMLDivElement>(null)
 
   const state = useSelectState<SandwichMenuItem>({
-    isOpen,
-    onOpenChange: (isOpen) => {
-      if (!isOpen) onClose()
-    },
+    isOpen: true,
     onSelectionChange: (key: React.Key) => {
       onItemClick(key.toString())
     },
@@ -33,12 +29,12 @@ const SandwichMenuPopover: React.FC<SandwichMenuPopoverProps> = ({ isOpen, onClo
     children: (item) => <StyledItem key={item.id}>{item.name}</StyledItem>,
   })
 
-  const { menuProps, labelProps } = useSelect<SandwichMenuItem>(
+  const { menuProps } = useSelect<SandwichMenuItem>(
     {
       'aria-label': 'Pool Management',
       label: 'Pool Management',
       items: menuItems,
-      children: (item) => <StyledItem key={item.id}>{item.name}</StyledItem>,
+      children: ({ id, name }: SandwichMenuItem) => <StyledItem key={id}>{name}</StyledItem>,
       onSelectionChange: (key: React.Key) => {
         onItemClick(key.toString())
         onClose()
@@ -47,7 +43,7 @@ const SandwichMenuPopover: React.FC<SandwichMenuPopoverProps> = ({ isOpen, onClo
     state,
     triggerRef,
   )
-  const { triggerProps, overlayProps } = useOverlayTrigger({ type: 'menu' }, state, triggerRef)
+  const { overlayProps } = useOverlayTrigger({ type: 'menu' }, state, triggerRef)
 
   return (
     <>

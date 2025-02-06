@@ -17,5 +17,5 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "vite.config.mts", "**/*.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "vite.config.mts", "**/*.d.ts", "../ui/**/*.d.ts"]
 }

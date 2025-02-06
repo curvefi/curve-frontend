@@ -55,7 +55,6 @@ export const initOnboard = (
     notify: {
       desktop: {
         enabled: true,
-        transactionHandler: () => {},
         position: 'topRight',
       },
     },
