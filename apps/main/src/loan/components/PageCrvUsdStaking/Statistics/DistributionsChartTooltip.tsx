@@ -28,7 +28,7 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
           backgroundColor: (theme) => theme.design.Layer[3].Fill,
           padding: Spacing.md,
           width: '20.5rem',
-          maxWidth: '100vw',
+          maxWidth: '80%',
         }}
         elevation={2}
       >

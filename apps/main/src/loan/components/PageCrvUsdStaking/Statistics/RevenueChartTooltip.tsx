@@ -47,7 +47,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
           backgroundColor: (theme) => theme.design.Layer[3].Fill,
           padding: Spacing.md,
           width: '20.5rem', // fixed width to cap maximum width of tooltip
-          maxWidth: '100vw',
+          maxWidth: '80%',
         }}
         elevation={2}
       >
