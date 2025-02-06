@@ -1,5 +1,5 @@
 {
-  "campaignName": "",
+  "campaignName": "Resolv Points",
   "platform": "Resolv",
   "description": "Points for providing liquidity.",
   "platformImageId": "resolv.png",
@@ -36,6 +36,30 @@
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xc907ba505c2e1cbc4658c395d4a2c7e6d2c32656",
+      "network": "ethereum",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1738796400",
+      "campaignEnd": "1770000000",
+      "address": "0x4628f13651ead6793f8d838b34b8f8522fb0cc52",
+      "network": "ethereum",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1738796400",
+      "campaignEnd": "1770000000",
+      "address": "0x38de22a3175708d45e7c7c64cd78479c8b56f76e",
       "network": "ethereum",
       "multiplier": "30x",
       "tags": ["points"],
