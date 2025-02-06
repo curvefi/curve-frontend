@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
+import { SxProps, Theme } from '@mui/material'
 
 export type ModalDialogProps = {
   children: ReactNode
@@ -16,10 +17,11 @@ export type ModalDialogProps = {
   onClose: () => void
   titleAction?: ReactNode
   footer?: ReactNode
+  sx?: SxProps<Theme>
 }
 
-export const ModalDialog = ({ children, open, onClose, title, titleAction, footer }: ModalDialogProps) => (
-  <Dialog open={open} onClose={onClose}>
+export const ModalDialog = ({ children, open, onClose, title, titleAction, footer, sx }: ModalDialogProps) => (
+  <Dialog open={open} onClose={onClose} sx={sx}>
     <Card
       sx={{
         ...SizesAndSpaces.ModalHeight.sm,
