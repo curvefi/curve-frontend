@@ -1,33 +1,21 @@
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import Stack from '@mui/material/Stack'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import ToggleButton from '@mui/material/ToggleButton'
-import { t } from '@lingui/macro'
 import { formatDate } from '@ui/utils/utilsFormat'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import RevenueChartTooltip from './RevenueChartTooltip'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
 import { toUTC } from '@curvefi/prices-api/timestamp'
+import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 
-const { FontSize, FontWeight, Spacing } = SizesAndSpaces
+const { FontSize } = SizesAndSpaces
 
 type Props = {
   data: ScrvUsdYieldWithAverages[]
   height?: number
-  timeOptions: TimeOption[]
-  activeTimeOption: TimeOption
-  setActiveTimeOption: (event: React.MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
 }
 
-const labels = {
-  proj_apy: { text: t`APR`, dash: 'none' },
-  proj_apy_7d_avg: { text: t`7-day MA APR`, dash: '2 2' },
-  proj_apy_total_avg: { text: t`Average APR`, dash: '4 4' },
-} as const
-
-const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption, setActiveTimeOption }: Props) => {
+const LineChartComponent = ({ data, height = 400 }: Props) => {
   const {
     design: { Color, Text },
   } = useTheme()
@@ -47,7 +35,7 @@ const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption,
             top: 16,
             right: 16,
             left: undefined,
-            bottom: 16,
+            bottom: 8,
           }}
         >
           <CartesianGrid stroke={gridLineColor} strokeWidth={0.3} vertical={true} />
@@ -85,7 +73,7 @@ const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption,
             dataKey="proj_apy_7d_avg"
             stroke={sevenDayAverageLineColor}
             strokeWidth={2}
-            strokeDasharray={labels['proj_apy_7d_avg'].dash}
+            strokeDasharray={priceLineLabels['proj_apy_7d_avg'].dash}
             activeDot={{ r: 4 }}
             dot={false}
             isAnimationActive={false}
@@ -95,42 +83,13 @@ const LineChartComponent = ({ data, height = 400, timeOptions, activeTimeOption,
             dataKey="proj_apy_total_avg"
             stroke={averageLineColor}
             strokeWidth={2}
-            strokeDasharray={labels['proj_apy_total_avg'].dash}
+            strokeDasharray={priceLineLabels['proj_apy_total_avg'].dash}
             activeDot={{ r: 4 }}
             dot={false}
             isAnimationActive={false}
           />
-          <Legend
-            verticalAlign="bottom"
-            align="left"
-            iconType="plainline"
-            iconSize={20}
-            height={32}
-            formatter={(value: keyof typeof labels) => labels[value].text}
-            wrapperStyle={{
-              fontWeight: FontWeight.Medium,
-              fontSize: FontSize.sm.desktop,
-              color: Text.TextColors.Secondary,
-              paddingTop: Spacing.sm.desktop,
-              paddingLeft: Spacing.lg.desktop,
-            }}
-          />
         </LineChart>
       </ResponsiveContainer>
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center"
-        sx={{ margin: `-2.75rem ${Spacing.lg.desktop} 0 0` }}
-      >
-        <ToggleButtonGroup exclusive value={activeTimeOption} onChange={setActiveTimeOption}>
-          {timeOptions.map((option) => (
-            <ToggleButton value={option} key={option} size="extraSmall">
-              {option}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-      </Stack>
     </Stack>
   )
 }

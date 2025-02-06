@@ -6,14 +6,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { toUTC } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils/utilsFormat'
-const { Spacing } = SizesAndSpaces
+import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 
-// replicates recharts legend component line to illustrate price line pattern and color
-const LegendLine = ({ color, dash }: { color: string; dash?: string }) => (
-  <svg width="20" height="2">
-    <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash} />
-  </svg>
-)
+const { Spacing } = SizesAndSpaces
 
 const DataSet = ({
   label,

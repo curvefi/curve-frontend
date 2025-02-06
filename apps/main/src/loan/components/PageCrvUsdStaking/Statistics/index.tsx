@@ -9,6 +9,7 @@ import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import RevenueLineChart from './RevenueLineChart'
 import DistributionsBarChart from './DistributionsBarChart'
 import AdvancedDetails from './AdvancedDetails'
+import RevenueChartFooter from './RevenueChartFooter'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -51,12 +52,14 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
           chartOptions={chartOptions}
         />
         {activeChartOption.label === 'Savings Rate' && (
-          <RevenueLineChart
-            data={yieldData ?? []}
-            timeOptions={timeOptions}
-            activeTimeOption={activeTimeOption}
-            setActiveTimeOption={(_, newValue) => newValue && setActiveTimeOption(newValue)}
-          />
+          <Stack width="100%" height="100%">
+            <RevenueLineChart data={yieldData ?? []} />
+            <RevenueChartFooter
+              timeOptions={timeOptions}
+              activeTimeOption={activeTimeOption}
+              setActiveTimeOption={(_, newValue) => newValue && setActiveTimeOption(newValue)}
+            />
+          </Stack>
         )}
         {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
       </Card>
