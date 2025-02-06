@@ -1,13 +1,13 @@
 import React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
 
-import { formatNumber } from 'ui/src/utils'
+import { formatDate, formatNumber } from 'ui/src/utils'
 
 import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
-import { VeCrvDailyLock } from '@/dao/types/dao.types'
+import { LocksDaily } from '@curvefi/prices-api/dao'
 
 type PositiveAndNegativeBarChartProps = {
-  data: VeCrvDailyLock[]
+  data: LocksDaily[]
   height?: number
 }
 
@@ -16,7 +16,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
     <BarChart
       width={500}
       height={300}
-      data={data}
+      data={data.map((x) => ({ ...x, amount: Number(x.amount) / 10 ** 18 }))}
       margin={{
         top: 16,
         right: 20,
@@ -28,6 +28,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
       <XAxis
         dataKey="day"
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
+        tickFormatter={formatDate}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         minTickGap={20}
@@ -38,14 +39,14 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={(value) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
+        tickFormatter={(value: number) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
         tickCount={10}
       />
       <Tooltip content={PositiveAndNegativeBarChartTooltip} cursor={{ opacity: 0.3 }} />
       <ReferenceLine y={0} stroke="#000" opacity={0.3} />
       <Bar dataKey="amount" label={false} fill="#8884d8" isAnimationActive={false}>
         {data.map((entry, index) => (
-          <Cell key={`$cell-${index}`} fill={+entry.amount > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
+          <Cell key={`$cell-${index}`} fill={entry.amount > 0n ? 'var(--chart-green)' : 'var(--chart-red)'} />
         ))}
       </Bar>
     </BarChart>
