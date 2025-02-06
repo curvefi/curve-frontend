@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { useCallback } from 'react'
 import { t } from '@lingui/macro'
-
 import VoteCountdown from '../../VoteCountdown'
 import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
 import LazyItem from '@ui/LazyItem'
