@@ -52,7 +52,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
           chartOptions={chartOptions}
         />
         {activeChartOption.label === 'Savings Rate' && (
-          <Stack width="100%" height="100%">
+          <Stack width="100%">
             <RevenueLineChart data={yieldData ?? []} />
             <RevenueChartFooter
               timeOptions={timeOptions}

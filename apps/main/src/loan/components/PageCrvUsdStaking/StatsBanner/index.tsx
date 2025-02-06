@@ -103,6 +103,7 @@ const Wrapper = styled.div`
   background-color: ${Greens[100]};
   border: 1px solid ${Greens[500]};
   align-self: flex-start;
+  width: 100%;
   max-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section}); // action card + gap + section
 `
 

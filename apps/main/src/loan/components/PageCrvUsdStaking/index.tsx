@@ -13,6 +13,9 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Stack } from '@mui/material'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
@@ -67,11 +70,17 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   return (
     <Wrapper>
       <MainContainer isChartExpanded={isChartExpanded} mobileBreakpoint={mobileBreakpoint}>
-        {isUserScrvUsdBalanceZero && <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} />}
-        <Stack justifyContent="center" direction="row" gap={Sizing[200]}>
+        {isUserScrvUsdBalanceZero && <StatsBanner />}
+        <Stack
+          width="100%"
+          sx={{ display: 'flex' }}
+          justifyContent="center"
+          direction={isChartExpanded ? 'column' : 'row'}
+          gap={Sizing[200]}
+        >
           {isChartExpanded && (
             <Stack>
-              <UserPositionBanner mobileBreakpoint={mobileBreakpoint} />
+              {!isUserScrvUsdBalanceZero && <UserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
               <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
             </Stack>
           )}
@@ -96,37 +105,17 @@ const Wrapper = styled.div`
   max-width: 100%;
   padding: 0 var(--spacing-2);
   gap: var(--spacing-4);
-  @media (min-width: 29.375rem) {
-    padding: 0 var(--spacing-3);
-  }
-  @media (min-width: 43.75rem) {
-    padding: 0 var(--spacing-3);
-  }
-  // 79.5rem === var(--width)
-  @media (min-width: 79.5rem) {
-    padding: 0 var(--spacing-3);
+  @media (min-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})) {
+    padding: 0;
   }
 `
 
 const MainContainer = styled.div<{ mobileBreakpoint: string; isChartExpanded: boolean }>`
   display: flex;
   flex-direction: ${({ isChartExpanded }) => (isChartExpanded ? 'column' : 'row')};
-  justify-content: center;
   gap: var(--spacing-3);
   padding: ${({ isChartExpanded }) => (isChartExpanded ? 'var(--spacing-3)' : '0')};
   flex-direction: column;
-`
-
-const StyledStatsBanner = styled(StatsBanner)<{ mobileBreakpoint: string }>`
-  width: 100%;
-  max-width: 100%;
-  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
-    max-width: 100%;
-  }
-`
-
-const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: string }>`
-  margin: var(--spacing-3) 0 auto var(--spacing-3);
 `
 
 export default CrvUsdStaking

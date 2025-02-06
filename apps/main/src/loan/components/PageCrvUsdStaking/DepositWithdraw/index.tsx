@@ -116,6 +116,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   max-width: ${MaxWidth.actionCard};
   width: 100%;
+  /* @media (min-width: ) {
+    padding: 0 var(--spacing-3);
+  } */
 `
 
 const ModuleContainer = styled.div`
