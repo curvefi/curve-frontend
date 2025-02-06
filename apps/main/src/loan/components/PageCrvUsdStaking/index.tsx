@@ -102,6 +102,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
             <Stack
               gap={Sizing[100]}
               width="100%"
+              maxWidth={MaxWidth.section}
               justifyContent="center"
               sx={{
                 [`@media (max-width: ${columnViewBreakPoint})`]: {
