@@ -8,11 +8,14 @@ import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { formatNumber } from '@ui/utils'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import Tooltip from '@ui/Tooltip'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+
+const { MaxWidth } = SizesAndSpaces
 
 type UserPositionBannerProps = {
   className?: string
@@ -122,6 +125,7 @@ const Wrapper = styled.div`
   gap: var(--spacing-3);
   padding: var(--spacing-3);
   background-color: var(--box--secondary--background-color);
+  max-width: ${MaxWidth.section};
 `
 
 const StatsTitleWrapper = styled.div`
@@ -144,9 +148,8 @@ const StyledTokenIcon = styled(Image)`
 
 const StatsRow = styled.div<{ mobileBreakpoint: string }>`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: flex-end;
   width: 100%;
   gap: var(--spacing-3);
   flex-wrap: wrap;
@@ -155,7 +158,7 @@ const StatsRow = styled.div<{ mobileBreakpoint: string }>`
     flex-direction: row;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: var(--spacing-4);
+    gap: var(--spacing-2);
   }
 `
 

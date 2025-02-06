@@ -10,7 +10,7 @@ const { Spacing } = SizesAndSpaces
 const ethereumChainId = 1
 
 const AdvancedDetails = () => (
-  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }} elevation={0}>
+  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, boxShadow: 'none' }} elevation={0}>
     <CardHeader
       size="small"
       title={t`Advanced Details`}

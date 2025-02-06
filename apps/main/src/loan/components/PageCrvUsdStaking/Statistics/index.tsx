@@ -36,6 +36,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
       <Card
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,
+          boxShadow: 'none',
         }}
         elevation={0}
       >
