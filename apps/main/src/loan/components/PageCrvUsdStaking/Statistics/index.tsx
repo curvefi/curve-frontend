@@ -37,6 +37,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,
         }}
+        elevation={0}
       >
         <CardHeader title="Statistics" />
         <Box sx={{ padding: Spacing.md }}>
@@ -52,7 +53,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
           chartOptions={chartOptions}
         />
         {activeChartOption.label === 'Savings Rate' && (
-          <Stack width="100%">
+          <Stack>
             <RevenueLineChart data={yieldData ?? []} />
             <RevenueChartFooter
               timeOptions={timeOptions}

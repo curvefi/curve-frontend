@@ -73,23 +73,29 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
         {isUserScrvUsdBalanceZero && <StatsBanner />}
         <Stack
           width="100%"
-          sx={{ display: 'flex' }}
           justifyContent="center"
           direction={isChartExpanded ? 'column' : 'row'}
           gap={Sizing[200]}
+          sx={{
+            '@media (max-width: 65.625rem)': {
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 0,
+            },
+          }}
         >
           {isChartExpanded && (
-            <Stack>
+            <>
               {!isUserScrvUsdBalanceZero && <UserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
               <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
-            </Stack>
+            </>
           )}
           <DepositWithdraw />
           {!isChartExpanded && (
-            <Stack width="100%">
+            <>
               {!isUserScrvUsdBalanceZero && <UserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
               <Statistics isChartExpanded={isChartExpanded} toggleChartExpanded={toggleChartExpanded} />
-            </Stack>
+            </>
           )}
         </Stack>
       </MainContainer>
@@ -105,7 +111,7 @@ const Wrapper = styled.div`
   max-width: 100%;
   padding: 0 var(--spacing-2);
   gap: var(--spacing-4);
-  @media (min-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})) {
+  @media (min-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section + Sizing[400]})) {
     padding: 0;
   }
 `

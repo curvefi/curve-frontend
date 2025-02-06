@@ -33,7 +33,7 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
 
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ paddingInline: Spacing.md }}>
-      <Stack direction="row" gap={4}>
+      <Stack direction="row" gap={4} flexWrap="wrap">
         {Object.entries(priceLineLabels).map(([key, { label, dash }]) => (
           <LegendSet
             key={key}
@@ -49,7 +49,12 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
           />
         ))}
       </Stack>
-      <ToggleButtonGroup exclusive value={activeTimeOption} onChange={setActiveTimeOption}>
+      <ToggleButtonGroup
+        exclusive
+        value={activeTimeOption}
+        onChange={setActiveTimeOption}
+        sx={{ marginLeft: Spacing.md }}
+      >
         {timeOptions.map((option) => (
           <ToggleButton value={option} key={option} size="extraSmall">
             {option}

@@ -12,7 +12,7 @@ const StatsStack = () => {
   const { data: revenueData, error: revenueError, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
 
   return (
-    <Stack direction="row" gap={Spacing.md} sx={{ justifyContent: 'space-between', width: '100%' }}>
+    <Stack direction="row" flexWrap="wrap" gap={Spacing.md} sx={{ justifyContent: 'space-between' }}>
       <Metric
         label="Total crvUSD Staked"
         value={yieldData?.[yieldData.length - 1]?.supply ?? 0}
