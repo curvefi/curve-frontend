@@ -116,7 +116,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = appPath == 'dao' ? 0 : 1
+        const clickIndex = ['dex', 'dao'].includes(appPath) ? 0 : 1
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)

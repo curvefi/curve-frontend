@@ -11,6 +11,7 @@ import { alpha } from '@mui/system'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { defineMuiChip } from '@ui-kit/themes/chip/mui-chip'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
@@ -64,6 +65,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
   },

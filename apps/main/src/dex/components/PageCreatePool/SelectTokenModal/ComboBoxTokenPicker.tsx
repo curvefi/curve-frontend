@@ -1,4 +1,4 @@
-import { CreateToken, CreateQuickListToken } from '@/dex/components/PageCreatePool/types'
+import { CreateQuickListToken, CreateToken } from '@/dex/components/PageCreatePool/types'
 import { t } from '@lingui/macro'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
@@ -6,7 +6,6 @@ import { useMemo, useRef, useState } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Item } from '@react-stately/collections'
 import styled from 'styled-components'
-import Fuse from 'fuse.js'
 import { breakpoints } from '@ui/utils/responsive'
 import { delayAction, shortenTokenAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
@@ -20,7 +19,8 @@ import TokenIcon from '@/dex/components/TokenIcon'
 import { Chip } from '@ui/Typography'
 import LazyItem from '@ui/LazyItem'
 import Checkbox from '@ui/Checkbox'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { filterTokens } from '@ui-kit/utils'
 
 type Props = {
   curve: CurveApi
@@ -103,38 +103,19 @@ const ComboBoxTokenPicker = ({
           basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
         )
       : tokens
-    const filteredTokens = disabledKeys
+    const enabledTokens = disabledKeys
       ? basePoolsFilteredTokens.filter(
           (item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase()),
         )
       : basePoolsFilteredTokens
-    const fuse = new Fuse<CreateToken>(filteredTokens, {
-      ignoreLocation: true,
-      threshold: 0.01,
-      keys: ['symbol', 'address'],
-    })
 
-    const result = fuse.search(filterValue)
-
-    const checkedResult =
-      filterValue.length !== 42
-        ? result
-        : result.length !== 0 && result[0].item.address.toLowerCase() === filterValue.toLowerCase()
-          ? result
-          : []
-
+    const filteredResults = filterTokens(filterValue, enabledTokens, endsWith)
     settokenQueryStatus('')
-    if (filterValue.length === 42 && checkedResult.length === 0) {
+    if (filterValue.length === 42 && filteredResults.length === 0) {
       verifyTokens()
     }
 
-    if (filterValue.length === 0) {
-      return filteredTokens
-    } else if (checkedResult.length > 0) {
-      return checkedResult.map((r) => r.item)
-    } else {
-      return tokens.filter((item) => endsWith(item.address, filterValue))
-    }
+    return filteredResults
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterValue, tokens, disabledKeys, filterBasepools])
 

@@ -39,29 +39,28 @@ type RateCellProps = {
 export const LineGraphCell = ({ market, type }: RateCellProps) => {
   const { snapshots, snapshotKey, isLoading, rate } = useSnapshots(market, type)
   const { design } = useTheme()
-  if (rate == null) {
-    return '-'
-  }
   return (
-    <Box data-testid={`line-graph-${type}`}>
-      {snapshots?.length ? (
-        <LineChart data={snapshots} {...graphSize} compact>
-          <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
-          <Line
-            type="monotone"
-            dataKey={snapshotKey}
-            stroke={getColor(design, snapshots, snapshotKey)}
-            strokeWidth={1}
-            dot={<></>}
-          />
-        </LineChart>
-      ) : isLoading ? (
-        <Skeleton {...graphSize} />
-      ) : (
-        <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
-          {t`No historical data`}
-        </Typography>
-      )}
-    </Box>
+    rate != null && (
+      <Box data-testid={`line-graph-${type}`}>
+        {snapshots?.length ? (
+          <LineChart data={snapshots} {...graphSize} compact>
+            <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
+            <Line
+              type="monotone"
+              dataKey={snapshotKey}
+              stroke={getColor(design, snapshots, snapshotKey)}
+              strokeWidth={1}
+              dot={<></>}
+            />
+          </LineChart>
+        ) : isLoading ? (
+          <Skeleton {...graphSize} />
+        ) : (
+          <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
+            {t`No historical data`}
+          </Typography>
+        )}
+      </Box>
+    )
   )
 }

@@ -197,6 +197,10 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
 
   const Chips = {
+    BorderRadius: {
+      Clickable: 0,
+      NonClickable: '100px',
+    },
     Default: {
       Label: Text.TextColors.Secondary,
       Fill: Layer[2].Fill,
@@ -532,6 +536,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
 
   const Chips = {
+    BorderRadius: {
+      Clickable: 0,
+      NonClickable: '100px',
+    },
     Default: {
       Label: Text.TextColors.Secondary,
       Fill: Layer[2].Fill,
@@ -812,6 +820,10 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
 
   const Chips = {
+    BorderRadius: {
+      Clickable: 0,
+      NonClickable: 0,
+    },
     Default: {
       Label: Text.TextColors.Secondary,
       Fill: Layer[1].Fill,

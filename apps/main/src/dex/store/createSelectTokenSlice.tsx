@@ -1,9 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-
-import Fuse from 'fuse.js'
 import cloneDeep from 'lodash/cloneDeep'
 import { Token } from '@/dex/types/main.types'
+import { filterTokens } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -40,21 +39,7 @@ const createSelectTokenSlice = (set: SetState<State>, get: GetState<State>): Sel
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    filterFn: (filterValue, tokens, { endsWith }) => {
-      const fuse = new Fuse<Token>(tokens, {
-        ignoreLocation: true,
-        threshold: 0.01,
-        keys: ['symbol', 'address'],
-      })
-
-      const result = fuse.search(filterValue)
-
-      if (result.length > 0) {
-        return result.map((r) => r.item)
-      } else {
-        return tokens.filter((item) => endsWith(item.address, filterValue))
-      }
-    },
+    filterFn: (filterValue, tokens, { endsWith }) => filterTokens(filterValue, tokens, endsWith),
     setFilterValue: (filterValue, tokens, filterOptions) => {
       get()[sliceKey].setStateByKey('filterValue', filterValue)
 

@@ -68,7 +68,7 @@ const preview: Preview = {
           <DocsContainer context={context}>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <Box sx={{ '& .docs-story': { backgroundColor: 'background.paper' } }}>{children}</Box>
+              <Box sx={{ '& .docs-story': { backgroundColor: 'background.default' } }}>{children}</Box>
             </ThemeProvider>
           </DocsContainer>
         )
