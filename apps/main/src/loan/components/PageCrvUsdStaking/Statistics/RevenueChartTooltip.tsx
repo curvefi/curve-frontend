@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
-import { toUTC } from '@curvefi/prices-api/timestamp'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils/utilsFormat'
 import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 
@@ -38,7 +38,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
   if (active && payload && payload.length) {
     const { timestamp, proj_apy, proj_apy_7d_avg, proj_apy_total_avg } = payload[0].payload
 
-    const date = toUTC(timestamp)
+    const date = toDate(timestamp)
     const formattedDate = formatDate(date, 'long')
 
     return (

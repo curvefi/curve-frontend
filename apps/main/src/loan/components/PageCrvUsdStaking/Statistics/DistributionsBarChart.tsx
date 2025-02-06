@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
 import { useTheme } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { toUTC } from '@curvefi/prices-api/timestamp'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import DistributionsChartTooltip from './DistributionsChartTooltip'
 
 const { FontSize } = SizesAndSpaces
@@ -43,7 +43,7 @@ const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> 
           minTickGap={20}
           allowDataOverflow={false}
           tickFormatter={(time) => {
-            const date = toUTC(time as string | number)
+            const date = toDate(time as string | number)
             return formatDate(date)
           }}
         />

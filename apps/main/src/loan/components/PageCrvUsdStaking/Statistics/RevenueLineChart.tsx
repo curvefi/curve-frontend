@@ -5,7 +5,7 @@ import { Stack, Box } from '@mui/material'
 import { formatDate } from '@ui/utils/utilsFormat'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
-import { toUTC } from '@curvefi/prices-api/timestamp'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 
 const { FontSize } = SizesAndSpaces
@@ -49,7 +49,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
               minTickGap={20}
               tickMargin={4}
               tickFormatter={(time) => {
-                const date = toUTC(time as string | number)
+                const date = toDate(time as string | number)
                 return formatDate(date)
               }}
             />
