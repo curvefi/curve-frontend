@@ -129,7 +129,7 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
       </Wrapper>
 
       {tokenAlert && isMobile && <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>}
-      {poolAlert && (
+      {poolAlert && !poolAlert.isPoolPageOnly && (
         <>
           {!poolAlert.isInformationOnly && !poolAlert.isInformationOnlyAndShowInForm ? (
             <Box padding="0.5rem 0 0 0">{poolAlert.message}</Box>

@@ -112,6 +112,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     // Fantom networks
     const crossCurveAlert = (externalLinks: { label: string; url: string }[]): PoolAlert => ({
       alertType: '',
+      isPoolPageOnly: true,
       message: (
         <PoolAlertCustomMessage title="CrossCurve links" titleIcon={<RCCrossCurve />} externalLinks={externalLinks} />
       ),
