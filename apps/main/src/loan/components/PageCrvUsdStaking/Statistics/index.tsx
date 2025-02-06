@@ -23,9 +23,10 @@ const timeOptions: TimeOption[] = ['1m', '6m', '1y']
 type StatisticsProps = {
   isChartExpanded: boolean
   toggleChartExpanded: () => void
+  hideExpandChart: boolean
 }
 
-const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) => {
+const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
   const [activeChartOption, setActiveChartOption] = useState(chartOptions[0])
   const [activeTimeOption, setActiveTimeOption] = useState(timeOptions[0])
   const { data: yieldData } = useScrvUsdYield({ timeOption: activeTimeOption })
@@ -52,6 +53,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
           activeTimeOption={activeTimeOption}
           setActiveTimeOption={setActiveTimeOption}
           chartOptions={chartOptions}
+          hideExpandChart={hideExpandChart}
         />
         {activeChartOption.label === 'Savings Rate' && (
           <Stack>

@@ -20,9 +20,10 @@ const { MaxWidth } = SizesAndSpaces
 type UserPositionBannerProps = {
   className?: string
   mobileBreakpoint: string
+  chartExpanded: boolean
 }
 
-const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobileBreakpoint }) => {
+const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobileBreakpoint, chartExpanded }) => {
   const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
   const crvUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvUsdRateLoading = useStore((state) => state.usdRates.loading)
@@ -58,7 +59,7 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
   })
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} chartExpanded={chartExpanded}>
       <Box>
         <Title>{t`YOUR CSV POSITION`}</Title>
       </Box>
@@ -119,13 +120,14 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ chartExpanded: boolean }>`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
   background-color: var(--box--secondary--background-color);
-  max-width: ${MaxWidth.section};
+  width: 100%;
+  max-width: ${({ chartExpanded }) => (chartExpanded ? '100%' : MaxWidth.section)};
 `
 
 const StatsTitleWrapper = styled.div`

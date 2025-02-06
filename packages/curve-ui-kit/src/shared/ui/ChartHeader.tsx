@@ -26,6 +26,11 @@ type ChartHeaderProps = {
   setActiveChartOption: (newChartOption: ChartOption) => void
   activeTimeOption: TimeOption
   setActiveTimeOption: (newTimeOption: TimeOption) => void
+  /* 
+  hideExpandChart is used to hide the expand chart button when the
+  chart is already taking up the full width of the viewport
+  */
+  hideExpandChart?: boolean
 }
 
 const ChartHeader = ({
@@ -37,6 +42,7 @@ const ChartHeader = ({
   setActiveChartOption,
   activeTimeOption,
   setActiveTimeOption,
+  hideExpandChart = false,
 }: ChartHeaderProps) => {
   const handleChartOption = (event: React.MouseEvent<HTMLElement>, newChartOption: ChartOption) => {
     // ensure that one option is always selected by checking null
@@ -83,13 +89,15 @@ const ChartHeader = ({
               {option.label}
             </ToggleButton>
           ))}
-          <IconButton
-            size="small"
-            onClick={toggleChartExpanded}
-            sx={{ [`@media (max-width: ${smallBreakPoint})`]: { marginLeft: 'auto' } }}
-          >
-            <Icon name={isChartExpanded ? 'Minimize' : 'Maximize'} size={20} />
-          </IconButton>
+          {!hideExpandChart && (
+            <IconButton
+              size="small"
+              onClick={toggleChartExpanded}
+              sx={{ [`@media (max-width: ${smallBreakPoint})`]: { marginLeft: 'auto' } }}
+            >
+              <Icon name={isChartExpanded ? 'Minimize' : 'Maximize'} size={20} />
+            </IconButton>
+          )}
         </ToggleButtonGroup>
         {timeOptions && (
           <Select
