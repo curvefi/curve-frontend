@@ -1,9 +1,9 @@
-import { toUTC } from '../timestamp'
+import { toDate } from '../timestamp'
 import type * as Responses from './responses'
 import type * as Models from './models'
 
 export const parseProposal = (x: Responses.GetProposalsResponse['proposals'][number]): Models.Proposal => ({
-  timestamp: toUTC(x.dt),
+  timestamp: toDate(x.dt),
   id: x.vote_id,
   type: x.vote_type.toLocaleLowerCase() === 'parameter' ? 'parameter' : 'ownership',
   metadata: x.metadata?.startsWith('"') // Remove weird starting quote, if present.

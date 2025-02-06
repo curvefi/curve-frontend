@@ -50,10 +50,10 @@ const TopHoldersTable: React.FC = () => {
               </span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(Number(holder.weight) / 10 ** 18, { notation: 'compact' })}
+              {formatNumber(holder.weight.fromWei(), { notation: 'compact' })}
             </TableData>
             <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(Number(holder.locked) / 10 ** 18, { notation: 'compact' })}
+              {formatNumber(holder.locked.fromWei(), { notation: 'compact' })}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'weightRatio' ? 'sortby-active right-padding' : 'right-padding'}

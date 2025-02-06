@@ -1,4 +1,4 @@
-import { toUTC } from '../timestamp'
+import { toDate } from '../timestamp'
 import type * as Responses from './responses'
 import type * as Models from './models'
 
@@ -11,21 +11,21 @@ export const parseVotesOverview = (x: Responses.GetVotesOverviewResponse['data']
 })
 
 export const parseLocksDaily = (x: Responses.GetLocksDailyResponse['locks'][number]): Models.LocksDaily => ({
-  day: toUTC(x.day),
+  day: toDate(x.day),
   amount: BigInt(x.amount),
 })
 
 export const parseUserLock = (x: Responses.GetUserLocksResponse['locks'][number]): Models.UserLock => ({
-  timestamp: toUTC(x.dt),
+  timestamp: toDate(x.dt),
   amount: BigInt(Math.round(parseFloat(x.amount))),
-  unlockTime: toUTC(x.unlock_time),
+  unlockTime: toDate(x.unlock_time),
   lockType: x.lock_type as Models.UserLock['lockType'],
   lockedBalance: BigInt(Math.round(parseFloat(x.locked_balance))),
   txHash: x.transaction_hash,
 })
 
 export const parseSupply = (x: Responses.GetSupplyResponse['supply'][number]): Models.Supply => ({
-  timestamp: toUTC(x.dt),
+  timestamp: toDate(x.dt),
   veCrvTotal: BigInt(x.total_vecrv),
   crvEscrowed: BigInt(x.escrowed_crv),
   crvSupply: BigInt(x.crv_supply),
@@ -44,5 +44,5 @@ export const parseLockers = (x: Responses.GetLockersTopResponse['users'][number]
   locked: BigInt(Math.round(parseFloat(x.locked))),
   weight: BigInt(Math.round(parseFloat(x.weight))),
   weightRatio: parseFloat(x.weight_ratio.slice(0, -1)),
-  unlockTime: toUTC(x.unlock_time),
+  unlockTime: toDate(x.unlock_time),
 })

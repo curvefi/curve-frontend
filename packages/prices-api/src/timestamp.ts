@@ -2,15 +2,16 @@ const TZ_OFFSET = /[+-]\d{2}:?\d{2}$/
 
 /**
  * Converts a timestamp string or number to UTC Date object
- * @param timestamp - Timestamp as string (ISO format) or number (unix seconds)
+ * @param timestamp - Timestamp as string (ISO format or unix seconds) or number (unix seconds)
  * @returns UTC Date object
  * @example
- * toUTC(1234567890)
- * toUTC("2024-01-01T00:00:00.000Z")
- * toUTC("2024-01-01T00:00:00.000Z+01:00")
- * toUTC("2024-01-01T00:00:00") // (assumes UTC)
+ * toDate(1234567890) // Unix timestamp number
+ * toDate("1234567890") // Unix timestamp string
+ * toDate("2024-01-01T00:00:00.000Z") // ISO with UTC
+ * toDate("2024-01-01T00:00:00.000+01:00") // ISO with timezone
+ * toDate("2024-01-01T00:00:00") // ISO without timezone (assumes UTC)
  */
-export function toUTC(timestamp: string | number): Date {
+export function toDate(timestamp: string | number): Date {
   // Convert actual unix timestamp numbers to Date.
   if (typeof timestamp === 'number') {
     return new Date(timestamp * 1000)

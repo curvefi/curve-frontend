@@ -42,8 +42,8 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
 
   const dataFormatted = data.map((x) => ({
     ...x,
-    weight: Number(x.weight) / 10 ** 18,
-    locked: Number(x.locked) / 10 ** 18,
+    weight: x.weight.fromWei(),
+    locked: x.locked.fromWei(),
   }))
 
   return (

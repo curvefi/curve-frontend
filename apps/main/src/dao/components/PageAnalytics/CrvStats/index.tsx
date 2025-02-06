@@ -25,9 +25,7 @@ const CrvStats: React.FC = () => {
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 
-  const veCrvApr = aprLoading
-    ? 0
-    : calculateApr(veCrvFees.fees[1].feesUsd, Number(veCrvData.totalVeCrv) / 10 ** 18, crv)
+  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
 
   const loading = Boolean(provider && veCrvLoading)
   return (
@@ -40,7 +38,7 @@ const CrvStats: React.FC = () => {
             title={t`Total CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(Number(veCrvData.totalCrv) / 10 ** 18, { notation: 'compact' })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -49,7 +47,7 @@ const CrvStats: React.FC = () => {
             title={t`Locked CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(Number(veCrvData.totalLockedCrv) / 10 ** 18, { notation: 'compact' })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -58,7 +56,7 @@ const CrvStats: React.FC = () => {
             title={t`veCRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(Number(veCrvData.totalVeCrv) / 10 ** 18, { notation: 'compact' })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
