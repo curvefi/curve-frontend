@@ -1,5 +1,6 @@
 import { getHost, type Address, type Options, type Chain } from '..'
 import { fetchJson as fetch } from '../fetch'
+import { getTimeRange } from '../timestamp'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
@@ -77,14 +78,13 @@ export async function getOHLC(
 ) {
   const host = getHost(options)
 
-  end ??= Math.floor(new Date().getTime() / 1000)
-  start ??= end - 10 * 24 * 60 * 60 // Subtract 1 month worth of seconds.
+  const range = getTimeRange({ start, end })
 
   const params = new URLSearchParams({
     agg_number: interval.toString(),
     agg_units: units,
-    ...(start && { start: start.toString() }),
-    ...(end && { end: end.toString() }),
+    start: range.start.toString(),
+    end: range.end.toString(),
   })
 
   const resp = await fetch<Responses.GetLlammaOHLCResponse>(

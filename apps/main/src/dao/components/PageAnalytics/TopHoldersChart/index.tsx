@@ -8,7 +8,7 @@ import Spinner from '../../Spinner'
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
-import { VeCrvHolder } from '@/dao/types/dao.types'
+import type { Locker } from '@curvefi/prices-api/dao'
 
 const TopLockers: React.FC = () => {
   const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(
@@ -19,26 +19,26 @@ const TopLockers: React.FC = () => {
   const lockersFetchError = veCrvHolders.fetchStatus === 'ERROR'
   const lockersFetchLoading = veCrvHolders.fetchStatus === 'LOADING'
 
-  const othersData: VeCrvHolder = useMemo(() => {
+  const othersData: Locker = useMemo(() => {
     if (!lockersFetchSuccess || veCrvData.fetchStatus !== 'SUCCESS')
       return {
-        user: 'Others(<0.5%)',
-        weight: 0,
-        locked: 0,
-        weight_ratio: 0,
-        unlock_time: 0,
+        user: 'Others(<0.5%)' as `Others(${string})`,
+        weight: 0n,
+        locked: 0n,
+        weightRatio: 0,
+        unlockTime: null,
       }
 
     const othersVeCrv = veCrvData.totalVeCrv - veCrvHolders.totalValues.weight
     const otherLockedCrv = veCrvData.totalLockedCrv - veCrvHolders.totalValues.locked
-    const othersWeightRatio = +(100 - veCrvHolders.totalValues.weight_ratio).toFixed(2)
+    const othersWeightRatio = +(100 - veCrvHolders.totalValues.weightRatio).toFixed(2)
 
     return {
-      user: 'Others(<0.3%)',
+      user: 'Others(<0.3%)' as `Others(${string})`,
       weight: othersVeCrv,
       locked: otherLockedCrv,
-      weight_ratio: othersWeightRatio,
-      unlock_time: 0,
+      weightRatio: othersWeightRatio,
+      unlockTime: null,
     }
   }, [
     lockersFetchSuccess,
@@ -47,7 +47,7 @@ const TopLockers: React.FC = () => {
     veCrvData.totalVeCrv,
     veCrvHolders.totalValues.locked,
     veCrvHolders.totalValues.weight,
-    veCrvHolders.totalValues.weight_ratio,
+    veCrvHolders.totalValues.weightRatio,
   ])
 
   return (

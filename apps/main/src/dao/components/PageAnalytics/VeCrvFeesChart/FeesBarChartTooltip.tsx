@@ -4,40 +4,31 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber, convertToLocaleTimestamp } from '@ui/utils/utilsFormat'
+import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
 
 import Box from '@ui/Box'
+import type { Distribution } from '@curvefi/prices-api/revenue'
 
 const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
-  const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
-
   if (active && payload && payload.length) {
-    const { date, fees_usd, timestamp } = payload[0].payload
-    const payloadTimestamp = convertToLocaleTimestamp(new Date(timestamp).getTime() / 1000)
+    const { feesUsd, timestamp } = payload[0].payload as Distribution
 
     return (
       <TooltipWrapper>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
-            {date ? (
-              <TooltipData>
-                {date}
-                {payloadTimestamp > currentTime && <strong> {t`(in progress)`}</strong>}
-              </TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>
+              {formatDate(timestamp)}
+              {timestamp > new Date() && <strong> {t`(in progress)`}</strong>}
+            </TooltipData>
           </TooltipColumn>
         </Box>
+
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
-            {fees_usd ? (
-              <TooltipData>{formatNumber(fees_usd, { currency: 'USD', notation: 'compact' })}</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>{formatNumber(feesUsd, { currency: 'USD', notation: 'compact' })}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>
