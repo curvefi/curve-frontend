@@ -47,12 +47,12 @@ export type GetUserLocksResponse = {
   }[]
 }
 
+type Locker = { user: Address; locked: string; weight: string; weight_ratio: string; unlock_time: number }
+
 export type GetLockersResponse = {
-  users: {
-    user: Address
-    locked: string
-    weight: string
-    weight_ratio: string
-    unlock_time: number
-  }[]
+  locks: Locker[]
+}
+
+export type GetLockersTopResponse = {
+  users: Locker[]
 }
