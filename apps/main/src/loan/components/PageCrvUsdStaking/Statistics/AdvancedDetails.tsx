@@ -4,10 +4,9 @@ import { t } from '@lingui/macro'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SCRVUSD_VAULT_ADDRESS } from './constants'
 import networks from '@/loan/networks'
+import { ETHEREUM_CHAIN_ID } from '@/loan/constants'
 
 const { Spacing } = SizesAndSpaces
-
-const ethereumChainId = 1
 
 const AdvancedDetails = () => (
   <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, boxShadow: 'none' }} elevation={0}>
@@ -20,7 +19,7 @@ const AdvancedDetails = () => (
       <ActionInfo
         label={t`Vault Contract Address`}
         address={SCRVUSD_VAULT_ADDRESS}
-        linkAddress={networks[ethereumChainId].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
+        linkAddress={networks[ETHEREUM_CHAIN_ID].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
         copiedText={t`Vault Contract Address Copied!`}
       />
     </Stack>

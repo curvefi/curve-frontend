@@ -1,4 +1,5 @@
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import Stack from '@mui/material/Stack'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ToggleButton from '@mui/material/ToggleButton'
@@ -27,9 +28,12 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
   const {
     design: { Color },
   } = useTheme()
-  const averageLineColor = Color.Tertiary[400]
-  const sevenDayAverageLineColor = Color.Secondary[500]
-  const mainLineColor = Color.Primary[500]
+
+  const priceLineColors = {
+    proj_apy: Color.Primary[500],
+    proj_apy_7d_avg: Color.Secondary[500],
+    proj_apy_total_avg: Color.Tertiary[400],
+  } as const satisfies Record<YieldKeys, string>
 
   return (
     <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ paddingInline: Spacing.md }}>
@@ -41,10 +45,10 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
             dash={dash}
             legendColor={
               key === 'proj_apy'
-                ? mainLineColor
+                ? priceLineColors.proj_apy
                 : key === 'proj_apy_7d_avg'
-                  ? sevenDayAverageLineColor
-                  : averageLineColor
+                  ? priceLineColors.proj_apy_7d_avg
+                  : priceLineColors.proj_apy_total_avg
             }
           />
         ))}

@@ -61,7 +61,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
     }
   }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
 
-  // close chart on mobile
+  // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
   useEffect(() => {
     if (columnView && isChartExpanded) {
       minimizeChart()

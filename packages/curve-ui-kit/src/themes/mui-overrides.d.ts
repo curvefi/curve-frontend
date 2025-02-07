@@ -17,9 +17,3 @@ declare module '@mui/material/styles' {
     highlight: string
   }
 }
-
-declare module '@mui/material/CardHeader' {
-  interface CardHeaderPropsVariantOverrides {
-    size?: true
-  }
-}

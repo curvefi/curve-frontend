@@ -12,6 +12,8 @@ import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { defineMuiChip } from '@ui-kit/themes/chip/mui-chip'
+import { defineMuiCardHeader } from '@ui-kit/themes/card-header/mui-card-header'
+import { defineMuiSelect } from '@ui-kit/themes/mui-select'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
@@ -25,37 +27,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       disableRipple: true,
     },
   },
-  MuiCardHeader: {
-    styleOverrides: {
-      root: {
-        padding: `${SizesAndSpaces.Spacing.lg.desktop} ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
-        alignItems: 'flex-end',
-        borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`, // 1px to account for border
-        variants: [
-          {
-            props: { size: 'small' },
-            style: {
-              minHeight: SizesAndSpaces.Sizing.md.desktop,
-              padding: `${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.md.desktop} ${SizesAndSpaces.Spacing.sm.desktop}`,
-            },
-          },
-        ],
-      },
-      action: { alignContent: 'center', margin: 0 },
-      title: {
-        ...typography.headingSBold,
-        variants: [
-          {
-            props: { size: 'small' },
-            style: {
-              ...typography.headingXsBold,
-            },
-          },
-        ],
-      },
-    },
-  },
+  MuiCardHeader: defineMuiCardHeader(design, typography),
   MuiCardActions: {
     styleOverrides: {
       root: {
@@ -126,23 +98,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
-  MuiSelect: {
-    styleOverrides: {
-      root: {
-        border: 'none',
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: 'none',
-          borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        },
-        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-          border: `2px solid ${design.Inputs.Base.Default.Border.Active}`,
-        },
-      },
-      select: {
-        ...typography.bodyMBold,
-      },
-    },
-  },
+  MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: {
     styleOverrides: {
       thumb: {

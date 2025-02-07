@@ -2,6 +2,7 @@ import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Stack, Card, CardHeader, Box } from '@mui/material'
 import { useState } from 'react'
+import { t } from '@lingui/macro'
 import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
 import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
@@ -13,9 +14,14 @@ import RevenueChartFooter from './RevenueChartFooter'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
+const chartLabels = {
+  savingsRate: t`Savings Rate`,
+  distributions: t`Distributions`,
+}
+
 const chartOptions: ChartOption[] = [
-  { activeTitle: 'Historical Rate', label: 'Savings Rate' },
-  { activeTitle: 'Historical Distributions', label: 'Distributions' },
+  { activeTitle: t`Historical Rate`, label: chartLabels.savingsRate },
+  { activeTitle: t`Historical Distributions`, label: chartLabels.distributions },
 ]
 
 const timeOptions: TimeOption[] = ['1m', '6m', '1y']
@@ -55,7 +61,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
           chartOptions={chartOptions}
           hideExpandChart={hideExpandChart}
         />
-        {activeChartOption.label === 'Savings Rate' && (
+        {activeChartOption.label === chartLabels.savingsRate && (
           <Stack>
             <RevenueLineChart data={yieldData ?? []} />
             <RevenueChartFooter
@@ -65,7 +71,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
             />
           </Stack>
         )}
-        {activeChartOption.label === 'Distributions' && <DistributionsBarChart data={revenueData ?? null} />}
+        {activeChartOption.label === chartLabels.distributions && <DistributionsBarChart data={revenueData ?? null} />}
       </Card>
       <AdvancedDetails />
     </Stack>

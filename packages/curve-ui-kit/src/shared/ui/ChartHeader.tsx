@@ -66,7 +66,7 @@ const ChartHeader = ({
         padding: Spacing.md,
         rowGap: Spacing.md,
         columnGap: Spacing.sm,
-        '@media (max-width: 35.9375rem)': { flexDirection: 'column', alignItems: 'flex-start' },
+        [`@media (max-width: ${smallBreakPoint})`]: { flexDirection: 'column', alignItems: 'flex-start' },
       }}
     >
       <Typography variant="headingXsBold" color="textSecondary">
@@ -75,7 +75,7 @@ const ChartHeader = ({
       <Stack
         direction="row"
         sx={{
-          '@media (max-width: 35.9375rem)': { width: '100%' },
+          [`@media (max-width: ${smallBreakPoint})`]: { width: '100%' },
         }}
       >
         <ToggleButtonGroup
