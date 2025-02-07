@@ -13,11 +13,11 @@ export const TheadButton = styled.button<{ nowrap?: boolean }>`
   text-transform: inherit;
   ${({ nowrap }) => nowrap && `white-space: nowrap;`}
 
-  :disabled {
+  &:disabled {
     cursor: initial;
   }
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     background-color: transparent;
     color: var(--button_text--color);
   }

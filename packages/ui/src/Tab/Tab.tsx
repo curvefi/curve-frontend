@@ -16,7 +16,7 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
     cursor: pointer;
   }
   
-  :hover {
+  &:hover {
     background-color: var(--tab--content--background-color);
   }
   
@@ -30,7 +30,7 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
       transform: none;
     }
 
-    ::before {
+    &::before {
       background-color: ${({ variant }) =>
         variant === 'secondary' ? `var(--tab-secondary--background-color);` : `var(--tab--content--background-color);`}
       content: '';

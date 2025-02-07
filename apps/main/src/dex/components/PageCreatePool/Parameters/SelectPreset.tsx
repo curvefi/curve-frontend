@@ -268,7 +268,7 @@ const PoolPresetButton = styled(Button)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover {
+  &:hover {
     color: var(--button--color);
     border: 1px solid var(--button--background-color);
   }

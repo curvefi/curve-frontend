@@ -1,8 +1,8 @@
 import type { ChipProps } from 'ui/src/Typography/types'
 
 import * as React from 'react'
-import styled from 'styled-components'
-
+// import styled from 'styled-components'
+import styled from '@emotion/styled'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 
 const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: string }>) => {
@@ -34,7 +34,7 @@ const Label = styled.span<LabelProps>`
   ${({ fontVariantNumeric }) => fontVariantNumeric && `font-variant-numeric: ${fontVariantNumeric};`}
   ${({ isMono }) => (isMono ? 'font-family: var(--font-mono);' : 'font-family: var(--font);')}
   ${({ isError }) => isError && `color: var(--danger_darkBg-400);`}
-  ${({ opacity }) => opacity !== undefined && `opacity: ${opacity};`}}
+  ${({ opacity }) => opacity !== undefined && `opacity: ${opacity};`}
   
     // TODO: remove
   ${({ maxWidth }) => {
@@ -68,7 +68,7 @@ const Label = styled.span<LabelProps>`
     position: relative;
     top: 3px;
 
-    :hover {
+    &:hover {
       opacity: 1;
     }
   }

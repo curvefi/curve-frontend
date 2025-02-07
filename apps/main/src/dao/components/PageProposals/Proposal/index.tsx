@@ -101,7 +101,7 @@ const ProposalStatus = styled.h4`
   font-size: var(--font-size-1);
   text-transform: uppercase;
   &.Passed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -112,7 +112,7 @@ const ProposalStatus = styled.h4`
     }
   }
   &.Denied {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -123,7 +123,7 @@ const ProposalStatus = styled.h4`
     }
   }
   &.Active {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -172,7 +172,7 @@ const ExecutedStatus = styled.h4`
   font-size: var(--font-size-1);
   text-transform: uppercase;
   &.executed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -183,7 +183,7 @@ const ExecutedStatus = styled.h4`
     }
   }
   &.executable {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;

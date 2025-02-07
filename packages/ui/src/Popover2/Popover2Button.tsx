@@ -51,12 +51,12 @@ const Button = styled.button<{ variant?: ButtonVariant }>`
   min-height: 24px;
   padding: 0.5rem 0 0.2rem 0.5rem;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--primary-400);
     cursor: pointer;
   }
 
-  :disabled {
+  &:disabled {
     opacity: 0.7;
   }
 `

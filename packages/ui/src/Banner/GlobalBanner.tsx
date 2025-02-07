@@ -76,7 +76,7 @@ const Message = styled.p<{ padding?: string }>`
     text-transform: inherit;
     word-wrap: break-word;
     text-decoration-color: var(--whitea20);
-    :hover {
+    &:hover {
       color: inherit;
       text-decoration-color: var(--white);
     }
@@ -91,7 +91,7 @@ const StyledButton = styled(Button)`
   border: 1px solid var(--whitea20);
   text-transform: uppercase;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: inherit;
     border-color: inherit;
     background-color: var(--whitea20);
