@@ -1,8 +1,7 @@
 import type { ChipProps } from 'ui/src/Typography/types'
 
 import * as React from 'react'
-// import styled from 'styled-components'
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 
 const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: string }>) => {
