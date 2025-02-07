@@ -1,5 +1,3 @@
-import 'numbro/dist/languages.min.js'
-
 import { setDayjsLocale } from './dayjs'
 import { ReactNode } from 'react'
 
