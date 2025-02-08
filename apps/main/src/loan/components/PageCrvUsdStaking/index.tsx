@@ -19,15 +19,13 @@ const { MaxWidth } = SizesAndSpaces
 
 const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
-  const {
-    fetchUserBalances,
-    checkApproval,
-    inputAmount,
-    fetchExchangeRate,
-    fetchCrvUsdSupplies,
-    fetchSavingsYield,
-    stakingModule,
-  } = useStore((state) => state.scrvusd)
+  const fetchUserBalances = useStore((state) => state.scrvusd.fetchUserBalances)
+  const checkApproval = useStore((state) => state.scrvusd.checkApproval)
+  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
+  const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
+  const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
+  const fetchSavingsYield = useStore((state) => state.scrvusd.fetchSavingsYield)
+  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const lendApi = useStore((state) => state.lendApi)
   const { signerAddress, provider } = useWallet()
   const chainId = useStore((state) => state.curve?.chainId)

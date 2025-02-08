@@ -14,9 +14,8 @@ type DeployButtonProps = {
 
 const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   const { signerAddress } = useWallet()
-  const { approval: depositApproved, fetchStatus: depositFetchStatus } = useStore(
-    (state) => state.scrvusd.depositApproval,
-  )
+  const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
+  const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
   const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)
   const { inputAmount, stakingModule, userBalances, getInputAmountApproved } = useStore((state) => state.scrvusd)
 
