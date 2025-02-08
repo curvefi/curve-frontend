@@ -11,21 +11,22 @@ import Icon from 'ui/src/Icon'
 
 const { Spacing } = SizesAndSpaces
 
-export type ChartOption = {
-  label: string
+export type ChartOption<T = string> = {
   activeTitle: string
+  label: string
+  key: T
 }
 
-type ChartHeaderProps = {
+type ChartHeaderProps<T = string> = {
   isChartExpanded: boolean
   toggleChartExpanded: () => void
-  chartOptions: ChartOption[]
+  chartOptions: ChartOption<T>[]
   // set timeOptions to show select dropdown
   timeOptions?: TimeOption[]
-  activeChartOption: ChartOption
-  setActiveChartOption: (newChartOption: ChartOption) => void
-  activeTimeOption: TimeOption
-  setActiveTimeOption: (newTimeOption: TimeOption) => void
+  activeChartOption: T
+  setActiveChartOption: (value: T) => void
+  activeTimeOption?: TimeOption
+  setActiveTimeOption?: (newTimeOption: TimeOption) => void
   /* 
   hideExpandChart is used to hide the expand chart button when the
   chart is already taking up the full width of the viewport
@@ -33,7 +34,7 @@ type ChartHeaderProps = {
   hideExpandChart?: boolean
 }
 
-const ChartHeader = ({
+const ChartHeader = <T extends string>({
   isChartExpanded,
   toggleChartExpanded,
   chartOptions,
@@ -43,19 +44,20 @@ const ChartHeader = ({
   activeTimeOption,
   setActiveTimeOption,
   hideExpandChart = false,
-}: ChartHeaderProps) => {
-  const handleChartOption = (event: React.MouseEvent<HTMLElement>, newChartOption: ChartOption) => {
+}: ChartHeaderProps<T>) => {
+  const handleChartOption = (event: React.MouseEvent<HTMLElement>, key: T) => {
     // ensure that one option is always selected by checking null
-    if (newChartOption !== null) setActiveChartOption(newChartOption)
+    if (key !== null) setActiveChartOption(key)
   }
   const handleTimeOption = (event: SelectChangeEvent<TimeOption>) => {
-    if (event.target.value !== null) setActiveTimeOption(event.target.value as TimeOption)
+    if (event.target.value !== null && setActiveTimeOption) setActiveTimeOption(event.target.value as TimeOption)
   }
   /*
   The small breakpoint is used for placing Title and ToggleButtonGroup in a column 
   and separate the expand Chart button to the right
   */
   const smallBreakPoint = '35.9375rem' // 575px
+  const foundChartOption = chartOptions.find((option) => option.key === activeChartOption)
 
   return (
     <Stack
@@ -70,7 +72,7 @@ const ChartHeader = ({
       }}
     >
       <Typography variant="headingXsBold" color="textSecondary">
-        {activeChartOption.activeTitle}
+        {foundChartOption?.activeTitle ?? '?'}
       </Typography>
       <Stack
         direction="row"
@@ -85,7 +87,7 @@ const ChartHeader = ({
           sx={{ [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 } }}
         >
           {chartOptions.map((option) => (
-            <ToggleButton value={option} key={option.label} size="small">
+            <ToggleButton value={option.key} key={option.key} size="small">
               {option.label}
             </ToggleButton>
           ))}

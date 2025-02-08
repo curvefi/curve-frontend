@@ -1,7 +1,7 @@
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import type { StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Stack, Card, CardHeader, Box } from '@mui/material'
-import { useState } from 'react'
 import { t } from '@lingui/macro'
 import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
@@ -11,17 +11,17 @@ import RevenueLineChart from './RevenueLineChart'
 import DistributionsBarChart from './DistributionsBarChart'
 import AdvancedDetails from './AdvancedDetails'
 import RevenueChartFooter from './RevenueChartFooter'
-
+import useStore from '@/loan/store/useStore'
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-const chartLabels = {
+const chartLabels: Record<StatisticsChart, string> = {
   savingsRate: t`Savings Rate`,
   distributions: t`Distributions`,
 }
 
-const chartOptions: ChartOption[] = [
-  { activeTitle: t`Historical Rate`, label: chartLabels.savingsRate },
-  { activeTitle: t`Historical Distributions`, label: chartLabels.distributions },
+const chartOptions: ChartOption<StatisticsChart>[] = [
+  { activeTitle: t`Historical Rate`, label: chartLabels.savingsRate, key: 'savingsRate' },
+  { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
 
 const timeOptions: TimeOption[] = ['1m', '6m', '1y']
@@ -33,9 +33,12 @@ type StatisticsProps = {
 }
 
 const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
-  const [activeChartOption, setActiveChartOption] = useState(chartOptions[0])
-  const [activeTimeOption, setActiveTimeOption] = useState(timeOptions[0])
-  const { data: yieldData } = useScrvUsdYield({ timeOption: activeTimeOption })
+  const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
+  const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
+  const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
+  const setRevenueChartTimeOption = useStore((state) => state.scrvusd.setRevenueChartTimeOption)
+
+  const { data: yieldData } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
   const { data: revenueData } = useScrvUsdRevenue({})
 
   return (
@@ -54,24 +57,22 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
         <ChartHeader
           isChartExpanded={isChartExpanded}
           toggleChartExpanded={toggleChartExpanded}
-          activeChartOption={activeChartOption}
-          setActiveChartOption={setActiveChartOption}
-          activeTimeOption={activeTimeOption}
-          setActiveTimeOption={setActiveTimeOption}
+          activeChartOption={selectedStatisticsChart}
+          setActiveChartOption={setSelectedStatisticsChart}
           chartOptions={chartOptions}
           hideExpandChart={hideExpandChart}
         />
-        {activeChartOption.label === chartLabels.savingsRate && (
+        {selectedStatisticsChart === 'savingsRate' && (
           <Stack>
             <RevenueLineChart data={yieldData ?? []} />
             <RevenueChartFooter
               timeOptions={timeOptions}
-              activeTimeOption={activeTimeOption}
-              setActiveTimeOption={(_, newValue) => newValue && setActiveTimeOption(newValue)}
+              activeTimeOption={revenueChartTimeOption}
+              setActiveTimeOption={(_, newValue) => newValue && setRevenueChartTimeOption(newValue)}
             />
           </Stack>
         )}
-        {activeChartOption.label === chartLabels.distributions && <DistributionsBarChart data={revenueData ?? null} />}
+        {selectedStatisticsChart === 'distributions' && <DistributionsBarChart data={revenueData ?? null} />}
       </Card>
       <AdvancedDetails />
     </Stack>

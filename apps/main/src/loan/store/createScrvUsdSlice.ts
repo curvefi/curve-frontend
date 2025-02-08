@@ -1,5 +1,6 @@
-import type { DepositWithdrawModule } from '@/loan/components/PageCrvUsdStaking/types'
+import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import type { PricesYieldData, PricesYieldDataResponse, Provider } from '@/loan/store/types'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import BigNumber from 'bignumber.js'
@@ -35,6 +36,8 @@ type SliceState = {
     value: string
   }
   stakingModule: DepositWithdrawModule
+  selectedStatisticsChart: StatisticsChart
+  revenueChartTimeOption: TimeOption
   inputAmount: string
   crvUsdExchangeRate: {
     fetchStatus: FetchStatus
@@ -95,6 +98,8 @@ export type ScrvUsdSlice = {
     fetchSavingsYield: (provider?: Provider | null) => void
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
+    setSelectedStatisticsChart: (chart: StatisticsChart) => void
+    setRevenueChartTimeOption: (timeOption: TimeOption) => void
     setInputAmount: (amount: string) => void
     setApproveInfinite: () => void
     setPreviewReset: () => void
@@ -122,6 +127,8 @@ const DEFAULT_STATE: SliceState = {
     fetchStatus: '',
   },
   stakingModule: 'deposit',
+  selectedStatisticsChart: 'savingsRate',
+  revenueChartTimeOption: '1m',
   inputAmount: '0',
   preview: {
     fetchStatus: '',
@@ -647,6 +654,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     setStakingModule: (stakingModule: DepositWithdrawModule) => {
       get()[sliceKey].setStateByKey('stakingModule', stakingModule)
       get()[sliceKey].setStakingModuleChangeReset()
+    },
+    setSelectedStatisticsChart: (chart: StatisticsChart) => {
+      get()[sliceKey].setStateByKey('selectedStatisticsChart', chart)
+    },
+    setRevenueChartTimeOption: (timeOption: TimeOption) => {
+      get()[sliceKey].setStateByKey('revenueChartTimeOption', timeOption)
     },
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => {
       if (stakingModule === 'deposit') {
