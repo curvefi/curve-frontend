@@ -3326,15 +3326,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.66.2":
-  version: 2.66.2
-  resolution: "@curvefi/api@npm:2.66.2"
+"@curvefi/api@npm:^2.66.5":
+  version: 2.66.5
+  resolution: "@curvefi/api@npm:2.66.5"
   dependencies:
-    "@curvefi/ethcall": "npm:6.0.7"
+    "@curvefi/ethcall": "npm:6.0.12"
     bignumber.js: "npm:^9.1.2"
     ethers: "npm:^6.13.4"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/a604ba657459934b35cf8a3416690141a4dbae8e7c6487fdcd172a27959c9bee7499c9cd2405a3dcf9a3292af96d25f2bce24d6c409b65659dc3e2dd8739505e
+  checksum: 10c0/349143b53d5dd72b638011faab2a82641fc34c1bb47fae0f37115174dc819d71d0f310d71249922a770fea81e65c27379115e90a653a14bf47229d3d47ae907b
+  languageName: node
+  linkType: hard
+
+"@curvefi/ethcall@npm:6.0.12":
+  version: 6.0.12
+  resolution: "@curvefi/ethcall@npm:6.0.12"
+  dependencies:
+    "@types/node": "npm:^22.12.0"
+    abi-coder: "npm:^5.0.0"
+  peerDependencies:
+    ethers: ^6.0.0
+  checksum: 10c0/84c7795eac718ffe322f60d848c71189acea9b98d90ee401563ab058eddebe1e37eda135d74986f63fb52cccd828e600a314347cfc3ebcf41cd9d28669737a32
   languageName: node
   linkType: hard
 
@@ -10664,6 +10676,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~6.19.2"
   checksum: 10c0/ead9495cfc6b1da5e7025856dcce2591e9bae635357410c0d2dd619fce797d2a1d402887580ca4b336cb78168b195224869967de370a23f61663cf1e4836121c
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.12.0":
+  version: 22.13.1
+  resolution: "@types/node@npm:22.13.1"
+  dependencies:
+    undici-types: "npm:~6.20.0"
+  checksum: 10c0/d4e56d41d8bd53de93da2651c0a0234e330bd7b1b6d071b1a94bd3b5ee2d9f387519e739c52a15c1faa4fb9d97e825b848421af4b2e50e6518011e7adb4a34b7
   languageName: node
   linkType: hard
 
@@ -21230,7 +21251,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.66.2"
+    "@curvefi/api": "npm:^2.66.5"
     "@curvefi/lending-api": "npm:^2.4.5"
     "@curvefi/stablecoin-api": "npm:^1.5.9"
     "@hookform/error-message": "npm:^2.0.1"
@@ -26913,6 +26934,13 @@ __metadata:
   version: 6.19.8
   resolution: "undici-types@npm:6.19.8"
   checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.20.0":
+  version: 6.20.0
+  resolution: "undici-types@npm:6.20.0"
+  checksum: 10c0/68e659a98898d6a836a9a59e6adf14a5d799707f5ea629433e025ac90d239f75e408e2e5ff086afc3cace26f8b26ee52155293564593fbb4a2f666af57fc59bf
   languageName: node
   linkType: hard
 
