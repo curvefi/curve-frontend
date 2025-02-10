@@ -10850,7 +10850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^8 || ^9, bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.1.0, bignumber.js@npm:^9.1.2":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.1.0, bignumber.js@npm:^9.1.2":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 10c0/e17786545433f3110b868725c449fa9625366a6e675cd70eb39b60938d6adbd0158cb4b3ad4f306ce817165d37e63f4aa3098ba4110db1d9a3b9f66abfbaf10d
@@ -12331,7 +12331,6 @@ __metadata:
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.13.5"
-    numbro: "npm:^2.4.0"
     react: "npm:*"
     react-dom: "npm:*"
     storybook: "npm:^8.3.5"
@@ -18095,15 +18094,6 @@ __metadata:
   dependencies:
     boolbase: "npm:^1.0.0"
   checksum: 10c0/5fee7ff309727763689cfad844d979aedd2204a817fbaaf0e1603794a7c20db28548d7b024692f953557df6ce4a0ee4ae46cd8ebd9b36cfb300b9226b567c479
-  languageName: node
-  linkType: hard
-
-"numbro@npm:^2.4.0":
-  version: 2.5.0
-  resolution: "numbro@npm:2.5.0"
-  dependencies:
-    bignumber.js: "npm:^8 || ^9"
-  checksum: 10c0/5fce44fb0e9dd9e3d48b74f0f29910af515284ac35eff0c14911ccaa7a666c2b95a55be02d2605f30fd3fac7d522ffecb5c1f24acb91c1a1880eb53b268a2ccc
   languageName: node
   linkType: hard
 
