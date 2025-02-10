@@ -1,14 +1,13 @@
 import { t } from '@lingui/macro'
 
-import useStore from '@/loan/store/useStore'
-import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
-
 import { useTheme } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import { Stack } from '@mui/material'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
@@ -16,11 +15,11 @@ const StatsBanner = () => {
   const {
     design: { Color },
   } = useTheme()
-  const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
+  const { provider } = useWallet()
+  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({ provider })
 
   const exampleBalance = 100000
-  const isLoadingPricesYieldData = !isReady(pricesYieldData.fetchStatus)
-  const scrvUsdApy = pricesYieldData.data?.proj_apr || 0
+  const scrvUsdApy = statisticsData?.proj_apr || 0
   const oneMonthProjYield = (scrvUsdApy / 100 / 12) * exampleBalance
   const oneYearProjYield = (scrvUsdApy / 100) * exampleBalance
 
@@ -45,21 +44,21 @@ const StatsBanner = () => {
           label={t`30 Days Projection`}
           unit="dollar"
           value={oneMonthProjYield}
-          loading={isLoadingPricesYieldData}
+          loading={isStatisticsLoading}
           tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
         />
         <Metric
           label={t`1 Year Projection`}
           unit="dollar"
           value={oneYearProjYield}
-          loading={isLoadingPricesYieldData}
+          loading={isStatisticsLoading}
           tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
         />
         <Metric
           label={t`Estimated APY`}
           unit="percentage"
           value={scrvUsdApy}
-          loading={isLoadingPricesYieldData}
+          loading={isStatisticsLoading}
           tooltip={t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
         />

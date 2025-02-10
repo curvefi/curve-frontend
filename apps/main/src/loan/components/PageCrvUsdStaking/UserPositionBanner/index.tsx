@@ -14,6 +14,7 @@ import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import Tooltip from '@ui/Tooltip'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -24,10 +25,10 @@ type UserPositionBannerProps = {
 }
 
 const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobileBreakpoint, chartExpanded }) => {
-  const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
+  const { signerAddress, provider } = useWallet()
+  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({ provider })
   const crvUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvUsdRateLoading = useStore((state) => state.usdRates.loading)
-  const { signerAddress } = useWallet()
   const userBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? ''])
   const crvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.crvUsdExchangeRate.fetchStatus)
 
@@ -37,15 +38,14 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
     maximumFractionDigits: 4,
   })
   const userBalanceLoading = !isReady(userBalance?.fetchStatus)
-  const isLoadingPricesYieldData = !isReady(pricesYieldData.fetchStatus)
   const exchangeRateLoading = !isReady(crvUsdExchangeRateFetchStatus)
 
-  const totalScrvUsdSupply = pricesYieldData.data?.supply ?? 0
+  const totalScrvUsdSupply = statisticsData?.supply ?? 0
   const totalScrvUsdSupplyFormatted = formatNumber(totalScrvUsdSupply, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  const scrvUsdApy = pricesYieldData.data?.proj_apr ?? 0
+  const scrvUsdApy = statisticsData?.proj_apr ?? 0
   const scrvUsdApyFormatted = formatNumber(scrvUsdApy, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   const userShareOfTotalScrvUsdSupply = BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100).toString()
@@ -92,7 +92,7 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />
           </StatsTitleWrapper>
-          {isLoadingPricesYieldData ? (
+          {isStatisticsLoading ? (
             <Loader isLightBg skeleton={[120, 26]} />
           ) : (
             <StatsItemValue>~{scrvUsdApyFormatted}%</StatsItemValue>
@@ -102,12 +102,12 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
           <StatsTitleWrapper>
             <StatsItemTitle>{t`Your share of the vault`}</StatsItemTitle>
           </StatsTitleWrapper>
-          {isLoadingPricesYieldData ? (
+          {isStatisticsLoading ? (
             <Loader isLightBg skeleton={[120, 26]} />
           ) : (
             <StatsItemValue>{userShareOfTotalScrvUsdSupplyFormatted}%</StatsItemValue>
           )}
-          {userBalanceLoading || isLoadingPricesYieldData ? (
+          {userBalanceLoading || isStatisticsLoading ? (
             <Loader isLightBg skeleton={[60, 14]} />
           ) : (
             <StatsDetailData>

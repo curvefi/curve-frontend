@@ -23,12 +23,12 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
-  const fetchSavingsYield = useStore((state) => state.scrvusd.fetchSavingsYield)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const lendApi = useStore((state) => state.lendApi)
-  const { signerAddress, provider } = useWallet()
+  const { signerAddress } = useWallet()
   const chainId = useStore((state) => state.curve?.chainId)
   const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
+
   const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
@@ -43,12 +43,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
     }
 
     fetchData()
-  }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, fetchSavingsYield])
-
-  // none library fetches
-  useEffect(() => {
-    fetchSavingsYield(provider)
-  }, [fetchSavingsYield, provider])
+  }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return

@@ -1,5 +1,4 @@
 import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
-import type { PricesYieldData, PricesYieldDataResponse, Provider } from '@/loan/store/types'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
@@ -7,7 +6,6 @@ import BigNumber from 'bignumber.js'
 import { t } from '@lingui/macro'
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
 import networks from '@/loan/networks'
-import { Contract } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
@@ -64,10 +62,6 @@ type SliceState = {
     transaction: string | null
     errorMessage: string
   }
-  pricesYieldData: {
-    fetchStatus: FetchStatus
-    data: PricesYieldData | null
-  }
 }
 
 type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
@@ -95,7 +89,6 @@ export type ScrvUsdSlice = {
     fetchUserBalances: () => void
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
-    fetchSavingsYield: (provider?: Provider | null) => void
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setSelectedStatisticsChart: (chart: StatisticsChart) => void
@@ -159,58 +152,6 @@ const DEFAULT_STATE: SliceState = {
     transaction: null,
     errorMessage: '',
   },
-  pricesYieldData: {
-    fetchStatus: 'loading',
-    data: null,
-  },
-}
-
-const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
-const YEAR = 86400 * 365.25 * 100
-const VAULT_ABI = [
-  {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'profitUnlockingRate',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'totalSupply',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint256' }],
-  },
-]
-
-/**
- * Fetches the savings yield data from the Curve API.
- * If a provider is provided, the data is fetched from the vault contract directly.
- * That provides more accurate data and works even if our servers are down.
- */
-async function _fetchSavingsYield(provider?: Provider | null): Promise<PricesYieldDataResponse> {
-  if (provider) {
-    const vault = new Contract(VAULT_ADDRESS, VAULT_ABI, provider)
-    const [unlock_amount, supply, block] = await Promise.all([
-      vault.profitUnlockingRate(),
-      vault.totalSupply(),
-      provider.getBlock('latest'),
-    ])
-
-    const unlockAmountNum = Number(unlock_amount)
-    const supplyNum = Number(supply)
-
-    return {
-      last_updated: new Date(block?.timestamp ?? 0).toISOString(),
-      last_updated_block: block?.number ?? 0,
-      proj_apr: supplyNum > 0 ? (unlockAmountNum * 1e-12 * YEAR) / supplyNum : 0,
-      supply: supplyNum / 1e18,
-    }
-  }
-
-  const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/statistics`)
-  return await response.json()
 }
 
 const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -587,17 +528,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       } catch (error) {
         console.error(error)
         get()[sliceKey].setStateByKey('crvUsdSupplies', { fetchStatus: 'error', crvUSD: '', scrvUSD: '' })
-      }
-    },
-    fetchSavingsYield: async (provider?: Provider | null) => {
-      get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'loading', data: null })
-
-      try {
-        const data = await _fetchSavingsYield(provider)
-        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'success', data })
-      } catch (error) {
-        console.error(error)
-        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'error', data: null })
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {

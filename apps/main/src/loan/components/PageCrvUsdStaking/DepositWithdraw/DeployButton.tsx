@@ -12,12 +12,15 @@ type DeployButtonProps = {
   className?: string
 }
 
-const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
+const DeployButton = ({ className }: DeployButtonProps) => {
   const { signerAddress } = useWallet()
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
   const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
   const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)
-  const { inputAmount, stakingModule, userBalances, getInputAmountApproved } = useStore((state) => state.scrvusd)
+  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
+  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
+  const userBalances = useStore((state) => state.scrvusd.userBalances)
+  const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)
 
   const userBalance = useMemo(
     () => userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: '0', scrvUSD: '0' },
