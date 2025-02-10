@@ -23,14 +23,14 @@ type TransactionDetailsProps = {
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { signerAddress } = useWallet()
-  const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
+  const { preview, scrvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
     (state) => state.scrvusd,
   )
   const fetchStatus = useStore((state) => state.scrvusd.estGas.fetchStatus)
   const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(signerAddress ?? ''))
 
   const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)
-  const exchangeRateLoading = isLoading(crvUsdExchangeRate.fetchStatus)
+  const exchangeRateLoading = isLoading(scrvUsdExchangeRate.fetchStatus)
 
   return (
     <TransactionDetailsWrapper className={className}>
@@ -39,7 +39,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
           {exchangeRateLoading ? (
             <Loader isLightBg skeleton={[72, 12]} />
           ) : (
-            t`1 crvUSD = ${formatNumber(crvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+            t`1 crvUSD = ${formatNumber(scrvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
           scrvUSD`
           )}
         </ToggleTitle>

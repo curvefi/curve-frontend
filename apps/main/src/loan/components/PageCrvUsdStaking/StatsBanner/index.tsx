@@ -7,7 +7,7 @@ import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
@@ -15,13 +15,10 @@ const StatsBanner = () => {
   const {
     design: { Color },
   } = useTheme()
-  const { provider } = useWallet()
-  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({ provider })
+  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
 
   const exampleBalance = 100000
   const scrvUsdApy = statisticsData?.proj_apr || 0
-  const oneMonthProjYield = (scrvUsdApy / 100 / 12) * exampleBalance
-  const oneYearProjYield = (scrvUsdApy / 100) * exampleBalance
 
   return (
     <Stack
@@ -43,14 +40,14 @@ const StatsBanner = () => {
         <Metric
           label={t`30 Days Projection`}
           unit="dollar"
-          value={oneMonthProjYield}
+          value={oneMonthProjectionYield(scrvUsdApy, exampleBalance)}
           loading={isStatisticsLoading}
           tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
         />
         <Metric
           label={t`1 Year Projection`}
           unit="dollar"
-          value={oneYearProjYield}
+          value={oneYearProjectionYield(scrvUsdApy, exampleBalance)}
           loading={isStatisticsLoading}
           tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
         />

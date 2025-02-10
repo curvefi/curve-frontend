@@ -6,7 +6,7 @@ import useStore from '@/loan/store/useStore'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
-import UserPositionBanner from '@/loan/components/PageCrvUsdStaking/UserPositionBanner'
+import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -16,7 +16,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
+const CrvUsdStaking = () => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
   const fetchUserBalances = useStore((state) => state.scrvusd.fetchUserBalances)
   const checkApproval = useStore((state) => state.scrvusd.checkApproval)
@@ -96,9 +96,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
         >
           {isChartExpanded && (
             <>
-              {!isUserScrvUsdBalanceZero && (
-                <UserPositionBanner mobileBreakpoint={mobileBreakpoint} chartExpanded={isChartExpanded} />
-              )}
+              {!isUserScrvUsdBalanceZero && <UserPosition chartExpanded={isChartExpanded} />}
               <Statistics
                 hideExpandChart={columnView}
                 isChartExpanded={isChartExpanded}
@@ -109,7 +107,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
           <DepositWithdraw />
           {!isChartExpanded && (
             <Stack
-              gap={Sizing[100]}
+              gap={Sizing[200]}
               width="100%"
               maxWidth={MaxWidth.section}
               justifyContent="center"
@@ -119,9 +117,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
                 },
               }}
             >
-              {!isUserScrvUsdBalanceZero && (
-                <UserPositionBanner mobileBreakpoint={mobileBreakpoint} chartExpanded={isChartExpanded} />
-              )}
+              {!isUserScrvUsdBalanceZero && <UserPosition />}
               <Statistics
                 hideExpandChart={columnView}
                 isChartExpanded={isChartExpanded}

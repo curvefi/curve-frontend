@@ -1,7 +1,8 @@
-import type { PricesStatisticsDataResponse, Provider } from '@/loan/store/types'
+import type { PricesStatisticsDataResponse } from '@/loan/store/types'
 import { Contract } from 'ethers'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
@@ -27,8 +28,8 @@ const VAULT_ABI = [
  * If a provider is provided, the data is fetched from the vault contract directly.
  * That provides more accurate data and works even if our servers are down.
  */
-async function _fetchSavingsStatistics(params: { provider?: Provider | null }): Promise<PricesStatisticsDataResponse> {
-  const { provider } = params
+async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> {
+  const { provider } = useWallet.getState()
 
   console.log(provider)
 
@@ -56,7 +57,7 @@ async function _fetchSavingsStatistics(params: { provider?: Provider | null }): 
 }
 
 export const { useQuery: useScrvUsdStatistics } = queryFactory({
-  queryKey: (params: { provider?: Provider | null }) => ['scrvUsdStatistics', { provider: params.provider }] as const,
+  queryKey: () => ['scrvUsdStatistics'] as const,
   queryFn: _fetchSavingsStatistics,
   staleTime: '5m',
   validationSuite: createValidationSuite(() => {}),

@@ -37,7 +37,7 @@ type SliceState = {
   selectedStatisticsChart: StatisticsChart
   revenueChartTimeOption: TimeOption
   inputAmount: string
-  crvUsdExchangeRate: {
+  scrvUsdExchangeRate: {
     fetchStatus: FetchStatus
     value: string
   }
@@ -127,7 +127,7 @@ const DEFAULT_STATE: SliceState = {
     fetchStatus: '',
     value: '0',
   },
-  crvUsdExchangeRate: {
+  scrvUsdExchangeRate: {
     fetchStatus: 'loading',
     value: '',
   },
@@ -499,15 +499,15 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       if (!lendApi) return
 
-      get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
+      get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
 
       try {
         const response = await lendApi.st_crvUSD.convertToShares(1)
 
-        get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'success', value: response })
+        get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'success', value: response })
       } catch (error) {
         console.error(error)
-        get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'error', value: '' })
+        get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'error', value: '' })
       }
     },
     fetchCrvUsdSupplies: async () => {
