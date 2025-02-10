@@ -83,7 +83,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     chainId: Chain.Fantom,
     rpcUrl: 'https://rpc.ftm.tools/',
     nativeCurrencySymbol: 'FTM',
-    explorerUrl: 'https://explorer.fantom.network/',
+    explorerUrl: 'https://ftmscout.com/',
     orgUIPath: 'https://ftm.curve.fi',
   },
   [Chain.Arbitrum]: {
