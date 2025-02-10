@@ -32,6 +32,7 @@ const StatsBanner = () => {
       sx={{
         backgroundColor: Color.Secondary[100],
         border: `1px solid ${Color.Secondary[500]}`,
+        width: '100%',
         maxWidth: `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`, // action card + gap + section
       }}
     >

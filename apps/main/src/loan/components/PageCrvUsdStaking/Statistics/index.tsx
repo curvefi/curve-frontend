@@ -1,6 +1,7 @@
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { Stack, Card, CardHeader, Box } from '@mui/material'
 import { t } from '@lingui/macro'
 import StatsStack from './StatsStack'
@@ -42,7 +43,16 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
   const { data: revenueData } = useScrvUsdRevenue({})
 
   return (
-    <Stack width="100%" maxWidth={isChartExpanded ? '100%' : MaxWidth.section} direction="column" spacing={0}>
+    <Stack
+      width="100%"
+      direction="column"
+      spacing={0}
+      sx={{
+        maxWidth: isChartExpanded
+          ? `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`
+          : MaxWidth.section,
+      }}
+    >
       <Card
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,

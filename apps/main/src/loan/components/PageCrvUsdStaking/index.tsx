@@ -1,4 +1,3 @@
-import styled from 'styled-components'
 import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 
@@ -67,11 +66,28 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   }, [isChartExpanded, columnView, minimizeChart])
 
   return (
-    <Wrapper>
-      <MainContainer isChartExpanded={isChartExpanded} mobileBreakpoint={mobileBreakpoint}>
+    <Stack
+      direction={'column'}
+      alignItems={'center'}
+      gap={Sizing[400]}
+      width="100%"
+      sx={{
+        [`@media (max-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section} + ${Sizing[400]}))`]: {
+          padding: `0 ${Sizing[100]}`,
+        },
+      }}
+    >
+      <Stack
+        direction={'column'}
+        gap={Sizing[200]}
+        width="100%"
+        justifyContent={'center'}
+        sx={{
+          maxWidth: `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
+        }}
+      >
         {isUserScrvUsdBalanceZero && <StatsBanner />}
         <Stack
-          width="100%"
           justifyContent="center"
           direction={isChartExpanded ? 'column' : 'row'}
           gap={Sizing[200]}
@@ -119,30 +135,10 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
             </Stack>
           )}
         </Stack>
-      </MainContainer>
+      </Stack>
       <UserInformation />
-    </Wrapper>
+    </Stack>
   )
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 100%;
-  padding: 0 var(--spacing-2);
-  gap: var(--spacing-4);
-  @media (min-width: calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section + Sizing[400]})) {
-    padding: 0;
-  }
-`
-
-const MainContainer = styled.div<{ mobileBreakpoint: string; isChartExpanded: boolean }>`
-  display: flex;
-  flex-direction: ${({ isChartExpanded }) => (isChartExpanded ? 'column' : 'row')};
-  gap: var(--spacing-3);
-  padding: ${({ isChartExpanded }) => (isChartExpanded ? 'var(--spacing-3)' : '0')};
-  flex-direction: column;
-`
 
 export default CrvUsdStaking
