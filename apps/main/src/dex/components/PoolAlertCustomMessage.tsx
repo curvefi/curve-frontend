@@ -84,7 +84,7 @@ const StyledChip = styled(Chip)`
   padding: 0.2rem 0.5rem 0.4rem;
   margin: 0.25rem 0.25rem 0 0;
 
-  :hover {
+  &:hover {
     opacity: 1;
   }
 
@@ -93,7 +93,7 @@ const StyledChip = styled(Chip)`
     text-decoration: none;
     text-transform: uppercase;
 
-    :hover {
+    &:hover {
       color: inherit;
       text-transform: uppercase;
     }

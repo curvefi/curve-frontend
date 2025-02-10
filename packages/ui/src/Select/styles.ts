@@ -14,12 +14,12 @@ export const StyledBtn = styled.button<{ $loading?: boolean }>`
   padding: 0 0.25rem 0 0.5rem;
   white-space: nowrap;
 
-  :disabled {
+  &:disabled {
     cursor: initial;
     transition: none;
   }
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--button_outlined--hover--color);
     border-color: var(--button_outlined--hover--color);
     background-color: var(--button_outlined--hover--background-color);

@@ -89,7 +89,7 @@ const LinkStyles = styled.a<StylesProps>`
       margin-right: ${(props) => (props.link2 ? 'var(--spacing-3)' : '')};
     }
   }
-  :focus-visible {
+  &:focus-visible {
     outline: var(--button_text--hover--color) auto 2px;
   }
 `

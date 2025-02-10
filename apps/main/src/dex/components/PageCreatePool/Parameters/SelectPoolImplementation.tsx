@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useLingui } from '@lingui/react'
 
 import useStore from '@/dex/store/useStore'
 
@@ -17,7 +16,6 @@ type Props = {
 }
 
 const SelectPoolImplementation = ({ chainId }: Props) => {
-  const { i18n } = useLingui()
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const { implementation, updateImplementation } = useStore((state) => state.createPool)
 
@@ -34,7 +32,7 @@ const SelectPoolImplementation = ({ chainId }: Props) => {
           onChange={() => updateImplementation(0)}
           isDisabled={false}
         >{t`Basic`}</StyledCheckbox>
-        <Tooltip placement="bottom" tooltip={i18n._(implementations[0].description)}>
+        <Tooltip placement="bottom" tooltip={t(implementations[0].description)}>
           <StyledInformationIcon name="InformationSquare" size={16} />
         </Tooltip>
       </Row>
@@ -44,7 +42,7 @@ const SelectPoolImplementation = ({ chainId }: Props) => {
           onChange={() => updateImplementation(3)}
           isDisabled={false}
         >{t`Optimised`}</StyledCheckbox>
-        <Tooltip placement="bottom" tooltip={i18n._(implementations[3].description)}>
+        <Tooltip placement="bottom" tooltip={t(implementations[3].description)}>
           <StyledInformationIcon name="InformationSquare" size={16} />
         </Tooltip>
       </Row>

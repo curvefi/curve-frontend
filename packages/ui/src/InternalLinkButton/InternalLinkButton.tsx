@@ -36,7 +36,7 @@ const StyledButton = styled(Button)`
     color: var(--white);
     cursor: pointer;
   }
-  :focus-visible {
+  &:focus-visible {
     outline: var(--button_text--hover--color) auto 2px;
   }
 `

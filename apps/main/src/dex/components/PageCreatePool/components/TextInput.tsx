@@ -1,7 +1,7 @@
 import type { AriaTextFieldProps } from 'react-aria'
 
 import { useTextField } from 'react-aria'
-import { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import styled from 'styled-components'
 
 import Box from '@ui/Box'
@@ -20,7 +20,7 @@ const TextInput = (props: Props) => {
       <label {...labelProps}>{label}</label>
       <StyledInput {...inputProps} ref={ref} />
       {props.description && <div {...descriptionProps}>{props.description}</div>}
-      {props.errorMessage && <div {...errorMessageProps}>{props.errorMessage}</div>}
+      {props.errorMessage && <div {...errorMessageProps}>{props.errorMessage as ReactNode}</div>}
     </InputWrapper>
   )
 }
@@ -52,7 +52,7 @@ const StyledInput = styled.input`
   transition:
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  :focus-visible {
+  &:focus-visible {
     outline: var(--button_text--hover--color) auto 2px;
   }
 `

@@ -68,7 +68,7 @@ const CopyIconButton = styled(IconButton)<{ isValid: boolean }>`
   border: 1px solid transparent;
   opacity: 0.5;
 
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
     background-color: var(--button_icon--hover--background-color);
   }
@@ -90,7 +90,7 @@ const StyledExternalLink = styled(ExternalLink)<{ isValid: boolean }>`
       return `
         cursor: initial;
         text-decoration: none;
-        :hover {
+        &:hover {
           color: inherit;
         }
         

@@ -38,11 +38,11 @@ const StyledComboBoxButton = styled(ButtonComp)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :disabled {
+  &:disabled {
     opacity: 0.7;
   }
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--input_button--hover--color);
     background-color: var(--input_button--hover--background-color);
   }

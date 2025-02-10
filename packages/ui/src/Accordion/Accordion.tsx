@@ -95,13 +95,13 @@ const StyledButton = styled.button<{ isHideTopBorder?: boolean }>`
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :disabled {
+  &:disabled {
     opacity: 0.5;
     cursor: initial;
     transition: none;
   }
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: inherit;
     cursor: pointer;
     opacity: 1;

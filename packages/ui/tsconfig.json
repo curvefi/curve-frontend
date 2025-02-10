@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@lingui/macro": ["../../curve-ui-kit/src/lib/i18n.ts"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "../../packages/curve-ui-kit/**/*.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "**/*.d.ts", "../curve-ui-kit/**/*.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

@@ -206,7 +206,7 @@ function DatePicker(props) {
 const Cell = styled.div`
   cursor: pointer;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--dropdown--hover--color);
     background-color: var(--dropdown--hover--background-color);
   }
