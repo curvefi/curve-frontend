@@ -1,4 +1,13 @@
 import styled from 'styled-components'
+import isPropValid from '@emotion/is-prop-valid'
+
+/**
+ * This implements the default behavior from styled-components v5
+ * For HTML elements, forward the prop if it is a valid HTML attribute. For other elements, forward all props.
+ * TODO: Use transient props: https://styled-components.com/docs/faqs#transient-props-since-5.1
+ */
+export const shouldForwardProp = (propName: string, target: unknown) =>
+  typeof target !== 'string' || isPropValid(propName)
 
 export const FlexContainer = styled.div`
   display: flex;

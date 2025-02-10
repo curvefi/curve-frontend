@@ -250,7 +250,7 @@ const Cell = styled.div`
     color: white;
   }
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--dropdown--hover--color);
     background-color: var(--dropdown--hover--background-color);
   }

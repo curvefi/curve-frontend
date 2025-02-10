@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   lint:
-    timeout-minutes: 5
+    timeout-minutes: 6
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
       - run: yarn set version stable
       - run: yarn install --immutable
 
-      - run: yarn run dev &
+      - run: yarn run dev | tee dev-server.log &
         working-directory: apps/main
       - run: yarn run cy:run:e2e
         working-directory: tests
@@ -36,3 +36,9 @@ jobs:
         with:
           name: cypress-main
           path: tests/cypress/screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: dev-server-log
+          path: dev-server.log

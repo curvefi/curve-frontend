@@ -182,7 +182,7 @@ const StyledPopoverWrapper = styled.div`
 const StyledItem = styled.li`
   padding: 0.375rem 0.5rem; // 6px 8px
 
-  :hover:not([aria-selected='true']),
+  &:hover:not([aria-selected='true']),
   &.isFocused {
     color: var(--dropdown--hover--color);
     background-color: var(--dropdown--hover--background-color);

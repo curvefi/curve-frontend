@@ -8,8 +8,13 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = tokenUsdRate
 
-export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) =>
-  useQueryMapping(
-    tokenAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
-    tokenAddresses,
+/**
+ * todo: fix performance - curve-lending js that recalculates all usd rates every time we call the query
+ */
+export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
+  const uniqueAddresses = Array.from(new Set(tokenAddresses))
+  return useQueryMapping(
+    uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+    uniqueAddresses,
   )
+}

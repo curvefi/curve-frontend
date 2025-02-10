@@ -11,7 +11,7 @@ import {
   useWallet,
 } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/dao/constants'
-import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
+import { updateAppLocale } from '@ui-kit/lib/i18n'
 import { getNetworkFromUrl, parseParams } from '@/dao/utils/utilsRouter'
 import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
@@ -219,10 +219,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (isSuccess(connectState)) {
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
-        ;(async () => {
-          let data = await import(`@/locales/${rLocale}/messages`)
-          dynamicActivate(rLocale, data)
-        })()
         setLocale(rLocale)
         updateAppLocale(rLocale)
         updateWalletLocale(rLocale)

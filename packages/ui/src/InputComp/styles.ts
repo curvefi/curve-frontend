@@ -7,8 +7,8 @@ export const StyledInput = styled.input<Pick<InputProps, 'variant' | 'minHeight'
 
   background-color: transparent;
 
-  :-webkit-autofill,
-  :-webkit-autofill:focus {
+  &:-webkit-autofill,
+  &:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--input--color) !important;
     transition:
       background-color 600000s 0s,
@@ -38,12 +38,12 @@ export const StyledInput = styled.input<Pick<InputProps, 'variant' | 'minHeight'
     outline: none;
   }
 
-  ::placeholder,
-  ::-webkit-input-placeholder {
+  &::placeholder,
+  &::-webkit-input-placeholder {
     font-weight: 400;
   }
 
-  :-ms-input-placeholder {
+  &:-ms-input-placeholder {
     font-weight: 400;
   }
 

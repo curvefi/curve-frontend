@@ -6,7 +6,7 @@ import React from 'react'
 
 import { linkStyles } from 'ui/src/Link/styles'
 
-interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {
+export interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {
   isNumber?: boolean
 }
 

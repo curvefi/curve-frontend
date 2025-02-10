@@ -452,8 +452,8 @@ const ResetButton = styled(Button)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  :hover:not(:disabled),
-  :active:not(:disabled) {
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
     color: var(--button_filled-hover-contrast--background-color);
   }
 `
