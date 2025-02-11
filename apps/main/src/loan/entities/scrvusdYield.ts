@@ -23,20 +23,20 @@ type GetScrvUsdYieldResponse = {
 export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
   // calcs starting timestamp
   const timeOptionCalc: Record<TimeOption, number> = {
-    '1m': 30 * 24 * 60 * 60 * 1000, // 30 days
-    '6m': 180 * 24 * 60 * 60 * 1000, // 180 days
-    '1y': 365 * 24 * 60 * 60 * 1000, // 365 days
+    '1M': 30 * 24 * 60 * 60 * 1000, // 30 days
+    '6M': 180 * 24 * 60 * 60 * 1000, // 180 days
+    '1Y': 365 * 24 * 60 * 60 * 1000, // 365 days
   }
   // sets number of aggregations
   const aggNumbers: Record<TimeOption, number> = {
-    '1m': 4,
-    '6m': 16,
-    '1y': 32,
+    '1M': 4,
+    '6M': 16,
+    '1Y': 32,
   }
   const timeUnit: Record<TimeOption, string> = {
-    '1m': 'hour',
-    '6m': 'hour',
-    '1y': 'hour',
+    '1M': 'hour',
+    '6M': 'hour',
+    '1Y': 'hour',
   }
 
   const startTimestamp = Math.floor((Date.now() - timeOptionCalc[params.timeOption]) / 1000)

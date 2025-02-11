@@ -26,7 +26,7 @@ const chartOptions: ChartOption<StatisticsChart>[] = [
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
 
-const timeOptions: TimeOption[] = ['1m', '6m', '1y']
+const timeOptions: TimeOption[] = ['1M', '6M', '1Y']
 
 type StatisticsProps = {
   isChartExpanded: boolean

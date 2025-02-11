@@ -1,1 +1,1 @@
-export type TimeOption = '1m' | '6m' | '1y'
+export type TimeOption = '1M' | '6M' | '1Y'
