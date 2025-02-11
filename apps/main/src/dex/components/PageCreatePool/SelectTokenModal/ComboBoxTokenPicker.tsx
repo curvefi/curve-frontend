@@ -61,7 +61,7 @@ const ComboBoxTokenPicker = ({
 
   const [filterValue, setFilterValue] = useState('')
   const [filterBasepools, setFilterBasepools] = useState(false)
-  const [tokenQueryStatus, settokenQueryStatus] = useState<TokenQueryType>('')
+  const [tokenQueryStatus, setTokenQueryStatus] = useState<TokenQueryType>('')
 
   const quickList = [
     {
@@ -78,11 +78,11 @@ const ComboBoxTokenPicker = ({
 
   const verifyTokens = async () => {
     if (disabledKeys?.some((item) => item.toLowerCase() === filterValue.toLowerCase())) {
-      settokenQueryStatus('DISABLED')
+      setTokenQueryStatus('DISABLED')
       return
     }
 
-    settokenQueryStatus('LOADING')
+    setTokenQueryStatus('LOADING')
 
     try {
       const token = await curve.getCoinsData([filterValue])
@@ -92,7 +92,7 @@ const ComboBoxTokenPicker = ({
       updateUserAddedTokens(filterValue, token[0].symbol, false, isBasePool)
     } catch (error) {
       console.log(error)
-      settokenQueryStatus('ERROR')
+      setTokenQueryStatus('ERROR')
     }
   }
 
@@ -110,7 +110,7 @@ const ComboBoxTokenPicker = ({
       : basePoolsFilteredTokens
 
     const filteredResults = filterTokens(filterValue, enabledTokens, endsWith)
-    settokenQueryStatus('')
+    setTokenQueryStatus('')
     if (filterValue.length === 42 && filteredResults.length === 0) {
       verifyTokens()
     }
@@ -166,6 +166,10 @@ const ComboBoxTokenPicker = ({
           state={{ ...overlayTriggerState, close: handleClose }}
         >
           <ComboBox
+            // quick fix: pass a key prop so the component rerenders when the items change.
+            // there seems to be a bug in react-stately that ignores changes to the items prop.
+            // this component should be replaced soon by MUI, so I won't spend time fixing it.
+            key={items?.length}
             label=""
             showSearch
             aria-label={t`Search by name or paste address`}
@@ -173,7 +177,6 @@ const ComboBoxTokenPicker = ({
             allowsCustomValue={!isMdUp}
             disabledKeys={disabledKeys}
             items={items}
-            inputValue={filterValue}
             isListboxOpenPermanently
             listBoxHeight="500px"
             menuTrigger="focus"

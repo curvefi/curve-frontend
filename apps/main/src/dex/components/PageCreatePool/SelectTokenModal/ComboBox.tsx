@@ -82,7 +82,13 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
             <StyledInputWrapper id="inp-search">
               <Icon name={'Search'} size={24} aria-label="search icon" />
 
-              <StyledInput placeholder={props.placeholder} ref={inputRef} type="search" onChange={debounceInpChange} />
+              <StyledInput
+                placeholder={props.placeholder}
+                ref={inputRef}
+                type="search"
+                onChange={debounceInpChange}
+                defaultValue={props.defaultInputValue}
+              />
               <StyledIconButton
                 className={!!inputRef?.current?.value ? 'show' : ''}
                 padding={2}
