@@ -177,7 +177,6 @@ const ComboBoxTokenPicker = ({
             allowsCustomValue={!isMdUp}
             disabledKeys={disabledKeys}
             items={items}
-            inputValue={filterValue}
             isListboxOpenPermanently
             listBoxHeight="500px"
             menuTrigger="focus"
