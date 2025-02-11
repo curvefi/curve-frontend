@@ -9,11 +9,9 @@ import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import useStore from '@/dex/store/useStore'
 
 import Header from '@/dex/layout/default/Header'
-import { Locale } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { isChinese, t } from '@lingui/macro'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useWallet()
@@ -24,11 +22,9 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const locale = useUserProfileStore((state) => state.locale)
-
   const { rChainId, rNetwork } = useNetworkFromUrl()
 
-  const sections = useMemo(() => getSections(locale, rNetwork), [locale, rNetwork])
+  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
 
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
@@ -65,7 +61,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (locale: Locale, network: string) => [
+const getSections = (network: string) => [
   {
     title: t`Documentation`,
     links: [
@@ -75,7 +71,7 @@ const getSections = (locale: Locale, network: string) => [
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}`, label: t`Risk Disclaimers` },
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
-      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+      ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },
   {

@@ -1,6 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@/loan/utils/utilsRouter'
@@ -9,10 +8,8 @@ import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import useStore from '@/loan/store/useStore'
 import Header from '@/loan/layout/Header'
-import { Locale } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { isChinese, t } from '@lingui/macro'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useWallet()
@@ -22,8 +19,6 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
   const updateConnectState = useStore((state) => state.updateConnectState)
-
-  const locale = useUserProfileStore((state) => state.locale)
 
   const [networkSwitch, setNetworkSwitch] = useState('')
 
@@ -40,7 +35,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
-  const sections = useMemo(() => getSections(locale, rNetwork), [locale, rNetwork])
+  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
@@ -59,7 +54,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (locale: Locale, network: string) => [
+const getSections = (network: string) => [
   {
     title: t`Documentation`,
     links: [
@@ -69,7 +64,7 @@ const getSections = (locale: Locale, network: string) => [
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}?tab=crvusd`, label: t`Risk Disclaimers` },
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
-      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+      ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },
   {

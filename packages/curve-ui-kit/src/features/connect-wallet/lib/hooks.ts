@@ -13,8 +13,6 @@ import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { Address } from '@ui-kit/utils'
 import { getRpcProvider } from './utils/wallet-helpers'
 
-export { useSetChain, useSetLocale } from '@web3-onboard/react'
-
 type UseConnectWallet = {
   (): {
     wallet: Wallet | null
