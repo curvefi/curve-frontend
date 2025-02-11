@@ -18,7 +18,7 @@ const actionStyles = css`
   border: 1px solid transparent;
   opacity: 0.5;
 
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
     background-color: var(--button_icon--hover--background-color);
   }
@@ -55,7 +55,7 @@ export const StyledStats = styled(Box)<StatsProps>`
 export const StyledInformationSquare16 = styled(Icon)`
   opacity: 0.4;
 
-  :hover {
+  &:hover {
     opacity: 1;
   }
 `

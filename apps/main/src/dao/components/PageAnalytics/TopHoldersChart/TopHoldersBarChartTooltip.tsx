@@ -3,13 +3,19 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
+import { formatNumber, formatDate } from '@ui/utils'
 
 import Box from '@ui/Box'
+import type { Locker } from '@curvefi/prices-api/dao'
+
+type Payload = Omit<Locker, 'weight' | 'locked'> & {
+  weight: number
+  locked: number
+}
 
 const TopHoldersBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
-    const { user, locked, weight, weight_ratio, unlock_time } = payload[0].payload
+    const { user, locked, weight, weightRatio, unlockTime } = payload[0].payload as Payload
 
     return (
       <TooltipWrapper>
@@ -20,34 +26,20 @@ const TopHoldersBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = (
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Relative Weight`}</TooltipDataTitle>
-            {weight_ratio ? (
-              <TooltipData>{weight_ratio}%</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>{weightRatio}%</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV`}</TooltipDataTitle>
-            {weight ? (
-              <TooltipData>{formatNumber(weight, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>{formatNumber(weight, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Locked CRV`}</TooltipDataTitle>
-            {locked ? (
-              <TooltipData>{formatNumber(locked, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>{formatNumber(locked, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>
-            {unlock_time ? (
-              <TooltipData>
-                {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(unlock_time).getTime()))}
-              </TooltipData>
+            {unlockTime ? (
+              <TooltipData>{formatDate(unlockTime)}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

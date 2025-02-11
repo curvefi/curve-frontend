@@ -1,4 +1,4 @@
-import type { FlattenSimpleInterpolation } from 'styled-components'
+import { Interpolation } from 'styled-components'
 
 export const breakpoints = {
   xxs: 20, // >=320
@@ -10,7 +10,7 @@ export const breakpoints = {
 }
 
 export const mediaQueries =
-  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | String | FlattenSimpleInterpolation) =>
+  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | String | Interpolation<any>) =>
     `@media (min-width: ${breakpoints[key]}rem) { ${style} }`
 
 export function getPageWidthClassName(innerWidth: number) {

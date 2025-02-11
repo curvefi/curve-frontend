@@ -103,7 +103,7 @@ export const DetailsButton = styled(Button)<{ $isOpen?: boolean }>`
 
   ${({ $isOpen }) => $isOpen && `border-bottom: 1px solid var(--box--primary--background);`};
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     border-color: inherit;
     color: inherit;
   }

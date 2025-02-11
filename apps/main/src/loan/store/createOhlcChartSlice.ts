@@ -132,10 +132,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
+          const time = item.time.getLocalTimestamp()
+
           volumeArray = [
             ...volumeArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
@@ -144,7 +146,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselinePriceArray = [
             ...baselinePriceArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               base_price: item.basePrice,
             },
           ]
@@ -152,7 +154,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           oraclePriceArray = [
             ...oraclePriceArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               value: item.oraclePrice,
             },
           ]
@@ -160,7 +162,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           ohlcDataArray = [
             ...ohlcDataArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               open: item.open,
               close: item.close,
               high: item.high,
@@ -223,10 +225,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
+          const time = item.time.getLocalTimestamp()
+
           volumeArray = [
             ...volumeArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
@@ -235,7 +239,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselinePriceArray = [
             ...baselinePriceArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               base_price: item.basePrice,
             },
           ]
@@ -243,7 +247,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           oraclePriceArray = [
             ...oraclePriceArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               value: item.oraclePrice,
             },
           ]
@@ -251,7 +255,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           ohlcDataArray = [
             ...ohlcDataArray,
             {
-              time: item.time.getUTCTimestamp(),
+              time,
               open: item.open,
               close: item.close,
               high: item.high,

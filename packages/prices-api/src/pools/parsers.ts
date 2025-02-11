@@ -1,4 +1,4 @@
-import { toUTC } from '../timestamp'
+import { toDate } from '../timestamp'
 import type * as Responses from './responses'
 import type * as Models from './models'
 
@@ -32,13 +32,13 @@ export const parsePool = (x: Responses.GetPoolsResponse['data'][number]): Models
 })
 
 export const parseVolume = (x: Responses.GetVolumeResponse['data'][number]): Models.Volume => ({
-  timestamp: toUTC(x.timestamp),
+  timestamp: toDate(x.timestamp),
   volume: x.volume,
   fees: x.fees,
 })
 
 export const parseTvl = (x: Responses.GetTvlResponse['data'][number]): Models.Tvl => ({
-  timestamp: toUTC(x.timestamp),
+  timestamp: toDate(x.timestamp),
   tvlUSD: x.tvl_usd ?? 0,
   balances: [...x.balances],
   tokenPrices: [...x.token_prices],

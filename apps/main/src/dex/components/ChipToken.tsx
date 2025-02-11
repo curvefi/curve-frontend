@@ -101,7 +101,7 @@ const ChipTokenWrapper = styled.span`
   border: 1px solid transparent;
   font-size: var(--font-size-2);
 
-  :hover {
+  &:hover {
     margin-right: 4px;
     border-color: lightgray;
 

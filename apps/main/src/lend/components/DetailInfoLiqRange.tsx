@@ -190,13 +190,13 @@ const LiqRangeEditButton = styled(Button)`
   font-size: var(--font-size-2);
   text-align: right;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     border-color: inherit;
     color: inherit;
     opacity: 1;
   }
 
-  :disabled {
+  &:disabled {
     opacity: 0.5;
     cursor: initial;
   }

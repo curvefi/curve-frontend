@@ -2,7 +2,7 @@ import { CreateQuickListToken, CreateToken } from '@/dex/components/PageCreatePo
 import { t } from '@lingui/macro'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
-import { useMemo, useRef, useState } from 'react'
+import { Key, useMemo, useRef, useState } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Item } from '@react-stately/collections'
 import styled from 'styled-components'
@@ -129,7 +129,7 @@ const ComboBoxTokenPicker = ({
     isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
   }
 
-  const handleOnSelectChange = (tokenAddress: React.Key) => {
+  const handleOnSelectChange = (tokenAddress: Key | null) => {
     if (tokenAddress) {
       onSelectionChange(tokenAddress)
       setFilterBasepools(false)
@@ -421,7 +421,7 @@ const ComboBoxButton = styled(Button)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover {
+  &:hover {
     color: var(--button--color);
     border: 1px solid var(--button--background-color);
   }

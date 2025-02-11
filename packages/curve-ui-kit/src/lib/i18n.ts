@@ -1,9 +1,5 @@
-import { I18n, i18n } from '@lingui/core'
-import { en, zh } from 'make-plural/plurals'
-import numbro from 'numbro'
-import 'numbro/dist/languages.min.js'
-
 import { setDayjsLocale } from './dayjs'
+import { ReactNode } from 'react'
 
 export type Locale = {
   name: string
@@ -19,21 +15,6 @@ export const DEFAULT_LOCALES: Locale[] = [
 
 if (process.env.NODE_ENV === 'development') {
   DEFAULT_LOCALES.push({ name: 'pseudo', value: 'pseudo', lang: 'en' })
-}
-
-export function initTranslation(i18n: I18n, defaultLocale: string): void {
-  i18n.loadLocaleData({
-    en: { plurals: en },
-    'zh-Hans': { plurals: zh },
-    'zh-Hant': { plurals: zh },
-    pseudo: { plurals: en },
-  })
-  i18n.load(defaultLocale, {})
-  i18n.activate(defaultLocale)
-}
-
-export function isLocaleInChinese(locale: Locale['value']) {
-  return locale === 'zh-Hant' || locale === 'zh-Hans'
 }
 
 export function findLocale(selectedLocale: string) {
@@ -54,40 +35,21 @@ export function parseLocale(locale?: string): { parsedLocale: Locale['value']; p
   }
 }
 
-/**
- * Activates messages data for a dynamically loaded locale.
- *
- * Example:
- * ```ts
- * const messages = await import(`@/locales/en/messages`)
- * dynamicActivate('en', messages)
- * ```
- *
- * Note: The import must be performed by the calling app since the import path
- * is relative to the app's location, not this package. Passing the import path
- * as a parameter (e.g. '@/locales/en/messages') would not work because the path
- * would be resolved relative to this package's directory structure rather than
- * the app's, and thus will not be able to be found.
- *
- * @param locale - The locale identifier (e.g. 'en', 'zh-Hans')
- * @param data - The imported locale messages data
- */
-export function dynamicActivate(locale: string, data: { messages: Record<string, string> }) {
-  i18n.load(locale, data.messages)
-  i18n.activate(locale)
-}
-
 export function updateAppLocale(locale: string) {
   setDayjsLocale(locale as Locale['value'])
-
-  let numbroLang = ''
-  if (locale === 'zh-Hant') numbroLang = 'zh-TW'
-  if (locale === 'zh-Hans') numbroLang = 'zh-CN'
-
-  if (numbroLang) {
-    import(`numbro/languages/${numbroLang}`).then((module) => {
-      numbro.registerLanguage(module.default)
-      numbro.setLanguage(numbroLang)
-    })
-  }
 }
+
+/**
+ * Placeholder for a translation function, so that we can introduce a real one later.
+ * @param key Key to translate. This is an array if there are variables to interpolate.
+ * @param template Variables to interpolate. They are appended to the keys of the same index.
+ * @returns The original string, or the string with the variables interpolated.
+ */
+export const t = (key: string | readonly string[], ...template: unknown[]) =>
+  Array.isArray(key) ? key.map((k, i) => (i < template.length ? `${k}${template[i]}` : k)).join('') : (key as string)
+
+/**
+ * Placeholder for a translation component, so that we can introduce a real one later.
+ * @param children The text to translate.
+ */
+export const Trans = ({ children }: { children: ReactNode }) => children

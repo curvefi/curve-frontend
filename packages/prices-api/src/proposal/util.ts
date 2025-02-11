@@ -5,7 +5,7 @@ export function getStatus(proposal: Proposal): ProposalStatus {
     return 'executed'
   }
 
-  if (proposal.end > new Date().getTime() / 1000) {
+  if (proposal.end > Date.now() / 1000) {
     return 'active'
   }
 
