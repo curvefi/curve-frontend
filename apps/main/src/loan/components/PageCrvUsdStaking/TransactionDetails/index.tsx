@@ -15,6 +15,7 @@ import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import Collapse from '@mui/material/Collapse'
 
 type TransactionDetailsProps = {
   className?: string
@@ -50,36 +51,34 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
           <StyledIcon name={isOpen ? 'ChevronUp' : 'ChevronDown'} size={16} />
         </Box>
       </ToggleField>
-      {isOpen && (
-        <>
-          <TransactionField>
-            <TransactionFieldLabel>{t`You receive`}</TransactionFieldLabel>
-            <FieldValue
-              value={preview.value}
-              fetchStatus={preview.fetchStatus}
-              symbol={isReady(preview.fetchStatus) ? (stakingModule === 'deposit' ? t`scrvUSD` : t`crvUSD`) : null}
-            />
-          </TransactionField>
-          {/* <TransactionField>
+      <Collapse in={isOpen}>
+        <TransactionField>
+          <TransactionFieldLabel>{t`You receive`}</TransactionFieldLabel>
+          <FieldValue
+            value={preview.value}
+            fetchStatus={preview.fetchStatus}
+            symbol={isReady(preview.fetchStatus) ? (stakingModule === 'deposit' ? t`scrvUSD` : t`crvUSD`) : null}
+          />
+        </TransactionField>
+        {/* <TransactionField>
             <TransactionFieldLabel>{t`Your scrvUSD share`}</TransactionFieldLabel>
             <FieldValue value={preview.value} fetchStatus={preview.fetchStatus} />
           </TransactionField> */}
-          <TransactionField>
-            <TransactionFieldLabel>{t`Infinite allowance`}</TransactionFieldLabel>
-            <Switch isActive={approveInfinite} onChange={setApproveInfinite} />
-          </TransactionField>
-          <TransactionField>
-            <TransactionFieldLabel>{t`Estimated TX cost`}</TransactionFieldLabel>
-            <FieldValue value={estGasCostUsd} fetchStatus={fetchStatus} gas={{ estGasCostUsd, estGasCost, tooltip }} />
-          </TransactionField>
-          {/* <TransactionField>
+        <TransactionField>
+          <TransactionFieldLabel>{t`Infinite allowance`}</TransactionFieldLabel>
+          <Switch isActive={approveInfinite} onChange={setApproveInfinite} />
+        </TransactionField>
+        <TransactionField>
+          <TransactionFieldLabel>{t`Estimated TX cost`}</TransactionFieldLabel>
+          <FieldValue value={estGasCostUsd} fetchStatus={fetchStatus} gas={{ estGasCostUsd, estGasCost, tooltip }} />
+        </TransactionField>
+        {/* <TransactionField>
             <TransactionFieldLabel>{t`Additional slippage tolerance`}</TransactionFieldLabel>
             <TransactionFieldValue>
               <StyledDetailInfoSlippageTolerance noLabel maxSlippage={maxSlippage} />
             </TransactionFieldValue>
           </TransactionField> */}
-        </>
-      )}
+      </Collapse>
     </TransactionDetailsWrapper>
   )
 }

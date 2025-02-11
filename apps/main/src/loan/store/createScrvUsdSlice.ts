@@ -121,7 +121,7 @@ const DEFAULT_STATE: SliceState = {
   },
   stakingModule: 'deposit',
   selectedStatisticsChart: 'savingsRate',
-  revenueChartTimeOption: '1m',
+  revenueChartTimeOption: '1M',
   inputAmount: '0',
   preview: {
     fetchStatus: '',
