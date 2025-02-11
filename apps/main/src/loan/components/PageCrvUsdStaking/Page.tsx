@@ -4,7 +4,8 @@ import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import Image from 'next/image'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled from 'styled-components'
+import Typography from '@mui/material/Typography'
+import Stack from '@mui/material/Stack'
 
 import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
@@ -13,11 +14,12 @@ import { RCScrvUSDLogoSM } from 'ui/src/images'
 
 import DocumentHead from '@/loan/layout/DocumentHead'
 import Box from '@ui/Box'
+import { Spacing as PrimitiveSpacing } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Settings from '@/loan/layout/Settings'
-
 import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
 
-const mobileBreakpoint = '47.5rem'
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -32,43 +34,35 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Savings crvUSD`} />
-      <Container>
-        <HeaderContainer mobileBreakpoint={mobileBreakpoint}>
+      <Stack
+        direction="column"
+        margin={'0 auto'}
+        marginBottom={PrimitiveSpacing[600]}
+        gap={PrimitiveSpacing[600]}
+        alignItems="center"
+        sx={{
+          maxWidth: `calc(${MaxWidth.actionCard} + ${PrimitiveSpacing[200]} + ${MaxWidth.section})`, // action card + gap + section
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems="center"
+          alignSelf="flex-start"
+          gap={Spacing.sm}
+          paddingInline={Spacing.sm}
+          paddingBlock={Spacing.md}
+        >
           <Image height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
           <Box flex flexColumn>
-            <Title>{t`Savings crvUSD`}</Title>
-            <Description>{t`Let your idle crvUSD do more for you.`}</Description>
+            <Typography variant="headingMBold">{t`Savings crvUSD`}</Typography>
+            <Typography variant="bodySRegular">{t`Let your idle crvUSD do more for you.`}</Typography>
           </Box>
-        </HeaderContainer>
-        <CrvUsdStaking mobileBreakpoint={mobileBreakpoint} />
-      </Container>
+        </Stack>
+        <CrvUsdStaking />
+      </Stack>
       <Settings showScrollButton />
     </>
   )
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-4);
-`
-
-const HeaderContainer = styled.div<{ mobileBreakpoint: string }>`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-  padding: var(--spacing-3);
-  gap: var(--spacing-3);
-`
-
-const Description = styled.p``
-
-const Title = styled.h1`
-  font-size: var(--font-size-7);
-  text-transform: uppercase;
-`
 
 export default Page
