@@ -1,4 +1,3 @@
-import { Locale } from '@ui-kit/widgets/Header/types'
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -12,7 +11,6 @@ import useStore from '@/dao/store/useStore'
 
 import Header from '@/dao/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useWallet()
