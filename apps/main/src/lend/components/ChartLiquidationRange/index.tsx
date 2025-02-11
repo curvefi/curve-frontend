@@ -153,7 +153,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
                 barSize={30}
                 fill="#1763fd00"
                 stroke={chartAxisColor}
-                shape={({ x, y, width, height }) => (
+                shape={({ x, y, width, height }: any) => (
                   <path
                     fill="url(#pattern-stripe)"
                     stroke={chartAxisColor}

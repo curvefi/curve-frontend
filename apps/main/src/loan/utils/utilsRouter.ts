@@ -1,19 +1,11 @@
 import type { Params } from 'react-router'
 import type { FormType as ManageFormType } from '@/loan/components/PageLoanManage/types'
-import type { Locale } from '@ui-kit/lib/i18n'
-
-import { DEFAULT_LOCALES, parseLocale } from '@ui-kit/lib/i18n'
 import { ROUTE } from '@/loan/constants'
 import networks, { networksIdMapper } from '@/loan/networks'
 import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
 import { NetworkEnum, RouterParams } from '@/loan/types/loan.types'
 
-export function getPath({ locale = 'en', network = 'ethereum' }: Params<string>, rerouteRoute: string) {
-  const { parsedLocale } = parseLocale(locale)
-  return parsedLocale && parsedLocale !== 'en'
-    ? `/${parsedLocale}/${network}${rerouteRoute}`
-    : `/${network}${rerouteRoute}`
-}
+export const getPath = ({ network = 'ethereum' }: Params<string>, rerouteRoute: string) => `/${network}${rerouteRoute}`
 
 export function getCollateralListPathname(params: Params) {
   const endPath = `${ROUTE.PAGE_MARKETS}`
@@ -38,7 +30,6 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
   const { collateralId, formType } = params ?? {}
   const paths = window.location.hash.substring(2).split('/')
 
-  const locale = getLocaleFromUrl()
   const network = getNetworkFromUrl()
 
   // subdirectory
@@ -75,15 +66,14 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     }
   }
 
-  const parsedPathname = `${locale.rLocalePathname}/${network.rNetwork}/${rSubdirectory}`
+  const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
     window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(`${locale.rLocalePathname}/${rSubdirectory}`))
+    (chainIdNotRequired && window.location.hash.substring(1).startsWith(rSubdirectory))
       ? ''
       : parsedPathname
 
   return {
-    ...locale,
     ...network,
     rSubdirectory,
     rSubdirectoryUseDefault,
@@ -92,22 +82,6 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams
-}
-
-export function getLocaleFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  let resp: { rLocale: Locale | null; rLocalePathname: string } = {
-    rLocale: null,
-    rLocalePathname: '',
-  }
-
-  const foundLocale = DEFAULT_LOCALES.find((l) => l.value.toLowerCase() === (restPathnames[0] ?? '').toLowerCase())
-
-  if (foundLocale && foundLocale.value !== 'en') {
-    resp.rLocale = foundLocale
-    resp.rLocalePathname = `/${foundLocale.value}`
-  }
-  return resp
 }
 
 export function getNetworkFromUrl() {

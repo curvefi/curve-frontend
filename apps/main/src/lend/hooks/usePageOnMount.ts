@@ -4,32 +4,22 @@ import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import {
-  getWalletChainId,
-  getWalletSignerAddress,
-  useSetChain,
-  useSetLocale,
-  useWallet,
-} from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/lend/constants'
-import { updateAppLocale } from '@ui-kit/lib/i18n'
 import { getNetworkFromUrl, parseParams } from '@/lend/utils/utilsRouter'
 import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, PageProps, Wallet } from '@/lend/types/lend.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
-  const updateWalletLocale = useSetLocale()
   const api = useStore((state) => state.api)
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateApi = useStore((state) => state.updateApi)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const setLocale = useUserProfileStore((state) => state.setLocale)
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
   const parsedParams = parseParams(params, chainIdNotRequired)
@@ -105,7 +95,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             } else {
               const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
               if (foundNetwork && isActiveNetwork) {
-                navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
+                navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -150,7 +140,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
             const foundNetwork = networks[+currChainId as ChainId]?.id
             if (foundNetwork) {
-              navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
+              navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -173,7 +163,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
       if (!isActiveNetwork) {
         // network in router is not good, redirect to default network
-        navigate(`${parsedParams.rLocalePathname}/ethereum${ROUTE.PAGE_MARKETS}`)
+        navigate(`ethereum${ROUTE.PAGE_MARKETS}`)
       } else {
         updateGlobalStoreByKey('routerProps', { params, location, navigate })
         if (walletName) {
@@ -216,7 +206,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
-          navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
+          navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
         } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
@@ -228,12 +218,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   // locale switched
   useEffect(() => {
     if (isSuccess(connectState)) {
-      const rLocale = parsedParams.rLocale?.value ?? 'en'
-      if (rLocale !== document.documentElement.lang) {
-        setLocale(rLocale)
-        updateAppLocale(rLocale)
-        updateWalletLocale(rLocale)
-      } else if (
+      if (
         walletChainId &&
         api &&
         api.chainId === walletChainId &&

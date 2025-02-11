@@ -16,7 +16,6 @@ import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
 import { t } from '@ui-kit/lib/i18n'
 import GlobalBanner from '@ui/Banner'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -47,12 +46,6 @@ export const MobileHeader = <TChainId extends number>({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const { pathname } = useLocation()
-
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
-  const locale = useUserProfileStore((state) => state.locale)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
@@ -114,7 +107,7 @@ export const MobileHeader = <TChainId extends number>({
                 <SidebarSection key={title} title={title} pages={links} />
               ))}
 
-              <SocialSidebarSection title={t`Community`} locale={locale} />
+              <SocialSidebarSection title={t`Community`} />
             </Box>
 
             <SideBarFooter WalletProps={{ ...WalletProps, onConnectWallet: onConnect }} />

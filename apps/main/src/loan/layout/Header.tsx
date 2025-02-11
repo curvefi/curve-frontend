@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
-import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/loan/utils/utilsRouter'
+import { getNetworkFromUrl, getRestFullPathname } from '@/loan/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/loan/networks'
@@ -12,7 +12,6 @@ import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@/loan/types/loan.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
@@ -37,10 +36,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
-  const locale = useUserProfileStore((state) => state.locale)
-
   const location = useLocation()
-  const { rLocalePathname } = getLocaleFromUrl()
   const { params: routerParams } = routerProps ?? {}
 
   const routerNetwork = routerParams?.network ?? 'ethereum'
@@ -53,8 +49,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       isMdUp={isMdUp}
       currentApp="crvusd"
       pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.crvusd.pages, rLocalePathname, routerPathname, routerNetwork),
-        [rLocalePathname, routerNetwork, routerPathname],
+        () => _parseRouteAndIsActive(APP_LINK.crvusd.pages, routerPathname, routerNetwork),
+        [routerNetwork, routerPathname],
       )}
       ChainProps={{
         options: visibleNetworksList,
@@ -64,11 +60,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`${locale}/${network}/${getRestFullPathname()}`)
+              navigate(`${network}/${getRestFullPathname()}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, navigate, locale, updateConnectState],
+          [rChainId, navigate, updateConnectState],
         ),
       }}
       WalletProps={{

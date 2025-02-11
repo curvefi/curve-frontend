@@ -1,24 +1,16 @@
 import type { Params } from 'react-router'
 
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
-import { DEFAULT_LOCALES, Locale, parseLocale } from '@ui-kit/lib/i18n'
 import useStore from '@/dex/store/useStore'
 import { useMemo } from 'react'
 import { NetworkEnum, RouterParams } from '@/dex/types/main.types'
 
-export function getPath({ locale, network }: Params, rerouteRoute: string) {
-  const { parsedLocale } = parseLocale(locale)
-  const parsedNetwork = network ? `/${network}` : ''
-  return parsedLocale && parsedLocale !== 'en'
-    ? `/${parsedLocale}${parsedNetwork}${rerouteRoute}`
-    : `${parsedNetwork}${rerouteRoute}`
-}
+export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
 
 export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
   const { pool, transfer, lockedCrvFormType } = params
   const paths = window.location.hash.substring(2).split('/')
 
-  const locale = getLocaleFromUrl()
   const network = useNetworkFromUrl()
 
   // subdirectory
@@ -68,15 +60,14 @@ export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
     }
   }
 
-  const parsedPathname = `${locale.rLocalePathname}/${network.rNetwork}/${rSubdirectory}`
+  const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
     window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(`${locale.rLocalePathname}/${rSubdirectory}`))
+    (chainIdNotRequired && window.location.hash.substring(1).startsWith(`${rSubdirectory}`))
       ? ''
       : parsedPathname
 
   return {
-    ...locale,
     ...network,
     rSubdirectory,
     rSubdirectoryUseDefault,
@@ -85,22 +76,6 @@ export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
     redirectPathname,
     restFullPathname: useRestFullPathname(),
   } as RouterParams
-}
-
-export function getLocaleFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  let resp: { rLocale: Locale | null; rLocalePathname: string } = {
-    rLocale: null,
-    rLocalePathname: '',
-  }
-
-  const foundLocale = DEFAULT_LOCALES.find((l) => l.value.toLowerCase() === (restPathnames[0] ?? '').toLowerCase())
-
-  if (foundLocale && foundLocale.value !== 'en') {
-    resp.rLocale = foundLocale
-    resp.rLocalePathname = `/${foundLocale.value}`
-  }
-  return resp
 }
 
 export function useNetworkFromUrl() {
@@ -158,8 +133,4 @@ export function useRestPartialPathname() {
     }
   })
   return restPathnames.slice(rNetworkIdx + 1, endIdx).join('/')
-}
-
-export function useParamsFromUrl() {
-  return { ...useNetworkFromUrl(), ...getLocaleFromUrl() }
 }
