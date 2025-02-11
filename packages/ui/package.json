@@ -14,8 +14,8 @@
     "bignumber.js": "^9.1.2",
     "ethers": "^6.13.5",
     "lodash": "4.17.21",
-    "react-aria": "3.22.0",
-    "react-stately": "3.18.0"
+    "react-aria": "3.37.0",
+    "react-stately": "3.35.0"
   },
   "devDependencies": {
     "@types/react": "*",

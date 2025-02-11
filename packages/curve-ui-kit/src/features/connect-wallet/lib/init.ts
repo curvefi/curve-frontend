@@ -17,11 +17,10 @@ import * as onboard from '@web3-onboard/react'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 export const initOnboard = (
-  locale: string,
   themeType: ThemeKey,
   networks: Record<number, { hex: string; symbol: string; name: string; rpcUrl: string }>,
-) => {
-  const walletState = onboard.init({
+) =>
+  onboard.init({
     wallets: [
       injected,
       trezor,
@@ -68,10 +67,3 @@ export const initOnboard = (
       autoConnectLastWallet: false,
     },
   })
-
-  if (walletState && locale) {
-    walletState.state.actions.setLocale(locale)
-  }
-
-  return walletState
-}
