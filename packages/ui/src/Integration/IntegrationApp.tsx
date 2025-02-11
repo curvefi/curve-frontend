@@ -143,7 +143,7 @@ const AppExternalLink = styled(ExternalLink)`
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--button--color);
     border: 1px solid var(--nav_button--border-color);
     background-color: var(--button_filled--hover--background-color);

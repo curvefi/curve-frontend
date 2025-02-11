@@ -67,7 +67,7 @@ const StyledInput = styled.input`
   transition:
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  :focus-visible {
+  &:focus-visible {
     outline: var(--button_text--hover--color) auto 2px;
   }
 `

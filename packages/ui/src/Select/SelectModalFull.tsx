@@ -1,4 +1,4 @@
-import type { SelectState } from 'react-stately'
+import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
 
 import * as React from 'react'
 import styled from 'styled-components'
@@ -9,14 +9,14 @@ import { Radio, RadioGroup } from 'ui/src/Radio'
 import DelayRender from 'ui/src/DelayRender'
 import ModalDialog from 'ui/src/Dialog'
 
-function SelectModalFull<T>({
+function SelectModalFull<T extends object>({
   title,
   state,
   onSelectionChange,
 }: {
   title: string
   state: SelectState<T>
-  onSelectionChange: ((key: React.Key) => any) | undefined
+  onSelectionChange: ReactStatelySelectProps<T>['onSelectionChange']
 }) {
   const handleRadioGroupChange = (updatedKey: string) => {
     if (typeof onSelectionChange === 'function') onSelectionChange(updatedKey)
@@ -26,7 +26,7 @@ function SelectModalFull<T>({
   return (
     <DelayRender>
       <ModalDialog title={title} state={state}>
-        <RadioGroup aria-label={title} onChange={handleRadioGroupChange} value={state.selectedKey.toString()}>
+        <RadioGroup aria-label={title} onChange={handleRadioGroupChange} value={state.selectedKey?.toString()}>
           {[...state.collection].map((item) => {
             const value = item.key.toString()
             return (

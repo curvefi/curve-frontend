@@ -16,17 +16,17 @@ export const buttonFilledStyles = css`
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover:not(:disabled):not(.loading) {
+  &:hover:not(:disabled):not(.loading) {
     background-color: var(--button_filled--hover--background-color);
   }
 
-  :active:not(:disabled) {
+  &:active:not(:disabled) {
     box-shadow: none;
     transform: translate3d(3px, 3px, 3px);
   }
 
   &.loading,
-  :disabled {
+  &:disabled {
     color: var(--button--disabled--color);
     border-color: var(--button--disabled--border-color);
     background-color: var(--button--disabled--background-color);
@@ -51,13 +51,13 @@ export const buttonSelectStyles = css`
     border: 1px solid var(--button--border-color);
     box-shadow: 3px 3px 0 var(--button--shadow-color);
   }
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--button--color);
     border: 1px solid var(--button--border-color);
     background-color: var(--button_filled--hover--background-color);
   }
   &.loading,
-  :disabled {
+  &:disabled {
     color: var(--button--disabled--color);
   }
 `
@@ -73,13 +73,13 @@ export const buttonOutlinedStyles = css`
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :disabled {
+  &:disabled {
     opacity: 0.5;
     cursor: initial;
     transition: none;
   }
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     color: var(--button_outlined--hover--color);
     border-color: var(--button_outlined--hover--color);
     background-color: var(--button_outlined--hover--background-color);
@@ -171,14 +171,14 @@ export const buttonBaseStyles = css<ButtonProps>`
       
         transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         
-        :hover:not(:disabled),
-        :active:not(:disabled) {
+        &:hover:not(:disabled),
+        &:active:not(:disabled) {
           color: var(--button_text--hover--color);
           background-color: var(--button_outlined--hover--background-color);
         }
 
         &.loading,
-        :disabled {
+        &:disabled {
           color: var(--button--disabled--color);
         }
       `
@@ -196,13 +196,13 @@ export const buttonBaseStyles = css<ButtonProps>`
           border: 1px solid var(--nav_button--border-color);
           box-shadow: 3px 3px 0 var(--button--shadow-color);
         }
-        :hover:not(:disabled) {
+        &:hover:not(:disabled) {
           color: var(--button--color); 
           border: 1px solid var(--nav_button--border-color);
           background-color: var(--button_filled--hover--background-color);
         }
         &.loading,
-        :disabled {
+        &:disabled {
           color: var(--button--disabled--color);
         }
       `

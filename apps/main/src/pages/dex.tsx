@@ -2,9 +2,6 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes, useParams } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
-import 'focus-visible'
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
@@ -15,8 +12,6 @@ import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/dex/globalStyle'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
 import Page from '@/dex/layout/default'
-import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
-import { messages as messagesEn } from '@/locales/en/messages.js'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { QueryProvider } from '@ui/QueryProvider'
@@ -26,9 +21,8 @@ import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi } from '@/dex/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-
-i18n.load({ en: messagesEn })
-i18n.activate('en')
+import { shouldForwardProp } from '@ui/styled-containers'
+import { StyleSheetManager } from 'styled-components'
 
 const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })
@@ -97,11 +91,6 @@ const App: NextPage = () => {
     // init locale
     const { rLocale } = getLocaleFromUrl()
     const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-      dynamicActivate(parsedLocale, data)
-    })()
     ;(async () => {
       const networks = await fetchNetworks()
 
@@ -190,7 +179,7 @@ const App: NextPage = () => {
       <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
-            <I18nProvider i18n={i18n}>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
               <AriaI18nProvider locale={locale}>
                 <QueryProvider persister={persister} queryClient={queryClient}>
                   <OverlayProvider>
@@ -231,7 +220,7 @@ const App: NextPage = () => {
                   </OverlayProvider>
                 </QueryProvider>
               </AriaI18nProvider>
-            </I18nProvider>
+            </StyleSheetManager>
           </HashRouter>
         )}
       </ThemeProvider>

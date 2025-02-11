@@ -9,9 +9,16 @@
       "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],
       "@external-rewards": ["../../../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"]
+      "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"],
+      "@lingui/macro": ["../../../packages/curve-ui-kit/src/lib/i18n.ts"]
     }
   },
   "exclude": ["node_modules", "cypress"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../../packages/curve-ui-kit/**/*.d.ts"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../packages/curve-ui-kit/**/*.d.ts",
+    "../../packages/ui/**/*.d.ts"
+  ]
 }

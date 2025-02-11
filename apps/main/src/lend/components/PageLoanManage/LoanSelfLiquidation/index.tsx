@@ -234,7 +234,7 @@ const StyledInternalLink = styled(InternalLink)`
   color: inherit;
   text-transform: inherit;
 
-  :hover {
+  &:hover {
     color: var(--link_light--hover--color);
     text-decoration-color: var(--link_light--hover--color);
   }
