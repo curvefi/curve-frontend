@@ -7,6 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
 import { toDate } from '@curvefi/prices-api/timestamp'
 import { TOOLTIP_MAX_WIDTH } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
+import { basicMuiTheme } from '@ui-kit/themes/basic-theme'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,7 +30,9 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
           backgroundColor: (theme) => theme.design.Layer[3].Fill,
           padding: Spacing.md,
           width: TOOLTIP_MAX_WIDTH,
-          maxWidth: '80%',
+          [basicMuiTheme.breakpoints.down('tablet')]: {
+            width: `calc(${TOOLTIP_MAX_WIDTH} * 0.8)`, // 80% of normal tooltip width on small viewports
+          },
         }}
         elevation={2}
       >

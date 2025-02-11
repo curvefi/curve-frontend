@@ -29,7 +29,7 @@ const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> 
         data={data?.epochs ?? []}
         margin={{
           top: 16,
-          right: 20,
+          right: 16,
           left: undefined,
           bottom: 16,
         }}

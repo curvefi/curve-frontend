@@ -9,6 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { toDate } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils/utilsFormat'
 import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
+import { basicMuiTheme } from '@ui-kit/themes/basic-theme'
 
 const { Spacing } = SizesAndSpaces
 
@@ -48,8 +49,10 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
       sx={{
         backgroundColor: Layer[3].Fill,
         padding: Spacing.md,
-        width: TOOLTIP_MAX_WIDTH, // fixed width to cap maximum width of tooltip
-        maxWidth: '80%',
+        width: TOOLTIP_MAX_WIDTH,
+        [basicMuiTheme.breakpoints.down('tablet')]: {
+          width: `calc(${TOOLTIP_MAX_WIDTH} * 0.8)`, // 80% of normal tooltip width on small viewports
+        },
       }}
       elevation={2}
     >
