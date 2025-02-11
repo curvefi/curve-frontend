@@ -2,7 +2,7 @@ import { Locale } from '@ui-kit/widgets/Header/types'
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'

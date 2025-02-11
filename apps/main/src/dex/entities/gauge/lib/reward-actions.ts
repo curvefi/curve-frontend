@@ -9,7 +9,7 @@
  * allowing components to easily access and manipulate gauge-related data.
  */
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import * as models from '@/dex/entities/gauge/model'
 import { gaugeKeys as keys } from '@/dex/entities/gauge/model'

@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import Stack from '@mui/material/Stack'
 

@@ -1,7 +1,7 @@
 import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLoanCreate/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { _parseValue } from '@/lend/components/PageLoanCreate/utils'
 import useStore from '@/lend/store/useStore'

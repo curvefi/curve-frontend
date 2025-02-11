@@ -1,5 +1,5 @@
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled, { css } from 'styled-components'
 
 import { handleClickCopy, shortenTokenName } from '@/lend/utils/helpers'

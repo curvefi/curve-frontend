@@ -3,7 +3,7 @@ import type { PricesYieldData, PricesYieldDataResponse, Provider } from '@/loan/
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import BigNumber from 'bignumber.js'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
 import networks from '@/loan/networks'
 import { Contract } from 'ethers'

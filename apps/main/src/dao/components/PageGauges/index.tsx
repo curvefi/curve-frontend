@@ -2,7 +2,7 @@ import { SubNavItem } from '@/dao/components/SubNav/types'
 
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import useStore from '@/dao/store/useStore'
 import { useWallet } from '@ui-kit/features/connect-wallet'

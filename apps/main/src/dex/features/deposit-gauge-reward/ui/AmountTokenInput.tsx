@@ -1,5 +1,5 @@
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useMemo, type Key } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'

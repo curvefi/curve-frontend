@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo, useRef } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'

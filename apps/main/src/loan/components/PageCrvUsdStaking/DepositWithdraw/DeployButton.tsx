@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import styled from 'styled-components'

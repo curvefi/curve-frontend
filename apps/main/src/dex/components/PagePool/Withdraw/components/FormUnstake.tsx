@@ -2,7 +2,7 @@ import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/
 import type { Step } from '@ui/Stepper/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import { formatNumber } from '@ui/utils'

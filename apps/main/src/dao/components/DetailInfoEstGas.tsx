@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'

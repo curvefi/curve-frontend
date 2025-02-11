@@ -1,6 +1,6 @@
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 

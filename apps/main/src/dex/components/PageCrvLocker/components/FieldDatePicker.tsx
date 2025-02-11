@@ -1,7 +1,7 @@
 import type { DateValue } from '@internationalized/date'
 import type { FormType, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/dao/constants'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/dao/utils/utilsRouter'

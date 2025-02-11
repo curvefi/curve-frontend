@@ -10,7 +10,7 @@ import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import useStore from '@/loan/store/useStore'
 import Header from '@/loan/layout/Header'
 import { Locale } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

@@ -12,8 +12,7 @@
     "paths": {
       "@ui": ["../../../packages/ui/src/index.ts"],
       "@ui/*": ["../../../packages/ui/src/*"],
-      "@ui-kit/*": ["./*"],
-      "@lingui/macro": ["./lib/i18n.ts"]
+      "@ui-kit/*": ["./*"]
     }
   },
   "exclude": ["node_modules"],

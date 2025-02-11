@@ -1,5 +1,5 @@
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
 import useStore from '@/lend/store/useStore'
 import { useMemo } from 'react'

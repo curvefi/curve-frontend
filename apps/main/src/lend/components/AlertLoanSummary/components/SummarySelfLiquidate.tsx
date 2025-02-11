@@ -1,6 +1,6 @@
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useMemo } from 'react'
 
 import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@ui-kit/utils'

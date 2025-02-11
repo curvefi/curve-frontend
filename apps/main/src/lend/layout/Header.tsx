@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/lend/constants'
 import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'

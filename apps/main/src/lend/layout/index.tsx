@@ -10,7 +10,7 @@ import useStore from '@/lend/store/useStore'
 import Header from '@/lend/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeightResizeObserver } from '@ui/hooks'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Locale } from '@ui-kit/widgets/Header/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { breakpoints, formatNumber } from '@ui/utils'
 import networks from '@/loan/networks'

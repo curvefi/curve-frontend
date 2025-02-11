@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { Contract, Interface } from 'ethers'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'

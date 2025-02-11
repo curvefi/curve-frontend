@@ -1,5 +1,5 @@
 import Stack from '@mui/material/Stack'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { ReactNode } from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'

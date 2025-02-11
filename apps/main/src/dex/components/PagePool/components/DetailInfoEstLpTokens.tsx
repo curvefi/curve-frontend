@@ -1,7 +1,7 @@
 import type { FormLpTokenExpected } from '@/dex/components/PagePool/Deposit/types'
 
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { formatNumber } from '@ui/utils'
 

@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { REFRESH_INTERVAL } from '@/lend/constants'

@@ -2,7 +2,7 @@ import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/
 import type { Step } from '@ui/Stepper/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import styled from 'styled-components'
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'

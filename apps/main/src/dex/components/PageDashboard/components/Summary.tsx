@@ -1,7 +1,7 @@
 import type { TooltipProps } from '@ui/Tooltip/types'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Item, Section } from 'react-stately'
 import styled from 'styled-components'
 

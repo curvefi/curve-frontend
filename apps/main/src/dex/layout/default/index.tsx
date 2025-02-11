@@ -10,7 +10,7 @@ import useStore from '@/dex/store/useStore'
 
 import Header from '@/dex/layout/default/Header'
 import { Locale } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'

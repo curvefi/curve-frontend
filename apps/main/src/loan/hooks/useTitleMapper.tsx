@@ -1,5 +1,5 @@
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import Box from '@ui/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'

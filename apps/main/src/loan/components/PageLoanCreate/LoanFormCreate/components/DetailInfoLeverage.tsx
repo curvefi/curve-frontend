@@ -1,6 +1,6 @@
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import React from 'react'
 

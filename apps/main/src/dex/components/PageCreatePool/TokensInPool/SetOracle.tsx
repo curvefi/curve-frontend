@@ -1,7 +1,7 @@
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { debounce } from 'lodash'
 
 import useStore from '@/dex/store/useStore'
