@@ -22,7 +22,16 @@ const UserInformation = () => {
       <Typography alignSelf="center" variant="headingSBold">
         {t`How to get yield with Savings crvUSD?`}
       </Typography>
-      <Stack direction="row" gap={Spacing.lg}>
+      <Stack
+        direction="row"
+        gap={Spacing.lg}
+        sx={{
+          flexWrap: {
+            tablet: 'wrap',
+            desktop: 'nowrap',
+          },
+        }}
+      >
         <Stack direction="column" gap={Spacing.sm}>
           <Image src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Get crvUSD`}</Typography>

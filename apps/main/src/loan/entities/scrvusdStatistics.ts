@@ -31,8 +31,6 @@ const VAULT_ABI = [
 async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> {
   const { provider } = useWallet.getState()
 
-  console.log(provider)
-
   if (provider) {
     const vault = new Contract(VAULT_ADDRESS, VAULT_ABI, provider)
     const [unlock_amount, supply, block] = await Promise.all([

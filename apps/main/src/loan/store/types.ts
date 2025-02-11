@@ -62,3 +62,12 @@ export type PricesStatisticsData = {
   proj_apr: number
   supply: number
 }
+
+export type PricesUserStatsResponse = {
+  total_deposited: string
+  total_recieved: string
+  total_withdrawn: string
+  total_transferred_in: string
+  total_transferred_out: string
+  current_balance: string
+}
