@@ -17,14 +17,11 @@ type ItemObj = {
 export function SelectSortingMethod<T extends object>({ description, ...props }: SelectSortingMethodProps<T>) {
   return (
     <Select {...props} aria-label="Sort By">
-      {(item) => {
-        const { label, key } = item as ItemObj
-        return (
-          <StyledItem key={key} textValue={label}>
-            <strong>{label}</strong>
-          </StyledItem>
-        )
-      }}
+      {({ label, key }: ItemObj) => (
+        <StyledItem key={key} textValue={label}>
+          <strong>{label}</strong>
+        </StyledItem>
+      )}
     </Select>
   )
 }

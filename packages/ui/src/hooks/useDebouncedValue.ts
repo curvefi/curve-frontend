@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 function useDebounceValue(initialVal: string, delay: number, callback: (value: string) => void) {
   const [val, setVal] = useState(initialVal)
-  const [timer, setTimer] = useState<NodeJS.Timer | null>(null)
+  const [timer, setTimer] = useState<number | null>(null)
 
   useEffect(() => {
     if (initialVal !== val) {
@@ -22,7 +22,7 @@ function useDebounceValue(initialVal: string, delay: number, callback: (value: s
         clearTimeout(timer)
       }
 
-      const timerId = setTimeout(() => callback(value), delay)
+      const timerId = window.setTimeout(() => callback(value), delay)
       setTimer(timerId)
 
       return () => {

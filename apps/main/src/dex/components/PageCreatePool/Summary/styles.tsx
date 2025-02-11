@@ -80,7 +80,7 @@ export const SummaryDataPlaceholder = styled.p`
   }
 `
 
-export const StyledCheckmark = styled(({ ...rest }) => <Icon {...rest} />)`
+export const StyledCheckmark = styled(Icon)`
   color: var(--primary-400);
   margin-right: var(--spacing-1);
 `

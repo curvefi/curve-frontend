@@ -228,7 +228,7 @@ const StyledIconButton = styled(IconButton)`
   border: 1px solid transparent;
   font-weight: var(--bold);
   opacity: 1;
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
     background-color: var(--button_icon--hover--background-color);
   }

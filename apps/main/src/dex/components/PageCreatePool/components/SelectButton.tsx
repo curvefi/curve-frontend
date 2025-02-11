@@ -85,7 +85,7 @@ const StyledButton = styled(Button)<{ paddingSize: 'small' | undefined }>`
       color: var(--button-text-contrast--color);
     }
   }
-  :disabled {
+  &:disabled {
     &:hover:not(:disabled):not(.loading) {
       border-color: var(--button--disabled--border-color);
       color: var(--button--disabled--color);

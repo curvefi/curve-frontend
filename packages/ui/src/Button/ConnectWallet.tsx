@@ -58,12 +58,12 @@ const ConnectButton = styled(Button)<{
   position: relative;
   text-transform: uppercase;
 
-  :active {
+  &:active {
     box-shadow: none;
     transform: translate3d(3px, 3px, 3px);
   }
 
-  :hover {
+  &:hover {
     color: var(--nav_button--hover--color);
     border-color: var(--nav_button--hover--color);
   }

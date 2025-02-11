@@ -38,7 +38,7 @@ const TextSkeleton = styled.span<TextSkeletonProps>`
 
   
 
-  :after {
+  &:after {
     content: '';
     position: absolute;
     top: 0;

@@ -51,7 +51,7 @@ const StyledLink = styled(InternalLink)`
   text-decoration: none;
 
   &.active,
-  :hover.active {
+  &:hover.active {
     color: inherit;
     /* border-bottom: 3px solid var(--nav--page--color); */
   }

@@ -100,7 +100,7 @@ const ChipPoolWrapper = styled.span`
   min-height: 21px;
   border: 1px solid transparent;
 
-  :hover {
+  &:hover {
     border-color: lightgray;
 
     ${ChipPoolAdditionalInfo} {

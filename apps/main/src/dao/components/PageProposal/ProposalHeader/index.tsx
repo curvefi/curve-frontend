@@ -52,7 +52,7 @@ const Wrapper = styled.div`
 const Status = styled.h3`
   font-size: var(--font-size-2);
   &.Passed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -63,7 +63,7 @@ const Status = styled.h3`
     }
   }
   &.Denied {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -74,7 +74,7 @@ const Status = styled.h3`
     }
   }
   &.Active {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -85,7 +85,7 @@ const Status = styled.h3`
     }
   }
   &.executed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -96,7 +96,7 @@ const Status = styled.h3`
     }
   }
   &.executable {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -111,7 +111,7 @@ const Status = styled.h3`
 const ExecutedStatus = styled.h3`
   font-size: var(--font-size-2);
   &.executed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -122,7 +122,7 @@ const ExecutedStatus = styled.h3`
     }
   }
   &.executable {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;

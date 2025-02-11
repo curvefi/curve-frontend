@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useLingui } from '@lingui/react'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { getPath } from '@/dex/utils/utilsRouter'
 
@@ -26,13 +24,11 @@ type Props = {
 }
 
 const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) => {
-  const { i18n } = useLingui()
   const swapType = useStore((state) => state.createPool.swapType)
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
   const updatePoolPresetIndex = useStore((state) => state.createPool.updatePoolPresetIndex)
   const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
 
-  const navigate = useNavigate()
   const params = useParams()
 
   const overlayTriggerState = useOverlayTriggerState({})
@@ -86,11 +82,11 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 0}
                     name={POOL_PRESETS[0].name}
-                    descriptionName={i18n._(POOL_PRESETS[0].descriptionName)}
-                    description={i18n._(POOL_PRESETS[0].description)}
+                    descriptionName={t(POOL_PRESETS[0].descriptionName)}
+                    description={t(POOL_PRESETS[0].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(0)
-                      setStableFeeValue(i18n._(POOL_PRESETS[0].defaultParams.stableSwapFee))
+                      setStableFeeValue(t(POOL_PRESETS[0].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -100,11 +96,11 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 1}
                     name={POOL_PRESETS[1].name}
-                    descriptionName={i18n._(POOL_PRESETS[1].descriptionName)}
-                    description={i18n._(POOL_PRESETS[1].description)}
+                    descriptionName={t(POOL_PRESETS[1].descriptionName)}
+                    description={t(POOL_PRESETS[1].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(1)
-                      setStableFeeValue(i18n._(POOL_PRESETS[1].defaultParams.stableSwapFee))
+                      setStableFeeValue(t(POOL_PRESETS[1].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -114,11 +110,11 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 2}
                     name={POOL_PRESETS[2].name}
-                    descriptionName={i18n._(POOL_PRESETS[2].descriptionName)}
-                    description={i18n._(POOL_PRESETS[2].description)}
+                    descriptionName={t(POOL_PRESETS[2].descriptionName)}
+                    description={t(POOL_PRESETS[2].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(2)
-                      setStableFeeValue(i18n._(POOL_PRESETS[2].defaultParams.stableSwapFee))
+                      setStableFeeValue(t(POOL_PRESETS[2].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -132,12 +128,12 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 3}
                     name={POOL_PRESETS[3].name}
-                    descriptionName={i18n._(POOL_PRESETS[3].descriptionName)}
-                    description={i18n._(POOL_PRESETS[3].description)}
+                    descriptionName={t(POOL_PRESETS[3].descriptionName)}
+                    description={t(POOL_PRESETS[3].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(3)
-                      setMidValue(i18n._(POOL_PRESETS[3].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[3].defaultParams.outFee))
+                      setMidValue(t(POOL_PRESETS[3].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[3].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -147,12 +143,12 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 4}
                     name={POOL_PRESETS[4].name}
-                    descriptionName={i18n._(POOL_PRESETS[4].descriptionName)}
-                    description={i18n._(POOL_PRESETS[4].description)}
+                    descriptionName={t(POOL_PRESETS[4].descriptionName)}
+                    description={t(POOL_PRESETS[4].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(4)
-                      setMidValue(i18n._(POOL_PRESETS[4].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[4].defaultParams.outFee))
+                      setMidValue(t(POOL_PRESETS[4].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[4].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -162,12 +158,12 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 5}
                     name={POOL_PRESETS[5].name}
-                    descriptionName={i18n._(POOL_PRESETS[5].descriptionName)}
-                    description={i18n._(POOL_PRESETS[5].description)}
+                    descriptionName={t(POOL_PRESETS[5].descriptionName)}
+                    description={t(POOL_PRESETS[5].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(5)
-                      setMidValue(i18n._(POOL_PRESETS[5].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[5].defaultParams.outFee))
+                      setMidValue(t(POOL_PRESETS[5].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[5].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -177,12 +173,12 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 6}
                     name={POOL_PRESETS[6].name}
-                    descriptionName={i18n._(POOL_PRESETS[6].descriptionName)}
-                    description={i18n._(POOL_PRESETS[6].description)}
+                    descriptionName={t(POOL_PRESETS[6].descriptionName)}
+                    description={t(POOL_PRESETS[6].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(6)
-                      setMidValue(i18n._(POOL_PRESETS[6].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[6].defaultParams.outFee))
+                      setMidValue(t(POOL_PRESETS[6].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[6].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -196,12 +192,12 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 7}
                     name={POOL_PRESETS[7].name}
-                    descriptionName={i18n._(POOL_PRESETS[7].descriptionName)}
-                    description={i18n._(POOL_PRESETS[7].description)}
+                    descriptionName={t(POOL_PRESETS[7].descriptionName)}
+                    description={t(POOL_PRESETS[7].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(7)
-                      setMidValue(i18n._(POOL_PRESETS[7].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[7].defaultParams.outFee))
+                      setMidValue(t(POOL_PRESETS[7].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[7].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -211,12 +207,12 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   <SelectButton
                     selected={poolPresetIndex === 8}
                     name={POOL_PRESETS[8].name}
-                    descriptionName={i18n._(POOL_PRESETS[8].descriptionName)}
-                    description={i18n._(POOL_PRESETS[8].description)}
+                    descriptionName={t(POOL_PRESETS[8].descriptionName)}
+                    description={t(POOL_PRESETS[8].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(8)
-                      setMidValue(i18n._(POOL_PRESETS[8].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[8].defaultParams.outFee))
+                      setMidValue(t(POOL_PRESETS[8].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[8].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
@@ -272,7 +268,7 @@ const PoolPresetButton = styled(Button)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover {
+  &:hover {
     color: var(--button--color);
     border: 1px solid var(--button--background-color);
   }
