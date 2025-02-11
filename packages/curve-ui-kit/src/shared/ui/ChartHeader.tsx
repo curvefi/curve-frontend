@@ -68,7 +68,11 @@ const ChartHeader = <T extends string>({
         padding: Spacing.md,
         rowGap: Spacing.md,
         columnGap: Spacing.sm,
-        [`@media (max-width: ${smallBreakPoint})`]: { flexDirection: 'column', alignItems: 'flex-start' },
+        [`@media (max-width: ${smallBreakPoint})`]: {
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          rowGap: Spacing.lg,
+        },
       }}
     >
       <Typography variant="headingXsBold" color="textSecondary">

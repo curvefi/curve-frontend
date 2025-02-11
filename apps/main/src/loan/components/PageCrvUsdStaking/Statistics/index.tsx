@@ -8,6 +8,7 @@ import StatsStack from './StatsStack'
 import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
 import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import RevenueLineChart from './RevenueLineChart'
 import DistributionsBarChart from './DistributionsBarChart'
 import AdvancedDetails from './AdvancedDetails'
@@ -42,6 +43,9 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
   const { data: yieldData } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
   const { data: revenueData } = useScrvUsdRevenue({})
 
+  const smallBreakPoint = '35.9375rem' // 575px
+  const smallView = useMediaQuery(`(max-width: ${smallBreakPoint})`)
+
   return (
     <Stack
       width="100%"
@@ -61,7 +65,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
         elevation={0}
       >
         <CardHeader title="Statistics" />
-        <Box sx={{ padding: Spacing.md }}>
+        <Box sx={{ padding: Spacing.md, marginBottom: smallView ? Spacing.xl : 0 }}>
           <StatsStack />
         </Box>
         <ChartHeader
@@ -73,7 +77,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
           hideExpandChart={hideExpandChart}
         />
         {selectedStatisticsChart === 'savingsRate' && (
-          <Stack>
+          <Stack sx={{ marginBottom: smallView ? Spacing.xl : 0 }}>
             <RevenueLineChart data={yieldData ?? []} />
             <RevenueChartFooter
               timeOptions={timeOptions}

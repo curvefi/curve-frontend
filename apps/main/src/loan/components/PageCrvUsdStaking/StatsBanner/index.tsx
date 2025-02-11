@@ -36,7 +36,7 @@ const StatsBanner = () => {
         <Typography variant="headingSBold">{t`Your stablecoins could do more`}</Typography>
         <Typography variant="bodyMRegular">{t`With $100k of scrvUSD held you could get`}</Typography>
       </Stack>
-      <Stack direction="row" gap={Sizing[200]} justifyContent="space-between">
+      <Stack direction="row" gap={Sizing[200]} justifyContent="space-between" flexWrap="wrap">
         <Metric
           label={t`30 Days Projection`}
           unit="dollar"
