@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import Box from '@mui/material/Box'
 import { GraphType, useSnapshots } from '../hooks/useSnapshots'
 

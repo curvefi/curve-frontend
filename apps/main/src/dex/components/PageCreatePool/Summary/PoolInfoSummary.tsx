@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import useStore from '@/dex/store/useStore'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'

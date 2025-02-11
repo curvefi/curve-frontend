@@ -1,5 +1,5 @@
 import { CreateQuickListToken, CreateToken } from '@/dex/components/PageCreatePool/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
 import { Key, useMemo, useRef, useState } from 'react'

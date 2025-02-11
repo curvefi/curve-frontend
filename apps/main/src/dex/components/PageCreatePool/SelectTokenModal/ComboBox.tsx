@@ -4,7 +4,7 @@ import { useButton, useComboBox, useFocusRing } from 'react-aria'
 import { useComboBoxState } from '@react-stately/combobox'
 import React, { ChangeEvent, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import debounce from 'lodash/debounce'
 

@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'

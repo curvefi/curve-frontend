@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { isChinese, t } from '@lingui/macro'
-
+import { isChinese, t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { getNetworkFromUrl } from '@/dao/utils/utilsRouter'
 import { useHeightResizeObserver } from '@ui/hooks'
 import useStore from '@/dao/store/useStore'
-
 import Header from '@/dao/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
 

@@ -1,6 +1,6 @@
 import type { FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import React from 'react'
 

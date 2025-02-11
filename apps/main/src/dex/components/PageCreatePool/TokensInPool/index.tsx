@@ -1,7 +1,7 @@
 import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
 import { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { uniqBy } from 'lodash'
 import useStore from '@/dex/store/useStore'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'

@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 

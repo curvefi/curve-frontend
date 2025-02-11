@@ -15,7 +15,7 @@ import { BaseHeaderProps } from './types'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { useState } from 'react'
 import { AppName } from '@ui-kit/shared/routes'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import GlobalBanner from '@ui/Banner'
 import { isBeta, isCypress } from '@ui-kit/utils'
 

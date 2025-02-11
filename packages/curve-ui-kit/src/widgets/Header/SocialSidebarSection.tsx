@@ -9,7 +9,7 @@ import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
 import { DodoIcon } from '@ui-kit/shared/icons/DodoIcon'
 import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
-import { isChinese } from '@lingui/macro'
+import { isChinese } from '@ui-kit/lib/i18n'
 
 type SocialButtonProps = {
   label: string

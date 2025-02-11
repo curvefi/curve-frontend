@@ -1,7 +1,7 @@
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 

@@ -1,5 +1,5 @@
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'

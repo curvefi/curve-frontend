@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { enforce, group, test } from 'vest'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
 import { BD } from '@ui-kit/utils'

@@ -2,7 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 
 import { shortenAccount } from '@ui/utils'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { fulfilledValue, isValidAddress } from '@/dex/utils'

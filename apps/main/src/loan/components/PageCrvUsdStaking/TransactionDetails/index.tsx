@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import useStore from '@/loan/store/useStore'
 import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 export const ChainSettings = ({
   showTestnets,

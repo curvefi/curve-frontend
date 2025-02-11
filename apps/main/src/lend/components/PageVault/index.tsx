@@ -1,6 +1,6 @@
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/lend/components/PageVault/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 

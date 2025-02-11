@@ -1,7 +1,7 @@
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { format } from '@/lend/components/AlertLoanSummary/utils'
 

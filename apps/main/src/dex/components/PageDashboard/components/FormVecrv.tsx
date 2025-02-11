@@ -1,7 +1,7 @@
 import type { Step } from '@ui/Stepper/types'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'

@@ -1,5 +1,5 @@
 import InputProvider, { InputDebounced } from '@ui/InputComp'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import type { Address } from 'viem'

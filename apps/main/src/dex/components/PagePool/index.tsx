@@ -7,7 +7,7 @@ import type {
   Slippage,
   TransferFormType,
 } from '@/dex/components/PagePool/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'

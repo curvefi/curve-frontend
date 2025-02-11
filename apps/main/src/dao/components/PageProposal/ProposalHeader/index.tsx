@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import SmallLabel from '@/dao/components/SmallLabel'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'

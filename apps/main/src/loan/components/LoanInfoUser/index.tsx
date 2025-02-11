@@ -1,7 +1,7 @@
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 
 import React, { useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 

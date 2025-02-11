@@ -8,7 +8,7 @@ import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import useStore from '@/loan/store/useStore'
 import Header from '@/loan/layout/Header'
-import { isChinese, t } from '@lingui/macro'
+import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {

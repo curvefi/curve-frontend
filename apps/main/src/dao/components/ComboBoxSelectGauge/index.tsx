@@ -4,7 +4,7 @@ import Fuse from 'fuse.js'
 import React, { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { delayAction } from '@/dao/utils'
 import useStore from '@/dao/store/useStore'

@@ -10,7 +10,7 @@ import type { ContractTransactionResponse } from 'ethers'
 import type { GetState, SetState } from 'zustand'
 import produce from 'immer'
 import { BigNumber } from 'bignumber.js'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { notify } from '@ui-kit/features/connect-wallet'
 import type { State } from '@/dex/store/useStore'
 import {

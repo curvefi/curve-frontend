@@ -2,7 +2,7 @@ import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/t
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'

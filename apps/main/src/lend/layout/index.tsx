@@ -9,7 +9,7 @@ import useStore from '@/lend/store/useStore'
 import Header from '@/lend/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeightResizeObserver } from '@ui/hooks'
-import { isChinese, t } from '@lingui/macro'
+import { isChinese, t } from '@ui-kit/lib/i18n'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useWallet()

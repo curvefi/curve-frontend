@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { BigNumber } from 'bignumber.js'
 import useStore from '@/dex/store/useStore'
 import {

@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { REFRESH_INTERVAL } from '@/lend/constants'
 import { helpers } from '@/lend/lib/apiLending'

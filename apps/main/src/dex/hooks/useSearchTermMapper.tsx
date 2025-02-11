@@ -1,6 +1,6 @@
 import type { SearchTermKey, SearchTermMapper } from '@/dex/components/PagePoolList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 export enum SEARCH_TERM {

@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles'
 import NextImage from 'next/image'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 type ConnectWalletPromptProps = {
   description: string
