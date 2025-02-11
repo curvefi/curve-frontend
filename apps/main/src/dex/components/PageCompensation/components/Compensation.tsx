@@ -1,7 +1,6 @@
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useState } from 'react'
-import numbro from 'numbro'
 import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'
 import { getErrorMessage, shortenTokenAddress } from '@/dex/utils'
@@ -16,6 +15,7 @@ import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { formatNumber } from '@ui/utils'
 
 const Compensation = ({
   rChainId,
@@ -86,18 +86,7 @@ const Compensation = ({
     setTxInfoBar(null)
   }, [curve?.signerAddress])
 
-  let formattedBalance = null
-  if (typeof balance !== 'undefined' && !haveBalancesError) {
-    if (balance === 0) {
-      formattedBalance = 0
-    } else {
-      formattedBalance = numbro(balance).format({
-        thousandSeparated: true,
-        mantissa: 5,
-        trimMantissa: false,
-      })
-    }
-  }
+  const formattedBalance = balance && formatNumber(balance, { minimumFractionDigits: 5 })
 
   const disabled =
     balance === 0 || haveBalancesError || !curve || step === 'claimed' || step === 'error' || step === 'claiming'
@@ -120,13 +109,7 @@ const Compensation = ({
           {((formattedBalance && token === 'CRV') || vestedTotal > 0) && (
             <div>
               <strong>Remaining vested:</strong>{' '}
-              {vestedTotal > 0
-                ? numbro(vestedTotal).format({
-                    thousandSeparated: true,
-                    mantissa: 5,
-                    trimMantissa: false,
-                  })
-                : '-'}
+              {vestedTotal > 0 ? formatNumber(vestedTotal, { minimumFractionDigits: 5 }) : '-'}
             </div>
           )}
           {formattedBalance ? (

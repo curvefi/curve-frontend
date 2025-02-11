@@ -249,7 +249,7 @@ const ChartBandBalances = ({
 
                   <Bar
                     dataKey="collateralBorrowedUsd"
-                    shape={(props) => {
+                    shape={(props: any) => {
                       const { width, collateralUsd, isLiquidationBand, borrowed, collateralBorrowedUsd } = props
 
                       if (barWidth === 0 && +width > 0) {

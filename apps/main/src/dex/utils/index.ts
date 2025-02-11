@@ -1,7 +1,4 @@
 import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
-
-import numbro from 'numbro'
-
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 import { shortenAccount } from '@ui/utils'
 import { ChainId } from '@/dex/types/main.types'
@@ -43,45 +40,8 @@ export function shortenTokenName(token: string) {
   }
 }
 
-export function formatNumber(value: string | number | undefined, formatOptions?: numbro.Format) {
-  if (typeof value === 'undefined' || value === 'NaN') {
-    return '-'
-  }
-
-  try {
-    if (Number(value) === 0) {
-      return '0'
-    }
-
-    const options: numbro.Format = {
-      mantissa: 3,
-      trimMantissa: false,
-      thousandSeparated: true,
-      ...(formatOptions || {}),
-    }
-    const parsedValue = numbro(value).format(options)
-
-    if (Number(parsedValue) === 0) {
-      const firstTwoNonZeroDigits = Number(value)
-        .toFixed(15)
-        .match(/^-?\d*\.?0*\d{0,2}/)
-
-      const num = firstTwoNonZeroDigits?.[0]
-
-      if (num) {
-        return Number(num) === 0 ? '0' : num
-      }
-    }
-    return parsedValue
-  } catch (error) {
-    console.error(error)
-    return ''
-  }
-}
-
-export function isValidAddress(address: string) {
-  return address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
-}
+export const isValidAddress = (address: string) =>
+  address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
 
 export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
   if (!tokenAddress) return
@@ -133,10 +93,8 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export function sleep(ms?: number) {
-  const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)
-  return new Promise((resolve) => setTimeout(resolve, parsedMs))
-}
+export const sleep = (ms: number = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 // curve.fi url
 export function getCurvefiUrl(poolId: string, host: string) {
@@ -152,18 +110,12 @@ export function getCurvefiUrl(poolId: string, host: string) {
   }
 }
 
-export function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 50)
-  }
-}
+export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => cb(), 50)
 
-export function getChainPoolIdActiveKey(chainId: ChainId | null, poolId: string | undefined) {
-  return chainId && poolId ? `${chainId}-${poolId}` : ''
-}
+export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
+  chainId && poolId ? `${chainId}-${poolId}` : ''
 
-export function getChainSignerActiveKey(chainId: ChainId | null, signerAddress: string | undefined) {
-  return chainId && signerAddress ? `${chainId}-${shortenAccount(signerAddress)}` : ''
-}
+export const getChainSignerActiveKey = (chainId: ChainId | null, signerAddress: string | undefined) =>
+  chainId && signerAddress ? `${chainId}-${shortenAccount(signerAddress)}` : ''
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())

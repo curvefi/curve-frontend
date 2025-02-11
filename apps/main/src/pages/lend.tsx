@@ -34,7 +34,6 @@ const App: NextPage = () => {
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const theme = useUserProfileStore((state) => state.theme)
-  const locale = useUserProfileStore((state) => state.locale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -46,9 +45,7 @@ const App: NextPage = () => {
   // update on every state change
   useEffect(() => {
     if (!pageWidth) return
-
     document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
-    document.documentElement.lang = locale
   })
 
   // init app
@@ -58,7 +55,7 @@ const App: NextPage = () => {
     }
 
     // init onboard
-    useWallet.initialize(locale, theme, networks)
+    useWallet.initialize(theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -107,7 +104,6 @@ const App: NextPage = () => {
                   <Page>
                     <Routes>
                       {SubRoutes}
-                      <Route path=":locale">{SubRoutes}</Route>
                       <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
                       <Route
                         path="/disclaimer"

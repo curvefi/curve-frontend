@@ -4,11 +4,9 @@ import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
-import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { getLocaleFromUrl } from '@/dao/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@ui/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
@@ -45,8 +43,6 @@ const App: NextPage = () => {
   const curve = useStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
-  const locale = useUserProfileStore((state) => state.locale)
-  const setLocale = useUserProfileStore((state) => state.setLocale)
   const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
 
   const [appLoaded, setAppLoaded] = useState(false)
@@ -58,10 +54,8 @@ const App: NextPage = () => {
 
   useEffect(() => {
     if (!pageWidth) return
-
     document.body.className = `theme-${theme} ${pageWidth} ${getIsMobile() ? '' : 'scrollSmooth'}`
     document.body.setAttribute('data-theme', theme)
-    document.documentElement.lang = locale
   })
 
   useEffect(() => {
@@ -69,14 +63,9 @@ const App: NextPage = () => {
       updateShowScrollButton(window.scrollY)
     }
 
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    setLocale(rLocale?.value ?? 'en')
-    useWallet.initialize(locale, theme, networks)
+    useWallet.initialize(theme, networks)
 
-    const handleVisibilityChange = () => {
-      updateGlobalStoreByKey('isPageVisible', !document.hidden)
-    }
+    const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
     updateGlobalStoreByKey('loaded', true)
@@ -147,34 +136,22 @@ const App: NextPage = () => {
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
             <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-              <AriaI18nProvider locale={locale}>
-                <OverlayProvider>
-                  <Page>
-                    <Routes>
-                      {SubRoutes}
-                      <Route path=":locale">{SubRoutes}</Route>
-                      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
-                      <Route
-                        path="/proposals/*"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />}
-                      />
-                      <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
-                      <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
-                      <Route
-                        path="/analytics/*"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />}
-                      />
-                      <Route
-                        path="/vecrv/*"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />}
-                      />
-                      <Route path="404" element={<Page404 />} />
-                      <Route path="*" element={<Page404 />} />
-                    </Routes>
-                  </Page>
-                  <GlobalStyle />
-                </OverlayProvider>
-              </AriaI18nProvider>
+              <OverlayProvider>
+                <Page>
+                  <Routes>
+                    {SubRoutes}
+                    <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
+                    <Route path="/proposals/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
+                    <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
+                    <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
+                    <Route path="/analytics/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />} />
+                    <Route path="/vecrv/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />} />
+                    <Route path="404" element={<Page404 />} />
+                    <Route path="*" element={<Page404 />} />
+                  </Routes>
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
             </StyleSheetManager>
           </HashRouter>
         )}
