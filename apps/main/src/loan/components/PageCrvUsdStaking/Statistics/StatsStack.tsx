@@ -4,6 +4,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
 
 const { Spacing } = SizesAndSpaces
 
@@ -16,10 +17,25 @@ const CRVUSD_OPTION = {
 const StatsStack = () => {
   const { data: yieldData, error: yieldError, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1y' })
   const { data: revenueData, error: revenueError, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
+  const { data: statisticsData, error: statisticsError, isFetching: statisticsIsFetching } = useScrvUsdStatistics({})
 
   return (
-    <Grid container columnGap={Spacing.lg} rowGap={Spacing.md} wrap="wrap">
-      <Grid flexGrow={1}>
+    <Grid
+      container
+      wrap="wrap"
+      sx={{
+        display: 'grid',
+        // gridAutoFlow: 'dense',
+        gridAutoRows: '1fr',
+        gridTemplateColumns: {
+          mobile: 'repeat(2, 1fr)',
+          tablet: 'repeat(2, 1fr)',
+          desktop: 'repeat(4, 1fr)',
+        },
+        gap: Spacing.lg,
+      }}
+    >
+      <Grid>
         <Metric
           label="Total crvUSD Staked"
           value={yieldData?.[yieldData.length - 1]?.supply ?? 0}
@@ -27,16 +43,16 @@ const StatsStack = () => {
           unit={CRVUSD_OPTION}
         />
       </Grid>
-      <Grid flexGrow={1}>
+      <Grid>
         <Metric
           label="Current APY"
-          value={yieldData?.[yieldData.length - 1]?.proj_apy ?? 0}
-          loading={yieldIsFetching}
+          value={statisticsData?.proj_apr ?? 0}
+          loading={statisticsIsFetching}
           decimals={2}
           unit="percentage"
         />
       </Grid>
-      <Grid flexGrow={1}>
+      <Grid>
         <Metric
           label="Total Revenue Distributed"
           value={revenueData?.total_distributed ?? 0}
@@ -44,7 +60,7 @@ const StatsStack = () => {
           unit={CRVUSD_OPTION}
         />
       </Grid>
-      <Grid flexGrow={1}>
+      <Grid>
         <Metric
           label="Weekly Accumulated Revenue"
           value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue ?? 0}

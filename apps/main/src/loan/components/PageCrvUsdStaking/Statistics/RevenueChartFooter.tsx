@@ -36,7 +36,12 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
   } as const satisfies Record<YieldKeys, string>
 
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ paddingInline: Spacing.md }}>
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      sx={{ paddingInline: Spacing.md, paddingBottom: Spacing.md }}
+    >
       <Stack direction="row" gap={4} flexWrap="wrap">
         {Object.entries(priceLineLabels).map(([key, { label, dash }]) => (
           <LegendSet
