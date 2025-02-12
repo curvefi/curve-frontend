@@ -1,5 +1,13 @@
-export const paramsToString = (params: Record<string, string | number | boolean>) =>
-  new URLSearchParams(Object.entries(params).map(([key, value]) => [key, encodeURIComponent(value)])).toString()
+/**
+ * Converts a Record of string key-value pairs to a URL query string.
+ * Ignores keys with null or undefined values, automatically converting other values to strings.
+ */
+export const paramsToString = (params: Record<string, string | number | boolean | null | undefined>) =>
+  new URLSearchParams(
+    Object.entries(params)
+      .filter(([_, value]) => value != null)
+      .map(([key, value]) => [key, value!.toString()]),
+  ).toString()
 
 export class FetchError extends Error {
   constructor(
@@ -36,5 +44,5 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
     // Make the promise be rejected if we didn't get a 2xx response
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
   }
-  return (await resp.json()) as T
+  return resp.json()
 }

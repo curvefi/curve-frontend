@@ -1,6 +1,6 @@
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ColumnDef, ColumnFiltersState, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
+import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { t } from '@ui-kit/lib/i18n'
 import {
