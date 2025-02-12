@@ -1,4 +1,3 @@
-import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from 'ui/src/images'
@@ -28,6 +27,7 @@ const UserInformation = () => {
         gap={Spacing.lg}
         sx={{
           flexWrap: {
+            mobile: 'wrap',
             tablet: 'wrap',
             desktop: 'nowrap',
           },

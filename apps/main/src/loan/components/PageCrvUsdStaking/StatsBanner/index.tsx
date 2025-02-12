@@ -1,4 +1,3 @@
-import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 
 import { useTheme } from '@mui/material/styles'

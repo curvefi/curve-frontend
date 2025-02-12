@@ -1,5 +1,5 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 type PriceLineLabel = { label: string; dash: string }
 

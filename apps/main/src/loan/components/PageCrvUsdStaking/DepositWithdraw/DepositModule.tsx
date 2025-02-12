@@ -19,6 +19,7 @@ import {
   StyledInputComp,
 } from './styles'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+
 const DepositModule = () => {
   const { signerAddress } = useWallet()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({

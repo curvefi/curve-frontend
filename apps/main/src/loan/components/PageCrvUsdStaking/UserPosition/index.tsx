@@ -1,7 +1,7 @@
 import { Card, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { useTheme } from '@mui/material/styles'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
 import useStore from '@/loan/store/useStore'

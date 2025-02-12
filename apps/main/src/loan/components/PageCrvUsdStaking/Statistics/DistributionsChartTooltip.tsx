@@ -1,7 +1,7 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { TooltipProps } from 'recharts'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, formatDate } from '@ui/utils/utilsFormat'

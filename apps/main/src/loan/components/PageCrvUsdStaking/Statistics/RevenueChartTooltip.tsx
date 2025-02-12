@@ -2,7 +2,7 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import { TooltipProps } from 'recharts'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
