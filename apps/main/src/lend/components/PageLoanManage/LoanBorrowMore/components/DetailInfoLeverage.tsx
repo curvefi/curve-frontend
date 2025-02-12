@@ -1,7 +1,7 @@
 import type { Step } from '@ui/Stepper/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { _parseValues } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
 import useStore from '@/lend/store/useStore'

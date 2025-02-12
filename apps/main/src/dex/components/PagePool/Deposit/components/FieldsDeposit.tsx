@@ -1,6 +1,6 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import { formatNumber } from '@ui/utils'

@@ -1,6 +1,6 @@
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import {
   Bar,
   Brush,
@@ -249,7 +249,7 @@ const ChartBandBalances = ({
 
                   <Bar
                     dataKey="collateralBorrowedUsd"
-                    shape={(props) => {
+                    shape={(props: any) => {
                       const { width, collateralUsd, isLiquidationBand, borrowed, collateralBorrowedUsd } = props
 
                       if (barWidth === 0 && +width > 0) {

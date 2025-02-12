@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultUnstake/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { helpers } from '@/lend/lib/apiLending'

@@ -1,6 +1,6 @@
 import type { SearchTermKey, SearchTermMapper } from '@/loan/components/PageMarketList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { CollateralDataCacheOrApi } from '@/loan/types/loan.types'
 
 export enum SEARCH_TERM {

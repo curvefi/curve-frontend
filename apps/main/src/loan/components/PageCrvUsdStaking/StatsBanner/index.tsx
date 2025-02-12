@@ -1,4 +1,5 @@
-import { t } from '@lingui/macro'
+import styled from 'styled-components'
+import { t } from '@ui-kit/lib/i18n'
 
 import { useTheme } from '@mui/material/styles'
 import { Typography } from '@mui/material'

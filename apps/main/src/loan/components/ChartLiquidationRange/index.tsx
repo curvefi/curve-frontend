@@ -9,13 +9,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
 import { HeathColorKey, Theme } from '@/loan/types/loan.types'
 
@@ -141,7 +139,7 @@ const ChartLiquidationRange = ({ data, healthColorKey, isManage, isDetailView, t
                 barSize={30}
                 fill="#1763fd00"
                 stroke={chartAxisColor}
-                shape={({ x, y, width, height }) => (
+                shape={({ x, y, width, height }: any) => (
                   <path
                     fill="url(#pattern-stripe)"
                     stroke={chartAxisColor}

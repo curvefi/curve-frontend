@@ -1,6 +1,6 @@
 import type { LiqRange, LiqRangeSliderIdx } from '@/lend/store/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 

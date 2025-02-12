@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/macro'
+import { Trans } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'

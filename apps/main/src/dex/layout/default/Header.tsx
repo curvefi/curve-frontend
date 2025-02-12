@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { useParamsFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
+import { useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/dex/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -33,7 +33,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
+  const { rChainId, rNetwork } = useNetworkFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
@@ -63,11 +63,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
                 : []),
               ...APP_LINK.main.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
             ],
-            rLocalePathname,
             routerPathname,
             rNetwork,
           ),
-        [hasRouter, network, networks, rChainId, rLocalePathname, rNetwork, routerCached, routerPathname],
+        [hasRouter, network, networks, rChainId, rNetwork, routerCached, routerPathname],
       )}
       ChainProps={{
         options: visibleNetworksList,
@@ -77,11 +76,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`${rLocalePathname}/${network}/${restPartialPathname}`)
+              navigate(`${network}/${restPartialPathname}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, networks, navigate, rLocalePathname, restPartialPathname, updateConnectState],
+          [rChainId, networks, navigate, restPartialPathname, updateConnectState],
         ),
       }}
       WalletProps={{

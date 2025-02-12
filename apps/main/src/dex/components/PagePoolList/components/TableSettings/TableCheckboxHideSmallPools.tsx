@@ -1,7 +1,7 @@
 import type { SearchParams } from '@/dex/components/PagePoolList/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import Checkbox from '@ui/Checkbox'
 import { PoolData } from '@/dex/types/main.types'

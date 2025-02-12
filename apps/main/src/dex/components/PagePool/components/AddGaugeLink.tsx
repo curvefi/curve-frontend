@@ -1,7 +1,7 @@
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
 
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getPath } from '@/dex/utils/utilsRouter'

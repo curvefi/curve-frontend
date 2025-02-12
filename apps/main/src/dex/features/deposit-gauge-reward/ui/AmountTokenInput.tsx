@@ -1,12 +1,11 @@
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useMemo, type Key } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
-import { formatNumber } from '@/dex/utils'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -25,6 +24,7 @@ import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/dex
 import { useTokens } from '@/dex/entities/token'
 import { FlexContainer } from '@ui/styled-containers'
 import { ChainId, Token } from '@/dex/types/main.types'
+import { formatNumber } from '@ui/utils'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId
@@ -125,7 +125,7 @@ export const AmountTokenInput: React.FC<{
               haveSigner && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(tokenBalance),
+                description: formatNumber(tokenBalance, { showAllFractionDigits: true }),
               }
             }
             testId="deposit-amount"

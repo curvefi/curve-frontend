@@ -1,7 +1,7 @@
 import type { ButtonProps } from '@ui/Button/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useMemo, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'

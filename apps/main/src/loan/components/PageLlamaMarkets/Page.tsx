@@ -4,7 +4,7 @@ import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingM
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { invalidateLendingVaults } from '@/loan/entities/lending-vaults'
 import DocumentHead from '@/loan/layout/DocumentHead'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'

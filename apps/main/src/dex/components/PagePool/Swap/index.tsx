@@ -1,7 +1,7 @@
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'

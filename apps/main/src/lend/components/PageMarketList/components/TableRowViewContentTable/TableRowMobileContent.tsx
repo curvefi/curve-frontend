@@ -2,7 +2,7 @@ import type { Content } from '@/lend/components/PageMarketList/components/TableR
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 
 import React, { useCallback, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { FilterType } from '@/lend/components/PageMarketList/utils'

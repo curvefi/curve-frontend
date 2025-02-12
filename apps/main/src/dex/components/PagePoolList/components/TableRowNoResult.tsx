@@ -1,6 +1,6 @@
 import type { SearchParams } from '@/dex/components/PagePoolList/types'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@ui-kit/lib/i18n'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 

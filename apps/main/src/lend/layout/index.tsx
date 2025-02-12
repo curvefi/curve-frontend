@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@/lend/utils/utilsRouter'
@@ -10,9 +9,7 @@ import useStore from '@/lend/store/useStore'
 import Header from '@/lend/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeightResizeObserver } from '@ui/hooks'
-import { t } from '@lingui/macro'
-import { Locale } from '@ui-kit/widgets/Header/types'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { isChinese, t } from '@ui-kit/lib/i18n'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useWallet()
@@ -25,8 +22,6 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const layoutHeight = useStore((state) => state.layout.height)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
-
-  const locale = useUserProfileStore((state) => state.locale)
 
   const [networkSwitch, setNetworkSwitch] = useState('')
 
@@ -53,7 +48,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
 
-  const sections = useMemo(() => getSections(locale, rNetwork), [locale, rNetwork])
+  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
@@ -73,7 +68,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (locale: Locale, network: string) => [
+const getSections = (network: string) => [
   {
     title: t`Documentation`,
     links: [
@@ -83,7 +78,7 @@ const getSections = (locale: Locale, network: string) => [
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}?tab=lend`, label: t`Risk Disclaimers` },
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
-      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+      ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },
   {

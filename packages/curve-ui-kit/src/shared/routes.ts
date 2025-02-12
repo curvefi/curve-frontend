@@ -1,5 +1,5 @@
 import type { AppRoutes } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { isBeta } from '@ui-kit/utils'
 
 export const DEX_ROUTES = {

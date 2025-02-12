@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
 import networks from '@/dao/networks'

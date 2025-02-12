@@ -2,7 +2,7 @@ import { Dispatch, FunctionComponent } from 'react'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
 import { FormControlLabel } from '@mui/material'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 type AdvancedModeSwitcherProps = {
   label?: string

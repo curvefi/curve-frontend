@@ -1,4 +1,5 @@
-import { t } from '@lingui/macro'
+import styled from 'styled-components'
+import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from 'ui/src/images'
 import Icon from '@ui/Icon'

@@ -1,7 +1,7 @@
 import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dex/components/PageCrvLocker/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_FORM_EST_GAS } from '@/dex/components/PageCrvLocker/utils'

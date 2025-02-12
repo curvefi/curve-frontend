@@ -2,7 +2,7 @@ import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/P
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useRef, useState } from 'react'

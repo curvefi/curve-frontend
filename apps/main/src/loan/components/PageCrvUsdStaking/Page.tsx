@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import Image from 'next/image'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'

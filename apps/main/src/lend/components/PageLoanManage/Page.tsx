@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 

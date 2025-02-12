@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import {

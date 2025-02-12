@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'

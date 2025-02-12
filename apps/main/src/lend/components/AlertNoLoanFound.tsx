@@ -1,7 +1,7 @@
 import type { AlertType } from '@ui/AlertBox/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 

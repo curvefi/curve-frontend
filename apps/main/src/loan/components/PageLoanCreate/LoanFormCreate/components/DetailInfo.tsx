@@ -1,6 +1,6 @@
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useMemo } from 'react'
 
 import { getActiveStep } from '@ui/Stepper/helpers'

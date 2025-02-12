@@ -2,7 +2,7 @@ import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoan
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'

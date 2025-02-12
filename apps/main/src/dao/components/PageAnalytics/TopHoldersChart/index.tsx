@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import useStore from '@/dao/store/useStore'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import Box from '@ui/Box'

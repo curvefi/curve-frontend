@@ -3,7 +3,7 @@ import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import useStore from '@/lend/store/useStore'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'

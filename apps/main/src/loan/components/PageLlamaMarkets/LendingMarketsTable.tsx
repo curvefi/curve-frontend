@@ -1,7 +1,7 @@
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { CompactUsdCell, LineGraphCell, PoolTitleCell, RateCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LlamaMarket } from '@/loan/entities/llama-markets'

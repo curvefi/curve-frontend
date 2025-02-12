@@ -5,7 +5,7 @@ import type {
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'

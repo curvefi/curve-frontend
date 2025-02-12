@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import GitHubIcon from '@mui/icons-material/GitHub'

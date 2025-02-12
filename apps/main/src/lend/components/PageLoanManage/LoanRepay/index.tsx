@@ -3,7 +3,7 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoan
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'

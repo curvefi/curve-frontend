@@ -1,7 +1,7 @@
 import type { FormType } from '@/lend/components/PageLoanCreate/types'
 
 import { useMemo, useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'

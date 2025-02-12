@@ -1,6 +1,6 @@
 import { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { shortenTokenAddress } from '@/dex/utils'
 import styled from 'styled-components'
 import useStore from '@/dex/store/useStore'

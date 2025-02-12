@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 

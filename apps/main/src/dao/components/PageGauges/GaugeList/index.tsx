@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React, { useEffect, useCallback } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import useStore from '@/dao/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'

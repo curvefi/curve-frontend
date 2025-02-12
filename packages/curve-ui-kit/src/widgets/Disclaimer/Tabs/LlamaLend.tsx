@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'

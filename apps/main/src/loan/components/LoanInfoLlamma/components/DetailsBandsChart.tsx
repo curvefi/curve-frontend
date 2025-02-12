@@ -1,7 +1,7 @@
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 
 import React, { useMemo, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import useStore from '@/loan/store/useStore'
 
