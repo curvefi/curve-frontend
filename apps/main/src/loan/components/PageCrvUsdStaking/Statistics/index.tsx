@@ -48,6 +48,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
 
   return (
     <Stack
+      width="100%"
       sx={{
         maxWidth: isChartExpanded
           ? `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`

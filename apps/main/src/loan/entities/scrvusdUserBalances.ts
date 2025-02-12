@@ -14,6 +14,7 @@ async function _fetchSavingsUserBalances({
 }): Promise<ScrvUsdUserBalances | null> {
   const lendApi = useStore.getState().lendApi
 
+  if (!signerAddress) return null
   if (!lendApi) return null
 
   const response = await lendApi.st_crvUSD.userBalances(signerAddress)

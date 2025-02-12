@@ -29,15 +29,26 @@ const CrvUsdStaking = () => {
   const { signerAddress, connecting, walletName } = useWallet()
   const chainId = useStore((state) => state.curve?.chainId)
 
-  const { data: userScrvUsdBalance, refetch: refetchUserScrvUsdBalance } = useScrvUsdUserBalances({
+  const {
+    data: userScrvUsdBalance,
+    isFetching: isUserScrvUsdBalanceFetching,
+    isFetched: isUserScrvUsdBalanceFetched,
+    refetch: refetchUserScrvUsdBalance,
+  } = useScrvUsdUserBalances({
     signerAddress: signerAddress ?? '',
   })
 
-  const willConnect = connecting || walletName
+  const isUserScrvUsdBalanceZero =
+    signerAddress && userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
 
-  const isUserScrvUsdBalanceZero = userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
+  const connectedUserNoScrvUsdBalance =
+    !!signerAddress && !!walletName && !!isUserScrvUsdBalanceFetched && !!isUserScrvUsdBalanceZero
 
-  const showStatsBanner = !willConnect && isUserScrvUsdBalanceZero
+  // walletName indicates the wallet is cached and will begin connecting
+  const showStatsBanner =
+    !walletName || connectedUserNoScrvUsdBalance || !signerAddress
+      ? true
+      : !connecting && !isUserScrvUsdBalanceFetching && !walletName && isUserScrvUsdBalanceZero
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)

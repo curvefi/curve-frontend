@@ -25,7 +25,6 @@ const StatsStack = () => {
       wrap="wrap"
       sx={{
         display: 'grid',
-        // gridAutoFlow: 'dense',
         gridAutoRows: '1fr',
         gridTemplateColumns: {
           mobile: 'repeat(2, 1fr)',
