@@ -12,6 +12,7 @@ import {
 } from '@/loan/components/PageLlamaMarkets/cells'
 import { VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { PriceCell } from '@/loan/components/PageLlamaMarkets/cells/PriceCell'
+import type { Address } from '@ui-kit/utils'
 
 const { ColumnWidth } = SizesAndSpaces
 
@@ -107,7 +108,7 @@ export const LLAMA_MARKET_COLUMNS = [
 
 export const DEFAULT_SORT = [{ id: 'liquidityUsd', desc: true }]
 
-export const DEFAULT_VISIBILITY: VisibilityGroup[] = [
+export const getMarketColumnsVisibility: (address?: Address) => VisibilityGroup[] = (address) => [
   {
     label: t`Markets`,
     options: [
@@ -117,10 +118,26 @@ export const DEFAULT_VISIBILITY: VisibilityGroup[] = [
   },
   {
     label: t`Borrow`,
-    options: [{ label: t`Chart`, id: borrowChartId, active: true }],
+    options: [
+      { label: t`Chart`, id: borrowChartId, active: true },
+      ...(address
+        ? [
+            { label: t`Health`, id: 'userHealth', active: true },
+            { label: t`Borrow Amount`, id: 'userBorrowed', active: true },
+          ]
+        : []),
+    ],
   },
   {
     label: t`Lend`,
-    options: [{ label: t`Chart`, id: lendChartId, active: true }],
+    options: [
+      { label: t`Chart`, id: lendChartId, active: true },
+      ...(address
+        ? [
+            { label: t`My earnings`, id: 'userEarnings', active: true },
+            { label: t`Supplied Amount`, id: 'userDeposited', active: true },
+          ]
+        : []),
+    ],
   },
 ]

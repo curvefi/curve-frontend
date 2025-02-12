@@ -181,7 +181,7 @@ export const useLlamaMarkets = (userAddress?: Address) =>
     combine: (results): PartialQueryResult<LlamaMarket[]> => {
       const [lendingVaults, mintMarkets, campaigns, favoriteMarkets, userLendingVaults, userMintMarkets] = results
       const favoriteMarketsSet = new Set(favoriteMarkets.data)
-      // console.log(userAddress, results)
+      console.log(userAddress, results)
       return {
         ...combineQueriesMeta(results),
         data: [
