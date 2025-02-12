@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { shortenTokenAddress, shortenTokenName } from '@/dex/utils'

@@ -2,7 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import Fuse from 'fuse.js'
 import produce from 'immer'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { shortenTokenAddress } from '@ui/utils'
 import {

@@ -4,7 +4,7 @@ import { useButton, useComboBox, useFocusRing } from 'react-aria'
 import { useComboBoxState } from '@react-stately/combobox'
 import React, { ChangeEvent, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import debounce from 'lodash/debounce'
 
@@ -82,7 +82,13 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
             <StyledInputWrapper id="inp-search">
               <Icon name={'Search'} size={24} aria-label="search icon" />
 
-              <StyledInput placeholder={props.placeholder} ref={inputRef} type="search" onChange={debounceInpChange} />
+              <StyledInput
+                placeholder={props.placeholder}
+                ref={inputRef}
+                type="search"
+                onChange={debounceInpChange}
+                defaultValue={props.defaultInputValue}
+              />
               <StyledIconButton
                 className={!!inputRef?.current?.value ? 'show' : ''}
                 padding={2}

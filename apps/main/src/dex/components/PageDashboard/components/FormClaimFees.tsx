@@ -1,7 +1,7 @@
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'

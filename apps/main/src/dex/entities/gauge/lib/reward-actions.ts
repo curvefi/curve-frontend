@@ -1,16 +1,5 @@
-/**
- * @description This file contains custom hooks and utility functions for gauge-related mutations in the Curve.fi DApp.
- * It's a crucial part of the 'gauge' entity in the FSD architecture.
- *
- * The hooks in this file provide an easy-to-use interface for components to interact with gauge data and operations.
- * They encapsulate the usage of React Query and the application's global state, offering a clean API
- *
- * These hooks abstract away the complexity of data mutation and state management,
- * allowing components to easily access and manipulate gauge-related data.
- */
-
-import { t } from '@lingui/macro'
-import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
+import { t } from '@ui-kit/lib/i18n'
+import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import * as models from '@/dex/entities/gauge/model'
 import { gaugeKeys as keys } from '@/dex/entities/gauge/model'
 import type {
@@ -25,6 +14,8 @@ import { queryClient } from '@ui-kit/lib/api/query-client'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { notify } from '@ui-kit/features/connect-wallet'
+
+type QueryMutation = Mutation<unknown, DefaultError, any> // todo: type got converted from any to unknown in v5.60
 
 export const useAddRewardToken = ({
   chainId,
@@ -61,7 +52,7 @@ export const useAddRewardTokenIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.addRewardToken({ chainId, poolId }),
-      predicate: ({ state }) =>
+      predicate: ({ state }: QueryMutation) =>
         state.variables?.rewardTokenId === rewardTokenId && state.variables?.distributorId === distributorId,
     }),
   )
@@ -99,7 +90,8 @@ export const useDepositRewardApproveIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositRewardIsApproved({ chainId, poolId }),
-      predicate: ({ state }) => state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount,
+      predicate: ({ state }: QueryMutation) =>
+        state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount,
     }),
   )
 
@@ -135,7 +127,7 @@ export const useDepositRewardIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositReward({ chainId, poolId }),
-      predicate: ({ state }) =>
+      predicate: ({ state }: QueryMutation) =>
         state.variables?.rewardTokenId === rewardTokenId &&
         state.variables?.amount === amount &&
         state.variables?.epoch === epoch,

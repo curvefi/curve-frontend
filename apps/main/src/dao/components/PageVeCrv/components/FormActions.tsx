@@ -1,5 +1,5 @@
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import useStore from '@/dao/store/useStore'

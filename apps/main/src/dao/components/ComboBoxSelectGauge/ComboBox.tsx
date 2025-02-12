@@ -1,7 +1,7 @@
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import chunk from 'lodash/chunk'
 import styled from 'styled-components'
 

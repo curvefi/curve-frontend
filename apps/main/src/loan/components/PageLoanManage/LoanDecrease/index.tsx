@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanDecrease/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'

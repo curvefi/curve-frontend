@@ -2,7 +2,7 @@ import type { InputVariant } from '@ui/InputComp/types'
 
 import React, { useEffect, useState } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import { Trans, t } from '@lingui/macro'
+import { Trans, t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'

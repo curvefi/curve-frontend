@@ -1,6 +1,6 @@
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@ui-kit/lib/i18n'
 import React from 'react'
 import styled from 'styled-components'
 

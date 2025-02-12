@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'

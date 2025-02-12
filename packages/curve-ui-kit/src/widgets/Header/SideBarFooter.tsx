@@ -10,7 +10,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 

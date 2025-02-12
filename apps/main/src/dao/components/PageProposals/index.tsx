@@ -1,6 +1,6 @@
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
 import { useCallback, useEffect } from 'react'
 import useStore from '@/dao/store/useStore'

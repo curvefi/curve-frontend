@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'

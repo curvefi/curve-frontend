@@ -1,5 +1,5 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'

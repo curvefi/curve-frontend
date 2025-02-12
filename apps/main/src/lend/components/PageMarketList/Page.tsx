@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'

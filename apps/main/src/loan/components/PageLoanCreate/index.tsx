@@ -1,6 +1,6 @@
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 

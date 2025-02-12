@@ -6,7 +6,7 @@ import type {
 } from '@/lend/components/PageLoanManage/types'
 
 import { useCallback, useMemo, useRef, useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'

@@ -16,7 +16,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 const {
   Spacing,

@@ -1,6 +1,6 @@
 import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { isValidAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import useStore from '@/lend/store/useStore'
 
 import { CONNECT_STAGE } from '@/lend/constants'

@@ -1,7 +1,7 @@
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import {
   Bar,
   Brush,
@@ -219,7 +219,7 @@ const ChartBandBalances = ({
 
                 <Bar
                   dataKey="collateralStablecoinUsd"
-                  shape={(props) => {
+                  shape={(props: any) => {
                     const { width, collateralUsd, isLiquidationBand, stablecoin, collateralStablecoinUsd } = props
 
                     if (barWidth === 0 && +width > 0) {

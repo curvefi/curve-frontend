@@ -8,7 +8,7 @@ import { MarketBadges } from '@/loan/components/PageLlamaMarkets/cells/MarketTit
 import { MarketWarnings } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketWarnings'
 import { TokenPair } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/TokenPair'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'

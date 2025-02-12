@@ -1,7 +1,7 @@
 import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 

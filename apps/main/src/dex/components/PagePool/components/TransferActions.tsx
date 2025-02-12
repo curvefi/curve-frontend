@@ -1,7 +1,7 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'

@@ -1,7 +1,7 @@
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import type { FormStatus, FormValues, PageLoanCreateProps, StepKey } from '@/loan/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE, hasDeleverage } from '@/loan/components/PageLoanManage/utils'

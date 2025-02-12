@@ -2,7 +2,7 @@ import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultCl
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import Box from '@ui/Box'
 import Button from '@ui/Button'

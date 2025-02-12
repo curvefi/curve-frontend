@@ -1,5 +1,5 @@
 import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
 import { shortenTokenAddress } from '@/dex/utils'

@@ -8,7 +8,7 @@ import { helpers } from '@/dao/lib/curvejs'
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import {
   FetchingState,
   PricesProposalResponse,

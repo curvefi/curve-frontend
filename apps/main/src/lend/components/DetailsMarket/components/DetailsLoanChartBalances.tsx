@@ -1,6 +1,6 @@
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useMemo, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 

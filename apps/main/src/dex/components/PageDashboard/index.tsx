@@ -2,7 +2,7 @@ import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/compo
 import type { Params } from 'react-router'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'

@@ -74,8 +74,6 @@ export type ExpectedBorrowed = {
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
 export type RouterParams = {
-  rLocale: { value: 'en' } | null
-  rLocalePathname: string
   rChainId: ChainId
   rNetwork: NetworkEnum
   rNetworkIdx: number

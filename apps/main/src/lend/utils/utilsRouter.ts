@@ -1,16 +1,10 @@
 import type { Params } from 'react-router'
-import { DEFAULT_LOCALES, parseLocale } from '@ui-kit/lib/i18n'
 import { ROUTE } from '@/lend/constants'
 import networks, { networksIdMapper } from '@/lend/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 import { NetworkEnum, RouterParams } from '@/lend/types/lend.types'
 
-export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {
-  const { parsedLocale } = parseLocale(locale)
-  return parsedLocale && parsedLocale !== 'en'
-    ? `/${parsedLocale}/${network}${rerouteRoute}`
-    : `/${network}${rerouteRoute}`
-}
+export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
 
 export function getCollateralListPathname(params: Params) {
   const endPath = `${ROUTE.PAGE_MARKETS}`
@@ -36,7 +30,6 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
   const { owmId, formType } = params ?? {}
   const paths = window.location.hash.substring(2).split('/')
 
-  const locale = getLocaleFromUrl()
   const network = getNetworkFromUrl()
 
   // subdirectory
@@ -69,15 +62,14 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     }
   }
 
-  const parsedPathname = `${locale.rLocalePathname}/${network.rNetwork}/${rSubdirectory}`
+  const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
     window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(`${locale.rLocalePathname}/${rSubdirectory}`))
+    (chainIdNotRequired && window.location.hash.substring(1).startsWith(rSubdirectory))
       ? ''
       : parsedPathname
 
   return {
-    ...locale,
     ...network,
     rSubdirectory,
     rSubdirectoryUseDefault,
@@ -86,23 +78,6 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams
-}
-
-type LocaleOption = (typeof DEFAULT_LOCALES)[number]
-export function getLocaleFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  let resp: { rLocale: LocaleOption | null; rLocalePathname: string } = {
-    rLocale: null,
-    rLocalePathname: '',
-  }
-
-  const foundLocale = DEFAULT_LOCALES.find((l) => l.value.toLowerCase() === (restPathnames[0] ?? '').toLowerCase())
-
-  if (foundLocale && foundLocale.value !== 'en') {
-    resp.rLocale = foundLocale
-    resp.rLocalePathname = `/${foundLocale.value}`
-  }
-  return resp
 }
 
 export function getNetworkFromUrl() {
@@ -155,8 +130,4 @@ export function getRestPartialPathname() {
     }
   })
   return restPathnames.slice(rNetworkIdx + 1, endIdx).join('/')
-}
-
-export function getParamsFromUrl() {
-  return { ...getNetworkFromUrl(), ...getLocaleFromUrl() }
 }

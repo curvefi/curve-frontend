@@ -3,12 +3,10 @@ import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
 import { produce } from 'immer'
 import merge from 'lodash/merge'
-import type { Locale } from '@ui-kit/lib/i18n'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type State = {
   theme: ThemeKey
-  locale: Locale['value']
   /** Key is either 'global' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { global: string } & Partial<Record<string, string>>
   isAdvancedMode: boolean
@@ -17,7 +15,6 @@ type State = {
 type Action = {
   reset: () => void
   setTheme: (theme: ThemeKey) => void
-  setLocale: (locale: Locale['value']) => void
   /**
    * Sets or removes a max slippage value for a given key.
    * @param slippage - The slippage value as a string percentage (e.g. "0.1" for 0.1%), or null to remove
@@ -45,7 +42,6 @@ const INITIAL_THEME =
 
 const INITIAL_STATE: State = {
   theme: INITIAL_THEME,
-  locale: 'en',
   maxSlippage: { global: '0.1' },
   isAdvancedMode: false,
 }
@@ -54,8 +50,6 @@ const store: StateCreator<Store> = (set) => ({
   ...INITIAL_STATE,
   reset: () => set(INITIAL_STATE),
   setTheme: (theme) => set((state) => ({ ...state, theme })),
-  setLocale: (locale) => set((state) => ({ ...state, locale })),
-
   setMaxSlippage: (maxSlippage: string | null, key?: string) => {
     // Check if we want to delete a slippage value first.
     if (maxSlippage === null) {

@@ -2,7 +2,7 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoan
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import { NOFITY_MESSAGE } from '@/lend/constants'

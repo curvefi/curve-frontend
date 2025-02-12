@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/lend/constants'
-import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
+import { getNetworkFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/lend/networks'
@@ -26,7 +26,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
-  const { rLocalePathname, rNetwork } = getParamsFromUrl()
+  const { rNetwork } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const routerProps = useStore((state) => state.routerProps)
@@ -46,8 +46,8 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
       isMdUp={isMdUp}
       currentApp="lend"
       pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.lend.pages, rLocalePathname, routerPathname, routerNetwork),
-        [rLocalePathname, routerNetwork, routerPathname],
+        () => _parseRouteAndIsActive(APP_LINK.lend.pages, routerPathname, routerNetwork),
+        [routerNetwork, routerPathname],
       )}
       ChainProps={{
         options: visibleNetworksList,
@@ -58,18 +58,12 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
             if (chainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
               const [currPath] = window.location.hash.split('?')
-
-              if (currPath.endsWith('markets')) {
-                // include search params when in market list page
-                navigate(`${rLocalePathname}/${network}/${getRestFullPathname()}`)
-              } else {
-                navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
-              }
-
+              const path = currPath.endsWith('markets') ? getRestFullPathname() : getRestPartialPathname()
+              navigate(`${network}/${path}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
           },
-          [chainId, rLocalePathname, updateConnectState, navigate],
+          [chainId, updateConnectState, navigate],
         ),
       }}
       WalletProps={{

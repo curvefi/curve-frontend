@@ -1,7 +1,7 @@
 import type { FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'

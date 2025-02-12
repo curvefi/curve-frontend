@@ -1,6 +1,6 @@
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { FilterType } from '@/lend/components/PageMarketList/utils'

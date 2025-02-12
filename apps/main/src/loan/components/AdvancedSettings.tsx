@@ -1,7 +1,7 @@
 import type { InputVariant } from '@ui/InputComp/types'
 
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 

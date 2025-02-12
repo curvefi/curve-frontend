@@ -1,6 +1,6 @@
 import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'

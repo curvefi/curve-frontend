@@ -1,6 +1,6 @@
 import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/dex/components/PagePoolList/types'
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { breakpoints } from '@ui/utils'
 import useStore from '@/dex/store/useStore'

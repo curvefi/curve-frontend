@@ -2,7 +2,7 @@ import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoan
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/loan/store/createLoanSwap'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
