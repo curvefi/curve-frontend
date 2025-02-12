@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 
 import useStore from '@/loan/store/useStore'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
@@ -21,16 +22,19 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const WithdrawModule = () => {
   const { signerAddress } = useWallet()
-  const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
+  const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
+    signerAddress: signerAddress ?? '',
+  })
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const preview = useStore((state) => state.scrvusd.preview)
   const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
   const setMax = useStore((state) => state.scrvusd.setMax)
 
-  const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
   const isLoadingPreview = isLoading(preview.fetchStatus)
 
-  const validationError = userBalances?.scrvUSD ? BigNumber(inputAmount).gt(BigNumber(userBalances.scrvUSD)) : false
+  const validationError = userScrvUsdBalance?.scrvUSD
+    ? BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.scrvUSD))
+    : false
 
   return (
     <Box flex flexColumn>
@@ -45,10 +49,10 @@ const WithdrawModule = () => {
           </Box>
           <StyledInputComp
             value={inputAmount}
-            walletBalance={userBalances?.scrvUSD ?? '0'}
-            walletBalanceUSD={userBalances?.scrvUSD ?? '0'}
+            walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
+            walletBalanceUSD={userScrvUsdBalance?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
-            isLoadingBalances={isLoadingBalances}
+            isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
             setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'withdraw')}
@@ -70,10 +74,10 @@ const WithdrawModule = () => {
           </Box>
           <StyledInputComp
             value={preview.value}
-            walletBalance={userBalances?.crvUSD ?? '0'}
-            walletBalanceUSD={userBalances?.crvUSD ?? '0'}
+            walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
+            walletBalanceUSD={userScrvUsdBalance?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
-            isLoadingBalances={isLoadingBalances}
+            isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={isLoadingPreview}
             readOnly
           />

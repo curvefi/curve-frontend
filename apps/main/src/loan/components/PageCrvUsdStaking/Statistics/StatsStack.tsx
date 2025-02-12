@@ -15,9 +15,9 @@ const CRVUSD_OPTION = {
 }
 
 const StatsStack = () => {
-  const { data: yieldData, error: yieldError, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1Y' })
-  const { data: revenueData, error: revenueError, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
-  const { data: statisticsData, error: statisticsError, isFetching: statisticsIsFetching } = useScrvUsdStatistics({})
+  const { data: yieldData, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1Y' })
+  const { data: revenueData, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
+  const { data: statisticsData, isFetching: statisticsIsFetching } = useScrvUsdStatistics({})
 
   return (
     <Grid

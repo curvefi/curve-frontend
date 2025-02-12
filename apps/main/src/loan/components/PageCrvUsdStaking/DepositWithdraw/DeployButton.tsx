@@ -7,6 +7,7 @@ import useStore from '@/loan/store/useStore'
 
 import Button from '@ui/Button'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 type DeployButtonProps = {
   className?: string
@@ -14,18 +15,17 @@ type DeployButtonProps = {
 
 const DeployButton = ({ className }: DeployButtonProps) => {
   const { signerAddress } = useWallet()
+  const { data: userScrvUsdBalance } = useScrvUsdUserBalances({
+    signerAddress: signerAddress ?? '',
+  })
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
   const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
   const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const userBalances = useStore((state) => state.scrvusd.userBalances)
   const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)
 
-  const userBalance = useMemo(
-    () => userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: '0', scrvUSD: '0' },
-    [userBalances, signerAddress],
-  )
+  const userBalance = useMemo(() => userScrvUsdBalance ?? { crvUSD: '0', scrvUSD: '0' }, [userScrvUsdBalance])
 
   const isInputAmountApproved = getInputAmountApproved()
 

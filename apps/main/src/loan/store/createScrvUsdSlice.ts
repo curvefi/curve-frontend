@@ -1,3 +1,4 @@
+import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { GetState, SetState } from 'zustand'
@@ -9,6 +10,7 @@ import networks from '@/loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
 import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { queryClient } from '@ui-kit/lib/api/query-client'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -16,13 +18,6 @@ type SliceState = {
   estGas: {
     gas: number
     fetchStatus: FetchStatus
-  }
-  userBalances: {
-    [address: string]: {
-      fetchStatus: FetchStatus
-      crvUSD: string
-      scrvUSD: string
-    }
   }
   depositApproval: {
     approval: boolean
@@ -86,7 +81,6 @@ export type ScrvUsdSlice = {
       withdraw: (amount: string) => Promise<void>
       redeem: (amount: string) => Promise<void>
     }
-    fetchUserBalances: () => void
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
@@ -113,7 +107,6 @@ const DEFAULT_STATE: SliceState = {
     gas: 0,
     fetchStatus: '',
   },
-  userBalances: {},
   depositApproval: {
     approval: false,
     allowance: '',
@@ -366,7 +359,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].fetchUserBalances()
+
+          // invalidate user balances query
+          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          queryClient.invalidateQueries({ queryKey: ['scrvUsdUserBalances', { signerAddress: signerAddress ?? '' }] })
+
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully deposited ${amount} crvUSD!`
@@ -421,7 +418,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].fetchUserBalances()
+
+          // invalidate user balances query
+          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          queryClient.invalidateQueries({ queryKey: ['scrvUsdUserBalances', { signerAddress: signerAddress ?? '' }] })
+
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
@@ -478,7 +479,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].fetchUserBalances()
+
+          // invalidate user balances query
+          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          queryClient.invalidateQueries({ queryKey: ['scrvUsdUserBalances', { signerAddress: signerAddress ?? '' }] })
+
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
@@ -538,7 +543,10 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       if (!lendApi || !signerAddress) return
 
-      const userBalance = get()[sliceKey].userBalances[signerAddress] ?? { crvUSD: '0', scrvUSD: '0' }
+      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
+        'useScrvUsdUserBalances',
+        { signerAddress },
+      ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       try {
         let response = ''
@@ -557,30 +565,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('preview', { fetchStatus: 'error', value: '0' })
       }
     },
-    fetchUserBalances: async () => {
-      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-      const lendApi = get().lendApi
-
-      if (!lendApi || !signerAddress) return
-
-      try {
-        get()[sliceKey].setStateByKey('userBalances', { [signerAddress]: { fetchStatus: 'loading' } })
-
-        const response = await lendApi.st_crvUSD.userBalances(signerAddress)
-
-        const balances = {
-          crvUSD: response.crvUSD === '0.0' ? '0' : response.crvUSD,
-          scrvUSD: response.st_crvUSD === '0.0' ? '0' : response.st_crvUSD,
-        }
-
-        get()[sliceKey].setStateByKey('userBalances', { [signerAddress]: { fetchStatus: 'success', ...balances } })
-      } catch (error) {
-        console.error(error)
-        get()[sliceKey].setStateByKey('userBalances', {
-          [signerAddress]: { crvUSD: '', scrvUSD: '', fetchStatus: 'error' },
-        })
-      }
-    },
     setStakingModule: (stakingModule: DepositWithdrawModule) => {
       get()[sliceKey].setStateByKey('stakingModule', stakingModule)
       get()[sliceKey].setStakingModuleChangeReset()
@@ -592,12 +576,17 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('revenueChartTimeOption', timeOption)
     },
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => {
+      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
+        'useScrvUsdUserBalances',
+        { signerAddress: userAddress },
+      ]) ?? { crvUSD: '0', scrvUSD: '0' }
+
       if (stakingModule === 'deposit') {
-        const crvUsdBalance = get()[sliceKey].userBalances[userAddress].crvUSD
+        const crvUsdBalance = userBalance.crvUSD
 
         get()[sliceKey].setStateByKey('inputAmount', crvUsdBalance)
       } else {
-        const scrvUsdBalance = get()[sliceKey].userBalances[userAddress].scrvUSD
+        const scrvUsdBalance = userBalance.scrvUSD
 
         get()[sliceKey].setStateByKey('inputAmount', scrvUsdBalance)
       }
@@ -647,10 +636,13 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       const stakingModule = get()[sliceKey].stakingModule
       const getInputAmountApproved = get()[sliceKey].getInputAmountApproved()
       const gas = get()[sliceKey].estGas.gas
-      const userBalance = get()[sliceKey].userBalances[userAddress]?.crvUSD ?? '0'
+      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
+        'useScrvUsdUserBalances',
+        { signerAddress: userAddress },
+      ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       if (!getInputAmountApproved && stakingModule === 'deposit') {
-        if (new BigNumber(userBalance).isGreaterThan('0')) {
+        if (new BigNumber(userBalance.crvUSD).isGreaterThan('0')) {
           return gas + SCRVUSD_GAS_ESTIMATE.FIRST_DEPOSIT
         }
         return gas + SCRVUSD_GAS_ESTIMATE.FOLLOWING_DEPOSIT

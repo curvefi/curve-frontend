@@ -14,12 +14,12 @@ import { Stack, useMediaQuery } from '@mui/material'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Fade from '@mui/material/Fade'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 const { MaxWidth } = SizesAndSpaces
 
 const CrvUsdStaking = () => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
-  const fetchUserBalances = useStore((state) => state.scrvusd.fetchUserBalances)
   const checkApproval = useStore((state) => state.scrvusd.checkApproval)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
@@ -28,13 +28,14 @@ const CrvUsdStaking = () => {
   const lendApi = useStore((state) => state.lendApi)
   const { signerAddress, connecting, walletName } = useWallet()
   const chainId = useStore((state) => state.curve?.chainId)
-  const userScrvUsd = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']) ?? '0'
 
-  const userScrvUsdBalance = userScrvUsd?.scrvUSD ?? '0'
+  const { data: userScrvUsdBalance, refetch: refetchUserScrvUsdBalance } = useScrvUsdUserBalances({
+    signerAddress: signerAddress ?? '',
+  })
 
   const willConnect = connecting || walletName
 
-  const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
+  const isUserScrvUsdBalanceZero = userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
 
   const showStatsBanner = !willConnect && isUserScrvUsdBalanceZero
 
@@ -44,14 +45,14 @@ const CrvUsdStaking = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!lendApi || !signerAddress) return
-
-      fetchUserBalances()
+      // ensure user balances are up to date on load
+      refetchUserScrvUsdBalance()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
     }
 
     fetchData()
-  }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies])
+  }, [lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return

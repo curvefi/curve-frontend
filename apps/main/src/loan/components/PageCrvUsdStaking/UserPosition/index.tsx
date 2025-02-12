@@ -9,6 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import BigNumber from 'bignumber.js'
 import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
@@ -25,14 +26,15 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
     design: { Layer },
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
+  const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({
+    signerAddress: signerAddress ?? '',
+  })
   const usdRateLoading = useStore((state) => state.usdRates.loading)
-  const userBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? ''])
   const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
   const scrvUsdRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate.value)
 
   const userScrvUsdBalance = Number(userBalance?.scrvUSD)
   const userScrvUsdBalanceInCrvUsd = userScrvUsdBalance / Number(scrvUsdRate)
-  const userBalanceLoading = !isReady(userBalance?.fetchStatus)
   const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
 
   const totalScrvUsdSupply = statisticsData?.supply ?? 0
