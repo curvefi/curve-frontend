@@ -7,7 +7,7 @@ import { weiToEther } from '@ui-kit/utils'
 
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
-const UNLOCK_MULTIPLIER = 1e12 * YEAR
+const UNLOCK_MULTIPLIER = 1e-12 * YEAR
 const VAULT_ABI = [
   {
     stateMutability: 'view',
@@ -47,18 +47,15 @@ async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> 
     return {
       last_updated: new Date(block?.timestamp ?? 0).toISOString(),
       last_updated_block: block?.number ?? 0,
-      proj_apr: supplyNum > 0 ? Number(((unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum).toFixed(4)) : 0,
+      proj_apr: supplyNum > 0 ? (unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum : 0,
       supply: weiToEther(supplyNum),
     }
   }
 
   const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/statistics`)
-  const data = await response.json()
+  const data: PricesStatisticsDataResponse = await response.json()
 
-  return {
-    ...data,
-    proj_apr: Number(data.proj_apr.toFixed(4)),
-  }
+  return data
 }
 
 export const { useQuery: useScrvUsdStatistics } = queryFactory({
