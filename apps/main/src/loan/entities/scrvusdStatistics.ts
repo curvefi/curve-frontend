@@ -47,13 +47,18 @@ async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> 
     return {
       last_updated: new Date(block?.timestamp ?? 0).toISOString(),
       last_updated_block: block?.number ?? 0,
-      proj_apr: supplyNum > 0 ? (unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum : 0,
+      proj_apr: supplyNum > 0 ? Number(((unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum).toFixed(4)) : 0,
       supply: weiToEther(supplyNum),
     }
   }
 
   const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/statistics`)
-  return await response.json()
+  const data = await response.json()
+
+  return {
+    ...data,
+    proj_apr: Number(data.proj_apr.toFixed(4)),
+  }
 }
 
 export const { useQuery: useScrvUsdStatistics } = queryFactory({
