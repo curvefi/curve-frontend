@@ -1,9 +1,9 @@
 import { FieldsOf } from '@ui-kit/lib'
-import type { Address } from '@curvefi/prices-api'
+import type { Address, Chain } from '@curvefi/prices-api'
 
 export type ChainQuery<T = number> = { chainId: T }
 export type UserQuery = { userAddress: Address }
-export type ChainNameQuery = { blockchainId: string }
+export type ChainNameQuery = { blockchainId: Chain }
 
 export type ContractQuery = ChainNameQuery & { contractAddress: Address }
 export type PoolQuery<T = number> = ChainQuery<T> & { poolId: string }

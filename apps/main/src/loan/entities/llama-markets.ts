@@ -38,8 +38,8 @@ export type AssetDetails = {
 
 export type LlamaMarket = {
   chain: Chain
-  address: string
-  controllerAddress: string
+  address: Address
+  controllerAddress: Address
   assets: Assets
   utilizationPercent: number
   liquidityUsd: number
