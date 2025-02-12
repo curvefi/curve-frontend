@@ -3,9 +3,11 @@ import { Contract } from 'ethers'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { weiToEther } from '@ui-kit/utils'
 
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
+const UNLOCK_MULTIPLIER = 1e12 * YEAR
 const VAULT_ABI = [
   {
     stateMutability: 'view',
@@ -45,8 +47,8 @@ async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> 
     return {
       last_updated: new Date(block?.timestamp ?? 0).toISOString(),
       last_updated_block: block?.number ?? 0,
-      proj_apr: supplyNum > 0 ? (unlockAmountNum * 1e-12 * YEAR) / supplyNum : 0,
-      supply: supplyNum / 1e18,
+      proj_apr: supplyNum > 0 ? (unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum : 0,
+      supply: weiToEther(supplyNum),
     }
   }
 

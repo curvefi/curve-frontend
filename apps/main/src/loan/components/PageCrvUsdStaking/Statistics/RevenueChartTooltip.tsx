@@ -1,6 +1,6 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
-import { TOOLTIP_MAX_WIDTH } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
+import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import { TooltipProps } from 'recharts'
 import { t } from '@lingui/macro'
 import { Paper, Stack, Typography } from '@mui/material'
@@ -9,7 +9,6 @@ import { useTheme } from '@mui/material/styles'
 import { toDate } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils/utilsFormat'
 import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
-import { basicMuiTheme } from '@ui-kit/themes/basic-theme'
 
 const { Spacing } = SizesAndSpaces
 
@@ -49,10 +48,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
       sx={{
         backgroundColor: Layer[3].Fill,
         padding: Spacing.md,
-        width: TOOLTIP_MAX_WIDTH,
-        [basicMuiTheme.breakpoints.down('tablet')]: {
-          width: `calc(${TOOLTIP_MAX_WIDTH} * 0.8)`, // 80% of normal tooltip width on small viewports
-        },
+        width: { mobile: TOOLTIP_MAX_WIDTH_MOBILE, tablet: TOOLTIP_MAX_WIDTH },
       }}
       elevation={2}
     >

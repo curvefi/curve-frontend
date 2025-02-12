@@ -6,8 +6,7 @@ import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
 import { toDate } from '@curvefi/prices-api/timestamp'
-import { TOOLTIP_MAX_WIDTH } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
-import { basicMuiTheme } from '@ui-kit/themes/basic-theme'
+import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,38 +20,33 @@ const DataSet = ({ label, value }: { label: string; value: string }) => (
 )
 
 const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload && payload.length) {
-    const { endDate, weeklyRevenue } = payload[0].payload as Epoch
+  if (!active || !payload || !payload.length) return null
 
-    return (
-      <Paper
+  const { endDate, weeklyRevenue } = payload[0].payload as Epoch
+
+  return (
+    <Paper
+      sx={{
+        backgroundColor: (theme) => theme.design.Layer[3].Fill,
+        padding: Spacing.md,
+        width: { mobile: TOOLTIP_MAX_WIDTH_MOBILE, tablet: TOOLTIP_MAX_WIDTH },
+      }}
+      elevation={2}
+    >
+      <Typography variant="bodyMBold">{formatDate(toDate(endDate), 'long')}</Typography>
+      <Stack
+        direction="column"
         sx={{
-          backgroundColor: (theme) => theme.design.Layer[3].Fill,
-          padding: Spacing.md,
-          width: TOOLTIP_MAX_WIDTH,
-          [basicMuiTheme.breakpoints.down('tablet')]: {
-            width: `calc(${TOOLTIP_MAX_WIDTH} * 0.8)`, // 80% of normal tooltip width on small viewports
-          },
+          marginTop: Spacing.sm,
+          padding: Spacing.sm,
+          gap: 1,
+          backgroundColor: (theme) => theme.design.Layer[2].Fill,
         }}
-        elevation={2}
       >
-        <Typography variant="bodyMBold">{formatDate(toDate(endDate), 'long')}</Typography>
-        <Stack
-          direction="column"
-          sx={{
-            marginTop: Spacing.sm,
-            padding: Spacing.sm,
-            gap: 1,
-            backgroundColor: (theme) => theme.design.Layer[2].Fill,
-          }}
-        >
-          <DataSet label={t`Weekly Revenue`} value={`$${formatNumber(weeklyRevenue, { notation: 'compact' })}`} />
-        </Stack>
-      </Paper>
-    )
-  }
-
-  return null
+        <DataSet label={t`Weekly Revenue`} value={`$${formatNumber(weeklyRevenue, { notation: 'compact' })}`} />
+      </Stack>
+    </Paper>
+  )
 }
 
 export default DistributionsChartTooltip

@@ -23,7 +23,7 @@ const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> 
   const barColor = Color.Secondary[500]
 
   return (
-    <Stack direction="column" spacing={0} width="100%" sx={{ position: 'relative' }}>
+    <Stack sx={{ position: 'relative' }}>
       {/* Position relative and width 99% required to make ResponsiveContainer scale properly */}
       <Box width="100%" sx={{ top: 0, left: 0 }}>
         <ResponsiveContainer width="99%" height={height}>

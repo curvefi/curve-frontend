@@ -9,7 +9,7 @@ import { ETHEREUM_CHAIN_ID } from '@/loan/constants'
 const { Spacing } = SizesAndSpaces
 
 const AdvancedDetails = () => (
-  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, boxShadow: 'none' }} elevation={0}>
+  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, boxShadow: 'none' }}>
     <CardHeader
       size="small"
       title={t`Advanced Details`}

@@ -37,10 +37,6 @@ const CrvUsdStaking = () => {
   const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
 
   const showStatsBanner = !willConnect && isUserScrvUsdBalanceZero
-  // show when wallet won't connect, if the userbalance fetch has completed and the balance is zero
-
-  console.log(userScrvUsd)
-  console.log(isUserScrvUsdBalanceZero)
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
