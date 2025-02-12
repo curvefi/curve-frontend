@@ -13,6 +13,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Stack, useMediaQuery } from '@mui/material'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import Fade from '@mui/material/Fade'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -25,11 +26,22 @@ const CrvUsdStaking = () => {
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const lendApi = useStore((state) => state.lendApi)
-  const { signerAddress } = useWallet()
+  const { signerAddress, connecting, walletName } = useWallet()
   const chainId = useStore((state) => state.curve?.chainId)
-  const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
+  const userScrvUsd = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']) ?? '0'
+
+  const userScrvUsdBalance = userScrvUsd?.scrvUSD ?? '0'
+
+  const willConnect = connecting || walletName
 
   const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
+
+  const showStatsBanner = !willConnect && isUserScrvUsdBalanceZero
+  // show when wallet won't connect, if the userbalance fetch has completed and the balance is zero
+
+  console.log(userScrvUsd)
+  console.log(isUserScrvUsdBalanceZero)
+
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
 
@@ -81,7 +93,13 @@ const CrvUsdStaking = () => {
           maxWidth: `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
         }}
       >
-        {isUserScrvUsdBalanceZero && <StatsBanner />}
+        {showStatsBanner && (
+          <Fade in={showStatsBanner}>
+            <div>
+              <StatsBanner />
+            </div>
+          </Fade>
+        )}
         <Stack
           justifyContent="center"
           direction={isChartExpanded ? 'column' : 'row'}
