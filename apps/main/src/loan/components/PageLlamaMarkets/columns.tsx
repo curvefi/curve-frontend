@@ -7,10 +7,11 @@ import {
   CompactUsdCell,
   LineGraphCell,
   MarketTitleCell,
+  PercentageCell,
   RateCell,
-  UtilizationCell,
 } from '@/loan/components/PageLlamaMarkets/cells'
 import { VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { PriceCell } from '@/loan/components/PageLlamaMarkets/cells/PriceCell'
 
 const { ColumnWidth } = SizesAndSpaces
 
@@ -37,9 +38,27 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: MarketTitleCell,
     size: ColumnWidth.lg,
   }),
-  columnHelper.accessor('rates.borrow', {
-    header: t`7D Avg Borrow Rate`,
-    cell: (c) => <RateCell market={c.row.original} type="borrow" />,
+  columnHelper.accessor('userHealth', {
+    header: t`Health`,
+    cell: PercentageCell,
+    meta: { type: 'numeric' },
+    size: ColumnWidth.sm,
+  }),
+  columnHelper.accessor('userBorrowed', {
+    header: t`Borrow Amount`,
+    cell: PriceCell,
+    meta: { type: 'numeric' },
+    size: ColumnWidth.sm,
+  }),
+  columnHelper.accessor('userEarnings', {
+    header: t`My Earnings`,
+    cell: PriceCell,
+    meta: { type: 'numeric' },
+    size: ColumnWidth.sm,
+  }),
+  columnHelper.accessor('userDeposited', {
+    header: t`Supplied Amount`,
+    cell: PriceCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
@@ -67,7 +86,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,
-    cell: UtilizationCell,
+    cell: PercentageCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),

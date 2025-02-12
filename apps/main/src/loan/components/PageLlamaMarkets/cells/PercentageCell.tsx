@@ -6,7 +6,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const UtilizationCell = ({ getValue }: CellContext<LlamaMarket, number>) => {
+export const PercentageCell = ({ getValue }: CellContext<LlamaMarket, number>) => {
   const value = getValue()
   if (value == null) {
     return '-'
