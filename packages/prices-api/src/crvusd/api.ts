@@ -1,5 +1,5 @@
 import { getHost, type Options, type Chain } from '..'
-import { fetchJson as fetch, paramsToString } from '../fetch'
+import { fetchJson as fetch, addQueryString } from '../fetch'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
@@ -13,7 +13,7 @@ export async function getMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetMarketsResponse>(`${host}/v1/crvusd/markets/${chain}?${paramsToString(params)}`)
+  const resp = await fetch<Responses.GetMarketsResponse>(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
   return resp.data.map(Parsers.parseMarket)
 }
 
@@ -28,7 +28,7 @@ export async function getSnapshots(
 ) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetSnapshotsResponse>(
-    `${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots?${paramsToString(params)}`,
+    `${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots${addQueryString(params)}`,
   )
   return resp.data.map(Parsers.parseSnapshot)
 }

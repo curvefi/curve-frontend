@@ -2,12 +2,14 @@
  * Converts a Record of string key-value pairs to a URL query string.
  * Ignores keys with null or undefined values, automatically converting other values to strings.
  */
-export const paramsToString = (params: Record<string, string | number | boolean | null | undefined>) =>
-  new URLSearchParams(
+export const addQueryString = (params: Record<string, string | number | boolean | null | undefined>) => {
+  const query = new URLSearchParams(
     Object.entries(params)
       .filter(([_, value]) => value != null)
       .map(([key, value]) => [key, value!.toString()]),
   ).toString()
+  return query && `?${query}`
+}
 
 export class FetchError extends Error {
   constructor(

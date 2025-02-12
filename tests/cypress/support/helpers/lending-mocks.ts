@@ -61,19 +61,14 @@ export const mockLendingVaults = () =>
   cy.intercept('https://prices.curve.fi/v1/lending/markets/*', (req) => {
     const chain = new URL(req.url).pathname.split('/').pop()!
     const count = oneInt(2, 20)
-    const body = {
-      chain,
-      count: count + 1,
-      data: [
-        ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
-        // add a pool with a fixed vault address to test campaign rewards
-        ...(chain == 'ethereum'
-          ? [{ ...oneLendingPool(chain, oneFloat()), vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b' }]
-          : []),
-      ],
-    }
-    console.log({ chain, url: req.url, body })
-    return req.reply(body)
+    const data = [
+      ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
+      // add a pool with a fixed vault address to test campaign rewards
+      ...(chain == 'ethereum'
+        ? [{ ...oneLendingPool(chain, oneFloat()), vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b' }]
+        : []),
+    ]
+    req.reply({ chain, count: data.length, data })
   })
 
 export const mockLendingSnapshots = () =>

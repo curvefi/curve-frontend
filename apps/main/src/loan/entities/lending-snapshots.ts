@@ -15,7 +15,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
     const chain = blockchainId as Chain
     if (!chains.includes(chain)) return [] // backend gives 404 for optimism
 
-    // todo: pass &sort_by=DATE_ASC&start=${start} and remove reverse - backend is timing out
+    // todo: pass {sort_by: 'DATE_ASC, start: now-week} and remove reverse (backend is timing out)
     const response = await getSnapshots(chain, contractAddress, { agg: 'none' })
     return response.reverse()
   },

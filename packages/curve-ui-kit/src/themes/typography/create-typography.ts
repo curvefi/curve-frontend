@@ -45,26 +45,28 @@ const responsiveValues = (
   },
 })
 
-const variant = (args: TypographyVariantDefinition, name: string) => {
-  const { fontFamily, fontSize, fontWeight, lineHeight = fontSize, letterSpacing = '0%', textCase } = args
-  const res = {
-    fontFamily,
-    fontWeight: FontWeight[fontWeight ?? 'Medium'],
-    letterSpacing,
-    // Undo the letter spacing to the right of the last letter
-    ...(letterSpacing !== '0%' && {
-      marginRight: `calc(${letterSpacing} * -1)`,
-    }),
-    textTransform: textCase,
-    ...(!(fontSize in FontSize) && { fontSize }),
-    ...(!(lineHeight in LineHeight) && { lineHeight }),
-    ...responsiveValues(fontSize, lineHeight, 'mobile'),
-    ...responsiveValues(fontSize, lineHeight, 'tablet'),
-    ...responsiveValues(fontSize, lineHeight, 'desktop'),
-  }
-  if (name == 'headingSBold') console.log(args, res)
-  return res
-}
+const variant = ({
+  fontFamily,
+  fontSize,
+  fontWeight,
+  lineHeight = fontSize,
+  letterSpacing = '0%',
+  textCase,
+}: TypographyVariantDefinition) => ({
+  fontFamily,
+  fontWeight: FontWeight[fontWeight ?? 'Medium'],
+  letterSpacing,
+  // Undo the letter spacing to the right of the last letter
+  ...(letterSpacing !== '0%' && {
+    marginRight: `calc(${letterSpacing} * -1)`,
+  }),
+  textTransform: textCase,
+  ...(!(fontSize in FontSize) && { fontSize }),
+  ...(!(lineHeight in LineHeight) && { lineHeight }),
+  ...responsiveValues(fontSize, lineHeight, 'mobile'),
+  ...responsiveValues(fontSize, lineHeight, 'tablet'),
+  ...responsiveValues(fontSize, lineHeight, 'desktop'),
+})
 
 // prettier-ignore
 export const TYPOGRAPHY_VARIANTS = {
@@ -113,7 +115,7 @@ export const createTypography = ({ Text }: DesignSystem) =>
     ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
     ...Object.fromEntries(
       Object.entries(TYPOGRAPHY_VARIANTS).map(([key, def]) => {
-        const { fontFamily, ...value } = variant(def, key)
+        const { fontFamily, ...value } = variant(def)
         return [key, { ...value, fontFamily: Fonts[Text.FontFamily[fontFamily]] }]
       }),
     ),

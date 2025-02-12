@@ -1,3 +1,7 @@
+import { toDate } from '../timestamp'
+import type * as Responses from './responses'
+import type * as Models from './models'
+
 export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
   name: x.name,
   controller: x.controller,
@@ -39,10 +43,6 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   },
   leverage: x.leverage,
 })
-import { toDate } from '../timestamp'
-import type * as Responses from './responses'
-
-import type * as Models from './models'
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),

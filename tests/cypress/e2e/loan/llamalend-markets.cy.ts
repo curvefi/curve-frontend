@@ -30,6 +30,10 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should have sticky headers', () => {
+    if (breakpoint === 'mobile') {
+      cy.viewport(400, 400) // fixed mobile viewport, filters wrap depending on the width
+    }
+
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')

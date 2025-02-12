@@ -41,8 +41,8 @@ export const useWallet: UseConnectWallet = () => {
   const [{ wallet, connecting }, connect, disconnect] = useOnboardWallet()
   const [storedWalletName, setWalletName] = useLocalStorage<string | null>('walletName')
   // todo: remove this after a while. It tries to read the walletName from the old cache
-  const oldWalletName = getFromLocalStorage<{ walletName: string }>('curve-app-cache')?.walletName
-  const walletName = storedWalletName || oldWalletName || null
+  const walletName =
+    storedWalletName || getFromLocalStorage<{ walletName: string }>('curve-app-cache')?.walletName || null
 
   useEffect(() => {
     state.wallet = wallet
