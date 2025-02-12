@@ -16,12 +16,12 @@ import { PoolRewards } from '@/loan/entities/campaigns'
 const { Spacing } = SizesAndSpaces
 
 const poolTypeNames: Record<LlamaMarketType, () => string> = {
-  [LlamaMarketType.Pool]: () => t`Lend`,
+  [LlamaMarketType.Lend]: () => t`Lend`,
   [LlamaMarketType.Mint]: () => t`Mint`,
 }
 
 const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
-  [LlamaMarketType.Pool]: () => t`Lend markets allow you to earn interest on your assets.`,
+  [LlamaMarketType.Lend]: () => t`Lend markets allow you to earn interest on your assets.`,
   [LlamaMarketType.Mint]: () => t`Mint markets allow you to borrow assets against your collateral.`,
 }
 
@@ -41,7 +41,12 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
       <Tooltip title={poolTypeTooltips[type]()}>
-        <Chip size="small" color="default" label={poolTypeNames[type]()} />
+        <Chip
+          size="small"
+          color="default"
+          label={poolTypeNames[type]()}
+          data-testid={`pool-type-${type.toLowerCase()}`}
+        />
       </Tooltip>
 
       {leverage > 0 && (
@@ -51,7 +56,7 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
       )}
 
       {rewards && (
-        <Tooltip title={getRewardsDescription(rewards)} placement="top">
+        <Tooltip title={getRewardsDescription(rewards)} placement="top" data-testid={`rewards-${rewards.action}`}>
           <PointsIcon htmlColor={iconsColor} />
         </Tooltip>
       )}

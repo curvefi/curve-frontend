@@ -12,7 +12,7 @@ export const { getQueryOptions: getLendingVaultOptions, invalidate: invalidateLe
   queryFn: async (): Promise<LendingVault[]> => {
     const chains = await queryClient.fetchQuery(getSupportedLendingChainOptions({}))
     const markets = await Promise.all(
-      chains.map(async (chain) => (await getMarkets(chain)).map((market) => ({ ...market, chain }))),
+      chains.map(async (chain) => (await getMarkets(chain, {})).map((market) => ({ ...market, chain }))),
     )
     return markets.flat()
   },

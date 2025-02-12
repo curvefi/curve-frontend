@@ -18,10 +18,7 @@ import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
 import { t } from '@ui-kit/lib/i18n'
 
-const {
-  Spacing,
-  Grid: { Column_Spacing },
-} = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 /**
  * A button for controlling the DataTable.
@@ -81,8 +78,8 @@ export const TableFilters = ({
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Stack paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
-      <Grid container spacing={Column_Spacing}>
+    <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
+      <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
@@ -105,15 +102,19 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
-        <Grid size={{ mobile: 12 }}>
-          <Stack direction="row" justifyContent="space-between">
-            {children}
-            <Button color="ghost" size="small" onClick={onResetFilters}>
-              {t`Reset Filters`}
-            </Button>
-          </Stack>
-        </Grid>
       </Grid>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        paddingInline={Spacing.md}
+        flexWrap="wrap"
+      >
+        {children}
+        <Button color="ghost" size="small" onClick={onResetFilters} data-testid="reset-filter">
+          {t`Reset Filters`}
+        </Button>
+      </Stack>
       <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (

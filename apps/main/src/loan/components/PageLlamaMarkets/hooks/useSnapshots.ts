@@ -17,7 +17,7 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   { address, chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: GraphType,
 ): UseSnapshotsResult<T> {
-  const isPool = marketType == LlamaMarketType.Pool
+  const isPool = marketType == LlamaMarketType.Lend
   const showMintGraph = !isPool && type === 'borrow'
   const contractAddress = isPool ? controllerAddress : address
   const params = { blockchainId: chain, contractAddress }

@@ -36,7 +36,7 @@ export const LendingMarketsTable = ({
     getFilteredRowModel: getFilteredRowModel(),
     state: { sorting, columnVisibility, columnFilters },
     onSortingChange,
-    maxMultiSortColCount: 3, // allow 3 columns to be sorted at once
+    maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
 
   return (

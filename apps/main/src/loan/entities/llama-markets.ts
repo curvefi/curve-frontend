@@ -10,7 +10,7 @@ import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 
 export enum LlamaMarketType {
   Mint = 'Mint',
-  Pool = 'Pool', // todo: rename to Lend
+  Lend = 'Lend',
 }
 
 export type Assets = {
@@ -88,7 +88,7 @@ const convertLendingVault = (
   utilizationPercent: (100 * totalDebtUsd) / totalAssetsUsd,
   liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
-  type: LlamaMarketType.Pool,
+  type: LlamaMarketType.Lend,
   url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
   isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
@@ -130,7 +130,7 @@ const convertMintMarket = (
       chain,
     },
   },
-  utilizationPercent: (100 * borrowed) / debtCeiling,
+  utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered
   // todo: do we want to see collateral or borrowable?
   liquidityUsd: collateralAmountUsd,
   rates: { borrow: rate, lend: null },

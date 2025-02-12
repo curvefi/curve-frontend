@@ -1,7 +1,3 @@
-import { toDate } from '../timestamp'
-import type * as Responses from './responses'
-import type * as Models from './models'
-
 export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
   name: x.name,
   controller: x.controller,
@@ -9,24 +5,30 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   llamma: x.llamma,
   policy: x.policy,
   oracle: x.oracle,
-  rate: parseFloat(x.rate),
-  apyBorrow: parseFloat(x.borrow_apy),
-  apyLend: parseFloat(x.lend_apy),
+  oraclePools: x.oracle_pools,
+  rate: x.rate,
+  apyBorrow: x.borrow_apy,
+  apyLend: x.lend_apy,
   nLoans: x.n_loans,
-  priceOracle: parseFloat(x.price_oracle),
-  ammPrice: parseFloat(x.amm_price),
-  totalDebt: parseFloat(x.total_debt),
-  totalAssets: parseFloat(x.total_assets),
-  totalDebtUsd: parseFloat(x.total_debt_usd),
-  totalAssetsUsd: parseFloat(x.total_assets_usd),
-  minted: parseFloat(x.minted),
-  redeemed: parseFloat(x.redeemed),
-  mintedUsd: parseFloat(x.minted_usd),
-  redeemedUsd: parseFloat(x.redeemed_usd),
-  collateralBalance: parseFloat(x.collateral_balance),
-  borrowedBalance: parseFloat(x.borrowed_balance),
-  collateralBalanceUsd: parseFloat(x.collateral_balance_usd),
-  borrowedBalanceUsd: parseFloat(x.borrowed_balance_usd),
+  priceOracle: x.price_oracle,
+  ammPrice: x.amm_price,
+  basePrice: x.base_price,
+  totalDebt: x.total_debt,
+  totalAssets: x.total_assets,
+  totalDebtUsd: x.total_debt_usd,
+  totalAssetsUsd: x.total_assets_usd,
+  minted: x.minted,
+  redeemed: x.redeemed,
+  mintedUsd: x.minted_usd,
+  redeemedUsd: x.redeemed_usd,
+  loanDiscount: x.loan_discount,
+  liquidationDiscount: x.liquidation_discount,
+  minBand: x.min_band,
+  maxBand: x.max_band,
+  collateralBalance: x.collateral_balance,
+  borrowedBalance: x.borrowed_balance,
+  collateralBalanceUsd: x.collateral_balance_usd,
+  borrowedBalanceUsd: x.borrowed_balance_usd,
   collateralToken: {
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
@@ -37,6 +39,10 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   },
   leverage: x.leverage,
 })
+import { toDate } from '../timestamp'
+import type * as Responses from './responses'
+
+import type * as Models from './models'
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),

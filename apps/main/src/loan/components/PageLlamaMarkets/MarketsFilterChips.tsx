@@ -48,11 +48,11 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
 
   const marketTypes = {
     [LlamaMarketType.Mint]: !filter || filter.includes(LlamaMarketType.Mint),
-    [LlamaMarketType.Pool]: !filter || filter.includes(LlamaMarketType.Pool),
+    [LlamaMarketType.Lend]: !filter || filter.includes(LlamaMarketType.Lend),
   }
   const toggles = {
     [LlamaMarketType.Mint]: useCallback(() => toggleMarketType(LlamaMarketType.Mint), [toggleMarketType]),
-    [LlamaMarketType.Pool]: useCallback(() => toggleMarketType(LlamaMarketType.Pool), [toggleMarketType]),
+    [LlamaMarketType.Lend]: useCallback(() => toggleMarketType(LlamaMarketType.Lend), [toggleMarketType]),
   }
   return [marketTypes, toggles] as const
 }
@@ -63,14 +63,36 @@ export const MarketsFilterChips = (props: ColumnFilterProps) => {
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
 
   return (
-    <Stack direction="row" gap={Spacing.lg}>
+    <Stack direction="row" gap={Spacing.lg} flexWrap="wrap">
       <Stack direction="row" gap="4px">
-        <SelectableChip label={t`Favorites`} selected={favorites} toggle={toggleFavorites} icon={<HeartIcon />} />
-        <SelectableChip label={t`Rewards`} selected={rewards} toggle={toggleRewards} icon={<PointsIcon />} />
+        <SelectableChip
+          label={t`Favorites`}
+          selected={favorites}
+          toggle={toggleFavorites}
+          icon={<HeartIcon />}
+          data-testid="chip-favorites"
+        />
+        <SelectableChip
+          label={t`Rewards`}
+          selected={rewards}
+          toggle={toggleRewards}
+          icon={<PointsIcon />}
+          data-testid="chip-rewards"
+        />
       </Stack>
       <Stack direction="row" gap="4px">
-        <SelectableChip label={t`Mint Markets`} selected={marketTypes.Mint} toggle={toggleMarkets.Mint} />
-        <SelectableChip label={t`Lend Markets`} selected={marketTypes.Pool} toggle={toggleMarkets.Pool} />
+        <SelectableChip
+          label={t`Mint Markets`}
+          selected={marketTypes.Mint}
+          toggle={toggleMarkets.Mint}
+          data-testid="chip-mint"
+        />
+        <SelectableChip
+          label={t`Lend Markets`}
+          selected={marketTypes.Lend}
+          toggle={toggleMarkets.Lend}
+          data-testid="chip-lend"
+        />
       </Stack>
     </Stack>
   )

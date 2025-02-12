@@ -10,22 +10,23 @@ export type PoolRewards = {
   description: string | null
 }
 
+const REWARDS: Record<string, PoolRewards> = Object.fromEntries(
+  campaigns.flatMap(({ pools }: CampaignRewardsItem) =>
+    pools.map(({ address, multiplier, tags, action, description }) => [
+      address.toLowerCase(),
+      {
+        multiplier: parseFloat(multiplier),
+        tags,
+        action,
+        description: description === 'null' ? null : description,
+      },
+    ]),
+  ),
+)
+
 export const { getQueryOptions: getCampaignsOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v1'] as const,
-  queryFn: async (): Promise<Record<string, PoolRewards>> =>
-    Object.fromEntries(
-      campaigns.flatMap(({ pools }: CampaignRewardsItem) =>
-        pools.map(({ address, multiplier, tags, action, description }) => [
-          address.toLowerCase(),
-          {
-            multiplier: parseFloat(multiplier),
-            tags,
-            action,
-            description: description === 'null' ? null : description,
-          },
-        ]),
-      ),
-    ),
+  queryFn: async () => REWARDS,
   staleTime: '5m',
   validationSuite: EmptyValidationSuite,
 })

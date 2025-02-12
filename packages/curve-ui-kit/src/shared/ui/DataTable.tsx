@@ -160,7 +160,7 @@ export const DataTable = <T extends unknown>({
     </TableHead>
     <TableBody>
       {table.getRowModel().rows.length === 0 && (
-        <TableRow>
+        <TableRow data-testid="table-empty-row">
           <Typography
             variant="tableCellL"
             colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}

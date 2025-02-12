@@ -5,18 +5,20 @@ import type { Address } from '..'
  * You can have a crvUSD borrow (partially) being collateralized by crvUSD.
  */
 export type Market = {
-  name: Address
+  name: string
   controller: Address
   vault: Address
   llamma: Address
   policy: Address
   oracle: Address
+  oraclePools: Address[]
   rate: number
   apyBorrow: number
   apyLend: number
   nLoans: number
   priceOracle: number
   ammPrice: number
+  basePrice: number
   totalDebt: number // Borrowed
   totalAssets: number // Supplied
   totalDebtUsd: number
@@ -25,6 +27,10 @@ export type Market = {
   mintedUsd: number
   redeemed: number
   redeemedUsd: number
+  loanDiscount: number
+  liquidationDiscount: number
+  minBand: number
+  maxBand: number
   collateralBalance: number // Collateral (like CRV)
   collateralBalanceUsd: number
   borrowedBalance: number // Collateral (like crvUSD)

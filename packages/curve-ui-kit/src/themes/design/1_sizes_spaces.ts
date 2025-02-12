@@ -211,7 +211,7 @@ const MappedLineHeight = {
   lg: {
     mobile: '1.5rem', // 24px
     tablet: '1.5rem', // 24px
-    desktop: '1.75rem', // 28px
+    desktop: '2rem', // 32px
   },
   xl: {
     mobile: '2rem', // 32px
