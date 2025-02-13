@@ -1,23 +1,35 @@
 import { getHost, type Options, type Chain } from '..'
-import { fetchJson as fetch } from '../fetch'
+import { fetchJson as fetch, addQueryString } from '../fetch'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
-export async function getMarkets(chain: Chain, page: number, options?: Options) {
+export async function getMarkets(
+  chain: Chain,
+  params: {
+    page?: number
+    per_page?: number
+    fetch_on_chain?: boolean
+  } = { fetch_on_chain: true },
+  options?: Options,
+) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetMarketsResponse>(
-    `${host}/v1/crvusd/markets/${chain}?fetch_on_chain=true&page=${page}&per_page=10`,
-  )
-
+  const resp = await fetch<Responses.GetMarketsResponse>(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
   return resp.data.map(Parsers.parseMarket)
 }
 
-export async function getSnapshots(chain: Chain, marketAddr: string, options?: Options) {
+export async function getSnapshots(
+  chain: Chain,
+  marketAddr: string,
+  params: {
+    agg?: string
+    fetch_on_chain?: boolean
+  } = { fetch_on_chain: true, agg: 'day' },
+  options?: Options,
+) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetSnapshotsResponse>(
-    `${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots?fetch_on_chain=true&agg=day`,
+    `${host}/v1/crvusd/markets/${chain}/${marketAddr}/snapshots${addQueryString(params)}`,
   )
-
   return resp.data.map(Parsers.parseSnapshot)
 }
 

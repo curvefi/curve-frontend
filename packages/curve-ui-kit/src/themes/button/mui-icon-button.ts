@@ -21,6 +21,10 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Comp
       '&:hover': { color: Button.Ghost.Hover.Label, backgroundColor: 'transparent', filter: 'saturate(2)' },
       fontFamily: Fonts[Text.FontFamily.Button],
     },
+    sizeExtraSmall: {
+      height: ButtonSize.xs,
+      minWidth: ButtonSize.xs,
+    },
     sizeSmall: {
       height: ButtonSize.sm,
       minWidth: ButtonSize.sm,

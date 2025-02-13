@@ -18,13 +18,13 @@ const { Spacing } = SizesAndSpaces
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
 const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; field: 'collateral' | 'borrowed' }) => {
-  const { blockchainId, address } = useMemo(
+  const { chain, address } = useMemo(
     () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
     [data, field, symbol],
   )
   return (
     <>
-      <TokenIcon imageBaseUrl={getImageBaseUrl(blockchainId)} token={symbol} address={address} size="mui-md" />
+      <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} token={symbol} address={address} size="mui-md" />
       <Typography component="span" variant="bodyMBold">
         {symbol}
       </Typography>
@@ -45,12 +45,12 @@ export const LendingMarketsFilters = ({
   <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="blockchainId"
-        renderItem={(blockchainId) => (
+        field="chain"
+        renderItem={(chain) => (
           <>
-            <ChainIcon blockchainId={blockchainId} size="md" />
+            <ChainIcon blockchainId={chain} size="md" />
             <Typography component="span" variant="bodyMBold">
-              {capitalize(blockchainId)}
+              {capitalize(chain)}
             </Typography>
           </>
         )}
@@ -79,7 +79,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
       <MinimumSliderFilter
-        field="totalSupplied.usdTotal"
+        field="liquidityUsd"
         title={t`Min Liquidity`}
         format={(value) => formatNumber(value, { currency: 'USD' })}
         {...props}
