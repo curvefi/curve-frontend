@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormControlLabel } from '@mui/material'
 
 export type VisibilityOption = {
-  id: string
+  columns: string[]
   active: boolean
   label: string
   visible: boolean
@@ -34,7 +34,7 @@ export const TableVisibilitySettingsPopover = ({
   open: boolean
   onClose: () => void
   visibilityGroups: VisibilityGroup[]
-  toggleVisibility: (id: string) => void
+  toggleVisibility: (columns: string[]) => void
   anchorEl: HTMLButtonElement
 }) => (
   <Popover
@@ -58,15 +58,15 @@ export const TableVisibilitySettingsPopover = ({
             {label}
           </Typography>
           {options.map(
-            ({ id, active, label, visible }) =>
+            ({ columns, active, label, visible }) =>
               visible && (
                 <FormControlLabel
-                  key={id}
+                  key={columns.join(',')}
                   control={
                     <Switch
-                      data-testid={`visibility-toggle-${cleanColumnId(id)}`}
+                      data-testid={`visibility-toggle-${columns.join(',')}`}
                       checked={active}
-                      onChange={() => toggleVisibility(id)}
+                      onChange={() => toggleVisibility(columns)}
                       size="small"
                     />
                   }
@@ -88,7 +88,10 @@ const flatten = (visibilitySettings: VisibilityGroup[]): Record<string, boolean>
     (acc, group) => ({
       ...acc,
       ...group.options.reduce(
-        (acc, { active, visible, id }) => ({ ...acc, [cleanColumnId(id)]: active && visible }),
+        (acc, { active, visible, columns }) => ({
+          ...acc,
+          ...columns.reduce((acc, id) => ({ ...acc, [cleanColumnId(id)]: active && visible }), {}),
+        }),
         {},
       ),
     }),
@@ -108,11 +111,13 @@ export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
 
   /** toggle visibility of a column by its id */
   const toggleColumnVisibility = useCallback(
-    (id: string): void =>
+    (columns: string[]): void =>
       setVisibilitySettings((prev) =>
         prev.map((group) => ({
           ...group,
-          options: group.options.map((option) => (option.id === id ? { ...option, active: !option.active } : option)),
+          options: group.options.map((option) =>
+            option.columns === columns ? { ...option, active: !option.active } : option,
+          ),
         })),
       ),
     [],

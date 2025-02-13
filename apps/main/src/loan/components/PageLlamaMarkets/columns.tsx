@@ -49,7 +49,7 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor('userBorrowed', {
     header: t`Borrow Amount`,
     cell: PriceCell,
-    meta: { type: 'numeric' },
+    meta: { type: 'numeric', borderRight: true },
     size: ColumnWidth.sm,
   }),
   columnHelper.accessor('userEarnings', {
@@ -61,7 +61,7 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor('userDeposited', {
     header: t`Supplied Amount`,
     cell: PriceCell,
-    meta: { type: 'numeric' },
+    meta: { type: 'numeric', borderRight: true },
     size: ColumnWidth.sm,
     filterFn: boolFilterFn,
   }),
@@ -108,7 +108,7 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden('type', multiFilterFn),
 ] satisfies ColumnDef<LlamaMarket, any>[]
 
-export const DEFAULT_SORT = [{ id: 'liquidityUsd', desc: true }]
+export const DEFAULT_SORT = [{ columns: ['liquidityUsd'], desc: true }]
 
 export const useDefaultMarketColumnsVisibility: (address?: Address) => VisibilityGroup[] = (address) =>
   useMemo(
@@ -116,24 +116,22 @@ export const useDefaultMarketColumnsVisibility: (address?: Address) => Visibilit
       {
         label: t`Markets`,
         options: [
-          { label: t`Available Liquidity`, id: 'liquidityUsd', active: true, visible: true },
-          { label: t`Utilization`, id: 'utilizationPercent', active: true, visible: true },
+          { label: t`Available Liquidity`, columns: ['liquidityUsd'], active: true, visible: true },
+          { label: t`Utilization`, columns: ['utilizationPercent'], active: true, visible: true },
         ],
       },
       {
         label: t`Borrow`,
         options: [
-          { label: t`Chart`, id: borrowChartId, active: true, visible: true },
-          { label: t`Health`, id: 'userHealth', active: true, visible: !!address },
-          { label: t`Borrow Amount`, id: 'userBorrowed', active: true, visible: !!address },
+          { label: t`Chart`, columns: [borrowChartId], active: true, visible: true },
+          { label: t`Borrow Details`, columns: ['userHealth', 'userBorrowed'], active: true, visible: !!address },
         ],
       },
       {
         label: t`Lend`,
         options: [
-          { label: t`Chart`, id: lendChartId, active: true, visible: true },
-          { label: t`My earnings`, id: 'userEarnings', active: true, visible: !!address },
-          { label: t`Supplied Amount`, id: 'userDeposited', active: true, visible: !!address },
+          { label: t`Chart`, columns: [lendChartId], active: true, visible: true },
+          { label: t`Lend Details`, columns: ['userEarnings', 'userDeposited'], active: true, visible: !!address },
         ],
       },
     ],

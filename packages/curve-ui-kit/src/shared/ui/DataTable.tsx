@@ -21,10 +21,11 @@ const getAlignment = <T extends unknown>({ columnDef }: Column<T>) =>
 
 const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
   const column = cell.column
+  const { hidden, variant, borderRight } = column.columnDef.meta ?? {}
   return (
-    !column.columnDef.meta?.hidden && (
+    !hidden && (
       <Typography
-        variant={column.columnDef.meta?.variant ?? 'tableCellMBold'}
+        variant={variant ?? 'tableCellMBold'}
         color="text.primary"
         component="td"
         sx={{
@@ -32,6 +33,7 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
           paddingInline: Spacing.sm,
           paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
           ...getExtraColumnPadding(column),
+          ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         data-testid={`data-table-cell-${column.id}`}
       >
@@ -49,7 +51,7 @@ const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight
       sx={(t) => ({
         marginBlock: 0,
         height: Sizing[rowHeight],
-        borderBottom: `1px solid${t.design.Layer[1].Outline}`,
+        borderBottom: `1px solid ${t.design.Layer[1].Outline}`,
         [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
         [`&:hover .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
       })}
