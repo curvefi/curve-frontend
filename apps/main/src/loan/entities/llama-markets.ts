@@ -113,7 +113,7 @@ const convertLendingVault = (
   userEarnings: user ? user.collateral - user.totalDeposited : null, // todo: check if correct
   userDeposited: user?.totalDeposited ?? null,
   userBorrowed: user?.borrowed ?? null,
-  userHealth: user?.health ?? null,
+  userHealth: user?.healthFull ?? null,
 })
 
 const convertMintMarket = (
@@ -165,7 +165,7 @@ const convertMintMarket = (
   userEarnings: user ? user.collateral - user.totalDeposited : null, // todo: check if correct
   userDeposited: user?.totalDeposited ?? null,
   userBorrowed: user?.debt ?? null,
-  userHealth: user?.health ?? null,
+  userHealth: user?.healthFull ?? null,
 })
 
 export const useLlamaMarkets = (userAddress?: Address) =>
@@ -195,7 +195,7 @@ export const useLlamaMarkets = (userAddress?: Address) =>
               ),
             ),
           ...(mintMarkets.data ?? []).map((market) =>
-            convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMintMarkets.data?.[market.llamma]),
+            convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMintMarkets.data?.[market.address]),
           ),
         ],
       }

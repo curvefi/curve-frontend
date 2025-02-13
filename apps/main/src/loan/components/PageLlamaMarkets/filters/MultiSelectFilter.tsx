@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react'
-import { get, identity, sortBy, sortedUniq } from 'lodash'
+import { get, sortBy, sortedUniq } from 'lodash'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
@@ -15,7 +15,7 @@ const { Spacing } = SizesAndSpaces
  */
 const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
   const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, identity))
+  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
 }
 
 /**

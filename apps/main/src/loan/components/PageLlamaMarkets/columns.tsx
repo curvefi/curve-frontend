@@ -63,6 +63,7 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: PriceCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
+    filterFn: boolFilterFn,
   }),
   columnHelper.accessor('rates.borrow', {
     id: borrowChartId,

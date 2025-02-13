@@ -1,4 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
+import PersonIcon from '@mui/icons-material/Person'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
@@ -7,6 +8,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useCallback } from 'react'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const { Spacing } = SizesAndSpaces
 
@@ -58,13 +60,38 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
 }
 
 export const MarketsFilterChips = (props: ColumnFilterProps) => {
+  const [myMarkets, toggleMyMarkets] = useToggleFilter('userDeposited', props)
   const [favorites, toggleFavorites] = useToggleFilter('isFavorite', props)
   const [rewards, toggleRewards] = useToggleFilter('rewards', props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
+  const { signerAddress } = useWallet()
 
   return (
     <Stack direction="row" gap={Spacing.lg} flexWrap="wrap">
       <Stack direction="row" gap="4px">
+        <SelectableChip
+          label={t`Mint Markets`}
+          selected={marketTypes.Mint}
+          toggle={toggleMarkets.Mint}
+          data-testid="chip-mint"
+        />
+        <SelectableChip
+          label={t`Lend Markets`}
+          selected={marketTypes.Lend}
+          toggle={toggleMarkets.Lend}
+          data-testid="chip-lend"
+        />
+      </Stack>
+      <Stack direction="row" gap="4px">
+        {signerAddress && (
+          <SelectableChip
+            label={t`My Markets`}
+            selected={myMarkets}
+            toggle={toggleMyMarkets}
+            icon={<PersonIcon />}
+            data-testid="chip-my-markets"
+          />
+        )}
         <SelectableChip
           label={t`Favorites`}
           selected={favorites}
@@ -78,20 +105,6 @@ export const MarketsFilterChips = (props: ColumnFilterProps) => {
           toggle={toggleRewards}
           icon={<PointsIcon />}
           data-testid="chip-rewards"
-        />
-      </Stack>
-      <Stack direction="row" gap="4px">
-        <SelectableChip
-          label={t`Mint Markets`}
-          selected={marketTypes.Mint}
-          toggle={toggleMarkets.Mint}
-          data-testid="chip-mint"
-        />
-        <SelectableChip
-          label={t`Lend Markets`}
-          selected={marketTypes.Lend}
-          toggle={toggleMarkets.Lend}
-          data-testid="chip-lend"
         />
       </Stack>
     </Stack>

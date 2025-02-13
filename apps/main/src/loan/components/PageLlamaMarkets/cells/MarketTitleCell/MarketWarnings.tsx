@@ -13,7 +13,11 @@ const { Spacing } = SizesAndSpaces
 /**
  * Displays warnings for a pool, such as deprecated pools or pools with collateral corrosion.
  */
-export const MarketWarnings = ({ market: { userCollateralEroded, deprecatedMessage } }: { market: LlamaMarket }) => (
+export const MarketWarnings = ({
+  market: { userCollateralEroded, userDeposited, deprecatedMessage },
+}: {
+  market: LlamaMarket
+}) => (
   <Stack direction="row" gap={Spacing.md} sx={{ height: 20 }}>
     {deprecatedMessage && (
       <Tooltip title={deprecatedMessage}>
@@ -23,7 +27,7 @@ export const MarketWarnings = ({ market: { userCollateralEroded, deprecatedMessa
         </Typography>
       </Tooltip>
     )}
-    {userCollateralEroded && (
+    {Boolean(userDeposited) && userCollateralEroded && (
       <Tooltip title={t`Your position is in eroded`}>
         <Chip label={t`Collateral erosion`} color="alert" size="small" />
       </Tooltip>

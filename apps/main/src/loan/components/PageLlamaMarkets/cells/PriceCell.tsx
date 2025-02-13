@@ -11,9 +11,10 @@ export const PriceCell = ({ getValue, row }: CellContext<LlamaMarket, number>) =
   if (!value) {
     return '-'
   }
-  const { usdPrice, chain, address, symbol } = row.original.assets.borrowed
-  const usdValue = usdPrice ? formatNumber(value / usdPrice, { currency: 'USD', notation: 'compact' }) : '-'
-  const usdTooltip = usdPrice ? formatNumber(value / usdPrice, { currency: 'USD' }) : '-'
+  const { assets, type } = row.original
+  const { usdPrice, chain, address, symbol } = { Lend: assets.collateral, Mint: assets.borrowed }[type]
+  const usdValue = usdPrice ? formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' }) : '-'
+  const usdTooltip = usdPrice ? formatNumber(value * usdPrice, { currency: 'USD', showAllFractionDigits: true }) : '-'
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
