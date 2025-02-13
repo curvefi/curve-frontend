@@ -1,6 +1,5 @@
 import type {
   LpPriceOhlcDataFormatted,
-  ChartType,
   ChartHeight,
   VolumeData,
   OraclePriceData,
@@ -34,7 +33,6 @@ function hslaToRgb(hsla: string) {
 }
 
 type Props = {
-  chartType: ChartType
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
@@ -55,7 +53,6 @@ type Props = {
 }
 
 const CandleChart = ({
-  chartType,
   chartHeight,
   ohlcData,
   volumeData,
