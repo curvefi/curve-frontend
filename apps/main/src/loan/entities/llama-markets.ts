@@ -82,9 +82,9 @@ const convertLendingVault = (
     apyLend,
     leverage,
   }: LendingVault,
-  favoriteMarkets: Set<string> | undefined,
+  favoriteMarkets: Set<string>,
   campaigns: Record<string, PoolRewards> | undefined = {},
-  userLendingVaults: Record<Address, UserLendingVault> | undefined = {},
+  user: UserLendingVault | undefined,
 ): LlamaMarket => ({
   chain,
   address: vault,
@@ -106,14 +106,14 @@ const convertLendingVault = (
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
   url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
-  isFavorite: favoriteMarkets?.has(vault) || false,
+  isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
   leverage,
-  userCollateralEroded: userLendingVaults[controller]?.softLiquidation,
-  userEarnings: userLendingVaults[controller]?.collateralUp ?? null, // todo: check if correct
-  userDeposited: userLendingVaults[controller]?.totalDeposited ?? null,
-  userBorrowed: userLendingVaults[controller]?.borrowed ?? null,
-  userHealth: userLendingVaults[controller]?.health ?? null,
+  userCollateralEroded: user?.softLiquidation ?? false,
+  userEarnings: user ? user.collateral - user.totalDeposited : null, // todo: check if correct
+  userDeposited: user?.totalDeposited ?? null,
+  userBorrowed: user?.borrowed ?? null,
+  userHealth: user?.health ?? null,
 })
 
 const convertMintMarket = (
@@ -130,9 +130,9 @@ const convertMintMarket = (
     stablecoin_price,
     chain,
   }: MintMarket,
-  favoriteMarkets: Set<string> | undefined,
+  favoriteMarkets: Set<string>,
   campaigns: Record<string, PoolRewards> | undefined = {},
-  userMintMarketsData: Record<Address, UserMintMarket> | undefined = {},
+  user: UserMintMarket | undefined,
 ): LlamaMarket => ({
   chain,
   address,
@@ -158,14 +158,14 @@ const convertMintMarket = (
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
   url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralToken.symbol}/create`,
-  isFavorite: favoriteMarkets?.has(address) || false,
+  isFavorite: favoriteMarkets.has(address),
   rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,
-  userCollateralEroded: userMintMarketsData[llamma]?.softLiquidation,
-  userEarnings: userMintMarketsData[llamma]?.collateralUp ?? null, // todo: check if correct
-  userDeposited: userMintMarketsData[llamma]?.totalDeposited ?? null,
-  userBorrowed: userMintMarketsData[llamma]?.debt ?? null,
-  userHealth: userMintMarketsData[llamma]?.health ?? null,
+  userCollateralEroded: user?.softLiquidation ?? false,
+  userEarnings: user ? user.collateral - user.totalDeposited : null, // todo: check if correct
+  userDeposited: user?.totalDeposited ?? null,
+  userBorrowed: user?.debt ?? null,
+  userHealth: user?.health ?? null,
 })
 
 export const useLlamaMarkets = (userAddress?: Address) =>
@@ -181,15 +181,21 @@ export const useLlamaMarkets = (userAddress?: Address) =>
     combine: (results): PartialQueryResult<LlamaMarket[]> => {
       const [lendingVaults, mintMarkets, campaigns, favoriteMarkets, userLendingVaults, userMintMarkets] = results
       const favoriteMarketsSet = new Set(favoriteMarkets.data)
-      console.log(userAddress, results)
       return {
         ...combineQueriesMeta(results),
         data: [
           ...(lendingVaults.data ?? [])
             .filter((vault) => vault.totalAssetsUsd)
-            .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userLendingVaults.data)),
+            .map((vault) =>
+              convertLendingVault(
+                vault,
+                favoriteMarketsSet,
+                campaigns.data,
+                userLendingVaults.data?.[vault.controller],
+              ),
+            ),
           ...(mintMarkets.data ?? []).map((market) =>
-            convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMintMarkets.data),
+            convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMintMarkets.data?.[market.llamma]),
           ),
         ],
       }

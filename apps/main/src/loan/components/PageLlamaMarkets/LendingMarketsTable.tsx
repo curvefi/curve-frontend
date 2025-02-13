@@ -11,11 +11,10 @@ import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettings
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import {
   DEFAULT_SORT,
-  getMarketColumnsVisibility,
   LLAMA_MARKET_COLUMNS,
+  useDefaultMarketColumnsVisibility,
 } from '@/loan/components/PageLlamaMarkets/columns'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { useMemo } from 'react'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -30,10 +29,10 @@ export const LendingMarketsTable = ({
   headerHeight: string
   isError: boolean
 }) => {
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters()
   const { signerAddress } = useWallet()
-  const marketColumnsVisibility = useMemo(() => getMarketColumnsVisibility(signerAddress), [signerAddress])
-  const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(marketColumnsVisibility)
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters()
+  const defaultVisibility = useDefaultMarketColumnsVisibility(signerAddress)
+  const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(defaultVisibility)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({

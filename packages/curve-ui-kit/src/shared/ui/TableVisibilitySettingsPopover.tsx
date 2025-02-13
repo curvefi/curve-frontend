@@ -3,13 +3,14 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Switch from '@mui/material/Switch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FormControlLabel } from '@mui/material'
 
 export type VisibilityOption = {
   id: string
   active: boolean
   label: string
+  visible: boolean
 }
 export type VisibilityGroup = {
   options: VisibilityOption[]
@@ -56,20 +57,23 @@ export const TableVisibilitySettingsPopover = ({
           >
             {label}
           </Typography>
-          {options.map(({ id, active, label }) => (
-            <FormControlLabel
-              key={id}
-              control={
-                <Switch
-                  data-testid={`visibility-toggle-${cleanColumnId(id)}`}
-                  checked={active}
-                  onChange={() => toggleVisibility(id)}
-                  size="small"
+          {options.map(
+            ({ id, active, label, visible }) =>
+              visible && (
+                <FormControlLabel
+                  key={id}
+                  control={
+                    <Switch
+                      data-testid={`visibility-toggle-${cleanColumnId(id)}`}
+                      checked={active}
+                      onChange={() => toggleVisibility(id)}
+                      size="small"
+                    />
+                  }
+                  label={label}
                 />
-              }
-              label={label}
-            />
-          ))}
+              ),
+          )}
         </Stack>
       ))}
     </Stack>
@@ -83,7 +87,10 @@ const flatten = (visibilitySettings: VisibilityGroup[]): Record<string, boolean>
   visibilitySettings.reduce(
     (acc, group) => ({
       ...acc,
-      ...group.options.reduce((acc, { active, id }) => ({ ...acc, [cleanColumnId(id)]: active }), {}),
+      ...group.options.reduce(
+        (acc, { active, visible, id }) => ({ ...acc, [cleanColumnId(id)]: active && visible }),
+        {},
+      ),
     }),
     {},
   )
@@ -94,6 +101,10 @@ const flatten = (visibilitySettings: VisibilityGroup[]): Record<string, boolean>
 export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
   /** current visibility settings in grouped format */
   const [visibilitySettings, setVisibilitySettings] = useState(groups)
+
+  useEffect(() => {
+    setVisibilitySettings(groups)
+  }, [groups])
 
   /** toggle visibility of a column by its id */
   const toggleColumnVisibility = useCallback(

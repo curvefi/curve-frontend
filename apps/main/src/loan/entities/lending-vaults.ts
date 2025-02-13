@@ -36,7 +36,6 @@ export const { getQueryOptions: getUserLendingVaultsOptions, invalidate: invalid
     const markets = await Promise.all(
       chains.map(async (chain) => {
         const markets = await getUserMarkets(userAddress, chain, {})
-        // console.log(chain, markets)
         return Promise.all(
           markets.map(async ({ controller }) => [
             controller,
@@ -45,7 +44,6 @@ export const { getQueryOptions: getUserLendingVaultsOptions, invalidate: invalid
         )
       }),
     )
-    // console.log(markets)
     return Object.fromEntries(markets.flat())
   },
   staleTime: '5m',
