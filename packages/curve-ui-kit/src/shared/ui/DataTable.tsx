@@ -77,8 +77,9 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
   const { column } = header
   const sort = column.getIsSorted()
   const canSort = column.getCanSort()
+  const { hidden, borderRight } = column.columnDef.meta ?? {}
   return (
-    !column.columnDef.meta?.hidden && (
+    !hidden && (
       <Typography
         component="th"
         sx={{
@@ -95,6 +96,7 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
             },
             transition: `color ${TransitionFunction}`,
           }),
+          ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         colSpan={header.colSpan}
         width={header.getSize()}

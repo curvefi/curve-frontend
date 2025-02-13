@@ -151,7 +151,7 @@ const convertMintMarket = (
       chain,
     },
   },
-  utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered
+  utilizationPercent: (100 * borrowed) / debtCeiling,
   // todo: do we want to see collateral or borrowable?
   liquidityUsd: collateralAmountUsd,
   rates: { borrow: rate, lend: null },

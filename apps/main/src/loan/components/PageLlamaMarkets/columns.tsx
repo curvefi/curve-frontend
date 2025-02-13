@@ -43,20 +43,23 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor('userHealth', {
     header: t`Health`,
     cell: PercentageCell,
-    meta: { type: 'numeric' },
+    meta: { type: 'numeric', hideZero: true },
     size: ColumnWidth.sm,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('userBorrowed', {
     header: t`Borrow Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
     size: ColumnWidth.sm,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('userEarnings', {
     header: t`My Earnings`,
     cell: PriceCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('userDeposited', {
     header: t`Supplied Amount`,
@@ -64,6 +67,7 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric', borderRight: true },
     size: ColumnWidth.sm,
     filterFn: boolFilterFn,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrow', {
     id: borrowChartId,
@@ -84,7 +88,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`7D Supply Yield Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
     size: ColumnWidth.md,
-    sortUndefined: 'last',
     enableSorting: false,
   }),
   columnHelper.accessor('utilizationPercent', {
@@ -108,7 +111,7 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden('type', multiFilterFn),
 ] satisfies ColumnDef<LlamaMarket, any>[]
 
-export const DEFAULT_SORT = [{ columns: ['liquidityUsd'], desc: true }]
+export const DEFAULT_SORT = [{ id: 'liquidityUsd', desc: true }]
 
 export const useDefaultMarketColumnsVisibility: (address?: Address) => VisibilityGroup[] = (address) =>
   useMemo(

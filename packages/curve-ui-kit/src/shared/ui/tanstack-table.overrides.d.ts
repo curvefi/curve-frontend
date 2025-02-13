@@ -10,5 +10,6 @@ declare module '@tanstack/table-core' {
     hidden?: boolean
     variant?: TypographyVariantKey
     borderRight?: boolean
+    hideZero?: boolean
   }
 }

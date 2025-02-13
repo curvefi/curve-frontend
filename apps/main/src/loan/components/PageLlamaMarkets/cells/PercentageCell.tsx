@@ -6,9 +6,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const PercentageCell = ({ getValue, row }: CellContext<LlamaMarket, number>) => {
+export const PercentageCell = ({ getValue, column }: CellContext<LlamaMarket, number>) => {
   const value = getValue()
-  if (value == null || !row.original.userDeposited) {
+  if (value == null || (value === 0 && column.columnDef.meta?.hideZero)) {
     return '-'
   }
   return (
