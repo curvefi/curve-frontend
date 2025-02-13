@@ -1,6 +1,5 @@
 import type {
   LpPriceOhlcDataFormatted,
-  ChartType,
   ChartHeight,
   VolumeData,
   OraclePriceData,
@@ -14,8 +13,26 @@ import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { debounce } from 'lodash'
 
+/**
+ * Converts an HSLA color string to RGB format
+ * Lightweight Cahrts v5 adds support for HSLA, but until then we need to convert to RGB
+ * @param hsla - HSLA color string (e.g. "hsla(230, 60%, 29%, 1)")
+ * @returns RGB color string (e.g. "rgb(44, 57, 118)")
+ * @example
+ * hslaToRgb("hsla(230, 60%, 29%, 1)") // returns "rgb(44, 57, 118)"
+ * hslaToRgb("hsl(230, 60%, 29%)") // returns "rgb(44, 57, 118)"
+ */
+function hslaToRgb(hsla: string) {
+  return hsla.replace(/hsla?\((\d+),\s*(\d+)%,\s*(\d+)%(?:,\s*[\d.]+)?\)/, (_, h, s, l) => {
+    const a = s / 100
+    const b = l / 100
+    const k = (n: number) => (n + h / 30) % 12
+    const f = (n: number) => b - a * Math.min(b, 1 - b) * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))
+    return `rgb(${Math.round(255 * f(0))}, ${Math.round(255 * f(8))}, ${Math.round(255 * f(4))})`
+  })
+}
+
 type Props = {
-  chartType: ChartType
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
@@ -36,7 +53,6 @@ type Props = {
 }
 
 const CandleChart = ({
-  chartType,
   chartHeight,
   ohlcData,
   volumeData,
@@ -97,8 +113,8 @@ const CandleChart = ({
 
     chartRef.current = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: colors.backgroundColor },
-        textColor: colors.textColor,
+        background: { type: ColorType.Solid, color: hslaToRgb(colors.backgroundColor) },
+        textColor: hslaToRgb(colors.textColor),
       },
       width: wrapperRef.current.clientWidth,
       height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
