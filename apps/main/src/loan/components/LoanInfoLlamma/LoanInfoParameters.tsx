@@ -32,7 +32,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           </Chip>
         )}
       </DetailInfo>
-      <DetailInfo label={t`Oracle Price`} size="md">
+      <DetailInfo label={t`Oracle price`} size="md">
         {typeof priceInfo?.oraclePrice !== 'undefined' && (
           <Chip
             size="md"
