@@ -1,106 +1,167 @@
-import { Assets, getLendingVaultOptions, LendingVaultFromApi } from '@/loan/entities/lending-vaults'
+import { getLendingVaultOptions, LendingVault } from '@/loan/entities/lending-vaults'
 import { useQueries } from '@tanstack/react-query'
 import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
+import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
+import { Chain } from '@curvefi/prices-api'
+import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
+import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 
 export enum LlamaMarketType {
-  Mint = 'mint',
-  Pool = 'pool',
+  Mint = 'Mint',
+  Lend = 'Lend',
+}
+
+export type Assets = {
+  borrowed: AssetDetails
+  collateral: AssetDetails
+}
+
+export type AssetDetails = {
+  symbol: string
+  address: string
+  chain: Chain
+  usdPrice: number | null
 }
 
 export type LlamaMarket = {
-  blockchainId: string
+  chain: Chain
   address: string
   controllerAddress: string
   assets: Assets
   utilizationPercent: number
-  totalSupplied: {
-    total: number
-    usdTotal: number
-  }
+  liquidityUsd: number
   rates: {
-    lend?: number // apy %, only for pools
+    lend: number | null // apy %, only for pools
     borrow: number // apy %
   }
   type: LlamaMarketType
+  url: string
+  rewards: PoolRewards | null
+  isCollateralEroded: boolean
+  isFavorite: boolean
+  leverage: number
+  deprecatedMessage?: string
 }
 
-const convertLendingVault = ({
-  controllerAddress,
-  blockchainId,
-  totalSupplied,
-  assets,
-  address,
-  rates,
-  borrowed,
-}: LendingVaultFromApi): LlamaMarket => ({
-  blockchainId: blockchainId,
-  address: address,
-  controllerAddress: controllerAddress,
-  assets: assets,
-  utilizationPercent: (100 * borrowed.usdTotal) / totalSupplied.usdTotal,
-  totalSupplied: totalSupplied,
-  rates: {
-    lend: rates.lendApyPcent,
-    borrow: rates.borrowApyPcent,
+const DEPRECATED_LLAMAS: Record<string, () => string> = {
+  '0x136e783846ef68C8Bd00a3369F787dF8d683a696': () =>
+    t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
+}
+
+const convertLendingVault = (
+  {
+    controller,
+    chain,
+    totalAssetsUsd,
+    totalDebtUsd,
+    vault,
+    collateralToken,
+    collateralBalance,
+    collateralBalanceUsd,
+    borrowedToken,
+    borrowedBalance,
+    borrowedBalanceUsd,
+    apyBorrow,
+    apyLend,
+    leverage,
+  }: LendingVault,
+  favoriteMarkets: Set<string>,
+  campaigns: Record<string, PoolRewards>,
+): LlamaMarket => ({
+  chain,
+  address: vault,
+  controllerAddress: controller,
+  assets: {
+    borrowed: {
+      ...borrowedToken,
+      usdPrice: borrowedBalanceUsd / borrowedBalance,
+      chain,
+    },
+    collateral: {
+      ...collateralToken,
+      chain,
+      usdPrice: collateralBalanceUsd / collateralBalance,
+    },
   },
-  type: LlamaMarketType.Pool,
+  utilizationPercent: (100 * totalDebtUsd) / totalAssetsUsd,
+  liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
+  rates: { lend: apyLend, borrow: apyBorrow },
+  type: LlamaMarketType.Lend,
+  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
+  isFavorite: favoriteMarkets.has(vault),
+  rewards: campaigns[vault.toLowerCase()] ?? null,
+  leverage,
+  isCollateralEroded: false, // todo
 })
 
 const convertMintMarket = (
   {
     address,
-    collateral_token,
-    stablecoin_token,
+    collateralToken,
+    collateralAmount,
+    collateralAmountUsd,
+    stablecoinToken,
     llamma,
     rate,
-    total_debt,
-    debt_ceiling,
-    collateral_amount,
-    collateral_amount_usd,
+    borrowed,
+    debtCeiling,
     stablecoin_price,
+    chain,
   }: MintMarket,
-  blockchainId: string,
+  favoriteMarkets: Set<string>,
+  campaigns: Record<string, PoolRewards>,
 ): LlamaMarket => ({
-  blockchainId,
+  chain,
   address,
   controllerAddress: llamma,
   assets: {
     borrowed: {
-      symbol: stablecoin_token.symbol,
-      address: stablecoin_token.address,
+      symbol: stablecoinToken.symbol,
+      address: stablecoinToken.address,
       usdPrice: stablecoin_price,
-      blockchainId,
+      chain,
     },
     collateral: {
-      symbol: collateral_token.symbol,
-      address: collateral_token.address,
-      usdPrice: collateral_amount_usd / collateral_amount,
-      blockchainId,
+      symbol: collateralToken.symbol,
+      address: collateralToken.address,
+      usdPrice: collateralAmountUsd / collateralAmount,
+      chain,
     },
   },
-  utilizationPercent: (100 * total_debt) / debt_ceiling,
-  totalSupplied: {
-    // todo: do we want to see collateral or borrowable?
-    total: collateral_amount,
-    usdTotal: collateral_amount_usd,
-  },
-  rates: {
-    borrow: rate * 100,
-  },
+  utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered
+  // todo: do we want to see collateral or borrowable?
+  liquidityUsd: collateralAmountUsd,
+  rates: { borrow: rate, lend: null },
   type: LlamaMarketType.Mint,
+  deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
+  url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralToken.symbol}/create`,
+  isFavorite: favoriteMarkets.has(address),
+  rewards: campaigns[address.toLowerCase()] ?? null,
+  leverage: 0,
+  isCollateralEroded: false, // todo
 })
 
 export const useLlamaMarkets = () =>
   useQueries({
-    queries: [getLendingVaultOptions({}), getMintMarketOptions({})],
-    combine: ([lendingVaults, mintMarkets]): PartialQueryResult<LlamaMarket[]> => ({
-      ...combineQueriesMeta([lendingVaults, mintMarkets]),
-      data: [
-        ...(lendingVaults.data?.lendingVaultData ?? [])
-          .filter((vault) => vault.totalSupplied.usdTotal)
-          .map(convertLendingVault),
-        ...(mintMarkets.data ?? []).flatMap(({ chain, data }) => data.map((i) => convertMintMarket(i, chain))),
-      ],
-    }),
+    queries: [
+      getLendingVaultOptions({}),
+      getMintMarketOptions({}),
+      getCampaignsOptions({}),
+      getFavoriteMarketOptions({}),
+    ],
+    combine: ([lendingVaults, mintMarkets, campaigns, favoriteMarkets]): PartialQueryResult<LlamaMarket[]> => {
+      const favoriteMarketsSet = new Set(favoriteMarkets.data)
+      const campaignData = campaigns.data ?? {}
+      return {
+        ...combineQueriesMeta([lendingVaults, mintMarkets, favoriteMarkets]),
+        data: [
+          ...(lendingVaults.data ?? [])
+            .filter((vault) => vault.totalAssetsUsd)
+            .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaignData)),
+          ...(mintMarkets.data ?? []).map((market) => convertMintMarket(market, favoriteMarketsSet, campaignData)),
+        ],
+      }
+    },
   })

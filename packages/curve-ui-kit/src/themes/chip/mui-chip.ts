@@ -110,6 +110,7 @@ export const defineMuiChip = (
         cursor: 'pointer',
         '&:has(.MuiChip-icon)': { ...handleBreakpoints({ paddingInline: Spacing.sm }) },
         '&:hover': {
+          borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
           color: Chips.Hover.Label,
           '& .MuiChip-deleteIcon': {

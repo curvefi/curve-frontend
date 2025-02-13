@@ -7,7 +7,7 @@ const campaigns = campaignList
     const campaignName = campaign.split('.')?.[0]
     if (!campaignName || !(campaignName in parsedCampaignsJsons)) return null
 
-    const dateFilteredCampaign = {
+    return {
       ...parsedCampaignsJsons[campaignName],
       pools: parsedCampaignsJsons[campaignName].pools.filter((pool: any) => {
         const currentTime = Date.now() / 1000
@@ -23,9 +23,7 @@ const campaigns = campaignList
         return currentTime >= startTime && currentTime <= endTime
       }),
     }
-
-    return dateFilteredCampaign
   })
-  .filter((campaign) => campaign !== null)
+  .filter(Boolean)
 
 export default campaigns

@@ -1,22 +1,21 @@
+import { oneOf, oneInt } from '@/support/generators'
+
 export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 640, 1200, 2000]
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
 
-const randomInt = (min: number, maxExclusive: number): number => Math.floor(Math.random() * (maxExclusive - min)) + min
-export const oneOf = <T>(...options: T[]) => options[randomInt(0, options.length)]
+export const oneDesktopViewport = () => [oneInt(DESKTOP_BREAKPOINT, MAX_WIDTH), oneInt(MIN_HEIGHT, MAX_HEIGHT)] as const
 
-export const oneDesktopViewport = () =>
-  [randomInt(DESKTOP_BREAKPOINT, MAX_WIDTH), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
-
-export const oneMobileViewport = () =>
-  [randomInt(MIN_WIDTH, TABLET_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+export const oneMobileViewport = () => [oneInt(MIN_WIDTH, TABLET_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT)] as const
 
 export const oneTabletViewport = () =>
-  [randomInt(TABLET_BREAKPOINT, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+  [oneInt(TABLET_BREAKPOINT, DESKTOP_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT)] as const
 
 export const oneMobileOrTabletViewport = () =>
-  [randomInt(MIN_WIDTH, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+  [oneInt(MIN_WIDTH, DESKTOP_BREAKPOINT), oneInt(MIN_HEIGHT, MAX_HEIGHT)] as const
 
-export const oneViewport = () => oneOf(oneDesktopViewport(), oneMobileViewport(), oneTabletViewport())
+export type Breakpoint = 'mobile' | 'tablet' | 'desktop'
+export const oneViewport = (): [number, number, Breakpoint] =>
+  oneOf([...oneDesktopViewport(), 'desktop'], [...oneMobileViewport(), 'mobile'], [...oneTabletViewport(), 'tablet'])
 
 export const isInViewport = ($el: JQuery) => {
   const height = Cypress.$(cy.state('window')).height()!

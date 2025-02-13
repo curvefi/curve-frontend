@@ -1,3 +1,16 @@
+/**
+ * Converts a Record of string key-value pairs to a URL query string.
+ * Ignores keys with null or undefined values, automatically converting other values to strings.
+ */
+export const addQueryString = (params: Record<string, string | number | boolean | null | undefined>) => {
+  const query = new URLSearchParams(
+    Object.entries(params)
+      .filter(([_, value]) => value != null)
+      .map(([key, value]) => [key, value!.toString()]),
+  ).toString()
+  return query && `?${query}`
+}
+
 export class FetchError extends Error {
   constructor(
     public status: number,
@@ -32,9 +45,6 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
   if (!resp.ok) {
     // Make the promise be rejected if we didn't get a 2xx response
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
-  } else {
-    const json = (await resp.json()) as T
-
-    return json
   }
+  return resp.json()
 }

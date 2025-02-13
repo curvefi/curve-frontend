@@ -3,20 +3,20 @@ import type { Address } from '..'
 export type Market = {
   name: string
   address: Address
-  factory: Address
+  factoryAddress: Address
   llamma: Address
   rate: number
   borrowed: number
   borrowable: number
-  collateral: number
-  collateralUsd: number
+  collateralAmount: number
+  collateralAmountUsd: number
   debtCeiling: number
   loans: number
-  tokenCollateral: {
+  collateralToken: {
     symbol: string
     address: Address
   }
-  tokenStablecoin: {
+  stablecoinToken: {
     symbol: string
     address: Address
   }

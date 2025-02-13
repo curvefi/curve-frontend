@@ -1,6 +1,6 @@
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending-snapshots'
-import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd'
+import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
 import { useMemo } from 'react'
 import { meanBy } from 'lodash'
 
@@ -14,13 +14,13 @@ type UseSnapshotsResult<T> = {
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
-  { address, blockchainId, controllerAddress, type: marketType, rates }: LlamaMarket,
+  { address, chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: GraphType,
 ): UseSnapshotsResult<T> {
-  const isPool = marketType == LlamaMarketType.Pool
+  const isPool = marketType == LlamaMarketType.Lend
   const showMintGraph = !isPool && type === 'borrow'
   const contractAddress = isPool ? controllerAddress : address
-  const params = { blockchainId: blockchainId, contractAddress }
+  const params = { blockchainId: chain, contractAddress }
   const { data: poolSnapshots, isLoading: poolIsLoading } = useLendingSnapshots(params, isPool)
   const { data: mintSnapshots, isLoading: mintIsLoading } = useCrvUsdSnapshots(params, showMintGraph)
 
@@ -29,7 +29,7 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
     ? {
         snapshots: poolSnapshots ?? null,
         isLoading: poolIsLoading,
-        snapshotKey: `${type}_apy` as const,
+        snapshotKey: `${type}Apy` as const,
       }
     : {
         snapshots: (showMintGraph && mintSnapshots) || null,

@@ -8,13 +8,8 @@ export type CrvUsdSnapshot = Snapshot
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'crvUsd', 'snapshots'] as const,
-  queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<CrvUsdSnapshot[]> => {
-    const snapshots = await getSnapshots(blockchainId as Chain, contractAddress)
-    return snapshots.map((snapshot) => ({
-      ...snapshot,
-      rate: snapshot.rate * 100, // Convert to percentage for consistency with lending snapshots
-    }))
-  },
+  queryFn: ({ blockchainId, contractAddress }: ContractQuery): Promise<CrvUsdSnapshot[]> =>
+    getSnapshots(blockchainId as Chain, contractAddress, { agg: 'none' }),
   staleTime: '10m',
   validationSuite: contractValidationSuite,
 })
