@@ -1,4 +1,4 @@
-import type { TokenIconProps } from 'ui/src/Token/TokenIcon'
+import type { TokenIconProps } from 'curve-ui-kit/src/shared/ui/TokenIcon'
 
 import React from 'react'
 import styled from 'styled-components'

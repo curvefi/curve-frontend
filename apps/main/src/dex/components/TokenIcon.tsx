@@ -1,7 +1,7 @@
 import React from 'react'
 import useStore from '@/dex/store/useStore'
 
-import TokenIconComp, { type TokenIconProps } from '@ui/Token/TokenIcon'
+import { type TokenIconProps, TokenIcon as TokenIconComp } from '@ui-kit/shared/ui/TokenIcon'
 
 function TokenIcon(props: Omit<TokenIconProps, 'setTokenImage'>) {
   const storedSrc = useStore((state) => state.tokens.tokensImage[props.address || ''])
