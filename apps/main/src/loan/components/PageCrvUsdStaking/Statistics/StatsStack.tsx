@@ -1,5 +1,6 @@
 import Grid from '@mui/material/Grid2'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
@@ -40,6 +41,7 @@ const StatsStack = () => {
           value={yieldData?.[yieldData.length - 1]?.supply ?? 0}
           loading={yieldIsFetching}
           unit={CRVUSD_OPTION}
+          copyText={t`Copied total crvUSD staked`}
         />
       </Grid>
       <Grid>
@@ -49,6 +51,7 @@ const StatsStack = () => {
           loading={statisticsIsFetching}
           decimals={2}
           unit="percentage"
+          copyText={t`Copied current APY`}
         />
       </Grid>
       <Grid>
@@ -57,6 +60,7 @@ const StatsStack = () => {
           value={revenueData?.total_distributed ?? 0}
           loading={revenueIsFetching}
           unit={CRVUSD_OPTION}
+          copyText={t`Copied total revenue distributed`}
         />
       </Grid>
       <Grid>
@@ -65,6 +69,7 @@ const StatsStack = () => {
           value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue ?? 0}
           loading={revenueIsFetching}
           unit={CRVUSD_OPTION}
+          copyText={t`Copied weekly accumulated revenue`}
         />
       </Grid>
     </Grid>

@@ -43,6 +43,7 @@ const StatsBanner = () => {
           value={oneMonthProjectionYield(scrvUsdApy, exampleBalance)}
           loading={isStatisticsLoading}
           tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+          copyText={t`Copied 30 days projection`}
         />
         <Metric
           label={t`1 Year Projection`}
@@ -50,6 +51,7 @@ const StatsBanner = () => {
           value={oneYearProjectionYield(scrvUsdApy, exampleBalance)}
           loading={isStatisticsLoading}
           tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+          copyText={t`Copied 1 year projection`}
         />
         <Metric
           label={t`Estimated APY`}
@@ -58,6 +60,7 @@ const StatsBanner = () => {
           loading={isStatisticsLoading}
           tooltip={t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+          copyText={t`Copied estimated APY`}
         />
       </Stack>
     </Stack>

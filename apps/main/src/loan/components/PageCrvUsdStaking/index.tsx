@@ -48,7 +48,7 @@ const CrvUsdStaking = () => {
   const showStatsBanner =
     !walletName || connectedUserNoScrvUsdBalance || !signerAddress
       ? true
-      : !connecting && !isUserScrvUsdBalanceFetching && !walletName && isUserScrvUsdBalanceZero
+      : !connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)

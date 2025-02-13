@@ -10,7 +10,7 @@ import { APP_LINK } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
-const { Spacing, Sizing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const UserInformation = () => {
   const {
@@ -59,16 +59,7 @@ const UserInformation = () => {
           </Typography>
         </Stack>
         <Stack direction="column" gap={Spacing.sm}>
-          <YieldGrowth
-            sx={{
-              width: 48,
-              height: 48,
-              '& path': {
-                fill: Text.TextColors.Primary,
-                stroke: Text.TextColors.Primary,
-              },
-            }}
-          />
+          <YieldGrowth color="inherit" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Watch your yield grow`}</Typography>
           <Typography variant="bodyMRegular">
             {t`Upon deposit, your crvUSD is instantly generating yield and your rewards get `}{' '}

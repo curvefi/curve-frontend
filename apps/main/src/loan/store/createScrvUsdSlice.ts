@@ -11,6 +11,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
+import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -362,7 +363,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           // invalidate user balances query
           const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-          queryClient.invalidateQueries({ queryKey: ['scrvUsdUserBalances', { signerAddress: signerAddress ?? '' }] })
+          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -421,7 +422,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           // invalidate user balances query
           const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-          queryClient.invalidateQueries({ queryKey: ['scrvUsdUserBalances', { signerAddress: signerAddress ?? '' }] })
+          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -482,7 +483,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           // invalidate user balances query
           const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-          queryClient.invalidateQueries({ queryKey: ['scrvUsdUserBalances', { signerAddress: signerAddress ?? '' }] })
+          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
 

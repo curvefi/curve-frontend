@@ -24,7 +24,7 @@ async function _fetchSavingsUserBalances({
   }
 }
 
-export const { useQuery: useScrvUsdUserBalances } = queryFactory({
+export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
   queryKey: (params: { signerAddress: string }) =>
     ['useScrvUsdUserBalances', { signerAddress: params.signerAddress }] as const,
   queryFn: _fetchSavingsUserBalances,
