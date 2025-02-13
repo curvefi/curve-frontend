@@ -19,7 +19,6 @@ import Inception from './Inception.json'
 import TurtleTotems from './TurtleTotems.json'
 import LevelMoney from './LevelMoney.json'
 import XPoints from './XPoints.json'
-import MindNetwork from './MindNetwork.json'
 import DTrinity from './DTrinity.json'
 import YieldFi from './YieldFi.json'
 import Babylon from './Babylon.json'
@@ -49,7 +48,6 @@ export {
   TurtleTotems,
   LevelMoney,
   XPoints,
-  MindNetwork,
   DTrinity,
   YieldFi,
   Babylon,
