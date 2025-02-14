@@ -10,7 +10,7 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
 import SelectTokenListItemUserBalance from '@/dex/components/ComboBoxSelectToken/ComboBoxTokenUserBalance'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Token } from '@/dex/types/main.types'
 
 const ComboBoxListItem = ({

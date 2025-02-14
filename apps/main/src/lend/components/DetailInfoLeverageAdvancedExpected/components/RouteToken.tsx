@@ -5,7 +5,7 @@ import { formatNumber } from '@ui/utils'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 
 import Box from '@ui/Box'
-import TokenIcon from '@/lend/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const RouteToken = ({
   imageBaseUrl,

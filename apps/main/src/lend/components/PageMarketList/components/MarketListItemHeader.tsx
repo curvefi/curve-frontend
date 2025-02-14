@@ -5,7 +5,7 @@ import { breakpoints } from '@ui/utils'
 import networks from '@/lend/networks'
 
 import Box from '@ui/Box'
-import TokenIcon from '@/lend/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { ChainId } from '@/lend/types/lend.types'
 
 const MarketListItemHeader = ({

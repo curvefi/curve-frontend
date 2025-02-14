@@ -2,10 +2,9 @@ import type { ImgHTMLAttributes } from 'react'
 import { Box, type Theme } from '@mui/material'
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 
-const { IconSize } = SizesAndSpaces
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
-type Size = 'sm' | 'mui-sm' | 'mui-md' | ''
+const { IconSize } = SizesAndSpaces
 
 const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
   if (size === 400) {
@@ -33,36 +32,16 @@ const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
   }
 }
 
-function getTokenImageSrc(imageBaseUrl: string | null, address?: string | null, storedSrc?: string | null | undefined) {
-  if (!address || !imageBaseUrl) return { src: DEFAULT_IMAGE, address: '' }
-
-  let src = storedSrc
-  if (src === null) src = DEFAULT_IMAGE // if null, it means the image src is bad
-  if (src === undefined) src = `${imageBaseUrl}${address.toLowerCase()}.png`
-
-  return { address, src }
-}
-
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
   imageBaseUrl: string | null
   token: string
   address?: string | null
-  size?: Size
-  storedSrc?: string | null
-  setTokenImage: (tokenAddress: string, src: string | null) => void
+  size?: 'sm' | 'mui-sm' | 'mui-md' | ''
 }
 
-export function TokenIcon({
-  className = '',
-  imageBaseUrl,
-  token,
-  size = 'sm',
-  address,
-  storedSrc,
-  setTokenImage,
-}: TokenIconProps) {
-  const img = getTokenImageSrc(imageBaseUrl, address, storedSrc)
+export function TokenIcon({ className = '', imageBaseUrl, token, size = 'sm', address }: TokenIconProps) {
+  const src = address && imageBaseUrl ? `${imageBaseUrl}${address.toLowerCase()}.png` : DEFAULT_IMAGE
 
   return (
     <Box
@@ -70,11 +49,10 @@ export function TokenIcon({
       data-testid={`token-icon-${token}`}
       className={`${className} ${size}`}
       alt={token}
-      onError={({ target }) => {
-        ;(target as HTMLImageElement).src = DEFAULT_IMAGE
-        setTokenImage(img.address, null)
+      onError={({ currentTarget }) => {
+        currentTarget.src = DEFAULT_IMAGE
       }}
-      src={img.src}
+      src={src}
       loading="lazy"
       sx={(t) => ({
         border: '1px solid transparent',

@@ -11,7 +11,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import TextEllipsis from '@ui/TextEllipsis'
-import TokenIcon from '@/lend/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId } from '@/lend/types/lend.types'
 

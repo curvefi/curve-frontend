@@ -11,7 +11,7 @@ import Icon from '@ui/Icon'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TextEllipsis from '@ui/TextEllipsis'
 import TooltipButton from '@ui/Tooltip'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const CurrencyReservesContent = ({
   cr,

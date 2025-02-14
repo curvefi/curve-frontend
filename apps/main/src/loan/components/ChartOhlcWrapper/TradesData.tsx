@@ -7,7 +7,7 @@ import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, conve
 import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 
 import Box from '@ui/Box'
-import TokenIcon from '@/loan/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 

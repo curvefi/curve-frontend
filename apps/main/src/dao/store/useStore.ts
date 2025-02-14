@@ -12,7 +12,6 @@ import createProposalsSlice, { ProposalsSlice } from '@/dao/store/createProposal
 import createUserSlice, { UserSlice } from '@/dao/store/createUserSlice'
 import createGaugesSlice, { GaugesSlice } from '@/dao/store/createGaugesSlice'
 import createAnalyticsSlice, { AnalyticsSlice } from '@/dao/store/createAnalyticsSlice'
-import createTokensSlice, { TokensSlice } from './createTokensSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from './createUsdRatesSlice'
 import createLayoutSlice, { AppLayoutSlice } from './createLayoutSlice'
@@ -24,7 +23,6 @@ export type State = AppSlice &
   UserSlice &
   GaugesSlice &
   AnalyticsSlice &
-  TokensSlice &
   LockedCrvSlice &
   UsdRatesSlice &
   AppLayoutSlice
@@ -37,7 +35,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGaugesSlice(set, get),
   ...createUserSlice(set, get),
   ...createAnalyticsSlice(set, get),
-  ...createTokensSlice(set, get),
   ...createLockedCrvSlice(set, get),
   ...createUsdRatesSlice(set, get),
   ...createLayoutSlice(set, get),

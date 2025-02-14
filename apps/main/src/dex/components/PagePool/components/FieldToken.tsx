@@ -5,7 +5,7 @@ import { shortenTokenAddress, shortenTokenName } from '@/dex/utils'
 
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 type Props = {
   idx: number

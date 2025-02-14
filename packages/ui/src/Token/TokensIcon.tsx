@@ -8,7 +8,7 @@ export type TokensIconProps = {
   imageBaseUrl: string | null
   tokens: string[]
   tokenAddresses: string[]
-  childComp(props: Omit<TokenIconProps, 'setTokenImage'>): React.JSX.Element
+  childComp(props: TokenIconProps): React.JSX.Element
 }
 
 const TokensIcon = ({

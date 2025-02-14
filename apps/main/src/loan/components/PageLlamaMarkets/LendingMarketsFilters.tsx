@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { formatNumber, getImageBaseUrl } from '@ui/utils'
-import TokenIcon from '../TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 

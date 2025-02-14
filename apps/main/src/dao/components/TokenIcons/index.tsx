@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import useStore from '@/dao/store/useStore'
 
 type Props = {
   className?: string
@@ -37,9 +36,6 @@ const TokenIcons = ({ className = '', imageBaseUrl, tokens }: Props) => {
           className += ' not-first'
         }
 
-        const storedSrc = useStore((state) => state.tokens.tokensImage[token.address ?? ''])
-        const setTokenImage = useStore((state) => state.tokens.setTokenImage)
-
         return (
           <StyledTokenIcon
             key={`${token.address}-${idx}`}
@@ -48,8 +44,6 @@ const TokenIcons = ({ className = '', imageBaseUrl, tokens }: Props) => {
             address={token.address}
             token={token.symbol}
             size="sm"
-            storedSrc={storedSrc}
-            setTokenImage={setTokenImage}
           />
         )
       })}

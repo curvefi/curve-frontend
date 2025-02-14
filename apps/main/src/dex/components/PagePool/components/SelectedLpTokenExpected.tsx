@@ -11,7 +11,7 @@ import Box from '@ui/Box'
 import Spacer from '@ui/Spacer'
 import Loader from '@ui/Loader'
 import TextEllipsis from '@ui/TextEllipsis'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 const SelectedLpTokenExpected = ({
