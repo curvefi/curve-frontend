@@ -6,8 +6,8 @@ import networks from '@/dao/networks'
 
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
+import TokenIcons from '@ui/TokenIcons'
 import SmallLabel from '@/dao/components/SmallLabel'
-import TokenIcons from '@/dao/components/TokenIcons'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 interface GaugeHeaderProps {

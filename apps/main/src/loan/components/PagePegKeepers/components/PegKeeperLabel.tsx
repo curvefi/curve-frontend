@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils'
 import networks from '@/loan/networks'
 
-import TokensIcon from '@ui/TokensIcon'
+import TokenIcons from '@ui/TokenIcons'
 import { ChainId } from '@/loan/types/loan.types'
 
 type Props = {
@@ -18,10 +18,18 @@ type Props = {
 const PegKeeperLabel = ({ className = '', poolName, rChainId, underlyingCoins, underlyingCoinAddresses }: Props) => {
   const { imageBaseUrl } = networks[rChainId]
 
+  const tokens = useMemo(
+    () =>
+      underlyingCoins.map((symbol, idx) => ({
+        symbol,
+        address: underlyingCoinAddresses[idx],
+      })),
+    [underlyingCoins, underlyingCoinAddresses],
+  )
+
   return (
     <Wrapper className={className}>
-      <TokensIcon imageBaseUrl={imageBaseUrl} tokens={underlyingCoins} tokenAddresses={underlyingCoinAddresses} />{' '}
-      <LabelText>{poolName}</LabelText>
+      <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} /> <LabelText>{poolName}</LabelText>
     </Wrapper>
   )
 }

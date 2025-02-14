@@ -1,27 +1,25 @@
+import { TokenIcon } from 'curve-ui-kit/src/shared/ui/TokenIcon'
+
 import styled from 'styled-components'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 type Props = {
-  className?: string
   imageBaseUrl: string | null
-  tokens: [
-    {
-      symbol: string
-      address: string
-    },
-  ]
+  tokens: {
+    symbol: string
+    address: string
+  }[]
 }
 
-const TokenIcons = ({ className = '', imageBaseUrl, tokens }: Props) => {
+export const TokenIcons = ({ tokens, ...props }: Props) => {
   const totalCount = tokens.length
   const isOddCount = totalCount % 2 === 1
   const iconsPerRow = totalCount > 4 ? 3 : 2
 
   return (
-    <Wrapper className={className} iconsPerRow={iconsPerRow} colSpan={isOddCount ? 2 : 1}>
-      {tokens.map((token, idx) => {
+    <Wrapper iconsPerRow={iconsPerRow} colSpan={isOddCount ? 2 : 1}>
+      {tokens.map(({ address, symbol }, idx) => {
         let className = ''
-        let tokenCount = idx + 1
+        const tokenCount = idx + 1
         const isLast = tokenCount === totalCount
 
         if (tokenCount > iconsPerRow) {
@@ -37,41 +35,32 @@ const TokenIcons = ({ className = '', imageBaseUrl, tokens }: Props) => {
         }
 
         return (
-          <StyledTokenIcon
-            key={`${token.address}-${idx}`}
+          <TokenIcon
+            key={`${address}${idx}`}
+            {...props}
             className={className}
-            imageBaseUrl={imageBaseUrl}
-            address={token.address}
-            token={token.symbol}
-            size="sm"
+            address={address}
+            token={symbol}
+            sx={{
+              '&.not-first-row': {
+                marginTop: '-6px',
+              },
+
+              '&.not-first': {
+                marginLeft: '-4px',
+              },
+
+              '&.not-last': {
+                position: 'relative',
+                left: '8px',
+              },
+            }}
           />
         )
       })}
     </Wrapper>
   )
 }
-
-type TokenIconProps = {
-  iconSize?: 'lg'
-}
-
-const StyledTokenIcon = styled(TokenIcon)<TokenIconProps>`
-  border: 1px solid transparent;
-  border-radius: 50%;
-
-  &.not-first-row {
-    margin-top: -6px;
-  }
-
-  &.not-first {
-    margin-left: -4px;
-  }
-
-  &.not-last {
-    position: relative;
-    left: 8px;
-  }
-`
 
 type WrapperProps = {
   iconsPerRow: number
@@ -80,7 +69,7 @@ type WrapperProps = {
 
 const Wrapper = styled.div<WrapperProps>`
   display: inline-grid;
-  /* min-width: 53px; */
+  //min-width: 53px;
 
   ${({ iconsPerRow, colSpan }) => `
         grid-template-columns: repeat(${iconsPerRow}, auto);

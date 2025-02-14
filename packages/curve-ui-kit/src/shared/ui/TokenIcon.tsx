@@ -1,5 +1,6 @@
 import type { ImgHTMLAttributes } from 'react'
 import { Box, type Theme } from '@mui/material'
+import type { SystemStyleObject } from '@mui/system'
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
@@ -38,9 +39,10 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   token: string
   address?: string | null
   size?: 'sm' | 'mui-sm' | 'mui-md' | ''
+  sx?: SystemStyleObject<Theme>
 }
 
-export function TokenIcon({ className = '', imageBaseUrl, token, size = 'sm', address }: TokenIconProps) {
+export function TokenIcon({ className = '', imageBaseUrl, token, size = 'sm', address, sx }: TokenIconProps) {
   const src = address && imageBaseUrl ? `${imageBaseUrl}${address.toLowerCase()}.png` : DEFAULT_IMAGE
 
   return (
@@ -54,14 +56,15 @@ export function TokenIcon({ className = '', imageBaseUrl, token, size = 'sm', ad
       }}
       src={src}
       loading="lazy"
-      sx={(t) => ({
+      sx={(theme) => ({
         border: '1px solid transparent',
         borderRadius: '50%',
         height: '1.625rem',
         width: '1.625rem',
-        '&.sm': getResponsiveSize(t, 400),
-        '&.mui-sm': getResponsiveSize(t, 'sm'),
-        '&.mui-md': getResponsiveSize(t, 'md'),
+        '&.sm': getResponsiveSize(theme, 400),
+        '&.mui-sm': getResponsiveSize(theme, 'sm'),
+        '&.mui-md': getResponsiveSize(theme, 'md'),
+        ...sx,
       })}
     />
   )
