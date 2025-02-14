@@ -28,7 +28,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
       <Typography component={Stack} variant="tableCellL" sx={showIconOnHover} direction="row" gap={2}>
         <MuiLink
           color="inherit"
-          underline="hover"
+          underline="none"
           {...(market.url.startsWith('http') ? { href: market.url } : { component: RouterLink, to: market.url })}
         >
           {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}

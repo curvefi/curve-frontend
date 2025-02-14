@@ -10,6 +10,8 @@ import { useIntersectionObserver } from 'ui'
 import { Cell, Column, flexRender, Header, Row, useReactTable } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
@@ -43,22 +45,31 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
 
 const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight: keyof typeof Sizing }) => {
   const ref = useRef<HTMLTableRowElement>(null)
+  const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   return (
-    <TableRow
-      sx={(t) => ({
-        marginBlock: 0,
-        height: Sizing[rowHeight],
-        borderBottom: `1px solid${t.design.Layer[1].Outline}`,
-        [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
-        [`&:hover .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
-      })}
-      ref={ref}
-      data-testid={`data-table-row-${row.id}`}
-    >
-      {/* render cells when visible vertically, so content is lazy loaded */}
-      {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
-    </TableRow>
+    <InvertTheme invert={isHover}>
+      <TableRow
+        sx={(t) => ({
+          marginBlock: 0,
+          height: Sizing[rowHeight],
+          borderBottom: `1px solid${t.design.Layer[1].Outline}`,
+          [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
+          '&:hover': {
+            [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
+            // backgroundColor: t.design.Table.Row.Hover,
+          },
+          ...(isHover && { backgroundColor: t.design.Table.Row.Hover }),
+        })}
+        ref={ref}
+        data-testid={`data-table-row-${row.id}`}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {/* render cells when visible vertically, so content is lazy loaded */}
+        {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
+      </TableRow>
+    </InvertTheme>
   )
 }
 
