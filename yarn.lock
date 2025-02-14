@@ -17335,7 +17335,6 @@ __metadata:
     immer: "npm:^9.0.21"
     lightweight-charts: "npm:4.2.3"
     lodash: "npm:4.17.21"
-    memoizee: "npm:^0.4.17"
     next: "npm:^15.1.6"
     next-images: "npm:^1.8.5"
     pinst: "npm:^3.0.0"
