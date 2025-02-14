@@ -3,7 +3,7 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatDate } from '@ui/utils'
+import { formatDate, formatNumber } from '@ui/utils'
 
 import Box from '@ui/Box'
 import type { Locker } from '@curvefi/prices-api/dao'
@@ -13,7 +13,7 @@ type Payload = Omit<Locker, 'weight' | 'locked'> & {
   locked: number
 }
 
-const TopHoldersBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
+const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const { user, locked, weight, weightRatio, unlockTime } = payload[0].payload as Payload
 

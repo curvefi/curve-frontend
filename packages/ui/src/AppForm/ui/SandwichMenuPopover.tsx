@@ -11,7 +11,7 @@ type SandwichMenuItem = {
 
 interface SandwichMenuPopoverProps {
   onClose: () => void
-  triggerRef: React.RefObject<HTMLButtonElement>
+  triggerRef: React.RefObject<HTMLButtonElement | null>
   onItemClick: (key: string) => void
 }
 

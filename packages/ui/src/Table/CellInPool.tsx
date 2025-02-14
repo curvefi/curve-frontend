@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils'
-
+import type { JSX } from 'react'
 import Chip from 'ui/src/Typography/Chip'
 import Icon from 'ui/src/Icon'
 

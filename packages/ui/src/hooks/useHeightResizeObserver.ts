@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-function useHeightResizeObserver(elementRef: React.RefObject<Element>) {
+function useHeightResizeObserver(elementRef: React.RefObject<Element | null>) {
   const [height, setHeight] = React.useState<number | null>(null)
 
   const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {

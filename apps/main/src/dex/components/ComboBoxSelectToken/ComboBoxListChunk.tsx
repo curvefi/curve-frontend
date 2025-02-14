@@ -18,7 +18,7 @@ const SelectTokenListChunk = ({
   dialogClose,
   handleOnSelectChange,
 }: Pick<ComboBoxSelectTokenProps, 'testId' | 'imageBaseUrl' | 'showBalances'> & {
-  inputRef?: React.RefObject<HTMLInputElement>
+  inputRef?: React.RefObject<HTMLInputElement | null>
   selectedToken: string
   tokens: Token[]
   dialogClose: () => void
