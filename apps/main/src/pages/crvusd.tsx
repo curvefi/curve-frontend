@@ -22,7 +22,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { StyleSheetManager } from 'styled-components'
 import { shouldForwardProp } from '@ui/styled-containers'
 import { getLendingVaultQueryKey, queryLendingVaults } from '@/loan/entities/lending-vaults'
-import { memoize } from 'lodash'
+import memoize from 'memoizee'
 import { getMintMarketQueryKey, queryMintMarkets } from '@/loan/entities/mint-markets'
 
 const PageMarketList = dynamic(() => import('@/loan/components/PageMarketList/Page'), { ssr: false })
@@ -40,16 +40,13 @@ const PageIntegrations = dynamic(() => import('@/loan/components/PageIntegration
 const PagePegKeepers = dynamic(() => import('@/loan/components/PagePegKeepers/Page'), { ssr: false })
 const PageCrvUsdStaking = dynamic(() => import('@/loan/components/PageCrvUsdStaking/Page'), { ssr: false })
 
-const getServerData = memoize(async () => ({
-  lendingVaults: await queryLendingVaults(),
-  mintMarkets: await queryMintMarkets(),
-}))
-
-typeof window === 'undefined' &&
-  setInterval(() => {
-    console.log('Clearing server cache')
-    getServerData.cache.clear!()
-  }, 1000 * 60)
+const getServerData = memoize(
+  async () => ({
+    lendingVaults: await queryLendingVaults(),
+    mintMarkets: await queryMintMarkets(),
+  }),
+  { maxAge: 1000 * 60, async: true, preFetch: true },
+)
 
 export const getServerSideProps = async () => ({
   props: await getServerData(),
