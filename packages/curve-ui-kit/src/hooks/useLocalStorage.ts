@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 
 export type GetAndSet<T, D = T> = [T | D, Dispatch<SetStateAction<T>>]
 
@@ -25,17 +25,14 @@ function getStoredValue<Type, Default>(key: string, initialValue: Default | unde
  */
 export function useLocalStorage<Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> {
   type T = Type | Default
-  const [storedValue, setStoredValue] = useState(() => getStoredValue<Type, Default>(key, initialValue))
-
+  const value = getStoredValue<Type, Default>(key, initialValue)
   const setValue = useCallback(
     (setter: SetStateAction<Type>) => {
       const value: T =
         typeof setter === 'function' ? (setter as (prev: T) => T)(getStoredValue(key, initialValue)) : setter
-      setStoredValue(value as Default)
       setLocalStorage(key, value)
     },
     [initialValue, key],
   )
-
-  return [storedValue, setValue]
+  return [value, setValue]
 }

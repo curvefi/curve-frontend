@@ -13,7 +13,7 @@ import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import AlertTitle from '@mui/material/AlertTitle'
-import { MAX_USD_VALUE } from 'ui'
+import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

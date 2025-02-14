@@ -54,11 +54,20 @@ export type LiqRangesMapper = { [n: string]: LiqRangeSliderIdx }
 /* createWalletSlice */
 export type Provider = BrowserProvider
 
-export type PricesYieldDataResponse = PricesYieldData
+export type PricesStatisticsDataResponse = PricesStatisticsData
 
-export type PricesYieldData = {
+export type PricesStatisticsData = {
   last_updated: string
   last_updated_block: number
   proj_apr: number
   supply: number
+}
+
+export type PricesUserStatsResponse = {
+  total_deposited: string
+  total_recieved: string
+  total_withdrawn: string
+  total_transferred_in: string
+  total_transferred_out: string
+  current_balance: string
 }
