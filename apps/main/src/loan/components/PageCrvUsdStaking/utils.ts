@@ -9,3 +9,6 @@ export const txIsSuccess = (status: TransactionStatus) => status === 'success'
 export const txIsError = (status: TransactionStatus) => status === 'error'
 export const txIsLoading = (status: TransactionStatus) => status === 'loading'
 export const txIsIdle = (status: TransactionStatus) => status === ''
+
+export const oneMonthProjectionYield = (apy: number, balance: number) => (apy / 100 / 12) * balance
+export const oneYearProjectionYield = (apy: number, balance: number) => (apy / 100) * balance

@@ -1,4 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
@@ -9,9 +10,10 @@ import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { defineMuiChip } from '@ui-kit/themes/chip/mui-chip'
+import { defineMuiCardHeader } from '@ui-kit/themes/card-header/mui-card-header'
+import { defineMuiSelect } from '@ui-kit/themes/mui-select'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
@@ -25,17 +27,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       disableRipple: true,
     },
   },
-  MuiCardHeader: {
-    styleOverrides: {
-      root: {
-        paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
-        paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
-        borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`, // 1px for the border
-      },
-      action: { alignContent: 'center', margin: 0 },
-    },
-  },
+  MuiCardHeader: defineMuiCardHeader(design, typography),
   MuiCardActions: {
     styleOverrides: {
       root: {
@@ -106,6 +98,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
+  MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: {
     styleOverrides: {
       thumb: {

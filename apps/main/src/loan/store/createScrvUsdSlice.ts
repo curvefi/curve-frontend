@@ -1,15 +1,17 @@
-import type { DepositWithdrawModule } from '@/loan/components/PageCrvUsdStaking/types'
-import type { PricesYieldData, PricesYieldDataResponse, Provider } from '@/loan/store/types'
+import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
+import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import BigNumber from 'bignumber.js'
 import { t } from '@ui-kit/lib/i18n'
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
 import networks from '@/loan/networks'
-import { Contract } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -17,13 +19,6 @@ type SliceState = {
   estGas: {
     gas: number
     fetchStatus: FetchStatus
-  }
-  userBalances: {
-    [address: string]: {
-      fetchStatus: FetchStatus
-      crvUSD: string
-      scrvUSD: string
-    }
   }
   depositApproval: {
     approval: boolean
@@ -35,8 +30,10 @@ type SliceState = {
     value: string
   }
   stakingModule: DepositWithdrawModule
+  selectedStatisticsChart: StatisticsChart
+  revenueChartTimeOption: TimeOption
   inputAmount: string
-  crvUsdExchangeRate: {
+  scrvUsdExchangeRate: {
     fetchStatus: FetchStatus
     value: string
   }
@@ -60,10 +57,6 @@ type SliceState = {
     transactionStatus: TransactionStatus
     transaction: string | null
     errorMessage: string
-  }
-  pricesYieldData: {
-    fetchStatus: FetchStatus
-    data: PricesYieldData | null
   }
 }
 
@@ -89,12 +82,12 @@ export type ScrvUsdSlice = {
       withdraw: (amount: string) => Promise<void>
       redeem: (amount: string) => Promise<void>
     }
-    fetchUserBalances: () => void
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
-    fetchSavingsYield: (provider?: Provider | null) => void
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
+    setSelectedStatisticsChart: (chart: StatisticsChart) => void
+    setRevenueChartTimeOption: (timeOption: TimeOption) => void
     setInputAmount: (amount: string) => void
     setApproveInfinite: () => void
     setPreviewReset: () => void
@@ -115,19 +108,20 @@ const DEFAULT_STATE: SliceState = {
     gas: 0,
     fetchStatus: '',
   },
-  userBalances: {},
   depositApproval: {
     approval: false,
     allowance: '',
     fetchStatus: '',
   },
   stakingModule: 'deposit',
+  selectedStatisticsChart: 'savingsRate',
+  revenueChartTimeOption: '1M',
   inputAmount: '0',
   preview: {
     fetchStatus: '',
     value: '0',
   },
-  crvUsdExchangeRate: {
+  scrvUsdExchangeRate: {
     fetchStatus: 'loading',
     value: '',
   },
@@ -152,58 +146,6 @@ const DEFAULT_STATE: SliceState = {
     transaction: null,
     errorMessage: '',
   },
-  pricesYieldData: {
-    fetchStatus: 'loading',
-    data: null,
-  },
-}
-
-const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
-const YEAR = 86400 * 365.25 * 100
-const VAULT_ABI = [
-  {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'profitUnlockingRate',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint256' }],
-  },
-  {
-    stateMutability: 'view',
-    type: 'function',
-    name: 'totalSupply',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint256' }],
-  },
-]
-
-/**
- * Fetches the savings yield data from the Curve API.
- * If a provider is provided, the data is fetched from the vault contract directly.
- * That provides more accurate data and works even if our servers are down.
- */
-async function _fetchSavingsYield(provider?: Provider | null): Promise<PricesYieldDataResponse> {
-  if (provider) {
-    const vault = new Contract(VAULT_ADDRESS, VAULT_ABI, provider)
-    const [unlock_amount, supply, block] = await Promise.all([
-      vault.profitUnlockingRate(),
-      vault.totalSupply(),
-      provider.getBlock('latest'),
-    ])
-
-    const unlockAmountNum = Number(unlock_amount)
-    const supplyNum = Number(supply)
-
-    return {
-      last_updated: new Date(block?.timestamp ?? 0).toISOString(),
-      last_updated_block: block?.number ?? 0,
-      proj_apr: supplyNum > 0 ? (unlockAmountNum * 1e-12 * YEAR) / supplyNum : 0,
-      supply: supplyNum / 1e18,
-    }
-  }
-
-  const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/statistics`)
-  return await response.json()
 }
 
 const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -418,7 +360,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].fetchUserBalances()
+
+          // invalidate user balances query
+          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
+
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully deposited ${amount} crvUSD!`
@@ -473,7 +419,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].fetchUserBalances()
+
+          // invalidate user balances query
+          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
+
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
@@ -530,7 +480,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].fetchUserBalances()
+
+          // invalidate user balances query
+          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
+
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
@@ -551,15 +505,15 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       if (!lendApi) return
 
-      get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
+      get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
 
       try {
         const response = await lendApi.st_crvUSD.convertToShares(1)
 
-        get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'success', value: response })
+        get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'success', value: response })
       } catch (error) {
         console.error(error)
-        get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'error', value: '' })
+        get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'error', value: '' })
       }
     },
     fetchCrvUsdSupplies: async () => {
@@ -582,17 +536,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('crvUsdSupplies', { fetchStatus: 'error', crvUSD: '', scrvUSD: '' })
       }
     },
-    fetchSavingsYield: async (provider?: Provider | null) => {
-      get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'loading', data: null })
-
-      try {
-        const data = await _fetchSavingsYield(provider)
-        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'success', data })
-      } catch (error) {
-        console.error(error)
-        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'error', data: null })
-      }
-    },
     previewAction: async (flag: PreviewFlag, amount: string) => {
       const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
@@ -601,7 +544,10 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       if (!lendApi || !signerAddress) return
 
-      const userBalance = get()[sliceKey].userBalances[signerAddress] ?? { crvUSD: '0', scrvUSD: '0' }
+      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
+        'useScrvUsdUserBalances',
+        { signerAddress },
+      ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       try {
         let response = ''
@@ -620,41 +566,28 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('preview', { fetchStatus: 'error', value: '0' })
       }
     },
-    fetchUserBalances: async () => {
-      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-      const lendApi = get().lendApi
-
-      if (!lendApi || !signerAddress) return
-
-      try {
-        get()[sliceKey].setStateByKey('userBalances', { [signerAddress]: { fetchStatus: 'loading' } })
-
-        const response = await lendApi.st_crvUSD.userBalances(signerAddress)
-
-        const balances = {
-          crvUSD: response.crvUSD === '0.0' ? '0' : response.crvUSD,
-          scrvUSD: response.st_crvUSD === '0.0' ? '0' : response.st_crvUSD,
-        }
-
-        get()[sliceKey].setStateByKey('userBalances', { [signerAddress]: { fetchStatus: 'success', ...balances } })
-      } catch (error) {
-        console.error(error)
-        get()[sliceKey].setStateByKey('userBalances', {
-          [signerAddress]: { crvUSD: '', scrvUSD: '', fetchStatus: 'error' },
-        })
-      }
-    },
     setStakingModule: (stakingModule: DepositWithdrawModule) => {
       get()[sliceKey].setStateByKey('stakingModule', stakingModule)
       get()[sliceKey].setStakingModuleChangeReset()
     },
+    setSelectedStatisticsChart: (chart: StatisticsChart) => {
+      get()[sliceKey].setStateByKey('selectedStatisticsChart', chart)
+    },
+    setRevenueChartTimeOption: (timeOption: TimeOption) => {
+      get()[sliceKey].setStateByKey('revenueChartTimeOption', timeOption)
+    },
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => {
+      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
+        'useScrvUsdUserBalances',
+        { signerAddress: userAddress },
+      ]) ?? { crvUSD: '0', scrvUSD: '0' }
+
       if (stakingModule === 'deposit') {
-        const crvUsdBalance = get()[sliceKey].userBalances[userAddress].crvUSD
+        const crvUsdBalance = userBalance.crvUSD
 
         get()[sliceKey].setStateByKey('inputAmount', crvUsdBalance)
       } else {
-        const scrvUsdBalance = get()[sliceKey].userBalances[userAddress].scrvUSD
+        const scrvUsdBalance = userBalance.scrvUSD
 
         get()[sliceKey].setStateByKey('inputAmount', scrvUsdBalance)
       }
@@ -704,10 +637,13 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       const stakingModule = get()[sliceKey].stakingModule
       const getInputAmountApproved = get()[sliceKey].getInputAmountApproved()
       const gas = get()[sliceKey].estGas.gas
-      const userBalance = get()[sliceKey].userBalances[userAddress]?.crvUSD ?? '0'
+      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
+        'useScrvUsdUserBalances',
+        { signerAddress: userAddress },
+      ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       if (!getInputAmountApproved && stakingModule === 'deposit') {
-        if (new BigNumber(userBalance).isGreaterThan('0')) {
+        if (new BigNumber(userBalance.crvUSD).isGreaterThan('0')) {
           return gas + SCRVUSD_GAS_ESTIMATE.FIRST_DEPOSIT
         }
         return gas + SCRVUSD_GAS_ESTIMATE.FOLLOWING_DEPOSIT

@@ -275,6 +275,8 @@ export const SizesAndSpaces = {
     table: '96rem', // 1536px
     footer: '96rem', // 1536px
     connectWallet: '50rem', // 800px
+    actionCard: '29rem', // 464px
+    section: '59.5rem', // 952px
   },
   MaxHeight: {
     popover: '17rem', // 272px

@@ -28,7 +28,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
       <XAxis
         dataKey="day"
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickFormatter={formatDate}
+        tickFormatter={(value: string) => formatDate(new Date(value))}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         minTickGap={20}

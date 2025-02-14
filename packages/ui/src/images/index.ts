@@ -11,7 +11,6 @@ export { default as RCCrvUSDLogoXS } from './crvusd-logo/webp/crvUSD-xs.webp'
 // ICON
 export { ReactComponent as RCPointsIcon } from './points-icon.svg'
 export { ReactComponent as RCPinBottom } from './pin-bottom.svg'
-export { ReactComponent as RCYieldGrowth } from './yield-growth.svg'
 
 // THEME
 export { default as ChadImg } from './chad.png'
