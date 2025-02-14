@@ -1,41 +1,41 @@
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { REFRESH_INTERVAL } from '@loan/constants'
+import { REFRESH_INTERVAL } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
-import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@loan/utils/utilsRouter'
-import { getTokenName } from '@loan/utils/utilsLoan'
-import { hasLeverage } from '@loan/components/PageLoanCreate/utils'
-import { scrollToTop } from '@loan/utils/helpers'
-import usePageOnMount from '@loan/hooks/usePageOnMount'
-import useStore from '@loan/store/useStore'
-import useTitleMapper from '@loan/hooks/useTitleMapper'
+import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import { getTokenName } from '@/loan/utils/utilsLoan'
+import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
+import useTitleMapper from '@/loan/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentHeader,
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import ChartOhlcWrapper from '@loan/components/ChartOhlcWrapper'
+import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import Box from '@ui/Box'
-import DocumentHead from '@loan/layout/DocumentHead'
-import LoanCreate from '@loan/components/PageLoanCreate/index'
-import usePageVisibleInterval from '@loan/hooks/usePageVisibleInterval'
-import LoanInfoLlamma from '@loan/components/LoanInfoLlamma'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import LoanCreate from '@/loan/components/PageLoanCreate/index'
+import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
+import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Curve, Llamma } from '@/loan/types/loan.types'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -58,7 +58,9 @@ const Page: NextPage = () => {
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const provider = useWalletStore((s) => s.provider)
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
+  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
@@ -228,6 +230,8 @@ const Page: NextPage = () => {
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
           />
         </Box>
       )}

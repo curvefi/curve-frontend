@@ -1,17 +1,16 @@
-import type { TransferProps } from '@main/components/PagePool/types'
+import type { TransferProps } from '@/dex/components/PagePool/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import { getChainPoolIdActiveKey } from '@main/utils'
-import useStore from '@main/store/useStore'
-import useTokenAlert from '@main/hooks/useTokenAlert'
+import { getChainPoolIdActiveKey } from '@/dex/utils'
+import useStore from '@/dex/store/useStore'
+import useTokenAlert from '@/dex/hooks/useTokenAlert'
 
 import AlertBox from '@ui/AlertBox'
-import AlertSeedAmounts from '@main/components/PagePool/components/AlertSeedAmounts'
-import FormConnectWallet from '@main/components/FormConnectWallet'
-import { useSignerAddress } from '@main/entities/signer'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
+import FormConnectWallet from '@/dex/components/FormConnectWallet'
+import { useSignerAddress } from '@/dex/entities/signer'
 
 const TransferActions = ({
   children,
@@ -28,7 +27,7 @@ const TransferActions = ({
   const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
 

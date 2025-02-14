@@ -2,30 +2,27 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import { formatNumber } from '@ui/utils/utilsFormat'
+import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
 
 import Box from '@ui/Box'
+import type { LocksDaily } from '@curvefi/prices-api/dao'
 
 const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
-    const { day, amount } = payload[0].payload
+    const { day, amount } = payload[0].payload as LocksDaily & { amount: number }
 
     return (
       <TooltipWrapper>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
-            {amount ? <TooltipData>{day}</TooltipData> : <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>}
+            <TooltipData>{formatDate(day)}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>
-            {amount ? (
-              <TooltipData>{formatNumber(amount, { notation: 'compact' })}</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
+            <TooltipData>{formatNumber(amount, { notation: 'compact' })}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>

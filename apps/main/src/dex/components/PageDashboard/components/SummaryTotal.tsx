@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import {
   StyledTotalBalanceWrapper,
   SummaryInnerContent,
   SummarySpinnerWrapper,
-} from '@main/components/PageDashboard/components/Summary'
+} from '@/dex/components/PageDashboard/components/Summary'
 import { Chip } from '@ui/Typography'
 import Spinner from '@ui/Spinner'
 

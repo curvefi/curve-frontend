@@ -1,12 +1,12 @@
 import type { AlertType } from '@ui/AlertBox/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { getLoanCreatePathname } from '@lend/utils/utilsRouter'
-import useStore from '@lend/store/useStore'
+import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
+import useStore from '@/lend/store/useStore'
 
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'

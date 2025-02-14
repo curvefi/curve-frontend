@@ -2,32 +2,24 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 import { ROUTE } from '@/lend/constants'
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
-import 'intersection-observer'
-import 'focus-visible'
 import { HashRouter } from 'react-router-dom'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/lend/globalStyle'
 import Page from '@/lend/layout'
-import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
-import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/lend/networks'
 import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import { QueryProvider } from '@ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
-import { getLocaleFromUrl } from '@/lend/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-
-i18n.load({ en: messagesEn })
-i18n.activate('en')
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { shouldForwardProp } from '@ui/styled-containers'
+import { StyleSheetManager } from 'styled-components'
 
 const PageLlammasList = dynamic(() => import('@/lend/components/PageMarketList/Page'), { ssr: false })
 const PageLoanCreate = dynamic(() => import('@/lend/components/PageLoanCreate/Page'), { ssr: false })
@@ -42,8 +34,6 @@ const App: NextPage = () => {
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const theme = useUserProfileStore((state) => state.theme)
-  const locale = useUserProfileStore((state) => state.locale)
-  const initializeWallet = useWalletStore((s) => s.initialize)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -55,9 +45,7 @@ const App: NextPage = () => {
   // update on every state change
   useEffect(() => {
     if (!pageWidth) return
-
     document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
-    document.documentElement.lang = locale
   })
 
   // init app
@@ -66,17 +54,8 @@ const App: NextPage = () => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-      dynamicActivate(parsedLocale, data)
-    })()
-
     // init onboard
-    initializeWallet(locale, theme, networks)
+    useWallet.initialize(theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -119,13 +98,12 @@ const App: NextPage = () => {
       <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
-            <I18nProvider i18n={i18n}>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
               <QueryProvider persister={persister} queryClient={queryClient}>
                 <OverlayProvider>
                   <Page>
                     <Routes>
                       {SubRoutes}
-                      <Route path=":locale">{SubRoutes}</Route>
                       <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
                       <Route
                         path="/disclaimer"
@@ -143,7 +121,7 @@ const App: NextPage = () => {
                   <GlobalStyle />
                 </OverlayProvider>
               </QueryProvider>
-            </I18nProvider>
+            </StyleSheetManager>
           </HashRouter>
         )}
       </ThemeProvider>

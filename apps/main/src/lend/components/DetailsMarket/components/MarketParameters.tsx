@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
-import { SubTitle } from '@lend/components/DetailsMarket/styles'
+import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { useOneWayMarket } from '@lend/entities/chain'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 
 const MarketParameters = ({
   rChainId,
@@ -40,7 +40,7 @@ const MarketParameters = ({
       [
         { label: t`AMM swap fee`, value: parameters?.fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
         { label: t`Admin fee`, value: parameters?.admin_fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
-        { label: t`A`, value: parameters?.A, formatOptions: { useGrouping: false }, isError: parametersError },
+        { label: t`Band width factor`, value: parameters?.A, formatOptions: { useGrouping: false }, isError: parametersError },
         { label: t`Loan discount`, value: parameters?.loan_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
         { label: t`Liquidation discount`, value: parameters?.liquidation_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
         { label: t`Max LTV`, value: _getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, isAdvance: true, tooltip: t`Max possible loan at N=4` },

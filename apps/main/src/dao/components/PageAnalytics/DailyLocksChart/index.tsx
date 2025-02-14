@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 import { useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import Box from '@ui/Box'
 import Spinner from '../../Spinner'
-import ErrorMessage from '@dao/components/ErrorMessage'
+import ErrorMessage from '@/dao/components/ErrorMessage'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
 const DailyLocks: React.FC = () => {

@@ -9,16 +9,16 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
 
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@lend/components/ChartTooltip'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { HeathColorKey } from '@lend/types/lend.types'
+import { HeathColorKey } from '@/lend/types/lend.types'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]
@@ -153,7 +153,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
                 barSize={30}
                 fill="#1763fd00"
                 stroke={chartAxisColor}
-                shape={({ x, y, width, height }) => (
+                shape={({ x, y, width, height }: any) => (
                   <path
                     fill="url(#pattern-stripe)"
                     stroke={chartAxisColor}

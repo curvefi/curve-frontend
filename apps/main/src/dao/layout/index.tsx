@@ -1,30 +1,23 @@
-import { Locale } from '@ui-kit/widgets/Header/types'
-
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
-
+import { isChinese, t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
-import { getWalletChainId, useConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
-import { getNetworkFromUrl } from '@dao/utils/utilsRouter'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
+import { getNetworkFromUrl } from '@/dao/utils/utilsRouter'
 import { useHeightResizeObserver } from '@ui/hooks'
-import useStore from '@dao/store/useStore'
-
-import Header from '@dao/layout/Header'
+import useStore from '@/dao/store/useStore'
+import Header from '@/dao/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const globalAlertHeight = useHeightResizeObserver(globalAlertRef)
 
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-
-  const locale = useUserProfileStore((state) => state.locale)
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight)
@@ -57,7 +50,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     return total - layoutHeight.footer + 24
   }, [layoutHeight])
 
-  const sections = useMemo(() => getSections(locale), [locale])
+  const sections = useMemo(() => getSections(), [])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
@@ -77,7 +70,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (locale: Locale) => [
+const getSections = () => [
   {
     title: t`Documentation`,
     links: [
@@ -86,7 +79,7 @@ const getSections = (locale: Locale) => [
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
       { route: '/disclaimer', label: t`Risk Disclaimers` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
-      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+      ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },
   {

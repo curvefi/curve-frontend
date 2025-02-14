@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
-import TokenIcon from '@main/components/TokenIcon'
+import TokenIcon from '@/dex/components/TokenIcon'
 
 export const CategoryColumn = styled.div`
   display: flex;
@@ -80,7 +80,7 @@ export const SummaryDataPlaceholder = styled.p`
   }
 `
 
-export const StyledCheckmark = styled(({ ...rest }) => <Icon {...rest} />)`
+export const StyledCheckmark = styled(Icon)`
   color: var(--primary-400);
   margin-right: var(--spacing-1);
 `

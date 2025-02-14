@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
-import type { EstimatedGas as FormEstGas } from '@main/components/PagePool/types'
-import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@main/components/PagePool/Swap/types'
-import type { RoutesAndOutput, RoutesAndOutputModal } from '@main/components/PageRouterSwap/types'
+import type { State } from '@/dex/store/useStore'
+import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
+import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
+import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
 import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import {
@@ -10,11 +10,11 @@ import {
   DEFAULT_EXCHANGE_OUTPUT,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@main/components/PagePool/Swap/utils'
-import { NETWORK_TOKEN } from '@main/constants'
-import { getMaxAmountMinusGas } from '@main/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@main/utils/utilsSwap'
-import curvejsApi from '@main/lib/curvejs'
+} from '@/dex/components/PagePool/Swap/utils'
+import { NETWORK_TOKEN } from '@/dex/constants'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import curvejsApi from '@/dex/lib/curvejs'
 import {
   Balances,
   ChainId,
@@ -25,9 +25,8 @@ import {
   FnStepResponse,
   Pool,
   PoolData,
-} from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+} from '@/dex/types/main.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -94,10 +93,10 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
         return storedIgnoreExchangeRateCheck
       } else {
-        const provider = useWalletStore.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
+        const provider = useWallet.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
-          const json = await import('@main/components/PagePool/abis/stored_rates.json').then((module) => module.default)
+          const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then((module) => module.default)
           const iface = new Interface(json)
           const contract = new Contract(pool.address, iface.format(), provider)
           const storedRates = await contract.stored_rates()
@@ -346,7 +345,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       return resp
     },
     fetchStepApprove: async (activeKey, curve, pool, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       const storedActiveKey = get()[sliceKey].activeKey
@@ -381,7 +380,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       }
     },
     fetchStepSwap: async (activeKey, curve, poolData, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

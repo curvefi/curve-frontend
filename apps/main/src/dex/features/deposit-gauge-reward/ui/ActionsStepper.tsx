@@ -1,16 +1,16 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { FunctionComponent, useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { DepositRewardFormValues, DepositRewardStep } from '@main/features/deposit-gauge-reward/types'
-import { StepperContainer } from '@main/features/deposit-gauge-reward/ui'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@main/entities/gauge'
-import { REFRESH_INTERVAL } from '@main/constants'
-import useStore from '@main/store/useStore'
+import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
+import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'
+import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
+import { REFRESH_INTERVAL } from '@/dex/constants'
+import useStore from '@/dex/store/useStore'
 import Stepper from '@ui/Stepper'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { ChainId } from '@main/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 
 type TxInfo = {
   description: string

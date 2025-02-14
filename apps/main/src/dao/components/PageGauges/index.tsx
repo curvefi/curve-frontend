@@ -1,22 +1,22 @@
-import { SubNavItem } from '@dao/components/SubNav/types'
+import { SubNavItem } from '@/dao/components/SubNav/types'
 
 import styled from 'styled-components'
-import { useState, useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { useEffect, useState } from 'react'
+import { t } from '@ui-kit/lib/i18n'
 
-import useStore from '@dao/store/useStore'
-import { useConnectWallet } from '@ui-kit/features/connect-wallet'
+import useStore from '@/dao/store/useStore'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 import Box from '@ui/Box'
 
 import GaugesList from './GaugeList'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 import GaugeVoting from './GaugeVoting'
-import SubNav from '@dao/components/SubNav'
+import SubNav from '@/dao/components/SubNav'
 
 const Gauges = () => {
   const { isMdUp } = useStore((state) => state.layout)
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const userAddress = wallet?.accounts[0].address
 
   const [navSelection, setNavSelection] = useState('gaugeList')

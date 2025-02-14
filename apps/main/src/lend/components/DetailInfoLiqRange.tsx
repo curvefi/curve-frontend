@@ -1,19 +1,19 @@
-import type { LiqRangeSliderIdx } from '@lend/store/types'
+import type { LiqRangeSliderIdx } from '@/lend/store/types'
 
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import { Chip } from '@ui/Typography'
 import Button from '@ui/Button'
-import ChartLiquidationRange from '@lend/components/ChartLiquidationRange'
+import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, HealthMode } from '@lend/types/lend.types'
+import { ChainId, HealthMode } from '@/lend/types/lend.types'
 
 const DetailInfoLiqRange = ({
   rChainId,
@@ -190,13 +190,13 @@ const LiqRangeEditButton = styled(Button)`
   font-size: var(--font-size-2);
   text-align: right;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     border-color: inherit;
     color: inherit;
     opacity: 1;
   }
 
-  :disabled {
+  &:disabled {
     opacity: 0.5;
     cursor: initial;
   }

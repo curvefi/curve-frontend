@@ -1,27 +1,22 @@
-import { LendingSnapshot, useLendingSnapshots } from '@loan/entities/lending'
-import { LendingVault } from '@loan/entities/vaults'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
-import Stack from '@mui/material/Stack'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
-import { t } from '@lingui/macro'
-import { useMemo } from 'react'
-import { meanBy } from 'lodash'
+import { t } from '@ui-kit/lib/i18n'
 import Box from '@mui/material/Box'
+import { GraphType, useSnapshots } from '../hooks/useSnapshots'
 
 const graphSize = { width: 172, height: 48 }
-
-type GraphType = 'borrow' | 'lend'
 
 /**
  * Get the color for the line graph. Will be green if the last value is higher than the first, red if lower, and blue if equal.
  */
-function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType) {
+function getColor<T>(design: DesignSystem, data: T[], snapshotKey: keyof T) {
   if (!data.length) return undefined
-  const first = data[0][`${type}_apy`]
-  const last = data[data.length - 1][`${type}_apy`]
+  const first = data[0][snapshotKey]
+  const last = data[data.length - 1][snapshotKey]
   return design.Layer.Feedback[last === first ? 'Info' : last < first ? 'Error' : 'Success']
 }
 
@@ -33,59 +28,39 @@ const calculateDomain =
     return [first - diff, first + diff]
   }
 
+type RateCellProps = {
+  market: LlamaMarket
+  type: GraphType
+}
+
 /**
  * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
  */
-export const LineGraphCell = ({
-  vault,
-  type,
-  showChart,
-}: {
-  vault: LendingVault
-  type: GraphType
-  showChart: boolean // chart is hidden depending on the chart settings
-}) => {
-  const { data: snapshots, isLoading } = useLendingSnapshots({
-    blockchainId: vault.blockchainId,
-    contractAddress: vault.controllerAddress,
-  })
+export const LineGraphCell = ({ market, type }: RateCellProps) => {
+  const { snapshots, snapshotKey, isLoading, rate } = useSnapshots(market, type)
   const { design } = useTheme()
-  const currentValue = vault.rates[`${type}ApyPcent`]
-  const snapshotKey = `${type}_apy` as const
-
-  const rate = useMemo(
-    () => (snapshots?.length ? meanBy(snapshots, (row) => row[snapshotKey]) : currentValue),
-    [snapshots, currentValue, snapshotKey],
-  )
-  if (rate == null) {
-    return '-'
-  }
-
   return (
-    <Stack direction="row" alignItems="center" justifyContent="end" gap={3} data-testid={`line-graph-cell-${type}`}>
-      {rate.toPrecision(4)}%
-      {showChart && (
-        <Box data-testid={`line-graph-${type}`}>
-          {snapshots?.length ? (
-            <LineChart data={snapshots} {...graphSize} compact>
-              <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey])} />
-              <Line
-                type="monotone"
-                dataKey={snapshotKey}
-                stroke={getColor(design, snapshots, type)}
-                strokeWidth={1}
-                dot={<></>}
-              />
-            </LineChart>
-          ) : isLoading ? (
-            <Skeleton {...graphSize} />
-          ) : (
-            <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
-              {t`No historical data`}
-            </Typography>
-          )}
-        </Box>
-      )}
-    </Stack>
+    rate != null && (
+      <Box data-testid={`line-graph-${type}`}>
+        {snapshots?.length ? (
+          <LineChart data={snapshots} {...graphSize} compact>
+            <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
+            <Line
+              type="monotone"
+              dataKey={snapshotKey}
+              stroke={getColor(design, snapshots, snapshotKey)}
+              strokeWidth={1}
+              dot={<></>}
+            />
+          </LineChart>
+        ) : isLoading ? (
+          <Skeleton {...graphSize} />
+        ) : (
+          <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
+            {t`No historical data`}
+          </Typography>
+        )}
+      </Box>
+    )
   )
 }

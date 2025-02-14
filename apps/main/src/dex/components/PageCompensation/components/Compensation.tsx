@@ -1,21 +1,21 @@
-import type { EtherContract } from '@main/components/PageCompensation/types'
-import { t } from '@lingui/macro'
+import type { EtherContract } from '@/dex/components/PageCompensation/types'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useState } from 'react'
-import numbro from 'numbro'
 import styled from 'styled-components'
-import { copyToClipboard } from '@main/lib/utils'
-import { getErrorMessage, shortenTokenAddress } from '@main/utils'
-import curvejsApi from '@main/lib/curvejs'
-import useStore from '@main/store/useStore'
-import { StyledIconButton } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
-import AlertFormError from '@main/components/AlertFormError'
+import { copyToClipboard } from '@/dex/lib/utils'
+import { getErrorMessage, shortenTokenAddress } from '@/dex/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import useStore from '@/dex/store/useStore'
+import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import AlertFormError from '@/dex/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, ChainId, Provider } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
+import { formatNumber } from '@ui/utils'
 
 const Compensation = ({
   rChainId,
@@ -40,7 +40,6 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const networks = useStore((state) => state.networks.networks)
 
@@ -57,7 +56,7 @@ const Compensation = ({
     async (activeKey: string, contract: EtherContract['contract'], balance: number) => {
       if (!curve) return
       const notifyMessage = t`Please confirm claim ${balance} compensation.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
 
       try {
         setStep('claiming')
@@ -77,7 +76,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, notifyNotification, fetchGasInfo, provider, networks],
+    [curve, fetchGasInfo, provider, networks],
   )
 
   // reset
@@ -87,18 +86,7 @@ const Compensation = ({
     setTxInfoBar(null)
   }, [curve?.signerAddress])
 
-  let formattedBalance = null
-  if (typeof balance !== 'undefined' && !haveBalancesError) {
-    if (balance === 0) {
-      formattedBalance = 0
-    } else {
-      formattedBalance = numbro(balance).format({
-        thousandSeparated: true,
-        mantissa: 5,
-        trimMantissa: false,
-      })
-    }
-  }
+  const formattedBalance = balance && formatNumber(balance, { minimumFractionDigits: 5 })
 
   const disabled =
     balance === 0 || haveBalancesError || !curve || step === 'claimed' || step === 'error' || step === 'claiming'
@@ -121,13 +109,7 @@ const Compensation = ({
           {((formattedBalance && token === 'CRV') || vestedTotal > 0) && (
             <div>
               <strong>Remaining vested:</strong>{' '}
-              {vestedTotal > 0
-                ? numbro(vestedTotal).format({
-                    thousandSeparated: true,
-                    mantissa: 5,
-                    trimMantissa: false,
-                  })
-                : '-'}
+              {vestedTotal > 0 ? formatNumber(vestedTotal, { minimumFractionDigits: 5 }) : '-'}
             </div>
           )}
           {formattedBalance ? (

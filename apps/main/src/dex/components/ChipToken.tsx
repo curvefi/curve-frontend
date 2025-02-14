@@ -3,9 +3,9 @@ import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
-import { copyToClipboard } from '@main/lib/utils'
+import { copyToClipboard } from '@/dex/lib/utils'
 import { formatNumberUsdRate } from '@ui/utils'
 
 import Icon from '@ui/Icon'
@@ -101,7 +101,7 @@ const ChipTokenWrapper = styled.span`
   border: 1px solid transparent;
   font-size: var(--font-size-2);
 
-  :hover {
+  &:hover {
     margin-right: 4px;
     border-color: lightgray;
 

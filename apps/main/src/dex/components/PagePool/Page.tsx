@@ -1,17 +1,13 @@
 import type { NextPage } from 'next'
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled from 'styled-components'
-import { t } from '@lingui/macro'
-import { ROUTE } from '@main/constants'
-import { getPath } from '@main/utils/utilsRouter'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
-import { scrollToTop } from '@main/utils'
-import DocumentHead from '@main/layout/default/DocumentHead'
-import Transfer from '@main/components/PagePool/index'
-import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
-import Box from '@ui/Box'
+import { ROUTE } from '@/dex/constants'
+import { getPath } from '@/dex/utils/utilsRouter'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useStore from '@/dex/store/useStore'
+import { scrollToTop } from '@/dex/utils'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import Transfer from '@/dex/components/PagePool/index'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -27,7 +23,6 @@ const Page: NextPage = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
-  const provider = useWalletStore((s) => s.provider)
   const network = useStore((state) => state.networks.networks[rChainId])
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
@@ -59,45 +54,18 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={poolDataCacheOrApi?.pool?.name ?? 'Pool'} />
-      {!provider ? (
-        <Box display="flex" fillWidth>
-          <ConnectWalletWrapper>
-            <ConnectWallet
-              description={t`Connect wallet to view pool`}
-              connectText={t`Connect Wallet`}
-              loadingText={t`Connecting`}
-            />
-          </ConnectWalletWrapper>
-        </Box>
-      ) : (
-        rChainId &&
-        rFormType &&
-        rPoolId &&
-        poolDataCacheOrApi?.pool?.id === rPoolId &&
-        typeof hasDepositAndStake !== 'undefined' && (
-          <Transfer
-            curve={curve}
-            params={params}
-            poolData={poolData}
-            poolDataCacheOrApi={poolDataCacheOrApi}
-            routerParams={{ rChainId, rPoolId, rFormType }}
-            hasDepositAndStake={hasDepositAndStake}
-          />
-        )
+      {rChainId && rFormType && rPoolId && poolDataCacheOrApi?.pool?.id === rPoolId && hasDepositAndStake != null && (
+        <Transfer
+          curve={curve}
+          params={params}
+          poolData={poolData}
+          poolDataCacheOrApi={poolDataCacheOrApi}
+          routerParams={{ rChainId, rPoolId, rFormType }}
+          hasDepositAndStake={hasDepositAndStake}
+        />
       )}
     </>
   )
 }
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  margin: var(--spacing-5) auto auto;
-  padding: var(--spacing-4) var(--spacing-4);
-  background: var(--page--background-color);
-  background-color: var(--table--background-color);
-`
 
 export default Page

@@ -2,10 +2,6 @@ import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
-import { i18n } from '@lingui/core'
-import 'intersection-observer'
-import 'focus-visible'
-import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
@@ -13,22 +9,18 @@ import { HashRouter } from 'react-router-dom'
 import GlobalStyle from '@/loan/globalStyle'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import Page from '@/loan/layout/index'
-import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
-import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
 import { isMobile, removeExtraSpaces } from '@/loan/utils/helpers'
-import { getLocaleFromUrl } from '@/loan/utils/utilsRouter'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { QueryProvider } from '@ui/QueryProvider'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-
-i18n.load({ en: messagesEn })
-i18n.activate('en')
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { StyleSheetManager } from 'styled-components'
+import { shouldForwardProp } from '@ui/styled-containers'
 
 const PageMarketList = dynamic(() => import('@/loan/components/PageMarketList/Page'), { ssr: false })
 const PageLlamaMarkets = dynamic(
@@ -54,9 +46,7 @@ const App: NextPage = () => {
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const initializeWallet = useWalletStore((s) => s.initialize)
   const theme = useUserProfileStore((state) => state.theme)
-  const locale = useUserProfileStore((state) => state.locale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -68,9 +58,7 @@ const App: NextPage = () => {
   // update on every state change
   useEffect(() => {
     if (!pageWidth) return
-
     document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
-    document.documentElement.lang = locale
   })
 
   // init app
@@ -79,16 +67,7 @@ const App: NextPage = () => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-      dynamicActivate(parsedLocale, data)
-    })()
-
-    initializeWallet(locale, theme, networks)
+    useWallet.initialize(theme, networks)
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
@@ -141,13 +120,12 @@ const App: NextPage = () => {
       <ThemeProvider theme={theme}>
         {typeof window !== 'undefined' && appLoaded && (
           <HashRouter>
-            <I18nProvider i18n={i18n}>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
               <QueryProvider persister={persister} queryClient={queryClient}>
                 <OverlayProvider>
                   <Page>
                     <Routes>
                       {SubRoutes}
-                      <Route path=":locale">{SubRoutes}</Route>
                       <Route
                         path={`${ROUTE.PAGE_MARKETS}/*`}
                         element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />}
@@ -176,7 +154,7 @@ const App: NextPage = () => {
                   <GlobalStyle />
                 </OverlayProvider>
               </QueryProvider>
-            </I18nProvider>
+            </StyleSheetManager>
           </HashRouter>
         )}
       </ThemeProvider>

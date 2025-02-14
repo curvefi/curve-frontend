@@ -211,7 +211,7 @@ const MappedLineHeight = {
   lg: {
     mobile: '1.5rem', // 24px
     tablet: '1.5rem', // 24px
-    desktop: '1.75rem', // 28px
+    desktop: '2rem', // 32px
   },
   xl: {
     mobile: '2rem', // 32px
@@ -274,6 +274,7 @@ export const SizesAndSpaces = {
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
     footer: '96rem', // 1536px
+    connectWallet: '50rem', // 800px
   },
   MaxHeight: {
     popover: '17rem', // 272px

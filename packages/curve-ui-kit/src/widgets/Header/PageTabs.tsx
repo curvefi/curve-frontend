@@ -2,6 +2,7 @@ import { FunctionComponent, useMemo } from 'react'
 import type { AppPage } from './types'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
+import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
 
 export type PageTabsProps = {
@@ -20,8 +21,8 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, 
           ? pages.map((page) => ({
               label: page.label,
               value: page.route,
-              to: page.route,
-              component: RouterLink,
+              component: page.target ? Link : RouterLink,
+              ...(page.target ? { href: page.route, target: page.target } : { to: page.route }),
             }))
           : APP_LINK[selectedApp].pages.map(({ label, route }) => ({
               label: label(),
@@ -31,5 +32,7 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, 
       [currentApp, networkName, pages, selectedApp],
     )}
     variant="overlined"
+    muiVariant="standard"
+    sx={{ overflow: 'visible' }}
   />
 )

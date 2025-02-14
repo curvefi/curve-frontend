@@ -1,16 +1,16 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
 import { weiToEther } from '@ui-kit/utils'
-import usePoolTotalStaked from '@main/hooks/usePoolTotalStaked'
+import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
 
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import TooltipIcon from '@ui/Tooltip/TooltipIcon'
-import { PoolDataCacheOrApi } from '@main/types/main.types'
+import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 const DetailInfoExpectedApy = ({
   crvApr,

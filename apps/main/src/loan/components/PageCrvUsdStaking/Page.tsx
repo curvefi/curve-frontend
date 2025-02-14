@@ -1,21 +1,21 @@
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import Image from 'next/image'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { scrollToTop } from '@loan/utils/helpers'
-import usePageOnMount from '@loan/hooks/usePageOnMount'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
 
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 
-import DocumentHead from '@loan/layout/DocumentHead'
+import DocumentHead from '@/loan/layout/DocumentHead'
 import Box from '@ui/Box'
-import Settings from '@loan/layout/Settings'
+import Settings from '@/loan/layout/Settings'
 
-import CrvUsdStaking from '@loan/components/PageCrvUsdStaking'
+import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
 
 const mobileBreakpoint = '47.5rem'
 

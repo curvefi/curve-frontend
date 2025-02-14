@@ -1,25 +1,26 @@
 import type { NextPage } from 'next'
-import type { FilterListProps, SearchParams } from '@lend/components/PageMarketList/types'
+import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ROUTE } from '@lend/constants'
-import { getPath } from '@lend/utils/utilsRouter'
-import { scrollToTop } from '@lend/utils/helpers'
-import usePageOnMount from '@lend/hooks/usePageOnMount'
-import useSearchTermMapper from '@lend/hooks/useSearchTermMapper'
-import useStore from '@lend/store/useStore'
-import useTitleMapper from '@lend/hooks/useTitleMapper'
+import { ROUTE } from '@/lend/constants'
+import { getPath } from '@/lend/utils/utilsRouter'
+import { scrollToTop } from '@/lend/utils/helpers'
+import usePageOnMount from '@/lend/hooks/usePageOnMount'
+import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
+import useStore from '@/lend/store/useStore'
+import useTitleMapper from '@/lend/hooks/useTitleMapper'
 
 import { AppPageContainer } from '@ui/AppPage'
-import DocumentHead from '@lend/layout/DocumentHead'
-import MarketList from '@lend/components/PageMarketList/index'
-import Settings from '@lend/layout/Settings'
-import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
+import DocumentHead from '@/lend/layout/DocumentHead'
+import MarketList from '@/lend/components/PageMarketList/index'
+import Settings from '@/lend/layout/Settings'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
+import { isLoading } from '@ui/utils'
 
 enum SEARCH {
   filter = 'filter',
@@ -42,7 +43,9 @@ const Page: NextPage = () => {
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 
@@ -137,10 +140,12 @@ const Page: NextPage = () => {
       ) : (
         <Box display="flex" fillWidth>
           <ConnectWalletWrapper>
-            <ConnectWallet
+            <ConnectWalletPrompt
               description="Connect wallet to view markets list"
               connectText="Connect Wallet"
               loadingText="Connecting"
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>
         </Box>

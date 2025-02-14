@@ -1,29 +1,28 @@
 import React, { useCallback, useMemo, useRef } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE, ROUTE } from '@main/constants'
+import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { useParamsFromUrl, useRestPartialPathname } from '@main/utils/utilsRouter'
-import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
-import useStore from '@main/store/useStore'
+import { useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
+import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import useStore from '@/dex/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
-import useLayoutHeight from '@main/hooks/useLayoutHeight'
+import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, Networks } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ChainId, Networks } from '@/dex/types/main.types'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
@@ -34,7 +33,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
+  const { rChainId, rNetwork } = useNetworkFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
@@ -64,11 +63,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
                 : []),
               ...APP_LINK.main.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
             ],
-            rLocalePathname,
             routerPathname,
             rNetwork,
           ),
-        [hasRouter, network, networks, rChainId, rLocalePathname, rNetwork, routerCached, routerPathname],
+        [hasRouter, network, networks, rChainId, rNetwork, routerCached, routerPathname],
       )}
       ChainProps={{
         options: visibleNetworksList,
@@ -78,11 +76,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`${rLocalePathname}/${network}/${restPartialPathname}`)
+              navigate(`${network}/${restPartialPathname}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, networks, navigate, rLocalePathname, restPartialPathname, updateConnectState],
+          [rChainId, networks, navigate, restPartialPathname, updateConnectState],
         ),
       }}
       WalletProps={{

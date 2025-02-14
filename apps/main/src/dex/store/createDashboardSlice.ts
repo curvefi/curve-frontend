@@ -1,8 +1,8 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
+import type { State } from '@/dex/store/useStore'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
-import type { VecrvInfo } from '@main/components/PageCrvLocker/types'
+import type { VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type {
   DashboardDataMapper,
@@ -12,19 +12,18 @@ import type {
   Order,
   SortId,
   WalletPoolData,
-} from '@main/components/PageDashboard/types'
+} from '@/dex/components/PageDashboard/types'
 
 import { PromisePool } from '@supercharge/promise-pool'
 import orderBy from 'lodash/orderBy'
 
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@main/components/PageDashboard/utils'
-import { claimButtonsKey } from '@main/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@main/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
+import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
+import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
 import { shortenAccount } from '@ui/utils'
-import curvejsApi from '@main/lib/curvejs'
-import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import curvejsApi from '@/dex/lib/curvejs'
+import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -333,7 +332,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
       const { pools, gas } = get()
       const { claimableFees, ...sliceState } = get()[sliceKey]
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       const { chainId } = curve
@@ -376,7 +375,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         gas,
         [sliceKey]: { formValues, ...sliceState },
       } = get()
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update form

@@ -4,37 +4,24 @@ import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import {
-  getWalletChainId,
-  getWalletSignerAddress,
-  useConnectWallet,
-  useSetChain,
-  useSetLocale,
-} from '@ui-kit/features/connect-wallet'
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@loan/constants'
-import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getNetworkFromUrl, parseParams } from '@loan/utils/utilsRouter'
-import { initCurveJs, initLendApi } from '@loan/utils/utilsCurvejs'
-import networks, { networksIdMapper } from '@loan/networks'
-import useStore from '@loan/store/useStore'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, PageProps, Wallet } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
+import { getNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
+import { initCurveJs, initLendApi } from '@/loan/utils/utilsCurvejs'
+import networks, { networksIdMapper } from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
+import { ChainId, PageProps, Wallet } from '@/loan/types/loan.types'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
-  const { wallet, connect, disconnect, walletName, setWalletName } = useConnectWallet()
+  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
-  const updateWalletLocale = useSetLocale()
 
-  const connectState = useWalletStore((s) => s.connectState)
-  const chooseWallet = useWalletStore((s) => s.chooseWallet)
+  const connectState = useStore((state) => state.connectState)
   const curve = useStore((state) => state.curve)
   const { lendApi, updateLendApi } = useStore((state) => state)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-
-  const setLocale = useUserProfileStore((state) => state.setLocale)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -45,7 +32,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await chooseWallet(wallet)
           const prevCurveApi = curve
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -62,7 +48,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, chooseWallet, wallet],
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet],
   )
 
   const handleConnectLendApi = useCallback(
@@ -70,7 +56,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await chooseWallet(wallet)
           const prevApi = lendApi ?? null
           updateGlobalStoreByKey('isLoadingLendApi', true)
           const apiNew = await initLendApi(chainId, useWallet ? wallet : null)
@@ -86,7 +71,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [chooseWallet, wallet, lendApi, updateGlobalStoreByKey, updateLendApi, updateConnectState],
+    [wallet, lendApi, updateGlobalStoreByKey, updateLendApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(
@@ -136,7 +121,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             } else {
               const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
               if (foundNetwork && isActiveNetwork) {
-                navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
+                navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -151,7 +136,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState],
+    [connect, navigate, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -164,7 +149,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState],
+    [disconnect, parsedParams.rChainId, updateConnectState, setWalletName],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -181,7 +166,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
             const foundNetwork = networks[+currChainId as ChainId]?.id
             if (foundNetwork) {
-              navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
+              navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -204,7 +189,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
       if (!isActiveNetwork) {
         // network in router is not good, redirect to default network
-        navigate(`${parsedParams.rLocalePathname}/ethereum${ROUTE.PAGE_MARKETS}`)
+        navigate(`ethereum${ROUTE.PAGE_MARKETS}`)
       } else {
         updateGlobalStoreByKey('routerProps', { params, location, navigate })
         if (walletName) {
@@ -248,7 +233,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
-          navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
+          navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
         } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
@@ -260,16 +245,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   // locale switched
   useEffect(() => {
     if (isSuccess(connectState)) {
-      const rLocale = parsedParams.rLocale?.value ?? 'en'
-      if (rLocale !== document.documentElement.lang) {
-        ;(async () => {
-          let data = await import(`@/locales/${rLocale}/messages`)
-          dynamicActivate(rLocale, data)
-        })()
-        setLocale(rLocale)
-        updateAppLocale(rLocale)
-        updateWalletLocale(rLocale)
-      } else if (
+      if (
         walletChainId &&
         curve &&
         curve.chainId === walletChainId &&

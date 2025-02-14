@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { formatNumber } from '@ui/utils'
-import { getTokenName } from '@loan/utils/utilsLoan'
-import useStore from '@loan/store/useStore'
+import { getTokenName } from '@/loan/utils/utilsLoan'
+import useStore from '@/loan/store/useStore'
 
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { Llamma } from '@loan/types/loan.types'
+import { Llamma } from '@/loan/types/loan.types'
 
 const AlertSoftLiquidation = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])

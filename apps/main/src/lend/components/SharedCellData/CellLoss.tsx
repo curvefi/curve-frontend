@@ -1,6 +1,6 @@
 import React from 'react'
 
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 

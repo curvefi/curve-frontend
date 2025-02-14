@@ -1,18 +1,18 @@
 import type { NextPage } from 'next'
 
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@loan/utils/helpers'
-import usePageOnMount from '@loan/hooks/usePageOnMount'
-import useStore from '@loan/store/useStore'
+import { scrollToTop } from '@/loan/utils/helpers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
 
 import { ExternalLink } from '@ui/Link'
-import DocumentHead from '@loan/layout/DocumentHead'
-import IntegrationsComp from '@loan/components/PageIntegrations/index'
+import DocumentHead from '@/loan/layout/DocumentHead'
+import IntegrationsComp from '@/loan/components/PageIntegrations/index'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const Page: NextPage = () => {

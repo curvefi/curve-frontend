@@ -1,38 +1,38 @@
-import type { FormStatus, FormValues, StepKey } from '@main/components/PagePool/Withdraw/types'
-import type { Slippage, TransferProps } from '@main/components/PagePool/types'
+import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
+import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled, { css } from 'styled-components'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import { amountsDescription } from '@main/components/PagePool/utils'
+import { amountsDescription } from '@/dex/components/PagePool/utils'
 import { mediaQueries } from '@ui/utils/responsive'
-import { resetFormAmounts } from '@main/components/PagePool/Withdraw/utils'
+import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { formatNumber } from '@ui/utils'
-import useStore from '@main/store/useStore'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@main/components/PagePool'
-import { FieldsWrapper } from '@main/components/PagePool/styles'
+import useStore from '@/dex/store/useStore'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import { Radio, RadioGroup } from '@ui/Radio'
-import AlertFormError from '@main/components/AlertFormError'
-import AlertSlippage from '@main/components/AlertSlippage'
+import AlertFormError from '@/dex/components/AlertFormError'
+import AlertSlippage from '@/dex/components/AlertSlippage'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import DetailInfoSlippage from '@main/components/PagePool/components/DetailInfoSlippage'
-import DetailInfoEstGas from '@main/components/DetailInfoEstGas'
-import DetailInfoSlippageTolerance from '@main/components/PagePool/components/DetailInfoSlippageTolerance'
-import SelectedLpTokenExpected from '@main/components/PagePool/components/SelectedLpTokenExpected'
-import SelectedOneCoinExpected from '@main/components/PagePool/components/SelectedOneCoinExpected'
-import FieldLpToken from '@main/components/PagePool/components/FieldLpToken'
-import FieldToken from '@main/components/PagePool/components/FieldToken'
+import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
+import SelectedLpTokenExpected from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
+import SelectedOneCoinExpected from '@/dex/components/PagePool/components/SelectedOneCoinExpected'
+import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
+import FieldToken from '@/dex/components/PagePool/components/FieldToken'
 import Stepper from '@ui/Stepper'
-import TransferActions from '@main/components/PagePool/components/TransferActions'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
-import WarningModal from '@main/components/PagePool/components/WarningModal'
-import { CurveApi, Pool, PoolData } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -58,7 +58,6 @@ const FormWithdraw = ({
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
@@ -92,18 +91,18 @@ const FormWithdraw = ({
   const handleApproveClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'WITHDRAW', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleWithdrawClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -112,7 +111,7 @@ const FormWithdraw = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, network],
+    [fetchStepWithdraw, network],
   )
 
   const getSteps = useCallback(

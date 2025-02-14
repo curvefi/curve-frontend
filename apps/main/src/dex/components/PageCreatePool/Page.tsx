@@ -1,24 +1,27 @@
 import type { NextPage } from 'next'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import DocumentHead from '@main/layout/default/DocumentHead'
-import PoolCreation from '@main/components/PageCreatePool/index'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
+import PoolCreation from '@/dex/components/PageCreatePool/index'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt } from '@ui-kit/features/connect-wallet'
-import { CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { CurveApi } from '@/dex/types/main.types'
+import useStore from '@/dex/store/useStore'
+import { isLoading } from '@ui/utils'
 
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const { curve } = usePageOnMount(params, location, navigate)
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
 
   useEffect(() => {
     scrollToTop()
@@ -34,6 +37,8 @@ const Page: NextPage = () => {
               description="Connect wallet to access pool creation"
               connectText="Connect Wallet"
               loadingText="Connecting"
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>
         </Box>

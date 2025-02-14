@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
-import networks from '@dao/networks'
-import useStore from '@dao/store/useStore'
+import networks from '@/dao/networks'
+import useStore from '@/dao/store/useStore'
 
-import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Box from '@ui/Box'
-import CopyIconButton from '@dao/components/CopyIconButton'
-import ExternalLinkIconButton from '@dao/components/ExternalLinkIconButton'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import CopyIconButton from '@/dao/components/CopyIconButton'
+import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined

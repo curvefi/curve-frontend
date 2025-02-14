@@ -1,7 +1,7 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import useStore from '@main/store/useStore'
-import { STABLESWAP } from '@main/components/PageCreatePool/constants'
+import useStore from '@/dex/store/useStore'
+import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import Box from '@ui/Box'
 import {
   CategoryColumn,
@@ -11,8 +11,8 @@ import {
   SummaryData,
   SummaryDataPlaceholder,
   StyledCheckmark,
-} from '@main/components/PageCreatePool/Summary/styles'
-import { ChainId } from '@main/types/main.types'
+} from '@/dex/components/PageCreatePool/Summary/styles'
+import { ChainId } from '@/dex/types/main.types'
 
 type Props = {
   chainId: ChainId

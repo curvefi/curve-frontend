@@ -1,15 +1,15 @@
 import type { ButtonProps } from '@ui/Button/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useMemo, useState } from 'react'
-import { t } from '@lingui/macro'
-import { DEFAULT_FORM_STATUS } from '@main/components/PageDashboard/utils'
-import { claimButtonsKey } from '@main/components/PageDashboard/components/FormClaimFees'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
-import useStore from '@main/store/useStore'
+import { t } from '@ui-kit/lib/i18n'
+import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
+import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
+import useStore from '@/dex/store/useStore'
 import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormClaimFeesButtons = ({
   activeKey,
@@ -30,7 +30,6 @@ const FormClaimFeesButtons = ({
   const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
   const formProcessing = useStore((state) => state.dashboard.formStatus.formProcessing)
   const fetchStepClaimFees = useStore((state) => state.dashboard.fetchStepClaimFees)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}
@@ -62,7 +61,7 @@ const FormClaimFeesButtons = ({
 
       const { scanTxPath } = network
       const notifyMessage = t`Please approve claim veCRV rewards.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
 
       // loading state
       setClaimingKey(key)
@@ -104,17 +103,7 @@ const FormClaimFeesButtons = ({
         />,
       )
     },
-    [
-      activeKey,
-      curve,
-      fetchStepClaimFees,
-      notifyNotification,
-      setFormStatus,
-      setSteps,
-      setTxInfoBar,
-      walletAddress,
-      network,
-    ],
+    [activeKey, curve, fetchStepClaimFees, setFormStatus, setSteps, setTxInfoBar, walletAddress, network],
   )
 
   return (

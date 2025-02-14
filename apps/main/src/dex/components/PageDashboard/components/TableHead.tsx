@@ -1,11 +1,11 @@
-import type { Order, SortId, TableLabel } from '@main/components/PageDashboard/types'
+import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import { SORT_ID } from '@main/components/PageDashboard/utils'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import { SORT_ID } from '@/dex/components/PageDashboard/utils'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import { Th, Thead, TheadSortButton } from '@ui/Table'
 import Box from '@ui/Box'

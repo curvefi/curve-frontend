@@ -1,9 +1,9 @@
-import type { FormStatus } from '@main/components/PageIntegrations/types'
+import type { FormStatus } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationTag } from '@ui/Integration/types'
 
 import React from 'react'
 import { Item } from 'react-stately'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import Icon from '@ui/Icon'
@@ -26,7 +26,7 @@ const SelectIntegrationTags = ({
     loading={formStatus.isLoading}
     minWidth="200px"
     selectedKey={filterKey}
-    onSelectionChange={(filterKey) => updatePath({ filterKey })}
+    onSelectionChange={(filterKey: string) => updatePath({ filterKey })}
     onSelectionDelete={filterKey !== 'all' ? () => updatePath({ filterKey: 'all' }) : undefined}
   >
     {({ id, displayName, color = 'transparent' }: IntegrationTag) => {

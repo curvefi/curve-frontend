@@ -1,24 +1,24 @@
 import { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { BigNumber } from 'bignumber.js'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import {
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
   TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
   POOL_PRESETS,
-} from '@main/components/PageCreatePool/constants'
-import SelectPreset from '@main/components/PageCreatePool/Parameters/SelectPreset'
-import SelectPoolImplementation from '@main/components/PageCreatePool/Parameters/SelectPoolImplementation'
-import NumberField from '@main/components/PageCreatePool/components/NumberField'
-import InitialPrice from '@main/components/PageCreatePool/Parameters/InitialPrice'
-import Switch from '@main/components/PageCreatePool/components/Switch'
-import TokenWarningBox from '@main/components/PageCreatePool/components/WarningBox'
+} from '@/dex/components/PageCreatePool/constants'
+import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
+import SelectPoolImplementation from '@/dex/components/PageCreatePool/Parameters/SelectPoolImplementation'
+import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
+import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
+import Switch from '@/dex/components/PageCreatePool/components/Switch'
+import TokenWarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
   curve: CurveApi
@@ -452,8 +452,8 @@ const ResetButton = styled(Button)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  :hover:not(:disabled),
-  :active:not(:disabled) {
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
     color: var(--button_filled-hover-contrast--background-color);
   }
 `

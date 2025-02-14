@@ -1,12 +1,9 @@
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
-
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
 import { useCallback, useEffect } from 'react'
-
-import useStore from '@dao/store/useStore'
-
+import useStore from '@/dao/store/useStore'
 import ProposalsFilters from './components/ProposalsFilters'
 import Proposal from './Proposal'
 import Box from '@ui/Box'
@@ -14,8 +11,8 @@ import SearchInput from '@ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Icon from '@ui/Icon'
-import ErrorMessage from '@dao/components/ErrorMessage'
-import { ProposalListFilter, SortByFilterProposals } from '@dao/types/dao.types'
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import { SortByFilterProposals } from '@/dao/types/dao.types'
 
 const Proposals = () => {
   const {
@@ -92,7 +89,7 @@ const Proposals = () => {
               items={PROPOSAL_FILTERS}
               selectedKey={activeFilter}
               minWidth="9rem"
-              onSelectionChange={(key) => setActiveFilter(key as ProposalListFilter)}
+              onSelectionChange={setActiveFilter}
             />
             <StyledProposalsFilters
               filters={PROPOSAL_FILTERS}

@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@main/store/useStore'
-import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@main/components/PageCrvLocker/types'
+import type { State } from '@/dex/store/useStore'
+import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -9,10 +9,10 @@ import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   DEFAULT_USER_LOCKED_CRV_INFO,
-} from '@main/components/PageCrvLocker/utils'
+} from '@/dex/components/PageCrvLocker/utils'
 
 import { formatNumber, shortenAccount } from '@ui/utils'
-import curvejsApi from '@main/lib/curvejs'
+import curvejsApi from '@/dex/lib/curvejs'
 import dayjs from '@ui-kit/lib/dayjs'
 import {
   ChainId,
@@ -20,9 +20,8 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
-} from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+} from '@/dex/types/main.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -168,7 +167,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       return resp
     },
     fetchStepApprove: async (activeKey, curve, rFormType, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
@@ -199,7 +198,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepCreate: async (activeKey, curve, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       if (formValues.lockedAmt && formValues.utcDate && formValues.days) {
@@ -246,7 +245,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepIncreaseCrv: async (activeKey, curve, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -279,7 +278,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepIncreaseTime: async (activeKey, curve, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       let cFormStatus = cloneDeep(get()[sliceKey].formStatus)

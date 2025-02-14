@@ -1,30 +1,30 @@
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useMemo, type Key } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
-import { NETWORK_TOKEN } from '@main/constants'
-import useTokensMapper from '@main/hooks/useTokensMapper'
-import useStore from '@main/store/useStore'
-import { formatNumber } from '@main/utils'
-import { DepositRewardStep, type DepositRewardFormValues } from '@main/features/deposit-gauge-reward/types'
+import { NETWORK_TOKEN } from '@/dex/constants'
+import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import useStore from '@/dex/store/useStore'
+import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
   FlexItemMaxBtn,
   FlexItemToken,
   StyledInputProvider,
   StyledTokenComboBox,
-} from '@main/features/deposit-gauge-reward/ui/styled'
-import { useImageBaseUrl } from '@main/entities/chain'
+} from '@/dex/features/deposit-gauge-reward/ui/styled'
+import { useImageBaseUrl } from '@/dex/entities/chain'
 import {
   useDepositRewardApproveIsMutating,
   useDepositRewardIsMutating,
   useGaugeRewardsDistributors,
-} from '@main/entities/gauge'
-import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@main/entities/signer'
-import { useTokens } from '@main/entities/token'
+} from '@/dex/entities/gauge'
+import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/dex/entities/signer'
+import { useTokens } from '@/dex/entities/token'
 import { FlexContainer } from '@ui/styled-containers'
-import { ChainId, Token } from '@main/types/main.types'
+import { ChainId, Token } from '@/dex/types/main.types'
+import { formatNumber } from '@ui/utils'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId
@@ -125,7 +125,7 @@ export const AmountTokenInput: React.FC<{
               haveSigner && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(tokenBalance),
+                description: formatNumber(tokenBalance, { showAllFractionDigits: true }),
               }
             }
             testId="deposit-amount"

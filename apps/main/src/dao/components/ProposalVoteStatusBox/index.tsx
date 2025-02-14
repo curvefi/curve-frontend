@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { breakpoints, formatNumber } from '@ui/utils'
 
 import Box from '@ui/Box'
-import ProgressBar from '@dao/components/ProposalVoteStatusBox/ProgressBar'
+import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
 import Tooltip, { TooltipIcon } from '@ui/Tooltip'
-import { ProposalData } from '@dao/types/dao.types'
+import { ProposalData } from '@/dao/types/dao.types'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData

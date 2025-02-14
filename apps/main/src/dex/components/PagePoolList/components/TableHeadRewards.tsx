@@ -1,7 +1,7 @@
-import type { PoolListTableLabel } from '@main/components/PagePoolList/types'
-import type { SortKey } from '@main/components/PagePoolList/types'
+import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
+import type { SortKey } from '@/dex/components/PagePoolList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 
 import Box from '@ui/Box'

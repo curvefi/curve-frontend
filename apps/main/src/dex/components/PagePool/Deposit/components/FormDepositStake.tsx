@@ -1,29 +1,29 @@
 import type { ReactNode } from 'react'
-import type { FormValues, FormStatus, StepKey, LoadMaxAmount } from '@main/components/PagePool/Deposit/types'
-import type { Slippage, TransferProps } from '@main/components/PagePool/types'
-import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@main/components/PagePool'
-import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@main/components/PagePool/Deposit/utils'
-import { amountsDescription, tokensDescription } from '@main/components/PagePool/utils'
+import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
+import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
+import type { Step } from '@ui/Stepper/types'
+import { t } from '@ui-kit/lib/i18n'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
+import { amountsDescription, tokensDescription } from '@/dex/components/PagePool/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@main/components/AlertFormError'
-import AlertSlippage from '@main/components/AlertSlippage'
-import FieldsDeposit from '@main/components/PagePool/Deposit/components/FieldsDeposit'
-import DetailInfoSlippage from '@main/components/PagePool/components/DetailInfoSlippage'
-import DetailInfoEstGas from '@main/components/DetailInfoEstGas'
-import DetailInfoEstLpTokens from '@main/components/PagePool/components/DetailInfoEstLpTokens'
-import DetailInfoExpectedApy from '@main/components/PagePool/components/DetailInfoExpectedApy'
-import DetailInfoSlippageTolerance from '@main/components/PagePool/components/DetailInfoSlippageTolerance'
-import HighSlippagePriceImpactModal from '@main/components/PagePool/components/WarningModal'
+import AlertFormError from '@/dex/components/AlertFormError'
+import AlertSlippage from '@/dex/components/AlertSlippage'
+import FieldsDeposit from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
+import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import DetailInfoEstLpTokens from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
+import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
+import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
+import HighSlippagePriceImpactModal from '@/dex/components/PagePool/components/WarningModal'
 import Stepper from '@ui/Stepper'
-import TransferActions from '@main/components/PagePool/components/TransferActions'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, Pool, PoolData } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormDepositStake = ({
   chainIdPoolId,
@@ -53,7 +53,6 @@ const FormDepositStake = ({
   const slippage = useStore((state) => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore((state) => state.poolDeposit.fetchStepDepositStake)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const network = useStore((state) => state.networks.networks[rChainId])
@@ -90,18 +89,18 @@ const FormDepositStake = ({
   const handleApproveClick = useCallback(
     async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your ${tokensDescription(formValues.amounts)}.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, 'DEPOSIT_STAKE', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification],
+    [fetchStepApprove],
   )
 
   const handleDepositStakeClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm deposit and staking of ${tokenText} LP Tokens at max ${maxSlippage}% slippage.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDepositStake(activeKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -110,7 +109,7 @@ const FormDepositStake = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDepositStake, notifyNotification, network],
+    [fetchStepDepositStake, network],
   )
 
   const getSteps = useCallback(

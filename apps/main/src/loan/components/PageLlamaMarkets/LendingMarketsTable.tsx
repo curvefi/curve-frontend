@@ -1,120 +1,42 @@
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
-import { t } from '@lingui/macro'
-import { CompactUsdCell, LineGraphCell, PoolTitleCell, UtilizationCell } from './cells'
+import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
-import { LendingVault } from '@loan/entities/vaults'
-import {
-  ColumnDef,
-  createColumnHelper,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
-import { LendingMarketsFilters } from '@loan/components/PageLlamaMarkets/LendingMarketsFilters'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import {
-  isFeatureVisible,
-  useVisibilitySettings,
-  VisibilityGroup,
-} from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
+import { DEFAULT_SORT, DEFAULT_VISIBILITY, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
 
-const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
-
-const columnHelper = createColumnHelper<LendingVault>()
-
-/** Define a hidden column. */
-const hidden = (id: DeepKeys<LendingVault>) =>
-  columnHelper.accessor(id, {
-    filterFn: (row, columnId, filterValue) => !filterValue?.length || filterValue.includes(row.getValue(columnId)),
-    meta: { hidden: true },
-  })
-
-const [borrowChartId, lendChartId] = ['borrowChart', 'lendChart']
-
-/** Columns for the lending markets table. */
-const columns = [
-  columnHelper.accessor('assets', {
-    header: t`Collateral • Borrow`,
-    cell: PoolTitleCell,
-    size: ColumnWidth.lg,
-  }),
-  columnHelper.accessor('rates.borrowApyPcent', {
-    header: t`7D Borrow Rate`,
-    cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" showChart={isFeatureVisible(c, borrowChartId)} />,
-    meta: { type: 'numeric' },
-    size: ColumnWidth.md,
-  }),
-  columnHelper.accessor('rates.lendApyPcent', {
-    header: t`7D Supply Yield`,
-    cell: (c) => <LineGraphCell vault={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
-    meta: { type: 'numeric' },
-    size: ColumnWidth.md,
-  }),
-  columnHelper.accessor('utilizationPercent', {
-    header: t`Utilization`,
-    cell: UtilizationCell,
-    meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
-  }),
-  columnHelper.accessor('totalSupplied.usdTotal', {
-    header: () => t`Available Liquidity`,
-    cell: CompactUsdCell,
-    meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
-  }),
-  // following columns are used to configure and filter tanstack, but they are displayed together in PoolTitleCell
-  hidden('blockchainId'),
-  hidden('assets.collateral.symbol'),
-  hidden('assets.borrowed.symbol'),
-] satisfies ColumnDef<LendingVault, any>[]
-
-const DEFAULT_SORT = [{ id: 'totalSupplied.usdTotal', desc: true }]
-
-const DEFAULT_VISIBILITY: VisibilityGroup[] = [
-  {
-    label: t`Markets`,
-    options: [
-      { label: t`Available Liquidity`, id: 'totalSupplied.usdTotal', active: true, type: 'column' },
-      { label: t`Utilization`, id: 'utilizationPercent', active: true, type: 'column' },
-    ],
-  },
-  {
-    label: t`Borrow`,
-    options: [{ label: t`Chart`, id: borrowChartId, active: true, type: 'feature' }],
-  },
-  {
-    label: t`Lend`,
-    options: [{ label: t`Chart`, id: lendChartId, active: true, type: 'feature' }],
-  },
-]
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 export const LendingMarketsTable = ({
   onReload,
   data,
   headerHeight,
+  isError,
 }: {
   onReload: () => void
-  data: LendingVault[]
+  data: LlamaMarket[]
   headerHeight: string
+  isError: boolean
 }) => {
-  const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
-  const { columnSettings, columnVisibility, featureVisibility, toggleVisibility } =
-    useVisibilitySettings(DEFAULT_VISIBILITY)
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters()
+  const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(DEFAULT_VISIBILITY)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({
-    columns,
+    columns: LLAMA_MARKET_COLUMNS,
     data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, columnVisibility, featureVisibility, columnFilters },
+    state: { sorting, columnVisibility, columnFilters },
     onSortingChange,
-    maxMultiSortColCount: 3, // allow 3 columns to be sorted at once
+    maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
 
   return (
@@ -125,7 +47,12 @@ export const LendingMarketsTable = ({
         maxWidth: MaxWidth.table,
       }}
     >
-      <DataTable table={table} headerHeight={headerHeight} rowHeight="3xl" emptyText={t`No markets found`}>
+      <DataTable
+        table={table}
+        headerHeight={headerHeight}
+        rowHeight="3xl"
+        emptyText={isError ? t`Could not load markets` : t`No markets found`}
+      >
         <TableFilters
           title={t`Llamalend Markets`}
           subtitle={t`Select a market to view more details`}
@@ -133,8 +60,12 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
+          onResetFilters={resetFilters}
+          collapsible={
+            <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+          }
         >
-          <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+          <MarketsFilterChips columnFiltersById={columnFiltersById} setColumnFilter={setColumnFilter} />
         </TableFilters>
       </DataTable>
     </Stack>

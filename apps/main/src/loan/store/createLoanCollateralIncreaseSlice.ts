@@ -1,19 +1,18 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormStatus, FormValues } from '@loan/components/PageLoanManage/CollateralIncrease/types'
-import type { FormDetailInfo, FormEstGas } from '@loan/components/PageLoanManage/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@loan/components/PageLoanManage/utils'
-import { loadingLRPrices } from '@loan/utils/utilsCurvejs'
-import networks from '@loan/networks'
+} from '@/loan/components/PageLoanManage/utils'
+import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import networks from '@/loan/networks'
 import cloneDeep from 'lodash/cloneDeep'
-import { ChainId, Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -143,7 +142,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
 
     // step
     fetchStepApprove: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -171,7 +170,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
       }
     },
     fetchStepIncrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

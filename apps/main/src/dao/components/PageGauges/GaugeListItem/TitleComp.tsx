@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 
 import { shortenTokenAddress } from '@ui/utils'
-import networks from '@dao/networks'
+import networks from '@/dao/networks'
 import Box from '@ui/Box'
-import TokenIcons from '@dao/components/TokenIcons'
-import SmallLabel from '@dao/components/SmallLabel'
-import CopyIconButton from '@dao/components/CopyIconButton'
-import ExternalLinkIconButton from '@dao/components/ExternalLinkIconButton'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import TokenIcons from '@/dao/components/TokenIcons'
+import SmallLabel from '@/dao/components/SmallLabel'
+import CopyIconButton from '@/dao/components/CopyIconButton'
+import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 interface TitleCompProps {
   gaugeData: GaugeFormattedData

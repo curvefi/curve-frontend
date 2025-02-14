@@ -1,15 +1,15 @@
 import Grid from '@mui/material/Grid2'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import React, { useMemo } from 'react'
-import { LendingVault } from '@loan/entities/vaults'
 import { capitalize } from 'lodash'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import Typography from '@mui/material/Typography'
-import { t } from '@lingui/macro'
-import { MultiSelectFilter } from '@loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
+import { t } from '@ui-kit/lib/i18n'
+import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { formatNumber, getImageBaseUrl } from '@ui/utils'
 import TokenIcon from '../TokenIcon'
-import { MinimumSliderFilter } from '@loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 
@@ -17,14 +17,14 @@ const { Spacing } = SizesAndSpaces
  * Displays a token with its icon and symbol.
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
-const Token = ({ symbol, data, field }: { symbol: string; data: LendingVault[]; field: 'collateral' | 'borrowed' }) => {
-  const { blockchainId, address } = useMemo(
+const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; field: 'collateral' | 'borrowed' }) => {
+  const { chain, address } = useMemo(
     () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
     [data, field, symbol],
   )
   return (
     <>
-      <TokenIcon imageBaseUrl={getImageBaseUrl(blockchainId)} token={symbol} address={address} size="mui-md" />
+      <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} token={symbol} address={address} size="mui-md" />
       <Typography component="span" variant="bodyMBold">
         {symbol}
       </Typography>
@@ -40,17 +40,17 @@ export const LendingMarketsFilters = ({
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
-  data: LendingVault[]
+  data: LlamaMarket[]
 }) => (
   <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="blockchainId"
-        renderItem={(blockchainId) => (
+        field="chain"
+        renderItem={(chain) => (
           <>
-            <ChainIcon blockchainId={blockchainId} size="md" />
+            <ChainIcon blockchainId={chain} size="md" />
             <Typography component="span" variant="bodyMBold">
-              {capitalize(blockchainId)}
+              {capitalize(chain)}
             </Typography>
           </>
         )}
@@ -79,7 +79,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
       <MinimumSliderFilter
-        field="totalSupplied.usdTotal"
+        field="liquidityUsd"
         title={t`Min Liquidity`}
         format={(value) => formatNumber(value, { currency: 'USD' })}
         {...props}

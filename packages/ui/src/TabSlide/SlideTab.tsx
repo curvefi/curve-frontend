@@ -55,7 +55,7 @@ const Label = styled.label`
 
   opacity: 0.7;
 
-  :hover:not(.disabled) {
+  &:hover:not(.disabled) {
     opacity: 1;
   }
 

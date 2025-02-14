@@ -9,18 +9,17 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@carbon/icons-react": "11.17.0",
+    "@carbon/icons-react": "11.54.0",
+    "@lingui/detect-locale": "^5.2.0",
     "bignumber.js": "^9.1.2",
-    "ethers": "^6.13.4",
+    "ethers": "^6.13.5",
     "lodash": "4.17.21",
-    "react-aria": "3.22.0",
-    "react-stately": "3.18.0"
+    "react-aria": "3.37.0",
+    "react-stately": "3.35.0"
   },
   "devDependencies": {
-    "@types/carbon__icons-react": "11.16.0",
     "@types/react": "*",
     "@types/react-dom": "*",
-    "@types/styled-components": "5.1.14",
     "eslint": "*",
     "eslint-config-custom": "*",
     "tsconfig": "*"
@@ -29,7 +28,7 @@
     "eslint": "*",
     "react": "*",
     "react-dom": "*",
-    "react-router-dom": "^6",
-    "styled-components": "^5"
+    "react-router-dom": "*",
+    "styled-components": "*"
   }
 }

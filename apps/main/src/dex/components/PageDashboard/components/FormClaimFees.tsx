@@ -1,17 +1,17 @@
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_STATUS } from '@main/components/PageDashboard/utils'
+import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { formatNumber } from '@ui/utils'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
-import useStore from '@main/store/useStore'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
+import useStore from '@/dex/store/useStore'
 
-import AlertFormError from '@main/components/AlertFormError'
-import FormClaimFeesButtons from '@main/components/PageDashboard/components/FormClaimFeesButtons'
+import AlertFormError from '@/dex/components/AlertFormError'
+import FormClaimFeesButtons from '@/dex/components/PageDashboard/components/FormClaimFeesButtons'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 
 export enum claimButtonsKey {

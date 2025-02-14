@@ -1,18 +1,15 @@
-import { t } from '@lingui/macro'
-import { useLingui } from '@lingui/react'
-
-import useStore from '@main/store/useStore'
+import { t } from '@ui-kit/lib/i18n'
+import useStore from '@/dex/store/useStore'
 
 import {
   CategoryDataRow,
   SummaryDataTitle,
   SummaryData,
   SummaryDataPlaceholder,
-} from '@main/components/PageCreatePool/Summary/styles'
-import { POOL_PRESETS } from '@main/components/PageCreatePool/constants'
+} from '@/dex/components/PageCreatePool/Summary/styles'
+import { POOL_PRESETS } from '@/dex/components/PageCreatePool/constants'
 
 const PoolPresetSummary = () => {
-  const { i18n } = useLingui()
   const { poolPresetIndex } = useStore((state) => state.createPool)
 
   return (
@@ -25,7 +22,7 @@ const PoolPresetSummary = () => {
       ) : (
         <CategoryDataRow>
           <SummaryDataTitle>{t`Preset:`}</SummaryDataTitle>
-          <SummaryData>{i18n._(POOL_PRESETS[poolPresetIndex].descriptionName)}</SummaryData>
+          <SummaryData>{t(POOL_PRESETS[poolPresetIndex].descriptionName)}</SummaryData>
         </CategoryDataRow>
       )}
     </>

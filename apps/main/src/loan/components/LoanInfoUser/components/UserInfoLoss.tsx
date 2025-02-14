@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
-import InpChipUsdRate from '@loan/components/InpChipUsdRate'
+import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
 import TextCaption from '@ui/TextCaption'
-import { Llamma } from '@loan/types/loan.types'
+import { Llamma } from '@/loan/types/loan.types'
 
 const SMALL_AMOUNT = 0.0001
 

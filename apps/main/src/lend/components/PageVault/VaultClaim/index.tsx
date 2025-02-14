@@ -1,28 +1,28 @@
-import type { FormStatus, RewardType } from '@lend/components/PageVault/VaultClaim/types'
+import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 import type { Step } from '@ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
-import useStore from '@lend/store/useStore'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
+import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Spinner from '@ui/Spinner'
 import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import Stats from '@ui/Stats'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, MarketClaimable, PageContentProps } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Api, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -30,7 +30,6 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const formStatus = useStore((state) => state.vaultClaim.formStatus)
   const claimable = useStore((state) => state.vaultClaim.claimable[userActiveKey])
   const fetchStepClaim = useStore((state) => state.vaultClaim.fetchStepClaim)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultClaim.setFormValues)
   const resetState = useStore((state) => state.vaultClaim.resetState)
 
@@ -65,7 +64,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
 
       const amount = type === 'crv' ? `${crv} CRV` : _getRewardsAmount(rewards)
       const notifyMessage = t`claim rewards ${amount}`
-      const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
@@ -81,9 +80,9 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [fetchStepClaim, notifyNotification, reset, userActiveKey],
+    [fetchStepClaim, reset, userActiveKey],
   )
 
   const getSteps = useCallback(

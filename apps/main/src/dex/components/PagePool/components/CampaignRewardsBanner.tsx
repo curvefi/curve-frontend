@@ -1,7 +1,7 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
-import useCampaignRewardsMapper from '@main/hooks/useCampaignRewardsMapper'
+import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 

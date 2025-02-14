@@ -1,16 +1,16 @@
 import { useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import { VOTES_LABELS } from '../constants'
 
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils/'
 
-import PaginatedTable from '@dao/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@dao/components/PaginatedTable/TableRow'
-import { UserProposalVoteData, UserProposalVotesSortBy } from '@dao/types/dao.types'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
+import { UserProposalVoteData, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 
 interface UserProposalVotesTableProps {
   userAddress: string

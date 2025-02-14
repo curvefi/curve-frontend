@@ -1,8 +1,8 @@
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { enforce, group, test } from 'vest'
 import { ChainParams } from '@ui-kit/lib/model/query'
-import useStore from '@lend/store/useStore'
-import { ChainId } from '@lend/types/lend.types'
+import useStore from '@/lend/store/useStore'
+import { ChainId } from '@/lend/types/lend.types'
 
 export const chainValidationGroup = ({ chainId }: ChainParams) =>
   group('chainValidation', () => {

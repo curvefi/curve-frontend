@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid2'
 import Typography from '@mui/material/Typography'
 import type { ReactNode } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { SoftLiquidationIcon } from '@ui-kit/shared/icons/SoftLiquidationIcon'
 import { CardStackPlusIcon } from '@ui-kit/shared/icons/CardStackPlusIcon'
 import { SignIcon } from '@ui-kit/shared/icons/SignIcon'
@@ -40,7 +40,7 @@ export const LendTableFooter = () => (
         <Typography variant="headingSBold" textAlign="center">{t`Why Use Llamalend?`}</Typography>
       </Grid>
       <GridItem title={t`Efficient collateral`} icon={SoftLiquidationIcon}>
-        {t`Llamalend is powered by the cutting edge LLAMA liquidation engine.`}{' '}
+        {t`Llamalend is powered by the cutting edge LLAMMA liquidation engine.`}{' '}
         {t`Soft - liquidations convert your collateral when in the collateral erosion zone to protect your from liquidations, ultimately letting improve your capital efficiency.`}
       </GridItem>
       <GridItem title={t`High Security by Design`} icon={SignIcon}>

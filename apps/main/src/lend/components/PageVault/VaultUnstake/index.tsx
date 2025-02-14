@@ -1,25 +1,25 @@
-import type { FormValues, FormStatus, StepKey } from '@lend/components/PageVault/VaultUnstake/types'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultUnstake/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
-import useStore from '@lend/store/useStore'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@lend/components/PageLoanManage/styles'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
+import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
-import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
-import InpChipVaultSharesUsdRate from '@lend/components/InpChipVaultShareUsdRate'
+import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
+import InpChipVaultSharesUsdRate from '@/lend/components/InpChipVaultShareUsdRate'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, PageContentProps } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -30,7 +30,6 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   const formValues = useStore((state) => state.vaultUnstake.formValues)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepUnstake = useStore((state) => state.vaultUnstake.fetchStepUnstake)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.vaultUnstake.setFormValues)
   const resetState = useStore((state) => state.vaultUnstake.resetState)
 
@@ -70,7 +69,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
       const { amount } = formValues
 
       const notifyMessage = t`unstake ${amount} vault shares`
-      const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepUnstake(payloadActiveKey, rFormType, api, market, formValues)
@@ -81,9 +80,9 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepUnstake, notifyNotification, reset],
+    [activeKey, fetchStepUnstake, reset],
   )
 
   const getSteps = useCallback(

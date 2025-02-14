@@ -16,11 +16,9 @@ import SvgIcon from '@mui/material/SvgIcon'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
+import { t } from '@ui-kit/lib/i18n'
 
-const {
-  Spacing,
-  Grid: { Column_Spacing },
-} = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 /**
  * A button for controlling the DataTable.
@@ -59,25 +57,29 @@ export const TableFilters = ({
   title,
   subtitle,
   onReload,
+  onResetFilters,
   learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
+  collapsible,
   children,
 }: {
   title: string
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
+  onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
   toggleVisibility: (columnId: string) => void
+  collapsible: ReactNode
   children: ReactNode
 }) => {
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Stack paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
-      <Grid container spacing={Column_Spacing}>
+    <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
+      <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
@@ -101,7 +103,19 @@ export const TableFilters = ({
           </Button>
         </Grid>
       </Grid>
-      <Collapse in={filterExpanded}>{filterExpanded != null && children}</Collapse>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        paddingInline={Spacing.md}
+        flexWrap="wrap"
+      >
+        {children}
+        <Button color="ghost" size="small" onClick={onResetFilters} data-testid="reset-filter">
+          {t`Reset Filters`}
+        </Button>
+      </Stack>
+      <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
         <TableVisibilitySettingsPopover
@@ -132,7 +146,7 @@ export function useColumnFilters() {
       ]),
     [setColumnFilters],
   )
-  const columnFiltersById = columnFilters.reduce(
+  const columnFiltersById: Record<string, unknown> = columnFilters.reduce(
     (acc, filter) => ({
       ...acc,
       [filter.id]: filter.value,
@@ -140,5 +154,7 @@ export function useColumnFilters() {
     {},
   )
 
-  return [columnFilters, columnFiltersById, setColumnFilter] as const
+  const resetFilters = useCallback(() => setColumnFilters([]), [setColumnFilters])
+
+  return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
 }

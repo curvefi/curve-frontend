@@ -103,7 +103,7 @@ const Button = styled.span`
   > svg {
     opacity: 0.6;
 
-    :hover {
+    &:hover {
       opacity: 1;
     }
   }

@@ -1,5 +1,5 @@
-import type { FormType, VecrvInfo } from '@dao/components/PageVeCrv/types'
-import { t } from '@lingui/macro'
+import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 import styled from 'styled-components'
 import { formatNumber } from '@ui/utils'

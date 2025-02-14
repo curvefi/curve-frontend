@@ -1,23 +1,22 @@
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import type { FormValues } from '@main/components/PageIntegrations/types'
+import type { FormValues } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
 import { useFocusRing } from '@react-aria/focus'
-import { Trans } from '@lingui/macro'
+import { Trans } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { ROUTE } from '@main/constants'
+import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils'
-import { getPath } from '@main/utils/utilsRouter'
-import { parseSearchParams } from '@main/components/PageIntegrations/utils'
-import useStore from '@main/store/useStore'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
+import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
-import SelectIntegrationTags from '@main/components/PageIntegrations/components/SelectIntegrationTags'
-import { ChainId, NetworkEnum } from '@main/types/main.types'
+import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
+import { ChainId, NetworkEnum } from '@/dex/types/main.types'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
@@ -35,7 +34,7 @@ const IntegrationsComp = ({
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)

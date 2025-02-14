@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -11,11 +11,11 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
-} from '@main/components/PageCreatePool/constants'
+} from '@/dex/components/PageCreatePool/constants'
 
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
   curve: CurveApi

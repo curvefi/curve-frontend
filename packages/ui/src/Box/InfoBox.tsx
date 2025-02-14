@@ -20,7 +20,7 @@ const Message = styled.span`
   font-weight: var(--font-weight--semi-bold);
   color: var(--white);
 
-  ::before {
+  &::before {
     content: '!';
     padding: 0 var(--spacing-2);
     margin-right: var(--spacing-2);

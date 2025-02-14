@@ -1,17 +1,17 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@lend/store/useStore'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
-import type { FormStatus, FormValues } from '@lend/components/PageVault/VaultDepositMint/types'
+import type { State } from '@/lend/store/useStore'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultDepositMint/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@lend/components/PageLoanManage/utils'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@lend/components/PageVault/VaultDepositMint/utils'
-import apiLending, { helpers } from '@lend/lib/apiLending'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultDepositMint/utils'
+import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId, Api, FutureRates } from '@lend/types/lend.types'
-import { setMissingProvider, useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Api, ChainId, FutureRates } from '@/lend/types/lend.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -137,7 +137,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
 
     // steps
     fetchStepApprove: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -162,7 +162,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       }
     },
     fetchStepDepositMint: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus

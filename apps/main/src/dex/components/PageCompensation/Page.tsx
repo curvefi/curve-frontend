@@ -1,22 +1,23 @@
 import type { NextPage } from 'next'
-import type { EtherContract } from '@main/components/PageCompensation/types'
+import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { Contract, Interface } from 'ethers'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Box, { BoxHeader } from '@ui/Box'
 import Button from '@ui/Button'
-import DocumentHead from '@main/layout/default/DocumentHead'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
 import ExternalLink from '@ui/Link/ExternalLink'
-import FormCompensation from '@main/components/PageCompensation/index'
+import FormCompensation from '@/dex/components/PageCompensation/index'
 import IconButton from '@ui/IconButton'
-import Settings from '@main/layout/default/Settings'
+import Settings from '@/dex/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { Provider } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Provider } from '@/dex/types/main.types'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import useStore from '@/dex/store/useStore'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -24,13 +25,13 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
-  const provider = useWalletStore((s) => s.provider)
-  const connectWallet = useWalletStore((s) => s.connectWallet)
+  const { provider } = useWallet()
+  const connectWallet = useStore((s) => s.updateConnectState)
   const [contracts, setContracts] = useState<EtherContract[]>([])
 
   const fetchData = useCallback(async (provider: Provider) => {
     const signer = await provider.getSigner()
-    const contracts = await import('@main/components/PageCompensation/abis').then((modules) =>
+    const contracts = await import('@/dex/components/PageCompensation/abis').then((modules) =>
       Object.entries(modules).map(([, { contractAddress, abi, ...rest }]) => {
         const iface = new Interface(abi)
         const contract = new Contract(contractAddress, iface.format(), signer)
@@ -71,7 +72,7 @@ const Page: NextPage = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button fillWidth loading={!pageLoaded} size="large" variant="filled" onClick={connectWallet}>
+              <Button fillWidth loading={!pageLoaded} size="large" variant="filled" onClick={() => connectWallet()}>
                 {t`Connect Wallet`}
               </Button>
             </>

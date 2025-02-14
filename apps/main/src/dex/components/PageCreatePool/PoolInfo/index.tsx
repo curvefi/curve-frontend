@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
-import useStore from '@main/store/useStore'
-import { STABLESWAP } from '@main/components/PageCreatePool/constants'
+import { t } from '@ui-kit/lib/i18n'
+import useStore from '@/dex/store/useStore'
+import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import TextInput from '@main/components/PageCreatePool/components/TextInput'
-import { ChainId } from '@main/types/main.types'
+import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
+import { ChainId } from '@/dex/types/main.types'
 
 type Props = {
   chainId: ChainId

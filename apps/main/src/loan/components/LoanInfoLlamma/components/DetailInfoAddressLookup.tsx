@@ -1,16 +1,16 @@
-import type { StatsProps } from '@loan/components/LoanInfoLlamma/styles'
+import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 
 import React from 'react'
 import styled from 'styled-components'
 
-import { copyToClipboard, shortenTokenAddress } from '@loan/utils/helpers'
-import networks from '@loan/networks'
+import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
+import networks from '@/loan/networks'
 
-import { StyledStats } from '@loan/components/LoanInfoLlamma/styles'
+import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { ChainId } from '@loan/types/loan.types'
+import { ChainId } from '@/loan/types/loan.types'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -49,7 +49,7 @@ const CopyIconButton = styled(IconButton)`
   border: 1px solid transparent;
   opacity: 0.5;
 
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
     background-color: var(--button_icon--hover--background-color);
   }

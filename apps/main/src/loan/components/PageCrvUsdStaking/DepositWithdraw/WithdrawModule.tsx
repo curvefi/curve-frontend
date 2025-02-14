@@ -1,9 +1,9 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import BigNumber from 'bignumber.js'
 
-import useStore from '@loan/store/useStore'
-import { isLoading } from '@loan/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
@@ -17,10 +17,10 @@ import {
   StyledIcon,
   StyledInputComp,
 } from './styles'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const WithdrawModule: React.FC = () => {
-  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
+  const { signerAddress } = useWallet()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 

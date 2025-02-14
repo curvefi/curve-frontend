@@ -1,24 +1,24 @@
-import type { ColumnKeys, FormValues, SearchParams } from '@main/components/PagePoolList/types'
+import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 
-import { COLUMN_KEYS } from '@main/components/PagePoolList/utils'
+import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
 import { Td, Tr, CellInPool } from '@ui/Table'
 import Box from '@ui/Box'
-import CampaignRewardsRow from '@main/components/CampaignRewardsRow'
-import PoolLabel from '@main/components/PoolLabel'
-import TCellRewards from '@main/components/PagePoolList/components/TableCellRewards'
-import TableCellVolume from '@main/components/PagePoolList/components/TableCellVolume'
-import TableCellTvl from '@main/components/PagePoolList/components/TableCellTvl'
-import TableCellRewardsBase from '@main/components/PagePoolList/components/TableCellRewardsBase'
-import TableCellRewardsCrv from '@main/components/PagePoolList/components/TableCellRewardsCrv'
-import TableCellRewardsOthers from '@main/components/PagePoolList/components/TableCellRewardsOthers'
-import { RewardsApy, PoolData, PoolDataCache, Tvl, Volume } from '@main/types/main.types'
+import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
+import PoolLabel from '@/dex/components/PoolLabel'
+import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
+import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
+import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
+import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
+import TableCellRewardsCrv from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
+import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { RewardsApy, PoolData, PoolDataCache, Tvl, Volume } from '@/dex/types/main.types'
 
 export type TableRowProps = {
   index: number

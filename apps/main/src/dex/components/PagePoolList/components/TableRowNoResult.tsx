@@ -1,11 +1,11 @@
-import type { SearchParams } from '@main/components/PagePoolList/types'
+import type { SearchParams } from '@/dex/components/PagePoolList/types'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@ui-kit/lib/i18n'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { shortenAccount } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 import { Td, Tr } from '@ui/Table'
 import Box from '@ui/Box'

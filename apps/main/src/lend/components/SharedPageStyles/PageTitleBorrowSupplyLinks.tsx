@@ -1,8 +1,8 @@
 import type { Params } from 'react-router-dom'
 
-import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@lend/utils/utilsRouter'
-import { helpers } from '@lend/lib/apiLending'
-import useStore from '@lend/store/useStore'
+import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
+import { helpers } from '@/lend/lib/apiLending'
+import useStore from '@/lend/store/useStore'
 
 import { AppPageFormTitleLinks } from '@ui/AppPage'
 import InternalLink from '@ui/Link/InternalLink'
@@ -51,7 +51,7 @@ const StyledLink = styled(InternalLink)`
   text-decoration: none;
 
   &.active,
-  :hover.active {
+  &:hover.active {
     color: inherit;
     /* border-bottom: 3px solid var(--nav--page--color); */
   }

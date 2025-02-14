@@ -1,4 +1,4 @@
-import { Blues, Grays, Greens, Reds, Violet, TransitionFunction } from './0_primitives'
+import { Blues, Grays, Greens, Reds, TransitionFunction, Violet } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
@@ -148,13 +148,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
-  const Feedback = {
-    Success: Greens[300],
-    Info: Layer[3].Fill,
-    Warning: Reds[400],
-    Error: Reds[500],
-  } as const
-
   const Tabs = {
     Transition,
     UnderLined: {
@@ -204,6 +197,10 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
 
   const Chips = {
+    BorderRadius: {
+      Clickable: 0,
+      NonClickable: '100px',
+    },
     Default: {
       Label: Text.TextColors.Secondary,
       Fill: Layer[2].Fill,
@@ -246,7 +243,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
           Default: Grays[400],
           Active: Light.Text.highlight,
           Filled: Grays[850],
-          Error: Feedback.Error,
+          Error: Reds[500],
         },
       },
       Nested: {
@@ -256,7 +253,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
           Default: Grays[400],
           Active: Light.Text.highlight,
           Filled: Grays[850],
-          Error: Feedback.Error,
+          Error: Reds[500],
         },
       },
     },
@@ -285,7 +282,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Color,
     Text,
     Button,
-    Feedback,
     Layer,
     Tabs,
     Chips,
@@ -493,13 +489,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
-  const Feedback = {
-    Success: Greens[400],
-    Info: Layer[3].Fill,
-    Warning: Reds[300],
-    Error: Reds[500],
-  } as const
-
   const Tabs = {
     Transition,
     UnderLined: {
@@ -547,6 +536,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
 
   const Chips = {
+    BorderRadius: {
+      Clickable: 0,
+      NonClickable: '100px',
+    },
     Default: {
       Label: Text.TextColors.Secondary,
       Fill: Layer[2].Fill,
@@ -589,7 +582,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
           Default: color[600],
           Active: Dark.Text.highlight,
           Filled: color[75],
-          Error: Feedback.Error,
+          Error: Reds[500],
         },
       },
       Nested: {
@@ -599,7 +592,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
           Default: color[600],
           Active: Dark.Text.highlight,
           Filled: color[75],
-          Error: Feedback.Error,
+          Error: Reds[500],
         },
       },
     },
@@ -628,7 +621,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Color,
     Text,
     Button,
-    Feedback,
     Layer,
     Tabs,
     Chips,
@@ -779,13 +771,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
-  const Feedback = {
-    Success: Greens[400],
-    Info: Layer[3].Fill,
-    Warning: Reds[400],
-    Error: Reds[500],
-  } as const
-
   const Tabs = {
     Transition,
     UnderLined: {
@@ -835,6 +820,10 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
 
   const Chips = {
+    BorderRadius: {
+      Clickable: 0,
+      NonClickable: 0,
+    },
     Default: {
       Label: Text.TextColors.Secondary,
       Fill: Layer[1].Fill,
@@ -877,7 +866,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
           Default: Violet[200],
           Active: Chad.Text.highlight,
           Filled: Violet[400],
-          Error: Feedback.Error,
+          Error: Reds[500],
         },
       },
       Nested: {
@@ -887,7 +876,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
           Default: Violet[200],
           Active: Chad.Text.highlight,
           Filled: Violet[400],
-          Error: Feedback.Error,
+          Error: Reds[500],
         },
       },
     },
@@ -916,7 +905,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Color,
     Text,
     Button,
-    Feedback,
     Layer,
     Tabs,
     Chips,

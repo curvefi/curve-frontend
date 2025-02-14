@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { shortenAccount } from '@ui/utils'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 
 import { SpinnerWrapper } from '@ui/Spinner'
 

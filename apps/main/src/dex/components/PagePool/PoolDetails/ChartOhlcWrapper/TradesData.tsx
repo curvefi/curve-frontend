@@ -1,17 +1,12 @@
 import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
 import styled from 'styled-components'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import {
-  convertFullTime,
-  convertTime,
-  convertTimeAgo,
-} from '@main/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 import Box from '@ui/Box'
-import TokenIcon from '@main/components/TokenIcon'
+import TokenIcon from '@/dex/components/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
-import useStore from '@main/store/useStore'
-import { ChainId } from '@main/types/main.types'
+import useStore from '@/dex/store/useStore'
+import { ChainId } from '@/dex/types/main.types'
 
 const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tradesTokens: LpTradeToken[] }> = ({
   lpTradesData,
@@ -66,7 +61,7 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
           </TradeTo>
         </Event>
         <TimestampColumn>
-          <Tooltip tooltip={`${convertTime(transaction.time)} ${convertFullTime(transaction.time)}`}>
+          <Tooltip tooltip={`${convertTime(transaction.time)} ${convertDate(transaction.time).toLocaleDateString()}`}>
             {convertTimeAgo(transaction.time)}
           </Tooltip>
         </TimestampColumn>

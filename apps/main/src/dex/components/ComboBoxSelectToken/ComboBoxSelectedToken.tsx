@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { shortenTokenAddress } from '@main/utils'
+import { shortenTokenAddress } from '@/dex/utils'
 
 import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
-import TokenIcon from '@main/components/TokenIcon'
-import { Token } from '@main/types/main.types'
+import TokenIcon from '@/dex/components/TokenIcon'
+import { Token } from '@/dex/types/main.types'
 
 const ComboBoxSelectedToken = ({
   imageBaseUrl,

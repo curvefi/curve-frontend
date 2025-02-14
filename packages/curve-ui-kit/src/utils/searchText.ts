@@ -1,6 +1,6 @@
-import { isEqualWith, uniqWith } from 'lodash'
-import Fuse from 'fuse.js'
-import FuseResult = Fuse.FuseResult
+import { get, isEqualWith, uniqWith } from 'lodash'
+import Fuse, { FuseResult } from 'fuse.js'
+import uniqBy from 'lodash/uniqBy'
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
@@ -26,13 +26,24 @@ export function groupSearchTerms(searchText: string) {
     }, defaultGrouped)
 }
 
+/**
+ * Helper function to replace all '₮' with 'T' in the data.
+ * Officially ₮ is the symbol of the Mongolian Tugrik, but it is misused by Tether.
+ */
+const cleanValue = <T>(term: T): T =>
+  (Array.isArray(term) ? term.map(cleanValue) : typeof term === 'string' ? term.replace(/₮/g, 'T') : term) as T
+
 // should only return results if pool/market have all searched tokens
 function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
+  const hasTether = searchTerms.some((term) => term.includes('₮')) // allow searching for Tether-only with '₮'
   const fuse = new Fuse<T>(datas, {
-    ignoreLocation: false,
+    ignoreLocation: true,
+    ignoreDiacritics: true,
+    isCaseSensitive: false,
     includeMatches: true,
     minMatchCharLength: 2,
     threshold: 0.01,
+    ...(!hasTether && { getFn: (obj: T, path: string | string[]) => cleanValue(get(obj, path)) }),
     keys,
   })
 
@@ -47,7 +58,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
 }
 
 // should return any pool/market that have any of the searched addresses
-function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens: string[]; other: string[] }) {
+function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens: string[]; other?: string[] }) {
   let uniqueResults: { tokens: SearchTermsFuseResult<T>; other: SearchTermsFuseResult<T> } = { tokens: [], other: [] }
 
   if (keys.tokens) {
@@ -59,7 +70,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
       keys: keys.tokens,
     })
 
-    let results: Fuse.FuseResult<T>[] = []
+    let results: FuseResult<T>[] = []
     searchTerms.forEach((term) => {
       results = [...results, ...fuse.search(term)]
     })
@@ -76,7 +87,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
       keys: keys.other,
     })
 
-    let results: Fuse.FuseResult<T>[] = []
+    let results: FuseResult<T>[] = []
     searchTerms.forEach((term) => {
       results = [...results, ...fuse.search(term)]
     })
@@ -91,7 +102,7 @@ export function searchByText<T>(
   searchText: string,
   datas: T[],
   tokenKeys: string[],
-  addressKeys: { tokens: string[]; other: string[] },
+  addressKeys: { tokens: string[]; other?: string[] },
 ) {
   const { addresses, tokens } = groupSearchTerms(searchText)
 
@@ -103,4 +114,17 @@ export function searchByText<T>(
     tokensResult: [...tokensResult, ...addressesResult.tokens],
     addressesResult: addressesResult.other,
   }
+}
+
+export function filterTokens<T extends { address: string }>(
+  filterValue: string,
+  tokens: T[],
+  endsWith: (string: string, substring: string) => boolean,
+): T[] {
+  const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
+  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
+  if (result.length > 0) {
+    return result.map((r) => r.item)
+  }
+  return tokens.filter((item) => endsWith(item.address, filterValue))
 }

@@ -5,7 +5,7 @@ import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { copyToClipboard, shortenTokenAddress } from '@lend/utils/helpers'
+import { copyToClipboard, shortenTokenAddress } from '@/lend/utils/helpers'
 import Icon from '@ui/Icon'
 
 interface ButtonProps extends AriaButtonProps {
@@ -103,7 +103,7 @@ const ChipPoolWrapper = styled.span`
   min-height: 21px;
   border: 1px solid transparent;
 
-  :hover {
+  &:hover {
     border-color: lightgray;
 
     ${ChipPoolAdditionalInfo} {

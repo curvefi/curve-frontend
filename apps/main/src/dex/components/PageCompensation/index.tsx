@@ -1,15 +1,15 @@
-import type { Balances, EtherContract, VestedTotals } from '@main/components/PageCompensation/types'
+import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
 
 import { Contract, ContractRunner, Interface } from 'ethers'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
 
-import { getErrorMessage } from '@main/utils'
+import { getErrorMessage } from '@/dex/utils'
 
-import AlertFormError from '@main/components/AlertFormError'
+import AlertFormError from '@/dex/components/AlertFormError'
 import Box from '@ui/Box'
-import Compensations from '@main/components/PageCompensation/components/Compensations'
-import { CurveApi, ChainId, Provider } from '@main/types/main.types'
+import Compensations from '@/dex/components/PageCompensation/components/Compensations'
+import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 
 const FormCompensation = ({
   rChainId,
@@ -78,7 +78,7 @@ const FormCompensation = ({
       try {
         const signer = await provider.getSigner()
         const vestAddresses = await Promise.all(contracts.map((c) => c.contract.vest()))
-        const abi = await import('@main/components/PageCompensation/abis/vest_abi.json').then(
+        const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(
           (module) => module.default,
         )
         // @ts-ignore

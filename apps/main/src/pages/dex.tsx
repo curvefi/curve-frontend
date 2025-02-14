@@ -1,35 +1,26 @@
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useParams } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
-import 'focus-visible'
-import 'intersection-observer'
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
-import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/dex/globalStyle'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
 import Page from '@/dex/layout/default'
-import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
-import { messages as messagesEn } from '@/locales/en/messages.js'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { QueryProvider } from '@ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/dex/utils'
-import { getLocaleFromUrl } from '@/dex/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi } from '@/dex/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-
-i18n.load({ en: messagesEn })
-i18n.activate('en')
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { shouldForwardProp } from '@ui/styled-containers'
+import { StyleSheetManager } from 'styled-components'
 
 const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })
@@ -64,10 +55,7 @@ const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = (
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const network = useStore((state) => state.networks.networks[chainId])
-  const initializeWallet = useWalletStore((s) => s.initialize)
-
   const theme = useUserProfileStore((state) => state.theme)
-  const locale = useUserProfileStore((state) => state.locale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -91,26 +79,13 @@ const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = (
 
     document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
     document.body.setAttribute('data-theme', theme)
-    document.documentElement.lang = locale
   })
 
   useEffect(() => {
-    const handleScrollListener = () => {
-      updateShowScrollButton(window.scrollY)
-    }
-
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-      dynamicActivate(parsedLocale, data)
-    })()
     ;(async () => {
       const networks = await fetchNetworks()
 
-      initializeWallet(locale, theme, networks)
+      useWallet.initialize(theme, networks)
 
       const handleVisibilityChange = () => {
         updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -123,7 +98,7 @@ const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = (
 
       document.addEventListener('visibilitychange', handleVisibilityChange)
       window.addEventListener('resize', () => handleResizeListener())
-      window.addEventListener('scroll', () => delay(handleScrollListener, 200))
+      window.addEventListener('scroll', () => delay(() => updateShowScrollButton(window.scrollY), 200))
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -162,9 +137,19 @@ const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = (
     isPageVisible,
   )
 
+  /**
+   * Lazily use useParams() to preserve network parameter during redirects.
+   * Using Navigate instead of direct component rendering ensures proper
+   * menu highlighting via isActive state.
+   */
+  const RootRedirect = () => {
+    const { network } = useParams()
+    return <Navigate to={`/${network ?? 'ethereum'}/pools`} />
+  }
+
   const SubRoutes = (
     <>
-      <Route path=":network" element={<PageSwap />} />
+      <Route path=":network" element={<RootRedirect />} />
       <Route path=":network/dashboard" element={<PageDashboard />} />
       <Route path=":network/locker" element={<PageLockedCrv />} />
       <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
@@ -185,48 +170,42 @@ const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = (
       <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
-            <I18nProvider i18n={i18n}>
-              <AriaI18nProvider locale={locale}>
-                <QueryProvider persister={persister} queryClient={queryClient}>
-                  <OverlayProvider>
-                    <Page>
-                      <Routes>
-                        {SubRoutes}
-                        <Route path=":locale">{SubRoutes}</Route>
-                        <Route
-                          path="/dashboard"
-                          element={<Navigate to={`/ethereum${ROUTE.PAGE_DASHBOARD}`} replace />}
-                        />
-                        <Route
-                          path="/deploy-gauge"
-                          element={<Navigate to={`/ethereum${ROUTE.PAGE_DEPLOY_GAUGE}`} replace />}
-                        />
-                        <Route path="/locker" element={<Navigate to={`/ethereum${ROUTE.PAGE_LOCKER}`} replace />} />
-                        <Route
-                          path="/create-pool"
-                          element={<Navigate to={`/ethereum${ROUTE.PAGE_CREATE_POOL}`} replace />}
-                        />
-                        <Route path="/integrations" element={<PageIntegrations />} />
-                        <Route path="/pools/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} replace />} />
-                        <Route path="/swap" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} replace />} />
-                        <Route
-                          path="/compensation"
-                          element={<Navigate to={`/ethereum${ROUTE.PAGE_COMPENSATION}`} replace />}
-                        />
-                        <Route
-                          path="/disclaimer"
-                          element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
-                        />
-                        <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
-                        <Route path="404" element={<Page404 />} />
-                        <Route path="*" element={<Page404 />} />
-                      </Routes>
-                    </Page>
-                    <GlobalStyle />
-                  </OverlayProvider>
-                </QueryProvider>
-              </AriaI18nProvider>
-            </I18nProvider>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Routes>
+                      {SubRoutes}
+                      <Route path="/dashboard" element={<Navigate to={`/ethereum${ROUTE.PAGE_DASHBOARD}`} replace />} />
+                      <Route
+                        path="/deploy-gauge"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_DEPLOY_GAUGE}`} replace />}
+                      />
+                      <Route path="/locker" element={<Navigate to={`/ethereum${ROUTE.PAGE_LOCKER}`} replace />} />
+                      <Route
+                        path="/create-pool"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_CREATE_POOL}`} replace />}
+                      />
+                      <Route path="/integrations" element={<PageIntegrations />} />
+                      <Route path="/pools/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} replace />} />
+                      <Route path="/swap" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} replace />} />
+                      <Route
+                        path="/compensation"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_COMPENSATION}`} replace />}
+                      />
+                      <Route
+                        path="/disclaimer"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
+                      />
+                      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} />} />
+                      <Route path="404" element={<Page404 />} />
+                      <Route path="*" element={<Page404 />} />
+                    </Routes>
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
+            </StyleSheetManager>
           </HashRouter>
         )}
       </ThemeProvider>

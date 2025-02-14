@@ -1,14 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { formatNumber } from '@ui/utils/'
 import { calculateStaleVeCrvPercentage } from './utils'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import Tooltip from '@ui/Tooltip'
 import Box from '@ui/Box'
-import { UserGaugeVoteWeight } from '@dao/types/dao.types'
+import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight

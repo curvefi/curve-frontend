@@ -5,7 +5,7 @@ import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@ui/utils/responsive'
-import { copyToClipboard, shortenTokenAddress } from '@loan/utils/helpers'
+import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
 
 import Icon from '@ui/Icon'
 
@@ -100,7 +100,7 @@ const ChipWrapper = styled.span`
   min-height: 21px;
   border: 1px solid transparent;
 
-  :hover {
+  &:hover {
     border-color: lightgray;
 
     ${ChipAdditionalInfo} {

@@ -1,16 +1,16 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
-import { copyToClipboard } from '@main/lib/utils'
-import { getChainPoolIdActiveKey } from '@main/utils'
+import { copyToClipboard } from '@/dex/lib/utils'
+import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import usePoolTokensLinksMapper from '@main/hooks/usePoolTokensLinksMapper'
-import useStore from '@main/store/useStore'
+import usePoolTokensLinksMapper from '@/dex/hooks/usePoolTokensLinksMapper'
+import useStore from '@/dex/store/useStore'
 import { Chip } from '@ui/Typography'
-import { StyledStats } from '@main/components/PagePool/PoolDetails/PoolStats/styles'
-import CurrencyReservesContent from '@main/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
+import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import CurrencyReservesContent from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { ChainId, TokensMapper, Tvl } from '@main/types/main.types'
+import { ChainId, TokensMapper, Tvl } from '@/dex/types/main.types'
 
 interface Props {
   rChainId: ChainId

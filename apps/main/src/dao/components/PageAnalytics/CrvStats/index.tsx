@@ -1,15 +1,15 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { formatNumber } from '@ui/utils'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import Box from '@ui/Box'
-import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Tooltip from '@ui/Tooltip'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const CrvStats: React.FC = () => {
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
   const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)
   const crv = usdRatesMapper.crv
@@ -20,12 +20,12 @@ const CrvStats: React.FC = () => {
   const aprLoading = veCrvLoading || veCrvFeesLoading || usdRatesLoading || !crv
 
   useEffect(() => {
-    if (provider && veCrvData.totalCrv === 0 && veCrvData.fetchStatus !== 'ERROR') {
+    if (provider && veCrvData.totalCrv === 0n && veCrvData.fetchStatus !== 'ERROR') {
       getVeCrvData(provider)
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 
-  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].fees_usd, veCrvData.totalVeCrv, crv)
+  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
 
   const loading = Boolean(provider && veCrvLoading)
   return (
@@ -38,7 +38,7 @@ const CrvStats: React.FC = () => {
             title={t`Total CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalCrv, { notation: 'compact' })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -47,7 +47,7 @@ const CrvStats: React.FC = () => {
             title={t`Locked CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv, { notation: 'compact' })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -56,7 +56,7 @@ const CrvStats: React.FC = () => {
             title={t`veCRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv, { notation: 'compact' })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />

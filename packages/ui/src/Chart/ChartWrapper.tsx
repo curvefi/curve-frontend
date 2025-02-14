@@ -237,7 +237,6 @@ const ChartWrapper = ({
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
             <CandleChart
-              chartType={chartType}
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
               volumeData={volumeData}

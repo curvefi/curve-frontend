@@ -1,29 +1,29 @@
 import type { Step } from '@ui/Stepper/types'
-import type { FormStatus } from '@main/components/PageDashboard/types'
+import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { ROUTE } from '@main/constants'
+import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils/responsive'
-import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@main/components/PageDashboard/utils'
-import { getPath } from '@main/utils/utilsRouter'
+import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
+import { getPath } from '@/dex/utils/utilsRouter'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import { formatNumber } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
-import { useDashboardContext } from '@main/components/PageDashboard/dashboardContext'
-import useStore from '@main/store/useStore'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
+import useStore from '@/dex/store/useStore'
 import { Chip } from '@ui/Typography'
 import { InternalLink } from '@ui/Link'
 import { Items } from '@ui/Items'
-import { SummaryInnerContent } from '@main/components/PageDashboard/components/Summary'
-import { Title } from '@main/components/PageDashboard/styles'
+import { SummaryInnerContent } from '@/dex/components/PageDashboard/components/Summary'
+import { Title } from '@/dex/components/PageDashboard/styles'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { CurveApi } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -41,7 +41,6 @@ const FormVecrv = () => {
   const dashboardVecrvInfo = useStore((state) => state.dashboard.vecrvInfo[activeKey])
   const formStatus = useStore((state) => state.dashboard.formStatus)
   const setFormStatusVecrv = useStore((state) => state.dashboard.setFormStatusVecrv)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchStepWithdraw = useStore((state) => state.dashboard.fetchStepWithdrawVecrv)
   const network = useStore((state) => curve && state.networks.networks[curve.chainId])
 
@@ -62,7 +61,7 @@ const FormVecrv = () => {
   const handleBtnClickWithdraw = useCallback(
     async (activeKey: string, curve: CurveApi, lockedAmount: string) => {
       const notifyMessage = t`Please confirm withdraw of ${lockedAmount} CRV.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
       if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress && network) {
@@ -80,7 +79,7 @@ const FormVecrv = () => {
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, setFormStatusVecrv, walletAddress, network],
+    [fetchStepWithdraw, setFormStatusVecrv, walletAddress, network],
   )
 
   const getSteps = useCallback(

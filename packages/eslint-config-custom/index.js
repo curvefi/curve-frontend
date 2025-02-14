@@ -1,12 +1,27 @@
 module.exports = {
   extends: ['next', 'turbo', 'prettier'],
-  plugins: ['no-only-tests', 'unused-imports'],
+  plugins: ['no-only-tests', 'unused-imports', 'import'],
   rules: {
     'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
     '@next/next/no-img-element': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'unused-imports/no-unused-imports': 'warn',
+
+    // rule to enforce that imports are only allowed from certain paths
+    'import/no-restricted-paths': [
+      'error',
+      {
+        basePath: '../..',
+        // this syntax is confusing: 'target' is importing, 'from' is imported
+        zones: [
+          { target: 'packages', from: 'apps' },
+          ...['dex', 'dao', 'lend', 'loan']
+            .map((app) => `apps/main/src/${app}`)
+            .map((from, _, paths) => ({ target: paths.filter((path) => path !== from), from })),
+        ],
+      },
+    ],
   },
   parser: '@typescript-eslint/parser',
   settings: {

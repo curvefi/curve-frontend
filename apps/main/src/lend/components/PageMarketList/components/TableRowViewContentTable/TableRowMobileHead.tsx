@@ -1,13 +1,13 @@
-import type { TableCellProps, TableRowProps } from '@lend/components/PageMarketList/types'
+import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { CellInPool } from '@ui/Table'
 import Box from '@ui/Box'
-import CellToken from '@lend/components/SharedCellData/CellToken'
-import CellMaxLeverage from '@lend/components/SharedCellData/CellMaxLeverage'
+import CellToken from '@/lend/components/SharedCellData/CellToken'
+import CellMaxLeverage from '@/lend/components/SharedCellData/CellMaxLeverage'
 import IconButton from '@ui/IconButton'
 import Icon from '@ui/Icon'
 import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'

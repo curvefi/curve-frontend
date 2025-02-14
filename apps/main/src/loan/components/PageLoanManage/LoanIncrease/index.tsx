@@ -1,40 +1,40 @@
-import type { FormValues, FormStatus, StepKey } from '@loan/components/PageLoanManage/LoanIncrease/types'
-import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanIncrease/types'
+import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@loan/store/createLoanIncreaseSlice'
+import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
-} from '@loan/components/PageLoanManage/utils'
-import { curveProps } from '@loan/utils/helpers'
+} from '@/loan/components/PageLoanManage/utils'
+import { curveProps } from '@/loan/utils/helpers'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
-import networks from '@loan/networks'
-import useStore from '@loan/store/useStore'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
+import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
 
-import { StyledDetailInfoWrapper, StyledInpChip } from '@loan/components/PageLoanManage/styles'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import DetailInfoBorrowRate from '@loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@loan/components/DetailInfoLiqRange'
-import DialogHealthWarning from '@loan/components/DialogHealthWarning'
+import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
+import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import AlertFormError from '@loan/components/AlertFormError'
+import AlertFormError from '@/loan/components/AlertFormError'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Curve, Llamma } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -59,7 +59,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const init = useStore((state) => state.loanIncrease.init)
   const fetchStepApprove = useStore((state) => state.loanIncrease.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanIncrease.fetchStepIncrease)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanIncrease.resetState)
@@ -121,7 +120,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             } ${llamma.collateralSymbol}.`
           : t`Please confirm borrowing of ${formValues.debt} ${getTokenName(llamma).stablecoin}.`
 
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
 
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)
 
@@ -134,9 +133,9 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, reset],
+    [activeKey, fetchStepIncrease, reset],
   )
 
   const getSteps = useCallback(
@@ -164,10 +163,10 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${formValues.collateral}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, curve, llamma, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         BORROW: {
@@ -212,7 +211,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [healthMode, notifyNotification, fetchStepApprove, handleBtnClickBorrow],
+    [healthMode, fetchStepApprove, handleBtnClickBorrow],
   )
 
   // onMount

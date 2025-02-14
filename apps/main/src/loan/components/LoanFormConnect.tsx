@@ -1,13 +1,12 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 
-import { CONNECT_STAGE } from '@loan/constants'
+import { CONNECT_STAGE } from '@/loan/constants'
 import { isLoading } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
 
 const LoanFormConnect = ({
   haveSigner,
@@ -17,7 +16,7 @@ const LoanFormConnect = ({
   haveSigner: boolean
   loading?: boolean
 }>) => {
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   const handleConnectClick = () => {

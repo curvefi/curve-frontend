@@ -1,9 +1,9 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
 
-import AdvancedSettings from '@loan/components/AdvancedSettings'
+import AdvancedSettings from '@/loan/components/AdvancedSettings'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 

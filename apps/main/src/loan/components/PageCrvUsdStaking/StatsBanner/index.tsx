@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import useStore from '@loan/store/useStore'
-import { isReady } from '@loan/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { formatNumber } from '@ui/utils'
 
 import Box from '@ui/Box'

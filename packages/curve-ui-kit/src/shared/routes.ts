@@ -1,5 +1,5 @@
 import type { AppRoutes } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { isBeta } from '@ui-kit/utils'
 
 export const DEX_ROUTES = {
@@ -19,6 +19,7 @@ export const CRVUSD_ROUTES = {
   BETA_PAGE_MARKETS: '/beta-markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_DISCLAIMER: '/disclaimer',
+  PAGE_PEGKEEPERS: '/pegkeepers',
 }
 
 export const DAO_ROUTES = {
@@ -28,6 +29,7 @@ export const DAO_ROUTES = {
   PAGE_VECRV: '/vecrv',
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
+  DISCUSSION: 'https://gov.curve.fi/',
 }
 
 export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
@@ -50,17 +52,14 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
       ...(isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` }] : []),
+      { route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
       { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
-      { route: `${CRVUSD_ROUTES.PAGE_DISCLAIMER}?tab=crvusd`, label: () => t`Risk Disclaimer` },
     ],
   },
   lend: {
     root: getAppRoot('lend'),
     label: 'Lend',
-    pages: [
-      { route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      { route: `${LEND_ROUTES.PAGE_DISCLAIMER}?tab=lend`, label: () => t`Risk Disclaimer` },
-    ],
+    pages: [{ route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` }],
   },
   dao: {
     root: getAppRoot('dao'),
@@ -70,6 +69,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
       { route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
       { route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
       { route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
+      { route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
   },
 }

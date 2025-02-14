@@ -15,15 +15,12 @@ import {
 } from './utils/walletModules'
 import * as onboard from '@web3-onboard/react'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
-import zhHans from '@ui-kit/features/connect-wallet/lib/locales/zh-Hans'
-import zhHant from '@ui-kit/features/connect-wallet/lib/locales/zh-Hant'
 
 export const initOnboard = (
-  locale: string,
   themeType: ThemeKey,
   networks: Record<number, { hex: string; symbol: string; name: string; rpcUrl: string }>,
-) => {
-  const walletState = onboard.init({
+) =>
+  onboard.init({
     wallets: [
       injected,
       trezor,
@@ -51,11 +48,9 @@ export const initOnboard = (
       icon: 'https://classic.curve.fi/logo-square.svg',
     },
     disableFontDownload: true,
-    i18n: { 'zh-Hans': zhHans, 'zh-Hant': zhHant },
     notify: {
       desktop: {
         enabled: true,
-        transactionHandler: () => {},
         position: 'topRight',
       },
     },
@@ -72,10 +67,3 @@ export const initOnboard = (
       autoConnectLastWallet: false,
     },
   })
-
-  if (walletState && locale) {
-    walletState.state.actions.setLocale(locale)
-  }
-
-  return walletState
-}

@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
-import useStore from '@main/store/useStore'
-import { shortenTokenAddress } from '@main/utils'
+import { t } from '@ui-kit/lib/i18n'
+import useStore from '@/dex/store/useStore'
+import { shortenTokenAddress } from '@/dex/utils'
 import { useNavigate } from 'react-router-dom'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import InternalLinkButton from '@ui/InternalLinkButton'
-import InfoBox from '@main/components/PageDeployGauge/InfoBox'
+import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import Spinner from '@ui/Spinner'
-import { ChainId } from '@main/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 
 type Props = {
   chainId: ChainId

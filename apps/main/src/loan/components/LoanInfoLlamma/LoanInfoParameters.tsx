@@ -1,9 +1,9 @@
-import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
@@ -18,7 +18,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
 
   return (
     <Box grid gridRowGap="1">
-      <DetailInfo label={t`A`} size="md">
+      <DetailInfo label={t`Band width factor`} size="md">
         <span>{formatNumber(llamma?.A, { useGrouping: false })}</span>
       </DetailInfo>
       <DetailInfo label={t`Base price`} size="md">
@@ -32,7 +32,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           </Chip>
         )}
       </DetailInfo>
-      <DetailInfo label={t`Oracle Price`} size="md">
+      <DetailInfo label={t`Oracle price`} size="md">
         {typeof priceInfo?.oraclePrice !== 'undefined' && (
           <Chip
             size="md"

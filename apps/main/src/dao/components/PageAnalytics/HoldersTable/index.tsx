@@ -1,15 +1,16 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
-import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
-import { TOP_HOLDERS } from '@dao/constants'
+import { shortenTokenAddress, formatNumber, formatDate } from '@ui/utils'
+import { TOP_HOLDERS } from '@/dao/constants'
 
-import PaginatedTable, { Column } from '@dao/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@dao/components/PaginatedTable/TableRow'
+import PaginatedTable, { Column } from '@/dao/components/PaginatedTable'
+import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import Box from '@ui/Box'
-import { VeCrvHolder, AllHoldersSortBy } from '@dao/types/dao.types'
+import type { AllHoldersSortBy } from '@/dao/types/dao.types'
+import type { Locker } from '@curvefi/prices-api/dao'
 
 const TopHoldersTable: React.FC = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
@@ -18,12 +19,12 @@ const TopHoldersTable: React.FC = () => {
 
   const holdersArray = Object.values(veCrvHolders.allHolders)
 
-  const HOLDERS_LABELS: Column<VeCrvHolder>[] = [
+  const HOLDERS_LABELS: Column<Locker>[] = [
     { key: 'user', label: 'Holder', disabled: true },
     { key: 'weight', label: 'veCRV' },
     { key: 'locked', label: 'CRV Locked' },
-    { key: 'weight_ratio', label: '% veCRV' },
-    { key: 'unlock_time', label: 'Unlock Time' },
+    { key: 'weightRatio', label: '% veCRV' },
+    { key: 'unlockTime', label: 'Unlock Time' },
   ]
 
   return (
@@ -49,20 +50,20 @@ const TopHoldersTable: React.FC = () => {
               </span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.weight, { notation: 'compact' })}
+              {formatNumber(holder.weight.fromWei(), { notation: 'compact' })}
             </TableData>
             <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.locked, { notation: 'compact' })}
+              {formatNumber(holder.locked.fromWei(), { notation: 'compact' })}
             </TableData>
             <TableData
-              className={allHoldersSortBy.key === 'weight_ratio' ? 'sortby-active right-padding' : 'right-padding'}
+              className={allHoldersSortBy.key === 'weightRatio' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(holder.weight_ratio, { style: 'percent', notation: 'compact' })}
+              {formatNumber(holder.weightRatio, { style: 'percent', notation: 'compact' })}
             </TableData>
             <TableData
-              className={allHoldersSortBy.key === 'unlock_time' ? 'sortby-active right-padding' : 'right-padding'}
+              className={allHoldersSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(holder.unlock_time).getTime()))}
+              {holder.unlockTime ? formatDate(holder.unlockTime) : 'N/A'}
             </TableData>
           </TableRowWrapper>
         )}

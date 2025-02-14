@@ -1,14 +1,13 @@
 import { LiquidityDataProps } from './types'
 
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import networks from '@lend/networks'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import { convertFullTime, convertTime, convertTimeAgo } from '@lend/components/ChartOhlcWrapper/utils'
+import networks from '@/lend/networks'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 
 import Box from '@ui/Box'
-import TokenIcon from '@lend/components/TokenIcon'
+import TokenIcon from '@/lend/components/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
@@ -19,13 +18,9 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
     <>
       {coins &&
         lendControllerData.map((transaction, index) => (
-          <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-            <LiquidityEvent
-              href={networks[chainId].scanTxPath(transaction.transaction_hash)}
-              rel="noopener"
-              target="_blank"
-            >
-              {transaction.deposit !== null && (
+          <TransactionRow key={`${transaction.txHash}-lp-${index}`}>
+            <LiquidityEvent href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+              {!!transaction.deposit && (
                 <>
                   <Box flex flexColumn>
                     <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
@@ -49,15 +44,15 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
                   </LiquidityEventRow>
                 </>
               )}
-              {transaction.withdrawal !== null && (
+              {!!transaction.withdrawal && (
                 <>
                   <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
                   <Box flex flexColumn margin="0 0 0 auto">
-                    {+transaction.withdrawal.amount_collateral !== 0 && (
+                    {+transaction.withdrawal.amountCollateral !== 0 && (
                       <LiquidityEventRow>
                         <Chip isBold isNumber>
-                          {formatNumber(transaction.withdrawal.amount_collateral, {
-                            ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
+                          {formatNumber(transaction.withdrawal.amountCollateral, {
+                            ...getFractionDigitsOptions(transaction.withdrawal.amountCollateral, 2),
                           })}
                         </Chip>
                         <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
@@ -69,11 +64,11 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
                         />
                       </LiquidityEventRow>
                     )}
-                    {+transaction.withdrawal.amount_borrowed !== 0 && (
+                    {+transaction.withdrawal.amountBorrowed !== 0 && (
                       <LiquidityEventRow>
                         <Chip isBold isNumber>
-                          {formatNumber(transaction.withdrawal.amount_borrowed, {
-                            ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
+                          {formatNumber(transaction.withdrawal.amountBorrowed, {
+                            ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
                           })}
                         </Chip>
                         <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
@@ -90,7 +85,9 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
               )}
             </LiquidityEvent>
             <TimestampColumn>
-              <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+              <Tooltip
+                tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
+              >
                 {convertTimeAgo(transaction.timestamp)}
               </Tooltip>
             </TimestampColumn>

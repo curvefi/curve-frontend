@@ -1,20 +1,20 @@
-import type { FormStatus, FormValues } from '@main/components/PagePool/Withdraw/types'
+import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import type { Step } from '@ui/Stepper/types'
-import type { TransferProps } from '@main/components/PagePool/types'
+import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
-import { DEFAULT_ESTIMATED_GAS } from '@main/components/PagePool'
+import { t } from '@ui-kit/lib/i18n'
+import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import { formatNumber } from '@ui/utils'
-import useStore from '@main/store/useStore'
-import AlertFormError from '@main/components/AlertFormError'
-import DetailInfoEstGas from '@main/components/DetailInfoEstGas'
-import FieldLpToken from '@main/components/PagePool/components/FieldLpToken'
-import TransferActions from '@main/components/PagePool/components/TransferActions'
+import useStore from '@/dex/store/useStore'
+import AlertFormError from '@/dex/components/AlertFormError'
+import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, PoolData } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -26,7 +26,6 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const formStatus = useStore((state) => state.poolWithdraw.formStatus)
   const formValues = useStore((state) => state.poolWithdraw.formValues)
   const fetchStepUnstake = useStore((state) => state.poolWithdraw.fetchStepUnstake)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
@@ -48,7 +47,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const handleUnstakeClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -57,7 +56,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepUnstake, notifyNotification, network],
+    [fetchStepUnstake, network],
   )
 
   const getSteps = useCallback(

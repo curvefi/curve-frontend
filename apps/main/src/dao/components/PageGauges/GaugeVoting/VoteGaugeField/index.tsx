@@ -1,16 +1,16 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { convertToLocaleTimestamp, formatNumber } from '@ui/utils'
 
 import Button from '@ui/Button'
 import NumberField from './NumberField'
-import MetricsComp, { MetricsColumnData } from '@dao/components/MetricsComp'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Box from '@ui/Box'
 import { TooltipIcon } from '@ui/Tooltip'
-import { UserGaugeVoteWeight } from '@dao/types/dao.types'
+import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 
 type VoteGaugeFieldProps = {
   powerUsed: number

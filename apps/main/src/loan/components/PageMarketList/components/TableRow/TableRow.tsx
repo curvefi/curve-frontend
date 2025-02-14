@@ -1,19 +1,19 @@
-import type { TableRowProps } from '@loan/components/PageMarketList/types'
+import type { TableRowProps } from '@/loan/components/PageMarketList/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@loan/constants'
+import { TITLE } from '@/loan/constants'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
 import { Tr, Td, CellInPool } from '@ui/Table'
-import TokenLabel from '@loan/components/TokenLabel'
-import TableCellRate from '@loan/components/SharedCells/TableCellRate'
-import TableCellTotalCollateral from '@loan/components/SharedCells/TableCellTotalCollateral'
-import TableCellUser from '@loan/components/SharedCells/TableCellUser'
-import TableCellUtilization from '@loan/components/SharedCells/TableCellUtilization'
-import { TitleKey } from '@loan/types/loan.types'
+import TokenLabel from '@/loan/components/TokenLabel'
+import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
+import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
+import TableCellUser from '@/loan/components/SharedCells/TableCellUser'
+import TableCellUtilization from '@/loan/components/SharedCells/TableCellUtilization'
+import { TitleKey } from '@/loan/types/loan.types'
 
 const TableRow = ({
   className,

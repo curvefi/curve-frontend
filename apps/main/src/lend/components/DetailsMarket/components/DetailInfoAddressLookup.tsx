@@ -1,16 +1,16 @@
-import type { StatsProps } from '@lend/components/DetailsMarket/styles'
+import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
 
 import React from 'react'
 import styled from 'styled-components'
 
-import { copyToClipboard, shortenTokenAddress } from '@lend/utils/helpers'
-import networks from '@lend/networks'
+import { copyToClipboard, shortenTokenAddress } from '@/lend/utils/helpers'
+import networks from '@/lend/networks'
 
-import { StyledStats } from '@lend/components/DetailsMarket/styles'
+import { StyledStats } from '@/lend/components/DetailsMarket/styles'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import { ChainId } from '@lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -68,7 +68,7 @@ const CopyIconButton = styled(IconButton)<{ isValid: boolean }>`
   border: 1px solid transparent;
   opacity: 0.5;
 
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
     background-color: var(--button_icon--hover--background-color);
   }
@@ -90,7 +90,7 @@ const StyledExternalLink = styled(ExternalLink)<{ isValid: boolean }>`
       return `
         cursor: initial;
         text-decoration: none;
-        :hover {
+        &:hover {
           color: inherit;
         }
         

@@ -1,36 +1,28 @@
 import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
-import { CONNECT_STAGE, ROUTE } from '@main/constants'
-import { useNetworkFromUrl } from '@main/utils/utilsRouter'
-import { getWalletChainId } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
+import { useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
-import { useConnectWallet } from '@ui-kit/features/connect-wallet'
-import useLayoutHeight from '@main/hooks/useLayoutHeight'
-import useStore from '@main/store/useStore'
-
-import Header from '@main/layout/default/Header'
-import { Locale } from '@ui-kit/widgets/Header/types'
-import { t } from '@lingui/macro'
+import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
+import useStore from '@/dex/store/useStore'
+import Header from '@/dex/layout/default/Header'
+import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { layoutHeightKeys } from '@main/store/createGlobalSlice'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
-  const { wallet } = useConnectWallet()
+  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const locale = useUserProfileStore((state) => state.locale)
-
   const { rChainId, rNetwork } = useNetworkFromUrl()
 
-  const sections = useMemo(() => getSections(locale, rNetwork), [locale, rNetwork])
+  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
 
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
@@ -67,7 +59,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (locale: Locale, network: string) => [
+const getSections = (network: string) => [
   {
     title: t`Documentation`,
     links: [
@@ -77,7 +69,7 @@ const getSections = (locale: Locale, network: string) => [
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}`, label: t`Risk Disclaimers` },
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
-      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+      ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },
   {

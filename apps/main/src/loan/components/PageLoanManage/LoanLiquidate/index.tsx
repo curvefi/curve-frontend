@@ -1,31 +1,31 @@
-import type { FormStatus, StepKey } from '@loan/components/PageLoanManage/LoanLiquidate/types'
-import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
+import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@loan/store/createLoanLiquidate'
-import { DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import { curveProps } from '@loan/utils/helpers'
+import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
+import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { curveProps } from '@/loan/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getCollateralListPathname } from '@loan/utils/utilsRouter'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
-import networks from '@loan/networks'
-import AlertFormWarning from '@loan/components/AlertFormWarning'
-import AlertFormError from '@loan/components/AlertFormError'
+import useStore from '@/loan/store/useStore'
+import networks from '@/loan/networks'
+import AlertFormWarning from '@/loan/components/AlertFormWarning'
+import AlertFormError from '@/loan/components/AlertFormError'
 import AlertInfoSelfLiquidation from '@ui/AlertBox/AlertInfoSelfLiquidation'
-import DetailInfoEstimateGas from '@loan/components/DetailInfoEstimateGas'
-import DetailInfoSlippageTolerance from '@loan/components/DetailInfoSlippageTolerance'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import InputReadOnly from '@ui/InputReadOnly'
 import InternalLink from '@ui/Link/InternalLink'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma, UserWalletBalances } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Curve, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -42,7 +42,6 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
   const fetchStepApprove = useStore((state) => state.loanLiquidate.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanLiquidate.fetchStepLiquidate)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
   const resetState = useStore((state) => state.loanLiquidate.resetState)
 
@@ -102,10 +101,10 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${getTokenName(llamma).stablecoin}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(curve, llamma, maxSlippage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         LIQUIDATE: {
@@ -116,7 +115,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
           onClick: async () => {
             const stablecoinName = getTokenName(llamma).stablecoin
             const notifyMessage = t`Please confirm ${stablecoinName} self-liquidation at max ${maxSlippage}% slippage.`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
 
@@ -139,7 +138,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
                 />,
               )
             }
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
       }
@@ -154,7 +153,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset],
+    [fetchStepApprove, fetchStepLiquidate, params, reset],
   )
 
   // onMount
@@ -246,7 +245,7 @@ const StyledInternalLink = styled(InternalLink)`
   color: inherit;
   text-transform: inherit;
 
-  :hover {
+  &:hover {
     color: var(--link_light--hover--color);
     text-decoration-color: var(--link_light--hover--color);
   }

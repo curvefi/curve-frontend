@@ -1,4 +1,4 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { enforce, group, test } from 'vest'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
 import { BD } from '@ui-kit/utils'
@@ -9,9 +9,9 @@ import {
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
-import { TIME_FRAMES } from '@main/constants'
-import useStore from '@main/store/useStore'
-import { formatNumber } from '@main/utils'
+import { TIME_FRAMES } from '@/dex/constants'
+import useStore from '@/dex/store/useStore'
+import { formatNumber } from '@ui/utils'
 
 export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardValidationGroup', () => {
@@ -68,6 +68,6 @@ function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
 
   enforce(amount).condition((amount) => ({
     pass: BD.from(amount).lte(BD.from(tokenBalance)),
-    message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`,
+    message: t`Amount ${formatNumber(amount, { showAllFractionDigits: true })} > wallet balance ${formatNumber(tokenBalance, { showAllFractionDigits: true })}`,
   }))
 }

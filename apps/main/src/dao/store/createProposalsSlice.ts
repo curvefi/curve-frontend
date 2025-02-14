@@ -1,14 +1,14 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@dao/store/useStore'
+import type { State } from '@/dao/store/useStore'
 
-import networks from '@dao/networks'
-import { SEVEN_DAYS, TOP_HOLDERS } from '@dao/constants'
-import { helpers } from '@dao/lib/curvejs'
+import networks from '@/dao/networks'
+import { SEVEN_DAYS, TOP_HOLDERS } from '@/dao/constants'
+import { helpers } from '@/dao/lib/curvejs'
 
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import {
   FetchingState,
   PricesProposalResponse,
@@ -22,8 +22,8 @@ import {
   SortDirection,
   TransactionState,
   UserProposalVoteResData,
-} from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+} from '@/dao/types/dao.types'
+import { useWallet, notify } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -337,7 +337,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
       const { curve } = get()
-      const { provider, notify } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
 
@@ -434,7 +434,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const { curve } = get()
       const voteIdKey = `${voteId}-${voteType}`
 
-      const { provider, notify } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       const fetchGasInfo = get().gas.fetchGasInfo
 
       if (!curve || !provider) return

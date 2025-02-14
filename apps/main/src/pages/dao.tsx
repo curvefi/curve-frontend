@@ -4,18 +4,10 @@ import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
-import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import 'intersection-observer'
-import 'focus-visible'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
-import { getLocaleFromUrl } from '@/dao/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@ui/utils'
-import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
@@ -23,10 +15,9 @@ import Page from '@/dao/layout'
 import GlobalStyle from '@/dao/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-
-i18n.load({ en: messagesEn })
-i18n.activate('en')
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { shouldForwardProp } from '@ui/styled-containers'
+import { StyleSheetManager } from 'styled-components'
 
 const Page404 = dynamic(() => import('@/dao/components/Page404/Page'), { ssr: false })
 const PageDao = dynamic(() => import('@/dao/components/PageProposals/Page'), { ssr: false })
@@ -39,7 +30,7 @@ const PageVeCrv = dynamic(() => import('@/dao/components/PageVeCrv/Page'), { ssr
 const PageDisclaimer = dynamic(() => import('@/dao/components/PageDisclaimer/Page'), { ssr: false })
 
 const App: NextPage = () => {
-  const connectState = useWalletStore((s) => s.connectState)
+  const connectState = useStore((state) => state.connectState)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
@@ -50,12 +41,9 @@ const App: NextPage = () => {
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const curve = useStore((state) => state.curve)
-  const wallet = useWalletStore((s) => s.wallet)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
-  const locale = useUserProfileStore((state) => state.locale)
-  const setLocale = useUserProfileStore((state) => state.setLocale)
-  const initializeWallet = useWalletStore((s) => s.initialize)
+  const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -66,10 +54,8 @@ const App: NextPage = () => {
 
   useEffect(() => {
     if (!pageWidth) return
-
     document.body.className = `theme-${theme} ${pageWidth} ${getIsMobile() ? '' : 'scrollSmooth'}`
     document.body.setAttribute('data-theme', theme)
-    document.documentElement.lang = locale
   })
 
   useEffect(() => {
@@ -77,21 +63,9 @@ const App: NextPage = () => {
       updateShowScrollButton(window.scrollY)
     }
 
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    ;(async () => {
-      let data = await import(`@/locales/${parsedLocale}/messages`)
-      dynamicActivate(parsedLocale, data)
-    })()
-    setLocale(parsedLocale)
-    updateAppLocale(parsedLocale)
-    initializeWallet(locale, theme, networks)
+    useWallet.initialize(theme, networks)
 
-    const handleVisibilityChange = () => {
-      updateGlobalStoreByKey('isPageVisible', !document.hidden)
-    }
+    const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
     updateGlobalStoreByKey('loaded', true)
@@ -161,36 +135,24 @@ const App: NextPage = () => {
       <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
-            <I18nProvider i18n={i18n}>
-              <AriaI18nProvider locale={locale}>
-                <OverlayProvider>
-                  <Page>
-                    <Routes>
-                      {SubRoutes}
-                      <Route path=":locale">{SubRoutes}</Route>
-                      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
-                      <Route
-                        path="/proposals/*"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />}
-                      />
-                      <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
-                      <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
-                      <Route
-                        path="/analytics/*"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />}
-                      />
-                      <Route
-                        path="/vecrv/*"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />}
-                      />
-                      <Route path="404" element={<Page404 />} />
-                      <Route path="*" element={<Page404 />} />
-                    </Routes>
-                  </Page>
-                  <GlobalStyle />
-                </OverlayProvider>
-              </AriaI18nProvider>
-            </I18nProvider>
+            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+              <OverlayProvider>
+                <Page>
+                  <Routes>
+                    {SubRoutes}
+                    <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
+                    <Route path="/proposals/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
+                    <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
+                    <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
+                    <Route path="/analytics/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />} />
+                    <Route path="/vecrv/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />} />
+                    <Route path="404" element={<Page404 />} />
+                    <Route path="*" element={<Page404 />} />
+                  </Routes>
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
+            </StyleSheetManager>
           </HashRouter>
         )}
       </ThemeProvider>

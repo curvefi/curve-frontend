@@ -13,6 +13,9 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
+// css class to hide elements on desktop unless the row is hovered
+export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
+
 const getAlignment = <T extends unknown>({ columnDef }: Column<T>) =>
   columnDef.meta?.type == 'numeric' ? 'right' : 'left'
 
@@ -43,12 +46,13 @@ const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   return (
     <TableRow
-      sx={{
+      sx={(t) => ({
         marginBlock: 0,
         height: Sizing[rowHeight],
-        borderBottom: '1px solid',
-        borderColor: (t) => t.design.Layer[1].Outline,
-      }}
+        borderBottom: `1px solid${t.design.Layer[1].Outline}`,
+        [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
+        [`&:hover .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
+      })}
       ref={ref}
       data-testid={`data-table-row-${row.id}`}
     >
@@ -97,16 +101,15 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
         variant="tableHeaderS"
       >
         {flexRender(column.columnDef.header, header.getContext())}
-        {canSort && (
-          <ArrowDownIcon
-            sx={{
-              ...(sort === 'asc' && { transform: `rotate(180deg)` }),
-              verticalAlign: 'text-bottom',
-              fontSize: sort ? 20 : 0,
-              transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
-            }}
-          />
-        )}
+        <ArrowDownIcon
+          sx={{
+            ...(sort === 'asc' && { transform: `rotate(180deg)` }),
+            verticalAlign: 'text-bottom',
+            fontSize: sort ? 20 : 0,
+            transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
+            visibility: canSort ? 'visible' : 'hidden', // render it invisible to avoid layout shift
+          }}
+        />
       </Typography>
     )
   )
@@ -157,7 +160,7 @@ export const DataTable = <T extends unknown>({
     </TableHead>
     <TableBody>
       {table.getRowModel().rows.length === 0 && (
-        <TableRow>
+        <TableRow data-testid="table-empty-row">
           <Typography
             variant="tableCellL"
             colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}

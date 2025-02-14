@@ -5,16 +5,14 @@ import {
   SwapType,
   TokenId,
   TokenState,
-} from '@main/components/PageCreatePool/types'
+} from '@/dex/components/PageCreatePool/types'
 import type { ContractTransactionResponse } from 'ethers'
-
 import type { GetState, SetState } from 'zustand'
 import produce from 'immer'
 import { BigNumber } from 'bignumber.js'
-import { t } from '@lingui/macro'
-
-import type { State } from '@main/store/useStore'
-
+import { t } from '@ui-kit/lib/i18n'
+import { notify } from '@ui-kit/features/connect-wallet'
+import type { State } from '@/dex/store/useStore'
 import {
   CRYPTOSWAP,
   POOL_PRESETS,
@@ -27,10 +25,9 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
-} from '@main/components/PageCreatePool/constants'
-import { isTricrypto } from '@main/components/PageCreatePool/utils'
-import { CurveApi, ChainId } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+} from '@/dex/components/PageCreatePool/constants'
+import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
 
 type SliceState = {
   navigationIndex: number
@@ -793,12 +790,11 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         },
         networks: { networks },
       } = get()
-      const { notify: notifyNotification } = useWalletStore.getState()
 
       let dismissNotificationHandler
 
       const notifyPendingMessage = t`Please confirm to create pool ${poolName}.`
-      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+      const { dismiss: dismissConfirm } = notify(notifyPendingMessage, 'pending')
 
       dismissNotificationHandler = dismissConfirm
 
@@ -845,7 +841,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up deploying message
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.tricryptoFactory.getDeployedPoolAddress(deployPoolTx)
@@ -862,7 +858,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notifyNotification(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -926,7 +922,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up deploying message
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
@@ -943,7 +939,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notifyNotification(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1024,7 +1020,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up deploying message
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.stableNgFactory.getDeployedMetaPoolAddress(deployPoolTx)
@@ -1042,7 +1038,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notifyNotification(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1095,7 +1091,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up deploying message
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.factory.getDeployedMetaPoolAddress(deployPoolTx)
@@ -1112,7 +1108,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notifyNotification(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.factory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1184,7 +1180,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up deploying message
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.stableNgFactory.getDeployedPlainPoolAddress(deployPoolTx)
@@ -1201,7 +1197,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notifyNotification(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1263,7 +1259,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up deploying message
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.factory.getDeployedPlainPoolAddress(deployPoolTx)
@@ -1281,7 +1277,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notifyNotification(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.factory.fetchRecentlyDeployedPool(poolAddress)
             set(

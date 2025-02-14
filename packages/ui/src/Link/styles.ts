@@ -29,7 +29,7 @@ export const linkStyles = css<LinkProps>`
 
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover {
+  &:hover {
     color: var(--link--hover--color);
     text-decoration-color: var(--link--underline--hover-color);
   }
@@ -53,12 +53,12 @@ export const linkStyles = css<LinkProps>`
   ${({ variant }) => {
     if (variant === 'contained') {
       return `
-        :active {
+        &:active {
           box-shadow: none;
           transform: translate3d(3px, 3px, 3px);
         }
     
-        :hover {
+        &:hover {
           color: var(--link_contained--color);
           background-color: var(--link_contained--background-color);
           text-decoration-color: var(--link_contained--underline-color);
@@ -72,7 +72,7 @@ export const linkStyles = css<LinkProps>`
       return `
         color: var(--link_light--color);
 
-        :hover {
+        &:hover {
           color: var(--link_light--hover--color);
           text-decoration-color: var(--link_light--hover--color);
         }
@@ -92,7 +92,7 @@ export const linkStyles = css<LinkProps>`
         color: inherit;
         text-transform: inherit;
         
-        :hover {
+        &:hover {
           color: inherit;
           text-decoration: inherit;
         }

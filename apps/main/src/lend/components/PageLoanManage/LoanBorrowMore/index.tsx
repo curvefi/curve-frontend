@@ -1,39 +1,39 @@
-import type { FormStatus, FormValues, StepKey } from '@lend/components/PageLoanManage/LoanBorrowMore/types'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanBorrowMore/types'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@lend/components/PageLoanManage/utils'
-import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@lend/constants'
-import { _showNoLoanFound } from '@lend/utils/helpers'
+import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
+import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
-import { _parseValues, DEFAULT_FORM_VALUES } from '@lend/components/PageLoanManage/LoanBorrowMore/utils'
-import { FieldsWrapper } from '@lend/components/SharedFormStyles/FieldsWrapper'
-import { StyledDetailInfoWrapper } from '@lend/components/PageLoanManage/styles'
+import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
+import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
+import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
-import AlertNoLoanFound from '@lend/components/AlertNoLoanFound'
-import AlertLoanSummary from '@lend/components/AlertLoanSummary'
-import DetailInfo from '@lend/components/PageLoanManage/LoanBorrowMore/components/DetailInfo'
-import DetailInfoLeverage from '@lend/components/PageLoanManage/LoanBorrowMore/components/DetailInfoLeverage'
-import DialogFormWarning from '@lend/components/DialogFormWarning'
-import InpToken from '@lend/components/InpToken'
-import InpTokenBorrow from '@lend/components/InpTokenBorrow'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import AlertFormError from '@/lend/components/AlertFormError'
+import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
+import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
+import DetailInfo from '@/lend/components/PageLoanManage/LoanBorrowMore/components/DetailInfo'
+import DetailInfoLeverage from '@/lend/components/PageLoanManage/LoanBorrowMore/components/DetailInfoLeverage'
+import DialogFormWarning from '@/lend/components/DialogFormWarning'
+import InpToken from '@/lend/components/InpToken'
+import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, HealthMode } from '@lend/types/lend.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -60,7 +60,6 @@ const LoanBorrowMore = ({
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
@@ -107,7 +106,7 @@ const LoanBorrowMore = ({
     ) => {
       const { chainId } = api
 
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -121,9 +120,9 @@ const LoanBorrowMore = ({
         )
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues],
+    [activeKey, fetchStepIncrease, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -186,10 +185,10 @@ const LoanBorrowMore = ({
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         BORROW_MORE: {
@@ -249,14 +248,7 @@ const LoanBorrowMore = ({
       }
       return stepsKey.map((k) => stepsObj[k])
     },
-    [
-      expectedCollateral?.totalCollateral,
-      userLoanDetails?.state,
-      userBalances,
-      notifyNotification,
-      fetchStepApprove,
-      handleBtnClickBorrow,
-    ],
+    [expectedCollateral?.totalCollateral, userLoanDetails?.state, userBalances, fetchStepApprove, handleBtnClickBorrow],
   )
 
   // onMount

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import DocumentHead from '@lend/layout/DocumentHead'
+import DocumentHead from '@/lend/layout/DocumentHead'
 import Error404 from '@ui/Error404'
 
 const Page: NextPage = () => (

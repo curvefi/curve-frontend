@@ -1,5 +1,5 @@
-import type { LlammaControllerEvent, LlammaTradeEvent } from '@ui/Chart/types'
-import { ChainId, Llamma } from '@loan/types/loan.types'
+import { ChainId, Llamma } from '@/loan/types/loan.types'
+import type { LlammaTrade, LlammaEvent } from '@curvefi/prices-api/llamma'
 
 export type LlammaLiquidityCoins = {
   crvusd: {
@@ -19,12 +19,12 @@ export interface ChartOhlcWrapperProps {
 }
 
 export interface LiqudityDataProps {
-  llammaControllerData: LlammaControllerEvent[]
+  llammaControllerData: LlammaEvent[]
   chainId: ChainId
   coins: LlammaLiquidityCoins
 }
 
 export interface TradesDataProps {
-  llammaTradesData: LlammaTradeEvent[]
+  llammaTradesData: LlammaTrade[]
   chainId: ChainId
 }

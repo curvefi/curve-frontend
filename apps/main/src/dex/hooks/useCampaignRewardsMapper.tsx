@@ -1,4 +1,4 @@
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 
 const useCampaignRewardsMapper = () => useStore((state) => state.campaigns.campaignRewardsMapper)
 

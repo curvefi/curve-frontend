@@ -1,6 +1,6 @@
-import type { BrushStartEndIndex } from '@lend/components/ChartBandBalances/types'
+import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import {
   Bar,
   Brush,
@@ -19,15 +19,15 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { BN, formatNumber } from '@ui/utils'
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import ChartBandBalancesSettings from '@lend/components/ChartBandBalances/ChartBandBalancesSettings'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@lend/components/ChartTooltip'
+import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import TextCaption from '@ui/TextCaption'
-import { PageContentProps, ParsedBandsBalances } from '@lend/types/lend.types'
+import { PageContentProps, ParsedBandsBalances } from '@/lend/types/lend.types'
 
 const ChartBandBalances = ({
   rChainId,
@@ -249,7 +249,7 @@ const ChartBandBalances = ({
 
                   <Bar
                     dataKey="collateralBorrowedUsd"
-                    shape={(props) => {
+                    shape={(props: any) => {
                       const { width, collateralUsd, isLiquidationBand, borrowed, collateralBorrowedUsd } = props
 
                       if (barWidth === 0 && +width > 0) {

@@ -1,0 +1,146 @@
+{
+  "chain": "ethereum",
+  "page": 1,
+  "per_page": 10,
+  "count": 6,
+  "data": [
+    {
+      "address": "0x8472A9A7632b173c8Cf3a86D3afec50c35548e76",
+      "factory_address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+      "llamma": "0x136e783846ef68C8Bd00a3369F787dF8d683a696",
+      "rate": 0.1732388227788837,
+      "total_debt": 192623.07719378526,
+      "n_loans": 11,
+      "debt_ceiling": 174073.4413314184,
+      "borrowable": -18549.635862366835,
+      "pending_fees": 18549.635862366835,
+      "collected_fees": 172190.9307192066,
+      "collateral_amount": 158.69274312862743,
+      "collateral_amount_usd": 478089.21128159994,
+      "stablecoin_amount": 1.9563e-14,
+      "collateral_token": {
+        "symbol": "sfrxETH",
+        "address": "0xac3E018457B222d93114458476f3E3416Abbe38F"
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+      }
+    },
+    {
+      "address": "0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE",
+      "factory_address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+      "llamma": "0x37417B2238AA52D0DD2D6252d989E728e8f706e4",
+      "rate": 0.12383442746589446,
+      "total_debt": 4395955.560029227,
+      "n_loans": 91,
+      "debt_ceiling": 150000000.0,
+      "borrowable": 145604044.43997076,
+      "pending_fees": 1732.0738145295481,
+      "collected_fees": 6977379.984621132,
+      "collateral_amount": 3204.3026948619963,
+      "collateral_amount_usd": 10354724.950420054,
+      "stablecoin_amount": 62088.49949432901,
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+      }
+    },
+    {
+      "address": "0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67",
+      "factory_address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+      "llamma": "0xE0438Eb3703bF871E31Ce639bd351109c88666ea",
+      "rate": 0.10501994534323122,
+      "total_debt": 29240131.542101294,
+      "n_loans": 167,
+      "debt_ceiling": 200000000.00000003,
+      "borrowable": 170759868.45789874,
+      "pending_fees": 9930.393149356307,
+      "collected_fees": 5968035.596323085,
+      "collateral_amount": 632.92716333,
+      "collateral_amount_usd": 62038766.10096086,
+      "stablecoin_amount": 159411.21751495206,
+      "collateral_token": {
+        "symbol": "WBTC",
+        "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+      }
+    },
+    {
+      "address": "0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635",
+      "factory_address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+      "llamma": "0x1681195C176239ac5E72d9aeBaCf5b2492E0C4ee",
+      "rate": 0.10517678600372715,
+      "total_debt": 20869135.039368864,
+      "n_loans": 340,
+      "debt_ceiling": 200000000.00000003,
+      "borrowable": 179130864.96063116,
+      "pending_fees": 6989.453890899149,
+      "collected_fees": 4879978.852828198,
+      "collateral_amount": 11897.831740339434,
+      "collateral_amount_usd": 32239490.51137516,
+      "stablecoin_amount": 1037797.418483593,
+      "collateral_token": {
+        "symbol": "WETH",
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+      }
+    },
+    {
+      "address": "0xEC0820EfafC41D8943EE8dE495fC9Ba8495B15cf",
+      "factory_address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+      "llamma": "0xfA96ad0a9E64261dB86950e2dA362f5572c5c6fd",
+      "rate": 0.12816072453935456,
+      "total_debt": 8363583.4139668,
+      "n_loans": 21,
+      "debt_ceiling": 50000000.0,
+      "borrowable": 41636416.5860332,
+      "pending_fees": 3430.678776803918,
+      "collected_fees": 1708029.610412792,
+      "collateral_amount": 4419.64947425191,
+      "collateral_amount_usd": 13316024.544803528,
+      "stablecoin_amount": 0.0,
+      "collateral_token": {
+        "symbol": "sfrxETH",
+        "address": "0xac3E018457B222d93114458476f3E3416Abbe38F"
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+      }
+    },
+    {
+      "address": "0x1C91da0223c763d2e0173243eAdaA0A2ea47E704",
+      "factory_address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+      "llamma": "0xf9bD9da2427a50908C4c6D1599D8e62837C2BCB0",
+      "rate": 0.11242232556486309,
+      "total_debt": 8037850.365583395,
+      "n_loans": 18,
+      "debt_ceiling": 50000000.0,
+      "borrowable": 41962149.6344166,
+      "pending_fees": 2808.8622262746676,
+      "collected_fees": 702963.8381835253,
+      "collateral_amount": 198.42359489039472,
+      "collateral_amount_usd": 19393288.39289104,
+      "stablecoin_amount": 0.0,
+      "collateral_token": {
+        "symbol": "tBTC",
+        "address": "0x18084fbA666a33d37592fA2633fD49a74DD93a88"
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+      }
+    }
+  ]
+}

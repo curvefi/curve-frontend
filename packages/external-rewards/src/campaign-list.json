@@ -60,13 +60,7 @@
     "campaign": "LevelMoney.json"
   },
   {
-    "campaign": "Corn.json"
-  },
-  {
     "campaign": "XPoints.json"
-  },
-  {
-    "campaign": "MindNetwork.json"
   },
   {
     "campaign": "DTrinity.json"
@@ -82,5 +76,8 @@
   },
   {
     "campaign": "Hourglass.json"
+  },
+  {
+    "campaign": "Fx.json"
   }
 ]

@@ -6,7 +6,7 @@ import { formatNumber } from '@ui/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
-import TokenIcon from '@lend/components/TokenIcon'
+import TokenIcon from '@/lend/components/TokenIcon'
 
 const HopSteps = ({
   fromTokenAddress,

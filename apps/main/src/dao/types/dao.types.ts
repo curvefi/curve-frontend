@@ -1,10 +1,9 @@
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { WalletState } from '@web3-onboard/core'
-import type { Locale } from '@ui-kit/lib/i18n'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
-import curvejsApi from '@dao/lib/curvejs'
+import curvejsApi from '@/dao/lib/curvejs'
 import type { BaseConfig } from '@ui/utils'
 
 export type PageWidthClassName =
@@ -25,8 +24,6 @@ export interface NetworkConfig extends BaseConfig {
 }
 
 export type RouterParams = {
-  rLocale: Locale | null
-  rLocalePathname: string
   rChainId: ChainId
   rNetwork: NetworkEnum
   rNetworkIdx: number
@@ -333,48 +330,6 @@ export type ActiveProposal = {
   startTimestamp: number
   endTimestamp: number
 }
-export type VeCrvFeeRes = {
-  fees_usd: number
-  timestamp: string
-}
-export type VeCrvFee = {
-  fees_usd: number
-  timestamp: number
-  date: string
-}
-
-export interface VeCrvFeesRes {
-  distributions: VeCrvFeeRes[]
-  page: number
-  count: number
-}
-
-export type VeCrvDailyLock = {
-  day: string
-  amount: string
-}
-
-export interface VeCrvDailyLockRes {
-  locks: { day: string; amount: string }[]
-}
-
-export interface VeCrvHolder {
-  user: string
-  locked: number
-  weight: number
-  weight_ratio: number
-  unlock_time: number
-}
-
-export interface VeCrvHoldersRes {
-  locks: {
-    user: string
-    locked: string
-    weight: string
-    weight_ratio: string
-    unlock_time: number
-  }[]
-}
 
 export interface UserLockApi {
   amount: string
@@ -521,8 +476,8 @@ export type SortByFilterGauges = {
   order: SortDirection
 }
 export type SortDirection = 'asc' | 'desc'
-export type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
-export type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
+export type TopHoldersSortBy = 'weight' | 'locked' | 'weightRatio'
+export type AllHoldersSortBy = 'weight' | 'locked' | 'weightRatio' | 'unlockTime'
 export type UserLocksSortBy = 'date' | 'amount' | 'unlock_time'
 export type UserGaugeVotesSortBy = 'weight' | 'timestamp'
 export type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'

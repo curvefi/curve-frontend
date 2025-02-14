@@ -1,41 +1,41 @@
-import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@main/components/PagePool/Swap/types'
-import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@main/components/PagePool/types'
+import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
+import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_EXCHANGE_OUTPUT, DEFAULT_EST_GAS, getSwapTokens } from '@main/components/PagePool/Swap/utils'
-import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@main/constants'
+import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
+import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import cloneDeep from 'lodash/cloneDeep'
-import usePageVisibleInterval from '@main/hooks/usePageVisibleInterval'
-import useStore from '@main/store/useStore'
-import { FieldsWrapper } from '@main/components/PagePool/styles'
+import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
+import useStore from '@/dex/store/useStore'
+import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@main/components/AlertFormError'
-import AlertFormWarning from '@main/components/AlertFormWarning'
-import AlertSlippage from '@main/components/AlertSlippage'
+import AlertFormError from '@/dex/components/AlertFormError'
+import AlertFormWarning from '@/dex/components/AlertFormWarning'
+import AlertSlippage from '@/dex/components/AlertSlippage'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import ChipInpHelper from '@main/components/ChipInpHelper'
-import DetailInfoEstGas from '@main/components/DetailInfoEstGas'
-import DetailInfoPriceImpact from '@main/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import DetailInfoExchangeRate from '@main/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoSlippageTolerance from '@main/components/PagePool/components/DetailInfoSlippageTolerance'
-import FieldHelperUsdRate from '@main/components/FieldHelperUsdRate'
+import ChipInpHelper from '@/dex/components/ChipInpHelper'
+import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
+import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import Stepper from '@ui/Stepper'
-import TokenComboBox from '@main/components/ComboBoxSelectToken'
-import TransferActions from '@main/components/PagePool/components/TransferActions'
+import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
-import WarningModal from '@main/components/PagePool/components/WarningModal'
-import { Balances, CurveApi, TokensMapper, PoolData, PoolAlert } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const Swap = ({
   chainIdPoolId,
@@ -77,7 +77,6 @@ const Swap = ({
   const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -127,7 +126,7 @@ const Swap = ({
     ) => {
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -143,7 +142,7 @@ const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
+    [activeKey, fetchStepSwap, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -180,7 +179,7 @@ const Swap = ({
           content: isApprove ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
-            const { dismiss } = notifyNotification(notifyMessage, 'pending')
+            const { dismiss } = notify(notifyMessage, 'pending')
             await fetchStepApprove(actionActiveKey, curve, poolData.pool, formValues, maxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
@@ -227,7 +226,7 @@ const Swap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [fetchStepApprove, handleSwapClick, notifyNotification],
+    [fetchStepApprove, handleSwapClick],
   )
 
   const fetchData = useCallback(() => {

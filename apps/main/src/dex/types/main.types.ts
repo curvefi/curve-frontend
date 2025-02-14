@@ -1,10 +1,9 @@
 import type { IDict, IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
-import type { SearchParams as PoolListSearchParams } from '@main/components/PagePoolList/types'
+import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
-import type { Locale } from '@ui-kit/lib/i18n'
 import type { BaseConfig } from '@ui/utils'
 import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
@@ -74,8 +73,6 @@ export type CurrencyReserves = {
 export type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
 export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
 export type RouterParams = {
-  rLocale: Locale | null
-  rLocalePathname: string
   rChainId: ChainId
   rNetwork: NetworkEnum
   rNetworkIdx: number
@@ -292,6 +289,7 @@ export interface PoolAlert extends TooltipProps {
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
+  isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
   message: string | React.ReactNode
 }

@@ -5,11 +5,9 @@ import Switch from '@mui/material/Switch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useCallback, useMemo, useState } from 'react'
 import { FormControlLabel } from '@mui/material'
-import { CellContext } from '@tanstack/react-table'
 
 export type VisibilityOption = {
   id: string
-  type: 'column' | 'feature' // columns hide the whole column, features hide a specific feature in a column
   active: boolean
   label: string
 }
@@ -78,13 +76,14 @@ export const TableVisibilitySettingsPopover = ({
   </Popover>
 )
 
-const flatten = (visibilitySettings: VisibilityGroup[], type: VisibilityOption['type']): Record<string, boolean> =>
+/**
+ * Converts a grouped visibility settings object to a flat object with column ids as keys and visibility as values.
+ */
+const flatten = (visibilitySettings: VisibilityGroup[]): Record<string, boolean> =>
   visibilitySettings.reduce(
     (acc, group) => ({
       ...acc,
-      ...group.options
-        .filter((option) => option.type === type)
-        .reduce((acc, { active, id }) => ({ ...acc, [cleanColumnId(id)]: active }), {}),
+      ...group.options.reduce((acc, { active, id }) => ({ ...acc, [cleanColumnId(id)]: active }), {}),
     }),
     {},
   )
@@ -96,7 +95,7 @@ export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
   /** current visibility settings in grouped format */
   const [visibilitySettings, setVisibilitySettings] = useState(groups)
 
-  /** toggle visibility of a column or feature by its id */
+  /** toggle visibility of a column by its id */
   const toggleColumnVisibility = useCallback(
     (id: string): void =>
       setVisibilitySettings((prev) =>
@@ -109,18 +108,11 @@ export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
   )
 
   /** current column visibility state as used internally by tanstack */
-  const columnVisibility = useMemo(() => flatten(visibilitySettings, 'column'), [visibilitySettings])
-
-  /** current feature visibility state as used by `isFeatureVisible` */
-  const featureVisibility = useMemo(() => flatten(visibilitySettings, 'feature'), [visibilitySettings])
+  const columnVisibility = useMemo(() => flatten(visibilitySettings), [visibilitySettings])
 
   return {
     columnSettings: visibilitySettings,
     columnVisibility,
-    featureVisibility,
     toggleVisibility: toggleColumnVisibility,
   }
 }
-
-export const isFeatureVisible = <TData, TValue>(c: CellContext<TData, TValue>, featureId: string) =>
-  c.table.getState().featureVisibility[featureId]

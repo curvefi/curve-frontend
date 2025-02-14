@@ -1,24 +1,24 @@
-import type { FormStatus, FormValues } from '@main/components/PagePool/Withdraw/types'
+import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import type { Step } from '@ui/Stepper/types'
-import type { TransferProps } from '@main/components/PagePool/types'
+import type { TransferProps } from '@/dex/components/PagePool/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t, Trans } from '@lingui/macro'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import styled from 'styled-components'
-import { DEFAULT_FORM_STATUS, getClaimText } from '@main/components/PagePool/Withdraw/utils'
+import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import { formatNumber } from '@ui/utils'
-import useStore from '@main/store/useStore'
+import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@main/components/AlertFormError'
+import AlertFormError from '@/dex/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Stats from '@ui/Stats'
 import Stepper from '@ui/Stepper'
-import TransferActions from '@main/components/PagePool/components/TransferActions'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi, PoolData } from '@main/types/main.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -30,7 +30,6 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const fetchClaimable = useStore((state) => state.poolWithdraw.fetchClaimable)
   const fetchStepClaim = useStore((state) => state.poolWithdraw.fetchStepClaim)
   const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
@@ -61,7 +60,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       rewardsNeedNudging: boolean | undefined,
     ) => {
       const notifyMessage = getClaimText(formValues, formStatus, 'notify', rewardsNeedNudging)
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, poolData)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
@@ -73,7 +72,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepClaim, notifyNotification, network],
+    [fetchStepClaim, network],
   )
 
   const getSteps = useCallback(

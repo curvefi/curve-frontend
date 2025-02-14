@@ -1,16 +1,16 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo, useRef } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'
 
-import { curveProps } from '@main/lib/utils'
-import useStore from '@main/store/useStore'
+import { curveProps } from '@/dex/lib/utils'
+import useStore from '@/dex/store/useStore'
 
-import DeploySidechain from '@main/components/PageDeployGauge/DeploySidechain'
-import DeployMainnet from '@main/components/PageDeployGauge/DeployMainnet'
-import ProcessSummary from '@main/components/PageDeployGauge/ProcessSummary'
-import DeployGaugeButton from '@main/components/PageDeployGauge/components/DeployGaugeButton'
+import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
+import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
+import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
+import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
 
 import Box, { BoxHeader } from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
@@ -18,7 +18,7 @@ import Switch from '@ui/Switch/Switch'
 import IconButton from '@ui/IconButton'
 import Icon from '@ui/Icon/Icon'
 import ModalDialog from '@ui/Dialog/ModalDialog'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
   curve: CurveApi
@@ -228,7 +228,7 @@ const StyledIconButton = styled(IconButton)`
   border: 1px solid transparent;
   font-weight: var(--bold);
   opacity: 1;
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
     background-color: var(--button_icon--hover--background-color);
   }

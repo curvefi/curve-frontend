@@ -1,6 +1,6 @@
-import type { LiqRangeSliderIdx } from '@loan/store/types'
+import type { LiqRangeSliderIdx } from '@/loan/store/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
@@ -9,10 +9,10 @@ import { formatNumber } from '@ui/utils'
 import { Chip } from '@ui/Typography'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
-import ChartLiquidationRange from '@loan/components/ChartLiquidationRange'
+import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
 import Icon from '@ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { HealthMode, LoanDetails, UserLoanDetails } from '@loan/types/loan.types'
+import { HealthMode, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 
 const DetailInfoLiqRange = ({
   bands: newBands,
@@ -170,13 +170,13 @@ const LiqRangeEditButton = styled(Button)`
   font-size: var(--font-size-2);
   text-align: right;
 
-  :hover:not(:disabled) {
+  &:hover:not(:disabled) {
     border-color: inherit;
     color: inherit;
     opacity: 1;
   }
 
-  :disabled {
+  &:disabled {
     opacity: 0.5;
     cursor: initial;
   }

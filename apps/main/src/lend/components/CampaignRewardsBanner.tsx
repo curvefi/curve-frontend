@@ -1,6 +1,6 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import useCampaignRewardsMapper from '@lend/hooks/useCampaignRewardsMapper'
+import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
 
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 

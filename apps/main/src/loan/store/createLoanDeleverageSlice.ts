@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
-import type { FormEstGas } from '@loan/components/PageLoanManage/types'
-import type { FormDetailInfo, FormStatus, FormValues } from '@loan/components/PageLoanManage/LoanDeleverage/types'
+import type { State } from '@/loan/store/useStore'
+import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -9,12 +9,11 @@ import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@loan/components/PageLoanManage/LoanDeleverage/utils'
-import { DEFAULT_FORM_EST_GAS } from '@loan/components/PageLoanManage/utils'
-import networks from '@loan/networks'
-import { ChainId, Curve, Llamma, UserLoanDetails } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/features/connect-wallet'
+} from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
+import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import networks from '@/loan/networks'
+import { ChainId, Curve, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -145,7 +144,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
     },
     fetchStepRepay: async (activeKey, curve, llamma, formValues, maxSlippage) => {
-      const { provider } = useWalletStore.getState()
+      const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {

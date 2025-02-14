@@ -1,19 +1,19 @@
 import styled from 'styled-components'
 import React, { useEffect, useCallback } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
 import SearchInput from '@ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
-import GaugeListItem from '@dao/components/PageGauges/GaugeListItem'
-import ErrorMessage from '@dao/components/ErrorMessage'
-import PaginatedTable from '@dao/components/PaginatedTable'
-import SmallScreenCard from '@dao/components/PageGauges/GaugeListItem/SmallScreenCard'
-import { GaugeFormattedData, SortByFilterGaugesKeys } from '@dao/types/dao.types'
+import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
+import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
 
 const GaugesList = () => {
   const {

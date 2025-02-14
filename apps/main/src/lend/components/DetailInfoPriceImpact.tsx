@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { formatNumber } from '@ui/utils'
 
@@ -16,7 +16,7 @@ const DetailInfoPriceImpact = ({
 }) => {
   const formattedPriceImpact = useMemo(() => {
     if (priceImpact === 'N/A') return 'N/A'
-    if (+priceImpact > 0) return `≈${formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}`
+    if (!isNaN(+priceImpact)) return `≈${formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}`
     return ''
   }, [priceImpact])
 

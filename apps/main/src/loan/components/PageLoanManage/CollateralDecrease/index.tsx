@@ -1,33 +1,33 @@
-import type { FormEstGas, PageLoanManageProps } from '@loan/components/PageLoanManage/types'
-import type { FormStatus, FormValues, StepKey } from '@loan/components/PageLoanManage/CollateralDecrease/types'
+import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/CollateralDecrease/types'
 import type { Step } from '@ui/Stepper/types'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@loan/components/PageLoanManage/utils'
-import { DEFAULT_WALLET_BALANCES } from '@loan/components/LoanInfoUser/utils'
-import { DEFAULT_FORM_STATUS } from '@loan/store/createLoanCollateralDecreaseSlice'
-import { curveProps } from '@loan/utils/helpers'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
+import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralDecreaseSlice'
+import { curveProps } from '@/loan/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
-import networks from '@loan/networks'
-import useStore from '@loan/store/useStore'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@loan/components/PageLoanManage/styles'
+import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@loan/components/AlertFormError'
+import AlertFormError from '@/loan/components/AlertFormError'
 import Box from '@ui/Box'
-import DetailInfoBorrowRate from '@loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@loan/components/DetailInfoLiqRange'
-import DialogHealthWarning from '@loan/components/DialogHealthWarning'
+import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
+import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Curve, Llamma } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -48,7 +48,6 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const init = useStore((state) => state.loanCollateralDecrease.init)
   const fetchStepDecrease = useStore((state) => state.loanCollateralDecrease.fetchStepDecrease)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanCollateralDecrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanCollateralDecrease.setStateByKey)
   const resetState = useStore((state) => state.loanCollateralDecrease.resetState)
@@ -96,7 +95,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const handleBtnClickRemove = useCallback(
     async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
       const notifyMessage = t`Please confirm removal of ${formValues.collateral} ${llamma.collateralSymbol}`
-      const notify = notifyNotification(notifyMessage, 'pending')
+      const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -109,9 +108,9 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
           />,
         )
       }
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepDecrease, network, notifyNotification, reset],
+    [activeKey, fetchStepDecrease, network, reset],
   )
 
   const stepsObj = useCallback(

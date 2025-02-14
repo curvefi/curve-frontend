@@ -1,33 +1,33 @@
-import type { FormStatus, FormValues, StepKey } from '@lend/components/PageLoanManage/LoanCollateralAdd/types'
-import type { FormEstGas } from '@lend/components/PageLoanManage/types'
+import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
-import { DEFAULT_HEALTH_MODE } from '@lend/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES } from '@lend/store/createLoanCollateralAddSlice'
-import { NOFITY_MESSAGE } from '@lend/constants'
-import { _showNoLoanFound } from '@lend/utils/helpers'
+import { t } from '@ui-kit/lib/i18n'
+import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
+import { NOFITY_MESSAGE } from '@/lend/constants'
+import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { helpers } from '@lend/lib/apiLending'
-import networks from '@lend/networks'
-import useStore from '@lend/store/useStore'
-import { StyledDetailInfoWrapper } from '@lend/components/PageLoanManage/styles'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
+import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@lend/components/AlertFormError'
-import AlertNoLoanFound from '@lend/components/AlertNoLoanFound'
-import AlertSummary from '@lend/components/AlertLoanSummary'
-import DetailInfoEstimateGas from '@lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@lend/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@lend/components/DetailInfoLiqRange'
-import InpToken from '@lend/components/InpToken'
-import LoanFormConnect from '@lend/components/LoanFormConnect'
+import AlertFormError from '@/lend/components/AlertFormError'
+import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
+import AlertSummary from '@/lend/components/AlertLoanSummary'
+import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
+import InpToken from '@/lend/components/InpToken'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
-import { Api, PageContentProps } from '@lend/types/lend.types'
+import { notify } from '@ui-kit/features/connect-wallet'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
 
 const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -42,7 +42,6 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const fetchStepApprove = useStore((state) => state.loanCollateralAdd.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanCollateralAdd.fetchStepIncrease)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanCollateralAdd.setFormValues)
   const resetState = useStore((state) => state.loanCollateralAdd.resetState)
 
@@ -65,7 +64,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
     async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
       const { chainId } = api
 
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
@@ -74,9 +73,9 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => updateFormValues({}, true)} />)
       }
       if (resp?.error) setTxInfoBar(null)
-      if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+      notification?.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues],
+    [activeKey, fetchStepIncrease, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -121,10 +120,10 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${market.collateral_token.symbol}`
-            const notify = notifyNotification(notifyMessage, 'pending')
+            const notification = notify(notifyMessage, 'pending')
 
             await fetchStepApprove(payloadActiveKey, api, market, formValues)
-            if (notify && typeof notify.dismiss === 'function') notify.dismiss()
+            notification?.dismiss()
           },
         },
         ADD: {
@@ -146,7 +145,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickAdd, notifyNotification, userBalances, userDetails?.state],
+    [fetchStepApprove, handleBtnClickAdd, userBalances, userDetails?.state],
   )
 
   // onMount

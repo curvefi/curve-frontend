@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import Box from '@ui/Box'
 import IconButton from '@ui/IconButton'
@@ -10,7 +10,7 @@ import Icon from '@ui/Icon'
 import VoteGaugeField from '../VoteGaugeField'
 import TitleComp from '../../GaugeListItem/TitleComp'
 import GaugeDetails from '../../GaugeListItem/GaugeDetails'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@dao/types/dao.types'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 
 type VoteGaugeProps = {
   imageBaseUrl: string

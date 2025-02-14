@@ -1,5 +1,5 @@
 import TextField from '@mui/material/TextField'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import SearchIcon from '@mui/icons-material/Search'
 import MenuItem from '@mui/material/MenuItem'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'

@@ -1,8 +1,8 @@
-import type { FormValues, FormStatus, FormDetailInfo } from '@loan/components/PageLoanManage/LoanDeleverage/types'
-import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -12,40 +12,40 @@ import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_HEALTH_MODE,
   hasDeleverage,
-} from '@loan/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES } from '@loan/components/PageLoanManage/LoanDeleverage/utils'
-import { REFRESH_INTERVAL } from '@loan/constants'
-import { curveProps } from '@loan/utils/helpers'
+} from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
+import { REFRESH_INTERVAL } from '@/loan/constants'
+import { curveProps } from '@/loan/utils/helpers'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import { getCollateralListPathname } from '@loan/utils/utilsRouter'
-import { getStepStatus, getTokenName } from '@loan/utils/utilsLoan'
-import networks from '@loan/networks'
-import usePageVisibleInterval from '@loan/hooks/usePageVisibleInterval'
-import useStore from '@loan/store/useStore'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
+import networks from '@/loan/networks'
+import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
+import useStore from '@/loan/store/useStore'
 
-import { StyledDetailInfoWrapper, StyledInpChip } from '@loan/components/PageLoanManage/styles'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@loan/components/AlertFormError'
-import AlertFormWarning from '@loan/components/AlertFormWarning'
+import AlertFormError from '@/loan/components/AlertFormError'
+import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
-import DetailInfoBorrowRate from '@loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@loan/components/DetailInfoLiqRange'
-import DialogHighPriceImpactWarning from '@loan/components/PageLoanManage/LoanDeleverage/components/DialogHighPriceImpactWarning'
-import DetailInfoSlippageTolerance from '@loan/components/DetailInfoSlippageTolerance'
-import DetailInfoTradeRoutes from '@loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
+import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
+import DialogHighPriceImpactWarning from '@/loan/components/PageLoanManage/LoanDeleverage/components/DialogHighPriceImpactWarning'
+import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
+import DetailInfoTradeRoutes from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanDeleverageAlertFull from '@loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull'
-import LoanDeleverageAlertPartial from '@loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial'
-import LoanFormConnect from '@loan/components/LoanFormConnect'
+import LoanDeleverageAlertFull from '@/loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull'
+import LoanDeleverageAlertPartial from '@/loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { Curve, Llamma } from '@/loan/types/loan.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -68,7 +68,6 @@ const LoanDeleverage = ({
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -110,7 +109,7 @@ const LoanDeleverage = ({
       const fTokenName = `${collateral} ${collateralName}`
       const notifyMessage = t`Please approve deleverage with ${fTokenName} at ${maxSlippage}% max slippage.`
 
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -134,7 +133,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
+    [activeKey, collateralName, fetchStepRepay, navigate, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

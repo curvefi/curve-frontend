@@ -1,30 +1,30 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@dao/components/PageVeCrv/types'
+import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_EST_GAS } from '@dao/components/PageVeCrv/utils'
-import { REFRESH_INTERVAL } from '@dao/constants'
+import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
+import { REFRESH_INTERVAL } from '@/dao/constants'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import { formatDisplayDate, toCalendarDate } from '@dao/utils/utilsDates'
+import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
 import { formatNumber } from '@ui/utils'
-import usePageVisibleInterval from '@dao/hooks/usePageVisibleInterval'
+import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
-import networks from '@dao/networks'
-import useStore from '@dao/store/useStore'
+import networks from '@/dao/networks'
+import useStore from '@/dao/store/useStore'
 
-import AlertFormError from '@dao/components/AlertFormError'
-import DetailInfoEstGas from '@dao/components/DetailInfoEstGas'
-import FormActions from '@dao/components/PageVeCrv/components/FormActions'
-import FieldDatePicker from '@dao/components/PageVeCrv/components/FieldDatePicker'
-import FieldLockedAmt from '@dao/components/PageVeCrv/components/FieldLockedAmt'
+import AlertFormError from '@/dao/components/AlertFormError'
+import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
+import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import FieldDatePicker from '@/dao/components/PageVeCrv/components/FieldDatePicker'
+import FieldLockedAmt from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { CurveApi } from '@/dao/types/dao.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -37,7 +37,6 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const formValues = useStore((state) => state.lockedCrv.formValues)
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.lockedCrv.fetchStepCreate)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
@@ -101,11 +100,11 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const handleBtnClickApproval = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your CRV.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { dismiss } = notify(notifyMessage, 'pending')
       await fetchStepApprove(activeKey, curve, rFormType, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification, rFormType],
+    [fetchStepApprove, rFormType],
   )
 
   const handleBtnClickCreate = useCallback(
@@ -113,7 +112,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       if (formValues.utcDate) {
         const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm locking ${formatNumber(formValues.lockedAmt)} CRV until ${localUtcDate}.`
-        const { dismiss } = notifyNotification(notifyMessage, 'pending')
+        const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -123,7 +122,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [fetchStepCreate, notifyNotification],
+    [fetchStepCreate],
   )
 
   const getSteps = useCallback(

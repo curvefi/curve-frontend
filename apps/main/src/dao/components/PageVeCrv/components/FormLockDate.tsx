@@ -1,29 +1,29 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@dao/components/PageVeCrv/types'
+import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_EST_GAS } from '@dao/components/PageVeCrv/utils'
-import { REFRESH_INTERVAL } from '@dao/constants'
+import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
+import { REFRESH_INTERVAL } from '@/dao/constants'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import { formatDisplayDate, toCalendarDate } from '@dao/utils/utilsDates'
+import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
 import dayjs from '@ui-kit/lib/dayjs'
-import networks from '@dao/networks'
-import usePageVisibleInterval from '@dao/hooks/usePageVisibleInterval'
-import useStore from '@dao/store/useStore'
+import networks from '@/dao/networks'
+import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
+import useStore from '@/dao/store/useStore'
 
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@dao/components/AlertFormError'
-import FormActions from '@dao/components/PageVeCrv/components/FormActions'
-import DetailInfoEstGas from '@dao/components/DetailInfoEstGas'
-import FieldDatePicker from '@dao/components/PageVeCrv/components/FieldDatePicker'
+import AlertFormError from '@/dao/components/AlertFormError'
+import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
+import FieldDatePicker from '@/dao/components/PageVeCrv/components/FieldDatePicker'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi } from '@dao/types/dao.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { CurveApi } from '@/dao/types/dao.types'
+import { notify } from '@ui-kit/features/connect-wallet'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -34,7 +34,6 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
   const formValues = useStore((state) => state.lockedCrv.formValues)
-  const notifyNotification = useWalletStore((s) => s.notify)
   const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
 
@@ -117,7 +116,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       if (formValues.utcDate) {
         const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm changing unlock date to ${localUtcDate}.`
-        const { dismiss } = notifyNotification(notifyMessage, 'pending')
+        const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -127,7 +126,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchStepIncreaseTime],
+    [fetchStepIncreaseTime],
   )
 
   const getSteps = useCallback(

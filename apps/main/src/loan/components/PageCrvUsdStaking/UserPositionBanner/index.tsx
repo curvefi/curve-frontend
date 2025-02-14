@@ -1,18 +1,18 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 
-import useStore from '@loan/store/useStore'
-import { isReady } from '@loan/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { formatNumber } from '@ui/utils'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
-import { CRVUSD_ADDRESS } from '@loan/constants'
+import { CRVUSD_ADDRESS } from '@/loan/constants'
 
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import Tooltip from '@ui/Tooltip'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type UserPositionBannerProps = {
   className?: string
@@ -23,7 +23,7 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
   const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
   const crvUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvUsdRateLoading = useStore((state) => state.usdRates.loading)
-  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
+  const { signerAddress } = useWallet()
   const userBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? ''])
   const crvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.crvUsdExchangeRate.fetchStatus)
 

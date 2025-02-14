@@ -1,26 +1,26 @@
-import { CreateToken, CreateQuickListToken } from '@main/components/PageCreatePool/types'
-import { t } from '@lingui/macro'
+import { CreateQuickListToken, CreateToken } from '@/dex/components/PageCreatePool/types'
+import { t } from '@ui-kit/lib/i18n'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
-import { useMemo, useRef, useState } from 'react'
+import { Key, useMemo, useRef, useState } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Item } from '@react-stately/collections'
 import styled from 'styled-components'
-import Fuse from 'fuse.js'
 import { breakpoints } from '@ui/utils/responsive'
-import { delayAction, shortenTokenAddress } from '@main/utils'
-import useStore from '@main/store/useStore'
-import { STABLESWAP } from '@main/components/PageCreatePool/constants'
-import ComboBox from '@main/components/PageCreatePool/SelectTokenModal/ComboBox'
+import { delayAction, shortenTokenAddress } from '@/dex/utils'
+import useStore from '@/dex/store/useStore'
+import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
+import ComboBox from '@/dex/components/PageCreatePool/SelectTokenModal/ComboBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ModalDialog from '@main/components/PageCreatePool/ConfirmModal/ModalDialog'
+import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import TokenIcon from '@main/components/TokenIcon'
+import TokenIcon from '@/dex/components/TokenIcon'
 import { Chip } from '@ui/Typography'
 import LazyItem from '@ui/LazyItem'
 import Checkbox from '@ui/Checkbox'
-import { CurveApi, ChainId } from '@main/types/main.types'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { filterTokens } from '@ui-kit/utils'
 
 type Props = {
   curve: CurveApi
@@ -61,7 +61,7 @@ const ComboBoxTokenPicker = ({
 
   const [filterValue, setFilterValue] = useState('')
   const [filterBasepools, setFilterBasepools] = useState(false)
-  const [tokenQueryStatus, settokenQueryStatus] = useState<TokenQueryType>('')
+  const [tokenQueryStatus, setTokenQueryStatus] = useState<TokenQueryType>('')
 
   const quickList = [
     {
@@ -78,11 +78,11 @@ const ComboBoxTokenPicker = ({
 
   const verifyTokens = async () => {
     if (disabledKeys?.some((item) => item.toLowerCase() === filterValue.toLowerCase())) {
-      settokenQueryStatus('DISABLED')
+      setTokenQueryStatus('DISABLED')
       return
     }
 
-    settokenQueryStatus('LOADING')
+    setTokenQueryStatus('LOADING')
 
     try {
       const token = await curve.getCoinsData([filterValue])
@@ -92,7 +92,7 @@ const ComboBoxTokenPicker = ({
       updateUserAddedTokens(filterValue, token[0].symbol, false, isBasePool)
     } catch (error) {
       console.log(error)
-      settokenQueryStatus('ERROR')
+      setTokenQueryStatus('ERROR')
     }
   }
 
@@ -103,38 +103,19 @@ const ComboBoxTokenPicker = ({
           basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
         )
       : tokens
-    const filteredTokens = disabledKeys
+    const enabledTokens = disabledKeys
       ? basePoolsFilteredTokens.filter(
           (item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase()),
         )
       : basePoolsFilteredTokens
-    const fuse = new Fuse<CreateToken>(filteredTokens, {
-      ignoreLocation: true,
-      threshold: 0.01,
-      keys: ['symbol', 'address'],
-    })
 
-    const result = fuse.search(filterValue)
-
-    const checkedResult =
-      filterValue.length !== 42
-        ? result
-        : result.length !== 0 && result[0].item.address.toLowerCase() === filterValue.toLowerCase()
-          ? result
-          : []
-
-    settokenQueryStatus('')
-    if (filterValue.length === 42 && checkedResult.length === 0) {
+    const filteredResults = filterTokens(filterValue, enabledTokens, endsWith)
+    setTokenQueryStatus('')
+    if (filterValue.length === 42 && filteredResults.length === 0) {
       verifyTokens()
     }
 
-    if (filterValue.length === 0) {
-      return filteredTokens
-    } else if (checkedResult.length > 0) {
-      return checkedResult.map((r) => r.item)
-    } else {
-      return tokens.filter((item) => endsWith(item.address, filterValue))
-    }
+    return filteredResults
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterValue, tokens, disabledKeys, filterBasepools])
 
@@ -148,7 +129,7 @@ const ComboBoxTokenPicker = ({
     isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
   }
 
-  const handleOnSelectChange = (tokenAddress: React.Key) => {
+  const handleOnSelectChange = (tokenAddress: Key | null) => {
     if (tokenAddress) {
       onSelectionChange(tokenAddress)
       setFilterBasepools(false)
@@ -185,6 +166,10 @@ const ComboBoxTokenPicker = ({
           state={{ ...overlayTriggerState, close: handleClose }}
         >
           <ComboBox
+            // quick fix: pass a key prop so the component rerenders when the items change.
+            // there seems to be a bug in react-stately that ignores changes to the items prop.
+            // this component should be replaced soon by MUI, so I won't spend time fixing it.
+            key={items?.length}
             label=""
             showSearch
             aria-label={t`Search by name or paste address`}
@@ -192,7 +177,6 @@ const ComboBoxTokenPicker = ({
             allowsCustomValue={!isMdUp}
             disabledKeys={disabledKeys}
             items={items}
-            inputValue={filterValue}
             isListboxOpenPermanently
             listBoxHeight="500px"
             menuTrigger="focus"
@@ -440,7 +424,7 @@ const ComboBoxButton = styled(Button)`
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover {
+  &:hover {
     color: var(--button--color);
     border: 1px solid var(--button--background-color);
   }

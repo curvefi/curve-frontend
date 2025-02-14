@@ -1,7 +1,7 @@
-import type { PageLoanManageProps } from '@loan/components/PageLoanManage/types'
-import type { BrushStartEndIndex } from '@loan/components/ChartBandBalances/types'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
+import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import {
   Bar,
   Brush,
@@ -20,14 +20,14 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { getTokenName } from '@loan/utils/utilsLoan'
-import useStore from '@loan/store/useStore'
+import { getTokenName } from '@/loan/utils/utilsLoan'
+import useStore from '@/loan/store/useStore'
 
-import ChartBandBalancesSettings from '@loan/components/ChartBandBalances/ChartBandBalancesSettings'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@loan/components/ChartTooltip'
+import ChartBandBalancesSettings from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { BandsBalancesData } from '@loan/types/loan.types'
+import { BandsBalancesData } from '@/loan/types/loan.types'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   brushIndex: BrushStartEndIndex
@@ -219,7 +219,7 @@ const ChartBandBalances = ({
 
                 <Bar
                   dataKey="collateralStablecoinUsd"
-                  shape={(props) => {
+                  shape={(props: any) => {
                     const { width, collateralUsd, isLiquidationBand, stablecoin, collateralStablecoinUsd } = props
 
                     if (barWidth === 0 && +width > 0) {

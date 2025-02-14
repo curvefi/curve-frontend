@@ -1,19 +1,19 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import styled from 'styled-components'
 
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
 import Button from '@ui/Button'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type DeployButtonProps = {
   className?: string
 }
 
 const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
-  const signerAddress = useWalletStore((s) => s.wallet?.accounts?.[0]?.address)
+  const { signerAddress } = useWallet()
   const { approval: depositApproved, fetchStatus: depositFetchStatus } = useStore(
     (state) => state.scrvusd.depositApproval,
   )

@@ -1,6 +1,4 @@
-import { Token } from '@main/types/main.types'
-
-export type EndsWith = (string: string, substring: string) => boolean
+import { Token } from '@/dex/types/main.types'
 
 export type ComboBoxSelectTokenProps = {
   disabled?: boolean

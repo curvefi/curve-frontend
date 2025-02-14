@@ -1,11 +1,11 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 import styled from 'styled-components'
 
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import { HealthMode } from '@loan/types/loan.types'
+import { HealthMode } from '@/loan/types/loan.types'
 
 function DialogHealthLeverageWarning({
   confirmed,

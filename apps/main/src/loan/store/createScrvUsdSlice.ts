@@ -1,15 +1,15 @@
-import type { DepositWithdrawModule } from '@loan/components/PageCrvUsdStaking/types'
-import type { PricesYieldData, PricesYieldDataResponse, Provider } from '@loan/store/types'
+import type { DepositWithdrawModule } from '@/loan/components/PageCrvUsdStaking/types'
+import type { PricesYieldData, PricesYieldDataResponse, Provider } from '@/loan/store/types'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@loan/store/useStore'
+import type { State } from '@/loan/store/useStore'
 import BigNumber from 'bignumber.js'
-import { t } from '@lingui/macro'
-import { SCRVUSD_GAS_ESTIMATE } from '@loan/constants'
-import networks from '@loan/networks'
+import { t } from '@ui-kit/lib/i18n'
+import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
+import networks from '@/loan/networks'
 import { Contract } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
-import { FetchStatus, TransactionStatus } from '@loan/types/loan.types'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -323,7 +323,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       depositApprove: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider } = useWallet.getState()
         const approveInfinite = get()[sliceKey].approveInfinite
 
         // TODO: check so curve always is set when approving
@@ -381,7 +381,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       deposit: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
@@ -436,7 +436,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       withdraw: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
@@ -491,7 +491,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       redeem: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
-        const { provider, notify } = useWalletStore.getState()
+        const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
@@ -594,7 +594,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const signerAddress = useWalletStore.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = get().lendApi
@@ -621,7 +621,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchUserBalances: async () => {
-      const signerAddress = useWalletStore.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
       const lendApi = get().lendApi
 
       if (!lendApi || !signerAddress) return

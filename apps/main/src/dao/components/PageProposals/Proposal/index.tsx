@@ -1,12 +1,11 @@
 import styled from 'styled-components'
 import { useCallback } from 'react'
-import { t } from '@lingui/macro'
-
+import { t } from '@ui-kit/lib/i18n'
 import VoteCountdown from '../../VoteCountdown'
-import ProposalVoteStatusBox from '@dao/components/ProposalVoteStatusBox'
+import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
 import LazyItem from '@ui/LazyItem'
-import SmallLabel from '@dao/components/SmallLabel'
-import { ProposalData } from '@dao/types/dao.types'
+import SmallLabel from '@/dao/components/SmallLabel'
+import { ProposalData } from '@/dao/types/dao.types'
 
 type Props = {
   proposalData: ProposalData
@@ -102,7 +101,7 @@ const ProposalStatus = styled.h4`
   font-size: var(--font-size-1);
   text-transform: uppercase;
   &.Passed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -113,7 +112,7 @@ const ProposalStatus = styled.h4`
     }
   }
   &.Denied {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -124,7 +123,7 @@ const ProposalStatus = styled.h4`
     }
   }
   &.Active {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -173,7 +172,7 @@ const ExecutedStatus = styled.h4`
   font-size: var(--font-size-1);
   text-transform: uppercase;
   &.executed {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;
@@ -184,7 +183,7 @@ const ExecutedStatus = styled.h4`
     }
   }
   &.executable {
-    :before {
+    &:before {
       display: inline-block;
       content: '';
       margin: auto 0.3rem auto 0;

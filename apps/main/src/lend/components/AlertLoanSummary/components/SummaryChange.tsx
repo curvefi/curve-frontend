@@ -1,12 +1,12 @@
-import type { SummaryProps } from '@lend/components/AlertLoanSummary/types'
+import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React from 'react'
 
-import { format } from '@lend/components/AlertLoanSummary/utils'
+import { format } from '@/lend/components/AlertLoanSummary/utils'
 
 import Icon from '@ui/Icon'
-import Item from '@lend/components/AlertLoanSummary/components/Item'
+import Item from '@/lend/components/AlertLoanSummary/components/Item'
 
 const SummaryChange = ({
   title,

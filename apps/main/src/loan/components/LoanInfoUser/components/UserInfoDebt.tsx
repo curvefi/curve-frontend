@@ -1,11 +1,11 @@
 import React from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
 import { formatNumber } from '@ui/utils'
-import useStore from '@loan/store/useStore'
+import useStore from '@/loan/store/useStore'
 
-import InpChipUsdRate from '@loan/components/InpChipUsdRate'
+import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
 import ListInfoItem from '@ui/ListInfo'
 
 const UserInfoDebt = ({

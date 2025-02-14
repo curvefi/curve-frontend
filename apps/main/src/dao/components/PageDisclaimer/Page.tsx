@@ -1,11 +1,11 @@
 import type { NextPage } from 'next'
 import { useEffect } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import Stack from '@mui/material/Stack'
 
-import DocumentHead from '@dao/layout/DocumentHead'
-import { scrollToTop } from '@dao/utils'
+import DocumentHead from '@/dao/layout/DocumentHead'
+import { scrollToTop } from '@/dao/utils'
 
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'

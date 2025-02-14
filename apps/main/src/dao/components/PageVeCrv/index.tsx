@@ -1,15 +1,15 @@
-import type { FormType, PageVecrv } from '@dao/components/PageVeCrv/types'
+import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@dao/store/useStore'
+import useStore from '@/dao/store/useStore'
 
 import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
-import FormLockCreate from '@dao/components/PageVeCrv/components/FormLockCreate'
-import FormLockCrv from '@dao/components/PageVeCrv/components/FormLockCrv'
-import FormLockDate from '@dao/components/PageVeCrv/components/FormLockDate'
+import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
+import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
+import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo, toggleForm } = pageProps

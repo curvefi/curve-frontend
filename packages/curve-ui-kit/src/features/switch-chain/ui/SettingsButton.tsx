@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 
 export const SettingsButton = (props: { onClick: () => void }) => (

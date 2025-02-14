@@ -1,16 +1,16 @@
 import { PoolActivityProps } from './types'
 
 import { useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 
-import useStore from '@lend/store/useStore'
+import useStore from '@/lend/store/useStore'
 
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Button from '@ui/Button/Button'
 import Icon from '@ui/Icon'
-import TradesData from '@lend/components/ChartOhlcWrapper/TradesData'
-import LiquidityData from '@lend/components/ChartOhlcWrapper/LiquidityData'
+import TradesData from '@/lend/components/ChartOhlcWrapper/TradesData'
+import LiquidityData from '@/lend/components/ChartOhlcWrapper/LiquidityData'
 
 const PoolActivity: React.FC<PoolActivityProps> = ({ chainId, poolAddress, coins }) => {
   const {

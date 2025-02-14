@@ -1,10 +1,10 @@
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_HEALTH_MODE } from '@loan/components/PageLoanManage/utils'
-import { getIsUserCloseToLiquidation } from '@loan/utils/utilsCurvejs'
-import { parseHealthPercent } from '@loan/utils/utilsLoan'
+import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { getIsUserCloseToLiquidation } from '@/loan/utils/utilsCurvejs'
+import { parseHealthPercent } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
 
 import Box from '@ui/Box'
@@ -12,7 +12,7 @@ import DetailInfo from '@ui/DetailInfo'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { HealthMode, HeathColorKey, LoanDetails, UserLoanDetails } from '@loan/types/loan.types'
+import { HealthMode, HeathColorKey, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 

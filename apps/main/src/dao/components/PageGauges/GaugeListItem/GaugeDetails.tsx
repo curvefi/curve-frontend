@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 
 import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
-import networks from '@dao/networks'
+import networks from '@/dao/networks'
 
 import Box from '@ui/Box'
-import ExternalLinkIconButton from '@dao/components/ExternalLinkIconButton'
-import CopyIconButton from '@dao/components/CopyIconButton'
+import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import CopyIconButton from '@/dao/components/CopyIconButton'
 import { ExternalLink } from '@ui/Link'
-import { GaugeFormattedData } from '@dao/types/dao.types'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => (
   <Wrapper className={className}>

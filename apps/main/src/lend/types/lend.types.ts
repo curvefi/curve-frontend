@@ -7,7 +7,7 @@ import type { WalletState } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import { TITLE } from '@lend/constants'
+import { TITLE } from '@/lend/constants'
 import { ethers } from 'ethers'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
@@ -74,8 +74,6 @@ export type ExpectedBorrowed = {
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
 export type RouterParams = {
-  rLocale: { value: 'en' } | null
-  rLocalePathname: string
   rChainId: ChainId
   rNetwork: NetworkEnum
   rNetworkIdx: number

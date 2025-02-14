@@ -1,18 +1,7 @@
-/**
- * @description This file contains custom hooks and utility functions for gauge-related mutations in the Curve.fi DApp.
- * It's a crucial part of the 'gauge' entity in the FSD architecture.
- *
- * The hooks in this file provide an easy-to-use interface for components to interact with gauge data and operations.
- * They encapsulate the usage of React Query and the application's global state, offering a clean API
- *
- * These hooks abstract away the complexity of data mutation and state management,
- * allowing components to easily access and manipulate gauge-related data.
- */
-
-import { t } from '@lingui/macro'
-import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
-import * as models from '@main/entities/gauge/model'
-import { gaugeKeys as keys } from '@main/entities/gauge/model'
+import { t } from '@ui-kit/lib/i18n'
+import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
+import * as models from '@/dex/entities/gauge/model'
+import { gaugeKeys as keys } from '@/dex/entities/gauge/model'
 import type {
   AddRewardMutation,
   AddRewardParams,
@@ -20,17 +9,18 @@ import type {
   DepositRewardApproveParams,
   DepositRewardMutation,
   DepositRewardParams,
-} from '@main/entities/gauge/types'
+} from '@/dex/entities/gauge/types'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { GaugeParams } from '@ui-kit/lib/model/query'
-import useTokensMapper from '@main/hooks/useTokensMapper'
-import { useWalletStore } from '@ui-kit/features/connect-wallet'
+import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { notify } from '@ui-kit/features/connect-wallet'
+
+type QueryMutation = Mutation<unknown, DefaultError, any> // todo: type got converted from any to unknown in v5.60
 
 export const useAddRewardToken = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string, Error, AddRewardMutation> => {
-  const notifyNotification = useWalletStore((s) => s.notify)
   const { tokensMapper } = useTokensMapper(chainId)
 
   return useMutation({
@@ -38,7 +28,7 @@ export const useAddRewardToken = ({
     onSuccess: (resp, { rewardTokenId }) => {
       if (resp) {
         const txDescription = t`Added reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notifyNotification(txDescription, 'success')
+        notify(txDescription, 'success')
       }
 
       return Promise.all([
@@ -48,7 +38,7 @@ export const useAddRewardToken = ({
     },
     onError: (error) => {
       console.error('Error adding reward:', error)
-      notifyNotification(t`Failed to add reward token`, 'error')
+      notify(t`Failed to add reward token`, 'error')
     },
   })
 }
@@ -62,7 +52,7 @@ export const useAddRewardTokenIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.addRewardToken({ chainId, poolId }),
-      predicate: ({ state }) =>
+      predicate: ({ state }: QueryMutation) =>
         state.variables?.rewardTokenId === rewardTokenId && state.variables?.distributorId === distributorId,
     }),
   )
@@ -71,7 +61,6 @@ export const useDepositRewardApprove = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string[], Error, DepositRewardApproveMutation> => {
-  const notifyNotification = useWalletStore((s) => s.notify)
   const { tokensMapper } = useTokensMapper(chainId)
 
   return useMutation({
@@ -79,7 +68,7 @@ export const useDepositRewardApprove = ({
     onSuccess: (resp, { rewardTokenId, amount }) => {
       if (resp) {
         const notifyMessage = t`Approve spending ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notifyNotification(notifyMessage, 'success', 15000)
+        notify(notifyMessage, 'success', 15000)
       }
       return queryClient.invalidateQueries({
         queryKey: keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }),
@@ -87,7 +76,7 @@ export const useDepositRewardApprove = ({
     },
     onError: (error) => {
       console.error('Error approving deposit reward:', error)
-      notifyNotification(t`Failed to approve deposit reward`, 'error', 15000)
+      notify(t`Failed to approve deposit reward`, 'error', 15000)
     },
   })
 }
@@ -101,7 +90,8 @@ export const useDepositRewardApproveIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositRewardIsApproved({ chainId, poolId }),
-      predicate: ({ state }) => state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount,
+      predicate: ({ state }: QueryMutation) =>
+        state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount,
     }),
   )
 
@@ -109,7 +99,6 @@ export const useDepositReward = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<string, Error, DepositRewardMutation> => {
-  const notifyNotification = useWalletStore((s) => s.notify)
   const { tokensMapper } = useTokensMapper(chainId)
 
   return useMutation({
@@ -117,13 +106,13 @@ export const useDepositReward = ({
     onSuccess: (resp, { rewardTokenId }) => {
       if (resp) {
         const txDescription = t`Deposited reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notifyNotification(txDescription, 'success', 15000)
+        notify(txDescription, 'success', 15000)
       }
       return queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
     },
     onError: (error) => {
       console.error('Error depositing reward:', error)
-      notifyNotification(t`Failed to deposit reward`, 'error', 15000)
+      notify(t`Failed to deposit reward`, 'error', 15000)
     },
   })
 }
@@ -138,7 +127,7 @@ export const useDepositRewardIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositReward({ chainId, poolId }),
-      predicate: ({ state }) =>
+      predicate: ({ state }: QueryMutation) =>
         state.variables?.rewardTokenId === rewardTokenId &&
         state.variables?.amount === amount &&
         state.variables?.epoch === epoch,

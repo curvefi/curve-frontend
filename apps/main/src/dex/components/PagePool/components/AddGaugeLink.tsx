@@ -1,21 +1,21 @@
-import type { PageTransferProps } from '@main/components/PagePool/types'
+import type { PageTransferProps } from '@/dex/components/PagePool/types'
 
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { getPath } from '@main/utils/utilsRouter'
-import useStore from '@main/store/useStore'
+import { getPath } from '@/dex/utils/utilsRouter'
+import useStore from '@/dex/store/useStore'
 import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
   THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
-} from '@main/components/PageDeployGauge/constants'
+} from '@/dex/components/PageDeployGauge/constants'
 
 import InteralLinkButton from '@ui/InternalLinkButton'
-import { ChainId } from '@main/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 
 const AddGaugeLink = ({
   chainId,

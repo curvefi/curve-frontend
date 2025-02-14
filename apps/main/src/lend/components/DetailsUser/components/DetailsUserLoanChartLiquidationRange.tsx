@@ -1,10 +1,10 @@
-import { SubTitle } from '@lend/components/DetailsMarket/styles'
-import { t } from '@lingui/macro'
-import ChartLiquidationRange from '@lend/components/ChartLiquidationRange'
-import useStore from '@lend/store/useStore'
+import { SubTitle } from '@/lend/components/DetailsMarket/styles'
+import { t } from '@ui-kit/lib/i18n'
+import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
+import useStore from '@/lend/store/useStore'
 import { useMemo } from 'react'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { PageContentProps } from '@lend/types/lend.types'
+import { PageContentProps } from '@/lend/types/lend.types'
 
 const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)

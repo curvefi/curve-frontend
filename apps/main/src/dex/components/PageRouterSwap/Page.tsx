@@ -1,21 +1,21 @@
 import type { NextPage } from 'next'
-import { t } from '@lingui/macro'
+import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { ROUTE } from '@main/constants'
-import { breakpoints } from '@ui/utils'
-import { getPath } from '@main/utils/utilsRouter'
-import { scrollToTop } from '@main/utils'
-import usePageOnMount from '@main/hooks/usePageOnMount'
-import useStore from '@main/store/useStore'
-import useTokensMapper from '@main/hooks/useTokensMapper'
-import AdvancedSettings from '@main/components/AdvancedSettings'
+import { ROUTE } from '@/dex/constants'
+import { breakpoints, isLoading } from '@ui/utils'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { scrollToTop } from '@/dex/utils'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import useStore from '@/dex/store/useStore'
+import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import Box, { BoxHeader } from '@ui/Box'
-import DocumentHead from '@main/layout/default/DocumentHead'
+import DocumentHead from '@/dex/layout/default/DocumentHead'
 import IconButton from '@ui/IconButton'
-import QuickSwap from '@main/components/PageRouterSwap/index'
-import { ConnectWalletPrompt as ConnectWallet, useWalletStore } from '@ui-kit/features/connect-wallet'
+import QuickSwap from '@/dex/components/PageRouterSwap/index'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
@@ -29,9 +29,11 @@ const Page: NextPage = () => {
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const provider = useWalletStore((s) => s.provider)
+  const { provider } = useWallet()
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
+  const connectWallet = useStore((s) => s.updateConnectState)
+  const connectState = useStore((s) => s.connectState)
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
@@ -117,7 +119,13 @@ const Page: NextPage = () => {
       {!provider ? (
         <Box display="flex" fillWidth flexJustifyContent="center">
           <ConnectWalletWrapper>
-            <ConnectWallet description="Connect wallet to swap" connectText="Connect Wallet" loadingText="Connecting" />
+            <ConnectWalletPrompt
+              description="Connect wallet to swap"
+              connectText="Connect Wallet"
+              loadingText="Connecting"
+              connectWallet={() => connectWallet()}
+              isLoading={isLoading(connectState)}
+            />
           </ConnectWalletWrapper>
         </Box>
       ) : (
