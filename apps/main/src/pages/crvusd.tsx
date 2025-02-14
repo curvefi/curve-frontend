@@ -21,6 +21,9 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { StyleSheetManager } from 'styled-components'
 import { shouldForwardProp } from '@ui/styled-containers'
+import { getLendingVaultQueryKey, queryLendingVaults } from '@/loan/entities/lending-vaults'
+import { memoize } from 'lodash'
+import { getMintMarketQueryKey, queryMintMarkets } from '@/loan/entities/mint-markets'
 
 const PageMarketList = dynamic(() => import('@/loan/components/PageMarketList/Page'), { ssr: false })
 const PageLlamaMarkets = dynamic(
@@ -37,7 +40,23 @@ const PageIntegrations = dynamic(() => import('@/loan/components/PageIntegration
 const PagePegKeepers = dynamic(() => import('@/loan/components/PagePegKeepers/Page'), { ssr: false })
 const PageCrvUsdStaking = dynamic(() => import('@/loan/components/PageCrvUsdStaking/Page'), { ssr: false })
 
-const App: NextPage = () => {
+const getServerData = memoize(async () => ({
+  lendingVaults: await queryLendingVaults(),
+  mintMarkets: await queryMintMarkets(),
+}))
+
+typeof window === 'undefined' &&
+  setInterval(() => {
+    console.log('Clearing server cache')
+    getServerData.cache.clear!()
+  }, 1000 * 60)
+
+export const getServerSideProps = async () => ({
+  props: await getServerData(),
+})
+
+const App: NextPage<Awaited<ReturnType<typeof getServerSideProps>>['props']> = (props) => {
+  const { lendingVaults, mintMarkets } = props
   const curve = useStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
@@ -60,6 +79,12 @@ const App: NextPage = () => {
     if (!pageWidth) return
     document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
   })
+
+  useEffect(() => {
+    console.log('setting lending vaults and mint markets', lendingVaults, mintMarkets)
+    queryClient.setQueryData(getLendingVaultQueryKey({}), lendingVaults)
+    queryClient.setQueryData(getMintMarketQueryKey({}), mintMarkets)
+  }, [mintMarkets, lendingVaults])
 
   // init app
   useEffect(() => {

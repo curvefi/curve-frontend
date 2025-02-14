@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfiguration = {
-  compiler: {
-    styledComponents: true
-  },
+  compiler: { styledComponents: true },
   images: {
     remotePatterns: [
       {
@@ -20,18 +18,6 @@ const nextConfiguration = {
       use: ['@svgr/webpack', 'url-loader']
     })
     return config
-  },
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    // ignoreDuringBuilds: true,
-  },
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    // ignoreBuildErrors: true,
   },
   redirects: async () => [{
     source: '/',
