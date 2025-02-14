@@ -45,8 +45,11 @@
     "react-dom": "*"
   },
   "peerDependencies": {
+    "eslint-config-custom": "*",
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "tsconfig": "*",
+    "typescript": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.26.8",
@@ -67,6 +70,7 @@
     "eslint-config-custom": "*",
     "storybook": "^8.5.3",
     "tsconfig": "*",
-    "type-fest": "^4.34.1"
+    "type-fest": "^4.34.1",
+    "typescript": "*"
   }
 }

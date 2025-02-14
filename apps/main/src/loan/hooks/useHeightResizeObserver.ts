@@ -33,7 +33,6 @@ function useHeightResizeObserver(elementRef: RefObject<Element>) {
     return () => {
       observer?.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRef])
 
   return height
