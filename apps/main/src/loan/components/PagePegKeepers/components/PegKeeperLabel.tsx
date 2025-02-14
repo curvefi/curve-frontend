@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { breakpoints } from '@ui/utils'
 import networks from '@/loan/networks'
 
-import TokenIcons from '@/loan/components/TokenIcons'
+import TokensIcon from '@ui/TokensIcon'
 import { ChainId } from '@/loan/types/loan.types'
 
 type Props = {
@@ -20,7 +20,7 @@ const PegKeeperLabel = ({ className = '', poolName, rChainId, underlyingCoins, u
 
   return (
     <Wrapper className={className}>
-      <TokenIcons imageBaseUrl={imageBaseUrl} tokens={underlyingCoins} tokenAddresses={underlyingCoinAddresses} />{' '}
+      <TokensIcon imageBaseUrl={imageBaseUrl} tokens={underlyingCoins} tokenAddresses={underlyingCoinAddresses} />{' '}
       <LabelText>{poolName}</LabelText>
     </Wrapper>
   )

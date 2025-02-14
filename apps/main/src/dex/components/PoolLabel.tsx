@@ -11,7 +11,7 @@ import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
 import Box from '@ui/Box'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'
-import TokenIcons from '@/dex/components/TokenIcons'
+import TokensIcon from '@ui/TokensIcon'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type PoolListProps = {
@@ -79,7 +79,7 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
     <div>
       <Wrapper className={className} onClick={({ target }) => handleClick(target)}>
         <IconsWrapper>
-          {isVisible && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} tokenAddresses={tokenAddresses} />}
+          {isVisible && <TokensIcon imageBaseUrl={imageBaseUrl} tokens={tokens} tokenAddresses={tokenAddresses} />}
         </IconsWrapper>
         <Box fillWidth>
           <Box flex flexAlignItems="center">

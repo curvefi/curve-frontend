@@ -1,4 +1,4 @@
-import type { TokenIconProps } from 'curve-ui-kit/src/shared/ui/TokenIcon'
+import { TokenIcon } from 'curve-ui-kit/src/shared/ui/TokenIcon'
 
 import React from 'react'
 import styled from 'styled-components'
@@ -8,7 +8,6 @@ export type TokensIconProps = {
   imageBaseUrl: string | null
   tokens: string[]
   tokenAddresses: string[]
-  childComp(props: TokenIconProps): React.JSX.Element
 }
 
 const TokensIcon = ({
@@ -16,7 +15,6 @@ const TokensIcon = ({
   className = '',
   tokens,
   tokenAddresses,
-  childComp: ChildComp,
   ...props
 }: React.PropsWithChildren<TokensIconProps>) => {
   const totalCount = tokenAddresses.length
@@ -43,7 +41,7 @@ const TokensIcon = ({
           className += ' not-first'
         }
 
-        return <ChildComp key={`${address}${idx}`} {...props} className={className} address={address} token={token} />
+        return <TokenIcon key={`${address}${idx}`} {...props} className={className} address={address} token={token} />
       })}
     </Wrapper>
   )
