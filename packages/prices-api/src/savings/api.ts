@@ -38,3 +38,10 @@ export async function getRevenue(page: number, perPage: number = 100, options?: 
 
   return { totalDistributed: resp.total_distributed, history: resp.history.map(Parsers.parseRevenue) }
 }
+
+export async function getUserStats(userAddress: string, options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetUserStatsResponse>(`${host}/v1/crvusd/savings/${userAddress}/stats`)
+
+  return Parsers.parseUserStats(resp)
+}

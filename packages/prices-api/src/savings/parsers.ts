@@ -39,3 +39,12 @@ export const parseStatistics = (x: Responses.GetStatisticsResponse): Models.Stat
   aprProjected: x.proj_apr,
   supply: x.supply,
 })
+
+export const parseUserStats = (x: Responses.GetUserStatsResponse): Models.UserStats => ({
+  totalDeposited: x.total_deposited,
+  totalReceived: x.total_recieved,
+  totalWithdrawn: x.total_withdrawn,
+  totalTransferredIn: x.total_transferred_in,
+  totalTransferredOut: x.total_transferred_out,
+  currentBalance: x.current_balance,
+})

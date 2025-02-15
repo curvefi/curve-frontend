@@ -15,14 +15,7 @@ export type GetEventsResponse = {
   }[]
 }
 
-export type GetYieldResponse = {
-  data: {
-    timestamp: number
-    assets: number
-    supply: number
-    proj_apy: string
-  }[]
-}
+export type GetYieldResponse = { data: { timestamp: number; assets: number; supply: number; proj_apy: string }[] }
 
 export type GetRevenueResponse = {
   count: number
@@ -45,4 +38,13 @@ export type GetStatisticsResponse = {
   last_updated_block: number
   proj_apr: number
   supply: number
+}
+
+export type GetUserStatsResponse = {
+  total_deposited: string
+  total_recieved: string
+  total_withdrawn: string
+  total_transferred_in: string
+  total_transferred_out: string
+  current_balance: string
 }
