@@ -52,8 +52,6 @@ export const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
 
   const formattedData = { ...data, epochs: organizeDataIntoEpochs(data.history) }
 
-  console.log(formattedData)
-
   return formattedData
 }
 

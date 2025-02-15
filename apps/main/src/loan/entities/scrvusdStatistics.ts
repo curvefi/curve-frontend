@@ -1,11 +1,11 @@
-import type { PricesStatisticsDataResponse } from '@/loan/store/types'
+import type { Statistics } from '@curvefi/prices-api/savings/models'
 import { Contract } from 'ethers'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { weiToEther } from '@ui-kit/utils'
 import { getStatistics } from '@curvefi/prices-api/savings'
-import type { Statistics } from '@curvefi/prices-api/savings/models'
+
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
 const UNLOCK_MULTIPLIER = 1e-12 * YEAR
