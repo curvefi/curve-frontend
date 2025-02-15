@@ -25,6 +25,7 @@ import Babylon from './Babylon.json'
 import Vnx from './Vnx.json'
 import Hourglass from './Hourglass.json'
 import Fx from './Fx.json'
+import Pumpbtc from './Pumpbtc.json'
 
 export {
   DLCLink,
@@ -54,4 +55,5 @@ export {
   Vnx,
   Hourglass,
   Fx,
+  Pumpbtc,
 }
