@@ -40,7 +40,7 @@ const StatsStack = () => {
       <Grid>
         <Metric
           label="Current APY"
-          value={statisticsData?.proj_apr ?? 0}
+          value={statisticsData?.aprProjected ?? 0}
           loading={statisticsIsFetching}
           decimals={2}
           unit="percentage"

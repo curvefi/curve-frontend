@@ -18,7 +18,7 @@ const StatsBanner = () => {
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
 
   const exampleBalance = 100000
-  const scrvUsdApy = statisticsData?.proj_apr || 0
+  const scrvUsdApy = statisticsData?.aprProjected || 0
 
   return (
     <Stack
