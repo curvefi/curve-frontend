@@ -83,11 +83,6 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
           {isVisible && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} tokenAddresses={tokenAddresses} />}
         </IconsWrapper>
         <Box fillWidth>
-          <TableCellReferenceAsset
-            isCrypto={poolData?.pool?.isCrypto}
-            referenceAsset={poolData?.pool?.referenceAsset}
-          />
-
           <Box flex flexAlignItems="center">
             {!isMobile && (
               <>
