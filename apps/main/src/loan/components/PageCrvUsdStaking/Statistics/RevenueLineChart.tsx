@@ -5,7 +5,6 @@ import { Stack, Box } from '@mui/material'
 import { formatDate } from '@ui/utils/utilsFormat'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 
 const { FontSize } = SizesAndSpaces

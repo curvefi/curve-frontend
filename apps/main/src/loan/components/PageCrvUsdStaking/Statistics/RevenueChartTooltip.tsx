@@ -6,7 +6,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils/utilsFormat'
 import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 
