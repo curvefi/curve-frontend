@@ -18,13 +18,19 @@ export async function getEvents(page: number, options?: Options) {
   return { count: resp.count, events: resp.events.map(Parsers.parseEvent) }
 }
 
-export async function getYield(options?: Options) {
+export async function getYield(
+  aggNumber: number = 1,
+  aggUnit: string = 'hour',
+  startDate?: number,
+  endDate?: number,
+  options?: Options,
+) {
   const host = getHost(options)
 
   const { start, end } = getTimeRange({ daysRange: 10 })
 
   const resp = await fetch<Responses.GetYieldResponse>(
-    `${host}/v1/crvusd/savings/yield?agg_number=1&agg_units=hour&start=${start}&end=${end}`,
+    `${host}/v1/crvusd/savings/yield?agg_number=${aggNumber}&agg_units=${aggUnit}&start=${startDate ?? start}&end=${endDate ?? end}`,
   )
 
   return resp.data.map(Parsers.parseYield)
