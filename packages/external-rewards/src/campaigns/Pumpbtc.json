@@ -1,0 +1,21 @@
+{
+  "campaignName": "PumpPoints",
+  "platform": "PumpBTC",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "pump-points.png",
+  "dashboardLink": "https://mainnet.pumpbtc.xyz/defi/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xea659b615b48ec6e2d55cd82fcbe5f43d79aeea0",
+      "network": "ethereum",
+      "multiplier": "4x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
