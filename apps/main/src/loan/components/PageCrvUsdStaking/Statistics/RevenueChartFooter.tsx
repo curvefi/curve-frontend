@@ -30,7 +30,7 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
   } = useTheme()
 
   const priceLineColors = {
-    proj_apy: Color.Primary[500],
+    apyProjected: Color.Primary[500],
     proj_apy_7d_avg: Color.Secondary[500],
     proj_apy_total_avg: Color.Tertiary[400],
   } as const satisfies Record<YieldKeys, string>
@@ -50,7 +50,7 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
             dash={dash}
             legendColor={
               key === 'proj_apy'
-                ? priceLineColors.proj_apy
+                ? priceLineColors.apyProjected
                 : key === 'proj_apy_7d_avg'
                   ? priceLineColors.proj_apy_7d_avg
                   : priceLineColors.proj_apy_total_avg

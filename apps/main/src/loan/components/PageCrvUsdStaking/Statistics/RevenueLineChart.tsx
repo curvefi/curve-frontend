@@ -35,9 +35,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
               axisLine={false}
               minTickGap={20}
               tickMargin={4}
-              tickFormatter={(time) => {
-                return formatDate(time)
-              }}
+              tickFormatter={(time) => formatDate(time)}
             />
             <YAxis
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
