@@ -196,15 +196,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [isAvailableManageGauge, rFormType, toggleForm])
 
-  const TitleComp = () => {
-    return (
-      <AppPageFormTitleWrapper>
-        <StyledExternalLink href={scanAddressPath(pool.address)}>
-          <Title as="h1">{pool?.name || ''}</Title>
-        </StyledExternalLink>
-      </AppPageFormTitleWrapper>
-    )
-  }
+  const TitleComp = () => (
+    <AppPageFormTitleWrapper>
+      <StyledExternalLink href={scanAddressPath(pool.address)}>
+        <Title as="h1">{pool?.name || ''}</Title>
+      </StyledExternalLink>
+    </AppPageFormTitleWrapper>
+  )
 
   // init rewardsMapper
   useEffect(() => {
