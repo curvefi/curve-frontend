@@ -12,7 +12,6 @@ import Box from '@ui/Box'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'
 import TokenIcons from '@/dex/components/TokenIcons'
-import TableCellReferenceAsset from '@/dex/components/PagePoolList/components/TableCellReferenceAsset'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type PoolListProps = {
@@ -83,11 +82,6 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
           {isVisible && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} tokenAddresses={tokenAddresses} />}
         </IconsWrapper>
         <Box fillWidth>
-          <TableCellReferenceAsset
-            isCrypto={poolData?.pool?.isCrypto}
-            referenceAsset={poolData?.pool?.referenceAsset}
-          />
-
           <Box flex flexAlignItems="center">
             {!isMobile && (
               <>
