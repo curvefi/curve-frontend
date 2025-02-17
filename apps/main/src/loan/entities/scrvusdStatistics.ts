@@ -1,7 +1,7 @@
 import type { Statistics } from '@curvefi/prices-api/savings/models'
 import { Contract } from 'ethers'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { weiToEther } from '@ui-kit/utils'
 import { getStatistics } from '@curvefi/prices-api/savings'
@@ -62,5 +62,5 @@ export const { useQuery: useScrvUsdStatistics } = queryFactory({
   queryKey: () => ['scrvUsdStatistics'] as const,
   queryFn: _fetchSavingsStatistics,
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}),
+  validationSuite: EmptyValidationSuite,
 })

@@ -1,6 +1,6 @@
 import type { Revenue } from '@curvefi/prices-api/savings/models'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { getRevenue } from '@curvefi/prices-api/savings'
 import { weiToEther } from '@ui-kit/utils'
 
@@ -59,5 +59,5 @@ export const { useQuery: useScrvUsdRevenue } = queryFactory({
   queryKey: () => ['scrvUsdRevenue'] as const,
   queryFn: _getScrvUsdRevenue,
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}),
+  validationSuite: EmptyValidationSuite,
 })

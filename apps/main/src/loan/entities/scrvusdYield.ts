@@ -1,7 +1,7 @@
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { Yield } from '@curvefi/prices-api/savings/models'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { timeOptionValidationSuite } from '@ui-kit/lib/model/query/time-option-validation'
 import { getYield } from '@curvefi/prices-api/savings'
 
 export type ScrvUsdYieldWithAverages = Yield & { proj_apy_7d_avg: number; proj_apy_total_avg: number }
@@ -53,5 +53,5 @@ export const { useQuery: useScrvUsdYield } = queryFactory({
   queryKey: (params: { timeOption: TimeOption }) => ['scrvUsdYield', { timeOption: params.timeOption }] as const,
   queryFn: _getScrvUsdYield,
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}),
+  validationSuite: timeOptionValidationSuite,
 })
