@@ -10,15 +10,15 @@ export const parseEvent = (x: Responses.GetEventsResponse['events'][number]): Mo
   assets: BigInt(x.assets),
   supply: BigInt(x.shares),
   blockNumber: x.block_number,
-  timestamp: toDate(x.timestamp),
+  date: toDate(x.timestamp),
   txHash: x.transaction_hash,
 })
 
 export const parseYield = (x: Responses.GetYieldResponse['data'][number]): Models.Yield => ({
-  timestamp: toDate(x.timestamp),
+  date: toDate(x.timestamp),
   assets: x.assets,
   supply: x.supply,
-  apyProjected: x.proj_apy,
+  apyProjected: Number(x.proj_apy),
 })
 
 export const parseRevenue = (x: Responses.GetRevenueResponse['history'][number]): Models.Revenue => ({
@@ -30,7 +30,7 @@ export const parseRevenue = (x: Responses.GetRevenueResponse['history'][number])
   feesTotal: BigInt(x.total_fees),
   feesProtocol: BigInt(x.protocol_fees),
   txHash: x.tx_hash,
-  timestamp: toDate(x.dt),
+  date: toDate(x.dt),
 })
 
 export const parseStatistics = (x: Responses.GetStatisticsResponse): Models.Statistics => ({
@@ -41,10 +41,10 @@ export const parseStatistics = (x: Responses.GetStatisticsResponse): Models.Stat
 })
 
 export const parseUserStats = (x: Responses.GetUserStatsResponse): Models.UserStats => ({
-  totalDeposited: x.total_deposited,
-  totalReceived: x.total_recieved,
-  totalWithdrawn: x.total_withdrawn,
-  totalTransferredIn: x.total_transferred_in,
-  totalTransferredOut: x.total_transferred_out,
-  currentBalance: x.current_balance,
+  totalDeposited: BigInt(x.total_deposited),
+  totalReceived: BigInt(x.total_recieved),
+  totalWithdrawn: BigInt(x.total_withdrawn),
+  totalTransferredIn: BigInt(x.total_transferred_in),
+  totalTransferredOut: BigInt(x.total_transferred_out),
+  currentBalance: BigInt(x.current_balance),
 })

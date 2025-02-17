@@ -8,11 +8,11 @@ export type Event = {
   assets: bigint
   supply: bigint
   blockNumber: number
-  timestamp: Date
+  date: Date
   txHash: Address
 }
 
-export type Yield = { timestamp: Date; assets: number; supply: number; apyProjected: string }
+export type Yield = { date: Date; assets: number; supply: number; apyProjected: number }
 
 export type Revenue = {
   strategy: Address
@@ -23,16 +23,16 @@ export type Revenue = {
   feesTotal: bigint
   feesProtocol: bigint
   txHash: Address
-  timestamp: Date
+  date: Date
 }
 
 export type Statistics = { lastUpdated: Date; lastUpdatedBlock: number; aprProjected: number; supply: number }
 
 export type UserStats = {
-  totalDeposited: string
-  totalReceived: string
-  totalWithdrawn: string
-  totalTransferredIn: string
-  totalTransferredOut: string
-  currentBalance: string
+  totalDeposited: bigint
+  totalReceived: bigint
+  totalWithdrawn: bigint
+  totalTransferredIn: bigint
+  totalTransferredOut: bigint
+  currentBalance: bigint
 }

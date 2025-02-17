@@ -28,20 +28,20 @@ export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
 
   const dataWithAverages: ScrvUsdYieldWithAverages[] = data?.map((item, index, array) => {
     // Calculate overall average across all data points
-    const totalAverage = array.reduce((sum, curr) => sum + Number(curr.apyProjected), 0) / array.length
+    const totalAverage = array.reduce((sum, curr) => sum + curr.apyProjected, 0) / array.length
 
     // Calculate 7-day moving average
     const SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000
-    const currentTimestamp = item.timestamp.getTime()
+    const currentTimestamp = item.date.getTime()
     const sevenDaysAgoTimestamp = currentTimestamp - SEVEN_DAYS_IN_MILLISECONDS
 
     const relevantData = array.filter(
       (dataPoint) =>
-        dataPoint.timestamp.getTime() >= sevenDaysAgoTimestamp &&
-        dataPoint.timestamp.getTime() <= currentTimestamp &&
+        dataPoint.date.getTime() >= sevenDaysAgoTimestamp &&
+        dataPoint.date.getTime() <= currentTimestamp &&
         array.indexOf(dataPoint) <= index, // Only include data points up to current index
     )
-    const movingAverage = relevantData.reduce((sum, curr) => sum + Number(curr.apyProjected), 0) / relevantData.length
+    const movingAverage = relevantData.reduce((sum, curr) => sum + curr.apyProjected, 0) / relevantData.length
 
     return { ...item, proj_apy_7d_avg: movingAverage, proj_apy_total_avg: totalAverage }
   })

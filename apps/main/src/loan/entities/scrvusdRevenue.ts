@@ -4,7 +4,7 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 import { getRevenue } from '@curvefi/prices-api/savings'
 import { weiToEther } from '@ui-kit/utils'
 
-type Epoch = { startDate: string; endDate: string; weeklyRevenue: number; data: Revenue[] }
+type Epoch = { startDate: Date; endDate: Date; weeklyRevenue: number; data: Revenue[] }
 
 export type ScrvUsdRevenue = { totalDistributed: string; epochs: Epoch[]; history: Revenue[] }
 
@@ -13,16 +13,16 @@ export type ScrvUsdRevenue = { totalDistributed: string; epochs: Epoch[]; histor
  */
 const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   // Sort history by date
-  const sortedHistory = [...history].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+  const sortedHistory = [...history].sort((a, b) => a.date.getTime() - b.date.getTime())
 
   const epochs: Epoch[] = []
   let currentEpoch: Epoch | null = null
 
   sortedHistory.forEach((item) => {
     // If we don't have a current epoch or the item doesn't belong to current epoch
-    if (!currentEpoch || item.timestamp > new Date(currentEpoch.endDate)) {
+    if (!currentEpoch || item.date > new Date(currentEpoch.endDate)) {
       // Find the previous Thursday if item is not on Thursday
-      const startDate = new Date(item.timestamp)
+      const startDate = new Date(item.date)
       while (startDate.getDay() !== 4) {
         // 4 represents Thursday
         startDate.setDate(startDate.getDate() - 1)
@@ -32,7 +32,7 @@ const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
       const endDate = new Date(startDate)
       endDate.setDate(startDate.getDate() + 7)
 
-      currentEpoch = { startDate: startDate.toISOString(), endDate: endDate.toISOString(), weeklyRevenue: 0, data: [] }
+      currentEpoch = { startDate: startDate, endDate: endDate, weeklyRevenue: 0, data: [] }
       epochs.push(currentEpoch)
     }
 
