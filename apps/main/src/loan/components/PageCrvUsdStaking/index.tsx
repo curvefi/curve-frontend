@@ -34,9 +34,7 @@ const CrvUsdStaking = () => {
     isFetching: isUserScrvUsdBalanceFetching,
     isFetched: isUserScrvUsdBalanceFetched,
     refetch: refetchUserScrvUsdBalance,
-  } = useScrvUsdUserBalances({
-    signerAddress: signerAddress ?? '',
-  })
+  } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
   const isUserScrvUsdBalanceZero =
     signerAddress && userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
@@ -97,9 +95,7 @@ const CrvUsdStaking = () => {
         gap={Sizing[200]}
         width="100%"
         justifyContent={'center'}
-        sx={{
-          maxWidth: `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
-        }}
+        sx={{ maxWidth: `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})` }}
       >
         {showStatsBanner && (
           <Fade in={showStatsBanner}>
@@ -113,11 +109,7 @@ const CrvUsdStaking = () => {
           direction={isChartExpanded ? 'column' : 'row'}
           gap={Sizing[200]}
           sx={{
-            [`@media (max-width: ${columnViewBreakPoint})`]: {
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 0,
-            },
+            [`@media (max-width: ${columnViewBreakPoint})`]: { flexDirection: 'column', alignItems: 'center', gap: 0 },
           }}
         >
           {isChartExpanded && (
@@ -137,11 +129,7 @@ const CrvUsdStaking = () => {
               width="100%"
               maxWidth={MaxWidth.section}
               justifyContent="center"
-              sx={{
-                [`@media (max-width: ${columnViewBreakPoint})`]: {
-                  alignItems: 'center',
-                },
-              }}
+              sx={{ [`@media (max-width: ${columnViewBreakPoint})`]: { alignItems: 'center' } }}
             >
               {!isUserScrvUsdBalanceZero && <UserPosition />}
               <Statistics

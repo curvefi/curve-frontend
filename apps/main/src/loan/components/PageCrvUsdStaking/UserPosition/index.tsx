@@ -23,7 +23,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({
-    signerAddress: signerAddress ?? '',
+    userAddress: signerAddress ?? '',
   })
   const usdRateLoading = useStore((state) => state.usdRates.loading)
   const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
