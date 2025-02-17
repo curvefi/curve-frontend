@@ -18,7 +18,11 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
         ? Object.fromEntries(
             marketNames
               .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])
-              .map((name) => [name, api.getOneWayMarket(name)]),
+              .map((name) => [name, api.getOneWayMarket(name)] as const)
+              .flatMap(([name, market]) => [
+                [name, market],
+                [market.addresses.controller, market],
+              ]),
           )
         : undefined,
     [api, apiChainId, chainId, marketNames, isLoadingApi],
@@ -28,5 +32,6 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
 
 export const useOneWayMarket = (chainId: ChainId, marketName: string) => {
   const { data, ...rest } = useOneWayMarketMapping({ chainId })
-  return { data: data?.[marketName], ...rest }
+  const market = data?.[marketName]
+  return { data: market, ...rest }
 }

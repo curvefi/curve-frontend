@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from 'react'
+import { type MouseEvent, ReactNode, useCallback, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import TableHead from '@mui/material/TableHead'
 import TableCell from '@mui/material/TableCell'
@@ -12,16 +12,22 @@ import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useNavigate } from 'react-router'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
 // css class to hide elements on desktop unless the row is hovered
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 
-const getAlignment = <T extends unknown>({ columnDef }: Column<T>) =>
+// css class to make elements clickable in a row and ignore the row click
+export const ClickableInRowClass = 'clickable-in-row'
+
+type TableItem = { url: string }
+
+const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
   columnDef.meta?.type == 'numeric' ? 'right' : 'left'
 
-const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
+const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => {
   const column = cell.column
   return (
     !column.columnDef.meta?.hidden && (
@@ -43,21 +49,35 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
   )
 }
 
-const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight: keyof typeof Sizing }) => {
+const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeight: keyof typeof Sizing }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
+  const navigate = useNavigate()
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
+  const url = row.original.url
+  const onClick = useCallback(
+    (e: MouseEvent<HTMLTableRowElement>) => {
+      if ((e.target as HTMLElement).classList.contains(ClickableInRowClass)) return
+      if (url.startsWith('http')) {
+        location.href = url
+      } else {
+        navigate(url)
+      }
+    },
+    [url, navigate],
+  )
+
   return (
-    <InvertTheme invert={isHover}>
+    <InvertTheme inverted={isHover}>
       <TableRow
         sx={(t) => ({
           marginBlock: 0,
           height: Sizing[rowHeight],
           borderBottom: `1px solid${t.design.Layer[1].Outline}`,
+          cursor: 'pointer',
           [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
           '&:hover': {
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
-            // backgroundColor: t.design.Table.Row.Hover,
           },
           ...(isHover && { backgroundColor: t.design.Table.Row.Hover }),
         })}
@@ -65,6 +85,7 @@ const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight
         data-testid={`data-table-row-${row.id}`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onClick={onClick}
       >
         {/* render cells when visible vertically, so content is lazy loaded */}
         {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
@@ -82,7 +103,7 @@ const getExtraColumnPadding = <T extends any>(column: Column<T>) => ({
   ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
 })
 
-const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> }) => {
+const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown> }) => {
   const { column } = header
   const sort = column.getIsSorted()
   const canSort = column.getCanSort()
@@ -126,7 +147,7 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
   )
 }
 
-export const DataTable = <T extends unknown>({
+export const DataTable = <T extends TableItem>({
   table,
   headerHeight,
   rowHeight,

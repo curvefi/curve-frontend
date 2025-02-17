@@ -89,7 +89,7 @@ const convertLendingVault = (
   liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
-  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
+  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
   isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
   leverage,
