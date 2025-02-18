@@ -9,7 +9,7 @@ import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
 import Box from '@ui/Box'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 
-const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
+const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const { feesUsd, timestamp } = payload[0].payload as Distribution
 

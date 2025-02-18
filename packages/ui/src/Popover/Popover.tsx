@@ -7,7 +7,7 @@ import { useOverlay, DismissButton } from '@react-aria/overlays'
 import { FocusScope } from '@react-aria/focus'
 
 interface Props extends AriaOverlayProps {
-  popoverRef: React.RefObject<HTMLDivElement>
+  popoverRef: React.RefObject<HTMLDivElement | null>
 }
 
 const Popover = (props: React.PropsWithChildren<Props>) => {

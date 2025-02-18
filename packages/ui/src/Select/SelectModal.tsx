@@ -19,7 +19,7 @@ function SelectModal<T>({
     menuProps: AriaListBoxOptions<T>
     minWidth?: string
     mobileRightAlign?: boolean
-    popoverRef?: React.RefObject<HTMLDivElement>
+    popoverRef?: React.RefObject<HTMLDivElement | null>
     selectSearchOptions?: {
       onSelectionChange: (key: React.Key) => void
       searchFilterKeys: string[]

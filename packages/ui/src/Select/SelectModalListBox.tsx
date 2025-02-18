@@ -10,7 +10,7 @@ import SelectModalListBoxItem from 'ui/src/Select/SelectModalListBoxItem'
 function SelectModalListBox<T>(
   props: AriaListBoxOptions<T> & {
     state: SelectState<T>
-    listBoxRef?: React.RefObject<HTMLUListElement>
+    listBoxRef?: React.RefObject<HTMLUListElement | null>
   },
 ) {
   const ref = React.useRef<HTMLUListElement>(null)

@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "private": true,
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "scripts": {
     "dev": "next dev --port 3000",
@@ -67,7 +67,6 @@
     "@types/react-dom": "*",
     "@types/validator": "^13.12.2",
     "eslint-config-custom": "*",
-    "eslint-config-next": "^15.1.6",
     "pinst": "^3.0.0",
     "tsconfig": "*",
     "typescript": "*",

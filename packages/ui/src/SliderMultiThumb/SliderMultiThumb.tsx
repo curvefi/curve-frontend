@@ -74,7 +74,7 @@ function Thumb(props: {
   index: number
   isDisplayOnly: boolean
   state: SliderState
-  trackRef: React.RefObject<HTMLDivElement>
+  trackRef: React.RefObject<HTMLDivElement | null>
 }) {
   const { state, trackRef, index, isDisplayOnly } = props
   const inputRef = React.useRef(null)
