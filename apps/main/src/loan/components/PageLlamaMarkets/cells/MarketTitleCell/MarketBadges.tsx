@@ -34,6 +34,8 @@ const getRewardsDescription = ({ action, description, multiplier }: PoolRewards)
     }[action]
   }`
 
+const classNames = (...items: (string | false | undefined | null)[]): string => items.filter(Boolean).join(' ')
+
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market: { address, rewards, type, leverage } }: { market: LlamaMarket }) => {
   const [isFavorite, toggleFavorite] = useFavoriteMarket(address)
@@ -61,12 +63,12 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
         </Tooltip>
       )}
 
-      <Tooltip
-        title={isFavorite ? t`Remove from favorites` : t`Add to favorites`}
-        placement="top"
-        className={ClickableInRowClass}
-      >
-        <IconButton size="extraSmall" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
+      <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
+        <IconButton
+          size="extraSmall"
+          onClick={toggleFavorite}
+          className={classNames(!isFavorite && DesktopOnlyHoverClass, ClickableInRowClass)}
+        >
           <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
         </IconButton>
       </Tooltip>

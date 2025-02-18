@@ -50,7 +50,7 @@ export const LineGraphCell = ({ market, type }: RateCellProps) => {
               dataKey={snapshotKey}
               stroke={getColor(design, snapshots, snapshotKey)}
               strokeWidth={1}
-              dot={<></>}
+              dot={<Box display="none" />}
             />
           </LineChart>
         ) : isLoading ? (
