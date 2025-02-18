@@ -83,13 +83,13 @@ const App: NextPage = () => {
       <Route path=":network/disclaimer" element={<PageDisclaimer />} />
       <Route path=":network/integrations" element={<PageIntegrations />} />
       <Route path=":network/markets" element={<PageLlammasList />} />
-      <Route path=":network/markets/:owmId" element={<Navigate to="create" />} />
-      <Route path=":network/markets/:owmId/create" element={<PageLoanCreate />} />
-      <Route path=":network/markets/:owmId/create/:formType" element={<PageLoanCreate />} />
-      <Route path=":network/markets/:owmId/manage" element={<PageLoanManage />} />
-      <Route path=":network/markets/:owmId/manage/:formType" element={<PageLoanManage />} />
-      <Route path=":network/markets/:owmId/vault" element={<PageVault />} />
-      <Route path=":network/markets/:owmId/vault/:formType" element={<PageVault />} />
+      <Route path=":network/markets/:market" element={<Navigate to="create" />} />
+      <Route path=":network/markets/:market/create" element={<PageLoanCreate />} />
+      <Route path=":network/markets/:market/create/:formType" element={<PageLoanCreate />} />
+      <Route path=":network/markets/:market/manage" element={<PageLoanManage />} />
+      <Route path=":network/markets/:market/manage/:formType" element={<PageLoanManage />} />
+      <Route path=":network/markets/:market/vault" element={<PageVault />} />
+      <Route path=":network/markets/:market/vault/:formType" element={<PageVault />} />
     </>
   )
 

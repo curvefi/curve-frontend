@@ -5,8 +5,6 @@ import { ReactNode } from 'react'
 import { chadTheme, darkTheme, lightTheme } from '../../themes'
 import memoizee from 'memoizee'
 
-export type * from '@mui/system/ThemeProvider'
-
 const themes = {
   light: lightTheme,
   dark: darkTheme,

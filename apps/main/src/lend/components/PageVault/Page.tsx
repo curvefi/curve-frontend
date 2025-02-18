@@ -42,9 +42,9 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { routerParams, api } = usePageOnMount(params, location, navigate)
   const titleMapper = useTitleMapper()
-  const { rChainId, rOwmId, rSubdirectory, rFormType } = routerParams
-
-  const market = useOneWayMarket(rChainId, rOwmId).data
+  const { rChainId, rMarket, rSubdirectory, rFormType } = routerParams
+  const market = useOneWayMarket(rChainId, rMarket).data
+  const rOwmId = market?.id ?? ''
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)

@@ -27,7 +27,7 @@ export function getVaultPathname(params: Params, owmId: string, formType: string
 }
 
 export function parseParams(params: Params, chainIdNotRequired?: boolean) {
-  const { owmId, formType } = params ?? {}
+  const { market, formType } = params ?? {}
   const paths = window.location.hash.substring(2).split('/')
 
   const network = getNetworkFromUrl()
@@ -45,11 +45,6 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
       rSubdirectory = subdirectory
       rSubdirectoryUseDefault = false
     }
-  }
-
-  let rOwmId = ''
-  if (owmId) {
-    rOwmId = owmId.toLowerCase()
   }
 
   // formType
@@ -73,7 +68,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     ...network,
     rSubdirectory,
     rSubdirectoryUseDefault,
-    rOwmId,
+    rMarket: market?.toLowerCase(),
     rFormType,
     redirectPathname,
     restFullPathname: getRestFullPathname(),
