@@ -60,7 +60,7 @@ function SliderSingleThumb({ loading, hideValue, hideLabel, ...props }: Props) {
   )
 }
 
-function Thumb(props: { index: number; state: SliderState; trackRef: React.RefObject<HTMLDivElement> }) {
+function Thumb(props: { index: number; state: SliderState; trackRef: React.RefObject<HTMLDivElement | null> }) {
   const { state, trackRef, index } = props
   const inputRef = React.useRef(null)
   const { thumbProps, inputProps, isDragging } = useSliderThumb(

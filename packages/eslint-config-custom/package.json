@@ -5,14 +5,14 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.66.0",
-    "@typescript-eslint/eslint-plugin": "^8.23.0",
-    "@typescript-eslint/parser": "^8.23.0",
+    "@tanstack/eslint-plugin-query": "^5.66.1",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
     "eslint": "*",
-    "eslint-config-next": "^15.1.6",
+    "eslint-config-next": "^15.1.7",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-config-turbo": "^2.4.0",
-    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-config-turbo": "^2.4.2",
+    "eslint-import-resolver-typescript": "^3.8.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "7.37.4",
@@ -20,8 +20,6 @@
     "prettier-eslint": "^16.3.0"
   },
   "peerDependencies": {
-    "eslint": "*",
-    "react": "*",
-    "react-dom": "*"
+    "eslint": "*"
   }
 }

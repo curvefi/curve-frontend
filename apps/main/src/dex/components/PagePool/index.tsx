@@ -41,7 +41,6 @@ import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
-import { Chip } from '@ui/Typography'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
@@ -51,11 +50,7 @@ import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
-export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
-  loading: false,
-  estimatedGas: null,
-  error: null,
-}
+export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
 
 export const DEFAULT_SLIPPAGE: Slippage = {
   loading: false,
@@ -65,10 +60,7 @@ export const DEFAULT_SLIPPAGE: Slippage = {
   error: '',
 }
 
-const DEFAULT_SEED: Seed = {
-  isSeed: null,
-  loaded: false,
-}
+const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
 const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
@@ -204,20 +196,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [isAvailableManageGauge, rFormType, toggleForm])
 
-  const TitleComp = () => {
-    const referenceAsset: { [referenceAsset: string]: string } = {
-      CRYPTO: t`CRYPTO V2`,
-      OTHER: t`OTHER`,
-    }
-    return (
-      <AppPageFormTitleWrapper>
-        <StyledExternalLink href={scanAddressPath(pool.address)}>
-          <Title as="h1">{pool?.name || ''}</Title>
-        </StyledExternalLink>
-        {pool?.referenceAsset && <StyledChip>{referenceAsset[pool.referenceAsset] ?? pool.referenceAsset}</StyledChip>}
-      </AppPageFormTitleWrapper>
-    )
-  }
+  const TitleComp = () => (
+    <AppPageFormTitleWrapper>
+      <StyledExternalLink href={scanAddressPath(pool.address)}>
+        <Title as="h1">{pool?.name || ''}</Title>
+      </StyledExternalLink>
+    </AppPageFormTitleWrapper>
+  )
 
   // init rewardsMapper
   useEffect(() => {
@@ -385,14 +370,6 @@ const Wrapper = styled(AppPageFormContainer)<{ chartExpanded: boolean }>`
   @media (min-width: ${breakpoints.md}rem) {
     ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
   }
-`
-
-const StyledChip = styled(Chip)`
-  margin-left: var(--spacing-2);
-  padding: 0 var(--spacing-1);
-
-  color: black;
-  background-color: white;
 `
 
 const StyledExternalLink = styled(ExternalLink)`

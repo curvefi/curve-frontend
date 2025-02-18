@@ -17,7 +17,7 @@ const SelectGaugeListChunk = ({
   dialogClose,
   handleOnSelectChange,
 }: Pick<ComboBoxSelectGaugeProps, 'testId' | 'imageBaseUrl'> & {
-  inputRef?: React.RefObject<HTMLInputElement>
+  inputRef?: React.RefObject<HTMLInputElement | null>
   selectedGauge: GaugeFormattedData | null
   gauges: GaugeFormattedData[]
   dialogClose: () => void
