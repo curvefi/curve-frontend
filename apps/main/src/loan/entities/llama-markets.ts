@@ -124,7 +124,7 @@ const convertMintMarket = (
       chain,
     },
     collateral: {
-      symbol: collateralToken.symbol,
+      symbol: collateralToken.symbol == 'WETH' ? 'ETH' : collateralToken.symbol,
       address: collateralToken.address,
       usdPrice: collateralAmountUsd / collateralAmount,
       chain,

@@ -50,8 +50,8 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { pageLoaded, api, routerParams } = usePageOnMount(params, location, navigate)
   const titleMapper = useTitleMapper()
-  const { rChainId, rOwm, rFormType, rSubdirectory } = routerParams
-  const market = useOneWayMarket(rChainId, rOwm).data
+  const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
+  const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
