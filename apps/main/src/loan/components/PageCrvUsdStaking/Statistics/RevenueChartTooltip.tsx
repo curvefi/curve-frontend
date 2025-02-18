@@ -40,7 +40,8 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
     return null
   }
 
-  const { date, apyProjected, proj_apy_7d_avg, proj_apy_total_avg } = payload[0].payload as ScrvUsdYieldWithAverages
+  const { timestamp, apyProjected, proj_apy_7d_avg, proj_apy_total_avg } = payload[0]
+    .payload as ScrvUsdYieldWithAverages
 
   return (
     <Paper
@@ -51,7 +52,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
       }}
       elevation={2}
     >
-      <Typography variant="bodyMBold">{formatDate(date, 'long')}</Typography>
+      <Typography variant="bodyMBold">{formatDate(timestamp, 'long')}</Typography>
       <Stack
         direction="column"
         sx={{ marginTop: Spacing.sm, padding: Spacing.sm, gap: 1, backgroundColor: Layer[2].Fill }}

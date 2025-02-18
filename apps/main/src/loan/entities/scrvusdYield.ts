@@ -32,13 +32,13 @@ export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
 
     // Calculate 7-day moving average
     const SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000
-    const currentTimestamp = item.date.getTime()
+    const currentTimestamp = item.timestamp.getTime()
     const sevenDaysAgoTimestamp = currentTimestamp - SEVEN_DAYS_IN_MILLISECONDS
 
     const relevantData = array.filter(
       (dataPoint) =>
-        dataPoint.date.getTime() >= sevenDaysAgoTimestamp &&
-        dataPoint.date.getTime() <= currentTimestamp &&
+        dataPoint.timestamp.getTime() >= sevenDaysAgoTimestamp &&
+        dataPoint.timestamp.getTime() <= currentTimestamp &&
         array.indexOf(dataPoint) <= index, // Only include data points up to current index
     )
     const movingAverage = relevantData.reduce((sum, curr) => sum + curr.apyProjected, 0) / relevantData.length

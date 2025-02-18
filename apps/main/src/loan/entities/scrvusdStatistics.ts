@@ -53,9 +53,7 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
     }
   }
 
-  const data = await getStatistics()
-
-  return data
+  return getStatistics()
 }
 
 export const { useQuery: useScrvUsdStatistics } = queryFactory({

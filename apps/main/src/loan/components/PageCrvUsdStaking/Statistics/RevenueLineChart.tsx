@@ -29,7 +29,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           <LineChart height={300} data={data} margin={{ top: 16, right: 16, left: undefined, bottom: 8 }}>
             <CartesianGrid stroke={gridLineColor} strokeWidth={0.3} vertical={true} />
             <XAxis
-              dataKey="date"
+              dataKey="timestamp"
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
               tickLine={false}
               axisLine={false}
