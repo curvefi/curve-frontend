@@ -44,7 +44,7 @@ export const Dex = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/security/security/#dao"
+        href="https://docs.curve.fi/security/security/#security-audits"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{
