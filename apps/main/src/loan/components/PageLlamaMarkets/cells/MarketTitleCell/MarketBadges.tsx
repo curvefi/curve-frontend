@@ -9,7 +9,7 @@ import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
-import { DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
+import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
 import { PoolRewards } from '@/loan/entities/campaigns'
 
@@ -61,7 +61,11 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
         </Tooltip>
       )}
 
-      <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
+      <Tooltip
+        title={isFavorite ? t`Remove from favorites` : t`Add to favorites`}
+        placement="top"
+        className={ClickableInRowClass}
+      >
         <IconButton size="extraSmall" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
           <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
         </IconButton>

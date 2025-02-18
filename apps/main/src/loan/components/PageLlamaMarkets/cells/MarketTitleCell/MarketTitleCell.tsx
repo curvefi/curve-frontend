@@ -12,6 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
+import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -30,10 +31,12 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
           color="inherit"
           underline="none"
           {...(market.url.startsWith('http') ? { href: market.url } : { component: RouterLink, to: market.url })}
+          className={ClickableInRowClass}
         >
           {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}
         </MuiLink>
         <CopyIconButton
+          className={ClickableInRowClass}
           label={t`Copy market address`}
           copyText={market.address}
           confirmationText={t`Market address copied`}

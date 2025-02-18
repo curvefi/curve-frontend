@@ -7,16 +7,17 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
-import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable'
 
 export function CopyIconButton({
   copyText,
   label,
   confirmationText,
+  className,
 }: {
   copyText: string
   label: string
   confirmationText: string
+  className?: string
 }) {
   const [isCopied, showAlert, hideAlert] = useSwitch(false)
   return (
@@ -24,13 +25,14 @@ export function CopyIconButton({
     <InvertTheme inverted={false}>
       <Tooltip title={label} placement="top">
         <IconButton
+          className={className}
           size="extraSmall"
           onClick={async () => {
             await navigator.clipboard.writeText(copyText)
             showAlert()
           }}
         >
-          <CopyIcon className={ClickableInRowClass} color="primary" />
+          <CopyIcon color="primary" />
         </IconButton>
       </Tooltip>
 

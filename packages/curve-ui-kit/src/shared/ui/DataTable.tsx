@@ -57,7 +57,11 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
   const url = row.original.url
   const onClick = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => {
-      if ((e.target as HTMLElement).classList.contains(ClickableInRowClass)) return
+      let element = e.target as HTMLElement
+      while (element.tagName != 'tr') {
+        if (element.classList.contains(ClickableInRowClass)) return
+        element = element.parentElement as HTMLElement
+      }
       if (url.startsWith('http')) {
         location.href = url
       } else {
