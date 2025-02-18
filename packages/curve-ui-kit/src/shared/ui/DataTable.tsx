@@ -58,7 +58,7 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
   const onClick = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => {
       let element = e.target as HTMLElement
-      while (element.tagName != 'tr') {
+      while (element.tagName != 'TR') {
         if (element.classList.contains(ClickableInRowClass)) return
         element = element.parentElement as HTMLElement
       }
