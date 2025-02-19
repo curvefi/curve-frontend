@@ -5,15 +5,11 @@ import { Stack, Box } from '@mui/material'
 import { formatDate } from '@ui/utils/utilsFormat'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 
 const { FontSize } = SizesAndSpaces
 
-type Props = {
-  data: ScrvUsdYieldWithAverages[]
-  height?: number
-}
+type Props = { data: ScrvUsdYieldWithAverages[]; height?: number }
 
 const LineChartComponent = ({ data, height = 400 }: Props) => {
   const {
@@ -30,16 +26,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
       {/* Position relative and width 99% required to make ResponsiveContainer scale properly */}
       <Box width="100%" sx={{ top: 0, left: 0 }}>
         <ResponsiveContainer width="99%" height={height}>
-          <LineChart
-            height={300}
-            data={data}
-            margin={{
-              top: 16,
-              right: 16,
-              left: undefined,
-              bottom: 8,
-            }}
-          >
+          <LineChart height={300} data={data} margin={{ top: 16, right: 16, left: undefined, bottom: 8 }}>
             <CartesianGrid stroke={gridLineColor} strokeWidth={0.3} vertical={true} />
             <XAxis
               dataKey="timestamp"
@@ -48,22 +35,19 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
               axisLine={false}
               minTickGap={20}
               tickMargin={4}
-              tickFormatter={(time) => {
-                const date = toDate(time as string | number)
-                return formatDate(date)
-              }}
+              tickFormatter={(time) => formatDate(time)}
             />
             <YAxis
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
               tickFormatter={(value) => `${value.toFixed(0)}%`}
               tickLine={false}
               axisLine={false}
-              dataKey={'proj_apy'}
+              dataKey={'apyProjected'}
             />
             <Tooltip content={RevenueChartTooltip} cursor={{ opacity: 0.3 }} />
             <Line
               type="monotone"
-              dataKey="proj_apy"
+              dataKey="apyProjected"
               stroke={mainLineColor}
               strokeWidth={2}
               activeDot={{ r: 4 }}

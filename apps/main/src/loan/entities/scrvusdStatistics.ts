@@ -1,9 +1,10 @@
-import type { PricesStatisticsDataResponse } from '@/loan/store/types'
+import type { Statistics } from '@curvefi/prices-api/savings/models'
 import { Contract } from 'ethers'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { weiToEther } from '@ui-kit/utils'
+import { getStatistics } from '@curvefi/prices-api/savings'
 
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
@@ -30,7 +31,7 @@ const VAULT_ABI = [
  * If a provider is provided, the data is fetched from the vault contract directly.
  * That provides more accurate data and works even if our servers are down.
  */
-async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> {
+async function _fetchSavingsStatistics(): Promise<Statistics> {
   const { provider } = useWallet.getState()
 
   if (provider) {
@@ -45,22 +46,19 @@ async function _fetchSavingsStatistics(): Promise<PricesStatisticsDataResponse> 
     const supplyNum = Number(supply)
 
     return {
-      last_updated: new Date(block?.timestamp ?? 0).toISOString(),
-      last_updated_block: block?.number ?? 0,
-      proj_apr: supplyNum > 0 ? (unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum : 0,
+      lastUpdated: new Date(block?.timestamp ?? 0),
+      lastUpdatedBlock: block?.number ?? 0,
+      aprProjected: supplyNum > 0 ? (unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum : 0,
       supply: weiToEther(supplyNum),
     }
   }
 
-  const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/statistics`)
-  const data: PricesStatisticsDataResponse = await response.json()
-
-  return data
+  return getStatistics()
 }
 
 export const { useQuery: useScrvUsdStatistics } = queryFactory({
   queryKey: () => ['scrvUsdStatistics'] as const,
   queryFn: _fetchSavingsStatistics,
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}),
+  validationSuite: EmptyValidationSuite,
 })

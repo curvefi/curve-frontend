@@ -3,16 +3,11 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
 import { useTheme } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { Stack, Box } from '@mui/material'
 import DistributionsChartTooltip from './DistributionsChartTooltip'
-
 const { FontSize } = SizesAndSpaces
 
-type RevenueDistributionsBarChartProps = {
-  data: ScrvUsdRevenue | null
-  height?: number
-}
+type RevenueDistributionsBarChartProps = { data: ScrvUsdRevenue | null; height?: number }
 
 const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> = ({ data, height = 400 }) => {
   const {
@@ -31,12 +26,7 @@ const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> 
             width={500}
             height={300}
             data={data?.epochs ?? []}
-            margin={{
-              top: 16,
-              right: 16,
-              left: undefined,
-              bottom: 16,
-            }}
+            margin={{ top: 16, right: 16, left: undefined, bottom: 16 }}
           >
             <CartesianGrid stroke={gridLineColor} strokeWidth={0.3} vertical={true} />
             <XAxis
@@ -46,10 +36,7 @@ const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> 
               axisLine={false}
               minTickGap={20}
               allowDataOverflow={false}
-              tickFormatter={(time) => {
-                const date = toDate(time as string | number)
-                return formatDate(date)
-              }}
+              tickFormatter={(time) => formatDate(time)}
             />
             <YAxis
               dataKey="weeklyRevenue"

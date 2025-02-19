@@ -6,7 +6,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { formatDate } from '@ui/utils/utilsFormat'
 import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 
@@ -41,7 +40,8 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
     return null
   }
 
-  const { timestamp, proj_apy, proj_apy_7d_avg, proj_apy_total_avg } = payload[0].payload as ScrvUsdYieldWithAverages
+  const { timestamp, apyProjected, proj_apy_7d_avg, proj_apy_total_avg } = payload[0]
+    .payload as ScrvUsdYieldWithAverages
 
   return (
     <Paper
@@ -52,17 +52,12 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
       }}
       elevation={2}
     >
-      <Typography variant="bodyMBold">{formatDate(toDate(timestamp), 'long')}</Typography>
+      <Typography variant="bodyMBold">{formatDate(timestamp, 'long')}</Typography>
       <Stack
         direction="column"
-        sx={{
-          marginTop: Spacing.sm,
-          padding: Spacing.sm,
-          gap: 1,
-          backgroundColor: Layer[2].Fill,
-        }}
+        sx={{ marginTop: Spacing.sm, padding: Spacing.sm, gap: 1, backgroundColor: Layer[2].Fill }}
       >
-        <DataSet label={t`APR`} value={proj_apy.toFixed(2) + '%'} lineColor={Color.Primary[500]} />
+        <DataSet label={t`APR`} value={apyProjected.toFixed(2) + '%'} lineColor={Color.Primary[500]} />
         <DataSet
           label={t`7-day MA APR`}
           value={proj_apy_7d_avg.toFixed(2) + '%'}

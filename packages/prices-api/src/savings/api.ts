@@ -15,30 +15,39 @@ export async function getEvents(page: number, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetEventsResponse>(`${host}/v1/crvusd/savings/events?page=${page}&per_page=10`)
 
-  return {
-    count: resp.count,
-    events: resp.events.map(Parsers.parseEvent),
-  }
+  return { count: resp.count, events: resp.events.map(Parsers.parseEvent) }
 }
 
-export async function getYield(options?: Options) {
+export async function getYield(
+  aggNumber: number = 1,
+  aggUnit: string = 'hour',
+  startDate?: number,
+  endDate?: number,
+  options?: Options,
+) {
   const host = getHost(options)
 
   const { start, end } = getTimeRange({ daysRange: 10 })
 
   const resp = await fetch<Responses.GetYieldResponse>(
-    `${host}/v1/crvusd/savings/yield?agg_number=1&agg_units=hour&start=${start}&end=${end}`,
+    `${host}/v1/crvusd/savings/yield?agg_number=${aggNumber}&agg_units=${aggUnit}&start=${startDate ?? start}&end=${endDate ?? end}`,
   )
 
   return resp.data.map(Parsers.parseYield)
 }
 
-export async function getRevenue(page: number, options?: Options) {
+export async function getRevenue(page: number, perPage: number = 100, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetRevenueResponse>(`${host}/v1/crvusd/savings/revenue${page}&per_page=100`)
+  const resp = await fetch<Responses.GetRevenueResponse>(
+    `${host}/v1/crvusd/savings/revenue?page=${page}&per_page=${perPage}`,
+  )
 
-  return {
-    totalDistributed: resp.total_distributed,
-    history: resp.history.map(Parsers.parseRevenue),
-  }
+  return { totalDistributed: resp.total_distributed, history: resp.history.map(Parsers.parseRevenue) }
+}
+
+export async function getUserStats(userAddress: string, options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetUserStatsResponse>(`${host}/v1/crvusd/savings/${userAddress}/stats`)
+
+  return Parsers.parseUserStats(resp)
 }

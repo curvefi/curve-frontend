@@ -23,7 +23,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 const WithdrawModule = () => {
   const { signerAddress } = useWallet()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
-    signerAddress: signerAddress ?? '',
+    userAddress: signerAddress ?? '',
   })
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const preview = useStore((state) => state.scrvusd.preview)
