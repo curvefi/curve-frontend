@@ -9,7 +9,7 @@ import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
 import Box from '@ui/Box'
 import type { LocksDaily } from '@curvefi/prices-api/dao'
 
-const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
+const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const { day, amount } = payload[0].payload as LocksDaily & { amount: number }
 

@@ -35,7 +35,7 @@ import InputProvider from '@ui/InputComp'
 import ShadowedBox from '@ui/ShadowedBox'
 
 const Popover = (
-  props: React.PropsWithChildren<AriaOverlayProps & { popoverRef: React.RefObject<HTMLDivElement> }>,
+  props: React.PropsWithChildren<AriaOverlayProps & { popoverRef: React.RefObject<HTMLDivElement | null> }>,
 ) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const { popoverRef = ref, isOpen, onClose, children } = props
@@ -100,7 +100,7 @@ function ListBoxSection<T extends {}>({
 }
 
 function ListBox<T extends {}>(
-  props: AriaListBoxOptions<T> & { listBoxRef: React.RefObject<HTMLUListElement>; state: ListState<T> },
+  props: AriaListBoxOptions<T> & { listBoxRef: React.RefObject<HTMLUListElement | null>; state: ListState<T> },
 ) {
   const ref = React.useRef<HTMLUListElement>(null)
   const { listBoxRef = ref, state } = props
@@ -117,7 +117,7 @@ function ListBox<T extends {}>(
 }
 
 function Button(
-  props: AriaButtonProps & { buttonRef: React.RefObject<HTMLButtonElement>; style?: React.CSSProperties },
+  props: AriaButtonProps & { buttonRef: React.RefObject<HTMLButtonElement | null>; style?: React.CSSProperties },
 ) {
   const ref = props.buttonRef
   const { buttonProps } = useButton(props, ref)

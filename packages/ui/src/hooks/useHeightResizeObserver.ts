@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-function useHeightResizeObserver(elementRef: React.RefObject<Element>) {
+function useHeightResizeObserver(elementRef: React.RefObject<Element | null>) {
   const [height, setHeight] = React.useState<number | null>(null)
 
   const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
@@ -31,7 +31,6 @@ function useHeightResizeObserver(elementRef: React.RefObject<Element>) {
     return () => {
       observer?.disconnect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementRef])
 
   return height

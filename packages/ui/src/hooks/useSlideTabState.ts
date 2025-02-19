@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-function useSlideTabState(tabsRef: React.RefObject<HTMLDivElement>, rFormType: string | null) {
+function useSlideTabState(tabsRef: React.RefObject<HTMLDivElement | null>, rFormType: string | null) {
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
 

@@ -31,7 +31,7 @@ export type NavigationSection = {
 }
 
 export type BaseHeaderProps<TChainId = number> = {
-  mainNavRef: RefObject<HTMLDivElement>
+  mainNavRef: RefObject<HTMLDivElement | null>
   currentApp: AppName
   isLite?: boolean
   ChainProps: Omit<ChainSwitcherProps<TChainId>, 'headerHeight'>

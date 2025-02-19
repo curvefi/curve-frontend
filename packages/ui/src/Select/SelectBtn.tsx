@@ -15,12 +15,12 @@ const SelectBtn = ({
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> &
   AriaButtonProps &
-  ButtonProps & { buttonRef: React.RefObject<HTMLElement>; style?: React.CSSProperties }) => {
+  ButtonProps & { buttonRef: React.RefObject<HTMLElement | null>; style?: React.CSSProperties }) => {
   const ref = props.buttonRef
   const { buttonProps } = useButton(props, ref)
 
   return (
-    <StyledBtn {...buttonProps} $loading={loading} ref={ref as React.RefObject<HTMLButtonElement>} style={style}>
+    <StyledBtn {...buttonProps} $loading={loading} ref={ref as React.RefObject<HTMLButtonElement | null>} style={style}>
       {loading && (
         <StyledSpinnerWrapper>
           <Spinner isDisabled size={17} />
