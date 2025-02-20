@@ -45,7 +45,16 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
 }
 
 export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', address, sx }: TokenIconProps) => (
-  <Tooltip title={symbol} placement="top">
+  <Tooltip
+    title={symbol}
+    placement="top"
+    PopperProps={{
+      sx: {
+        userSelect: 'none',
+        pointerEvents: 'none',
+      },
+    }}
+  >
     <Box
       component="img"
       data-testid={`token-icon-${symbol}`}
