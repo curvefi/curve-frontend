@@ -3,18 +3,21 @@ import { ChainOption } from '@ui-kit/features/switch-chain'
 import sortBy from 'lodash/sortBy'
 
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
+import { Chain } from '@ui-kit/utils'
 import curvejsApi from '@/dao/lib/curvejs'
 import { ChainId, NetworkEnum, NetworkConfig } from '@/dao/types/dao.types'
 
-const DEFAULT_NETWORK_CONFIG = {
-  api: curvejsApi,
-  isActiveNetwork: true,
-  showInSelectNetwork: true,
-}
+const DEFAULT_NETWORK_CONFIG = { api: curvejsApi, isActiveNetwork: true, showInSelectNetwork: true }
 
-const networksConfig = {
-  1: {},
-}
+const networksConfig = Object.values(Chain).reduce(
+  (acc, chainId) => {
+    if (typeof chainId === 'number') {
+      acc[chainId] = {}
+    }
+    return acc
+  },
+  {} as Record<number, {}>,
+)
 
 export const { networks, networksIdMapper, selectNetworkList } = Object.entries(networksConfig).reduce(
   (mapper, [key, config]) => {

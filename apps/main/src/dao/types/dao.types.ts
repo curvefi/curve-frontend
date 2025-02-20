@@ -1,4 +1,4 @@
-import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { WalletState } from '@web3-onboard/core'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type curveApi from '@curvefi/api'
@@ -14,7 +14,7 @@ export type PageWidthClassName =
   | 'page-small-x'
   | 'page-small-xx'
 export type CurveApi = typeof curveApi & { chainId: 1 }
-export type ChainId = 1
+export type ChainId = IChainId | number
 export type NetworkEnum = INetworkName
 
 export interface NetworkConfig extends BaseConfig {
@@ -36,16 +36,8 @@ export type RouterParams = {
   redirectPathname: string
   restFullPathname: string
 }
-export type PageProps = {
-  curve: CurveApi | null
-  pageLoaded: boolean
-  routerParams: RouterParams
-}
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
-}
+export type PageProps = { curve: CurveApi | null; pageLoaded: boolean; routerParams: RouterParams }
+export type RouterProps = { params: Params; location: Location; navigate: NavigateFunction }
 export type Provider = ethers.BrowserProvider
 export type Wallet = WalletState
 export type EstimatedGas = number | number[] | null
@@ -107,9 +99,7 @@ export interface ProposalData extends Omit<ProposalResponseData, 'votesFor' | 'v
   currentQuorumPercentage: number
 }
 
-export type PricesProposalsResponse = {
-  proposals: PricesProposalResponseData[]
-}
+export type PricesProposalsResponse = { proposals: PricesProposalResponseData[] }
 export type PricesProposalResponse =
   | {
       vote_id: number
@@ -131,16 +121,9 @@ export type PricesProposalResponse =
       creator_voting_power: string
       execution_tx: string
       script: string
-      votes: Array<{
-        voter: string
-        supports: boolean
-        voting_power: string
-        transaction_hash: string
-      }>
+      votes: Array<{ voter: string; supports: boolean; voting_power: string; transaction_hash: string }>
     }
-  | {
-      detail: string
-    }
+  | { detail: string }
 export type PricesProposalData = {
   vote_id: number
   vote_type: ProposalType
@@ -170,27 +153,16 @@ export type PricesProposalData = {
     transaction_hash: string
   }>
 }
-export type ProposalMapper = {
-  [proposalId: string]: PricesProposalData
-}
+export type ProposalMapper = { [proposalId: string]: PricesProposalData }
 export type PricesGaugeOverviewData = {
   address: string
   gauge_type: string
   name: string | null
   version: string | null
   lp_token: string
-  pool: {
-    address: string
-    name: string
-    chain: string
-    tvl_usd: number
-    trading_volume_24h: number
-  } | null
+  pool: { address: string; name: string; chain: string; tvl_usd: number; trading_volume_24h: number } | null
   tokens: [{ symbol: string; address: string; precision: number }]
-  market: {
-    name: string
-    chain: string
-  } | null
+  market: { name: string; chain: string } | null
   is_killed: boolean | null
   emissions: number
   gauge_weight: string
@@ -212,10 +184,7 @@ export type CurveApiBaseGauge = {
   lpTokenPrice: number | null
   blockchainId: string
   gauge: string
-  gauge_data: {
-    inflation_rate: string
-    working_supply: string
-  }
+  gauge_data: { inflation_rate: string; working_supply: string }
   gauge_controller: {
     gauge_relative_weight: string
     gauge_future_relative_weight: string
@@ -230,11 +199,7 @@ export type CurveApiBaseGauge = {
 }
 export type CurveApiPoolGauge = CurveApiBaseGauge & {
   isPool: true
-  poolUrls: {
-    swap: string[]
-    deposit: string[]
-    withdraw: string[]
-  }
+  poolUrls: { swap: string[]; deposit: string[]; withdraw: string[] }
   poolAddress: string
   virtualPrice: string | number
   type: string
@@ -243,23 +208,16 @@ export type CurveApiPoolGauge = CurveApiBaseGauge & {
 }
 export type CurveApiLendingGauge = CurveApiBaseGauge & {
   isPool: false
-  lendingVaultUrls: {
-    deposit: string
-    withdraw: string
-  }
+  lendingVaultUrls: { deposit: string; withdraw: string }
   lendingVaultAddress: string
 }
 export type CurveApiGaugeData = CurveApiPoolGauge | CurveApiLendingGauge
 export type CurveGaugeResponse = {
   success: boolean
-  data: {
-    [poolId: string]: CurveApiGaugeData
-  }
+  data: { [poolId: string]: CurveApiGaugeData }
   generatedTimeMs: number
 }
-export type PricesGaugeOverviewResponse = {
-  gauges: PricesGaugeOverviewData[]
-}
+export type PricesGaugeOverviewResponse = { gauges: PricesGaugeOverviewData[] }
 
 export interface GaugeFormattedData extends Omit<PricesGaugeOverviewData, 'gauge_weight'> {
   title: string
@@ -275,9 +233,7 @@ export interface GaugeCurveApiDataMapper {
   [gaugeAddress: string]: CurveApiGaugeData
 }
 
-export type GaugeVotesResponse = {
-  votes: GaugeVoteData[]
-}
+export type GaugeVotesResponse = { votes: GaugeVoteData[] }
 export type GaugeVoteData = {
   user: string
   weight: number
@@ -285,19 +241,10 @@ export type GaugeVoteData = {
   timestamp: string
   transaction: string
 }
-export type GaugeVote = {
-  user: string
-  weight: number
-  block_number: number
-  timestamp: number
-  transaction: string
-}
+export type GaugeVote = { user: string; weight: number; block_number: number; timestamp: number; transaction: string }
 
 export interface GaugeVotesMapper {
-  [gaugeAddress: string]: {
-    fetchingState: FetchingState
-    votes: GaugeVote[]
-  }
+  [gaugeAddress: string]: { fetchingState: FetchingState; votes: GaugeVote[] }
 }
 
 export type GaugeWeightHistoryData = {
@@ -309,9 +256,7 @@ export type GaugeWeightHistoryData = {
 }
 
 export interface UserMapper {
-  [userAddress: string]: {
-    ens: string
-  }
+  [userAddress: string]: { ens: string }
 }
 
 export interface UserVoteData {
@@ -320,16 +265,8 @@ export interface UserVoteData {
   userVote: 'no' | 'yes' | 'even'
 }
 
-export type SnapshotVotingPower = {
-  loading: boolean
-  value: number
-  blockNumber: number
-}
-export type ActiveProposal = {
-  active: boolean
-  startTimestamp: number
-  endTimestamp: number
-}
+export type SnapshotVotingPower = { loading: boolean; value: number; blockNumber: number }
+export type ActiveProposal = { active: boolean; startTimestamp: number; endTimestamp: number }
 
 export interface UserLockApi {
   amount: string
@@ -374,12 +311,7 @@ export interface UserProposalVoteResData {
     transaction_hash: string
     dt: string
   }
-  votes: {
-    voter: string
-    supports: boolean
-    voting_power: string
-    transaction_hash: string
-  }[]
+  votes: { voter: string; supports: boolean; voting_power: string; transaction_hash: string }[]
 }
 
 export interface UserProposalVoteData {
@@ -406,9 +338,7 @@ export type UserGaugeVote = {
   timestamp: number
   transaction: string
 }
-export type UserGaugeVotesRes = {
-  votes: UserGaugeVote[]
-}
+export type UserGaugeVotesRes = { votes: UserGaugeVote[] }
 
 export type UserGaugeVoteWeight = {
   title: string
@@ -425,21 +355,14 @@ export type UserGaugeVoteWeight = {
   poolUrl: string
   relativeWeight: number
   totalVeCrv: number
-  nextVoteTime: {
-    fetchingState: FetchingState | null
-    timestamp: number | null
-  }
+  nextVoteTime: { fetchingState: FetchingState | null; timestamp: number | null }
   canVote: boolean
 }
 
 export type UserGaugeVoteWeightsMapper = {
   [userAddress: string]: {
     fetchingState: FetchingState
-    data: {
-      powerUsed: number
-      veCrvUsed: number
-      gauges: UserGaugeVoteWeight[]
-    }
+    data: { powerUsed: number; veCrvUsed: number; gauges: UserGaugeVoteWeight[] }
   }
 }
 
@@ -471,10 +394,7 @@ export type SortByFilterGaugesKeys =
   | 'gauge_relative_weight'
   | 'gauge_relative_weight_7d_delta'
   | 'gauge_relative_weight_60d_delta'
-export type SortByFilterGauges = {
-  key: SortByFilterGaugesKeys
-  order: SortDirection
-}
+export type SortByFilterGauges = { key: SortByFilterGaugesKeys; order: SortDirection }
 export type SortDirection = 'asc' | 'desc'
 export type TopHoldersSortBy = 'weight' | 'locked' | 'weightRatio'
 export type AllHoldersSortBy = 'weight' | 'locked' | 'weightRatio' | 'unlockTime'
