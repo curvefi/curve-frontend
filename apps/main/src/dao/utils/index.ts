@@ -1,4 +1,6 @@
-import { AlertFormErrorKey } from '@/dao/types/dao.types'
+import { AlertFormErrorKey, GaugeFormattedData } from '@/dao/types/dao.types'
+import { Chain } from '@ui-kit/utils'
+import upperFirst from 'lodash/upperFirst'
 
 export * from './utilsRouter'
 export * from './utilsDates'
@@ -46,11 +48,7 @@ export function delayAction<T>(cb: T) {
 }
 
 export function scrollToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth',
-  })
+  window.scroll({ top: 0, left: 0, behavior: 'smooth' })
 }
 
 export function sleep(ms?: number) {
@@ -59,3 +57,10 @@ export function sleep(ms?: number) {
 }
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
+
+export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
+  if (!gaugeData) return 1
+  const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'
+  const chainId = Chain[upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
+  return chainId
+}
