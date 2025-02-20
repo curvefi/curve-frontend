@@ -28,7 +28,7 @@ const CurrencyReservesContent = ({
       <TokenIcon
         size="sm"
         blockchainId={network?.networkId ?? ''}
-        token={token}
+        symbol={token}
         address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
       />
 

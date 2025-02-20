@@ -47,22 +47,22 @@ const SelectedOneCoinExpected = ({
     <StyledRadioGroup aria-label="Withdraw from one coin" value={selectedTokenAddress} onChange={handleRadioChange}>
       {selectedTokenAddress ? (
         tokenAddresses.map((tokenAddress, idx) => {
-          const token = tokens[idx]
-          const haveSameTokenName = poolDataCacheOrApi?.tokensCountBy[token] > 1
+          const symbol = tokens[idx]
+          const haveSameTokenName = poolDataCacheOrApi?.tokensCountBy[symbol] > 1
 
           return (
             <Radio
               key={tokenAddress}
-              aria-label={`Withdraw from ${token} for ${amounts[idx]?.value ?? '0'}`}
+              aria-label={`Withdraw from ${symbol} for ${amounts[idx]?.value ?? '0'}`}
               value={tokenAddress}
             >
               <StyledTokenIcon
                 size="sm"
                 blockchainId={blockchainId}
-                token={token}
+                symbol={symbol}
                 address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
               />{' '}
-              {token} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}
+              {symbol} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}
               <Spacer />
               {loading ? (
                 <Loader skeleton={[90, 20]} />

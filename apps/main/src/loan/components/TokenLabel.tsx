@@ -32,7 +32,7 @@ const TokenLabel = ({
   const collateralAlert = useCollateralAlert(collateralDataCachedOrApi?.llamma?.address)
 
   const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma ?? {}
-  const token = coins?.[type === 'collateral' ? 1 : 0] ?? ''
+  const symbol = coins?.[type === 'collateral' ? 1 : 0] ?? ''
   const tokenAddress = coinAddresses?.[type === 'collateral' ? 1 : 0] ?? ''
 
   return (
@@ -50,7 +50,8 @@ const TokenLabel = ({
           </AlertTooltipIcon>
         </TooltipIconWrapper>
       )}
-      <TokenIcon blockchainId={blockchainId} token={token} address={tokenAddress} /> <Label size={size}>{token}</Label>
+      <TokenIcon blockchainId={blockchainId} symbol={symbol} address={tokenAddress} />{' '}
+      <Label size={size}>{symbol}</Label>
     </Wrapper>
   )
 }

@@ -35,7 +35,7 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                   <StyledTokenIcon
                     size="sm"
                     blockchainId={networks[chainId].networkId}
-                    token={coins.collateral.address}
+                    symbol={coins.collateral.symbol}
                     address={coins.collateral.address}
                   />
                 </LiquidityEventRow>
@@ -56,7 +56,7 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        token={coins.collateral.address}
+                        symbol={coins.collateral.symbol}
                         address={coins.collateral.address}
                       />
                     </LiquidityEventRow>
@@ -72,7 +72,7 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        token={coins.crvusd.address}
+                        symbol={coins.crvusd.symbol}
                         address={coins.crvusd.address}
                       />
                     </LiquidityEventRow>

@@ -142,7 +142,11 @@ const ComboBoxTokenPicker = ({
       <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
         {selectedToken ? (
           <>
-            <ButtonTokenIcon blockchainId={blockchainId} token={selectedToken.symbol} address={selectedToken.address} />
+            <ButtonTokenIcon
+              blockchainId={blockchainId}
+              symbol={selectedToken.symbol}
+              address={selectedToken.address}
+            />
             <LabelTextWrapper>
               <SelectedLabelText>
                 {selectedToken.symbol}{' '}
@@ -193,7 +197,7 @@ const ComboBoxTokenPicker = ({
                     variant="icon-outlined"
                     onClick={() => handleOnSelectChange(address)}
                   >
-                    <StyledQuickListTokenIcon address={address} blockchainId={blockchainId} token={symbol} size="sm" />{' '}
+                    <StyledQuickListTokenIcon address={address} blockchainId={blockchainId} symbol={symbol} size="sm" />{' '}
                     {symbol}
                   </QuickListButton>
                 ))}
@@ -217,7 +221,7 @@ const ComboBoxTokenPicker = ({
                     <ItemWrapper defaultHeight="50px">
                       <TokenIcon
                         blockchainId={blockchainId}
-                        token={item.symbol}
+                        symbol={item.symbol}
                         address={item.ethAddress || item.address}
                       />
                       <LabelTextWrapper>

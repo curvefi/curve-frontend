@@ -32,7 +32,7 @@ const ComboBoxListItem = ({
       onClick={() => handleOnSelectChange(item.address)}
     >
       <IconWrapper>
-        <TokenIcon blockchainId={blockchainId} token={item.symbol} address={item.ethAddress || item.address} />
+        <TokenIcon blockchainId={blockchainId} symbol={item.symbol} address={item.ethAddress || item.address} />
       </IconWrapper>
       <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
         <LabelText data-testid={`li-${testId}`}>{item.symbol}</LabelText>

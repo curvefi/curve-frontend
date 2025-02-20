@@ -35,7 +35,7 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
                   <StyledTokenIcon
                     size="sm"
                     blockchainId={networks[chainId].networkId}
-                    token={coins.collateralToken.address}
+                    symbol={coins.collateralToken.symbol}
                     address={coins.collateralToken.address}
                   />
                 </LiquidityEventRow>
@@ -56,7 +56,7 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        token={coins.collateralToken.address}
+                        symbol={coins.collateralToken.symbol}
                         address={coins.collateralToken.address}
                       />
                     </LiquidityEventRow>
@@ -72,7 +72,7 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        token={coins.borrowedToken.address}
+                        symbol={coins.borrowedToken.symbol}
                         address={coins.borrowedToken.address}
                       />
                     </LiquidityEventRow>

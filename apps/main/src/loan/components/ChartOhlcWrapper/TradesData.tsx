@@ -19,7 +19,7 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
             <StyledTokenIcon
               size="sm"
               blockchainId={networks[chainId].networkId}
-              token={transaction.tokenSold.address}
+              symbol={transaction.tokenSold.symbol}
               address={transaction.tokenSold.address}
             />
             <Box flex flexColumn>
@@ -49,7 +49,7 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
               className="bought"
               size="sm"
               blockchainId={networks[chainId].networkId}
-              token={transaction.tokenBought.address}
+              symbol={transaction.tokenBought.symbol}
               address={transaction.tokenBought.address}
             />
           </TradeTo>

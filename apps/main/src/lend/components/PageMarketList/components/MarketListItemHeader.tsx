@@ -21,7 +21,7 @@ const MarketListItemHeader = ({
 }) => (
   <TableTokenWrapper $isFirst={idx === 0}>
     <Wrapper flex flexAlignItems="center">
-      {<StyledTokenIcon blockchainId={networks[rChainId].networkId} token={symbol} address={address} />}
+      {<StyledTokenIcon blockchainId={networks[rChainId].networkId} symbol={symbol} address={address} />}
       <strong>{symbol}</strong>
     </Wrapper>
   </TableTokenWrapper>

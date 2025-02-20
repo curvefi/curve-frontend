@@ -21,7 +21,7 @@ const ComboBoxSelectedToken = ({
     <TokenIconWrapper>
       <TokenIcon
         blockchainId={blockchainId}
-        token={selected.symbol}
+        symbol={selected.symbol}
         size="sm"
         address={selected.ethAddress || selected.address}
       />

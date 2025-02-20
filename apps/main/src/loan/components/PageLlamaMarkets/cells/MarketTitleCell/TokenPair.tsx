@@ -21,7 +21,7 @@ const TooltipBox = ({ title, children, sx }: { title: string; children: ReactNod
 
 const TokenBox = ({ coin: { address, chain, symbol }, sx }: { coin: AssetDetails; sx: SxProps<Theme> }) => (
   <TooltipBox title={symbol} sx={sx}>
-    <TokenIcon blockchainId={chain} address={address} token={symbol} />
+    <TokenIcon blockchainId={chain} address={address} symbol={symbol} />
   </TooltipBox>
 )
 

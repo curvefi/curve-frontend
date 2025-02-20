@@ -37,21 +37,21 @@ const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
   blockchainId: string
-  token: string
+  symbol: string
   address?: string | null
   size?: 'sm' | 'mui-sm' | 'mui-md' | ''
   sx?: SystemStyleObject<Theme>
 }
 
-export function TokenIcon({ className = '', blockchainId, token, size = 'sm', address, sx }: TokenIconProps) {
+export function TokenIcon({ className = '', blockchainId, symbol, size = 'sm', address, sx }: TokenIconProps) {
   const src = address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE
 
   return (
     <Box
       component="img"
-      data-testid={`token-icon-${token}`}
+      data-testid={`token-icon-${symbol}`}
       className={`${className} ${size}`}
-      alt={token}
+      alt={symbol}
       onError={({ currentTarget }) => {
         currentTarget.src = DEFAULT_IMAGE
       }}

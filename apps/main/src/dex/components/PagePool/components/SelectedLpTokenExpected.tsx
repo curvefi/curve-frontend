@@ -33,17 +33,17 @@ const SelectedLpTokenExpected = ({
 }) => (
   <Box as="ul" grid gridRowGap={2}>
     {tokenAddresses.map((tokenAddress, idx) => {
-      const token = tokens[idx]
-      const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[token] > 1
+      const symbol = tokens[idx]
+      const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[symbol] > 1
 
       return (
         <Box key={tokenAddress} as="li" flex flexAlignItems="center">
           <StyledTokenIcon
             blockchainId={blockchainId}
-            token={token}
+            symbol={symbol}
             address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
           />{' '}
-          {token}
+          {symbol}
           {haveSameTokenName && <Chip>{shortenTokenAddress(tokenAddress)}</Chip>}
           <Spacer />
           {loading ? (

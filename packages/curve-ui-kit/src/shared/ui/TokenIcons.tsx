@@ -51,7 +51,7 @@ export function TokenIcons({ tokens, ...props }: Props) {
             {...props}
             className={className}
             address={address}
-            token={symbol}
+            symbol={symbol}
             sx={{
               '&.not-first-row': {
                 marginTop: '-6px',

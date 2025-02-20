@@ -44,7 +44,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                             <StyledTokenIcon
                               size="sm"
                               blockchainId={network?.networkId}
-                              token={coins[index].address}
+                              symbol={coins[index].symbol}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }
@@ -71,7 +71,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                             <StyledTokenIcon
                               size="sm"
                               blockchainId={network?.networkId}
-                              token={coins[index].address}
+                              symbol={coins[index].symbol}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }

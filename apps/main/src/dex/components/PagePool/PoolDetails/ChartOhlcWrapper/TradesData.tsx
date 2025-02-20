@@ -25,7 +25,7 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
             <StyledTokenIcon
               size="sm"
               blockchainId={network?.networkId ?? ''}
-              token={soldToken?.address ?? transaction.token_sold}
+              symbol={soldToken?.symbol ?? transaction.token_sold_symbol}
               address={soldToken?.address ?? transaction.token_sold}
             />
             <Box flex flexColumn>
@@ -55,7 +55,7 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
               className="bought"
               size="sm"
               blockchainId={network?.networkId ?? ''}
-              token={boughtToken?.address ?? transaction.token_bought}
+              symbol={boughtToken?.symbol ?? transaction.token_bought_symbol}
               address={boughtToken?.address ?? transaction.token_bought}
             />
           </TradeTo>

@@ -68,7 +68,7 @@ const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
           tokensInPool[TOKEN_H],
         ) && (
           <Box flex flexAlignItems="center">
-            <StyledBWButtonTokenIcon blockchainId={''} token={''} address={''} />
+            <StyledBWButtonTokenIcon blockchainId={''} symbol={''} address={''} />
             <SummaryDataPlaceholder>{t`No tokens selected`}</SummaryDataPlaceholder>
           </Box>
         )}
@@ -196,7 +196,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
   const { scanAddressPath, stableswapFactory } = useStore((state) => state.networks.networks[chainId])
   return (
     <TokenRow>
-      <ButtonTokenIcon blockchainId={blockchainId} token={token.symbol} address={token.address} />
+      <ButtonTokenIcon blockchainId={blockchainId} symbol={token.symbol} address={token.address} />
       <Box flex flexColumn>
         <TokenSymbol className="token-symbol">
           {token.symbol}
