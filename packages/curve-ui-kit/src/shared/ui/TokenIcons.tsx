@@ -1,6 +1,5 @@
-import { TokenIcon } from 'curve-ui-kit/src/shared/ui/TokenIcon'
-
-import styled from 'styled-components'
+import Box from '@mui/material/Box'
+import { TokenIcon } from './TokenIcon'
 
 type Props = {
   imageBaseUrl: string | null
@@ -10,13 +9,25 @@ type Props = {
   }[]
 }
 
-export const TokenIcons = ({ tokens, ...props }: Props) => {
+export function TokenIcons({ tokens, ...props }: Props) {
   const totalCount = tokens.length
   const isOddCount = totalCount % 2 === 1
   const iconsPerRow = totalCount > 4 ? 3 : 2
+  const colSpan = isOddCount ? 2 : 1
 
   return (
-    <Wrapper iconsPerRow={iconsPerRow} colSpan={isOddCount ? 2 : 1}>
+    <Box
+      display="inline-grid"
+      sx={{
+        gridTemplateColumns: `repeat(${iconsPerRow}, auto)`,
+        [`& > *:nth-child(${iconsPerRow}n-1)`]: {
+          justifySelf: 'center',
+        },
+        [`& > *:nth-child(${iconsPerRow}n-1):nth-last-of-type(1)`]: {
+          gridColumn: `span ${colSpan}`,
+        },
+      }}
+    >
       {tokens.map(({ address, symbol }, idx) => {
         let className = ''
         const tokenCount = idx + 1
@@ -58,30 +69,6 @@ export const TokenIcons = ({ tokens, ...props }: Props) => {
           />
         )
       })}
-    </Wrapper>
+    </Box>
   )
 }
-
-type WrapperProps = {
-  iconsPerRow: number
-  colSpan: number
-}
-
-const Wrapper = styled.div<WrapperProps>`
-  display: inline-grid;
-  //min-width: 53px;
-
-  ${({ iconsPerRow, colSpan }) => `
-        grid-template-columns: repeat(${iconsPerRow}, auto);
-
-        > *:nth-child(${iconsPerRow}n-1) {
-          justify-self: center;
-        }
-      
-        > *:nth-child(${iconsPerRow}n-1):nth-last-of-type(1) {
-          grid-column: span ${colSpan};
-        }
-      `}
-`
-
-export default TokenIcons

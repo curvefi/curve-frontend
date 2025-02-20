@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { breakpoints } from '@ui/utils'
 import networks from '@/loan/networks'
 
-import TokenIcons from '@ui/TokenIcons'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { ChainId } from '@/loan/types/loan.types'
 
 type Props = {

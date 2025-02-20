@@ -1,7 +1,7 @@
 import type { ImgHTMLAttributes } from 'react'
 import { Box, type Theme } from '@mui/material'
 import type { SystemStyleObject } from '@mui/system'
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 

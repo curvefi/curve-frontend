@@ -11,7 +11,7 @@ import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
 import Box from '@ui/Box'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'
-import TokenIcons from '@ui/TokenIcons'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type PoolListProps = {

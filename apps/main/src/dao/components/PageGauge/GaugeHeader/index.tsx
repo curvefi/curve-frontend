@@ -6,7 +6,7 @@ import networks from '@/dao/networks'
 
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
-import TokenIcons from '@ui/TokenIcons'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import SmallLabel from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 
