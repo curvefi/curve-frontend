@@ -7,7 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
-import { Balances, CurveApi, ChainId, UserPoolListMapper } from '@/dex/types/main.types'
+import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -63,7 +63,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     ...DEFAULT_STATE,
 
     fetchUserPoolList: async (curve) => {
-      const chainId: ChainId = curve.chainId
       const userActiveKey = getUserActiveKey(curve)
       let parsedUserPoolList: { [poolId: string]: boolean } = {}
 
@@ -73,7 +72,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           poolListError: '',
         })
 
-        const { poolList } = await curvejsApi.wallet.getUserPoolList(curve, curve.signerAddress)
+        const { poolList, error } = await curvejsApi.wallet.getUserPoolList(curve, curve.signerAddress)
 
         // parse user pool list
         for (const poolId of poolList) {
@@ -81,7 +80,10 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         }
 
         get()[sliceKey].setStateByActiveKey('poolList', userActiveKey, parsedUserPoolList)
-        get()[sliceKey].setStateByKey('poolListLoaded', true)
+        get()[sliceKey].setStateByKeys({
+          poolListLoaded: true,
+          poolListError: error,
+        })
         return parsedUserPoolList
       } catch (error) {
         console.error(error)
