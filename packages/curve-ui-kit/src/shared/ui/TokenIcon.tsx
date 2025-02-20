@@ -43,30 +43,26 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   sx?: SystemStyleObject<Theme>
 }
 
-export function TokenIcon({ className = '', blockchainId, symbol, size = 'sm', address, sx }: TokenIconProps) {
-  const src = address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE
-
-  return (
-    <Box
-      component="img"
-      data-testid={`token-icon-${symbol}`}
-      className={`${className} ${size}`}
-      alt={symbol}
-      onError={({ currentTarget }) => {
-        currentTarget.src = DEFAULT_IMAGE
-      }}
-      src={src}
-      loading="lazy"
-      sx={(theme) => ({
-        border: '1px solid transparent',
-        borderRadius: '50%',
-        height: '1.625rem',
-        width: '1.625rem',
-        '&.sm': getResponsiveSize(theme, 400),
-        '&.mui-sm': getResponsiveSize(theme, 'sm'),
-        '&.mui-md': getResponsiveSize(theme, 'md'),
-        ...sx,
-      })}
-    />
-  )
-}
+export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', address, sx }: TokenIconProps) => (
+  <Box
+    component="img"
+    data-testid={`token-icon-${symbol}`}
+    className={`${className} ${size}`}
+    alt={symbol}
+    onError={({ currentTarget }) => {
+      currentTarget.src = DEFAULT_IMAGE
+    }}
+    src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
+    loading="lazy"
+    sx={(theme) => ({
+      border: '1px solid transparent',
+      borderRadius: '50%',
+      height: '1.625rem',
+      width: '1.625rem',
+      '&.sm': getResponsiveSize(theme, 400),
+      '&.mui-sm': getResponsiveSize(theme, 'sm'),
+      '&.mui-md': getResponsiveSize(theme, 'md'),
+      ...sx,
+    })}
+  />
+)
