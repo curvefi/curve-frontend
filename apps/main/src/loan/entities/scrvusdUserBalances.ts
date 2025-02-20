@@ -1,6 +1,7 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
 import useStore from '@/loan/store/useStore'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 
 export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
 
@@ -25,5 +26,5 @@ export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUs
     ['useScrvUsdUserBalances', { userAddress: params.userAddress }] as const,
   queryFn: _fetchSavingsUserBalances,
   staleTime: '5m',
-  validationSuite: userAddressValidationSuite,
+  validationSuite: EmptyValidationSuite,
 })
