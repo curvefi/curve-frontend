@@ -36,7 +36,7 @@ export function TokenIcons({ tokens, ...props }: Props) {
         if (tokenCount > iconsPerRow) {
           className += 'not-first-row'
 
-          if (isOddCount && !isLast) {
+          if (isOddCount && !isLast && totalCount < 6) {
             className += ' not-last'
           }
         }
