@@ -24,13 +24,13 @@ type PoolListProps = {
 
 type Props = {
   className?: string
-  imageBaseUrl: string
+  blockchainId: string
   isVisible?: boolean
   poolData: PoolDataCache | PoolData | undefined
   poolListProps?: PoolListProps
 }
 
-const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, poolListProps }: Props) => {
+const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, poolListProps }: Props) => {
   const { pool } = poolData ?? {}
   const tokens = useMemo(
     () =>
@@ -85,7 +85,7 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
   return (
     <div>
       <Wrapper className={className} onClick={({ target }) => handleClick(target)}>
-        <IconsWrapper>{isVisible && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} />}</IconsWrapper>
+        <IconsWrapper>{isVisible && <TokenIcons blockchainId={blockchainId} tokens={tokens} />}</IconsWrapper>
         <Box fillWidth>
           <Box flex flexAlignItems="center">
             {!isMobile && (

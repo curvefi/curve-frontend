@@ -4,6 +4,8 @@ import { t } from '@ui-kit/lib/i18n'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
+import networks from '@/loan/networks'
+
 import { TITLE } from '@/loan/constants'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 
@@ -41,7 +43,12 @@ const TableRowMobile = ({
   const isVisible = !!entry?.isIntersecting
   const isShowDetail = showDetail === collateralId
 
-  const props = { rChainId, collateralId, collateralDataCachedOrApi }
+  const props = {
+    rChainId,
+    blockchainId: networks[rChainId].networkId,
+    collateralId,
+    collateralDataCachedOrApi,
+  }
 
   // prettier-ignore
   const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean; isBorder?: boolean }[][] = [

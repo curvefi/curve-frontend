@@ -18,7 +18,7 @@ type Props = {
   haveSameTokenName?: boolean
   haveSigner: boolean
   hideMaxButton?: boolean
-  imageBaseUrl: string
+  blockchainId: string
   isMaxLoading?: boolean
   isWithdraw?: boolean
   token: string
@@ -38,7 +38,7 @@ const FieldToken = ({
   hideMaxButton = false,
   hasError,
   haveSigner,
-  imageBaseUrl,
+  blockchainId,
   isWithdraw = false,
   isMaxLoading,
   token,
@@ -82,7 +82,7 @@ const FieldToken = ({
         />
       )}
       <Box flex flexAlignItems="center">
-        <TokenIcon imageBaseUrl={imageBaseUrl} token={token} address={tokenAddress} />
+        <TokenIcon blockchainId={blockchainId} token={token} address={tokenAddress} />
       </Box>
     </InputProvider>
   )

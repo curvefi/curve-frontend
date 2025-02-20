@@ -34,18 +34,18 @@ import { Chip } from '@ui/Typography'
 import { ChainId } from '@/dex/types/main.types'
 
 type Props = {
-  imageBaseUrl: string
+  blockchainId: string
   chainId: ChainId
 }
 
 type TokenSummary = {
-  imageBaseUrl: string
+  blockchainId: string
   token: TokenState
   chainId: ChainId
   swapType: SwapType
 }
 
-const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
+const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
   const { tokensInPool, swapType, validation } = useStore((state) => state.createPool)
 
   return (
@@ -68,7 +68,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
           tokensInPool[TOKEN_H],
         ) && (
           <Box flex flexAlignItems="center">
-            <StyledBWButtonTokenIcon imageBaseUrl={''} token={''} address={''} />
+            <StyledBWButtonTokenIcon blockchainId={''} token={''} address={''} />
             <SummaryDataPlaceholder>{t`No tokens selected`}</SummaryDataPlaceholder>
           </Box>
         )}
@@ -76,7 +76,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
           ''
         ) : (
           <TokenSummary
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={blockchainId}
             token={tokensInPool[TOKEN_A]}
             chainId={chainId}
             swapType={swapType}
@@ -86,7 +86,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
           ''
         ) : (
           <TokenSummary
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={blockchainId}
             token={tokensInPool[TOKEN_B]}
             chainId={chainId}
             swapType={swapType}
@@ -97,7 +97,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
             ''
           ) : (
             <TokenSummary
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               token={tokensInPool[TOKEN_C]}
               chainId={chainId}
               swapType={swapType}
@@ -111,7 +111,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
             ''
           ) : (
             <TokenSummary
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               token={tokensInPool[TOKEN_D]}
               chainId={chainId}
               swapType={swapType}
@@ -125,7 +125,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
             ''
           ) : (
             <TokenSummary
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               token={tokensInPool[TOKEN_E]}
               chainId={chainId}
               swapType={swapType}
@@ -139,7 +139,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
             ''
           ) : (
             <TokenSummary
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               token={tokensInPool[TOKEN_F]}
               chainId={chainId}
               swapType={swapType}
@@ -153,7 +153,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
             ''
           ) : (
             <TokenSummary
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               token={tokensInPool[TOKEN_G]}
               chainId={chainId}
               swapType={swapType}
@@ -167,7 +167,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
             ''
           ) : (
             <TokenSummary
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               token={tokensInPool[TOKEN_H]}
               chainId={chainId}
               swapType={swapType}
@@ -192,11 +192,11 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
   )
 }
 
-const TokenSummary = ({ imageBaseUrl, token, chainId, swapType }: TokenSummary) => {
+const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) => {
   const { scanAddressPath, stableswapFactory } = useStore((state) => state.networks.networks[chainId])
   return (
     <TokenRow>
-      <ButtonTokenIcon imageBaseUrl={imageBaseUrl} token={token.symbol} address={token.address} />
+      <ButtonTokenIcon blockchainId={blockchainId} token={token.symbol} address={token.address} />
       <Box flex flexColumn>
         <TokenSymbol className="token-symbol">
           {token.symbol}

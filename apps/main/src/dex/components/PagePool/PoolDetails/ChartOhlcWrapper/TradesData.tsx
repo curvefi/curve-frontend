@@ -24,7 +24,7 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
           <TradeFrom>
             <StyledTokenIcon
               size="sm"
-              imageBaseUrl={network?.imageBaseUrl ?? ''}
+              blockchainId={network?.networkId ?? ''}
               token={soldToken?.address ?? transaction.token_sold}
               address={soldToken?.address ?? transaction.token_sold}
             />
@@ -54,7 +54,7 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
             <StyledTokenIcon
               className="bought"
               size="sm"
-              imageBaseUrl={network?.imageBaseUrl ?? ''}
+              blockchainId={network?.networkId ?? ''}
               token={boughtToken?.address ?? transaction.token_bought}
               address={boughtToken?.address ?? transaction.token_bought}
             />

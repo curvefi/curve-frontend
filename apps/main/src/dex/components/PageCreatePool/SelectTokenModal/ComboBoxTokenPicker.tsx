@@ -27,7 +27,7 @@ type Props = {
   chainId: ChainId
   disabledKeys?: string[]
   haveSigner: boolean
-  imageBaseUrl: string
+  blockchainId: string
   selectedAddress: string
   tokens: CreateToken[]
   onSelectionChange: (selectedAddress: React.Key) => void
@@ -39,7 +39,7 @@ const ComboBoxTokenPicker = ({
   curve,
   disabledKeys,
   chainId,
-  imageBaseUrl,
+  blockchainId,
   selectedAddress,
   tokens = [],
   onSelectionChange,
@@ -142,7 +142,7 @@ const ComboBoxTokenPicker = ({
       <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
         {selectedToken ? (
           <>
-            <ButtonTokenIcon imageBaseUrl={imageBaseUrl} token={selectedToken.symbol} address={selectedToken.address} />
+            <ButtonTokenIcon blockchainId={blockchainId} token={selectedToken.symbol} address={selectedToken.address} />
             <LabelTextWrapper>
               <SelectedLabelText>
                 {selectedToken.symbol}{' '}
@@ -193,7 +193,7 @@ const ComboBoxTokenPicker = ({
                     variant="icon-outlined"
                     onClick={() => handleOnSelectChange(address)}
                   >
-                    <StyledQuickListTokenIcon address={address} imageBaseUrl={imageBaseUrl} token={symbol} size="sm" />{' '}
+                    <StyledQuickListTokenIcon address={address} blockchainId={blockchainId} token={symbol} size="sm" />{' '}
                     {symbol}
                   </QuickListButton>
                 ))}
@@ -216,7 +216,7 @@ const ComboBoxTokenPicker = ({
                   <Item key={item.address} textValue={item.symbol}>
                     <ItemWrapper defaultHeight="50px">
                       <TokenIcon
-                        imageBaseUrl={imageBaseUrl}
+                        blockchainId={blockchainId}
                         token={item.symbol}
                         address={item.ethAddress || item.address}
                       />

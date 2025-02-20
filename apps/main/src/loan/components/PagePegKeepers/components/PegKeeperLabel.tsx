@@ -16,8 +16,6 @@ type Props = {
 }
 
 const PegKeeperLabel = ({ className = '', poolName, rChainId, underlyingCoins, underlyingCoinAddresses }: Props) => {
-  const { imageBaseUrl } = networks[rChainId]
-
   const tokens = useMemo(
     () =>
       underlyingCoins.map((symbol, idx) => ({
@@ -29,7 +27,7 @@ const PegKeeperLabel = ({ className = '', poolName, rChainId, underlyingCoins, u
 
   return (
     <Wrapper className={className}>
-      <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} /> <LabelText>{poolName}</LabelText>
+      <TokenIcons blockchainId={networks[rChainId].networkId} tokens={tokens} /> <LabelText>{poolName}</LabelText>
     </Wrapper>
   )
 }

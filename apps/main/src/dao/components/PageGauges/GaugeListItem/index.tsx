@@ -44,7 +44,6 @@ const GaugeListItem = ({
   const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
-  const imageBaseUrl = networks[1].imageBaseUrl
   const gaugeHistoryLoading =
     gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
     !gaugeWeightHistoryMapper[gaugeData.address] ||
@@ -63,7 +62,7 @@ const GaugeListItem = ({
   return (
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
       <DataComp gridTemplateColumns={gridTemplateColumns}>
-        <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
+        <TitleComp gaugeData={gaugeData} />
         {userGaugeWeightVoteData ? (
           <GaugeWeightVotesColumns userGaugeWeightVoteData={userGaugeWeightVoteData} />
         ) : (

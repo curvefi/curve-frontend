@@ -10,65 +10,61 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
-const TradesData: React.FC<TradesDataProps> = ({ lendTradesData, chainId }) => {
-  const imageBaseUrl = networks[chainId].imageBaseUrl
-
-  return (
-    <>
-      {lendTradesData.map((transaction, index) => (
-        <TransactionRow key={`${transaction.txHash}-${transaction.idSold}-trade-${index}`}>
-          <Event href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
-            <TradeFrom>
-              <StyledTokenIcon
-                size="sm"
-                imageBaseUrl={imageBaseUrl}
-                token={transaction.tokenSold.address}
-                address={transaction.tokenSold.address}
-              />
-              <Box flex flexColumn>
-                <TradeFromSymbol>{transaction.tokenSold.symbol}</TradeFromSymbol>
-                <TradeFromAmount>
-                  <Chip isBold isNumber>
-                    {formatNumber(transaction.amountSold, {
-                      ...getFractionDigitsOptions(transaction.amountSold, 2),
-                    })}
-                  </Chip>
-                </TradeFromAmount>
-              </Box>
-            </TradeFrom>
-            <Arrow>→</Arrow>
-            <TradeTo>
-              <Box flex flexColumn>
-                <TradeToSymbol>{transaction.tokenBought.symbol}</TradeToSymbol>
-                <TradeToAmount>
-                  <Chip isBold isNumber>
-                    {formatNumber(transaction.amountBought, {
-                      ...getFractionDigitsOptions(transaction.amountBought, 2),
-                    })}
-                  </Chip>
-                </TradeToAmount>
-              </Box>
-              <StyledTokenIcon
-                className="bought"
-                size="sm"
-                imageBaseUrl={imageBaseUrl}
-                token={transaction.tokenBought.address}
-                address={transaction.tokenBought.address}
-              />
-            </TradeTo>
-          </Event>
-          <TimestampColumn>
-            <Tooltip
-              tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
-            >
-              {convertTimeAgo(transaction.timestamp)}
-            </Tooltip>
-          </TimestampColumn>
-        </TransactionRow>
-      ))}
-    </>
-  )
-}
+const TradesData: React.FC<TradesDataProps> = ({ lendTradesData, chainId }) => (
+  <>
+    {lendTradesData.map((transaction, index) => (
+      <TransactionRow key={`${transaction.txHash}-${transaction.idSold}-trade-${index}`}>
+        <Event href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+          <TradeFrom>
+            <StyledTokenIcon
+              size="sm"
+              blockchainId={networks[chainId].networkId}
+              token={transaction.tokenSold.address}
+              address={transaction.tokenSold.address}
+            />
+            <Box flex flexColumn>
+              <TradeFromSymbol>{transaction.tokenSold.symbol}</TradeFromSymbol>
+              <TradeFromAmount>
+                <Chip isBold isNumber>
+                  {formatNumber(transaction.amountSold, {
+                    ...getFractionDigitsOptions(transaction.amountSold, 2),
+                  })}
+                </Chip>
+              </TradeFromAmount>
+            </Box>
+          </TradeFrom>
+          <Arrow>→</Arrow>
+          <TradeTo>
+            <Box flex flexColumn>
+              <TradeToSymbol>{transaction.tokenBought.symbol}</TradeToSymbol>
+              <TradeToAmount>
+                <Chip isBold isNumber>
+                  {formatNumber(transaction.amountBought, {
+                    ...getFractionDigitsOptions(transaction.amountBought, 2),
+                  })}
+                </Chip>
+              </TradeToAmount>
+            </Box>
+            <StyledTokenIcon
+              className="bought"
+              size="sm"
+              blockchainId={networks[chainId].networkId}
+              token={transaction.tokenBought.address}
+              address={transaction.tokenBought.address}
+            />
+          </TradeTo>
+        </Event>
+        <TimestampColumn>
+          <Tooltip
+            tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
+          >
+            {convertTimeAgo(transaction.timestamp)}
+          </Tooltip>
+        </TimestampColumn>
+      </TransactionRow>
+    ))}
+  </>
+)
 
 const TransactionRow = styled.div`
   display: flex;

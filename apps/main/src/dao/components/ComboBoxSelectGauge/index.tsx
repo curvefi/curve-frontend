@@ -8,7 +8,6 @@ import { t } from '@ui-kit/lib/i18n'
 
 import { delayAction } from '@/dao/utils'
 import useStore from '@/dao/store/useStore'
-import networks from '@/dao/networks'
 
 import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
@@ -44,8 +43,6 @@ const ComboBoxGauges = ({
         ),
     )
     .sort((a, b) => b.gauge_weight - a.gauge_weight)
-
-  const imageBaseUrl = networks[1].imageBaseUrl
 
   const [result, setResult] = useState<GaugeFormattedData[] | undefined>()
 
@@ -99,7 +96,6 @@ const ComboBoxGauges = ({
           <ComboBox
             testId={testId}
             dialogClose={handleClose}
-            imageBaseUrl={imageBaseUrl}
             listBoxHeight={listBoxHeight}
             result={result}
             selectedGauge={selectedGauge}

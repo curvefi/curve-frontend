@@ -16,7 +16,7 @@ import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 const SelectedLpTokenExpected = ({
   amounts,
-  imageBaseUrl,
+  blockchainId,
   loading,
   poolDataCacheOrApi,
   tokens,
@@ -24,7 +24,7 @@ const SelectedLpTokenExpected = ({
   tokenAddresses,
 }: {
   amounts: Amount[]
-  imageBaseUrl: string
+  blockchainId: string
   loading: boolean
   poolDataCacheOrApi: PoolDataCacheOrApi
   tokens: string[]
@@ -39,7 +39,7 @@ const SelectedLpTokenExpected = ({
       return (
         <Box key={tokenAddress} as="li" flex flexAlignItems="center">
           <StyledTokenIcon
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={blockchainId}
             token={token}
             address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
           />{' '}

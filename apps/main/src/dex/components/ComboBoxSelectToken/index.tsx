@@ -14,7 +14,7 @@ import { filterTokens } from '@ui-kit/utils'
 
 const ComboBoxTokens = ({
   disabled,
-  imageBaseUrl,
+  blockchainId,
   listBoxHeight,
   selectedToken,
   showBalances,
@@ -27,7 +27,7 @@ const ComboBoxTokens = ({
   onSelectionChange,
 }: {
   disabled?: boolean
-  imageBaseUrl: string
+  blockchainId: string
   listBoxHeight?: string
   selectedToken: Token | undefined
   showBalances?: boolean
@@ -93,7 +93,7 @@ const ComboBoxTokens = ({
   return selectedToken ? (
     <>
       <ComboBoxSelectedTokenButton isDisabled={disabled} testId={testId} onPress={handleOpen} fillWidth>
-        <ComboBoxSelectedToken imageBaseUrl={imageBaseUrl} selected={selectedToken} testId={testId} />
+        <ComboBoxSelectedToken blockchainId={blockchainId} selected={selectedToken} testId={testId} />
       </ComboBoxSelectedTokenButton>
       {overlayTriggerState.isOpen && (
         <ModalDialog
@@ -105,7 +105,7 @@ const ComboBoxTokens = ({
           <ComboBox
             testId={testId}
             dialogClose={handleClose}
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={blockchainId}
             listBoxHeight={listBoxHeight}
             result={result}
             selectedToken={selectedToken.address}

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useMemo } from 'react'
 
 import { shortenTokenAddress } from '@ui/utils'
 import networks from '@/dao/networks'
@@ -13,64 +12,44 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 interface TitleCompProps {
   gaugeData: GaugeFormattedData
-  imageBaseUrl: string
   gaugeAddress?: string
 }
 
-const TitleComp = ({ gaugeData, imageBaseUrl, gaugeAddress }: TitleCompProps) => {
-  const imageBaseUrlFormatted = useMemo(() => {
-    if (gaugeData.pool) {
-      if (gaugeData.pool.chain === 'ethereum') {
-        return imageBaseUrl
-      }
-      // Insert chain before the last slash in imageBaseUrl
-      const baseUrlWithoutTrailingSlash = imageBaseUrl.replace(/\/$/, '')
-      return `${baseUrlWithoutTrailingSlash}-${gaugeData.pool.chain}/`
-    }
-    if (gaugeData.market) {
-      if (gaugeData.market.chain === 'ethereum') {
-        return imageBaseUrl
-      }
-      const baseUrlWithoutTrailingSlash = imageBaseUrl.replace(/\/$/, '')
-      return `${baseUrlWithoutTrailingSlash}-${gaugeData.market.chain}/`
-    }
-    return imageBaseUrl
-  }, [gaugeData.pool, gaugeData.market, imageBaseUrl])
-
-  return (
-    <Wrapper>
-      {gaugeData.tokens && <TokenIcons imageBaseUrl={imageBaseUrlFormatted} tokens={gaugeData.tokens} />}
-      <Box flex flexColumn flexGap={'var(--spacing-1)'}>
-        <BoxedDataComp>
-          {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
-          {gaugeData.platform && <SmallLabel description={gaugeData.platform} />}
-          {gaugeData.pool?.chain && <SmallLabel description={gaugeData.pool.chain} isNetwork />}
-          {gaugeData.market?.chain && <SmallLabel description={gaugeData.market.chain} isNetwork />}
-        </BoxedDataComp>
-        <Title>{gaugeData.title}</Title>
-        {gaugeData.tokens && (
-          <SymbolsWrapper>
-            {gaugeData.tokens.map((token, index) => (
-              <TokenSymbol key={`${token.symbol}-${index}`}>{token.symbol}</TokenSymbol>
-            ))}
-          </SymbolsWrapper>
-        )}
-        {gaugeAddress && (
-          <Box flex flexGap="var(--spacing-1)">
-            <GaugeAddress>{shortenTokenAddress(gaugeAddress)}</GaugeAddress>
-            <ButtonsWrapper>
-              <ExternalLinkIconButton
-                href={networks[1].scanAddressPath(gaugeAddress ?? '')}
-                tooltip={t`View gauge on explorer`}
-              />
-              <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />
-            </ButtonsWrapper>
-          </Box>
-        )}
-      </Box>
-    </Wrapper>
-  )
-}
+const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
+  <Wrapper>
+    {gaugeData.tokens && (
+      <TokenIcons blockchainId={gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? ''} tokens={gaugeData.tokens} />
+    )}
+    <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+      <BoxedDataComp>
+        {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
+        {gaugeData.platform && <SmallLabel description={gaugeData.platform} />}
+        {gaugeData.pool?.chain && <SmallLabel description={gaugeData.pool.chain} isNetwork />}
+        {gaugeData.market?.chain && <SmallLabel description={gaugeData.market.chain} isNetwork />}
+      </BoxedDataComp>
+      <Title>{gaugeData.title}</Title>
+      {gaugeData.tokens && (
+        <SymbolsWrapper>
+          {gaugeData.tokens.map((token, index) => (
+            <TokenSymbol key={`${token.symbol}-${index}`}>{token.symbol}</TokenSymbol>
+          ))}
+        </SymbolsWrapper>
+      )}
+      {gaugeAddress && (
+        <Box flex flexGap="var(--spacing-1)">
+          <GaugeAddress>{shortenTokenAddress(gaugeAddress)}</GaugeAddress>
+          <ButtonsWrapper>
+            <ExternalLinkIconButton
+              href={networks[1].scanAddressPath(gaugeAddress ?? '')}
+              tooltip={t`View gauge on explorer`}
+            />
+            <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />
+          </ButtonsWrapper>
+        </Box>
+      )}
+    </Box>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;

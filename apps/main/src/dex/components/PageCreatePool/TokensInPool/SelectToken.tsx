@@ -106,7 +106,7 @@ const SelectToken = ({
         haveSigner={haveSigner}
         disabledKeys={disabledTokens}
         chainId={chainId}
-        imageBaseUrl={network?.imageBaseUrl || ''}
+        blockchainId={network?.networkId}
         tokens={selTokens}
         selectedAddress={token.address}
         onSelectionChange={(value: Key) => handleInpChange(tokenId, value as string, tokensInPool)}

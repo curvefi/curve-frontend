@@ -5,6 +5,7 @@ import produce from 'immer'
 
 import campaigns from '@external-rewards'
 import { ChainId } from '@/dex/types/main.types'
+import { CURVE_ASSETS_URL } from '@ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -53,7 +54,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
             campaignRewardsMapper[pool.address.toLowerCase()].push({
               campaignName: campaign.campaignName,
               platform: campaign.platform,
-              platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
+              platformImageSrc: `${CURVE_ASSETS_URL}/platforms/${campaign.platformImageId}`,
               dashboardLink: campaign.dashboardLink,
               ...pool,
               description: pool.description !== 'null' ? pool.description : campaign.description,

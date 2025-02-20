@@ -1,5 +1,4 @@
 import { AssetDetails, LlamaMarket } from '@/loan/entities/llama-markets'
-import { getImageBaseUrl } from '@ui/utils'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -22,7 +21,7 @@ const TooltipBox = ({ title, children, sx }: { title: string; children: ReactNod
 
 const TokenBox = ({ coin: { address, chain, symbol }, sx }: { coin: AssetDetails; sx: SxProps<Theme> }) => (
   <TooltipBox title={symbol} sx={sx}>
-    <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} address={address} token={symbol} />
+    <TokenIcon blockchainId={chain} address={address} token={symbol} />
   </TooltipBox>
 )
 

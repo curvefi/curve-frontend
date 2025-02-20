@@ -5,8 +5,6 @@ import { useEffect } from 'react'
 
 import useStore from '@/dao/store/useStore'
 
-import networks from '@/dao/networks'
-
 import { USER_VOTES_TABLE_LABELS } from './constants'
 import Box from '@ui/Box'
 import PaginatedTable from '@/dao/components/PaginatedTable'
@@ -77,7 +75,6 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
       </VoteStats>
       {selectedGauge && (
         <VoteGauge
-          imageBaseUrl={networks[1].imageBaseUrl}
           gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
           userGaugeVoteData={formattedSelectedGauge}
           powerUsed={userData?.data.powerUsed}

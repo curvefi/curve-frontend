@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import { TokenIcon } from './TokenIcon'
 
 type Props = {
-  imageBaseUrl: string | null
+  blockchainId: string
   tokens: {
     symbol: string
     address: string

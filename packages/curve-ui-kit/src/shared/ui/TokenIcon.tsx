@@ -2,6 +2,7 @@ import type { ImgHTMLAttributes } from 'react'
 import { Box, type Theme } from '@mui/material'
 import type { SystemStyleObject } from '@mui/system'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
@@ -35,15 +36,15 @@ const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
 
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
-  imageBaseUrl: string | null
+  blockchainId: string
   token: string
   address?: string | null
   size?: 'sm' | 'mui-sm' | 'mui-md' | ''
   sx?: SystemStyleObject<Theme>
 }
 
-export function TokenIcon({ className = '', imageBaseUrl, token, size = 'sm', address, sx }: TokenIconProps) {
-  const src = address && imageBaseUrl ? `${imageBaseUrl}${address.toLowerCase()}.png` : DEFAULT_IMAGE
+export function TokenIcon({ className = '', blockchainId, token, size = 'sm', address, sx }: TokenIconProps) {
+  const src = address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE
 
   return (
     <Box

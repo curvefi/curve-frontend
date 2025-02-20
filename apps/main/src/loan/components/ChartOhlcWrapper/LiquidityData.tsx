@@ -5,7 +5,6 @@ import { t } from '@ui-kit/lib/i18n'
 
 import networks from '@/loan/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -35,7 +34,7 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                   <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
                   <StyledTokenIcon
                     size="sm"
-                    imageBaseUrl={getImageBaseUrl(chainId)}
+                    blockchainId={networks[chainId].networkId}
                     token={coins.collateral.address}
                     address={coins.collateral.address}
                   />
@@ -56,7 +55,7 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
-                        imageBaseUrl={getImageBaseUrl(chainId)}
+                        blockchainId={networks[chainId].networkId}
                         token={coins.collateral.address}
                         address={coins.collateral.address}
                       />
@@ -72,7 +71,7 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
-                        imageBaseUrl={getImageBaseUrl(chainId)}
+                        blockchainId={networks[chainId].networkId}
                         token={coins.crvusd.address}
                         address={coins.crvusd.address}
                       />

@@ -6,7 +6,7 @@ import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
-import { formatNumber, getImageBaseUrl } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
@@ -24,7 +24,7 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   )
   return (
     <>
-      <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} token={symbol} address={address} size="mui-md" />
+      <TokenIcon blockchainId={chain} token={symbol} address={address} size="mui-md" />
       <Typography component="span" variant="bodyMBold">
         {symbol}
       </Typography>

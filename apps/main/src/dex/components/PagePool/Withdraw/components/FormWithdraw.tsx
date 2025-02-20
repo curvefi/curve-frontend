@@ -37,7 +37,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 const FormWithdraw = ({
   chainIdPoolId,
   curve,
-  imageBaseUrl,
+  blockchainId,
   maxSlippage,
   poolData,
   poolDataCacheOrApi,
@@ -365,7 +365,7 @@ const FormWithdraw = ({
                 <SelectedOneCoinExpected
                   amounts={formValues.amounts}
                   haveSigner={haveSigner}
-                  imageBaseUrl={imageBaseUrl}
+                  blockchainId={blockchainId}
                   loading={slippage.loading}
                   poolDataCacheOrApi={poolDataCacheOrApi}
                   selectedTokenAddress={formValues.selectedTokenAddress}
@@ -389,7 +389,7 @@ const FormWithdraw = ({
               {formValues.selected === 'lpToken' && (
                 <SelectedLpTokenExpected
                   amounts={formValues.amounts}
-                  imageBaseUrl={imageBaseUrl}
+                  blockchainId={blockchainId}
                   loading={slippage.loading}
                   poolDataCacheOrApi={poolDataCacheOrApi}
                   tokens={poolDataCacheOrApi.tokens}
@@ -418,7 +418,7 @@ const FormWithdraw = ({
                         haveSigner={haveSigner}
                         haveSameTokenName={poolDataCacheOrApi?.tokensCountBy[token] > 1}
                         isWithdraw
-                        imageBaseUrl={imageBaseUrl}
+                        blockchainId={blockchainId}
                         token={token}
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
                         handleAmountChange={(val) => {

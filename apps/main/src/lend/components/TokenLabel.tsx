@@ -3,7 +3,6 @@ import type { BoxProps } from '@ui/Box/types'
 import styled from 'styled-components'
 
 import { copyToClipboard } from '@/lend/utils/helpers'
-import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 
 import Box from '@ui/Box'
@@ -35,7 +34,7 @@ const TokenLabel = ({
     <ExternalLinkTokenWrapper>
       <StyledTokenIcon
         size="sm"
-        imageBaseUrl={isVisible ? helpers.getImageBaseUrl(rChainId) : ''}
+        blockchainId={isVisible ? networks[rChainId].networkId : ''}
         token={symbol}
         address={address}
       />

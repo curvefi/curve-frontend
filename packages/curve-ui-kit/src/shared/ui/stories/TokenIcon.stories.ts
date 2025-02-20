@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { TokenIcon } from '../TokenIcon'
 
 const meta: Meta<typeof TokenIcon> = {
   title: 'UI Kit/Widgets/TokenIcon',
   component: TokenIcon,
   argTypes: {
-    imageBaseUrl: {
+    blockchainId: {
       control: 'text',
-      description: 'Base URL for token images',
+      description: 'Network the token is on',
     },
     token: {
       control: 'text',
@@ -25,7 +24,7 @@ const meta: Meta<typeof TokenIcon> = {
     },
   },
   args: {
-    imageBaseUrl: getImageBaseUrl('ethereum'),
+    blockchainId: 'ethereum',
     token: 'ETH',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     size: 'sm',

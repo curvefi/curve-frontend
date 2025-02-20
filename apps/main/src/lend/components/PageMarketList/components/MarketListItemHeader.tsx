@@ -18,18 +18,14 @@ const MarketListItemHeader = ({
   idx: number
   address: string
   symbol: string
-}) => {
-  const { imageBaseUrl } = networks[rChainId]
-
-  return (
-    <TableTokenWrapper $isFirst={idx === 0}>
-      <Wrapper flex flexAlignItems="center">
-        {<StyledTokenIcon imageBaseUrl={imageBaseUrl} token={symbol} address={address} />}
-        <strong>{symbol}</strong>
-      </Wrapper>
-    </TableTokenWrapper>
-  )
-}
+}) => (
+  <TableTokenWrapper $isFirst={idx === 0}>
+    <Wrapper flex flexAlignItems="center">
+      {<StyledTokenIcon blockchainId={networks[rChainId].networkId} token={symbol} address={address} />}
+      <strong>{symbol}</strong>
+    </Wrapper>
+  </TableTokenWrapper>
+)
 
 const TableTokenWrapper = styled.div<{ $isFirst?: boolean }>`
   display: flex;

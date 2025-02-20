@@ -9,18 +9,18 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Token } from '@/dex/types/main.types'
 
 const ComboBoxSelectedToken = ({
-  imageBaseUrl,
+  blockchainId,
   selected,
   testId,
 }: {
-  imageBaseUrl: string
+  blockchainId: string
   selected: Token
   testId: string | undefined
 }) => (
   <>
     <TokenIconWrapper>
       <TokenIcon
-        imageBaseUrl={imageBaseUrl}
+        blockchainId={blockchainId}
         token={selected.symbol}
         size="sm"
         address={selected.ethAddress || selected.address}

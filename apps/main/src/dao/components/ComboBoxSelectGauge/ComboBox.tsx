@@ -23,7 +23,6 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 const ComboBox = ({
   testId,
   dialogClose,
-  imageBaseUrl,
   listBoxHeight,
   result,
   selectedGauge,
@@ -31,7 +30,7 @@ const ComboBox = ({
   gauges,
   handleInpChange,
   handleOnSelectChange,
-}: Pick<ComboBoxSelectGaugeProps, 'testId' | 'imageBaseUrl' | 'listBoxHeight' | 'showInpSearch' | 'gauges'> & {
+}: Pick<ComboBoxSelectGaugeProps, 'testId' | 'listBoxHeight' | 'showInpSearch' | 'gauges'> & {
   dialogClose: () => void
   result: GaugeFormattedData[] | undefined
   selectedGauge: GaugeFormattedData | null
@@ -113,7 +112,6 @@ const ComboBox = ({
                 <ComboBoxListChunk
                   key={`gauges-${idx}`}
                   testId={testId}
-                  imageBaseUrl={imageBaseUrl}
                   inputRef={inputRef}
                   selectedGauge={selectedGauge}
                   gauges={gauges}

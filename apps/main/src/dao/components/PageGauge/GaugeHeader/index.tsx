@@ -1,8 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useMemo } from 'react'
-
-import networks from '@/dao/networks'
 
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
@@ -15,52 +12,32 @@ interface GaugeHeaderProps {
   dataLoading: boolean
 }
 
-const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => {
-  const imageBaseUrlFormatted = useMemo(() => {
-    const imageBaseUrl = networks[1].imageBaseUrl
-
-    if (!gaugeData) return imageBaseUrl
-
-    if (gaugeData.pool) {
-      if (gaugeData.pool.chain === 'ethereum') {
-        return imageBaseUrl
-      }
-      // Insert chain before the last slash in imageBaseUrl
-      const baseUrlWithoutTrailingSlash = imageBaseUrl.replace(/\/$/, '')
-      return `${baseUrlWithoutTrailingSlash}-${gaugeData.pool.chain}/`
-    }
-    if (gaugeData.market) {
-      if (gaugeData.market.chain === 'ethereum') {
-        return imageBaseUrl
-      }
-      const baseUrlWithoutTrailingSlash = imageBaseUrl.replace(/\/$/, '')
-      return `${baseUrlWithoutTrailingSlash}-${gaugeData.market.chain}/`
-    }
-    return imageBaseUrl
-  }, [gaugeData])
-
-  return (
-    <Wrapper variant="secondary">
-      <BoxedDataComp>
-        {gaugeData?.tokens && <TokenIcons imageBaseUrl={imageBaseUrlFormatted} tokens={gaugeData?.tokens} />}
-        {dataLoading ? (
-          <>
-            <Loader isLightBg skeleton={[65, 28]} />
-            <Loader isLightBg skeleton={[35, 28]} />
-          </>
-        ) : (
-          <>
-            <h3>{gaugeData?.title}</h3>
-            {gaugeData?.is_killed && <SmallLabel description={t`Killed`} isKilled />}
-            {gaugeData?.platform && <SmallLabel description={gaugeData?.platform} />}
-            {gaugeData?.pool?.chain && <SmallLabel description={gaugeData?.pool.chain} isNetwork />}
-            {gaugeData?.market?.chain && <SmallLabel description={gaugeData?.market.chain} isNetwork />}
-          </>
-        )}
-      </BoxedDataComp>
-    </Wrapper>
-  )
-}
+const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => (
+  <Wrapper variant="secondary">
+    <BoxedDataComp>
+      {gaugeData?.tokens && (
+        <TokenIcons
+          blockchainId={gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? ''}
+          tokens={gaugeData?.tokens}
+        />
+      )}
+      {dataLoading ? (
+        <>
+          <Loader isLightBg skeleton={[65, 28]} />
+          <Loader isLightBg skeleton={[35, 28]} />
+        </>
+      ) : (
+        <>
+          <h3>{gaugeData?.title}</h3>
+          {gaugeData?.is_killed && <SmallLabel description={t`Killed`} isKilled />}
+          {gaugeData?.platform && <SmallLabel description={gaugeData?.platform} />}
+          {gaugeData?.pool?.chain && <SmallLabel description={gaugeData?.pool.chain} isNetwork />}
+          {gaugeData?.market?.chain && <SmallLabel description={gaugeData?.market.chain} isNetwork />}
+        </>
+      )}
+    </BoxedDataComp>
+  </Wrapper>
+)
 
 const Wrapper = styled(Box)`
   padding: var(--spacing-3);

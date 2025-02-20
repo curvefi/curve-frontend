@@ -37,7 +37,6 @@ const SmallScreenCard: React.FC<Props> = ({
   const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
-  const imageBaseUrl = networks[1].imageBaseUrl
   const gaugeHistoryLoading =
     gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
     !gaugeWeightHistoryMapper[gaugeData.address] ||
@@ -75,7 +74,7 @@ const SmallScreenCard: React.FC<Props> = ({
   return (
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote}>
       <Box flex flexGap="var(--spacing-2)">
-        <StyledTitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
+        <StyledTitleComp gaugeData={gaugeData} />
         {userGaugeWeightVoteData ? (
           <Box flex flexColumn flexGap="var(--spacing-2)" margin="auto 0 auto auto">
             <GaugeDataTitle>{t`Weight`}</GaugeDataTitle>

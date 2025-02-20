@@ -8,13 +8,13 @@ import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const RouteToken = ({
-  imageBaseUrl,
+  blockchainId,
   tokenAddress = '',
   tokenSymbol = '',
   value = '',
   avgPrice,
 }: {
-  imageBaseUrl: string
+  blockchainId: string
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
   value: string | number
@@ -26,7 +26,7 @@ const RouteToken = ({
     <Wrapper flex flexAlignItems="center" flexJustifyContent="space-between">
       <Label>
         {tokenAddress && tokenSymbol && (
-          <TokenIcon imageBaseUrl={imageBaseUrl} token={tokenSymbol} address={tokenAddress} />
+          <TokenIcon blockchainId={blockchainId} token={tokenSymbol} address={tokenAddress} />
         )}
         <strong>{tokenSymbol}</strong>
       </Label>{' '}

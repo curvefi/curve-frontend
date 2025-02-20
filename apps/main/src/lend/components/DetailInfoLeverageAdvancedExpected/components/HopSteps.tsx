@@ -10,18 +10,18 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const HopSteps = ({
   fromTokenAddress,
-  imageBaseUrl,
+  blockchainId,
   showNextArrow,
   steps,
 }: {
   fromTokenAddress: string
-  imageBaseUrl: string
+  blockchainId: string
   showNextArrow: boolean
   steps: { name: string; part: number; fromTokenAddress: string; toTokenAddress: string }[]
 }) => (
   <>
     <Wrapper>
-      <StyledTokenIcon imageBaseUrl={imageBaseUrl} token={fromTokenAddress} address={fromTokenAddress} />
+      <StyledTokenIcon blockchainId={blockchainId} token={fromTokenAddress} address={fromTokenAddress} />
       <StepsWrapper>
         {steps.map((l, idx) => (
           <StepsListItem key={`${l.name}${l.part}${idx}`} isBold>

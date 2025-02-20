@@ -4,7 +4,6 @@ import styled from 'styled-components'
 
 import networks from '@/loan/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -19,7 +18,7 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
           <TradeFrom>
             <StyledTokenIcon
               size="sm"
-              imageBaseUrl={getImageBaseUrl(chainId)}
+              blockchainId={networks[chainId].networkId}
               token={transaction.tokenSold.address}
               address={transaction.tokenSold.address}
             />
@@ -49,7 +48,7 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
             <StyledTokenIcon
               className="bought"
               size="sm"
-              imageBaseUrl={getImageBaseUrl(chainId)}
+              blockchainId={networks[chainId].networkId}
               token={transaction.tokenBought.address}
               address={transaction.tokenBought.address}
             />

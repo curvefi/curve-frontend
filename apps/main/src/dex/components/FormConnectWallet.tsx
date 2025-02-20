@@ -5,7 +5,6 @@ import { isLoading } from '@ui/utils'
 
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useCurve } from '@/dex/entities/curve'
 import useStore from '@/dex/store/useStore'
 
 const FormConnectWallet = ({
@@ -14,7 +13,7 @@ const FormConnectWallet = ({
 }: React.PropsWithChildren<{
   loading: boolean
 }>) => {
-  const { data: curve } = useCurve()
+  const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
   const connectWallet = useStore((s) => s.updateConnectState)
   return (
