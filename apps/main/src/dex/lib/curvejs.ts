@@ -22,30 +22,29 @@ import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormC
 import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
 import { httpFetcher } from '@/dex/lib/utils'
 import {
+  _parseRoutesAndOutput,
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
-  _parseRoutesAndOutput,
 } from '@/dex/utils/utilsSwap'
 import { log } from '@ui-kit/lib/logging'
 import useStore from '@/dex/store/useStore'
 import {
-  CurveApi,
   ChainId,
+  ClaimableReward,
+  CurveApi,
+  EstimatedGas,
   NetworkConfig,
   Pool,
+  PoolData,
+  PoolParameters,
   Provider,
-  ClaimableReward,
   RewardCrv,
   RewardOther,
   RewardsApy,
-  PoolParameters,
-  UserBalancesMapper,
-  PoolData,
   UsdRatesMapper,
-  EstimatedGas,
+  UserBalancesMapper,
 } from '@/dex/types/main.types'
-import memoizee from 'memoizee'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -1311,29 +1310,10 @@ const poolWithdraw = {
   },
 }
 
-/**
- * TODO: Work around for getPoolList being called twice from UserSlice and DashboardSlice
- */
-const getUserPoolList = memoizee((curve: CurveApi, walletAddress: string) => curve.getUserPoolList(walletAddress), {
-  maxAge: 1000 * 60 * 5,
-  length: 1,
-  promise: true,
-})
-
 const wallet = {
-  getUserPoolList: async (curve: CurveApi, walletAddress: string) => {
-    log('getUserPoolList', curve.chainId, walletAddress)
-    let resp = { poolList: [] as string[], error: '' }
-    try {
-      resp.poolList = await getUserPoolList(curve, walletAddress)
-      return resp
-    } catch (error) {
-      resp.error = getErrorMessage(error, 'error-pool-list')
-      return resp
-    }
-  },
   getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
     log('getUserLiquidityUSD', poolIds, walletAddress)
+    console.log({ curve, poolIds, walletAddress })
     return await curve.getUserLiquidityUSD(poolIds, walletAddress)
   },
   getUserClaimable: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {

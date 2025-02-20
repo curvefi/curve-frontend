@@ -1,4 +1,4 @@
-import { getHost, type Options, type Chain } from '..'
+import { getHost, type Options, type Chain, type Address } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
 import type * as Responses from './responses'
@@ -13,6 +13,12 @@ export async function getPools(chain: Chain, page: number = 1, perPage: number =
     totals: Parsers.parsePoolTotals(resp.total),
     pools: resp.data.map(Parsers.parsePool),
   }
+}
+
+export async function getUserPools(chain: Chain, userAddress: Address, options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetUserPoolsResponse>(`${host}/v1/liquidity/${chain}/${userAddress}/positions`)
+  return { chain, positions: resp.positions.map(Parsers.parseUserPool) }
 }
 
 export async function getPool(chain: Chain, poolAddr: string, options?: Options) {

@@ -34,6 +34,15 @@ export type GetPoolsResponse = {
   data: Pool[]
 }
 
+export type GetUserPoolsResponse = {
+  chain: string
+  positions: {
+    pool_name: string
+    pool_address: Address
+    lp_token_balance: string
+  }[]
+}
+
 export type GetPoolResponse = Pool
 
 export type GetVolumeResponse = {

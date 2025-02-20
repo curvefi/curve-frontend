@@ -30,6 +30,12 @@ export type Pool = {
   poolMethods: string[]
 }
 
+export type UserPool = {
+  poolName: string
+  poolAddress: Address
+  lpTokenBalance: number
+}
+
 export type Volume = {
   timestamp: Date
   volume: number

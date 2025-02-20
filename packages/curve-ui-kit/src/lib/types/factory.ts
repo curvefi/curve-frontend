@@ -63,6 +63,7 @@ export type QueryFactoryOutput<
   assertValidity: (data: TParams) => TValidParams
   useQuery: (params: TParams, enabled?: boolean) => UseQueryResult<TData, TError>
   getQueryData: (params: TParams) => TData | undefined
+  fetchQuery: (params: TParams) => Promise<TData>
   prefetchQuery: (params: TParams, staleTime?: number) => Promise<void>
   invalidate: (params: TParams) => void
 }

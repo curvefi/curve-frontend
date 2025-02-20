@@ -8,6 +8,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
+import { fetchUserPools } from '@/dex/entities/user-pools'
+import { Address } from '@curvefi/prices-api'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -72,18 +74,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           poolListError: '',
         })
 
-        const { poolList, error } = await curvejsApi.wallet.getUserPoolList(curve, curve.signerAddress)
-
-        // parse user pool list
-        for (const poolId of poolList) {
-          parsedUserPoolList[poolId] = true
-        }
+        const { signerAddress, chainId } = curve
+        const userPools = await fetchUserPools({ userAddress: signerAddress as Address, chainId })
+        const parsedUserPoolList = userPools.reduce((acc, pool) => ({ ...acc, [pool.poolAddress]: true }), {})
 
         get()[sliceKey].setStateByActiveKey('poolList', userActiveKey, parsedUserPoolList)
-        get()[sliceKey].setStateByKeys({
-          poolListLoaded: true,
-          poolListError: error,
-        })
+        get()[sliceKey].setStateByKeys({ poolListLoaded: true })
+
         return parsedUserPoolList
       } catch (error) {
         console.error(error)

@@ -24,6 +24,7 @@ import { shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchUserPools } from '@/dex/entities/user-pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -135,18 +136,17 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         [sliceKey]: { activeKey, ...sliceState },
       } = get()
 
-      const { chainId } = curve
       const { wallet } = curvejsApi
 
       try {
         // Get user pool list
-        const { poolList, error } = await wallet.getUserPoolList(curve, walletAddress)
+        const { signerAddress, chainId } = curve
+        const userPools = await fetchUserPools({ userAddress: signerAddress as Address, chainId })
 
-        if (error) {
-          sliceState.setStateByKey('error', error)
-        }
         // no staked pools
-        if (poolList.length === 0) return { dashboardDataMapper: {}, error }
+        if (userPools.length === 0) return { dashboardDataMapper: {}, error: '' }
+
+        const poolList = userPools.map(({ poolAddress }) => poolAddress.toLowerCase())
 
         // get balances and claimables
         const [userPoolBalancesResult, userClaimableResult] = await Promise.allSettled([

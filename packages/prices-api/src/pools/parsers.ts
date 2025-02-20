@@ -31,6 +31,16 @@ export const parsePool = (x: Responses.GetPoolsResponse['data'][number]): Models
   poolMethods: x.pool_methods?.map((x) => x) ?? [],
 })
 
+export const parseUserPool = ({
+  pool_name,
+  pool_address,
+  lp_token_balance,
+}: Responses.GetUserPoolsResponse['data'][number]): Models.UserPool => ({
+  poolName: pool_name,
+  poolAddress: pool_address,
+  lpTokenBalance: Number(lp_token_balance),
+})
+
 export const parseVolume = (x: Responses.GetVolumeResponse['data'][number]): Models.Volume => ({
   timestamp: toDate(x.timestamp),
   volume: x.volume,

@@ -18,6 +18,7 @@ export function assertValidity<D extends object, S extends Suite<any, any>>(
   const result = suite(data, fields)
   const entries = Object.entries(result.getErrors())
   if (entries.length > 0) {
+    debugger
     throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
   }
   return data as D
