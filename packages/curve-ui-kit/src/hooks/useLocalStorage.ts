@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
 export type GetAndSet<T, D = T> = [T | D, Dispatch<SetStateAction<T>>]
 
@@ -25,8 +25,9 @@ function getStoredValue<Type, Default>(key: string, initialValue: Default | unde
  */
 export function useLocalStorage<Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> {
   type T = Type | Default
-  const storedValue = getStoredValue<Type, Default>(key, initialValue)
-  const [stateValue, setStateValue] = useState<T>(storedValue)
+  const item = window.localStorage.getItem(key)
+  const storedValue = useMemo(() => (item == null ? null : (JSON.parse(item) as T)), [item])
+  const [stateValue, setStateValue] = useState<T | Default | null>(storedValue)
   const setValue = useCallback(
     (setter: SetStateAction<Type>) => {
       const value: T =
@@ -36,6 +37,8 @@ export function useLocalStorage<Type, Default = Type>(key: string, initialValue?
     },
     [initialValue, key],
   )
-  useEffect(() => setStateValue(storedValue), [storedValue])
-  return [stateValue, setValue]
+  useEffect(() => {
+    storedValue != null && storedValue != stateValue && setStateValue(storedValue)
+  }, [storedValue, stateValue])
+  return [stateValue || initialValue!, setValue]
 }

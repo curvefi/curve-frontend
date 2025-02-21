@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         flaky: [1, 2]
-    name: Cypress E2E ${{ matrix.flaky }}
+    name: Cypress ${{ matrix.flaky }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
