@@ -10,23 +10,6 @@ const DEFAULT_IMAGE = '/images/default-crypto.png'
 
 const { IconSize } = SizesAndSpaces
 
-const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
-  // The original "400" is a remainder from legacy code.
-  // I didn't want to break the existing interface as it's used everywhere.
-  if (size === 400) {
-    return {
-      width: '1.75rem',
-      height: '1.75rem',
-      [t.breakpoints.down(400)]: {
-        width: '1.5rem',
-        height: '1.5rem',
-      },
-    }
-  }
-
-  return handleBreakpoints({ width: IconSize[size], height: IconSize[size] })
-}
-
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
   blockchainId: string
@@ -60,9 +43,18 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
       sx={(theme) => ({
         border: '1px solid transparent',
         borderRadius: '50%',
-        '&.sm': getResponsiveSize(theme, 400),
-        '&.mui-sm': getResponsiveSize(theme, 'sm'),
-        '&.mui-md': getResponsiveSize(theme, 'md'),
+        // The original "400" is a remainder from legacy code.
+        // I didn't want to break the existing interface as it's used everywhere.
+        '&.sm': {
+          width: '1.75rem',
+          height: '1.75rem',
+          [theme.breakpoints.down(400)]: {
+            width: '1.5rem',
+            height: '1.5rem',
+          },
+        },
+        '&.mui-sm': handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] }),
+        '&.mui-md': handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] }),
         ...sx,
       })}
     />
