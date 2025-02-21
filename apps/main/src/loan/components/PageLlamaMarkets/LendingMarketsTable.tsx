@@ -46,7 +46,6 @@ export const LendingMarketsTable = ({
         marginBlockStart: Spacing.xl,
         marginBlockEnd: Spacing.xxl,
         maxWidth: MaxWidth.table,
-        transition: `all ${TransitionFunction}`
       }}
     >
       <DataTable

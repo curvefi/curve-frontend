@@ -80,6 +80,9 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
           borderBottom: `1px solid${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
           transition: `background-color ${TransitionFunction}, border ${TransitionFunction}`,
+          '& .MuiChip-label, & .MuiLink-root': {
+            transition: `color ${TransitionFunction}`,
+          },
           [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
           '&:hover': {
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
