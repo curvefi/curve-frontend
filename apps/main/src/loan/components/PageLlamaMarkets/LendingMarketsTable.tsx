@@ -10,6 +10,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { DEFAULT_SORT, DEFAULT_VISIBILITY, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -45,6 +46,7 @@ export const LendingMarketsTable = ({
         marginBlockStart: Spacing.xl,
         marginBlockEnd: Spacing.xxl,
         maxWidth: MaxWidth.table,
+        transition: `all ${TransitionFunction}`
       }}
     >
       <DataTable
