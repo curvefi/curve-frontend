@@ -10,6 +10,8 @@ const DEFAULT_IMAGE = '/images/default-crypto.png'
 const { IconSize } = SizesAndSpaces
 
 const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
+  // The original "400" is a remainder from legacy code.
+  // I didn't want to break the existing interface as it's used everywhere.
   if (size === 400) {
     return {
       width: '1.75rem',
