@@ -42,9 +42,7 @@ export const chains = [
 
 export type Chain = (typeof chains)[number]
 
-export function isChain(chain: string): chain is Chain {
-  return chains.includes(chain as Chain)
-}
+export const isChain = (chain: Chain): chain is Chain => chains.includes(chain as Chain)
 
 // Copied from Viem such that you don't actually need a Viem dependency but may also use Ethers.
 export type Address = `0x${string}`

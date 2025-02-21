@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 type Gauge = {
   address: Address
@@ -9,7 +9,7 @@ type Gauge = {
   pool: {
     address: Address
     name: string
-    chain: string
+    chain: Chain
     tvl_usd: number
     trading_volume_24h: number
   } | null
@@ -22,7 +22,7 @@ type Gauge = {
     | null
   market: {
     name: string
-    chain: string
+    chain: Chain
   } | null
   is_killed: boolean
   emissions: number

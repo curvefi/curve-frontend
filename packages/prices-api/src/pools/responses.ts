@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 type Coin = {
   pool_index: number
@@ -23,7 +23,7 @@ type Pool = {
 }
 
 export type GetPoolsResponse = {
-  chain: string
+  chain: Chain
   total: {
     total_tvl: number
     trading_volume_24h: number
@@ -35,7 +35,7 @@ export type GetPoolsResponse = {
 }
 
 export type GetUserPoolsResponse = {
-  chain: string
+  chain: Chain
   positions: {
     pool_name: string
     pool_address: Address

@@ -1,5 +1,7 @@
+import type { Chain } from '../index'
+
 export type GetOHLCResponse = {
-  chain: string
+  chain: Chain
   address: string
   data: {
     time: number

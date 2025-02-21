@@ -1,7 +1,7 @@
 import type { Chain } from '..'
 
 export type ChainInfo = {
-  chain: string
+  chain: Chain
   total: {
     tvl: number
     tradingVolume24h: number

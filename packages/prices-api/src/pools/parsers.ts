@@ -35,7 +35,7 @@ export const parseUserPool = ({
   pool_name,
   pool_address,
   lp_token_balance,
-}: Responses.GetUserPoolsResponse['data'][number]): Models.UserPool => ({
+}: Responses.GetUserPoolsResponse['positions'][number]): Models.UserPool => ({
   poolName: pool_name,
   poolAddress: pool_address,
   lpTokenBalance: Number(lp_token_balance),

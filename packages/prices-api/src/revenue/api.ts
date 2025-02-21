@@ -1,4 +1,4 @@
-import { getHost, type Options } from '..'
+import { type Chain, getHost, type Options } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { paginate } from '../paginate'
 import type * as Responses from './responses'
@@ -13,7 +13,7 @@ export async function getByChain(options?: Options) {
   return resp.revenue.map(Parsers.parseChainRevenue)
 }
 
-export async function getTopPools(chain: string, numPools = 10, options?: Options) {
+export async function getTopPools(chain: Chain, numPools = 10, options?: Options) {
   const chainStr = chain === 'ethereum' ? 'mainnet' : chain
   const host = getHost(options?.host ? options : { host: API_URL_OLD })
 
@@ -36,7 +36,7 @@ export async function getPoolsWeekly(options?: Options) {
   return resp.fees.map(Parsers.parsePoolsWeekly)
 }
 
-export async function getCushions(chain: string, options?: Options) {
+export async function getCushions(chain: Chain, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetCushionsResponse>(`${host}/v1/dao/fees/${chain}/pending`)
 

@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 export type GetCushionsResponse = {
   data: {
@@ -11,7 +11,7 @@ export type GetCushionsResponse = {
 
 export type GetByChainResponse = {
   revenue: {
-    chain: string
+    chain: Chain
     totalDailyFeesUSD: number
   }[]
 }
@@ -34,7 +34,7 @@ export type GetCrvUsdWeeklyResponse = {
 
 export type GetPoolsWeeklyResponse = {
   fees: {
-    chain: string
+    chain: Chain
     fees_usd: number
     timestamp: string
   }[]
