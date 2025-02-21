@@ -33,7 +33,7 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
     <Box
       component="img"
       data-testid={`token-icon-${symbol}`}
-      className={`${className} ${size}`}
+      className={`${className}`}
       alt={symbol}
       onError={({ currentTarget }) => {
         currentTarget.src = DEFAULT_IMAGE
@@ -45,16 +45,16 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
         borderRadius: '50%',
         // The original "400" is a remainder from legacy code.
         // I didn't want to break the existing interface as it's used everywhere.
-        '&.sm': {
+        ...(size === 'sm' && {
           width: '1.75rem',
           height: '1.75rem',
           [theme.breakpoints.down(400)]: {
             width: '1.5rem',
             height: '1.5rem',
           },
-        },
-        '&.mui-sm': handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] }),
-        '&.mui-md': handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] }),
+        }),
+        ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
+        ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
         ...sx,
       })}
     />
