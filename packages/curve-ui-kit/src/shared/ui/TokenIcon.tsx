@@ -23,10 +23,12 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
   <Tooltip
     title={symbol}
     placement="top"
-    PopperProps={{
-      sx: {
-        userSelect: 'none',
-        pointerEvents: 'none',
+    slotProps={{
+      popper: {
+        sx: {
+          userSelect: 'none',
+          pointerEvents: 'none',
+        },
       },
     }}
   >
