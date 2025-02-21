@@ -46,22 +46,3 @@ export const isChain = (chain: Chain): chain is Chain => chains.includes(chain a
 
 // Copied from Viem such that you don't actually need a Viem dependency but may also use Ethers.
 export type Address = `0x${string}`
-
-export const CHAIN_IDS: Record<Chain, number> = {
-  ethereum: 1,
-  optimism: 10,
-  xdai: 100,
-  polygon: 137,
-  fantom: 250,
-  fraxtal: 252,
-  moonbeam: 1284,
-  base: 8453,
-  arbitrum: 42161,
-  avalanche: 43114,
-  matic: 137,
-  harmony: 1666600000,
-}
-
-export const CHAIN_ID_NAMES: Record<number, Chain> = Object.fromEntries(
-  Object.entries(CHAIN_IDS).map(([chain, id]) => [id, chain as Chain]),
-)
