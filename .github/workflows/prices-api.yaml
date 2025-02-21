@@ -1,5 +1,4 @@
 name: Prices API
-description: Builds and publishes the Prices API package to NPM
 
 on:
   push:
