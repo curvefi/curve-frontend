@@ -16,6 +16,7 @@ import { chainValidationGroup } from '@/lend/entities/chain'
 export type UserPoolStats = {
   chain: Chain
   userAddress: Address
+  poolId: string
   poolAddress: Address
   poolName?: string
   lpTokenBalance?: number
@@ -24,25 +25,43 @@ export type UserPoolStats = {
 type UserPoolParams = UserAddressParams & ChainParams
 type UserPoolQuery = UserAddressQuery & ChainQuery
 
+/** Create a function to get pool IDs from pool addresses */
+function createGetPoolIds(chainId: number) {
+  const {
+    pools: { poolsMapper },
+  } = useStore.getState()
+  const poolIds = Object.fromEntries(
+    Object.entries(poolsMapper[chainId]).map(([poolId, { pool }]) => [pool.address, poolId]),
+  )
+  return (poolAddress: string) => poolIds[poolAddress.toLowerCase()]
+}
+
 const queryUserPools = async ({ userAddress, chainId }: UserPoolQuery): Promise<UserPoolStats[]> => {
   const {
     curve,
     networks: { networks },
   } = useStore.getState()
+  const network = networks[chainId]
   const chains = await fetchSupportedChains({})
+  const getPoolId = createGetPoolIds(chainId)
 
   // use API when supported
-  const chain = networks[chainId].name.toLowerCase() as Chain
+  const chain = network.name.toLowerCase() as Chain
   if (chains.includes(chain)) {
     const { positions } = await getUserPools(chain, userAddress)
-    return positions.map((pool) => ({ ...pool, chain, userAddress }))
+    return positions.map((pool) => ({ ...pool, chain, userAddress, poolId: getPoolId(pool.poolAddress) }))
   }
 
   // for smaller chains, fallback to curvejs (it does too many requests on mainnet)
   if (curve.chainId !== chainId) throw new Error('Invalid chain in curvejs')
   console.warn(`chain ${chain} (${chainId}) not supported by API, using curvejs for user pools`)
   const poolAddresses = await curve.getUserPoolList()
-  return poolAddresses.map((poolAddress) => ({ chain, userAddress, poolAddress: poolAddress as Address }))
+  return poolAddresses.map((poolAddress) => ({
+    chain,
+    userAddress,
+    poolAddress: poolAddress as Address,
+    poolId: getPoolId(poolAddress),
+  }))
 }
 
 export const { fetchQuery: fetchUserPools } = queryFactory({

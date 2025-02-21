@@ -1313,7 +1313,6 @@ const poolWithdraw = {
 const wallet = {
   getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
     log('getUserLiquidityUSD', poolIds, walletAddress)
-    console.log({ curve, poolIds, walletAddress })
     return await curve.getUserLiquidityUSD(poolIds, walletAddress)
   },
   getUserClaimable: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
