@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 export type SoftLiqRatio = {
   timestamp: Date
@@ -58,3 +58,13 @@ export type LiqHealthDecile = {
   debt: number
   stablecoin: number
 }
+
+export type TotalOverview = {
+  chain: Chain
+  softLiquidationUsers: number
+  badDebt: number
+  liquidatablePositions: number
+  liquidatablePosDebtUsd: number
+  liquidatableCollateralUsd: number
+  liquidatableBorrowedUsd: number
+}[]
