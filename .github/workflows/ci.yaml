@@ -15,6 +15,11 @@ jobs:
       - run: yarn lint
       - run: yarn format:check
   cypress:
+    strategy:
+      fail-fast: false
+      matrix:
+        flaky: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    name: Cypress E2E ${{ matrix.flaky }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -34,11 +39,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-main
+          name: cypress-main-${{ matrix.flaky }}
           path: tests/cypress/screenshots
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: dev-server-log
+          name: dev-server-log-${{ matrix.flaky }}
           path: dev-server.log

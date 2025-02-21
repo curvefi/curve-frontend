@@ -7,7 +7,7 @@ export default defineConfig({
   defaultCommandTimeout: 20000,
   pageLoadTimeout: 120000,
   requestTimeout: 30000,
-  retries: { runMode: 2, openMode: 0 },
+  retries: { runMode: 0, openMode: 0 },
   scrollBehavior: 'center',
   e2e: {
     baseUrl: 'http://localhost:3000',
