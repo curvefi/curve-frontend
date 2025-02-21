@@ -146,7 +146,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         // no staked pools
         if (userPools.length === 0) return { dashboardDataMapper: {}, error: '' }
 
-        const poolList = userPools.map(({ poolId }) => poolId)
+        const poolList = userPools.map(({ poolId }) => poolId).filter(Boolean) as string[]
 
         // get balances and claimables
         const [userPoolBalancesResult, userClaimableResult] = await Promise.allSettled([

@@ -76,7 +76,10 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         const { signerAddress, chainId } = curve
         const userPools = await fetchUserPools({ userAddress: signerAddress as Address, chainId })
-        const parsedUserPoolList = userPools.reduce((acc, pool) => ({ ...acc, [pool.poolId]: true }), {})
+        const parsedUserPoolList = userPools.reduce(
+          (acc, { poolId }) => ({ ...acc, ...(poolId && { [poolId]: true }) }),
+          {},
+        )
 
         get()[sliceKey].setStateByActiveKey('poolList', userActiveKey, parsedUserPoolList)
         get()[sliceKey].setStateByKeys({ poolListLoaded: true })

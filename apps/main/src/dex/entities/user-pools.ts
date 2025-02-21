@@ -17,7 +17,7 @@ import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 export type UserPoolStats = {
   chain: Chain
   userAddress: Address
-  poolId: string
+  poolId?: string
   poolAddress: Address
   poolName?: string
   lpTokenBalance?: number
@@ -34,7 +34,13 @@ function createGetPoolIds(chainId: number) {
   const poolIds = Object.fromEntries(
     Object.entries(poolsMapper[chainId]).map(([poolId, { pool }]) => [pool.address, poolId]),
   )
-  return (poolAddress: string) => poolIds[poolAddress.toLowerCase()]
+  return (poolAddress: string) => {
+    const poolId = poolIds[poolAddress.toLowerCase()]
+    if (!poolId) {
+      console.warn(`Pool ID not found for address ${poolAddress}`)
+    }
+    return poolId
+  }
 }
 
 function getChainName(chainId: ChainId): Chain {
