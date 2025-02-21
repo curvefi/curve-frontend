@@ -79,7 +79,7 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
           height: Sizing[rowHeight],
           borderBottom: `1px solid${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
-          transition: `background-color ${TransitionFunction}`,
+          transition: `background-color ${TransitionFunction}, border ${TransitionFunction}`,
           [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
           '&:hover': {
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
