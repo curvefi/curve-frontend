@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { zip } from 'lodash'
 
 import useStore from '@/dex/store/useStore'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
@@ -34,9 +35,9 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
   const { pool } = poolData ?? {}
   const tokens = useMemo(
     () =>
-      (poolData?.tokens ?? []).map((symbol, idx) => ({
-        symbol,
-        address: (poolData?.tokenAddresses ?? [])[idx] || '',
+      zip(poolData?.tokens, poolData?.tokenAddresses).map(([symbol, address]) => ({
+        symbol: symbol!,
+        address: address!,
       })),
     [poolData?.tokens, poolData?.tokenAddresses],
   )

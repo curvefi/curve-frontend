@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { zip } from 'lodash'
 
 import { breakpoints } from '@ui/utils'
 import networks from '@/loan/networks'
@@ -18,9 +19,9 @@ type Props = {
 const PegKeeperLabel = ({ className = '', poolName, rChainId, underlyingCoins, underlyingCoinAddresses }: Props) => {
   const tokens = useMemo(
     () =>
-      underlyingCoins.map((symbol, idx) => ({
-        symbol,
-        address: underlyingCoinAddresses[idx],
+      zip(underlyingCoins, underlyingCoinAddresses).map(([symbol, address]) => ({
+        symbol: symbol!,
+        address: address!,
       })),
     [underlyingCoins, underlyingCoinAddresses],
   )
