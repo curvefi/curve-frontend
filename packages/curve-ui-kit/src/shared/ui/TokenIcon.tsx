@@ -4,6 +4,7 @@ import Tooltip from '@mui/material/Tooltip'
 import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
@@ -23,18 +24,7 @@ const getResponsiveSize = (t: Theme, size: 'sm' | 'md' | 400) => {
     }
   }
 
-  return {
-    width: IconSize[size].mobile,
-    height: IconSize[size].mobile,
-    [t.breakpoints.up('tablet')]: {
-      width: IconSize[size].tablet,
-      height: IconSize[size].tablet,
-    },
-    [t.breakpoints.up('desktop')]: {
-      width: IconSize[size].desktop,
-      height: IconSize[size].desktop,
-    },
-  }
+  return handleBreakpoints({ width: IconSize[size], height: IconSize[size] })
 }
 
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
