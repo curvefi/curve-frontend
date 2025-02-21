@@ -3,8 +3,8 @@ description: Builds and publishes the Prices API package to NPM
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - prices-api/[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   publish:
