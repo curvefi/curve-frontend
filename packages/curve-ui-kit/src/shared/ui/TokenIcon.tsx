@@ -43,7 +43,7 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
       sx={(theme) => ({
         border: '1px solid transparent',
         borderRadius: '50%',
-        // The original "400" is a remainder from legacy code.
+        // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
         // I didn't want to break the existing interface as it's used everywhere.
         ...(size === 'sm' && {
           width: '1.75rem',
