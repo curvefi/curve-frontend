@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useState, useEffect } from 'react'
 
-import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 
 import Box from '@ui/Box'
