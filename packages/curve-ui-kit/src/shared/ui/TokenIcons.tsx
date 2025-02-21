@@ -29,42 +29,30 @@ export function TokenIcons({ tokens, ...props }: Props) {
       }}
     >
       {tokens.map(({ address, symbol }, idx) => {
-        let className = ''
         const tokenCount = idx + 1
         const isLast = tokenCount === totalCount
 
-        if (tokenCount > iconsPerRow) {
-          className += 'not-first-row'
-
-          if (isOddCount && !isLast && totalCount < 6) {
-            className += ' not-last'
-          }
-        }
-
-        if (idx % iconsPerRow !== 0) {
-          className += ' not-first'
-        }
+        const isNotFirstRow = tokenCount > iconsPerRow
+        const isNotFirstInRow = idx % iconsPerRow !== 0
+        const shouldOffsetLastRowToken = isOddCount && !isLast && totalCount < 6 && isNotFirstRow
 
         return (
           <TokenIcon
             key={`${address}${idx}`}
             {...props}
-            className={className}
             address={address}
             symbol={symbol}
             sx={{
-              '&.not-first-row': {
+              ...(isNotFirstRow && {
                 marginTop: '-6px',
-              },
-
-              '&.not-first': {
+              }),
+              ...(isNotFirstInRow && {
                 marginLeft: '-4px',
-              },
-
-              '&.not-last': {
+              }),
+              ...(shouldOffsetLastRowToken && {
                 position: 'relative',
                 left: '8px',
-              },
+              }),
             }}
           />
         )
