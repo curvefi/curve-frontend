@@ -140,10 +140,13 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
       try {
         // Get user pool list
-        const { poolList } = await wallet.getUserPoolList(curve, walletAddress)
+        const { poolList, error } = await wallet.getUserPoolList(curve, walletAddress)
 
+        if (error) {
+          sliceState.setStateByKey('error', error)
+        }
         // no staked pools
-        if (poolList.length === 0) return { dashboardDataMapper: {}, error: '' }
+        if (poolList.length === 0) return { dashboardDataMapper: {}, error }
 
         // get balances and claimables
         const [userPoolBalancesResult, userClaimableResult] = await Promise.allSettled([
