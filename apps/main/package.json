@@ -6,6 +6,7 @@
     "node": "22"
   },
   "scripts": {
+    "next": "next",
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
