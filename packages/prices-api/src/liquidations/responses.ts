@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 export type GetSoftLiqRatiosResponse = {
   data: {
@@ -69,5 +69,17 @@ export type GetLiqHealthDecilesResponse = {
     collateral: number
     stablecoin: number
     debt: number
+  }[]
+}
+
+export type GetTotalOverviewResponse = {
+  data: {
+    chain: Chain
+    soft_liquidation_users: number
+    bad_debt: number
+    liquidatable_positions: number
+    liquidatable_pos_debt_usd: number
+    liquidatable_collateral_usd: number
+    liquidatable_borrowed_usd: number
   }[]
 }
