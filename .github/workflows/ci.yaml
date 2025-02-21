@@ -28,11 +28,22 @@ jobs:
         with:
           node-version: 22
           cache: yarn
+      - run: npm install -g wait-on &
+
       - run: yarn set version stable
       - run: yarn install --immutable
 
-      - run: yarn run dev | tee dev-server.log &
+      - name: Start dev server
+        run: yarn run dev | tee dev-server.log &
         working-directory: apps/main
+
+      - name: Wait for dev server
+        run: >
+          wait-on http://localhost:3000/dao &
+          wait-on http://localhost:3000/loan &
+          wait-on http://localhost:3000/lend &
+          wait-on http://localhost:3000/dex
+        working-directory: tests
       - run: yarn run cy:run:e2e
         working-directory: tests
 
@@ -41,6 +52,7 @@ jobs:
         with:
           name: cypress-main-${{ matrix.flaky }}
           path: tests/cypress/screenshots
+          retention-days: 1
 
       - uses: actions/upload-artifact@v4
         if: failure()

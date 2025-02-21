@@ -45,6 +45,7 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should sort', () => {
+    cy.get('[data-testid="line-graph-lend"] path').should('be.visible')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
     cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
