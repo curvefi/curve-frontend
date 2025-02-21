@@ -42,7 +42,7 @@ function getChainName(chainId: ChainId): Chain {
     networks: { networks },
   } = useStore.getState()
   const network = networks[chainId]
-  return network.name.toLowerCase() as Chain
+  return network.id as Chain
 }
 
 const queryUserPools = async ({ userAddress, chainId }: UserPoolQuery): Promise<UserPoolStats[]> => {
