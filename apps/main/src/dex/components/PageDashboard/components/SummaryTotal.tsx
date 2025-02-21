@@ -13,8 +13,9 @@ import {
 import { Chip } from '@ui/Typography'
 import Spinner from '@ui/Spinner'
 
-const SummaryTotal: React.FC = () => {
+const SummaryTotal = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()
+  const { isLoading } = useDashboardContext()
 
   const total = useMemo(() => {
     if (typeof dashboardDataMapper === 'undefined') return null
@@ -25,13 +26,13 @@ const SummaryTotal: React.FC = () => {
     <StyledTotalBalanceWrapper style={{ gridArea: 'grid-summary-total-balance' }}>
       <H2>{t`Total Balances`}</H2>
       <SummaryInnerContent>
-        {isValidAddress && total === null && (
+        {isValidAddress && isLoading && (
           <SummarySpinnerWrapper isMain>
             <Spinner />
           </SummarySpinnerWrapper>
         )}
         <TotalBalancesValue tooltip={formatNumber(total)} tooltipProps={{ noWrap: true }}>
-          {formatNumber(total, { currency: 'USD', notation: 'compact', defaultValue: '-' })}
+          {total === null ? '?' : formatNumber(total, { currency: 'USD', notation: 'compact', defaultValue: '-' })}
         </TotalBalancesValue>
       </SummaryInnerContent>
     </StyledTotalBalanceWrapper>

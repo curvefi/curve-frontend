@@ -76,7 +76,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`${network}/${restPartialPathname}`)
+              navigate(`/${network}/${restPartialPathname}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },

@@ -1,16 +1,18 @@
-import type { PricesUserStatsResponse } from '@/loan/store/types'
+import type { UserStats } from '@curvefi/prices-api/savings/models'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { getUserStats } from '@curvefi/prices-api/savings'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 
-async function _fetchSavingsStatistics({ userAddress }: { userAddress: string }): Promise<PricesUserStatsResponse> {
-  const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/${userAddress}/stats`)
+async function _fetchScrvUsdUserStats({ userAddress }: { userAddress: string }): Promise<UserStats> {
+  const data = await getUserStats(userAddress)
 
-  return await response.json()
+  return data
 }
 
 export const { useQuery: useScrvUsdUserStats } = queryFactory({
   queryKey: (params: { userAddress: string }) => ['scrvUsdUserStats', { userAddress: params.userAddress }] as const,
-  queryFn: _fetchSavingsStatistics,
+  queryFn: _fetchScrvUsdUserStats,
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}),
+  validationSuite: EmptyValidationSuite,
 })

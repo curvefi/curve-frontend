@@ -30,7 +30,7 @@ export const Dex = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/assets/pdf/CurveDAO.pdf"
+        href="https://docs.curve.fi/references/whitepaper"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{
@@ -44,7 +44,7 @@ export const Dex = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/references/audits/#curve-dao"
+        href="https://docs.curve.fi/security/security/#security-audits"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{

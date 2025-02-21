@@ -16,48 +16,19 @@ import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalanc
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  estGas: {
-    gas: number
-    fetchStatus: FetchStatus
-  }
-  depositApproval: {
-    approval: boolean
-    allowance: string
-    fetchStatus: FetchStatus
-  }
-  preview: {
-    fetchStatus: FetchStatus
-    value: string
-  }
+  estGas: { gas: number; fetchStatus: FetchStatus }
+  depositApproval: { approval: boolean; allowance: string; fetchStatus: FetchStatus }
+  preview: { fetchStatus: FetchStatus; value: string }
   stakingModule: DepositWithdrawModule
   selectedStatisticsChart: StatisticsChart
   revenueChartTimeOption: TimeOption
   inputAmount: string
-  scrvUsdExchangeRate: {
-    fetchStatus: FetchStatus
-    value: string
-  }
-  crvUsdSupplies: {
-    fetchStatus: FetchStatus
-    crvUSD: string
-    scrvUSD: string
-  }
+  scrvUsdExchangeRate: { fetchStatus: FetchStatus; value: string }
+  crvUsdSupplies: { fetchStatus: FetchStatus; crvUSD: string; scrvUSD: string }
   approveInfinite: boolean
-  approveDepositTransaction: {
-    transactionStatus: TransactionStatus
-    transaction: string | null
-    errorMessage: string
-  }
-  depositTransaction: {
-    transactionStatus: TransactionStatus
-    transaction: string | null
-    errorMessage: string
-  }
-  withdrawTransaction: {
-    transactionStatus: TransactionStatus
-    transaction: string | null
-    errorMessage: string
-  }
+  approveDepositTransaction: { transactionStatus: TransactionStatus; transaction: string | null; errorMessage: string }
+  depositTransaction: { transactionStatus: TransactionStatus; transaction: string | null; errorMessage: string }
+  withdrawTransaction: { transactionStatus: TransactionStatus; transaction: string | null; errorMessage: string }
 }
 
 type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
@@ -66,9 +37,7 @@ const sliceKey = 'scrvusd'
 
 export type ScrvUsdSlice = {
   [sliceKey]: SliceState & {
-    checkApproval: {
-      depositApprove: (amount: string) => Promise<void>
-    }
+    checkApproval: { depositApprove: (amount: string) => Promise<void> }
     estimateGas: {
       depositApprove: (amount: string) => Promise<void>
       deposit: (amount: string) => Promise<void>
@@ -104,48 +73,19 @@ export type ScrvUsdSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  estGas: {
-    gas: 0,
-    fetchStatus: '',
-  },
-  depositApproval: {
-    approval: false,
-    allowance: '',
-    fetchStatus: '',
-  },
+  estGas: { gas: 0, fetchStatus: '' },
+  depositApproval: { approval: false, allowance: '', fetchStatus: '' },
   stakingModule: 'deposit',
   selectedStatisticsChart: 'savingsRate',
   revenueChartTimeOption: '1M',
   inputAmount: '0',
-  preview: {
-    fetchStatus: '',
-    value: '0',
-  },
-  scrvUsdExchangeRate: {
-    fetchStatus: 'loading',
-    value: '',
-  },
-  crvUsdSupplies: {
-    fetchStatus: 'loading',
-    crvUSD: '',
-    scrvUSD: '',
-  },
+  preview: { fetchStatus: '', value: '0' },
+  scrvUsdExchangeRate: { fetchStatus: 'loading', value: '' },
+  crvUsdSupplies: { fetchStatus: 'loading', crvUSD: '', scrvUSD: '' },
   approveInfinite: false,
-  approveDepositTransaction: {
-    transactionStatus: '',
-    transaction: null,
-    errorMessage: '',
-  },
-  depositTransaction: {
-    transactionStatus: '',
-    transaction: null,
-    errorMessage: '',
-  },
-  withdrawTransaction: {
-    transactionStatus: '',
-    transaction: null,
-    errorMessage: '',
-  },
+  approveDepositTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
+  depositTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
+  withdrawTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
 }
 
 const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -363,7 +303,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           // invalidate user balances query
           const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -422,7 +362,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           // invalidate user balances query
           const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -483,7 +423,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           // invalidate user balances query
           const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ signerAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
 

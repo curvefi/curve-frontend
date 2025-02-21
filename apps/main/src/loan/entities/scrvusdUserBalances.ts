@@ -1,23 +1,20 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { createValidationSuite } from '@ui-kit/lib/validation'
 import useStore from '@/loan/store/useStore'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 
-export type ScrvUsdUserBalances = {
-  crvUSD: string
-  scrvUSD: string
-}
+export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
 
 async function _fetchSavingsUserBalances({
-  signerAddress,
+  userAddress,
 }: {
-  signerAddress: string
+  userAddress: string
 }): Promise<ScrvUsdUserBalances | null> {
   const lendApi = useStore.getState().lendApi
 
-  if (!signerAddress) return null
   if (!lendApi) return null
 
-  const response = await lendApi.st_crvUSD.userBalances(signerAddress)
+  const response = await lendApi.st_crvUSD.userBalances(userAddress)
   return {
     crvUSD: response.crvUSD === '0.0' ? '0' : response.crvUSD,
     scrvUSD: response.st_crvUSD === '0.0' ? '0' : response.st_crvUSD,
@@ -25,9 +22,9 @@ async function _fetchSavingsUserBalances({
 }
 
 export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
-  queryKey: (params: { signerAddress: string }) =>
-    ['useScrvUsdUserBalances', { signerAddress: params.signerAddress }] as const,
+  queryKey: (params: { userAddress: string }) =>
+    ['useScrvUsdUserBalances', { userAddress: params.userAddress }] as const,
   queryFn: _fetchSavingsUserBalances,
   staleTime: '5m',
-  validationSuite: createValidationSuite(() => {}),
+  validationSuite: EmptyValidationSuite,
 })

@@ -33,7 +33,7 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
       }}
       elevation={2}
     >
-      <Typography variant="bodyMBold">{formatDate(toDate(endDate), 'long')}</Typography>
+      <Typography variant="bodyMBold">{formatDate(endDate, 'long')}</Typography>
       <Stack
         direction="column"
         sx={{

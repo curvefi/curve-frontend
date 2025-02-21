@@ -14,11 +14,7 @@ import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/componen
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-const CRVUSD_OPTIONS = {
-  symbol: 'crvUSD',
-  position: 'suffix' as const,
-  abbreviate: true,
-}
+const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
   const { signerAddress } = useWallet()
@@ -27,7 +23,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({
-    signerAddress: signerAddress ?? '',
+    userAddress: signerAddress ?? '',
   })
   const usdRateLoading = useStore((state) => state.usdRates.loading)
   const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
@@ -38,7 +34,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
 
   const totalScrvUsdSupply = statisticsData?.supply ?? 0
-  const scrvUsdApy = statisticsData?.proj_apr ?? 0
+  const scrvUsdApy = statisticsData?.aprProjected ?? 0
 
   const userShareOfTotalScrvUsdSupply = Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
 
@@ -59,11 +55,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
           columnGap={Spacing.lg}
           rowGap={Spacing.md}
           padding={Spacing.lg}
-          sx={{
-            backgroundColor: Layer[2].Fill,
-            border: `2px solid ${Layer.Highlight.Outline}`,
-            width: '100%',
-          }}
+          sx={{ backgroundColor: Layer[2].Fill, border: `2px solid ${Layer.Highlight.Outline}`, width: '100%' }}
         >
           <Grid flexGrow={1}>
             <Metric

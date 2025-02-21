@@ -12,12 +12,7 @@ export type Event = {
   txHash: Address
 }
 
-export type Yield = {
-  timestamp: Date
-  assets: number
-  supply: number
-  apyProjected: string
-}
+export type Yield = { timestamp: Date; assets: number; supply: number; apyProjected: number }
 
 export type Revenue = {
   strategy: Address
@@ -31,9 +26,13 @@ export type Revenue = {
   timestamp: Date
 }
 
-export type Statistics = {
-  lastUpdated: Date
-  lastUpdatedBlock: number
-  aprProjected: number
-  supply: number
+export type Statistics = { lastUpdated: Date; lastUpdatedBlock: number; aprProjected: number; supply: number }
+
+export type UserStats = {
+  totalDeposited: bigint
+  totalReceived: bigint
+  totalWithdrawn: bigint
+  totalTransferredIn: bigint
+  totalTransferredOut: bigint
+  currentBalance: bigint
 }
