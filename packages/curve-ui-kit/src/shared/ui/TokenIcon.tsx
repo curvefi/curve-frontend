@@ -32,7 +32,7 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   blockchainId: string
   symbol: string
   address?: string | null
-  size?: 'sm' | 'mui-sm' | 'mui-md' | ''
+  size?: 'sm' | 'mui-sm' | 'mui-md'
   sx?: SystemStyleObject<Theme>
 }
 
@@ -60,8 +60,6 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
       sx={(theme) => ({
         border: '1px solid transparent',
         borderRadius: '50%',
-        height: '1.625rem',
-        width: '1.625rem',
         '&.sm': getResponsiveSize(theme, 400),
         '&.mui-sm': getResponsiveSize(theme, 'sm'),
         '&.mui-md': getResponsiveSize(theme, 'md'),
