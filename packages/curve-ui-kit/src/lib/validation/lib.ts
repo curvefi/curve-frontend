@@ -4,11 +4,16 @@ import { FieldName, FieldsOf } from './types'
 
 extendEnforce(enforce)
 
+const getErrors = (result: ReturnType<Suite<any, any>>) =>
+  Object.entries(result.getErrors())
+    .filter(([, errors]) => errors.length > 0)
+    .map(([field, errors]) => `${field}: ${errors.join(',')}`)
+
 export const checkValidity = <D extends object, S extends Suite<any, any>>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
-): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
+): boolean => getErrors(suite(data, fields)).length === 0
 
 export function assertValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
@@ -16,10 +21,9 @@ export function assertValidity<D extends object, S extends Suite<any, any>>(
   fields?: FieldName<D>[],
 ): D {
   const result = suite(data, fields)
-  const entries = Object.entries(result.getErrors())
-  if (entries.length > 0) {
-    debugger
-    throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
+  const errors = getErrors(result)
+  if (errors.length > 0) {
+    throw new Error(`Validation failed: ${errors.join(';')}`)
   }
   return data as D
 }

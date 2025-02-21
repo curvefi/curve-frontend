@@ -14,7 +14,6 @@ export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, 
   const queryParams = Object.fromEntries(
     queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : [])),
   ) as TParams
-  console.log(queryParams)
   return assertValidity(queryParams)
 }
 
