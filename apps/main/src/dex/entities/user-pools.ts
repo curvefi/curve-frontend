@@ -11,7 +11,8 @@ import { type Address, type Chain } from '@curvefi/prices-api'
 import { fetchSupportedChains } from '@ui-kit/entities/chains'
 import { createValidationSuite } from '@ui-kit/lib'
 import useStore from '@/dex/store/useStore'
-import { chainValidationGroup } from '@/lend/entities/chain'
+import type { ChainId } from '@/dex/types/main.types'
+import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 
 export type UserPoolStats = {
   chain: Chain
@@ -22,8 +23,8 @@ export type UserPoolStats = {
   lpTokenBalance?: number
 }
 
-type UserPoolParams = UserAddressParams & ChainParams
-type UserPoolQuery = UserAddressQuery & ChainQuery
+type UserPoolParams = UserAddressParams & ChainParams<ChainId>
+type UserPoolQuery = UserAddressQuery & ChainQuery<ChainId>
 
 /** Create a function to get pool IDs from pool addresses */
 function createGetPoolIds(chainId: number) {
@@ -36,23 +37,27 @@ function createGetPoolIds(chainId: number) {
   return (poolAddress: string) => poolIds[poolAddress.toLowerCase()]
 }
 
-const queryUserPools = async ({ userAddress, chainId }: UserPoolQuery): Promise<UserPoolStats[]> => {
+function getChainName(chainId: ChainId): Chain {
   const {
-    curve,
     networks: { networks },
   } = useStore.getState()
   const network = networks[chainId]
+  return network.name.toLowerCase() as Chain
+}
+
+const queryUserPools = async ({ userAddress, chainId }: UserPoolQuery): Promise<UserPoolStats[]> => {
+  const { curve } = useStore.getState()
   const chains = await fetchSupportedChains({})
   const getPoolId = createGetPoolIds(chainId)
 
   // use API when supported
-  const chain = network.name.toLowerCase() as Chain
+  const chain = getChainName(chainId)
   if (chains.includes(chain)) {
     const { positions } = await getUserPools(chain, userAddress)
     return positions.map((pool) => ({ ...pool, chain, userAddress, poolId: getPoolId(pool.poolAddress) }))
   }
 
-  // for smaller chains, fallback to curvejs (it does too many requests on mainnet)
+  // for smaller chains, fallback to curve-js (it does too many requests on mainnet)
   if (curve.chainId !== chainId) throw new Error('Invalid chain in curvejs')
   console.warn(`chain ${chain} (${chainId}) not supported by API, using curvejs for user pools`)
   const poolAddresses = await curve.getUserPoolList()

@@ -1,7 +1,6 @@
 import type { UserStats } from '@curvefi/prices-api/savings/models'
 import { queryFactory, type UserAddressParams, type UserAddressQuery } from '@ui-kit/lib/model/query'
 import { getUserStats } from '@curvefi/prices-api/savings'
-import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 
 export const { useQuery: useScrvUsdUserStats } = queryFactory({
