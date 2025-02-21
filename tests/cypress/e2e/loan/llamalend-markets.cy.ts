@@ -14,9 +14,9 @@ describe('LlamaLend Markets', () => {
     mockChains()
     mockLendingChains()
     mockTokenPrices()
-    mockLendingVaults()
+    mockLendingVaults().as('vaults')
     mockLendingSnapshots().as('snapshots')
-    mockMintMarkets()
+    mockMintMarkets().as('mint-markets')
     mockMintSnapshots()
 
     cy.viewport(width, height)
@@ -38,14 +38,21 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
-    const filterHeight = { mobile: 202, tablet: 112, desktop: 120 }[breakpoint]
+    const filterHeight = { mobile: 202, tablet: [112, 144], desktop: 120 }[breakpoint]
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
-    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', filterHeight)
+    const outerHeight = cy.get('[data-testid="table-filters"]').invoke('outerHeight')
+    if (typeof filterHeight === 'number') {
+      outerHeight.should('equal', filterHeight)
+    } else {
+      // the height can be within a range, because the text wraps depending on the width
+      outerHeight.should('be.within', ...filterHeight)
+    }
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
   it('should sort', () => {
-    cy.get('[data-testid="line-graph-lend"] path').should('be.visible')
+    cy.wait('@vaults')
+    cy.wait('@mint-markets')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
     cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
