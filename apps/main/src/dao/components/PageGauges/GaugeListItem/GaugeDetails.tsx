@@ -48,7 +48,10 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
               </h5>
               <h5>
                 {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
-                  ? formatNumber(gaugeData.pool.tvl_usd, { showDecimalIfSmallNumberOnly: true, currency: 'USD' })
+                  ? formatNumber(gaugeData.pool.tvl_usd, {
+                      showDecimalIfSmallNumberOnly: true,
+                      currency: 'USD',
+                    })
                   : 'N/A'}
               </h5>
             </StatsRow>
@@ -73,7 +76,11 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
           </Box>
           <h5>
-            {gaugeData.emissions ? formatNumber(gaugeData.emissions, { showDecimalIfSmallNumberOnly: true }) : 'N/A'}
+            {gaugeData.emissions
+              ? formatNumber(gaugeData.emissions, {
+                  showDecimalIfSmallNumberOnly: true,
+                })
+              : 'N/A'}
           </h5>
           <h5>{new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}</h5>
         </StatsRow>

@@ -1,4 +1,4 @@
-import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
+import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { WalletState } from '@web3-onboard/core'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type curveApi from '@curvefi/api'
@@ -14,7 +14,7 @@ export type PageWidthClassName =
   | 'page-small-x'
   | 'page-small-xx'
 export type CurveApi = typeof curveApi & { chainId: 1 }
-export type ChainId = IChainId | number
+export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export interface NetworkConfig extends BaseConfig {

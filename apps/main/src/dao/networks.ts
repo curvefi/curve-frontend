@@ -9,35 +9,26 @@ import { ChainId, NetworkEnum, NetworkConfig } from '@/dao/types/dao.types'
 
 const DEFAULT_NETWORK_CONFIG = { api: curvejsApi, isActiveNetwork: true, showInSelectNetwork: true }
 
-const networksConfig = Object.values(Chain).reduce(
-  (acc, chainId) => {
+export const { networks, networksIdMapper, selectNetworkList } = Object.values(Chain).reduce(
+  (mapper, chainId) => {
     if (typeof chainId === 'number') {
-      acc[chainId] = {}
-    }
-    return acc
-  },
-  {} as Record<number, {}>,
-)
+      const networkConfig = {
+        ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
+        ...DEFAULT_NETWORK_CONFIG,
+        showInSelectNetwork: chainId === 1,
+      }
+      mapper.networks[chainId] = networkConfig
+      mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
 
-export const { networks, networksIdMapper, selectNetworkList } = Object.entries(networksConfig).reduce(
-  (mapper, [key, config]) => {
-    const chainId = Number(key) as ChainId
-    const networkConfig = {
-      ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
-      ...DEFAULT_NETWORK_CONFIG,
-      ...config,
-    }
-    mapper.networks[chainId] = networkConfig
-    mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
-
-    if (networkConfig.showInSelectNetwork) {
-      mapper.selectNetworkList.push({
-        label: networkConfig.name,
-        chainId,
-        src: networkConfig.logoSrc,
-        srcDark: networkConfig.logoSrcDark,
-        isTestnet: networkConfig.isTestnet,
-      })
+      if (networkConfig.showInSelectNetwork) {
+        mapper.selectNetworkList.push({
+          label: networkConfig.name,
+          chainId,
+          src: networkConfig.logoSrc,
+          srcDark: networkConfig.logoSrcDark,
+          isTestnet: networkConfig.isTestnet,
+        })
+      }
     }
     return mapper
   },
