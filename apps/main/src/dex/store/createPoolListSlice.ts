@@ -159,7 +159,10 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         networks: { networks },
       } = get()
       const { hideSmallPoolsTvl } = networks[chainId]
-      return poolDatas.filter(({ pool }) => +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl)
+
+      return poolDatas.length < 10
+        ? poolDatas
+        : poolDatas.filter(({ pool }) => +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl)
     },
     sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, campaignRewardsMapper) => {
       if (poolDatas.length === 0) {

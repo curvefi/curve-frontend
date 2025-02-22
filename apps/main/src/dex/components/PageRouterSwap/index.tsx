@@ -13,7 +13,6 @@ import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { getTokensMapperStr } from '@/dex/store/createTokensSlice'
-import { getTokensObjList } from '@/dex/store/createQuickSwapSlice'
 import { getChainSignerActiveKey } from '@/dex/utils'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
 import useSelectToList from '@/dex/components/PageRouterSwap/components/useSelectToList'
@@ -34,12 +33,12 @@ import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
 import RouterSwapAlerts from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import Stepper from '@ui/Stepper'
-import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, CurveApi, Token, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { TokenSelector } from '@ui-kit/features/select-token'
 
 const QuickSwap = ({
   pageLoaded,
@@ -63,7 +62,8 @@ const QuickSwap = ({
   const curve = useStore((state) => state.curve)
   const { chainId, signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(rChainId)
-  const { selectToList, selectToListStr } = useSelectToList(rChainId)
+  const { selectToList } = useSelectToList(rChainId)
+  const selectFromList = useStore((state) => state.quickSwap.selectFromList[chainSignerActiveKey])
   const chainSignerActiveKey = getChainSignerActiveKey(rChainId, signerAddress)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
@@ -72,9 +72,8 @@ const QuickSwap = ({
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
-  const isHideSmallPools = useStore((state) => state.poolList.formValues.hideSmallPools)
+  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const selectFromList = useStore((state) => state.quickSwap.selectFromList[chainSignerActiveKey])
   const tokensMapperNonSmallTvl = useStore((state) => state.tokens.tokensMapperNonSmallTvl[rChainId] ?? {})
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
@@ -98,29 +97,51 @@ const QuickSwap = ({
 
   const isReady = pageLoaded && !isLoadingApi && isPageVisible
   const haveSigner = !!signerAddress
+
   const userFromBalance = userBalancesMapper[fromAddress]
   const userToBalance = userBalancesMapper[toAddress]
+
   const fromUsdRate = usdRatesMapper[fromAddress]
   const toUsdRate = usdRatesMapper[toAddress]
-  const fromToken = tokensNameMapper[fromAddress] ?? ''
-  const toToken = tokensNameMapper[toAddress] ?? ''
 
   const tokensMapperNonSmallTvlStr = useMemo(
     () => getTokensMapperStr(tokensMapperNonSmallTvl),
     [tokensMapperNonSmallTvl],
   )
 
-  const selectFromTokensList = useMemo(
-    () => getTokensObjList(selectFromList ?? selectToList, tokensMapper),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectFromList, selectToListStr, tokensMapperStr],
+  function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
+    if (!tokensList || tokensList.length === 0 || !tokensMapper || Object.keys(tokensMapper).length === 0) return []
+    return tokensList.map((address) => tokensMapper[address])
+  }
+
+  const tokensFrom = useMemo(
+    () =>
+      getTokensObjList(selectFromList ?? selectToList, tokensMapper)
+        .filter((token) => !!token)
+        .map((token) => ({
+          chain: network?.networkId ?? '',
+          address: token?.address as `0x${string}`,
+          symbol: token?.symbol,
+          label: '',
+        })),
+    [selectFromList, selectToList, tokensMapper, network?.networkId],
   )
 
-  const selectToTokensList = useMemo(
-    () => getTokensObjList(selectToList, tokensMapper),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectToListStr, tokensMapperStr],
+  const tokensTo = useMemo(
+    () =>
+      getTokensObjList(selectToList, tokensMapper)
+        .filter((token) => !!token)
+        .map((token) => ({
+          chain: network?.networkId ?? '',
+          address: token?.address as `0x${string}`,
+          symbol: token?.symbol,
+          label: '',
+        })),
+    [selectToList, tokensMapper, network?.networkId],
   )
+
+  const fromToken = tokensFrom.find((x) => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokensTo.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const updateFormValues = useCallback(
     (
@@ -346,9 +367,9 @@ const QuickSwap = ({
 
   // toToken list
   useEffect(() => {
-    setSelectToList(isReady ? curve : null, isHideSmallPools ? tokensMapperNonSmallTvl : tokensMapper)
+    setSelectToList(isReady ? curve : null, hideSmallPools ? tokensMapperNonSmallTvl : tokensMapper)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHideSmallPools, isReady, tokensMapperStr, tokensMapperNonSmallTvlStr, volumesMapper])
+  }, [hideSmallPools, isReady, tokensMapperStr, tokensMapperNonSmallTvlStr, volumesMapper])
 
   // re-fetch data
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['15s'], isPageVisible)
@@ -362,8 +383,8 @@ const QuickSwap = ({
       isReady ? formStatus : { ...formStatus, formProcessing: true },
       formValues,
       searchedParams,
-      toToken,
-      fromToken,
+      toToken?.address ?? '',
+      fromToken?.address ?? '',
     )
     setSteps(updatedSteps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -407,20 +428,15 @@ const QuickSwap = ({
                 testId="max"
                 onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
               />
-              <TokenComboBox
-                title=""
-                disabled={isDisable}
-                blockchainId={network?.networkId ?? ''}
-                listBoxHeight="500px"
-                selectedToken={tokensMapper[searchedParams.fromAddress]}
-                showCheckboxHideSmallPools
-                showSearch
-                showBalances={haveSigner}
-                testId="from-token"
-                tokens={selectFromTokensList as Token[]}
-                onOpen={() => setSelectFromList(curve, selectToList)}
-                onSelectionChange={(value) => {
-                  const fromAddress = value as string
+
+              <TokenSelector
+                selectedToken={fromToken}
+                tokens={tokensFrom}
+                balances={userBalancesMapper}
+                disabled={isDisable || !fromToken}
+                tokenPrices={usdRatesMapper}
+                onToken={(token) => {
+                  const fromAddress = token.address
                   const toAddress =
                     fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
                   resetFormErrors()
@@ -466,18 +482,14 @@ const QuickSwap = ({
               value={formValues.toAmount}
               onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
             />
-            <TokenComboBox
-              title=""
-              disabled={isDisable}
-              blockchainId={network?.networkId ?? ''}
-              listBoxHeight="500px"
-              selectedToken={tokensMapper[searchedParams.toAddress]}
-              showCheckboxHideSmallPools
-              showSearch
-              testId="to-token"
-              tokens={selectToTokensList as Token[]}
-              onSelectionChange={(value) => {
-                const toAddress = value as string
+            <TokenSelector
+              selectedToken={toToken}
+              tokens={tokensTo}
+              balances={userBalancesMapper}
+              disabled={isDisable || !toToken}
+              tokenPrices={usdRatesMapper}
+              onToken={(token) => {
+                const toAddress = token.address
                 const fromAddress =
                   toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
                 resetFormErrors()

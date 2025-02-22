@@ -641,9 +641,4 @@ function getRouterWarningModal(
   return null
 }
 
-export function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
-  if (!tokensList || tokensList.length === 0 || !tokensMapper || Object.keys(tokensMapper).length === 0) return []
-  return tokensList.map((address) => tokensMapper[address])
-}
-
 export default createQuickSwapSlice

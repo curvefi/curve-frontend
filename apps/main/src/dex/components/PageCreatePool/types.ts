@@ -35,7 +35,7 @@ export type CreateQuickListToken = {
 }
 
 export type BasePoolToken = {
-  namne: string
+  name: string
   token: string
   pool: string
 }
