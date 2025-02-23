@@ -7,10 +7,13 @@ import {
   CompactUsdCell,
   LineGraphCell,
   MarketTitleCell,
+  PercentageCell,
   RateCell,
-  UtilizationCell,
 } from '@/loan/components/PageLlamaMarkets/cells'
 import { VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { PriceCell } from '@/loan/components/PageLlamaMarkets/cells/PriceCell'
+import type { Address } from '@ui-kit/utils'
+import { useMemo } from 'react'
 
 const { ColumnWidth } = SizesAndSpaces
 
@@ -37,11 +40,34 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: MarketTitleCell,
     size: ColumnWidth.lg,
   }),
-  columnHelper.accessor('rates.borrow', {
-    header: t`7D Avg Borrow Rate`,
-    cell: (c) => <RateCell market={c.row.original} type="borrow" />,
+  columnHelper.accessor('userHealth', {
+    header: t`Health`,
+    cell: PercentageCell,
+    meta: { type: 'numeric', hideZero: true },
+    size: ColumnWidth.sm,
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('userBorrowed', {
+    header: t`Borrow Amount`,
+    cell: PriceCell,
+    meta: { type: 'numeric', borderRight: true },
+    size: ColumnWidth.sm,
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('userEarnings', {
+    header: t`My Earnings`,
+    cell: PriceCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('userDeposited', {
+    header: t`Supplied Amount`,
+    cell: PriceCell,
+    meta: { type: 'numeric', borderRight: true },
+    size: ColumnWidth.sm,
+    filterFn: boolFilterFn,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrow', {
     id: borrowChartId,
@@ -62,12 +88,11 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`7D Supply Yield Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
     size: ColumnWidth.md,
-    sortUndefined: 'last',
     enableSorting: false,
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,
-    cell: UtilizationCell,
+    cell: PercentageCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
@@ -88,20 +113,30 @@ export const LLAMA_MARKET_COLUMNS = [
 
 export const DEFAULT_SORT = [{ id: 'liquidityUsd', desc: true }]
 
-export const DEFAULT_VISIBILITY: VisibilityGroup[] = [
-  {
-    label: t`Markets`,
-    options: [
-      { label: t`Available Liquidity`, id: 'liquidityUsd', active: true },
-      { label: t`Utilization`, id: 'utilizationPercent', active: true },
+export const useDefaultMarketColumnsVisibility: (address?: Address) => VisibilityGroup[] = (address) =>
+  useMemo(
+    () => [
+      {
+        label: t`Markets`,
+        options: [
+          { label: t`Available Liquidity`, columns: ['liquidityUsd'], active: true, visible: true },
+          { label: t`Utilization`, columns: ['utilizationPercent'], active: true, visible: true },
+        ],
+      },
+      {
+        label: t`Borrow`,
+        options: [
+          { label: t`Chart`, columns: [borrowChartId], active: true, visible: true },
+          { label: t`Borrow Details`, columns: ['userHealth', 'userBorrowed'], active: true, visible: !!address },
+        ],
+      },
+      {
+        label: t`Lend`,
+        options: [
+          { label: t`Chart`, columns: [lendChartId], active: true, visible: true },
+          { label: t`Lend Details`, columns: ['userEarnings', 'userDeposited'], active: true, visible: !!address },
+        ],
+      },
     ],
-  },
-  {
-    label: t`Borrow`,
-    options: [{ label: t`Chart`, id: borrowChartId, active: true }],
-  },
-  {
-    label: t`Lend`,
-    options: [{ label: t`Chart`, id: lendChartId, active: true }],
-  },
-]
+    [address],
+  )

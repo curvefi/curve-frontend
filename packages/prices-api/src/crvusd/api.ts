@@ -49,19 +49,15 @@ export async function getKeepers(chain: Chain, options?: Options) {
 
 export async function getUserMarkets(userAddr: string, chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetUserMarketsResponse>(
-    `${host}/v1/crvusd/users/${chain}/${userAddr}?page=1&per_page=100`,
-  )
-
+  const resp = await fetch<Responses.GetUserMarketsResponse>(`${host}/v1/crvusd/users/${chain}/${userAddr}`)
   return Parsers.parseUserMarkets(resp)
 }
 
 export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetUserMarketStatsResponse>(
-    `${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/stats?page=1&per_page=100`,
+    `${host}/v1/crvusd/users/${chain}/${userAddr}/${marketController}/stats`,
   )
-
   return Parsers.parseUserMarketStats(resp)
 }
 

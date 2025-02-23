@@ -12,7 +12,7 @@ type TokenPairProps = Pick<LlamaMarket, 'assets' | 'chain'>
 
 const { IconSize } = SizesAndSpaces
 
-const TooltipBox = ({ title, children, sx }: { title: string; children: ReactNode; sx: SxProps<Theme> }) => (
+const TooltipBox = ({ title, children, sx }: { title: string; children: ReactNode; sx?: SxProps<Theme> }) => (
   <Box sx={{ position: 'absolute', ...sx }}>
     <Tooltip title={title} placement="top">
       <Box>{children}</Box>
@@ -20,7 +20,7 @@ const TooltipBox = ({ title, children, sx }: { title: string; children: ReactNod
   </Box>
 )
 
-const TokenBox = ({ coin: { address, chain, symbol }, sx }: { coin: AssetDetails; sx: SxProps<Theme> }) => (
+export const TokenBox = ({ coin: { address, chain, symbol }, sx }: { coin: AssetDetails; sx?: SxProps<Theme> }) => (
   <TooltipBox title={symbol} sx={sx}>
     <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} address={address} token={symbol} />
   </TooltipBox>

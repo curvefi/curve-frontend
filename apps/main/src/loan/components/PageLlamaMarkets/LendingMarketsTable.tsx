@@ -9,7 +9,12 @@ import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/Lendin
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
-import { DEFAULT_SORT, DEFAULT_VISIBILITY, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
+import {
+  DEFAULT_SORT,
+  LLAMA_MARKET_COLUMNS,
+  useDefaultMarketColumnsVisibility,
+} from '@/loan/components/PageLlamaMarkets/columns'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -24,8 +29,10 @@ export const LendingMarketsTable = ({
   headerHeight: string
   isError: boolean
 }) => {
+  const { signerAddress } = useWallet()
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters()
-  const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(DEFAULT_VISIBILITY)
+  const defaultVisibility = useDefaultMarketColumnsVisibility(signerAddress)
+  const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(defaultVisibility)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({
