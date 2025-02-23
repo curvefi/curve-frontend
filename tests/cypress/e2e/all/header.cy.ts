@@ -1,6 +1,7 @@
 import {
   AppPath,
   checkIsDarkMode,
+  LOAD_TIMEOUT,
   oneAppPath,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
@@ -163,7 +164,7 @@ describe('Header', () => {
       lend: 'btn-connect-prompt',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
-    cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
+    cy.get(`[data-testid='${testId}']`, { timeout: LOAD_TIMEOUT }).should('be.visible')
   }
 
   function switchEthToArbitrum() {
