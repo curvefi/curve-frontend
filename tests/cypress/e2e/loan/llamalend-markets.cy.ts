@@ -14,9 +14,9 @@ describe('LlamaLend Markets', () => {
     mockChains()
     mockLendingChains()
     mockTokenPrices()
-    mockLendingVaults().as('vaults')
+    mockLendingVaults()
     mockLendingSnapshots().as('snapshots')
-    mockMintMarkets().as('mint-markets')
+    mockMintMarkets()
     mockMintSnapshots()
 
     cy.viewport(width, height)
@@ -51,8 +51,7 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should sort', () => {
-    cy.wait('@vaults')
-    cy.wait('@mint-markets')
+    cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
     cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()

@@ -25,8 +25,8 @@ function getStoredValue<Type, Default>(key: string, initialValue: Default | unde
  */
 export function useLocalStorage<Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> {
   type T = Type | Default
-  const item = window.localStorage.getItem(key)
-  const storedValue = useMemo(() => (item == null ? null : (JSON.parse(item) as T)), [item])
+  const storageItem = window.localStorage.getItem(key)
+  const storedValue = useMemo(() => (storageItem == null ? null : (JSON.parse(storageItem) as T)), [storageItem])
   const [stateValue, setStateValue] = useState<T | Default | null>(storedValue)
   const setValue = useCallback(
     (setter: SetStateAction<Type>) => {
@@ -38,7 +38,7 @@ export function useLocalStorage<Type, Default = Type>(key: string, initialValue?
     [initialValue, key],
   )
   useEffect(() => {
-    storedValue != null && storedValue != stateValue && setStateValue(storedValue)
+    storedValue != stateValue && setStateValue(storedValue)
   }, [storedValue, stateValue])
   return [stateValue || initialValue!, setValue]
 }
