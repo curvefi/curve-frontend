@@ -1,5 +1,4 @@
 name: Prices API
-description: Builds and publishes the Prices API package to NPM
 
 on:
   push:
@@ -10,9 +9,11 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Setup yarn'
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup NPM registry in Yarn
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: yarn
@@ -21,7 +22,7 @@ jobs:
       - name: 'Build and publish'
         working-directory: packages/prices-api
         run: |
+          yarn config set npmRegistryServer "https://registry.npmjs.org"
+          yarn config set npmAuthToken "${{ secrets.NPM_TOKEN }}"
           yarn install --immutable
           yarn npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
