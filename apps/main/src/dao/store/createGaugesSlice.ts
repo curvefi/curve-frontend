@@ -126,7 +126,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const newGaugeMapper: GaugeMapper = {}
 
         formattedGauges.gauges.forEach((gauge) => {
-          newGaugeMapper[gauge.address.toLowerCase()] = {
+          newGaugeMapper[gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()] = {
             ...gauge,
             platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : '',
             title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name ?? null, gauge.address),
@@ -163,7 +163,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         const gaugeDataMapper: GaugeCurveApiDataMapper = Object.values(data.data).reduce((acc, gaugeData) => {
           if (gaugeData.gauge) {
-            acc[gaugeData.gauge.toLowerCase()] = gaugeData
+            acc[gaugeData.rootGauge?.toLowerCase() ?? gaugeData.gauge.toLowerCase()] = gaugeData
           }
           return acc
         }, {} as GaugeCurveApiDataMapper)

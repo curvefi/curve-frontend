@@ -156,6 +156,7 @@ export type PricesProposalData = {
 export type ProposalMapper = { [proposalId: string]: PricesProposalData }
 export type PricesGaugeOverviewData = {
   address: string
+  effective_address?: string
   gauge_type: string
   name: string | null
   version: string | null
@@ -184,7 +185,11 @@ export type CurveApiBaseGauge = {
   lpTokenPrice: number | null
   blockchainId: string
   gauge: string
-  gauge_data: { inflation_rate: string; working_supply: string }
+  rootGauge?: string
+  gauge_data: {
+    inflation_rate: string
+    working_supply: string
+  }
   gauge_controller: {
     gauge_relative_weight: string
     gauge_future_relative_weight: string

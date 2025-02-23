@@ -134,7 +134,7 @@ const Dashboard = ({
         <StyledTable>
           {isXSmDown ? <TableHeadMobile /> : <TableHead tableLabel={TABLE_LABEL} />}
           <tbody>
-            {noResult || !!error || !isValidAddress ? (
+            {noResult || error || !isValidAddress ? (
               <TableRowNoResult colSpan={colSpan} noResult={noResult} error={error} />
             ) : dashboardDataPoolIds?.length > 0 ? (
               <>

@@ -59,7 +59,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
               const network = networks[selectedChainId as ChainId].id
               const [currPath] = window.location.hash.split('?')
               const path = currPath.endsWith('markets') ? getRestFullPathname() : getRestPartialPathname()
-              navigate(`${network}/${path}`)
+              navigate(`/${network}/${path}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
           },

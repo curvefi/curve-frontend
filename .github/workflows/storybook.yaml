@@ -1,5 +1,4 @@
 name: Storybook
-description: Builds and deploys Storybook to GitHub Pages
 
 on:
   push:

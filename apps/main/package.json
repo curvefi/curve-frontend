@@ -24,12 +24,13 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@curvefi/api": "^2.66.5",
+    "@curvefi/api": "^2.66.6",
     "@curvefi/lending-api": "^2.4.5",
     "@curvefi/stablecoin-api": "^1.5.9",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^4.0.0",
     "@supercharge/promise-pool": "^3.2.0",
+    "@types/memoizee": "^0.4.11",
     "bignumber.js": "^9.1.2",
     "curve-ui-kit": "*",
     "ethers": "^6.13.5",

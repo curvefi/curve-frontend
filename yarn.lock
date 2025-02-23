@@ -1562,15 +1562,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.66.5":
-  version: 2.66.5
-  resolution: "@curvefi/api@npm:2.66.5"
+"@curvefi/api@npm:^2.66.6":
+  version: 2.66.6
+  resolution: "@curvefi/api@npm:2.66.6"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.12"
     bignumber.js: "npm:^9.1.2"
     ethers: "npm:^6.13.4"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/349143b53d5dd72b638011faab2a82641fc34c1bb47fae0f37115174dc819d71d0f310d71249922a770fea81e65c27379115e90a653a14bf47229d3d47ae907b
+  checksum: 10c0/9ae72cb252e0322ccd9978c1f4c20d693279bc0e58457d86f6dfe26fe87f46fc30b254b67f9ab0c858d1e7e0f05248626fa0813e4e93856c0bb673ae8abba08c
   languageName: node
   linkType: hard
 
@@ -8632,6 +8632,13 @@ __metadata:
   version: 2.0.13
   resolution: "@types/mdx@npm:2.0.13"
   checksum: 10c0/5edf1099505ac568da55f9ae8a93e7e314e8cbc13d3445d0be61b75941226b005e1390d9b95caecf5dcb00c9d1bab2f1f60f6ff9876dc091a48b547495007720
+  languageName: node
+  linkType: hard
+
+"@types/memoizee@npm:^0.4.11":
+  version: 0.4.11
+  resolution: "@types/memoizee@npm:0.4.11"
+  checksum: 10c0/4a8114e26971186b29b81add600e34ad45578f8847b5cf04209509f9f21c334171205405f19658f6176419fdad09cf18c084c21802257d71517f91761b97a10c
   languageName: node
   linkType: hard
 
@@ -17310,7 +17317,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.66.5"
+    "@curvefi/api": "npm:^2.66.6"
     "@curvefi/lending-api": "npm:^2.4.5"
     "@curvefi/stablecoin-api": "npm:^1.5.9"
     "@hookform/error-message": "npm:^2.0.1"
@@ -17319,6 +17326,7 @@ __metadata:
     "@supercharge/promise-pool": "npm:^3.2.0"
     "@svgr/webpack": "npm:^8.1.0"
     "@types/lodash": "npm:^4.17.15"
+    "@types/memoizee": "npm:^0.4.11"
     "@types/node": "npm:22.13.1"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
