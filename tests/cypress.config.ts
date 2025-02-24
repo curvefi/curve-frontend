@@ -1,7 +1,8 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
-  pageLoadTimeout: 30000, // todo: for some reason the page load is slow even with pre-building
+  defaultCommandTimeout: 10000,
+  pageLoadTimeout: 30000,
   retries: { runMode: 0, openMode: 0 },
   video: true,
   videosFolder: 'cypress/screenshots',
