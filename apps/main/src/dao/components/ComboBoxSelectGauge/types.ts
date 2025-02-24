@@ -4,7 +4,6 @@ export type EndsWith = (string: string, substring: string) => boolean
 
 export type ComboBoxSelectGaugeProps = {
   disabled?: boolean
-  imageBaseUrl: string
   listBoxHeight?: string
   selectedGauge: GaugeFormattedData | undefined
   showInpSearch?: boolean

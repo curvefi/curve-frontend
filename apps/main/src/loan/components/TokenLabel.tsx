@@ -1,17 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 
 import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
 import Box from '@ui/Box'
-import TokenIcon from '@/loan/components/TokenIcon'
-import { ChainId, CollateralData, CollateralDataCache } from '@/loan/types/loan.types'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { CollateralData, CollateralDataCache } from '@/loan/types/loan.types'
 
 type Props = {
   className?: string
-  rChainId: ChainId
+  blockchainId: string
   collateralDataCachedOrApi: CollateralDataCache | CollateralData | undefined
   minHeight?: number
   type: 'collateral' | 'borrow'
@@ -22,7 +21,7 @@ type Props = {
 
 const TokenLabel = ({
   className,
-  rChainId,
+  blockchainId,
   collateralDataCachedOrApi,
   minHeight,
   showAlert,
@@ -33,7 +32,7 @@ const TokenLabel = ({
   const collateralAlert = useCollateralAlert(collateralDataCachedOrApi?.llamma?.address)
 
   const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma ?? {}
-  const token = coins?.[type === 'collateral' ? 1 : 0] ?? ''
+  const symbol = coins?.[type === 'collateral' ? 1 : 0] ?? ''
   const tokenAddress = coinAddresses?.[type === 'collateral' ? 1 : 0] ?? ''
 
   return (
@@ -51,8 +50,8 @@ const TokenLabel = ({
           </AlertTooltipIcon>
         </TooltipIconWrapper>
       )}
-      <TokenIcon imageBaseUrl={getImageBaseUrl(rChainId)} token={token} address={tokenAddress} />{' '}
-      <Label size={size}>{token}</Label>
+      <TokenIcon blockchainId={blockchainId} symbol={symbol} address={tokenAddress} />{' '}
+      <Label size={size}>{symbol}</Label>
     </Wrapper>
   )
 }

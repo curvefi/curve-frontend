@@ -6,12 +6,13 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
 import { MarketBadges } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
 import { MarketWarnings } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketWarnings'
-import { TokenPair } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/TokenPair'
+import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@mui/material/Link'
+import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,12 +29,14 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
       <Typography component={Stack} variant="tableCellL" sx={showIconOnHover} direction="row" gap={2}>
         <MuiLink
           color="inherit"
-          underline="hover"
+          underline="none"
           {...(market.url.startsWith('http') ? { href: market.url } : { component: RouterLink, to: market.url })}
+          className={ClickableInRowClass}
         >
           {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}
         </MuiLink>
         <CopyIconButton
+          className={ClickableInRowClass}
           label={t`Copy market address`}
           copyText={market.address}
           confirmationText={t`Market address copied`}

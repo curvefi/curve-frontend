@@ -6,6 +6,7 @@
     "node": "22"
   },
   "scripts": {
+    "next": "next",
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
@@ -63,6 +64,7 @@
     "@next/bundle-analyzer": "^15.1.6",
     "@svgr/webpack": "^8.1.0",
     "@types/lodash": "^4.17.15",
+    "@types/memoizee": "^0.4.11",
     "@types/node": "22.13.1",
     "@types/react": "*",
     "@types/react-dom": "*",

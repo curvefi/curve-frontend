@@ -178,5 +178,5 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiSwitch: defineMuiSwitch(design),
-  MuiTypography: defineMuiTypography(),
+  MuiTypography: defineMuiTypography(design),
 })

@@ -15,7 +15,6 @@ const DetailsLoanChartBalances = ({
   rOwmId,
   market,
 }: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'>) => {
-  const { borrowed_token, collateral_token } = market ?? {}
   const statsBandsResp = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
@@ -28,8 +27,8 @@ const DetailsLoanChartBalances = ({
   const { oraclePrice, oraclePriceBand } = loanPricesResp?.prices ?? {}
 
   const chartBandBalancesData = useMemo(() => {
-    let data = cloneDeep(bandsBalances ?? [])
-
+    if (!bandsBalances) return
+    const data = cloneDeep(bandsBalances)
     if (data?.length > 0 && typeof oraclePriceBand === 'number') {
       const firstN = data[0].n
       const lastN = data[data.length - 1].n
@@ -52,9 +51,9 @@ const DetailsLoanChartBalances = ({
 
   const parsedChartBandBalancesData = useMemo(() => {
     setBrushIndex({ startIndex: undefined, endIndex: undefined })
-    return _parseData(chartBandBalancesData)
+    return chartBandBalancesData && _parseData(chartBandBalancesData)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartBandBalancesData.length])
+  }, [chartBandBalancesData?.length])
 
   return (
     <ChartBandBalances

@@ -5,10 +5,9 @@ import { t } from '@ui-kit/lib/i18n'
 
 import networks from '@/loan/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 
 import Box from '@ui/Box'
-import TokenIcon from '@/loan/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
@@ -35,8 +34,8 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                   <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
                   <StyledTokenIcon
                     size="sm"
-                    imageBaseUrl={getImageBaseUrl(chainId)}
-                    token={coins.collateral.address}
+                    blockchainId={networks[chainId].networkId}
+                    symbol={coins.collateral.symbol}
                     address={coins.collateral.address}
                   />
                 </LiquidityEventRow>
@@ -56,8 +55,8 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
-                        imageBaseUrl={getImageBaseUrl(chainId)}
-                        token={coins.collateral.address}
+                        blockchainId={networks[chainId].networkId}
+                        symbol={coins.collateral.symbol}
                         address={coins.collateral.address}
                       />
                     </LiquidityEventRow>
@@ -72,8 +71,8 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                       <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
-                        imageBaseUrl={getImageBaseUrl(chainId)}
-                        token={coins.crvusd.address}
+                        blockchainId={networks[chainId].networkId}
+                        symbol={coins.crvusd.symbol}
                         address={coins.crvusd.address}
                       />
                     </LiquidityEventRow>

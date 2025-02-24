@@ -56,7 +56,7 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
       <SubTitle>{t`Token`}</SubTitle>
       <StyledTokenComboBox
         title={t`Select a Token`}
-        imageBaseUrl={network?.imageBaseUrl ?? ''}
+        blockchainId={network?.networkId}
         listBoxHeight="400px"
         selectedToken={rewardTokenId ? tokensMapper[rewardTokenId] : undefined}
         showSearch={true}
