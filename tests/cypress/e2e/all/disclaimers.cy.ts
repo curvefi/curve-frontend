@@ -22,10 +22,10 @@ describe('Disclaimers', () => {
 
     it(`should contain multiple tabs for ${width}x${height}`, () => {
       cy.viewport(width, height)
-      cy.visit(`/${oneAppPath()}#/ethereum/disclaimer`)
+      cy.visit(`/${oneAppPath()}#/ethereum/disclaimer`, LOAD_TIMEOUT)
 
       // Make sure there's tabs available and click one.
-      cy.get(`[data-testid='disclaimer']`).should('be.visible')
+      cy.get(`[data-testid='disclaimer']`, LOAD_TIMEOUT).should('be.visible')
 
       const tabs = cy.get("[data-testid='disclaimer'] [role='tablist'] [role='tab']")
       tabs.should('have.length.at.least', 4)

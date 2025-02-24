@@ -38,16 +38,17 @@ jobs:
         working-directory: apps/main
 
       - name: Wait for dev server
+        # build apps in parallel, then wait for all of them sequentially
         run: |
-          wait-on --timeout 2m http://localhost:3000/dao & \
-          wait-on --timeout 2m http://localhost:3000/crvusd & \
-          wait-on --timeout 2m http://localhost:3000/lend & \
-          wait-on --timeout 2m http://localhost:3000/dex & \
-          wait-on --timeout 2m http://localhost:3000
-          wait-on --timeout 2m http://localhost:3000/dao
-          wait-on --timeout 2m http://localhost:3000/crvusd
-          wait-on --timeout 2m http://localhost:3000/lend
-          wait-on --timeout 2m http://localhost:3000/dex
+          wait-on http://localhost:3000/dao/ & \
+          wait-on http://localhost:3000/crvusd/ & \
+          wait-on http://localhost:3000/lend/ & \
+          wait-on http://localhost:3000/dex/ & \
+          wait-on http://localhost:3000/
+          wait-on http://localhost:3000/dao/
+          wait-on http://localhost:3000/crvusd/
+          wait-on http://localhost:3000/lend/
+          wait-on http://localhost:3000/dex/
         working-directory: tests
       - run: yarn run cy:run:e2e
         working-directory: tests

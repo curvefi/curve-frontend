@@ -1,5 +1,11 @@
 import { type Breakpoint, checkIsDarkMode, isInViewport, oneViewport } from '@/support/ui'
-import { mockLendingChains, mockLendingSnapshots, mockLendingVaults } from '@/support/helpers/lending-mocks'
+import {
+  createLendingVaultResponses,
+  type LendingVaultResponses,
+  mockLendingChains,
+  mockLendingSnapshots,
+  mockLendingVaults,
+} from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { oneOf, range, shuffle } from '@/support/generators'
 import { mockTokenPrices } from '@/support/helpers/tokens'
@@ -7,14 +13,16 @@ import { mockTokenPrices } from '@/support/helpers/tokens'
 describe('LlamaLend Markets', () => {
   let isDarkMode: boolean
   let breakpoint: Breakpoint
+  let vaultData: LendingVaultResponses
 
   beforeEach(() => {
     const [width, height, screen] = oneViewport()
+    vaultData = createLendingVaultResponses()
     breakpoint = screen
     mockChains()
     mockLendingChains()
     mockTokenPrices()
-    mockLendingVaults()
+    mockLendingVaults(vaultData)
     mockLendingSnapshots().as('snapshots')
     mockMintMarkets()
     mockMintSnapshots()
@@ -111,7 +119,8 @@ describe('LlamaLend Markets', () => {
   })
 
   it(`should allow filtering by token`, () => {
-    const columnId = oneOf('assets_collateral_symbol', 'assets_borrowed_symbol')
+    const type = oneOf('collateral', 'borrowed')
+    const columnId = `assets_${type}_symbol`
     cy.get(`[data-testid="btn-expand-filters"]`).click()
     const selectCoin = (symbol: string) => {
       cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
@@ -119,8 +128,11 @@ describe('LlamaLend Markets', () => {
       cy.get('body').click(0, 0) // close popover
       cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
     }
-    selectCoin('sfrxETH')
-    selectCoin('crvUSD')
+    const coins = vaultData.ethereum.data.map((d) => d[(type + '_token') as `${typeof type}_token`].symbol)
+    const coin1 = oneOf(...coins)
+    const coin2 = oneOf(...coins.filter((c) => c !== coin1))
+    selectCoin(coin1)
+    selectCoin(coin2)
   })
 
   it(`should allow filtering favorites`, () => {
