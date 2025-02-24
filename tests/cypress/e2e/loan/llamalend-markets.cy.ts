@@ -103,19 +103,23 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should allow filtering by chain', () => {
-    const chains = ['Ethereum', 'Fraxtal'] // only these chains are in the fixture
+    const chains = Object.keys(vaultData)
     const chain = oneOf(...chains)
     cy.get('[data-testid="multi-select-filter-chain"]').should('not.exist')
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    cy.get('[data-testid="multi-select-filter-chain"]').click()
-    cy.get(`#menu-chain [data-value="${chain.toLowerCase()}"]`).click()
-    cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain.toLowerCase()}"]`).should(
-      'be.visible',
-    )
+
+    function selectChain(chain: string) {
+      cy.get('[data-testid="multi-select-filter-chain"]').click()
+      cy.get(`#menu-chain [data-value="${chain}"]`).click()
+      cy.get(`body`).click(0, 0) // close popover
+    }
+
+    selectChain(chain)
+    cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
 
     const otherChain = oneOf(...chains.filter((c) => c !== chain))
-    cy.get(`#menu-chain [data-value="${otherChain.toLowerCase()}"]`).click()
-    ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c.toLowerCase()}"]`).should('be.visible'))
+    selectChain(otherChain)
+    ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c}"]`).should('be.visible'))
   })
 
   it(`should allow filtering by token`, () => {
