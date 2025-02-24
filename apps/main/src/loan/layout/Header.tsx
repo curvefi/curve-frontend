@@ -13,6 +13,8 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@/loan/types/loan.types'
+import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
+import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -24,11 +26,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
+  const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
-  const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply)
-  const dailyVolume = useStore((state) => state.dailyVolume)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const routerProps = useStore((state) => state.routerProps)
@@ -36,6 +37,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
+  const { data: dailyVolume } = useAppStatsDailyVolume({})
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ curve: curve })
   const location = useLocation()
   const { params: routerParams } = routerProps ?? {}
 

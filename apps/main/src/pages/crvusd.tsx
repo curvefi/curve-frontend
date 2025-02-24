@@ -42,7 +42,6 @@ const App: NextPage = () => {
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const fetchCrvUSDTotalSupply = useStore((state) => state.fetchCrvUSDTotalSupply)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -91,7 +90,6 @@ const App: NextPage = () => {
       if (isPageVisible && curve) {
         fetchAllStoredUsdRates(curve)
         fetchGasInfo(curve)
-        fetchCrvUSDTotalSupply(curve)
       }
     },
     REFRESH_INTERVAL['5m'],
