@@ -2,6 +2,7 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+export const ETHEREUM_CHAIN_ID = 1
 
 export const ROUTE = {
   ...DAO_ROUTES,
@@ -16,7 +17,7 @@ export const REFRESH_INTERVAL = {
   '1m': 60000,
   '5m': 300000,
   '11m': 660000,
-}
+} as const
 
 // 7 days in seconds
 export const SEVEN_DAYS = 604800

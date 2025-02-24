@@ -2,8 +2,10 @@ import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 
 import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
-import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
+import networks from '@/dao/networks'
+import { getChainIdFromGaugeData } from '@/dao/utils'
+import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Box from '@ui/Box'
@@ -20,6 +22,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeCurveApiData = useStore(
     (state) => state.gauges.gaugeCurveApiData.data[gaugeData?.address.toLowerCase() || ''],
   )
+  const chainId = getChainIdFromGaugeData(gaugeData)
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]
     : gaugeCurveApiData?.lendingVaultUrls.deposit
@@ -37,7 +40,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.address || '')}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    href={networks[1].scanAddressPath(gaugeData?.address || '')}
+                    href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
                     tooltip={t`View on explorer`}
                   />
                   <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
@@ -47,7 +50,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              href={networks[1].scanAddressPath(gaugeData?.address || '')}
+              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
               tooltip={t`View on explorer`}
             />
             <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
@@ -152,7 +155,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             />
             <SmallScreenButtonsWrapper>
               <ExternalLinkIconButton
-                href={networks[1].scanAddressPath(gaugeData?.pool?.address)}
+                href={networks[chainId].scanAddressPath(gaugeData?.pool?.address)}
                 tooltip={t`View on explorer`}
               />
               <CopyIconButton copyContent={gaugeData?.pool?.address} tooltip={t`Copy address`} />

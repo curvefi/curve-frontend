@@ -14,7 +14,7 @@ export type PageWidthClassName =
   | 'page-small-x'
   | 'page-small-xx'
 export type CurveApi = typeof curveApi & { chainId: 1 }
-export type ChainId = 1
+export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export interface NetworkConfig extends BaseConfig {

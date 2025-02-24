@@ -49,7 +49,7 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
             label={label}
             dash={dash}
             legendColor={
-              key === 'proj_apy'
+              key === 'apyProjected'
                 ? priceLineColors.apyProjected
                 : key === 'proj_apy_7d_avg'
                   ? priceLineColors.proj_apy_7d_avg
