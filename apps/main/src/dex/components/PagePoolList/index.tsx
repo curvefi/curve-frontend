@@ -46,7 +46,6 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const network = useStore((state) => state.networks.networks[rChainId])
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -211,7 +210,6 @@ const PoolList = ({
                   poolId={poolId}
                   rChainId={rChainId}
                   searchParams={searchParams}
-                  imageBaseUrl={network?.imageBaseUrl ?? ''}
                   showInPoolColumn={showInPoolColumn}
                   tableLabels={tableLabels}
                   searchTermMapper={searchTermMapper}

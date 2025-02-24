@@ -8,7 +8,6 @@ import { ChainId, NativeToken, Token, TokensMapper, TokensNameMapper, PoolData }
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  tokensImage: { [tokenAddress: string]: string | null }
   tokensNameMapper: { [chainId: string]: TokensNameMapper }
   tokensMapper: { [chainId: string]: TokensMapper } // list of all tokens from poolDatas
   tokensMapperNonSmallTvl: { [chainId: string]: TokensMapper }
@@ -20,7 +19,6 @@ const sliceKey = 'tokens'
 // prettier-ignore
 export type TokensSlice = {
   [sliceKey]: SliceState & {
-    setTokenImage: (tokenAddress: string, src: string | null) => void
     setTokensMapper(chainId: ChainId, poolDatas: PoolData[]): Promise<string[]>
     setEmptyPoolListDefault(chainId: ChainId): void
 
@@ -40,7 +38,6 @@ const DEFAULT_TOKEN: Token = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  tokensImage: {},
   tokensNameMapper: {},
   tokensMapper: {},
   tokensMapperNonSmallTvl: {},
@@ -51,9 +48,6 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    setTokenImage: (tokenAddress, src) => {
-      get()[sliceKey].setStateByActiveKey('tokensImage', tokenAddress, src)
-    },
     setTokensMapper: async (chainId, poolDatas) => {
       const { pools, networks } = get()
       const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]

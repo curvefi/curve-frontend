@@ -13,12 +13,12 @@ interface Props {
   navigation: number
   setNavigation: (index: number) => void
   disabled?: boolean
-  imageBaseUrl: string
+  blockchainId: string
   chainId: ChainId
   curve: CurveApi
 }
 
-const Navigation = ({ navigation, setNavigation, imageBaseUrl, chainId, curve }: Props) => {
+const Navigation = ({ navigation, setNavigation, blockchainId, chainId, curve }: Props) => {
   const createPoolState = useStore((state) => state.createPool)
   const { validation } = createPoolState
 
@@ -69,7 +69,7 @@ const Navigation = ({ navigation, setNavigation, imageBaseUrl, chainId, curve }:
         <Icon name={'ChevronRight'} size={16} className="navigation-icon" aria-label={t`Chevron right`} />
       </ButtonStyles>
       <SummaryContainer>
-        <ConfirmModal smallScreen chainId={chainId} curve={curve} imageBaseUrl={imageBaseUrl} />
+        <ConfirmModal smallScreen chainId={chainId} curve={curve} blockchainId={blockchainId} />
       </SummaryContainer>
     </NavigationStyles>
   )

@@ -178,12 +178,7 @@ const CreatePool = ({ curve }: Props) => {
           <CreateWrapper>
             <TitleWrapper flex>
               <MainTitle>{t`Pool Creation`}</MainTitle>
-              <SmallSummary
-                smallScreen
-                chainId={chainId}
-                curve={curve}
-                imageBaseUrl={networks[chainId]?.imageBaseUrl || ''}
-              />
+              <SmallSummary smallScreen chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
             </TitleWrapper>
             {/* Top nav */}
             <Navigation
@@ -191,7 +186,7 @@ const CreatePool = ({ curve }: Props) => {
               setNavigation={setNavigationIndex}
               chainId={chainId}
               curve={curve}
-              imageBaseUrl={networks[chainId]?.imageBaseUrl || ''}
+              blockchainId={networks[chainId]?.networkId}
             />
             <CreateBoxStyles flex flexColumn>
               {chainId && (
@@ -265,7 +260,7 @@ const CreatePool = ({ curve }: Props) => {
                   }
                   chainId={chainId}
                   curve={curve}
-                  imageBaseUrl={networks[chainId]?.imageBaseUrl || ''}
+                  blockchainId={networks[chainId]?.networkId}
                 />
               )}
             </NavButtonsBox>
@@ -292,12 +287,12 @@ const CreatePool = ({ curve }: Props) => {
                 fixedNavButton
                 chainId={chainId}
                 curve={curve}
-                imageBaseUrl={networks[chainId]?.imageBaseUrl || ''}
+                blockchainId={networks[chainId]?.networkId}
               />
             )}
           </NavButtonsBoxFixed>
           <DetailsContainer>
-            <Summary chainId={chainId} curve={curve} imageBaseUrl={networks[chainId]?.imageBaseUrl || ''} />
+            <Summary chainId={chainId} curve={curve} blockchainId={networks[chainId]?.networkId} />
           </DetailsContainer>
         </>
       ) : (

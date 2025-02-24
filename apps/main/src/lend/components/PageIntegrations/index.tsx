@@ -8,7 +8,7 @@ import Image from 'next/image'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/lend/constants'
-import { breakpoints } from '@ui/utils'
+import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { getPath } from '@/lend/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import networks, { networksIdMapper } from '@/lend/networks'
@@ -143,7 +143,7 @@ const IntegrationsComp = ({
                   </Box>
                 )
               }
-              imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
+              imageUrl={app.imageId ? `${CURVE_ASSETS_URL}/platforms/${app.imageId}` : ''}
             />
           ))}
         </IntegrationsWrapper>

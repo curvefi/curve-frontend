@@ -28,7 +28,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 const FormDepositStake = ({
   chainIdPoolId,
   curve,
-  imageBaseUrl,
+  blockchainId,
   poolAlert,
   poolData,
   poolDataCacheOrApi,
@@ -252,7 +252,7 @@ const FormDepositStake = ({
         formProcessing={disableForm}
         formValues={formValues}
         haveSigner={haveSigner}
-        imageBaseUrl={imageBaseUrl}
+        blockchainId={blockchainId}
         isSeed={seed.isSeed}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}

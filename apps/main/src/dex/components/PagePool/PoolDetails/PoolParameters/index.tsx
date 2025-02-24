@@ -11,7 +11,7 @@ import Box from '@ui/Box'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { Chip } from '@ui/Typography'
 import { ExternalLink } from '@ui/Link'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { ChainId, PoolData } from '@/dex/types/main.types'
@@ -128,8 +128,8 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       <ExternalLinkTokenWrapper>
                         <StyledTokenIcon
                           size="sm"
-                          imageBaseUrl={network?.imageBaseUrl ?? ''}
-                          token={token}
+                          blockchainId={network?.networkId ?? ''}
+                          symbol={token}
                           address={poolData.tokenAddresses[idx]}
                         />
                         <ExternalLinkToken>{token}</ExternalLinkToken>
