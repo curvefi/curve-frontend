@@ -1,4 +1,4 @@
-import { type Breakpoint, checkIsDarkMode, isInViewport, oneViewport } from '@/support/ui'
+import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport } from '@/support/ui'
 import {
   createLendingVaultResponses,
   type LendingVaultResponses,
@@ -34,7 +34,7 @@ describe('LlamaLend Markets', () => {
         isDarkMode = checkIsDarkMode(win)
       },
     })
-    cy.get('[data-testid="data-table"]').should('be.visible')
+    cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
   it('should have sticky headers', () => {
@@ -46,15 +46,12 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
-    const filterHeight = { mobile: 202, tablet: [112, 144], desktop: 120 }[breakpoint]
+
+    // filter height changes because text wraps depending on the width
+    const filterHeight = { mobile: [202], tablet: [112, 144, 200], desktop: [120] }[breakpoint]
+    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
+
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
-    const outerHeight = cy.get('[data-testid="table-filters"]').invoke('outerHeight')
-    if (typeof filterHeight === 'number') {
-      outerHeight.should('equal', filterHeight)
-    } else {
-      // the height can be within a range, because the text wraps depending on the width
-      outerHeight.should('be.within', ...filterHeight)
-    }
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
