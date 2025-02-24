@@ -486,7 +486,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
         'useScrvUsdUserBalances',
-        { signerAddress },
+        { userAddress: signerAddress },
       ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       try {
@@ -519,17 +519,13 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => {
       const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
         'useScrvUsdUserBalances',
-        { signerAddress: userAddress },
+        { userAddress: userAddress.toLowerCase() },
       ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       if (stakingModule === 'deposit') {
-        const crvUsdBalance = userBalance.crvUSD
-
-        get()[sliceKey].setStateByKey('inputAmount', crvUsdBalance)
+        get()[sliceKey].setStateByKey('inputAmount', userBalance.crvUSD)
       } else {
-        const scrvUsdBalance = userBalance.scrvUSD
-
-        get()[sliceKey].setStateByKey('inputAmount', scrvUsdBalance)
+        get()[sliceKey].setStateByKey('inputAmount', userBalance.scrvUSD)
       }
     },
     setInputAmount: (amount: string) => {
@@ -579,7 +575,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       const gas = get()[sliceKey].estGas.gas
       const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
         'useScrvUsdUserBalances',
-        { signerAddress: userAddress },
+        { userAddress: userAddress.toLowerCase() },
       ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       if (!getInputAmountApproved && stakingModule === 'deposit') {

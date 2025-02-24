@@ -22,13 +22,13 @@ type CurrentVotesProps = {
 
 const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
-  const {
-    setUserGaugeVoteWeightsSortBy,
-    userGaugeVoteWeightsSortBy,
-    getUserGaugeVoteWeights,
-    getAllVoteForGaugeNextTime,
-  } = useStore((state) => state.user)
-  const { gaugeMapper, selectedGauge, gaugesLoading } = useStore((state) => state.gauges)
+  const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
+  const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
+  const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
+  const getAllVoteForGaugeNextTime = useStore((state) => state.user.getAllVoteForGaugeNextTime)
+  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const selectedGauge = useStore((state) => state.gauges.selectedGauge)
+  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
 
   const userGauges = userData?.data.gauges ?? []
   const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
@@ -98,7 +98,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
             <React.Fragment key={index}>
               <GaugeListItemWrapper>
                 <GaugeListItem
-                  gaugeData={gaugeMapper[gauge.gaugeAddress]}
+                  gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
                   userGaugeWeightVoteData={gauge}
                   gridTemplateColumns={gridTemplateColumns}
                   powerUsed={userData?.data.powerUsed}
@@ -107,7 +107,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               </GaugeListItemWrapper>
               <SmallScreenCardWrapper>
                 <SmallScreenCard
-                  gaugeData={gaugeMapper[gauge.gaugeAddress]}
+                  gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
                   userGaugeWeightVoteData={gauge}
                   powerUsed={userData?.data.powerUsed}
                   userGaugeVote={true}

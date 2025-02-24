@@ -91,7 +91,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             } else {
               const foundNetwork = networks[walletChainId as ChainId]?.id
               if (foundNetwork) {
-                navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
+                console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
+                navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -136,7 +137,12 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
             const foundNetwork = networks[+currChainId as ChainId]?.id
             if (foundNetwork) {
-              navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
+              console.warn(
+                `Could not switch network to ${newChainId}, redirecting to ${foundNetwork}`,
+                parsedParams,
+                error,
+              )
+              navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -194,7 +200,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
-          navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
+          console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
+          navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
         } else {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }

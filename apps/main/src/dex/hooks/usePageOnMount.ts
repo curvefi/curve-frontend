@@ -104,7 +104,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             } else {
               const foundNetwork = networks[walletChainId as ChainId]?.id
               if (foundNetwork) {
-                navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
+                console.warn(`Network is switched to ${walletChainId}, redirecting...`, parsedParams)
+                navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -158,7 +159,12 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
             const foundNetwork = networks[+currChainId as ChainId]?.id
             if (foundNetwork) {
-              navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
+              console.warn(
+                `Could not switch network to ${newChainId}, redirecting to ${foundNetwork}`,
+                parsedParams,
+                error,
+              )
+              navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -180,8 +186,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       const isActiveNetwork = routerNetworkId ? (networks[routerNetworkId]?.isActiveNetwork ?? false) : false
 
       if (!isActiveNetwork) {
-        // network in router is not good, redirect to default network
-        navigate(`ethereum${ROUTE.PAGE_SWAP}`)
+        console.warn(`network in router (${routerNetworkId}) is not active, redirecting to default network`)
+        navigate(`/ethereum${ROUTE.PAGE_SWAP}`)
       } else {
         updateGlobalStoreByKey('routerProps', { params, location, navigate })
         if (walletName) {
@@ -224,7 +230,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
         if (foundNetwork && isActiveNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
-          navigate(`${foundNetwork}/${parsedParams.restFullPathname}`)
+          console.warn(`Network is switched to ${walletChainId}, redirecting...`, parsedParams)
+          navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
         } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }

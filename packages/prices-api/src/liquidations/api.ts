@@ -1,5 +1,5 @@
 import { getHost, type Options, type Chain } from '..'
-import { fetchJson as fetch } from '../fetch'
+import { fetchJson as fetch, addQueryString } from '../fetch'
 import type * as Responses from './responses'
 import * as Parsers from './parsers'
 
@@ -57,4 +57,24 @@ export async function getLiqHealthDeciles(endpoint: Endpoint, chain: Chain, mark
   )
 
   return resp.data.map(Parsers.parseLiqHealthDeciles)
+}
+
+export async function getTotalOverview(
+  {
+    endpoint,
+    ...params
+  }: {
+    endpoint: Endpoint
+    fetch_on_chain?: boolean
+  },
+  options?: Options,
+) {
+  params.fetch_on_chain ??= true
+
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetTotalOverviewResponse>(
+    `${host}/v1/${endpoint}/liquidations/total_overview${addQueryString(params)}`,
+  )
+
+  return resp.data.map(Parsers.parseTotalOverview)
 }
