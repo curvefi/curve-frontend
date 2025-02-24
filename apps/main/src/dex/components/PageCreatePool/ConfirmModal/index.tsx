@@ -32,7 +32,7 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
   disabled?: boolean
-  imageBaseUrl: string
+  blockchainId: string
   chainId: ChainId
   curve: CurveApi
   smallScreen?: boolean
@@ -42,7 +42,7 @@ type Props = {
 
 const ConfirmModal = ({
   disabled,
-  imageBaseUrl,
+  blockchainId,
   chainId,
   curve,
   smallScreen,
@@ -206,7 +206,7 @@ const ConfirmModal = ({
               {txStatus !== 'SUCCESS' && (
                 <SummaryContent>
                   <PoolTypeSummary />
-                  <TokensInPoolSummary imageBaseUrl={imageBaseUrl} chainId={chainId} />
+                  <TokensInPoolSummary blockchainId={blockchainId} chainId={chainId} />
                   <ParametersSummary chainId={chainId} />
                   <PoolInfoSummary chainId={chainId} />
                 </SummaryContent>

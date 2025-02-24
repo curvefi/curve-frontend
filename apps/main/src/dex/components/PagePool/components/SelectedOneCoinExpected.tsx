@@ -12,13 +12,13 @@ import Loader from '@ui/Loader'
 import Spacer from '@ui/Spacer'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import TextEllipsis from '@ui/TextEllipsis'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 const SelectedOneCoinExpected = ({
   amounts,
   haveSigner,
-  imageBaseUrl,
+  blockchainId,
   loading,
   poolDataCacheOrApi,
   selectedTokenAddress,
@@ -29,7 +29,7 @@ const SelectedOneCoinExpected = ({
 }: {
   amounts: Amount[]
   haveSigner: boolean
-  imageBaseUrl: string | null
+  blockchainId: string
   loading: boolean
   poolDataCacheOrApi: PoolDataCacheOrApi
   selectedTokenAddress: string
@@ -47,22 +47,22 @@ const SelectedOneCoinExpected = ({
     <StyledRadioGroup aria-label="Withdraw from one coin" value={selectedTokenAddress} onChange={handleRadioChange}>
       {selectedTokenAddress ? (
         tokenAddresses.map((tokenAddress, idx) => {
-          const token = tokens[idx]
-          const haveSameTokenName = poolDataCacheOrApi?.tokensCountBy[token] > 1
+          const symbol = tokens[idx]
+          const haveSameTokenName = poolDataCacheOrApi?.tokensCountBy[symbol] > 1
 
           return (
             <Radio
               key={tokenAddress}
-              aria-label={`Withdraw from ${token} for ${amounts[idx]?.value ?? '0'}`}
+              aria-label={`Withdraw from ${symbol} for ${amounts[idx]?.value ?? '0'}`}
               value={tokenAddress}
             >
               <StyledTokenIcon
                 size="sm"
-                imageBaseUrl={imageBaseUrl}
-                token={token}
+                blockchainId={blockchainId}
+                symbol={symbol}
                 address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
               />{' '}
-              {token} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}
+              {symbol} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}
               <Spacer />
               {loading ? (
                 <Loader skeleton={[90, 20]} />

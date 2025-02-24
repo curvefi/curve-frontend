@@ -12,12 +12,11 @@ import Chip from '@ui/Typography/Chip'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 const ComboBoxListItem = ({
-  imageBaseUrl,
   testId,
   selectedGauge,
   handleOnSelectChange,
   ...item
-}: Pick<ComboBoxSelectGaugeProps, 'testId' | 'imageBaseUrl'> &
+}: Pick<ComboBoxSelectGaugeProps, 'testId'> &
   GaugeFormattedData & {
     selectedGauge: GaugeFormattedData | null
     handleOnSelectChange(selectedGauge: string): void

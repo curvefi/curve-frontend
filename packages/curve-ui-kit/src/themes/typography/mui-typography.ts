@@ -1,5 +1,6 @@
 import type { Components } from '@mui/material/styles'
 import { TypographyVariantKey } from './create-typography'
+import type { DesignSystem } from '@ui-kit/themes/design'
 
 const variantMapping = {
   headingXxl: 'h1',
@@ -37,6 +38,10 @@ const variantMapping = {
   highlightXxl: 'p',
 } as const satisfies Record<TypographyVariantKey, keyof HTMLElementTagNameMap>
 
-export const defineMuiTypography = (): Components['MuiTypography'] => ({
+export const defineMuiTypography = ({ Text }: DesignSystem): Components['MuiTypography'] => ({
   defaultProps: { variant: 'bodyMRegular', variantMapping },
+  variants: Object.entries(Text.TextColors.Feedback).map(([key, value]) => ({
+    props: { color: key.toLowerCase() },
+    style: { color: value },
+  })),
 })

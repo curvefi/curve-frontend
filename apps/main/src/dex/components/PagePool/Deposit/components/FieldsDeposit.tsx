@@ -14,7 +14,7 @@ const FieldsDeposit = ({
   formValues,
   haveSigner,
   isSeed,
-  imageBaseUrl,
+  blockchainId,
   poolData,
   poolDataCacheOrApi,
   routerParams,
@@ -22,6 +22,7 @@ const FieldsDeposit = ({
   userPoolBalances,
   updateFormValues,
 }: {
+  blockchainId: string
   formProcessing: boolean
   formValues: FormValues
   haveSigner: boolean
@@ -31,10 +32,7 @@ const FieldsDeposit = ({
     loadMaxAmount: LoadMaxAmount | null,
     updatedMaxSlippage: string | null,
   ) => void
-} & Pick<
-  TransferProps,
-  'imageBaseUrl' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'
->) => {
+} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'>) => {
   const { rChainId } = routerParams
   const network = useStore((state) => state.networks.networks[rChainId])
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
@@ -91,7 +89,7 @@ const FieldsDeposit = ({
               hasError={haveSigner && !formProcessing ? +(value || '0') > +addressBalanceAmount : false}
               haveSameTokenName={haveSameTokenName}
               haveSigner={haveSigner}
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               isMaxLoading={maxLoading === idx}
               token={token}
               tokenAddress={ethAddress}

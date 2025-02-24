@@ -255,10 +255,6 @@ const curvejsApi = {
 
 export default curvejsApi
 
-export function getImageBaseUrl(rChainId: ChainId) {
-  return rChainId ? (networks[rChainId].imageBaseUrl ?? '') : ''
-}
-
 export function getWalletProvider(wallet: Wallet) {
   if ('isTrustWallet' in wallet.provider) {
     // unable to connect to curvejs with wallet.provider

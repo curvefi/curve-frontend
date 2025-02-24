@@ -1,8 +1,9 @@
-export type * from '@mui/system/ThemeProvider'
-import MuiThemeProvider from '@mui/system/ThemeProvider'
-import { FunctionComponent, ReactNode, useMemo } from 'react'
-import { chadTheme, darkTheme, lightTheme } from '../../themes'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { useTheme } from '@mui/material/styles'
+import MuiThemeProvider from '@mui/system/ThemeProvider'
+import { ReactNode } from 'react'
+import { chadTheme, darkTheme, lightTheme } from '../../themes'
+import memoizee from 'memoizee'
 
 const themes = {
   light: lightTheme,
@@ -10,21 +11,20 @@ const themes = {
   chad: chadTheme,
 }
 
-type ThemeProviderProps = {
-  theme: keyof typeof themes
+const createTheme = memoizee((theme: ThemeKey, inverted?: boolean) => themes[theme]({ inverted }))
+
+export const ThemeProvider = ({ theme: themeKey, children }: { theme: keyof typeof themes; children: ReactNode }) => (
+  <MuiThemeProvider theme={createTheme(themeKey)}>{children}</MuiThemeProvider>
+)
+
+export const InvertTheme = ({
+  children,
+  inverted = true,
+}: {
   children: ReactNode
-}
-
-export const ThemeProvider: FunctionComponent<ThemeProviderProps> = ({ theme: themeKey, children }) => {
-  const theme = useMemo(() => themes[themeKey](), [themeKey])
-  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
-}
-
-export const InvertTheme = ({ children }: { children: ReactNode }) => {
-  const {
-    theme: themeName,
-    options: { inverted },
-  } = useTheme().design
-  const theme = useMemo(() => themes[themeName]({ inverted: !inverted }), [inverted, themeName])
+  inverted?: boolean // allows to disable the inversion via prop
+}) => {
+  const { theme: themeName } = useTheme().design
+  const theme = createTheme(themeName, inverted)
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
 }

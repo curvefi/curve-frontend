@@ -5,23 +5,23 @@ import { shortenTokenAddress } from '@/dex/utils'
 
 import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Token } from '@/dex/types/main.types'
 
 const ComboBoxSelectedToken = ({
-  imageBaseUrl,
+  blockchainId,
   selected,
   testId,
 }: {
-  imageBaseUrl: string
+  blockchainId: string
   selected: Token
   testId: string | undefined
 }) => (
   <>
     <TokenIconWrapper>
       <TokenIcon
-        imageBaseUrl={imageBaseUrl}
-        token={selected.symbol}
+        blockchainId={blockchainId}
+        symbol={selected.symbol}
         size="sm"
         address={selected.ethAddress || selected.address}
       />

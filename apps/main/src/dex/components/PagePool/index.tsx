@@ -101,7 +101,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { pool } = poolDataCacheOrApi
   const poolId = poolData?.pool?.id
-  const { imageBaseUrl, isLite, pricesApi, scanAddressPath } = useStore((state) => state.networks.networks[rChainId])
+  const { networkId, isLite, pricesApi, scanAddressPath } = useStore((state) => state.networks.networks[rChainId])
   const poolAddress = poolData?.pool.address
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
@@ -252,7 +252,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                     <Swap
                       {...pageTransferProps}
                       chainIdPoolId={chainIdPoolId}
-                      imageBaseUrl={imageBaseUrl}
+                      blockchainId={networkId}
                       poolAlert={poolAlert}
                       maxSlippage={maxSlippage}
                       seed={seed}
@@ -266,8 +266,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 <Deposit
                   {...pageTransferProps}
                   chainIdPoolId={chainIdPoolId}
+                  blockchainId={networkId}
                   hasDepositAndStake={hasDepositAndStake}
-                  imageBaseUrl={imageBaseUrl}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}
@@ -279,7 +279,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 <Withdraw
                   {...pageTransferProps}
                   chainIdPoolId={chainIdPoolId}
-                  imageBaseUrl={imageBaseUrl}
+                  blockchainId={networkId}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}

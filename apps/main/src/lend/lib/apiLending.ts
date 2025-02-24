@@ -54,7 +54,6 @@ export const helpers = {
     await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
     return api
   },
-  getImageBaseUrl: (chainId: ChainId) => networks[chainId ?? '1'].imageBaseUrl,
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,

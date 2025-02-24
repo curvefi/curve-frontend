@@ -2,11 +2,11 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
-import { useChainId } from '@/dex/entities/chain'
 import { Token } from '@/dex/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 
 export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | undefined)[] } => {
-  const { data: chainId } = useChainId()
+  const chainId = useStore((state) => state.curve?.chainId ?? (0 as ChainId))
   const { tokensMapper } = useTokensMapper(chainId)
 
   const tokensKey = JSON.stringify(addresses)

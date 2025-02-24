@@ -35,11 +35,10 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
 
 const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   index,
-  isLite,
   columnKeys,
   formValues,
   isInPool,
-  imageBaseUrl,
+  blockchainId,
   poolData,
   poolDataCachedOrApi,
   poolId,
@@ -93,7 +92,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
           <MobileLabelContent>
             <PoolLabel
               isVisible
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               poolData={poolDataCachedOrApi}
               poolListProps={{
                 quickViewValue,

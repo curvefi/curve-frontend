@@ -1,7 +1,6 @@
 import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import apiLending from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
@@ -51,7 +50,6 @@ const ExpectedSwapDetails = ({
     setData(state)
   }, [networkId])
 
-  const imageBaseUrl = apiLending.helpers.getImageBaseUrl(rChainId)
   const swapFromTotal = _getTotal(swapFromAmounts.map(({ value }) => value))
   const swapToTotal = _getTotal(swapToAmounts)
   const minHeight = loading && data.length === 0 && swapFromTotal > 0 ? height : ''
@@ -65,7 +63,7 @@ const ExpectedSwapDetails = ({
         <Box grid gridGap={3}>
           {/* trade from */}
           <RouteToken
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={networkId}
             tokenSymbol={swapFromSymbol}
             tokenAddress={swapFromAddress}
             value={swapFromTotal}
@@ -88,7 +86,7 @@ const ExpectedSwapDetails = ({
 
           {/* trade to */}
           <RouteToken
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={networkId}
             tokenSymbol={swapToSymbol}
             tokenAddress={swapToAddress}
             value={swapToTotal}

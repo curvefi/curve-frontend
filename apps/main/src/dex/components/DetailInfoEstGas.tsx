@@ -9,7 +9,6 @@ import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
 import useStore from '@/dex/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { useCurve } from '@/dex/entities/curve'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 
 export type StepProgress = {
@@ -31,7 +30,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const { data: curve } = useCurve()
+  const curve = useStore((state) => state.curve)
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
