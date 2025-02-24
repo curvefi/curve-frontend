@@ -233,6 +233,11 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 
   const Table = {
     Header: { Fill: Light.Tables.Header.Fill },
+    Row: {
+      Default: Light.Layer[1].Fill,
+      Selected: Light.Layer.TypeAction.Selected,
+      Hover: Light.Layer.TypeAction.Hover,
+    },
   } as const
 
   const Inputs = {
@@ -572,6 +577,11 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Table = {
     Header: { Fill: Dark.Tables.Header.Fill },
+    Row: {
+      Default: Dark.Layer[1].Fill,
+      Selected: Dark.Layer.TypeAction.Selected,
+      Hover: Dark.Layer.TypeAction.Hover,
+    },
   } as const
 
   const Inputs = {
@@ -856,6 +866,11 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Table = {
     Header: { Fill: Chad.Tables.Header.Fill },
+    Row: {
+      Default: Chad.Layer[1].Fill,
+      Selected: Chad.Layer.TypeAction.Selected,
+      Hover: Chad.Layer.TypeAction.Hover,
+    },
   } as const
 
   const Inputs = {

@@ -42,7 +42,7 @@ const ChartBandBalances = ({
   market,
 }: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'> & {
   brushIndex: BrushStartEndIndex
-  data: ParsedBandsBalances[]
+  data: ParsedBandsBalances[] | undefined
   oraclePrice: string | undefined
   oraclePriceBand: number | null | undefined
   showLiquidationIndicator: boolean
@@ -55,17 +55,17 @@ const ChartBandBalances = ({
 
   const { cap, available } = statsCapAndAvailable ?? {}
 
-  const isNGroupeds = useMemo(() => data.filter((d) => d.isNGrouped), [data])
+  const isNGroupeds = useMemo(() => data?.filter((d) => d.isNGrouped), [data])
 
-  const oraclePriceBandData = data.find((d) => +d.n === oraclePriceBand && (+d.p_up > 0 || +d.p_down > 0))
+  const oraclePriceBandData = data?.find((d) => +d.n === oraclePriceBand && (+d.p_up > 0 || +d.p_down > 0))
   const chartHeight = 290
   let barWidth = 0
 
-  const isChartNotAvailable = typeof cap !== 'undefined' && +cap === +available && data.length === 0
+  const isChartNotAvailable = typeof cap !== 'undefined' && +cap === +available && data?.length === 0
 
   const showInAccurateChartAlert = useMemo(() => {
-    if (typeof cap !== 'undefined' && +cap > 0 && data.length > 0) {
-      return data.every((d) => +d.borrowed + +d.collateral === 0)
+    if (typeof cap !== 'undefined' && +cap > 0 && data && data.length > 0) {
+      return data?.every((d) => +d.borrowed + +d.collateral === 0)
     }
     return false
   }, [cap, data])
@@ -89,7 +89,11 @@ const ChartBandBalances = ({
         </StyledAlertBox>
       ) : (
         <Wrapper chartHeight={chartHeight}>
-          {data.length !== 0 ? (
+          {data?.length === 0 ? (
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          ) : (
             <InnerWrapper>
               <ResponsiveContainer width="99%" height={chartHeight}>
                 <ComposedChart data={data} margin={{ right: 25 }}>
@@ -110,7 +114,7 @@ const ChartBandBalances = ({
                     tickFormatter={(n) => {
                       let formattedTick = formatNumber(n)
                       if (xAxisDisplayType === 'price') {
-                        const d = data.find((d) => d.n === n)
+                        const d = data?.find((d) => d.n === n)
                         if (d) {
                           formattedTick =
                             d.pUpDownMedian === '' && d.isOraclePriceBand && oraclePrice
@@ -342,7 +346,7 @@ const ChartBandBalances = ({
                   )}
 
                   {/* grouped N */}
-                  {isNGroupeds.map((d) => (
+                  {isNGroupeds?.map((d) => (
                     <ReferenceLine
                       isFront
                       key={d.n}
@@ -351,7 +355,7 @@ const ChartBandBalances = ({
                       width={100}
                       label={
                         <Label
-                          value={data.length > 30 ? '••' : '•••'}
+                          value={data && data.length > 30 ? '••' : '•••'}
                           fontSize={20}
                           fontWeight="bold"
                           position="inside"
@@ -362,10 +366,6 @@ const ChartBandBalances = ({
                 </ComposedChart>
               </ResponsiveContainer>
             </InnerWrapper>
-          ) : (
-            <SpinnerWrapper>
-              <Spinner />
-            </SpinnerWrapper>
           )}
         </Wrapper>
       )}
