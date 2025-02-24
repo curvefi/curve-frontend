@@ -178,7 +178,7 @@ export type BasePool = {
   pool: string
   coins: string[]
 }
-export type PoolDataMapper = { [poolAddress: string]: PoolData }
+export type PoolDataMapper = { [poolId: string]: PoolData }
 export type PoolDataCache = {
   gauge: Gauge
   hasWrapped: boolean

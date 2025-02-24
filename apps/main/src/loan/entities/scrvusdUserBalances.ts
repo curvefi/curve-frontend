@@ -1,6 +1,5 @@
 import { queryFactory } from '@ui-kit/lib/model/query'
 import useStore from '@/loan/store/useStore'
-import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 
 export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }

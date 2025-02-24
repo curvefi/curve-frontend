@@ -117,7 +117,7 @@ export type GetUserMarketSnapshotsResponse = {
 }
 
 export type GetUserCollateralEventsResponse = {
-  chain: string
+  chain: Chain
   controller: Address
   user: Address
   total_deposit: number

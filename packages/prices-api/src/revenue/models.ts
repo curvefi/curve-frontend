@@ -1,7 +1,7 @@
 import type { Address, Chain } from '..'
 
 export type ChainRevenue = {
-  chain: string
+  chain: Chain
   totalDailyFeesUSD: number
 }
 

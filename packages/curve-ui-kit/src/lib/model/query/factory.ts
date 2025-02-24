@@ -40,7 +40,6 @@ export function queryFactory<
   TData,
   TParams
 > {
-  // todo: get rid of ValidatedData<T> use NonValidatedFields<T> instead
   const assertValidity = (data: TParams, fields?: TField[]) =>
     sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery
 
@@ -73,6 +72,7 @@ export function queryFactory<
     getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
     prefetchQuery: (params, staleTime = 0) =>
       queryClient.prefetchQuery({ queryKey: queryKey(params), queryFn, staleTime }),
+    fetchQuery: (params) => queryClient.fetchQuery(getQueryOptions(params, true)),
     useQuery: createQueryHook(getQueryOptions),
     invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }

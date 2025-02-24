@@ -14,8 +14,7 @@ import { Chip } from '@ui/Typography'
 import Spinner from '@ui/Spinner'
 
 const SummaryTotal = () => {
-  const { dashboardDataMapper, isValidAddress } = useDashboardContext()
-  const { isLoading } = useDashboardContext()
+  const { isLoading, dashboardDataMapper, isValidAddress } = useDashboardContext()
 
   const total = useMemo(() => {
     if (typeof dashboardDataMapper === 'undefined') return null
