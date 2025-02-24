@@ -39,15 +39,15 @@ jobs:
 
       - name: Wait for dev server
         run: |
-          wait-on http://localhost:3000/dao &
-          wait-on http://localhost:3000/loan &
-          wait-on http://localhost:3000/lend &
-          wait-on http://localhost:3000/dex &
-          wait-on http://localhost:3000
-          wait-on http://localhost:3000/dao
-          wait-on http://localhost:3000/loan
-          wait-on http://localhost:3000/lend
-          wait-on http://localhost:3000/dex
+          wait-on --verbose --timeout 2m http://localhost:3000/dao & \
+          wait-on --verbose --timeout 2m http://localhost:3000/crvusd & \
+          wait-on --verbose --timeout 2m http://localhost:3000/lend & \
+          wait-on --verbose --timeout 2m http://localhost:3000/dex & \
+          wait-on --verbose --timeout 2m http://localhost:3000
+          wait-on --verbose --timeout 2m http://localhost:3000/dao
+          wait-on --verbose --timeout 2m http://localhost:3000/crvusd
+          wait-on --verbose --timeout 2m http://localhost:3000/lend
+          wait-on --verbose --timeout 2m http://localhost:3000/dex
         working-directory: tests
       - run: yarn run cy:run:e2e
         working-directory: tests
