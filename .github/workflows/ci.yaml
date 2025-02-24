@@ -15,6 +15,11 @@ jobs:
       - run: yarn lint
       - run: yarn format:check
   cypress:
+    strategy:
+      fail-fast: false
+      matrix:
+        flaky: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    name: Cypress ${{ matrix.flaky }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -23,22 +28,42 @@ jobs:
         with:
           node-version: 22
           cache: yarn
+      - run: npm install -g wait-on &
+
       - run: yarn set version stable
       - run: yarn install --immutable
 
-      - run: yarn run dev | tee dev-server.log &
+      - name: Start dev server
+        run: yarn run dev | tee dev-server.log &
         working-directory: apps/main
+
+      - name: Wait for dev server
+        # build apps in parallel, then wait for all of them sequentially
+        run: |
+          wait-on http://localhost:3000/dao/ & \
+          wait-on http://localhost:3000/crvusd/ & \
+          wait-on http://localhost:3000/lend/ & \
+          wait-on http://localhost:3000/dex/ & \
+          wait-on http://localhost:3000/
+          wait-on http://localhost:3000/dao/
+          wait-on http://localhost:3000/crvusd/
+          wait-on http://localhost:3000/lend/
+          wait-on http://localhost:3000/dex/
+        working-directory: tests
       - run: yarn run cy:run:e2e
         working-directory: tests
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-main
+          name: cypress-main-${{ matrix.flaky }}
           path: tests/cypress/screenshots
+          retention-days: 1
+          if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: dev-server-log
-          path: dev-server.log
+          name: dev-server-log-${{ matrix.flaky }}
+          if-no-files-found: error
+          path: apps/main/dev-server.log
