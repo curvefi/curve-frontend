@@ -38,10 +38,15 @@ jobs:
         working-directory: apps/main
 
       - name: Wait for dev server
-        run: >
+        run: |
           wait-on http://localhost:3000/dao &
           wait-on http://localhost:3000/loan &
           wait-on http://localhost:3000/lend &
+          wait-on http://localhost:3000/dex &
+          wait-on http://localhost:3000
+          wait-on http://localhost:3000/dao
+          wait-on http://localhost:3000/loan
+          wait-on http://localhost:3000/lend
           wait-on http://localhost:3000/dex
         working-directory: tests
       - run: yarn run cy:run:e2e
@@ -53,9 +58,11 @@ jobs:
           name: cypress-main-${{ matrix.flaky }}
           path: tests/cypress/screenshots
           retention-days: 1
+          if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: dev-server-log-${{ matrix.flaky }}
-          path: dev-server.log
+          if-no-files-found: error
+          path: apps/main/dev-server.log

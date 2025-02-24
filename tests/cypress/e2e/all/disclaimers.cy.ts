@@ -1,4 +1,4 @@
-import { oneViewport, oneDesktopViewport, oneTabletViewport, oneAppPath } from '@/support/ui'
+import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneTabletViewport, oneViewport } from '@/support/ui'
 
 describe('Disclaimers', () => {
   describe('Footer link', () => {
@@ -7,7 +7,7 @@ describe('Disclaimers', () => {
     footerViewports.forEach((viewport) => {
       it(`should contain footer disclaimer links for ${viewport[0]}x${viewport[1]}`, () => {
         cy.viewport(...viewport)
-        cy.visit(`/${oneAppPath()}`)
+        cy.visit(`/${oneAppPath()}`, { timeout: LOAD_TIMEOUT })
 
         // Navigate to risk disclaimer from footer.
         cy.get(`[data-testid='footer']`).should('be.visible')
@@ -18,10 +18,10 @@ describe('Disclaimers', () => {
   })
 
   describe('Navigation', () => {
-    const viewport = oneViewport()
+    const [width, height] = oneViewport()
 
-    it(`should contain multiple tabs for ${viewport[0]}x${viewport[1]}`, () => {
-      cy.viewport(...viewport)
+    it(`should contain multiple tabs for ${width}x${height}`, () => {
+      cy.viewport(width, height)
       cy.visit(`/${oneAppPath()}#/ethereum/disclaimer`)
 
       // Make sure there's tabs available and click one.
