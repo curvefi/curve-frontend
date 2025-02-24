@@ -74,7 +74,11 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         <StatsRow>
           <StatTitle>{t`Emissions (CRV)`}</StatTitle>
           <StatData>
-            {gaugeData.emissions ? formatNumber(gaugeData.emissions, { showDecimalIfSmallNumberOnly: true }) : 'N/A'}
+            {gaugeData.emissions
+              ? formatNumber(gaugeData.emissions, {
+                  showDecimalIfSmallNumberOnly: true,
+                })
+              : 'N/A'}
           </StatData>
         </StatsRow>
         <StatsRow>
@@ -109,7 +113,10 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
               <StatTitle>{t`TVL`}</StatTitle>
               <StatData>
                 {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
-                  ? formatNumber(gaugeData.pool.tvl_usd, { showDecimalIfSmallNumberOnly: true, currency: 'USD' })
+                  ? formatNumber(gaugeData.pool.tvl_usd, {
+                      showDecimalIfSmallNumberOnly: true,
+                      currency: 'USD',
+                    })
                   : 'N/A'}
               </StatData>
             </StatsRow>

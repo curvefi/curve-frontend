@@ -48,7 +48,11 @@ export function delayAction<T>(cb: T) {
 }
 
 export function scrollToTop() {
-  window.scroll({ top: 0, left: 0, behavior: 'smooth' })
+  window.scroll({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  })
 }
 
 export function sleep(ms?: number) {

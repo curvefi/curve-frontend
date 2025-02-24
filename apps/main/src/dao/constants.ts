@@ -12,7 +12,12 @@ export const ROUTE = {
   PAGE_404: '/404',
 } as const
 
-export const REFRESH_INTERVAL = { '3s': 3000, '1m': 60000, '5m': 300000, '11m': 660000 }
+export const REFRESH_INTERVAL = {
+  '3s': 3000,
+  '1m': 60000,
+  '5m': 300000,
+  '11m': 660000,
+} as const
 
 // 7 days in seconds
 export const SEVEN_DAYS = 604800
