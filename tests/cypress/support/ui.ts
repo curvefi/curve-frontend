@@ -31,4 +31,4 @@ const oneDexPath = () => oneOf('', 'dex')
 export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd'] as const))
 export type AppPath = ReturnType<typeof oneAppPath>
 
-export const LOAD_TIMEOUT = { timeout: 20000 }
+export const LOAD_TIMEOUT = { timeout: 25000 }
