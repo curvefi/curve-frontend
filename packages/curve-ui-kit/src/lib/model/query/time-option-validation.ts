@@ -8,12 +8,12 @@ const validTimeOptions: TimeOption[] = ['1M', '6M', '1Y']
 
 export const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
   group('timeOptionValidation', () => {
-    test('timeOption', () => {
-      enforce(timeOption)
-        .message('Time option is required')
-        .isNotEmpty()
-        .message('Invalid time option')
-        .satisfy(() => validTimeOptions.includes(timeOption as TimeOption))
+    test('timeOption', 'Time option is required', () => {
+      enforce(timeOption).isNotEmpty()
+    })
+
+    test('timeOption', 'Invalid time option', () => {
+      enforce(validTimeOptions.includes(timeOption)).equals(true)
     })
   })
 

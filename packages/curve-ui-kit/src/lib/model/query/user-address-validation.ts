@@ -1,18 +1,17 @@
-import type { Address } from 'viem'
 import { enforce, group, test } from 'vest'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { isAddress } from 'viem'
 
-type UserAddressParams = { userAddress: Address }
+type UserAddressParams = { userAddress: string }
 
 export const userAddressValidationGroup = ({ userAddress }: UserAddressParams) =>
   group('userAddressValidation', () => {
-    test('userAddress', () => {
-      enforce(userAddress)
-        .message('Address is required')
-        .isNotEmpty()
-        .message('Invalid EVM address')
-        .satisfy(() => isAddress(userAddress))
+    test('userAddress', 'Address is required', () => {
+      enforce(userAddress).isNotEmpty()
+    })
+
+    test('userAddress', 'Invalid EVM address', () => {
+      enforce(isAddress(userAddress)).equals(true)
     })
   })
 
