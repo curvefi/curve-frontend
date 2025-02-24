@@ -170,7 +170,7 @@ describe('Header', () => {
       lend: 'btn-connect-prompt',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
-    cy.get(`[data-testid='${testId}']`, { timeout: LOAD_TIMEOUT }).should('be.visible')
+    cy.get(`[data-testid='${testId}']`, LOAD_TIMEOUT).should('be.visible')
   }
 
   function switchEthToArbitrum() {
