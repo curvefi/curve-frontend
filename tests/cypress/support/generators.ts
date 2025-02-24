@@ -5,6 +5,11 @@ export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
 
 export const oneInt = (minOrMax = 100, maxExclusive?: number): number => Math.floor(oneFloat(minOrMax, maxExclusive))
 
+/**
+ * Generate an array of numbers from 0 to lengthOrStart - 1 or from lengthOrStart to lengthOrStart + length - 1
+ * Example: range(3) => [0, 1, 2]
+ * Example: range(2, 3) => [2, 3, 4]
+ */
 export const range = (lengthOrStart: number, length?: number) =>
   length === undefined
     ? Array.from({ length: lengthOrStart }, (_, i) => i)
@@ -27,3 +32,6 @@ export const shuffle = <T>(...options: T[]): T[] => {
   }
   return result
 }
+
+export const oneTokenType = () => oneOf('collateral', 'borrowed')
+export type TokenType = ReturnType<typeof oneTokenType>

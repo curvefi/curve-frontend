@@ -7,7 +7,7 @@ import {
   mockLendingVaults,
 } from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
-import { oneOf, range, shuffle } from '@/support/generators'
+import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import { mockTokenPrices } from '@/support/helpers/tokens'
 
 describe('LlamaLend Markets', () => {
@@ -105,12 +105,6 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid="multi-select-filter-chain"]').should('not.exist')
     cy.get(`[data-testid="btn-expand-filters"]`).click()
 
-    function selectChain(chain: string) {
-      cy.get('[data-testid="multi-select-filter-chain"]').click()
-      cy.get(`#menu-chain [data-value="${chain}"]`).click()
-      cy.get(`body`).click(0, 0) // close popover
-    }
-
     selectChain(chain)
     cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
 
@@ -120,20 +114,13 @@ describe('LlamaLend Markets', () => {
   })
 
   it(`should allow filtering by token`, () => {
-    const type = oneOf('collateral', 'borrowed')
-    const columnId = `assets_${type}_symbol`
+    const type = oneTokenType()
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    const selectCoin = (symbol: string) => {
-      cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
-      cy.get(`#menu-${columnId} [data-value="${symbol}"]`).click()
-      cy.get('body').click(0, 0) // close popover
-      cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
-    }
     const coins = vaultData.ethereum.data.map((d) => d[(type + '_token') as `${typeof type}_token`].symbol)
     const coin1 = oneOf(...coins)
     const coin2 = oneOf(...coins.filter((c) => c !== coin1))
-    selectCoin(coin1)
-    selectCoin(coin2)
+    selectCoin(coin1, type)
+    selectCoin(coin2, type)
   })
 
   it(`should allow filtering favorites`, () => {
@@ -184,3 +171,21 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 })
+
+function selectChain(chain: string) {
+  cy.get('[data-testid="multi-select-filter-chain"]').click()
+  cy.get(`#menu-chain [data-value="${chain}"]`).click()
+  cy.get(`body`).click(0, 0) // close popover
+}
+
+const selectCoin = (symbol: string, type: TokenType) => {
+  const columnId = `assets_${type}_symbol`
+  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
+
+  // deselect previously selected tokens
+  cy.forEach(`#menu-${columnId} [aria-selected="true"]`, (el) => el.click())
+
+  cy.get(`#menu-${columnId} [data-value="${symbol}"]`).click()
+  cy.get('body').click(0, 0) // close popover
+  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+}
