@@ -113,11 +113,14 @@ describe('LlamaLend Markets', () => {
   it(`should allow filtering by token`, () => {
     const columnId = oneOf('assets_collateral_symbol', 'assets_borrowed_symbol')
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
-    cy.get(`#menu-${columnId} [data-value="sfrxETH"]`).click()
-    cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-sfrxETH"]`).should('be.visible')
-    cy.get(`#menu-${columnId} [data-value="crvUSD"]`).click()
-    cy.get(`[data-testid="token-icon-crvUSD"]`).should('be.visible')
+    const selectCoin = (symbol: string) => {
+      cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
+      cy.get(`#menu-${columnId} [data-value="${symbol}"]`).click()
+      cy.get('body').click(0, 0) // close popover
+      cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+    }
+    selectCoin('sfrxETH')
+    selectCoin('crvUSD')
   })
 
   it(`should allow filtering favorites`, () => {
