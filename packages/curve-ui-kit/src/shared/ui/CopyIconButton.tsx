@@ -6,21 +6,26 @@ import Snackbar from '@mui/material/Snackbar'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
 export function CopyIconButton({
   copyText,
   label,
   confirmationText,
+  className,
 }: {
   copyText: string
   label: string
   confirmationText: string
+  className?: string
 }) {
   const [isCopied, showAlert, hideAlert] = useSwitch(false)
   return (
-    <>
+    // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
+    <InvertTheme inverted={false}>
       <Tooltip title={label} placement="top">
         <IconButton
+          className={className}
           size="extraSmall"
           onClick={async () => {
             await navigator.clipboard.writeText(copyText)
@@ -37,6 +42,6 @@ export function CopyIconButton({
           {copyText}
         </Alert>
       </Snackbar>
-    </>
+    </InvertTheme>
   )
 }

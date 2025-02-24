@@ -8,7 +8,6 @@ import createCacheSlice, { CacheSlice } from '@/lend/store/createCacheSlice'
 import createAppSlice, { AppSlice } from '@/lend/store/createAppSlice'
 import createLayoutSlice, { AppLayoutSlice } from '@/lend/store/createLayoutSlice'
 import createGasSlice, { GasSlice } from '@/lend/store/createGasSlice'
-import createTokensSlice, { TokensSlice } from '@/lend/store/createTokensSlice'
 import createMarketsSlice, { MarketsSlice } from '@/lend/store/createMarketsSlice'
 import createUserSlice, { UserSlice } from '@/lend/store/createUserSlice'
 import createMarketListSlice, { MarketListSlice } from '@/lend/store/createMarketListSlice'
@@ -35,7 +34,6 @@ export type State = CacheSlice &
   AppSlice &
   AppLayoutSlice &
   GasSlice &
-  TokensSlice &
   IntegrationsSlice &
   ChartBandsSlice &
   UserSlice &
@@ -60,7 +58,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createAppSlice(set, get),
   ...createLayoutSlice(set, get),
   ...createGasSlice(set, get),
-  ...createTokensSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),
   ...createUserSlice(set, get),

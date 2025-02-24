@@ -42,7 +42,7 @@ export type PageTransferProps = {
 
 export type TransferProps = {
   chainIdPoolId: string
-  imageBaseUrl: string
+  blockchainId: string
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed

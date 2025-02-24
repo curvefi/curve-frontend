@@ -9,7 +9,7 @@ import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
-import { DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
+import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
 import { PoolRewards } from '@/loan/entities/campaigns'
 
@@ -33,6 +33,8 @@ const getRewardsDescription = ({ action, description, multiplier }: PoolRewards)
       borrow: t`Earn points by borrowing.`,
     }[action]
   }`
+
+const classNames = (...items: (string | false | undefined | null)[]): string => items.filter(Boolean).join(' ')
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market: { address, rewards, type, leverage } }: { market: LlamaMarket }) => {
@@ -62,7 +64,11 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
       )}
 
       <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
-        <IconButton size="extraSmall" onClick={toggleFavorite} className={isFavorite ? '' : DesktopOnlyHoverClass}>
+        <IconButton
+          size="extraSmall"
+          onClick={toggleFavorite}
+          className={classNames(!isFavorite && DesktopOnlyHoverClass, ClickableInRowClass)}
+        >
           <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
         </IconButton>
       </Tooltip>

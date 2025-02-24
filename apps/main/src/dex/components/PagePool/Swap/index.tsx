@@ -40,7 +40,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 const Swap = ({
   chainIdPoolId,
   curve,
-  imageBaseUrl,
+  blockchainId,
   maxSlippage,
   poolAlert,
   poolData,
@@ -52,7 +52,7 @@ const Swap = ({
   userPoolBalancesLoading,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
   chainIdPoolId: string
-  imageBaseUrl: string
+  blockchainId: string
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed
@@ -368,7 +368,7 @@ const Swap = ({
               <TokenComboBox
                 title={t`Select a Token`}
                 disabled={isDisabled || selectList.length === 0}
-                imageBaseUrl={imageBaseUrl}
+                blockchainId={blockchainId}
                 listBoxHeight="400px"
                 selectedToken={swapTokensMapper[formValues.fromAddress]}
                 showSearch={false}
@@ -451,7 +451,7 @@ const Swap = ({
             <TokenComboBox
               title={t`Select a Token`}
               disabled={isDisabled || selectList.length === 0}
-              imageBaseUrl={imageBaseUrl}
+              blockchainId={blockchainId}
               listBoxHeight="400px"
               selectedToken={swapTokensMapper[formValues.toAddress]}
               showSearch={false}

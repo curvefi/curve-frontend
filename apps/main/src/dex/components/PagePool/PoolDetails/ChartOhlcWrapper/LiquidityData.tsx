@@ -4,7 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import useStore from '@/dex/store/useStore'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 import Box from '@ui/Box'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 import type React from 'react'
@@ -43,8 +43,8 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                             <LpSymbol>{coins[index].symbol}</LpSymbol>
                             <StyledTokenIcon
                               size="sm"
-                              imageBaseUrl={network?.imageBaseUrl ?? ''}
-                              token={coins[index].address}
+                              blockchainId={network?.networkId}
+                              symbol={coins[index].symbol}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }
@@ -70,8 +70,8 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                             <LpSymbol>{coins[index].symbol}</LpSymbol>
                             <StyledTokenIcon
                               size="sm"
-                              imageBaseUrl={network?.imageBaseUrl ?? ''}
-                              token={coins[index].address}
+                              blockchainId={network?.networkId}
+                              symbol={coins[index].symbol}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }

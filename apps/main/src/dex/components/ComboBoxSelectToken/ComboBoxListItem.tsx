@@ -10,17 +10,17 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
 import SelectTokenListItemUserBalance from '@/dex/components/ComboBoxSelectToken/ComboBoxTokenUserBalance'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Token } from '@/dex/types/main.types'
 
 const ComboBoxListItem = ({
-  imageBaseUrl,
+  blockchainId,
   testId,
   showBalances,
   selectedToken,
   handleOnSelectChange,
   ...item
-}: Pick<ComboBoxSelectTokenProps, 'testId' | 'imageBaseUrl' | 'showBalances'> &
+}: Pick<ComboBoxSelectTokenProps, 'testId' | 'blockchainId' | 'showBalances'> &
   Token & {
     selectedToken: string
     handleOnSelectChange(selectedToken: string): void
@@ -32,7 +32,7 @@ const ComboBoxListItem = ({
       onClick={() => handleOnSelectChange(item.address)}
     >
       <IconWrapper>
-        <TokenIcon imageBaseUrl={imageBaseUrl} token={item.symbol} address={item.ethAddress || item.address} />
+        <TokenIcon blockchainId={blockchainId} symbol={item.symbol} address={item.ethAddress || item.address} />
       </IconWrapper>
       <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
         <LabelText data-testid={`li-${testId}`}>{item.symbol}</LabelText>

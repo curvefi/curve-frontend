@@ -36,10 +36,6 @@ export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
   }
 }
 
-export function getImageBaseUrl(rChainId: ChainId) {
-  return rChainId ? (networks[rChainId].imageBaseUrl ?? '') : ''
-}
-
 export function getIsUserCloseToLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,

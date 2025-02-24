@@ -10,14 +10,14 @@ import { Token } from '@/dex/types/main.types'
 
 const SelectTokenListChunk = ({
   testId,
-  imageBaseUrl,
+  blockchainId,
   inputRef,
   showBalances,
   selectedToken,
   tokens,
   dialogClose,
   handleOnSelectChange,
-}: Pick<ComboBoxSelectTokenProps, 'testId' | 'imageBaseUrl' | 'showBalances'> & {
+}: Pick<ComboBoxSelectTokenProps, 'testId' | 'blockchainId' | 'showBalances'> & {
   inputRef?: React.RefObject<HTMLInputElement | null>
   selectedToken: string
   tokens: Token[]
@@ -60,7 +60,7 @@ const SelectTokenListChunk = ({
           <SelectTokenListItem
             key={item.address}
             testId={testId}
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={blockchainId}
             showBalances={showBalances}
             selectedToken={selectedToken}
             {...item}

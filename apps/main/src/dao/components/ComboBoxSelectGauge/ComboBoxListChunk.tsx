@@ -10,13 +10,12 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 
 const SelectGaugeListChunk = ({
   testId,
-  imageBaseUrl,
   inputRef,
   selectedGauge,
   gauges,
   dialogClose,
   handleOnSelectChange,
-}: Pick<ComboBoxSelectGaugeProps, 'testId' | 'imageBaseUrl'> & {
+}: Pick<ComboBoxSelectGaugeProps, 'testId'> & {
   inputRef?: React.RefObject<HTMLInputElement | null>
   selectedGauge: GaugeFormattedData | null
   gauges: GaugeFormattedData[]
@@ -59,7 +58,6 @@ const SelectGaugeListChunk = ({
           <SelectGaugeListItem
             key={item.address}
             testId={testId}
-            imageBaseUrl={imageBaseUrl}
             selectedGauge={selectedGauge}
             {...item}
             handleOnSelectChange={handleOnSelectChange}

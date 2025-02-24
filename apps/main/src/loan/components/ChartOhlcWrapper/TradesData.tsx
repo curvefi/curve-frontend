@@ -4,10 +4,9 @@ import styled from 'styled-components'
 
 import networks from '@/loan/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-import { getImageBaseUrl } from '@/loan/utils/utilsCurvejs'
 
 import Box from '@ui/Box'
-import TokenIcon from '@/loan/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
@@ -19,8 +18,8 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
           <TradeFrom>
             <StyledTokenIcon
               size="sm"
-              imageBaseUrl={getImageBaseUrl(chainId)}
-              token={transaction.tokenSold.address}
+              blockchainId={networks[chainId].networkId}
+              symbol={transaction.tokenSold.symbol}
               address={transaction.tokenSold.address}
             />
             <Box flex flexColumn>
@@ -49,8 +48,8 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
             <StyledTokenIcon
               className="bought"
               size="sm"
-              imageBaseUrl={getImageBaseUrl(chainId)}
-              token={transaction.tokenBought.address}
+              blockchainId={networks[chainId].networkId}
+              symbol={transaction.tokenBought.symbol}
               address={transaction.tokenBought.address}
             />
           </TradeTo>

@@ -14,12 +14,12 @@ import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSum
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
-  imageBaseUrl: string
+  blockchainId: string
   chainId: ChainId
   curve: CurveApi
 }
 
-const Summary = ({ imageBaseUrl, chainId, curve }: Props) => {
+const Summary = ({ blockchainId, chainId, curve }: Props) => {
   const { advanced, validation } = useStore((state) => state.createPool)
 
   return (
@@ -30,7 +30,7 @@ const Summary = ({ imageBaseUrl, chainId, curve }: Props) => {
       </TopBox>
       <SummaryBox>
         <PoolTypeSummary />
-        <TokensInPoolSummary imageBaseUrl={imageBaseUrl} chainId={chainId} />
+        <TokensInPoolSummary blockchainId={blockchainId} chainId={chainId} />
         <ParametersSummary chainId={chainId} />
         <PoolInfoSummary chainId={chainId} />
       </SummaryBox>
@@ -41,7 +41,7 @@ const Summary = ({ imageBaseUrl, chainId, curve }: Props) => {
             !checkFormReady(validation.poolType, validation.tokensInPool, validation.parameters, validation.poolInfo)
           }
           curve={curve}
-          imageBaseUrl={imageBaseUrl}
+          blockchainId={blockchainId}
         />
       </BottomBox>
     </Wrapper>

@@ -11,12 +11,12 @@ import Box from '@ui/Box'
 import Spacer from '@ui/Spacer'
 import Loader from '@ui/Loader'
 import TextEllipsis from '@ui/TextEllipsis'
-import TokenIcon from '@/dex/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 
 const SelectedLpTokenExpected = ({
   amounts,
-  imageBaseUrl,
+  blockchainId,
   loading,
   poolDataCacheOrApi,
   tokens,
@@ -24,7 +24,7 @@ const SelectedLpTokenExpected = ({
   tokenAddresses,
 }: {
   amounts: Amount[]
-  imageBaseUrl: string
+  blockchainId: string
   loading: boolean
   poolDataCacheOrApi: PoolDataCacheOrApi
   tokens: string[]
@@ -33,17 +33,17 @@ const SelectedLpTokenExpected = ({
 }) => (
   <Box as="ul" grid gridRowGap={2}>
     {tokenAddresses.map((tokenAddress, idx) => {
-      const token = tokens[idx]
-      const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[token] > 1
+      const symbol = tokens[idx]
+      const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[symbol] > 1
 
       return (
         <Box key={tokenAddress} as="li" flex flexAlignItems="center">
           <StyledTokenIcon
-            imageBaseUrl={imageBaseUrl}
-            token={token}
+            blockchainId={blockchainId}
+            symbol={symbol}
             address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
           />{' '}
-          {token}
+          {symbol}
           {haveSameTokenName && <Chip>{shortenTokenAddress(tokenAddress)}</Chip>}
           <Spacer />
           {loading ? (

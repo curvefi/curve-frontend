@@ -2,7 +2,7 @@ import { Token } from '@/dex/types/main.types'
 
 export type ComboBoxSelectTokenProps = {
   disabled?: boolean
-  imageBaseUrl: string
+  blockchainId: string
   listBoxHeight?: string
   selectedToken: Token | undefined
   showBalances?: boolean
