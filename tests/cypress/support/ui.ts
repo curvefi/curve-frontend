@@ -1,4 +1,4 @@
-import { oneOf, oneInt } from '@/support/generators'
+import { oneInt, oneOf } from '@/support/generators'
 
 export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 640, 1200, 2000]
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
@@ -31,4 +31,7 @@ const oneDexPath = () => oneOf('', 'dex')
 export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd'] as const))
 export type AppPath = ReturnType<typeof oneAppPath>
 
-export const LOAD_TIMEOUT = { timeout: 30000 }
+export const LOAD_TIMEOUT = { timeout: 20000 }
+
+// scrollbar in px for the test browser. Firefox behaves when headless.
+export const SCROLL_WIDTH = Cypress.browser.name === 'firefox' ? (Cypress.browser.isHeadless ? 12 : 0) : 15

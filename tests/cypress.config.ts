@@ -1,9 +1,13 @@
 import { defineConfig } from 'cypress'
 
+// the app can hang sometimes during the CI run, with error [HMR] Invalid message: {"action":"appIsrManifest","data":{}} TypeError: Cannot read properties of undefined (reading 'pathname')
+// todo: disable HMR during tests
+const retries = { runMode: 2, openMode: 0 }
+
 export default defineConfig({
   defaultCommandTimeout: 5000,
-  pageLoadTimeout: 60000, // todo: for some reason the page load is slow even with pre-building
-  retries: { runMode: 0, openMode: 0 },
+  pageLoadTimeout: 20000,
+  retries,
   video: true,
   videosFolder: 'cypress/screenshots',
   e2e: {
