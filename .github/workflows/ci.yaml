@@ -18,8 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flaky: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-    name: Cypress ${{ matrix.flaky }}
+        flaky: [1, 2, 3, 4, 5, 6]
+        browser: [chrome, electron, firefox]
+    name: Cypress ${{ matrix.flaky }} in ${{ matrix.browser }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -50,10 +51,10 @@ jobs:
           wait-on http://localhost:3000/lend/
           wait-on http://localhost:3000/dex/
         working-directory: tests
-      - run: yarn run cy:run:e2e
+      - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
         working-directory: tests
         env:
-          ELECTRON_ENABLE_LOGGING: 1 # send console logs to stdout
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout
 
       - uses: actions/upload-artifact@v4
         if: failure()
