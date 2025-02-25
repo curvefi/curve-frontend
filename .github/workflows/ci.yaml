@@ -52,6 +52,8 @@ jobs:
         working-directory: tests
       - run: yarn run cy:run:e2e
         working-directory: tests
+        env:
+          ELECTRON_ENABLE_LOGGING: 1 # send console logs to stdout
 
       - uses: actions/upload-artifact@v4
         if: failure()
