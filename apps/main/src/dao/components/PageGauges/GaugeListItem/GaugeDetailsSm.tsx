@@ -4,6 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
 import networks from '@/dao/networks'
+import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 
 import { ExternalLink } from '@ui/Link'
 import Box from '@ui/Box'
@@ -88,7 +89,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
-          <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
+          <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
             {shortenTokenAddress(gaugeData.address)}
           </StyledExternalLink>
         </StatsRow>
@@ -127,7 +128,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
           <StatTitle>{t`Contract Address`}</StatTitle>
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
-              <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
+              <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.pool.address)}>
                 {shortenTokenAddress(gaugeData.pool.address)}
               </StyledExternalLink>
             </Box>
