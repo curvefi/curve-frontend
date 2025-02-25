@@ -27,6 +27,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
   const curve = useStore((state) => state.curve)
+  const chainId = curve?.chainId
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
@@ -38,7 +39,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
   const { data: dailyVolume } = useAppStatsDailyVolume({})
-  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ curve: curve })
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
   const location = useLocation()
   const { params: routerParams } = routerProps ?? {}
 

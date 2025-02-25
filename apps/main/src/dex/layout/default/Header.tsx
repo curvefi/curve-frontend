@@ -24,7 +24,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const curve = useStore((state) => state.curve)
+  const chainId = useStore((state) => state.curve?.chainId)
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
@@ -33,8 +33,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const { data: tvlTotal } = useAppStatsTvl({ curve })
-  const { data: volumeTotal } = useAppStatsVolume({ curve })
+  const { data: tvlTotal } = useAppStatsTvl({ chainId })
+  const { data: volumeTotal } = useAppStatsVolume({ chainId })
 
   const { rChainId, rNetwork } = useNetworkFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
