@@ -11,8 +11,8 @@ import TextCaption from '@ui/TextCaption'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
 const TableCellMarketsTotalDebt = () => {
-  const curve = useStore((state) => state.curve)
-  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ curve: curve })
+  const chainId = useStore((state) => state.curve?.chainId)
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}
 
