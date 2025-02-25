@@ -25,7 +25,7 @@ function getStoredValue<Type, Default>(key: string, initialValue: Default | unde
  */
 export function useLocalStorage<Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> {
   type T = Type | Default
-  const storageItem = window.localStorage.getItem(key)
+  const storageItem = window.localStorage.getItem(key) // important to run this in every render to get updates from other hooks
   const storedValue = useMemo(() => (storageItem == null ? null : (JSON.parse(storageItem) as T)), [storageItem])
   const [stateValue, setStateValue] = useState<T | Default | null>(storedValue)
   const setValue = useCallback(
