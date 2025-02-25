@@ -3,7 +3,6 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   defaultCommandTimeout: 5000,
   pageLoadTimeout: 20000,
-  retries,
   video: true,
   videosFolder: 'cypress/screenshots',
   e2e: {

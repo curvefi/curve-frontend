@@ -19,10 +19,13 @@ jobs:
       fail-fast: false
       matrix:
         browser: [electron, firefox, chrome]
-        count: [1, 2, 3, 4, 5]
+        count: [1, 2]
     name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,20 +41,6 @@ jobs:
       - name: Start dev server
         run: yarn start | tee dev-server.log &
         working-directory: apps/main
-
-      - name: Wait for dev server
-        # build apps in parallel, then wait for all of them sequentially
-        run: |
-          wait-on http://localhost:3000/dao/ & \
-          wait-on http://localhost:3000/crvusd/ & \
-          wait-on http://localhost:3000/lend/ & \
-          wait-on http://localhost:3000/dex/ & \
-          wait-on http://localhost:3000/
-          wait-on http://localhost:3000/dao/
-          wait-on http://localhost:3000/crvusd/
-          wait-on http://localhost:3000/lend/
-          wait-on http://localhost:3000/dex/
-        working-directory: tests
 
       - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
         working-directory: tests
