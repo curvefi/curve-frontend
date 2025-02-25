@@ -16,7 +16,9 @@ const expectedConnectHeight = 40
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 288
 const expectedFooterMaxWidth = 1536
-const scrollbarWidth = Cypress.browser.name === 'firefox' ? 0 : 15 // scrollbar in px for the test browser
+
+// scrollbar in px for the test browser. Firefox behaves when headless.
+const scrollbarWidth = Cypress.browser.name === 'firefox' ? (Cypress.browser.isHeadless ? 12 : 0) : 15
 
 const mainAppUrl = 'http://localhost:3000/dex'
 

@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flaky: [1, 2, 3, 4, 5, 6]
-        browser: [chrome, electron, firefox]
+        browser: [electron, firefox]
+        flaky: [1, 2, 3, 4, 5, 6, 7, 8]
     name: Cypress in ${{ matrix.browser }} ${{ matrix.flaky }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
