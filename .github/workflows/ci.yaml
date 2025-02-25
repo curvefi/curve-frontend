@@ -20,7 +20,7 @@ jobs:
       matrix:
         flaky: [1, 2, 3, 4, 5, 6]
         browser: [chrome, electron, firefox]
-    name: Cypress ${{ matrix.flaky }} in ${{ matrix.browser }}
+    name: Cypress in ${{ matrix.browser }} ${{ matrix.flaky }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -54,12 +54,12 @@ jobs:
       - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
         working-directory: tests
         env:
-          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-main-${{ matrix.flaky }}
+          name: cypress-main-${{ matrix.browser }}-${{ matrix.flaky }}
           path: tests/cypress/screenshots
           retention-days: 1
           if-no-files-found: error
@@ -67,6 +67,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: dev-server-log-${{ matrix.flaky }}
+          name: dev-server-log-${{ matrix.browser }}-${{ matrix.flaky }}
           if-no-files-found: error
           path: apps/main/dev-server.log

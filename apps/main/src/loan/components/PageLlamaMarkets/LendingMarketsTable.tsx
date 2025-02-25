@@ -10,9 +10,8 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { DEFAULT_SORT, DEFAULT_VISIBILITY, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
 export const LendingMarketsTable = ({
   onReload,
@@ -51,7 +50,7 @@ export const LendingMarketsTable = ({
       <DataTable
         table={table}
         headerHeight={headerHeight}
-        rowHeight="3xl"
+        rowSx={{ height: { ...Sizing['3xl'], mobile: 77 } }} // the 3xl is too small in mobile (64px)
         emptyText={isError ? t`Could not load markets` : t`No markets found`}
       >
         <TableFilters

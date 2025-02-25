@@ -13,6 +13,8 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useNavigate } from 'react-router'
+import type { Theme } from '@mui/material/styles'
+import type { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
@@ -49,7 +51,7 @@ const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => 
   )
 }
 
-const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeight: keyof typeof Sizing }) => {
+const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemStyleObject<Theme> }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
   const navigate = useNavigate()
@@ -57,11 +59,13 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
   const url = row.original.url
   const onClick = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => {
+      // ignore clicks on elements that should be clickable inside the row
       let element = e.target as HTMLElement
       while (element.tagName != 'TR') {
         if (element.classList.contains(ClickableInRowClass)) return
         element = element.parentElement as HTMLElement
       }
+      // redirect to the url or navigate to the route
       if (url.startsWith('http')) {
         location.href = url
       } else {
@@ -76,7 +80,6 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
       <TableRow
         sx={(t) => ({
           marginBlock: 0,
-          height: Sizing[rowHeight],
           borderBottom: `1px solid${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
           transition: `background-color ${TransitionFunction}, border ${TransitionFunction}`,
@@ -88,6 +91,7 @@ const DataRow = <T extends TableItem>({ row, rowHeight }: { row: Row<T>; rowHeig
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
           },
           ...(isHover && { backgroundColor: t.design.Table.Row.Hover }),
+          ...sx,
         })}
         ref={ref}
         data-testid={`data-table-row-${row.id}`}
@@ -121,7 +125,7 @@ const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown
         component="th"
         sx={{
           textAlign: getAlignment(column),
-          alignContent: 'end',
+          verticalAlign: 'bottom',
           padding: Spacing.sm,
           paddingBlockStart: 0,
           color: `text.${sort ? 'primary' : 'secondary'}`,
@@ -158,15 +162,16 @@ const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown
 export const DataTable = <T extends TableItem>({
   table,
   headerHeight,
-  rowHeight,
   emptyText,
   children,
+  rowSx,
 }: {
   table: ReturnType<typeof useReactTable<T>>
   headerHeight: string
-  rowHeight: keyof typeof Sizing
   emptyText: string
   children?: ReactNode
+  rowSx?: SystemStyleObject<Theme>
+  minRowHeight?: number
 }) => (
   <Table sx={{ minWidth: MinWidth.table, backgroundColor: (t) => t.design.Layer[1].Fill }} data-testid="data-table">
     <TableHead
@@ -213,7 +218,7 @@ export const DataTable = <T extends TableItem>({
         </TableRow>
       )}
       {table.getRowModel().rows.map((row) => (
-        <DataRow<T> key={row.id} row={row} rowHeight={rowHeight} />
+        <DataRow<T> key={row.id} row={row} sx={rowSx} />
       ))}
     </TableBody>
   </Table>

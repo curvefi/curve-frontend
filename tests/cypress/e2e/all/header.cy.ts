@@ -16,7 +16,7 @@ const expectedConnectHeight = 40
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 288
 const expectedFooterMaxWidth = 1536
-const scrollbarWidth = 15 // scrollbar in px for the test browser
+const scrollbarWidth = Cypress.browser.name === 'firefox' ? 0 : 15 // scrollbar in px for the test browser
 
 const mainAppUrl = 'http://localhost:3000/dex'
 
