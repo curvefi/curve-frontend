@@ -1,20 +1,28 @@
-import { type Breakpoint, checkIsDarkMode, isInViewport, oneViewport } from '@/support/ui'
-import { mockLendingChains, mockLendingSnapshots, mockLendingVaults } from '@/support/helpers/lending-mocks'
+import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport } from '@/support/ui'
+import {
+  createLendingVaultResponses,
+  type LendingVaultResponses,
+  mockLendingChains,
+  mockLendingSnapshots,
+  mockLendingVaults,
+} from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
-import { oneOf, range, shuffle } from '@/support/generators'
+import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import { mockTokenPrices } from '@/support/helpers/tokens'
 
 describe('LlamaLend Markets', () => {
   let isDarkMode: boolean
   let breakpoint: Breakpoint
+  let vaultData: LendingVaultResponses
 
   beforeEach(() => {
     const [width, height, screen] = oneViewport()
+    vaultData = createLendingVaultResponses()
     breakpoint = screen
     mockChains()
     mockLendingChains()
     mockTokenPrices()
-    mockLendingVaults()
+    mockLendingVaults(vaultData)
     mockLendingSnapshots().as('snapshots')
     mockMintMarkets()
     mockMintSnapshots()
@@ -26,7 +34,7 @@ describe('LlamaLend Markets', () => {
         isDarkMode = checkIsDarkMode(win)
       },
     })
-    cy.get('[data-testid="data-table"]').should('be.visible')
+    cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
   it('should have sticky headers', () => {
@@ -38,13 +46,17 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
-    const filterHeight = { mobile: 202, tablet: 112, desktop: 120 }[breakpoint]
+
+    // filter height changes because text wraps depending on the width
+    const filterHeight = { mobile: [202], tablet: [112, 144, 200], desktop: [120] }[breakpoint]
+    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
+
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
-    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', filterHeight)
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
   it('should sort', () => {
+    cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
     cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
@@ -79,38 +91,36 @@ describe('LlamaLend Markets', () => {
       cy.get(`[data-testid="btn-expand-filters"]`).click()
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
-      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click(60, 20)
-      cy.get(`[data-testid="slider-${columnId}"]`).click()
-      cy.get(`[data-testid="slider-${columnId}"]`).should('not.be.visible')
+      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click()
+      cy.get(`[data-testid="slider-${columnId}"]`).click(60, 20)
+      cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.contain', initialFilterText)
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
     })
   })
 
   it('should allow filtering by chain', () => {
-    const chains = ['Ethereum', 'Fraxtal'] // only these chains are in the fixture
+    const chains = Object.keys(vaultData)
     const chain = oneOf(...chains)
     cy.get('[data-testid="multi-select-filter-chain"]').should('not.exist')
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    cy.get('[data-testid="multi-select-filter-chain"]').click()
-    cy.get(`#menu-chain [data-value="${chain.toLowerCase()}"]`).click()
-    cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain.toLowerCase()}"]`).should(
-      'be.visible',
-    )
+
+    selectChain(chain)
+    cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
 
     const otherChain = oneOf(...chains.filter((c) => c !== chain))
-    cy.get(`#menu-chain [data-value="${otherChain.toLowerCase()}"]`).click()
-    ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c.toLowerCase()}"]`).should('be.visible'))
+    selectChain(otherChain)
+    ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c}"]`).should('be.visible'))
   })
 
   it(`should allow filtering by token`, () => {
-    const columnId = oneOf('assets_collateral_symbol', 'assets_borrowed_symbol')
+    const type = oneTokenType()
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
-    cy.get(`#menu-${columnId} [data-value="CRV"]`).click()
-    cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-CRV"]`).should('be.visible')
-    cy.get(`#menu-${columnId} [data-value="crvUSD"]`).click()
-    cy.get(`[data-testid="token-icon-crvUSD"]`).should('be.visible')
+    const coins = vaultData.ethereum.data.map((d) => d[(type + '_token') as `${typeof type}_token`].symbol)
+    const coin1 = oneOf(...coins)
+    const coin2 = oneOf(...coins.filter((c) => c !== coin1))
+    selectCoin(coin1, type)
+    selectCoin(coin2, type)
   })
 
   it(`should allow filtering favorites`, () => {
@@ -161,3 +171,21 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 })
+
+function selectChain(chain: string) {
+  cy.get('[data-testid="multi-select-filter-chain"]').click()
+  cy.get(`#menu-chain [data-value="${chain}"]`).click()
+  cy.get(`body`).click(0, 0) // close popover
+}
+
+const selectCoin = (symbol: string, type: TokenType) => {
+  const columnId = `assets_${type}_symbol`
+  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
+
+  // deselect previously selected tokens
+  cy.forEach(`#menu-${columnId} [aria-selected="true"]`, (el) => el.click())
+
+  cy.get(`#menu-${columnId} [data-value="${symbol}"]`).click()
+  cy.get('body').click(0, 0) // close popover
+  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+}
