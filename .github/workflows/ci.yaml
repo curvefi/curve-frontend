@@ -46,6 +46,7 @@ jobs:
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
 
       - uses: actions/upload-artifact@v4
         if: failure()
