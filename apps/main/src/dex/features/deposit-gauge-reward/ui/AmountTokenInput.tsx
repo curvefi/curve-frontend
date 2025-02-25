@@ -14,7 +14,6 @@ import {
   StyledInputProvider,
   StyledTokenComboBox,
 } from '@/dex/features/deposit-gauge-reward/ui/styled'
-import { useImageBaseUrl } from '@/dex/entities/chain'
 import {
   useDepositRewardApproveIsMutating,
   useDepositRewardIsMutating,
@@ -38,7 +37,7 @@ export const AmountTokenInput: React.FC<{
   const { data: signerAddress } = useSignerAddress()
   const { data: haveSigner } = useIsSignerConnected()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const { data: imageBaseUrl } = useImageBaseUrl(chainId)
+  const { networkId } = useStore((state) => state.networks.networks[chainId])
 
   const { tokensMapper } = useTokensMapper(chainId)
   const {
@@ -146,7 +145,7 @@ export const AmountTokenInput: React.FC<{
           <StyledTokenComboBox
             title=""
             disabled={isDisabled}
-            imageBaseUrl={imageBaseUrl}
+            blockchainId={networkId}
             listBoxHeight="500px"
             selectedToken={token}
             showCheckboxHideSmallPools

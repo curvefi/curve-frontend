@@ -79,7 +79,7 @@ export type RouterParams = {
   rNetworkIdx: number
   rSubdirectory: string
   rSubdirectoryUseDefault: boolean
-  rOwmId: string
+  rMarket: string
   rFormType: RFormType
   redirectPathname: string
   restFullPathname: string

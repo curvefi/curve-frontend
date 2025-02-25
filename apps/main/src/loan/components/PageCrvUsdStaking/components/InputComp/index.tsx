@@ -94,6 +94,7 @@ const InputLoaderWrapper = styled.div`
 
 const StyledIcon = styled(Icon)`
   margin-left: var(--spacing-1);
+  color: var(--page--text-color);
   opacity: 0.5;
 `
 
@@ -101,7 +102,9 @@ const WalletBalanceWrapper = styled(Box)`
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: var(--page--text-color);
   gap: var(--spacing-1);
+  opacity: 0.7;
 `
 
 const BalancesWrapper = styled(Box)`

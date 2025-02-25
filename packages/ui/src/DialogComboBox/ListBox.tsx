@@ -11,7 +11,7 @@ import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & {
     activeKey: string
-    listBoxRef: React.RefObject<HTMLUListElement>
+    listBoxRef: React.RefObject<HTMLUListElement | null>
     state: ListState<any>
     testId?: string
   },

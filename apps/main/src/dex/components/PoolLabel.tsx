@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { zip } from 'lodash'
 
 import useStore from '@/dex/store/useStore'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
@@ -11,8 +12,7 @@ import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
 import Box from '@ui/Box'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'
-import TokenIcons from '@/dex/components/TokenIcons'
-import TableCellReferenceAsset from '@/dex/components/PagePoolList/components/TableCellReferenceAsset'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type PoolListProps = {
@@ -25,14 +25,22 @@ type PoolListProps = {
 
 type Props = {
   className?: string
-  imageBaseUrl: string
+  blockchainId: string
   isVisible?: boolean
   poolData: PoolDataCache | PoolData | undefined
   poolListProps?: PoolListProps
 }
 
-const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, poolListProps }: Props) => {
-  const { pool, tokens = [], tokenAddresses = [] } = poolData ?? {}
+const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, poolListProps }: Props) => {
+  const { pool } = poolData ?? {}
+  const tokens = useMemo(
+    () =>
+      zip(poolData?.tokens, poolData?.tokenAddresses).map(([symbol, address]) => ({
+        symbol: symbol!,
+        address: address!,
+      })),
+    [poolData?.tokens, poolData?.tokenAddresses],
+  )
 
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
@@ -51,17 +59,16 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
     }
   }
 
-  const { highlightedTokens, isHighlightPoolName } = useMemo(() => {
-    if (isMobile || !isVisible) return { highlightedTokens: [], isHighlightPoolName: true }
+  const { highlightedTokens } = useMemo(() => {
+    if (isMobile || !isVisible) return { highlightedTokens: [] }
 
     let foundSearchedToken = false
 
-    const highlightedTokens = tokens.map((token, idx) => {
-      const tokenAddress = tokenAddresses[idx]
+    const highlightedTokens = tokens.map(({ symbol, address }, idx) => {
       const isHighLight =
         searchedTerms.findIndex((searched) => {
-          const parsedToken = token.toLowerCase()
-          const parsedTokenAddress = tokenAddress.toLowerCase()
+          const parsedToken = symbol.toLowerCase()
+          const parsedTokenAddress = address.toLowerCase()
           const parsedSearch = searched.toLowerCase()
           return (
             parsedToken.includes(parsedSearch) ||
@@ -70,24 +77,17 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
           )
         }) !== -1
       if (isHighLight) foundSearchedToken = true
-      return { token, tokenAddress, isHighLight }
+      return { symbol, address, isHighLight }
     })
 
     return { highlightedTokens, isHighlightPoolName: !foundSearchedToken }
-  }, [isMobile, isVisible, searchedTerms, tokenAddresses, tokens])
+  }, [isMobile, isVisible, searchedTerms, tokens])
 
   return (
     <div>
       <Wrapper className={className} onClick={({ target }) => handleClick(target)}>
-        <IconsWrapper>
-          {isVisible && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} tokenAddresses={tokenAddresses} />}
-        </IconsWrapper>
+        <IconsWrapper>{isVisible && <TokenIcons blockchainId={blockchainId} tokens={tokens} />}</IconsWrapper>
         <Box fillWidth>
-          <TableCellReferenceAsset
-            isCrypto={poolData?.pool?.isCrypto}
-            referenceAsset={poolData?.pool?.referenceAsset}
-          />
-
           <Box flex flexAlignItems="center">
             {!isMobile && (
               <>
@@ -111,13 +111,13 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
             {pool && (
               <div>
                 {isMobile
-                  ? tokens.map((token, idx) => <TokenLabel key={`${token}-${idx}`}>{token} </TokenLabel>)
+                  ? tokens.map(({ symbol }, idx) => <TokenLabel key={`${symbol}-${idx}`}>{symbol} </TokenLabel>)
                   : isVisible &&
-                    highlightedTokens.map(({ token, tokenAddress, isHighLight }, idx) => (
+                    highlightedTokens.map(({ symbol, address, isHighLight }, idx) => (
                       <ChipToken
-                        key={`${token}${tokenAddress}${idx}`}
-                        tokenName={token}
-                        tokenAddress={tokenAddress}
+                        key={`${symbol}${address}${idx}`}
+                        tokenName={symbol}
+                        tokenAddress={address}
                         isHighlight={isHighLight}
                       />
                     ))}

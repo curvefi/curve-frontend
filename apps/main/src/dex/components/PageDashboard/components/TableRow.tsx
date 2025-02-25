@@ -16,7 +16,7 @@ import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/Tab
 
 const TableRow = ({
   isLite,
-  imageBaseUrl,
+  blockchainId,
   formValues: { sortBy },
   fetchBoost,
   poolData,
@@ -33,7 +33,7 @@ const TableRow = ({
   return (
     <Tr ref={rowRef} onClick={() => updatePath(poolId)}>
       <Td>
-        <PoolLabel imageBaseUrl={imageBaseUrl} isVisible={isVisible} poolData={poolData} />
+        <PoolLabel blockchainId={blockchainId} isVisible={isVisible} poolData={poolData} />
       </Td>
       {isLite ? (
         <Td className="right">

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
-import { getFromLocalStorage, useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import { BrowserProvider } from 'ethers'
 import type {
@@ -39,10 +39,7 @@ const state: {
 
 export const useWallet: UseConnectWallet = () => {
   const [{ wallet, connecting }, connect, disconnect] = useOnboardWallet()
-  const [storedWalletName, setWalletName] = useLocalStorage<string | null>('walletName')
-  // todo: remove this after a while. It tries to read the walletName from the old cache
-  const walletName =
-    storedWalletName || getFromLocalStorage<{ walletName: string }>('curve-app-cache')?.walletName || null
+  const [walletName, setWalletName] = useLocalStorage<string | null>('walletName')
 
   useEffect(() => {
     state.wallet = wallet

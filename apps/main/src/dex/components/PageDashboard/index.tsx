@@ -54,7 +54,7 @@ const Dashboard = ({
 
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
-  const { isLite, imageBaseUrl } = useStore((state) => state.networks.networks[rChainId])
+  const { isLite, networkId } = useStore((state) => state.networks.networks[rChainId])
   const { userPoolBoost } = curvejsApi.wallet
 
   const isValidAddress = useMemo(() => isAddress(walletAddress as Address), [walletAddress])
@@ -134,7 +134,7 @@ const Dashboard = ({
         <StyledTable>
           {isXSmDown ? <TableHeadMobile /> : <TableHead tableLabel={TABLE_LABEL} />}
           <tbody>
-            {noResult || !!error || !isValidAddress ? (
+            {noResult || error || !isValidAddress ? (
               <TableRowNoResult colSpan={colSpan} noResult={noResult} error={error} />
             ) : dashboardDataPoolIds?.length > 0 ? (
               <>
@@ -147,7 +147,7 @@ const Dashboard = ({
                   const tableRowProps: DashboardTableRowProps = {
                     rChainId,
                     isLite,
-                    imageBaseUrl,
+                    blockchainId: networkId,
                     tableLabel: TABLE_LABEL,
                     fetchBoost: {
                       fetchUserPoolBoost: rChainId === 1 ? () => userPoolBoost(poolData.pool, walletAddress) : null,

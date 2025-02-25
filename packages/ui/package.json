@@ -9,7 +9,7 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@carbon/icons-react": "11.54.0",
+    "@carbon/icons-react": "^11.55.0",
     "@lingui/detect-locale": "^5.2.0",
     "bignumber.js": "^9.1.2",
     "ethers": "^6.13.5",

@@ -19,13 +19,13 @@ import Inception from './Inception.json'
 import TurtleTotems from './TurtleTotems.json'
 import LevelMoney from './LevelMoney.json'
 import XPoints from './XPoints.json'
-import MindNetwork from './MindNetwork.json'
 import DTrinity from './DTrinity.json'
 import YieldFi from './YieldFi.json'
 import Babylon from './Babylon.json'
 import Vnx from './Vnx.json'
 import Hourglass from './Hourglass.json'
 import Fx from './Fx.json'
+import Pumpbtc from './Pumpbtc.json'
 
 export {
   DLCLink,
@@ -49,11 +49,11 @@ export {
   TurtleTotems,
   LevelMoney,
   XPoints,
-  MindNetwork,
   DTrinity,
   YieldFi,
   Babylon,
   Vnx,
   Hourglass,
   Fx,
+  Pumpbtc,
 }

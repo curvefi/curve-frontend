@@ -19,7 +19,7 @@ import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/Tab
 
 const TableRowMobile: React.FC<DashboardTableRowProps> = ({
   isLite,
-  imageBaseUrl,
+  blockchainId,
   formValues,
   dashboardData,
   poolData,
@@ -42,10 +42,10 @@ const TableRowMobile: React.FC<DashboardTableRowProps> = ({
       <Td>
         {poolId && (
           <Box flex flexJustifyContent="space-between">
-            {imageBaseUrl && (
+            {blockchainId && (
               <PoolLabel
                 isVisible={isVisible}
-                imageBaseUrl={imageBaseUrl}
+                blockchainId={blockchainId}
                 poolData={poolData}
                 poolListProps={{ onClick: () => updatePath(poolId) }}
               />

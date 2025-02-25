@@ -24,7 +24,6 @@ interface PoolRowProps {
   rChainId: ChainId
   columnKeys: ColumnKeys[]
   searchParams: SearchParams
-  imageBaseUrl: string
   showInPoolColumn: boolean
   tableLabels: PoolListTableLabel
   searchTermMapper: SearchTermMapper
@@ -46,7 +45,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   rChainId,
   columnKeys,
   searchParams,
-  imageBaseUrl,
   showInPoolColumn,
   tableLabels,
   searchTermMapper,
@@ -97,7 +95,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     formValues,
     searchParams,
     isInPool,
-    imageBaseUrl,
+    blockchainId: network.networkId,
     poolId,
     columnKeys,
     poolData,

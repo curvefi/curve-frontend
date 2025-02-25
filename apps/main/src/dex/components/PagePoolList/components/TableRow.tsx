@@ -26,7 +26,7 @@ export type TableRowProps = {
   poolId: string
   formValues: FormValues
   isInPool: boolean
-  imageBaseUrl: string
+  blockchainId: string
   columnKeys: ColumnKeys[]
   poolData: PoolData | undefined
   poolDataCachedOrApi: PoolDataCache | PoolData | undefined
@@ -46,7 +46,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   poolId,
   formValues,
   isInPool,
-  imageBaseUrl,
+  blockchainId,
   columnKeys,
   poolData,
   poolDataCachedOrApi,
@@ -74,7 +74,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
             <Td $first={!showInPoolColumn}>
               <PoolLabel
                 isVisible
-                imageBaseUrl={imageBaseUrl}
+                blockchainId={blockchainId}
                 poolData={poolDataCachedOrApi}
                 poolListProps={{
                   searchText: searchText,

@@ -26,15 +26,17 @@
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
     "@commitlint/load": "19.6.1",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
-    "eslint": "^8.57.1",
+    "@eslint/eslintrc": "*",
+    "@eslint/js": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "eslint": "*",
     "eslint-config-custom": "*",
     "husky": "^9.1.7",
     "lint-staged": "15.4.3",
     "prettier": "^3.5.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "*",
+    "react-dom": "*",
     "turbo": "^2.4.0",
     "typescript": "^5"
   },
@@ -46,11 +48,13 @@
     ]
   },
   "resolutions": {
-    "eslint": "^8.57.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
+    "eslint": "^9.20.1",
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.20.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
     "typescript": "^5"
   }
 }

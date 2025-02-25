@@ -1,6 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import { ethers } from 'ethers'
-import { CDN_ROOT_URL, CURVE_ASSETS_URL, CURVE_CDN_URL, getImageBaseUrl } from './utilsConstants'
+import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
   blocknativeSupport: true,
@@ -10,13 +10,11 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   gasPricesUrl: '',
   gasPricesDefault: 0,
   integrations: {
-    imageBaseurl: `${CURVE_ASSETS_URL}/platforms`,
     listUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`,
     tagsUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`,
   },
   rewards: {
     baseUrl: CDN_ROOT_URL,
-    imageBaseUrl: `${CURVE_ASSETS_URL}/platforms`,
     campaignsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/campaign-list.json`,
     tagsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/reward-tags.json`,
   },
@@ -83,7 +81,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     chainId: Chain.Fantom,
     rpcUrl: 'https://rpc.ftm.tools/',
     nativeCurrencySymbol: 'FTM',
-    explorerUrl: 'https://ftmscan.com/',
+    explorerUrl: 'https://ftmscout.com/',
     orgUIPath: 'https://ftm.curve.fi',
   },
   [Chain.Arbitrum]: {
@@ -182,10 +180,9 @@ export type BaseConfig = {
   gasPricesDefault: number
   logoSrc: string
   logoSrcDark: string
-  integrations: { imageBaseurl: string; listUrl: string; tagsUrl: string }
-  rewards: { baseUrl: string; imageBaseUrl: string; campaignsUrl: string; tagsUrl: string }
+  integrations: { listUrl: string; tagsUrl: string }
+  rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   rpcUrl: string
-  imageBaseUrl: string
   scanAddressPath: (hash: string) => string
   scanTxPath: (hash: string) => string
   scanTokenPath: (hash: string) => string
@@ -204,7 +201,6 @@ export function getBaseNetworksConfig(chainId: number, networkConfig: any): Base
     id: id, // TODO: remove id or networkId
     networkId: id,
     hex: ethers.toQuantity(chainId),
-    imageBaseUrl: getImageBaseUrl(id),
     logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
     logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     rpcUrl,

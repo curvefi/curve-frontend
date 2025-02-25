@@ -45,6 +45,7 @@ import {
   UsdRatesMapper,
   EstimatedGas,
 } from '@/dex/types/main.types'
+import memoizee from 'memoizee'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -1310,12 +1311,21 @@ const poolWithdraw = {
   },
 }
 
+/**
+ * TODO: Work around for getPoolList being called twice from UserSlice and DashboardSlice
+ */
+const getUserPoolList = memoizee((curve: CurveApi, walletAddress: string) => curve.getUserPoolList(walletAddress), {
+  maxAge: 1000 * 60 * 5,
+  length: 1,
+  promise: true,
+})
+
 const wallet = {
   getUserPoolList: async (curve: CurveApi, walletAddress: string) => {
     log('getUserPoolList', curve.chainId, walletAddress)
     let resp = { poolList: [] as string[], error: '' }
     try {
-      resp.poolList = await curve.getUserPoolList(walletAddress)
+      resp.poolList = await getUserPoolList(curve, walletAddress)
       return resp
     } catch (error) {
       resp.error = getErrorMessage(error, 'error-pool-list')
@@ -1496,7 +1506,7 @@ const wallet = {
     const chunks = chunk(tokenAddresses, 20)
     await PromisePool.for(chunks)
       .withConcurrency(10)
-      .handleError((error, chunk) => {
+      .handleError((_, chunk) => {
         errors.push(chunk)
       })
       .process(async (addresses) => {

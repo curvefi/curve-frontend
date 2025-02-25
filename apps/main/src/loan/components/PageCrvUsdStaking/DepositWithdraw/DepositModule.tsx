@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 
 import useStore from '@/loan/store/useStore'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
@@ -21,13 +22,19 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const DepositModule = () => {
   const { signerAddress } = useWallet()
-  const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
-  const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
+  const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
+    userAddress: signerAddress ?? '',
+  })
+  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
+  const preview = useStore((state) => state.scrvusd.preview)
+  const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
+  const setMax = useStore((state) => state.scrvusd.setMax)
 
-  const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
   const isLoadingPreview = isLoading(preview.fetchStatus)
 
-  const validationError = userBalances?.crvUSD ? BigNumber(inputAmount).gt(BigNumber(userBalances.crvUSD)) : false
+  const validationError = userScrvUsdBalance?.crvUSD
+    ? BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.crvUSD))
+    : false
 
   return (
     <Box flex flexColumn>
@@ -41,11 +48,11 @@ const DepositModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            walletBalance={userBalances?.crvUSD ?? '0'}
-            walletBalanceUSD={userBalances?.crvUSD ?? '0'}
+            walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
+            walletBalanceUSD={userScrvUsdBalance?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
             value={inputAmount}
-            isLoadingBalances={isLoadingBalances}
+            isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
             setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'deposit')}
@@ -66,13 +73,13 @@ const DepositModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            walletBalance={userBalances?.scrvUSD ?? '0'}
-            walletBalanceUSD={userBalances?.scrvUSD ?? '0'}
+            walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
+            walletBalanceUSD={userScrvUsdBalance?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
             value={preview.value}
             readOnly
             isLoadingInput={isLoadingPreview}
-            isLoadingBalances={isLoadingBalances}
+            isLoadingBalances={userScrvUsdBalanceLoading}
           />
         </InputWrapper>
       </div>

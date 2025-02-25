@@ -18,7 +18,7 @@ export const parseYield = (x: Responses.GetYieldResponse['data'][number]): Model
   timestamp: toDate(x.timestamp),
   assets: x.assets,
   supply: x.supply,
-  apyProjected: x.proj_apy,
+  apyProjected: Number(x.proj_apy),
 })
 
 export const parseRevenue = (x: Responses.GetRevenueResponse['history'][number]): Models.Revenue => ({
@@ -38,4 +38,13 @@ export const parseStatistics = (x: Responses.GetStatisticsResponse): Models.Stat
   lastUpdatedBlock: x.last_updated_block,
   aprProjected: x.proj_apr,
   supply: x.supply,
+})
+
+export const parseUserStats = (x: Responses.GetUserStatsResponse): Models.UserStats => ({
+  totalDeposited: BigInt(x.total_deposited),
+  totalReceived: BigInt(x.total_recieved),
+  totalWithdrawn: BigInt(x.total_withdrawn),
+  totalTransferredIn: BigInt(x.total_transferred_in),
+  totalTransferredOut: BigInt(x.total_transferred_out),
+  currentBalance: BigInt(x.current_balance),
 })

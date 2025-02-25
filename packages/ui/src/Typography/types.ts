@@ -1,4 +1,4 @@
-import * as React from 'react'
+import type { JSX } from 'react'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 type ValueOf<T> = T[keyof T]

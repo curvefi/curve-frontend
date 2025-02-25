@@ -32,7 +32,7 @@ export const CrvUsd = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/assets/pdf/curve-stablecoin.pdf"
+        href="https://docs.curve.fi/assets/pdf/whitepaper_curve_stablecoin.pdf"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{
@@ -46,7 +46,7 @@ export const CrvUsd = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/references/audits/#crvusd-and-lending"
+        href="https://docs.curve.fi/security/security/#stablecoin-and-lending"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{

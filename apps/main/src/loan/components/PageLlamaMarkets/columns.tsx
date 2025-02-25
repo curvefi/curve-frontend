@@ -74,7 +74,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`7D Borrow Rate Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
     size: ColumnWidth.md,
-    enableSorting: false,
   }),
   columnHelper.accessor('rates.lend', {
     header: t`7D Avg Supply Yield`,
@@ -88,7 +87,7 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`7D Supply Yield Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
     size: ColumnWidth.md,
-    enableSorting: false,
+    sortUndefined: 'last',
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,

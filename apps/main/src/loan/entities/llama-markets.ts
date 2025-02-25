@@ -105,7 +105,7 @@ const convertLendingVault = (
   liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
-  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${vault}/create`,
+  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
   isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
   leverage,
@@ -115,6 +115,9 @@ const convertLendingVault = (
   userBorrowed: user?.borrowed ?? null,
   userHealth: user?.healthFull ?? null,
 })
+
+/** We show WETH as ETH in the UI and market URL */
+const getCollateralSymbol = ({ symbol }: { symbol: string }) => (symbol == 'WETH' ? 'ETH' : symbol)
 
 const convertMintMarket = (
   {
@@ -145,7 +148,7 @@ const convertMintMarket = (
       chain,
     },
     collateral: {
-      symbol: collateralToken.symbol,
+      symbol: getCollateralSymbol(collateralToken),
       address: collateralToken.address,
       usdPrice: collateralAmountUsd / collateralAmount,
       chain,
@@ -157,7 +160,7 @@ const convertMintMarket = (
   rates: { borrow: rate, lend: null },
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-  url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralToken.symbol}/create`,
+  url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
   isFavorite: favoriteMarkets.has(address),
   rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,

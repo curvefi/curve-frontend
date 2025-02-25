@@ -7,7 +7,7 @@ import Image from 'next/image'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@ui/utils'
+import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import useStore from '@/dex/store/useStore'
@@ -163,7 +163,7 @@ const IntegrationsComp = ({
                   </Box>
                 )
               }
-              imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
+              imageUrl={app.imageId ? `${CURVE_ASSETS_URL}/platforms/${app.imageId}` : ''}
             />
           ))}
         </IntegrationsWrapper>

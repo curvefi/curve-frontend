@@ -63,9 +63,6 @@
     "campaign": "XPoints.json"
   },
   {
-    "campaign": "MindNetwork.json"
-  },
-  {
     "campaign": "DTrinity.json"
   },
   {
@@ -82,5 +79,8 @@
   },
   {
     "campaign": "Fx.json"
+  },
+  {
+    "campaign": "Pumpbtc.json"
   }
 ]

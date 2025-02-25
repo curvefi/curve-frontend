@@ -64,3 +64,15 @@ export const parseLiqHealthDeciles = (
   debt: x.debt,
   stablecoin: x.stablecoin,
 })
+
+export const parseTotalOverview = (
+  x: Responses.GetTotalOverviewResponse['data'][number],
+): Models.TotalOverview[number] => ({
+  chain: x.chain,
+  softLiquidationUsers: x.soft_liquidation_users,
+  badDebt: x.bad_debt,
+  liquidatablePositions: x.liquidatable_positions,
+  liquidatablePosDebtUsd: x.liquidatable_pos_debt_usd,
+  liquidatableCollateralUsd: x.liquidatable_collateral_usd,
+  liquidatableBorrowedUsd: x.liquidatable_borrowed_usd,
+})

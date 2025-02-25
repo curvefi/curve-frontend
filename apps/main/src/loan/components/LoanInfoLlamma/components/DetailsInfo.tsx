@@ -1,5 +1,6 @@
 import { TITLE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
+import networks from '@/loan/networks'
 
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import TokenLabel from '@/loan/components/TokenLabel'
@@ -22,7 +23,12 @@ const DetailsInfo = ({
 
   const collateralDataCachedOrApi = collateralData ?? collateralDataCached
 
-  const props = { rChainId, collateralId, collateralDataCachedOrApi }
+  const props = {
+    rChainId,
+    blockchainId: networks[rChainId].networkId,
+    collateralId,
+    collateralDataCachedOrApi,
+  }
 
   // prettier-ignore
   const contents: { titleKey: TitleKey; content: React.ReactNode; }[][] = [

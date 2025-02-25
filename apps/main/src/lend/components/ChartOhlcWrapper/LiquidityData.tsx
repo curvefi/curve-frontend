@@ -7,95 +7,91 @@ import networks from '@/lend/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 
 import Box from '@ui/Box'
-import TokenIcon from '@/lend/components/TokenIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
-const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chainId, coins }) => {
-  const imageBaseUrl = networks[chainId].imageBaseUrl
-
-  return (
-    <>
-      {coins &&
-        lendControllerData.map((transaction, index) => (
-          <TransactionRow key={`${transaction.txHash}-lp-${index}`}>
-            <LiquidityEvent href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
-              {!!transaction.deposit && (
-                <>
-                  <Box flex flexColumn>
-                    <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
-                    <Nrange>
-                      N: {transaction.deposit.n1} / {transaction.deposit.n2}
-                    </Nrange>
-                  </Box>
-                  <LiquidityEventRow>
-                    <Chip isBold isNumber>
-                      {formatNumber(transaction.deposit.amount, {
-                        ...getFractionDigitsOptions(transaction.deposit.amount, 2),
-                      })}
-                    </Chip>
-                    <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
-                    <StyledTokenIcon
-                      size="sm"
-                      imageBaseUrl={imageBaseUrl}
-                      token={coins.collateralToken.address}
-                      address={coins.collateralToken.address}
-                    />
-                  </LiquidityEventRow>
-                </>
-              )}
-              {!!transaction.withdrawal && (
-                <>
-                  <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
-                  <Box flex flexColumn margin="0 0 0 auto">
-                    {+transaction.withdrawal.amountCollateral !== 0 && (
-                      <LiquidityEventRow>
-                        <Chip isBold isNumber>
-                          {formatNumber(transaction.withdrawal.amountCollateral, {
-                            ...getFractionDigitsOptions(transaction.withdrawal.amountCollateral, 2),
-                          })}
-                        </Chip>
-                        <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
-                        <StyledTokenIcon
-                          size="sm"
-                          imageBaseUrl={imageBaseUrl}
-                          token={coins.collateralToken.address}
-                          address={coins.collateralToken.address}
-                        />
-                      </LiquidityEventRow>
-                    )}
-                    {+transaction.withdrawal.amountBorrowed !== 0 && (
-                      <LiquidityEventRow>
-                        <Chip isBold isNumber>
-                          {formatNumber(transaction.withdrawal.amountBorrowed, {
-                            ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
-                          })}
-                        </Chip>
-                        <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
-                        <StyledTokenIcon
-                          size="sm"
-                          imageBaseUrl={imageBaseUrl}
-                          token={coins.borrowedToken.address}
-                          address={coins.borrowedToken.address}
-                        />
-                      </LiquidityEventRow>
-                    )}
-                  </Box>
-                </>
-              )}
-            </LiquidityEvent>
-            <TimestampColumn>
-              <Tooltip
-                tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
-              >
-                {convertTimeAgo(transaction.timestamp)}
-              </Tooltip>
-            </TimestampColumn>
-          </TransactionRow>
-        ))}
-    </>
-  )
-}
+const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chainId, coins }) => (
+  <>
+    {coins &&
+      lendControllerData.map((transaction, index) => (
+        <TransactionRow key={`${transaction.txHash}-lp-${index}`}>
+          <LiquidityEvent href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+            {!!transaction.deposit && (
+              <>
+                <Box flex flexColumn>
+                  <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
+                  <Nrange>
+                    N: {transaction.deposit.n1} / {transaction.deposit.n2}
+                  </Nrange>
+                </Box>
+                <LiquidityEventRow>
+                  <Chip isBold isNumber>
+                    {formatNumber(transaction.deposit.amount, {
+                      ...getFractionDigitsOptions(transaction.deposit.amount, 2),
+                    })}
+                  </Chip>
+                  <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
+                  <StyledTokenIcon
+                    size="sm"
+                    blockchainId={networks[chainId].networkId}
+                    symbol={coins.collateralToken.symbol}
+                    address={coins.collateralToken.address}
+                  />
+                </LiquidityEventRow>
+              </>
+            )}
+            {!!transaction.withdrawal && (
+              <>
+                <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
+                <Box flex flexColumn margin="0 0 0 auto">
+                  {+transaction.withdrawal.amountCollateral !== 0 && (
+                    <LiquidityEventRow>
+                      <Chip isBold isNumber>
+                        {formatNumber(transaction.withdrawal.amountCollateral, {
+                          ...getFractionDigitsOptions(transaction.withdrawal.amountCollateral, 2),
+                        })}
+                      </Chip>
+                      <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
+                      <StyledTokenIcon
+                        size="sm"
+                        blockchainId={networks[chainId].networkId}
+                        symbol={coins.collateralToken.symbol}
+                        address={coins.collateralToken.address}
+                      />
+                    </LiquidityEventRow>
+                  )}
+                  {+transaction.withdrawal.amountBorrowed !== 0 && (
+                    <LiquidityEventRow>
+                      <Chip isBold isNumber>
+                        {formatNumber(transaction.withdrawal.amountBorrowed, {
+                          ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
+                        })}
+                      </Chip>
+                      <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
+                      <StyledTokenIcon
+                        size="sm"
+                        blockchainId={networks[chainId].networkId}
+                        symbol={coins.borrowedToken.symbol}
+                        address={coins.borrowedToken.address}
+                      />
+                    </LiquidityEventRow>
+                  )}
+                </Box>
+              </>
+            )}
+          </LiquidityEvent>
+          <TimestampColumn>
+            <Tooltip
+              tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
+            >
+              {convertTimeAgo(transaction.timestamp)}
+            </Tooltip>
+          </TimestampColumn>
+        </TransactionRow>
+      ))}
+  </>
+)
 
 const TransactionRow = styled.div`
   display: flex;

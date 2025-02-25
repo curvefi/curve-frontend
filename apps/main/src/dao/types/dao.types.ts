@@ -14,7 +14,7 @@ export type PageWidthClassName =
   | 'page-small-x'
   | 'page-small-xx'
 export type CurveApi = typeof curveApi & { chainId: 1 }
-export type ChainId = 1
+export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export interface NetworkConfig extends BaseConfig {
@@ -175,6 +175,7 @@ export type ProposalMapper = {
 }
 export type PricesGaugeOverviewData = {
   address: string
+  effective_address?: string
   gauge_type: string
   name: string | null
   version: string | null
@@ -212,6 +213,7 @@ export type CurveApiBaseGauge = {
   lpTokenPrice: number | null
   blockchainId: string
   gauge: string
+  rootGauge?: string
   gauge_data: {
     inflation_rate: string
     working_supply: string

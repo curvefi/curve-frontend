@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { shortenTokenAddress, formatNumber } from '@ui/utils'
+import { formatNumber, shortenTokenAddress } from '@ui/utils'
 import { TOP_HOLDERS } from '@/dao/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'

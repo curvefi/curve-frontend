@@ -24,7 +24,7 @@ import { Token } from '@/dex/types/main.types'
 const ComboBox = ({
   testId,
   dialogClose,
-  imageBaseUrl,
+  blockchainId,
   listBoxHeight,
   showBalances,
   result,
@@ -37,7 +37,7 @@ const ComboBox = ({
 }: Pick<
   ComboBoxSelectTokenProps,
   | 'testId'
-  | 'imageBaseUrl'
+  | 'blockchainId'
   | 'listBoxHeight'
   | 'showBalances'
   | 'showCheckboxHideSmallPools'
@@ -134,7 +134,7 @@ const ComboBox = ({
                 <ComboBoxListChunk
                   key={`tokens-${idx}`}
                   testId={testId}
-                  imageBaseUrl={imageBaseUrl}
+                  blockchainId={blockchainId}
                   inputRef={inputRef}
                   showBalances={showBalances}
                   selectedToken={selectedToken}

@@ -13,13 +13,12 @@ import GaugeDetails from '../../GaugeListItem/GaugeDetails'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 
 type VoteGaugeProps = {
-  imageBaseUrl: string
   gaugeData: GaugeFormattedData
   userGaugeVoteData: UserGaugeVoteWeight
   powerUsed: number
 }
 
-const VoteGauge: React.FC<VoteGaugeProps> = ({ imageBaseUrl, gaugeData, userGaugeVoteData, powerUsed }) => {
+const VoteGauge: React.FC<VoteGaugeProps> = ({ gaugeData, userGaugeVoteData, powerUsed }) => {
   const [showDetails, setShowDetails] = useState(false)
   const { setSelectedGauge } = useStore((state) => state.gauges)
   const { veCrv } = useStore((state) => state.user.userVeCrv)
@@ -33,7 +32,7 @@ const VoteGauge: React.FC<VoteGaugeProps> = ({ imageBaseUrl, gaugeData, userGaug
         </IconButton>
       </TitleWrapper>
       <MainWrapper>
-        <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
+        <TitleComp gaugeData={gaugeData} />
         <VoteGaugeField newVote powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeVoteData} />
       </MainWrapper>
       <Box>
