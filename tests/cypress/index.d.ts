@@ -10,6 +10,7 @@ import {
   connectMetamask,
   allocateEth,
   tokenBalance,
+  cyForEach,
 } from './support/helpers'
 
 type DropFirst<T extends unknown[]> = T extends [any, ...infer U] ? U : never
@@ -24,6 +25,7 @@ declare global {
     interface Chainable {
       state: (of: 'window' | 'document') => Chainable<Window>
       dataTestId: typeof dataTestId
+      forEach: typeof cyForEach
       createJsonRpcProvider: typeof createJsonRpcProvider
       prepareMetamaskWallet: ChainableFn<typeof prepareMetamaskWallet>
       createRandomWallet: ChainableFn<typeof createRandomWallet>

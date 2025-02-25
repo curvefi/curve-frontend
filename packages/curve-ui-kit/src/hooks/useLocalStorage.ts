@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
 export type GetAndSet<T, D = T> = [T | D, Dispatch<SetStateAction<T>>]
 
@@ -25,14 +25,21 @@ function getStoredValue<Type, Default>(key: string, initialValue: Default | unde
  */
 export function useLocalStorage<Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> {
   type T = Type | Default
-  const value = getStoredValue<Type, Default>(key, initialValue)
+  const storageItem = window.localStorage.getItem(key) // important to run this in every render to get updates from other hooks
+  const storedValue = useMemo(() => (storageItem == null ? null : (JSON.parse(storageItem) as T)), [storageItem])
+  const [stateValue, setStateValue] = useState<T | Default | null>(storedValue)
   const setValue = useCallback(
     (setter: SetStateAction<Type>) => {
       const value: T =
         typeof setter === 'function' ? (setter as (prev: T) => T)(getStoredValue(key, initialValue)) : setter
       setLocalStorage(key, value)
+      setStateValue(value)
     },
     [initialValue, key],
   )
-  return [value, setValue]
+  useEffect(() => {
+    // Update state when other components update the local storage
+    storedValue != stateValue && setStateValue(storedValue)
+  }, [storedValue, stateValue])
+  return [stateValue || initialValue!, setValue]
 }

@@ -23,6 +23,7 @@
     "NEXT_PUBLIC_FRONTEND_DRPC_KEY",
     "ANALYZE",
     "NODE_ENV",
+    "DEV_PORT",
     "INFURA_PROJECT_ID",
     "MAINNET_ALCHEMY_API_KEY",
     "POLYGON_ALCHEMY_API_KEY",
@@ -37,6 +38,11 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
       "outputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
+    },
+    "start": {
+      "dependsOn": ["^build", "^start"],
+      "inputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**", "storybook-static/**"],
+      "outputs": []
     },
     "lint": {},
     "typecheck": {},

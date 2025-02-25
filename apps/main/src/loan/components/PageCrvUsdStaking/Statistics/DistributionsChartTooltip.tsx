@@ -5,7 +5,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { Paper, Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 
 const { Spacing } = SizesAndSpaces

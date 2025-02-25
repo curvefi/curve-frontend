@@ -1,9 +1,11 @@
 import {
   AppPath,
   checkIsDarkMode,
+  LOAD_TIMEOUT,
   oneAppPath,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
+  SCROLL_WIDTH,
   TABLET_BREAKPOINT,
 } from '@/support/ui'
 
@@ -13,8 +15,8 @@ const expectedMobileNavHeight = 56
 const expectedConnectHeight = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
+const expectedFooterMinWidth = 288
 const expectedFooterMaxWidth = 1536
-const scrollbarWidth = 15 // scrollbar in px for the test browser
 
 const mainAppUrl = 'http://localhost:3000/dex'
 
@@ -43,12 +45,12 @@ describe('Header', () => {
         .should('equal', expectedSubNavHeight + expectedMainNavHeight)
       cy.get(`header`)
         .invoke('outerWidth')
-        .should('equal', viewport[0] - scrollbarWidth)
+        .should('equal', viewport[0] - SCROLL_WIDTH)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
       const expectedFooterWidth = Math.min(
         expectedFooterMaxWidth,
-        viewport[0] - expectedFooterXMargin.desktop - scrollbarWidth,
+        viewport[0] - expectedFooterXMargin.desktop - SCROLL_WIDTH,
       )
       cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
     })
@@ -97,17 +99,22 @@ describe('Header', () => {
       waitIsLoaded(appPath)
     })
 
-    it('should have the right size', () => {
+    it(`should have the right size`, () => {
       const breakpoint = viewport[0] < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
-      const expectedFooterWidth = viewport[0] - scrollbarWidth - expectedFooterXMargin[breakpoint]
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight)
+      const expectedFooterWidth = Math.max(
+        expectedFooterMinWidth,
+        viewport[0] - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
+      )
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height')
       cy.get(`header`)
         .invoke('outerWidth')
-        .should('equal', viewport[0] - scrollbarWidth)
-      cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
+        .should('equal', viewport[0] - SCROLL_WIDTH, 'Header width')
+      cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth, 'Footer width')
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight)
-      cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height changed')
+      cy.get("[data-testid='navigation-connect-wallet']")
+        .invoke('outerHeight')
+        .should('equal', expectedConnectHeight, 'Connect height')
     })
 
     it('should open the menu and navigate', () => {
@@ -116,7 +123,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = ['dex', 'dao'].includes(appPath) ? 0 : 1
+        const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
@@ -163,7 +170,7 @@ describe('Header', () => {
       lend: 'btn-connect-prompt',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
-    cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
+    cy.get(`[data-testid='${testId}']`, LOAD_TIMEOUT).should('be.visible')
   }
 
   function switchEthToArbitrum() {
