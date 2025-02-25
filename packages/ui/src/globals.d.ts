@@ -14,6 +14,10 @@ declare module '*.webp' {
   const content: any
   export default content
 }
+declare module '*.css' {
+  const content: any
+  export default content
+}
 
 /// <reference types="next-images" />
 declare module '*.svg' {
