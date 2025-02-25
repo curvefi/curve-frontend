@@ -13,8 +13,7 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useNavigate } from 'react-router'
-import type { Theme } from '@mui/material/styles'
-import type { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx'
+import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
