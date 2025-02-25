@@ -308,8 +308,11 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const { signerAddress } = api
       const { filterKey, filterTypeKey, hideSmallMarkets, searchText, sortBy, sortByOrder } = searchParams
 
-      // get market list for table
-      let cMarkets = Object.values(marketMapping)
+      // Get market list for table. The mapping has both address and IDs, so only use one of them
+      const allMarkets = Object.entries(marketMapping)
+        .filter(([key]) => !key.startsWith('0x'))
+        .map(([, m]) => m)
+      let cMarkets = [...allMarkets]
 
       if (signerAddress) {
         if (filterTypeKey === 'borrow') {
@@ -418,9 +421,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         ])
       }
 
-      await Promise.all(
-        fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? Object.values(marketMapping) : cMarkets, shouldRefetch)),
-      )
+      await Promise.all(fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? allMarkets : cMarkets, shouldRefetch)))
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
       logSuccess(['market-list-slice', 'setFormValues'], sorted.result.length)
     },
