@@ -38,6 +38,11 @@
       "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
       "outputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
     },
+    "start": {
+      "dependsOn": ["^build", "^start"],
+      "inputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**", "storybook-static/**"],
+      "outputs": []
+    },
     "lint": {},
     "typecheck": {},
     "dev": {

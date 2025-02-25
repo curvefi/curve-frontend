@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "turbo build",
+    "start": "turbo start",
     "dev": "turbo dev --parallel",
     "lint": "turbo lint",
     "lint:fix": "turbo lint -- --fix",
