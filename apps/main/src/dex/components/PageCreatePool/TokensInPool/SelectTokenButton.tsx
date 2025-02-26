@@ -168,7 +168,7 @@ const ComboBoxTokenPicker = ({
           error={error}
           disabledTokens={disabledKeys ?? []}
           customOptions={
-            <StyledCheckbox
+            <Checkbox
               key={'filter-basepools'}
               isDisabled={basePools[chainId]?.length === 0}
               className={filterBasepools ? 'active' : ''}
@@ -176,7 +176,7 @@ const ComboBoxTokenPicker = ({
               onChange={() => setFilterBasepools(!filterBasepools)}
             >
               View Basepools
-            </StyledCheckbox>
+            </Checkbox>
           }
           onClose={handleClose}
           onToken={({ address }) => {
@@ -197,10 +197,6 @@ const ComboBoxTokenPicker = ({
 
 const ButtonTokenIcon = styled(TokenIcon)`
   margin-right: 0.25rem;
-`
-
-const StyledCheckbox = styled(Checkbox)`
-  margin: auto 1.25rem auto auto;
 `
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
