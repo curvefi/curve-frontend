@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
-import { parseNetworkFromUrl, getPath, getRestFullPathname } from '@/loan/utils/utilsRouter'
+import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { visibleNetworksList } from '@/loan/networks'
@@ -13,6 +13,8 @@ import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
+import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -24,16 +26,20 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const { rChainId, rNetwork } = parseNetworkFromUrl(params)
+  const curve = useStore((state) => state.curve)
+  const chainId = curve?.chainId
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
-  const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply)
-  const dailyVolume = useStore((state) => state.dailyVolume)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
+
+  const { data: dailyVolume } = useAppStatsDailyVolume({})
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
+
   const { network: routerNetwork = 'ethereum' } = params
   const routerPathname = usePathname()
 
