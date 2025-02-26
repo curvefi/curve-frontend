@@ -19,7 +19,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
-import { getPath } from '@/lend/utils/utilsRouter'
+import { getPath } from '@/loan/utils/utilsRouter'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 export const IntegrationsComp = (params: NetworkUrlParams) => {

@@ -1,5 +1,4 @@
 'use client'
-import type { NextPage } from 'next'
 import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import Typography from '@mui/material/Typography'

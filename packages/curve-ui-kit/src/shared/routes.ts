@@ -85,3 +85,18 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
 
 export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
   app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`
+
+/**
+ * Get the redirect URL for the app root URL. This is the entry point of the old routes with the hash router.
+ * We remove the hash and redirect to the new routes. We also handle old routes that were hardcoded in react-router.
+ */
+export function getRedirectUrl(app: AppName, { origin, search, hash }: Location, routes: string[]) {
+  const path = hash.replace(/^#/, '')
+  if (routes.includes(path)) {
+    return `${origin}/${app}/ethereum/${path}${search}`
+  }
+  if (path) {
+    return `${origin}/${app}/${path}${search}`
+  }
+  return `${origin}/${app}/ethereum/markets`
+}
