@@ -101,11 +101,7 @@ const TableSettings = ({
             />
             <Box flex gridGap={2}>
               <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
-              <TableCheckboxHideSmallPools
-                searchParams={searchParams}
-                poolDatasCachedOrApi={poolDatasCachedOrApi}
-                updatePath={updatePath}
-              />
+              <TableCheckboxHideSmallPools poolDatasCachedOrApi={poolDatasCachedOrApi} />
             </Box>
           </>
         ) : (
@@ -116,11 +112,7 @@ const TableSettings = ({
               updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
             />
             <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
-            <TableCheckboxHideSmallPools
-              searchParams={searchParams}
-              poolDatasCachedOrApi={poolDatasCachedOrApi}
-              updatePath={updatePath}
-            />
+            <TableCheckboxHideSmallPools poolDatasCachedOrApi={poolDatasCachedOrApi} />
           </>
         )}
       </FiltersWrapper>
