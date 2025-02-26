@@ -41,6 +41,8 @@ export type TokenListProps = {
   error: string
   /** List of token addresses that should be disabled/unselectable */
   disabledTokens: string[]
+  /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
+  disableSorting: boolean
   /** Custom React nodes to render below favorites section */
   customOptions: ReactNode
 }
@@ -55,6 +57,7 @@ export const TokenList = ({
   showSearch,
   error,
   disabledTokens,
+  disableSorting,
   customOptions,
   onToken,
   onSearch,
@@ -73,13 +76,14 @@ export const TokenList = ({
   const showFavorites = favorites.length > 0 && !debouncedSearch
 
   // List of all token options
-  const options = useMemo(
-    () =>
-      [...tokens]
-        .filter((token) =>
-          `${token.symbol}${token.address}`.toLocaleLowerCase().includes(debouncedSearch.toLocaleLowerCase()),
-        )
-        .sort((a, b) => {
+  const options = useMemo(() => {
+    const tokensFiltered = [...tokens].filter((token) =>
+      `${token.symbol}${token.address}`.toLocaleLowerCase().includes(debouncedSearch.toLocaleLowerCase()),
+    )
+
+    return disableSorting
+      ? tokensFiltered
+      : tokensFiltered.sort((a, b) => {
           const aBalance = +(balances[a.address] ?? 0)
           const bBalance = +(balances[b.address] ?? 0)
 
@@ -93,9 +97,8 @@ export const TokenList = ({
 
           // Finally sort by label
           return a.symbol.localeCompare(b.symbol)
-        }),
-    [tokens, debouncedSearch, balances, tokenPrices],
-  )
+        })
+  }, [tokens, disableSorting, debouncedSearch, balances, tokenPrices])
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>

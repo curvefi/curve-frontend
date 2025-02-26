@@ -167,6 +167,7 @@ const ComboBoxTokenPicker = ({
           compact={false}
           error={error}
           disabledTokens={disabledKeys ?? []}
+          disableSorting={true}
           customOptions={
             <Checkbox
               key={'filter-basepools'}

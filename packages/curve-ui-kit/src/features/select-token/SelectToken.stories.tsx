@@ -75,6 +75,7 @@ const meta: Meta<typeof TokenSelector> = {
     compact: false,
     error: '',
     disabledTokens: defaultDisabledTokens,
+    disableSorting: false,
     onToken: (token) => console.log('Selected token:', token),
   },
   argTypes: {
@@ -122,10 +123,15 @@ const meta: Meta<typeof TokenSelector> = {
       control: 'object',
       description: 'Array of token addresses that should be disabled in the selector',
     },
+    disableSorting: {
+      control: 'boolean',
+      description: 'Disable automatic sorting so you can apply your own in the tokens property',
+    },
     customOptions: {
       control: false,
       description: 'Adds extra custom options to the modal, below the favorites',
     },
+
     onToken: {
       action: 'token selected',
       description: 'Callback when a token is selected',
