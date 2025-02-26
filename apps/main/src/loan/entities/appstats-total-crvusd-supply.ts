@@ -1,16 +1,13 @@
 import type { ChainId } from '@/loan/types/loan.types'
-import { ChainParams } from '@ui-kit/lib/model/query'
+import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { curvejsValidationSuite } from '@/loan/entities/validation/curve-lending-js-validation'
 
-async function _fetchAppStatsTotalCrvusdSupply({ chainId }: ChainParams<ChainId>) {
-  const curve = useStore.getState().curve
-  if (!curve || !chainId) return null
-
-  const fetchedTotalSupply = await networks[chainId].api.helpers.getTotalSupply(curve)
-  return fetchedTotalSupply
+function _fetchAppStatsTotalCrvusdSupply({ chainId }: ChainQuery<ChainId>) {
+  const curve = useStore.getState().curve!
+  return networks[chainId].api.helpers.getTotalSupply(curve)
 }
 
 export const { useQuery: useAppStatsTotalCrvusdSupply } = queryFactory({
