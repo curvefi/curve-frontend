@@ -1,9 +1,17 @@
+import type { ChainParams } from '@ui-kit/lib/model/query'
+import type { ChainId } from '@/dex/types/main.types'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { enforce, group, test } from 'vest'
 import useStore from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
 
-export const curvejsValidationGroup = ({ chainId }: { chainId: ChainId | null }) =>
+export const chainValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
+  group('chainValidation', () => {
+    test('chainId', () => {
+      enforce(chainId).message('Chain ID is required').isNotEmpty().message('Invalid chain ID').isValidChainId()
+    })
+  })
+
+export const curvejsValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
       const curve = useStore.getState().curve
@@ -11,4 +19,7 @@ export const curvejsValidationGroup = ({ chainId }: { chainId: ChainId | null })
     })
   })
 
-export const curvejsValidationSuite = createValidationSuite(curvejsValidationGroup)
+export const curvejsValidationSuite = createValidationSuite((params: ChainParams<ChainId>) => {
+  chainValidationGroup(params)
+  curvejsValidationGroup(params)
+})
