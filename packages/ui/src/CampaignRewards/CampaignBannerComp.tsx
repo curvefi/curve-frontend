@@ -6,7 +6,7 @@ import { ExternalLink } from 'ui/src/Link'
 import { RCPointsIcon } from 'ui/src/images'
 import RewardsCompSmall from './CampaignRewardsComp'
 
-const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool, message }) => (
+const RewardsBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
   <Wrapper>
     <StyledPointsIcon />
     <RewardsMessage>

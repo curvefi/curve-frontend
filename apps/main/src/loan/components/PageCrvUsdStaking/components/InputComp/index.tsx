@@ -24,7 +24,7 @@ type InputCompProps = {
   readOnly?: boolean
 }
 
-const InputComp: React.FC<InputCompProps> = ({
+const InputComp = ({
   className,
   readOnly = false,
   walletBalance,
@@ -35,7 +35,7 @@ const InputComp: React.FC<InputCompProps> = ({
   value,
   setValue,
   setMax,
-}) => {
+}: InputCompProps) => {
   const [isFocused, setIsFocused] = useState(false)
 
   return (

@@ -9,7 +9,7 @@ interface ProgressBarProps {
   quorum?: boolean
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ support, minSupport, quorum, active }) => (
+const ProgressBar = ({ support, minSupport, quorum, active }: ProgressBarProps) => (
   <ProgressBarContainer active={active} quorum={quorum}>
     {quorum && <SupportLine quorum={quorum} minSupport={minSupport} active={active} />}
     <ProgressBarFill quorum={quorum} support={support} />

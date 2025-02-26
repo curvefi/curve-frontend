@@ -12,7 +12,7 @@ type Props = Pick<WalletPoolData, 'liquidityUsd' | 'percentStaked'> & {
   isHighLight: boolean
 }
 
-const TableCellBalances: React.FC<Props> = ({ isHighLight, liquidityUsd, percentStaked }) => (
+const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: Props) => (
   <>
     <Chip
       isNumber

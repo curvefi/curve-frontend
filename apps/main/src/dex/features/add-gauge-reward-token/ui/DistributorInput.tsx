@@ -6,7 +6,7 @@ import type { Address } from 'viem'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemDistributor, SubTitle } from './styled'
 
-export const DistributorInput: React.FC<{ disabled: boolean }> = ({ disabled }) => {
+export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
   const { setValue, formState, trigger, watch } = useFormContext<AddRewardFormValues>()
   const distributorId = watch('distributorId')
 

@@ -26,7 +26,7 @@ type TotalAll = {
 
 type Props = { title?: string }
 
-const TotalRecurrence: React.FC<Props> = ({ title }) => {
+const TotalRecurrence = ({ title }: Props) => {
   const {
     isLoading,
     formValues: { walletAddress },

@@ -1,9 +1,9 @@
-import { FunctionComponent, useCallback } from 'react'
+import { useCallback } from 'react'
 import IconButton from '@mui/material/IconButton'
 import { themes, ThemeSwitcherProps } from './types'
 import Tooltip from '@mui/material/Tooltip'
 
-export const ThemeSwitcherButton: FunctionComponent<ThemeSwitcherProps> = ({ theme, onChange, label }) => {
+export const ThemeSwitcherButton = ({ theme, onChange, label }: ThemeSwitcherProps) => {
   const i = themes.findIndex((t) => t.type === theme)
   const themeIndex = i === -1 ? 0 : i
   const onClick = useCallback(() => {

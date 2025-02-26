@@ -17,7 +17,7 @@ import TableCellRewards from '@/dex/components/PageDashboard/components/TableCel
 import TableCellBalances from '@/dex/components/PageDashboard/components/TableCellBalances'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 
-const TableRowMobile: React.FC<DashboardTableRowProps> = ({
+const TableRowMobile = ({
   isLite,
   blockchainId,
   formValues,
@@ -27,7 +27,7 @@ const TableRowMobile: React.FC<DashboardTableRowProps> = ({
   tableLabel,
   fetchBoost,
   updatePath,
-}) => {
+}: DashboardTableRowProps) => {
   const rowRef = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
 

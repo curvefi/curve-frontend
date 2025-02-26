@@ -17,10 +17,7 @@ import AlertFormError from '@/dex/components/AlertFormError'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { ChainId } from '@/dex/types/main.types'
 
-export const DepositReward: React.FC<{
-  chainId: ChainId
-  poolId: string
-}> = ({ chainId, poolId }) => {
+export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,

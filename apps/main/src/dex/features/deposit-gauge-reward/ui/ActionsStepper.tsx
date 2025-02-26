@@ -17,7 +17,7 @@ type TxInfo = {
   txHash: string
 }
 
-export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
     watch,

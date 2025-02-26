@@ -19,7 +19,7 @@ type FieldValueProps = {
   }
 }
 
-const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null, symbol = null }) => {
+const FieldValue = ({ value, fetchStatus, gas = null, symbol = null }: FieldValueProps) => {
   if (gas) {
     return (
       <TransactionFieldValue>

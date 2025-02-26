@@ -25,13 +25,13 @@ type Props = {
   addUserVote?: boolean
 }
 
-const SmallScreenCard: React.FC<Props> = ({
+const SmallScreenCard = ({
   gaugeData,
   userGaugeWeightVoteData,
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
-}) => {
+}: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights, gaugeListSortBy } = useStore((state) => state.gauges)
   const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)

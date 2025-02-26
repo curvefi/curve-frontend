@@ -15,7 +15,7 @@ import Box from '@ui/Box'
 import PoolActivity from '@/loan/components/ChartOhlcWrapper/PoolActivity'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
-const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, llammaId }) => {
+const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps) => {
   const address = llamma?.address ?? ''
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)

@@ -6,7 +6,7 @@ interface VoteCountdownProps {
   className?: string
 }
 
-const VoteCountdown: React.FC<VoteCountdownProps> = ({ startDate, className }) => {
+const VoteCountdown = ({ startDate, className }: VoteCountdownProps) => {
   const [timeRemaining, setTimeRemaining] = useState('')
 
   useEffect(() => {

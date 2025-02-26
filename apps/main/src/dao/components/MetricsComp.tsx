@@ -11,7 +11,7 @@ interface Props {
   row?: boolean
 }
 
-const MetricsComp: React.FC<Props> = ({ loading, title, data, className, row = false }) => (
+const MetricsComp = ({ loading, title, data, className, row = false }: Props) => (
   <Wrapper className={className} row={row}>
     <MetricsTitle row={row}>{title}</MetricsTitle>
     {loading ? <StyledLoader isLightBg skeleton={[56, 16.5]} row={row} /> : data}

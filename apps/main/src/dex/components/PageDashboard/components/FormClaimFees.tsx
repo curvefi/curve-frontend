@@ -19,7 +19,7 @@ export enum claimButtonsKey {
   crvUSD = 'crvUSD',
 }
 
-const FormClaimFees: React.FC = () => {
+const FormClaimFees = () => {
   const {
     activeKey,
     isLoading,

@@ -9,7 +9,7 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { useSignerAddress } from '@/dex/entities/signer'
 import { ChainId } from '@/dex/types/main.types'
 
-const ManageGauge: React.FC<{ poolId: string; chainId: ChainId }> = ({ poolId, chainId }) => {
+const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const sliderTabs: Tab<TabValue>[] = [
     {
       label: t`Add Reward`,
