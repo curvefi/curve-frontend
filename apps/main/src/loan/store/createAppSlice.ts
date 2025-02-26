@@ -6,9 +6,8 @@ import produce from 'immer'
 
 import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
-import { httpFetcher, log } from '@/loan/utils/helpers'
+import { log } from '@/loan/utils/helpers'
 import isEqual from 'lodash/isEqual'
-import networks from '@/loan/networks'
 import { Curve, LendApi, RouterProps, Wallet } from '@/loan/types/loan.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -19,8 +18,6 @@ type SliceState = {
   curve: Curve | null
   connectState: ConnectState
   lendApi: LendApi | null
-  crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
-  dailyVolume: number | null
   isLoadingApi: false
   isLoadingLendApi: false
   isLoadingCurve: true
@@ -33,8 +30,6 @@ type SliceState = {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   getContract(jsonModuleName: string, contractAddress: string, provider: ContractRunner): Promise<ethers.Contract | null>
-  fetchCrvUSDTotalSupply(api: Curve): Promise<void>
-  fetchDailyVolume(): Promise<void>
   updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
   updateLendApi(lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null): Promise<void>
@@ -50,8 +45,6 @@ const DEFAULT_STATE: SliceState = {
   curve: null,
   connectState: { status: '', stage: '' },
   lendApi: null,
-  crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
-  dailyVolume: null,
   isLoadingApi: false,
   isLoadingCurve: true,
   isLoadingLendApi: false,
@@ -75,21 +68,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     } catch (error) {
       console.error(error)
       return null
-    }
-  },
-  fetchCrvUSDTotalSupply: async (api: Curve) => {
-    const chainId = api.chainId
-    const fetchedTotalSupply = await networks[chainId].api.helpers.getTotalSupply(api)
-    get().updateGlobalStoreByKey('crvusdTotalSupply', fetchedTotalSupply)
-  },
-  fetchDailyVolume: async () => {
-    const { updateGlobalStoreByKey } = get()
-    try {
-      const resp = await httpFetcher('https://api.curve.fi/api/getVolumes/ethereum/crvusd-amms')
-      updateGlobalStoreByKey('dailyVolume', resp.data?.totalVolume ?? 'NaN')
-    } catch (error) {
-      console.error(error)
-      updateGlobalStoreByKey('dailyVolume', 'NaN')
     }
   },
   updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
@@ -122,8 +100,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     if (!prevCurveApi || isNetworkSwitched) {
       usdRates.fetchAllStoredUsdRates(curveApi)
-      state.fetchCrvUSDTotalSupply(curveApi)
-      state.fetchDailyVolume()
     }
 
     state.updateGlobalStoreByKey('isLoadingApi', false)
