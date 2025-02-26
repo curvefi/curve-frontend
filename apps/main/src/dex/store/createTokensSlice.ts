@@ -19,7 +19,7 @@ const sliceKey = 'tokens'
 // prettier-ignore
 export type TokensSlice = {
   [sliceKey]: SliceState & {
-    setTokensMapper(chainId: ChainId, poolDatas: PoolData[]): Promise<string[]>
+    setTokensMapper(chainId: ChainId, poolDatas: PoolData[]): string[]
     setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -48,7 +48,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    setTokensMapper: async (chainId, poolDatas) => {
+    setTokensMapper: (chainId, poolDatas) => {
       const { pools, networks } = get()
       const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
 

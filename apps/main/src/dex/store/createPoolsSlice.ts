@@ -291,7 +291,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               pools.fetchPoolsVolume(chainId, partialPoolDatas),
             ]))
 
-        const partialTokens = await tokens.setTokensMapper(chainId, partialPoolDatas)
+        const partialTokens = tokens.setTokensMapper(chainId, partialPoolDatas)
 
         if (curve.signerAddress) {
           userBalances.fetchUserBalancesByTokens(curve, partialTokens)
