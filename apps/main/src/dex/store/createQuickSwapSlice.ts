@@ -11,7 +11,6 @@ import type {
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
-import orderBy from 'lodash/orderBy'
 
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/dex/components/PageRouterSwap/utils'
 import { NETWORK_TOKEN } from '@/dex/constants'
@@ -410,11 +409,9 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       const { chainId, signerAddress } = curve
 
-      const selectToList = orderBy(
-        Object.entries(tokensMapper).map(([_, v]) => v!),
-        ({ volume }) => (typeof volume !== 'undefined' ? +volume : 0),
-        ['desc'],
-      ).map(({ address }) => address)
+      const selectToList = Object.entries(tokensMapper)
+        .map(([_, v]) => v!)
+        .map(({ address }) => address)
 
       sliceState.setStateByActiveKey('selectToList', chainId.toString(), selectToList)
 

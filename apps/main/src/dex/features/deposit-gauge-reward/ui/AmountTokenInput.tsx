@@ -74,6 +74,7 @@ export const AmountTokenInput: React.FC<{
         address: token?.address as `0x${string}`,
         symbol: token?.symbol,
         label: '',
+        volume: token?.volume ?? 0,
       }))
 
     const rewardTokenId = getValues('rewardTokenId')

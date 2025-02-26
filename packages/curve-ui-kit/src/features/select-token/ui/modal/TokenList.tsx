@@ -95,6 +95,9 @@ export const TokenList = ({
           // If USD balances are equal, compare raw balances
           if (aBalance !== bBalance) return bBalance - aBalance
 
+          // Sort by volume in descending order
+          if (a.volume !== b.volume) return b.volume - a.volume
+
           // Finally sort by label
           return a.symbol.localeCompare(b.symbol)
         })

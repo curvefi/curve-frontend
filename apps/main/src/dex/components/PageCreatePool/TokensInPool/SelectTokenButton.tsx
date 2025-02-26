@@ -69,6 +69,7 @@ const ComboBoxTokenPicker = ({
     address: address as `0x${string}`,
     symbol,
     label: '',
+    volume: 0,
   }))
 
   if (!overlayTriggerState.isOpen) {
@@ -92,6 +93,7 @@ const ComboBoxTokenPicker = ({
       label: [token.basePool ? 'Base pool' : '', token.userAddedToken ? 'User added' : '']
         .filter((x) => x !== '')
         .join(' - '),
+      volume: token.volume ?? 0,
     }))
   }, [filterBasepools, tokens, filterValue, endsWith, basePools, chainId, blockchainId])
 

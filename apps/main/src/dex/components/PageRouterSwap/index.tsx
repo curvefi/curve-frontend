@@ -123,6 +123,7 @@ const QuickSwap = ({
           address: token?.address as `0x${string}`,
           symbol: token?.symbol,
           label: '',
+          volume: token?.volume ?? 0,
         })),
     [selectFromList, selectToList, tokensMapper, network?.networkId],
   )
@@ -136,6 +137,7 @@ const QuickSwap = ({
           address: token?.address as `0x${string}`,
           symbol: token?.symbol,
           label: '',
+          volume: token?.volume ?? 0,
         })),
     [selectToList, tokensMapper, network?.networkId],
   )

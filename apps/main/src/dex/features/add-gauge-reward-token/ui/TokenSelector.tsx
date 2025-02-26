@@ -44,6 +44,7 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
         address: token?.address as `0x${string}`,
         symbol: token?.symbol,
         label: '',
+        volume: token?.volume ?? 0,
       }))
   }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
 
