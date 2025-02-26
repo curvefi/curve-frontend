@@ -24,7 +24,7 @@ export const defineMuiCardHeader = (
         },
       ],
     },
-    action: { alignContent: 'center', margin: 0 },
+    action: { alignContent: 'center', alignSelf: 'center', margin: 0 },
     title: {
       ...typography.headingSBold,
       variants: [
