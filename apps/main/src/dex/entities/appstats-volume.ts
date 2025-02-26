@@ -1,12 +1,11 @@
 import type { ChainId } from '@/dex/types/main.types'
-import type { ChainParams } from '@ui-kit/lib/model/query'
+import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { curvejsValidationSuite } from './validation/curvejs-validation'
 
-async function _fetchAppStatsVolume({ chainId }: ChainParams<ChainId>) {
-  if (!chainId) return null
+async function _fetchAppStatsVolume({ chainId }: ChainQuery<ChainId>) {
   const curve = useStore.getState().curve
   const networks = useStore.getState().networks.networks
   const { isLite } = networks[chainId]
