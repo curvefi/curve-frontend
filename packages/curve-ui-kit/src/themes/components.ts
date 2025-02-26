@@ -104,6 +104,15 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiList: {
+    styleOverrides: {
+      root: {
+        '&:focus': {
+          outline: 'none',
+        },
+      },
+    },
+  },
   MuiMenuItem: defineMuiMenuItem(design),
   MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: {
