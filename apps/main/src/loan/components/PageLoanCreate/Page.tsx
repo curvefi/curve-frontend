@@ -21,7 +21,6 @@ import {
 } from '@ui/AppPage'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import Box from '@ui/Box'
-import DocumentHead from '@/loan/layout/DocumentHead'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
@@ -164,73 +163,68 @@ const Page = (params: CollateralUrlParams) => {
     llammaId,
   }
 
-  return (
+  return provider ? (
     <>
-      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
-      {provider ? (
-        <>
-          {chartExpanded && (
-            <PriceAndTradesExpandedContainer>
-              <Box flex padding="0 0 0 var(--spacing-2)">
-                {isMdUp && <TitleComp />}
-                <ExpandButton
-                  variant={'select'}
-                  onClick={() => {
-                    setChartExpanded()
-                  }}
-                >
-                  {chartExpanded ? 'Minimize' : 'Expand'}
-                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-                </ExpandButton>
-              </Box>
-              <PriceAndTradesExpandedWrapper variant="secondary">
-                <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-              </PriceAndTradesExpandedWrapper>
-            </PriceAndTradesExpandedContainer>
-          )}
-          <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-            <AppPageFormsWrapper navHeight={navHeight}>
-              {!isMdUp && !chartExpanded && <TitleComp />}
-              {rChainId && rCollateralId && (
-                <LoanCreate
-                  curve={curve}
-                  isReady={isReady}
-                  isLeverage={isLeverage}
-                  loanExists={loanExists}
-                  llamma={llamma}
-                  llammaId={llammaId}
-                  params={params}
-                  rChainId={rChainId}
-                  rCollateralId={rCollateralId}
-                  rFormType={rFormType}
-                  fetchInitial={fetchInitial}
-                />
-              )}
-            </AppPageFormsWrapper>
-
-            <AppPageInfoWrapper>
-              {isMdUp && !chartExpanded && <TitleComp />}
-              <AppPageInfoContentWrapper variant="secondary">
-                <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
-                {isValidRouterParams && rChainId && (
-                  <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-                )}
-              </AppPageInfoContentWrapper>
-            </AppPageInfoWrapper>
-          </Wrapper>
-        </>
-      ) : (
-        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWalletPrompt
-            description={t`Connect your wallet to view market`}
-            connectText={t`Connect`}
-            loadingText={t`Connecting`}
-            connectWallet={() => connectWallet()}
-            isLoading={isLoading(connectState)}
-          />
-        </Box>
+      {chartExpanded && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex padding="0 0 0 var(--spacing-2)">
+            {isMdUp && <TitleComp />}
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
       )}
+      <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
+        <AppPageFormsWrapper navHeight={navHeight}>
+          {!isMdUp && !chartExpanded && <TitleComp />}
+          {rChainId && rCollateralId && (
+            <LoanCreate
+              curve={curve}
+              isReady={isReady}
+              isLeverage={isLeverage}
+              loanExists={loanExists}
+              llamma={llamma}
+              llammaId={llammaId}
+              params={params}
+              rChainId={rChainId}
+              rCollateralId={rCollateralId}
+              rFormType={rFormType}
+              fetchInitial={fetchInitial}
+            />
+          )}
+        </AppPageFormsWrapper>
+
+        <AppPageInfoWrapper>
+          {isMdUp && !chartExpanded && <TitleComp />}
+          <AppPageInfoContentWrapper variant="secondary">
+            <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
+            {isValidRouterParams && rChainId && (
+              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+            )}
+          </AppPageInfoContentWrapper>
+        </AppPageInfoWrapper>
+      </Wrapper>
     </>
+  ) : (
+    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+      <ConnectWalletPrompt
+        description={t`Connect your wallet to view market`}
+        connectText={t`Connect`}
+        loadingText={t`Connecting`}
+        connectWallet={() => connectWallet()}
+        isLoading={isLoading(connectState)}
+      />
+    </Box>
   )
 }
 

@@ -10,6 +10,7 @@ import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
 
 import { useRouter } from 'next/navigation'
+
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
     showDetail: string
@@ -29,7 +30,7 @@ const TableRowResult = ({
   ...props
 }: Props) => {
   const { searchTermMapper } = props
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
@@ -45,13 +46,8 @@ const TableRowResult = ({
     [collateralDataCachedOrApi, searchTermMapper, searchedByAddresses],
   )
 
-  const handleCellClick = () => {
-    if (loanExists) {
-      navigate(getLoanManagePathname(params, collateralId, 'loan'))
-    } else {
-      navigate(getLoanCreatePathname(params, collateralId))
-    }
-  }
+  const handleCellClick = () =>
+    push(loanExists ? getLoanManagePathname(params, collateralId, 'loan') : getLoanCreatePathname(params, collateralId))
 
   const tableRowProps = {
     collateralDataCachedOrApi,
