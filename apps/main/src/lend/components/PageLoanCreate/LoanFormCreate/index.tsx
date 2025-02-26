@@ -426,7 +426,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           )}
           {steps && <Stepper steps={steps} />}
           {formStatus.isComplete && market && (
-            <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, market.id, 'loan')}>
+            <LinkButton variant="filled" size="large" href={getLoanManagePathname(params, market.id, 'loan')}>
               Manage loan
             </LinkButton>
           )}

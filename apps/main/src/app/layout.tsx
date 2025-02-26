@@ -60,6 +60,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
       <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="theme-color" content="#ffffff" />
+      <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
       <script dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
       <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
       <style dangerouslySetInnerHTML={{ __html: baseCss }} />

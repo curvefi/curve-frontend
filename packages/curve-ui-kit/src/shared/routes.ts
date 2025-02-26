@@ -42,7 +42,7 @@ export const getAppRoot = (app: AppName) =>
         ? `http://localhost:${process.env.DEV_PORT || 300}`
         : `https://curve.fi`
       : window.location.origin
-  }/${app === 'main' ? 'dex' : app}`
+  }/${app == 'crvusd' ? app : `#/${app === 'main' ? 'dex' : app}`}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {

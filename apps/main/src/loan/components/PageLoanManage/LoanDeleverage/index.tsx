@@ -1,12 +1,9 @@
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
@@ -23,7 +20,6 @@ import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import networks from '@/loan/networks'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
-
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/loan/components/AlertFormError'
@@ -46,6 +42,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useRouter } from 'next/navigation'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -56,7 +53,7 @@ const LoanDeleverage = ({
   rChainId,
 }: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'>) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   const activeKey = useStore((state) => state.loanDeleverage.activeKey)
   const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO

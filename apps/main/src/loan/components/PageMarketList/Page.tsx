@@ -1,8 +1,6 @@
-import type { NextPage } from 'next'
+'use client'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
 import { ROUTE, TITLE } from '@/loan/constants'
@@ -13,13 +11,14 @@ import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import DocumentHead from '@/loan/layout/DocumentHead'
 import CollateralList from '@/loan/components/PageMarketList/index'
 import Settings from '@/loan/layout/Settings'
 import TableStats from '@/loan/components/PageMarketList/components/TableStats'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 enum SEARCH {
   sortBy = 'sortBy',
@@ -27,12 +26,10 @@ enum SEARCH {
   search = 'search',
 }
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: CollateralUrlParams) => {
+  const { push: navigate } = useRouter()
+  const searchParams = useSearchParams()
+  const { pageLoaded, routerParams, curve } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
@@ -76,9 +73,9 @@ const Page: NextPage = () => {
     if (!pageLoaded || isLoadingApi) return
 
     const parsedSearchParams = {
-      sortBy: searchParams.get(SEARCH.sortBy) || TITLE.totalBorrowed,
-      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
-      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
+      sortBy: searchParams?.get(SEARCH.sortBy) || TITLE.totalBorrowed,
+      sortByOrder: searchParams?.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams?.get(SEARCH.search) || ''),
     } as SearchParams
 
     setStateByKey('searchParams', parsedSearchParams)
@@ -89,7 +86,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Markets`} />
       {provider ? (
         <Container>
           <Content>

@@ -10,7 +10,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
-import { Link as RouterLink } from 'react-router-dom'
+import RouterLink from 'next/link'
 import MuiLink from '@mui/material/Link'
 import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable'
 
@@ -30,7 +30,8 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
         <MuiLink
           color="inherit"
           underline="none"
-          {...(market.url.startsWith('http') ? { href: market.url } : { component: RouterLink, to: market.url })}
+          href={market.url}
+          {...(!market.url.startsWith('http') && { component: RouterLink })}
           className={ClickableInRowClass}
         >
           {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}

@@ -1,11 +1,8 @@
-import type { NextPage } from 'next'
+'use client'
 import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { REFRESH_INTERVAL } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
 import { getCollateralListPathname, getLoanCreatePathname } from '@/loan/utils/utilsRouter'
@@ -16,7 +13,6 @@ import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
-
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -38,12 +34,12 @@ import Icon from '@ui/Icon'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { isLoading } from '@ui/utils'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { useRouter } from 'next/navigation'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { curve, routerParams } = usePageOnMount(params, location, navigate)
+const Page = (params: CollateralUrlParams) => {
+  const { push: navigate } = useRouter()
+  const { curve, routerParams } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
 

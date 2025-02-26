@@ -1,8 +1,5 @@
 import type { PageCollateralList, TableRowProps } from '@/loan/components/PageMarketList/types'
-
 import React, { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { parseSearchTermMapper } from '@/loan/hooks/useSearchTermMapper'
 import networks from '@/loan/networks'
@@ -12,6 +9,7 @@ import TableRow from '@/loan/components/PageMarketList/components/TableRow/Table
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
 
+import { useRouter } from 'next/navigation'
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
     showDetail: string
@@ -31,7 +29,7 @@ const TableRowResult = ({
   ...props
 }: Props) => {
   const { searchTermMapper } = props
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])

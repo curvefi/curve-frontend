@@ -4,17 +4,13 @@ import type {
   LoanFormType,
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useStore from '@/loan/store/useStore'
-
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
@@ -23,11 +19,12 @@ import LoanDeleverage from '@/loan/components/PageLoanManage/LoanDeleverage'
 import LoanIncrease from '@/loan/components/PageLoanManage/LoanIncrease'
 import LoanLiquidate from '@/loan/components/PageLoanManage/LoanLiquidate'
 import SlideTabsWrapper, { SlideTab, SlideTabs } from '@ui/TabSlide'
+import { useRouter } from 'next/navigation'
 
 interface Props extends PageLoanManageProps {}
 
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const loanExists = useStore((state) => state.loans.existsMapper[llammaId]?.loanExists)
@@ -66,10 +63,10 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         cb()
       } else {
         if (llamma) resetUserDetailsState(llamma)
-        navigate(getLoanCreatePathname(params, rCollateralId))
+        push(getLoanCreatePathname(params, rCollateralId))
       }
     },
-    [llamma, loanExists, navigate, params, rCollateralId, resetUserDetailsState],
+    [llamma, loanExists, push, params, rCollateralId, resetUserDetailsState],
   )
 
   // tabs positions
@@ -99,7 +96,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
       <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'loan' : (rFormType as string)}
-        handleClick={(key: string) => navigate(getLoanManagePathname(params, rCollateralId, key as FormType))}
+        handleClick={(key: string) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
       />
 
       <AppFormContentWrapper>

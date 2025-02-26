@@ -3,7 +3,7 @@ import { ListItem } from '@mui/material'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
 import Link from '@mui/material/Link'
 import Button from '@mui/material/Button'
-import { Link as RouterLink } from 'react-router-dom'
+import RouterLink from 'next/link'
 
 type SidebarItemProps = {
   page: AppPage
@@ -15,7 +15,7 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
     <Button
       {...(page.route.startsWith('http')
         ? { component: Link, href: page.route, target: page.target }
-        : { component: RouterLink, to: page.route, className: page.isActive ? 'current' : '' })}
+        : { component: RouterLink, href: page.route, className: page.isActive ? 'current' : '' })}
       color="navigation"
       size="small"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}

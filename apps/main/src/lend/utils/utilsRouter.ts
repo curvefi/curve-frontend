@@ -16,10 +16,8 @@ export function getLoanCreatePathname(params: Params, owmId: string, formType: s
   return getPath(params, endPath)
 }
 
-export function getLoanManagePathname(params: Params, owmId: string, formType: string) {
-  const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_MANAGE}/${formType}`
-  return getPath(params, endPath)
-}
+export const getLoanManagePathname = (params: Params, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
 export function getVaultPathname(params: Params, owmId: string, formType: string) {
   const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_VAULT}${formType === 'vault' ? '' : `/${formType}`}`

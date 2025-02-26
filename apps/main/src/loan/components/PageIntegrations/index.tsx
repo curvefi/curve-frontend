@@ -1,48 +1,47 @@
+'use client'
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@ui/Integration/types'
-import type { NavigateFunction, Params } from 'react-router'
-
 import { Trans } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/loan/constants'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
-import { getPath } from '@/loan/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
-import { ChainId, NetworkEnum } from '@/loan/types/loan.types'
+import { NetworkEnum, type NetworkUrlParams } from '@/loan/types/loan.types'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { getPath } from '@/lend/utils/utilsRouter'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
-const IntegrationsComp = ({
-  integrationsTags,
-  navigate,
-  params,
-  rChainId,
-  searchParams,
-}: {
-  integrationsTags: IntegrationsTags
-  navigate: NavigateFunction
-  params: Params
-  rChainId: ChainId | ''
-  searchParams: URLSearchParams
-}) => {
+export const IntegrationsComp = (params: NetworkUrlParams) => {
   const { isFocusVisible, focusProps } = useFocusRing()
-
+  const init = useStore((state) => state.integrations.init)
+  const integrationsTags = useStore((state) => state.integrations.integrationsTags)
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)
   const isXSmDown = useStore((state) => state.layout.isXSmDown)
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
+  const searchParams = useSearchParams()
+  const { push } = useRouter()
+  const {
+    routerParams: { rChainId },
+  } = usePageOnMount(true)
+
+  useEffect(() => {
+    init(rChainId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
@@ -59,7 +58,7 @@ const IntegrationsComp = ({
 
   // get filterKey from url
   const parsedSearchParams = useMemo(() => {
-    const searchParamsFilterKey = searchParams.get('filter')
+    const searchParamsFilterKey = searchParams?.get('filter')
     let parsed: { filterKey: FilterKey } = { filterKey: 'all' }
 
     if (searchParamsFilterKey) {
@@ -75,12 +74,18 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) => {
-    const pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`)
-    navigate(pathname)
-  }
+  const updateRouteFilterKey = (filterKey: FilterKey) =>
+    push(getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`))
 
   const parsedResults = results === null ? integrationsList : results
+
+  if (!integrationsTags) {
+    return (
+      <SpinnerWrapper>
+        <Spinner />
+      </SpinnerWrapper>
+    )
+  }
 
   return (
     <>
@@ -186,5 +191,3 @@ const NoResultWrapper = styled(Box)`
     margin-right: 0;
   }
 `
-
-export default IntegrationsComp
