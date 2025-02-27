@@ -1,1 +1,1 @@
-export { AdvancedMode } from './AdvancedMode'
+export { HideSmallPools } from './HideSmallPools'
