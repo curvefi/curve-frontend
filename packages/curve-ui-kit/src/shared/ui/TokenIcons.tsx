@@ -20,10 +20,10 @@ export function TokenIcons({ tokens, ...props }: Props) {
       display="inline-grid"
       sx={{
         gridTemplateColumns: `repeat(${iconsPerRow}, auto)`,
-        [`& > *:nth-child(${iconsPerRow}n-1)`]: {
+        [`& > *:nth-of-type(${iconsPerRow}n-1)`]: {
           justifySelf: 'center',
         },
-        [`& > *:nth-child(${iconsPerRow}n-1):nth-last-of-type(1)`]: {
+        [`& > *:nth-of-type(${iconsPerRow}n-1):nth-last-of-type(1)`]: {
           gridColumn: `span ${colSpan}`,
         },
       }}

@@ -1,3 +1,4 @@
+'use client'
 import type { NextPage } from 'next'
 import { Navigate, Route, Routes } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
@@ -29,7 +30,7 @@ const PageGauge = dynamic(() => import('@/dao/components/PageGauge/Page'), { ssr
 const PageVeCrv = dynamic(() => import('@/dao/components/PageVeCrv/Page'), { ssr: false })
 const PageDisclaimer = dynamic(() => import('@/dao/components/PageDisclaimer/Page'), { ssr: false })
 
-const App: NextPage = () => {
+export const App: NextPage = () => {
   const connectState = useStore((state) => state.connectState)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
@@ -159,5 +160,3 @@ const App: NextPage = () => {
     </div>
   )
 }
-
-export default App
