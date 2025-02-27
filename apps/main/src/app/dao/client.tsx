@@ -1,4 +1,5 @@
 'use client'
+import '@/global-extensions'
 import type { NextPage } from 'next'
 import { Navigate, Route, Routes } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
