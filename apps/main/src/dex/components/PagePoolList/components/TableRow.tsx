@@ -41,7 +41,7 @@ export type TableRowProps = {
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }
 
-const TableRow: FunctionComponent<TableRowProps> = ({
+const TableRow = ({
   index,
   poolId,
   formValues,
@@ -59,7 +59,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   volumeCached,
   volume,
   handleCellClick,
-}) => {
+}: TableRowProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
 
@@ -160,7 +160,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.
  */
-export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
+export const LazyItem = ({ children, id, style, ...props }: HTMLAttributes<HTMLTableRowElement>) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 

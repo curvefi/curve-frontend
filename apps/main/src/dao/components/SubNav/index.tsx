@@ -13,7 +13,7 @@ interface SubNavProps {
   setNavChange: (key: string) => void
 }
 
-const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested, className }) => (
+const SubNav = ({ activeKey, navItems, setNavChange, nested, className }: SubNavProps) => (
   <NavWrapper nested={nested} className={className}>
     {navItems.map((item) => (
       <ButtonWrapper key={item.key}>

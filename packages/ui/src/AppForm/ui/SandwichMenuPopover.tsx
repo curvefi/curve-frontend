@@ -17,7 +17,7 @@ interface SandwichMenuPopoverProps {
 
 const menuItems: SandwichMenuItem[] = [{ id: 'manage-gauge', name: 'Gauge Management' }]
 
-const SandwichMenuPopover: React.FC<SandwichMenuPopoverProps> = ({ onClose, onItemClick, triggerRef }) => {
+const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuPopoverProps) => {
   const popoverRef = useRef<HTMLDivElement>(null)
 
   const state = useSelectState<SandwichMenuItem>({

@@ -19,7 +19,7 @@ type FieldValueProps = {
   }
 }
 
-const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null, symbol = null }) => {
+const FieldValue = ({ value, fetchStatus, gas, symbol }: FieldValueProps) => {
   if (gas) {
     return (
       <TransactionFieldValue>
@@ -47,7 +47,7 @@ const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null,
 
   return (
     <TransactionFieldValue>
-      {formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {symbol && symbol}
+      {formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {symbol}
     </TransactionFieldValue>
   )
 }

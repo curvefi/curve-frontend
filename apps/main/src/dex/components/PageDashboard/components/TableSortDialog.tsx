@@ -22,7 +22,7 @@ type Props = {
   tableLabel: TableLabel
 }
 
-const TableSortDialog: React.FC<Props> = ({ className = '', tableLabel }) => {
+const TableSortDialog = ({ className = '', tableLabel }: Props) => {
   let overlayTriggerState = useOverlayTriggerState({})
 
   const {

@@ -24,10 +24,7 @@ import { ChainId, Token } from '@/dex/types/main.types'
 import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 
-export const AmountTokenInput: React.FC<{
-  chainId: ChainId
-  poolId: string
-}> = ({ chainId, poolId }) => {
+export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')

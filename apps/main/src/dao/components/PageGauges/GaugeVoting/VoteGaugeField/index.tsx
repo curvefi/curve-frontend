@@ -19,12 +19,7 @@ type VoteGaugeFieldProps = {
   newVote?: boolean
 }
 
-const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
-  powerUsed,
-  userGaugeVoteData,
-  userVeCrv,
-  newVote = false,
-}) => {
+const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
   const { canVote, nextVoteTime, userPower, gaugeAddress } = userGaugeVoteData
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed

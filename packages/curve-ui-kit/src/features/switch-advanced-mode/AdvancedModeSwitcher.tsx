@@ -1,4 +1,4 @@
-import { Dispatch, FunctionComponent } from 'react'
+import { Dispatch } from 'react'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
 import { FormControlLabel } from '@mui/material'
@@ -9,10 +9,7 @@ type AdvancedModeSwitcherProps = {
   advancedMode: [boolean, Dispatch<boolean>]
 }
 
-export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> = ({
-  advancedMode: [checked, onChange],
-  label,
-}) => {
+export const AdvancedModeSwitcher = ({ advancedMode: [checked, onChange], label }: AdvancedModeSwitcherProps) => {
   const control = (
     <Switch
       checked={checked}

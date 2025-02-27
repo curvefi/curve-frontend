@@ -11,10 +11,14 @@ import useStore from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
 
-export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disabled: boolean }> = ({
+export const TokenSelector = ({
   chainId,
   poolId,
   disabled,
+}: {
+  chainId: ChainId
+  poolId: string
+  disabled: boolean
 }) => {
   const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
   const aliasesCrv = useStore((state) => state.networks.aliases[chainId]?.crv)

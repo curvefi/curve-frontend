@@ -6,7 +6,7 @@ import { FlexContainer } from '@ui/styled-containers'
 import { ChainId } from '@/dex/types/main.types'
 import useStore from '@/dex/store/useStore'
 
-export const HelperFields: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const HelperFields = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { watch } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')

@@ -11,7 +11,7 @@ interface PoolTotalStakedProps {
   poolDataCacheOrApi: PoolDataCacheOrApi
 }
 
-const PoolTotalStaked: React.FC<PoolTotalStakedProps> = ({ poolDataCacheOrApi }) => {
+const PoolTotalStaked = ({ poolDataCacheOrApi }: PoolTotalStakedProps) => {
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
 
   return (

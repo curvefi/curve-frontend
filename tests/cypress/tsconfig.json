@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@curvefi/prices-api": ["../../packages/prices-api/src"],
     }
   },
   "include": ["./**/*.ts", "types/**/*.d.ts", "../cypress.config.ts"]

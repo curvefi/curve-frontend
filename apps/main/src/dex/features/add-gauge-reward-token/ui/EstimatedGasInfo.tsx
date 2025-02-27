@@ -4,7 +4,7 @@ import { useEstimateGasAddRewardToken } from '@/dex/entities/gauge'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import { ChainId } from '@/dex/types/main.types'
 
-export const EstimatedGasInfo: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const EstimatedGasInfo = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     watch,
     formState: { isValid },

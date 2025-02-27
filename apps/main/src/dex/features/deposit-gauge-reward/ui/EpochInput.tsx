@@ -8,7 +8,7 @@ import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@
 import { FlexContainer } from '@ui/styled-containers'
 import { ChainId } from '@/dex/types/main.types'
 
-export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, formState, watch } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')

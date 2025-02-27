@@ -21,7 +21,7 @@ type TransactionDetailsProps = {
   className?: string
 }
 
-const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
+const TransactionDetails = ({ className }: TransactionDetailsProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { signerAddress } = useWallet()
   const { preview, scrvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(

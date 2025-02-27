@@ -1,4 +1,3 @@
-import { FunctionComponent } from 'react'
 import Button from '@mui/material/Button'
 import { addressShort, type Address } from '@ui-kit/utils'
 
@@ -11,11 +10,7 @@ export type ConnectedWalletLabelProps = {
   sx?: SxProps<Theme>
 }
 
-export const ConnectedWalletLabel: FunctionComponent<ConnectedWalletLabelProps> = ({
-  walletAddress,
-  onDisconnectWallet,
-  ...props
-}) => (
+export const ConnectedWalletLabel = ({ walletAddress, onDisconnectWallet, ...props }: ConnectedWalletLabelProps) => (
   <Button size="small" color="ghost" onClick={onDisconnectWallet} title={walletAddress} {...props}>
     {addressShort(walletAddress)}
   </Button>

@@ -33,7 +33,7 @@ type ProposalProps = {
   }
 }
 
-const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
+const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
   const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(
