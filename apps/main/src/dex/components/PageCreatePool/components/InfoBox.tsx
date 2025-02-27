@@ -82,7 +82,7 @@ const LinkStyles = styled.a<StylesProps>`
       margin-left: var(--spacing-3);
     }
   }
-  &:nth-of-type(1) {
+  &:nth-child(1) {
     margin-bottom: var(--spacing-narrow);
     @media (min-width: 36.75rem) {
       margin-bottom: auto;

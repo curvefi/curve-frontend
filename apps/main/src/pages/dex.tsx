@@ -1,4 +1,4 @@
-'use client'
+import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes, useParams } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
@@ -34,7 +34,7 @@ const PageIntegrations = dynamic(() => import('@/dex/components/PageIntegrations
 const PageCompensation = dynamic(() => import('@/dex/components/PageCompensation/Page'), { ssr: false })
 const PageDisclaimer = dynamic(() => import('@/dex/components/PageDisclaimer/Page'), { ssr: false })
 
-export const App = () => {
+const App: NextPage = () => {
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -73,6 +73,7 @@ export const App = () => {
 
   useEffect(() => {
     if (!pageWidth) return
+
     document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
     document.body.setAttribute('data-theme', theme)
   })
@@ -208,3 +209,5 @@ export const App = () => {
     </div>
   )
 }
+
+export default App

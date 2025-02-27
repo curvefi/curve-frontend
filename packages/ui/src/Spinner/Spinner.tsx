@@ -49,13 +49,13 @@ const StyledSpinner = styled.div<StyledSpinnerProps>`
     border-color: ${({ isDisabled }) => getSpinnerColor(isDisabled)} transparent transparent transparent;
   }
 
-  div:nth-of-type(1) {
+  div:nth-child(1) {
     animation-delay: -0.45s;
   }
-  div:nth-of-type(2) {
+  div:nth-child(2) {
     animation-delay: -0.3s;
   }
-  div:nth-of-type(3) {
+  div:nth-child(3) {
     animation-delay: -0.15s;
   }
 `

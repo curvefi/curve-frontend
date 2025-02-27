@@ -1,4 +1,3 @@
-'use client'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
@@ -9,7 +8,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import GlobalStyle from '@/loan/globalStyle'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
-import Page from '@/loan/layout'
+import Page from '@/loan/layout/index'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
@@ -38,7 +37,7 @@ const PageIntegrations = dynamic(() => import('@/loan/components/PageIntegration
 const PagePegKeepers = dynamic(() => import('@/loan/components/PagePegKeepers/Page'), { ssr: false })
 const PageCrvUsdStaking = dynamic(() => import('@/loan/components/PageCrvUsdStaking/Page'), { ssr: false })
 
-export const App: NextPage = () => {
+const App: NextPage = () => {
   const curve = useStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
@@ -160,3 +159,5 @@ export const App: NextPage = () => {
     </div>
   )
 }
+
+export default App
