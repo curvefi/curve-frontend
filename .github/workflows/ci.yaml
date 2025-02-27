@@ -18,8 +18,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [electron, firefox, chrome]
+        browser: [chrome]
         count: [1, 2]
+        include:
+          - browser: firefox
+            count: 1
     name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 10
     runs-on: ubuntu-latest

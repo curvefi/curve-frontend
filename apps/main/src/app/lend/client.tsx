@@ -1,3 +1,5 @@
+'use client'
+import '@/global-extensions'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
@@ -29,7 +31,7 @@ const PageDisclaimer = dynamic(() => import('@/lend/components/PageDisclaimer/Pa
 const Page404 = dynamic(() => import('@/lend/components/Page404/Page'), { ssr: false })
 const PageIntegrations = dynamic(() => import('@/lend/components/PageIntegrations/Page'), { ssr: false })
 
-const App: NextPage = () => {
+export const App: NextPage = () => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -128,5 +130,3 @@ const App: NextPage = () => {
     </div>
   )
 }
-
-export default App
