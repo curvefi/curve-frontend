@@ -8,6 +8,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { setUserBalances } from '@ui-kit/lib/entities/user-balances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -111,7 +113,8 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         get()[sliceKey].setStateByKey('walletBalancesLoading', false)
 
         // set wallet balances into tokens state
-        get().userBalances.updateUserBalancesFromPool(fetchedWalletBalances)
+        const { gauge, lpToken, ...rest } = fetchedWalletBalances
+        setUserBalances(queryClient, rest)
 
         if (isFetchWalletBalancesOnly) {
           return fetchedWalletBalances

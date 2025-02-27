@@ -13,7 +13,6 @@ import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
 import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
 import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
-import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
 import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
 import createTokensSlice, { TokensSlice } from '@/dex/store/createTokensSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
@@ -36,7 +35,6 @@ export type State = GlobalSlice &
   UserSlice &
   PoolListSlice &
   QuickSwapSlice &
-  UserBalancesSlice &
   DashboardSlice &
   TokensSlice &
   LockedCrvSlice &
@@ -58,7 +56,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createUserSlice(set, get),
   ...createDashboardSlice(set, get),
   ...createQuickSwapSlice(set, get),
-  ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
   ...createLockedCrvSlice(set, get),
   ...createCreatePoolSlice(set, get),

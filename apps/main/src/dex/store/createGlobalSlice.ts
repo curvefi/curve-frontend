@@ -15,6 +15,7 @@ import {
 } from '@/dex/types/main.types'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { clearUsdRates } from '@ui-kit/lib/entities/usd-rates'
+import { clearUserBalances } from '@ui-kit/lib/entities/user-balances'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -168,9 +169,8 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.quickSwap.resetState()
       state.tokens.resetState()
       clearUsdRates(queryClient)
-      state.userBalances.resetState()
+      clearUserBalances(queryClient)
       state.user.resetState()
-      state.userBalances.resetState()
       state.lockedCrv.resetState()
       state.createPool.resetState()
       state.campaigns.resetState()
@@ -179,7 +179,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     if (isUserSwitched || !curveApi.signerAddress) {
       state.user.resetState()
-      state.userBalances.resetState()
+      clearUserBalances(queryClient)
     }
 
     // update network settings from api

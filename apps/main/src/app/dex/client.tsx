@@ -47,7 +47,6 @@ export const App = () => {
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -112,10 +111,6 @@ export const App = () => {
       if (curve) {
         fetchGasInfo(curve)
         fetchPoolsVolumeTvl(curve)
-
-        if (curve.signerAddress) {
-          fetchAllStoredBalances(curve)
-        }
       }
     },
     REFRESH_INTERVAL['5m'],

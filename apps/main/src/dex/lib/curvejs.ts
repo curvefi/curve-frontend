@@ -5,8 +5,6 @@ import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/comp
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import countBy from 'lodash/countBy'
 import dayjs from '@ui-kit/lib/dayjs'
-import chunk from 'lodash/chunk'
-import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
 import PromisePool from '@supercharge/promise-pool/dist'
 import {
@@ -1477,42 +1475,6 @@ const wallet = {
   userPoolShare: async (p: Pool) => {
     log('userPoolShare', p.name)
     return p.userShare()
-  },
-  fetchUserBalances: async (curve: CurveApi, tokenAddresses: string[]) => {
-    const { chainId } = curve
-    log('fetchWalletTokensBalances', chainId, tokenAddresses.length)
-
-    const results: UserBalancesMapper = {}
-    const errors: string[][] = []
-    const chunks = chunk(tokenAddresses, 20)
-    await PromisePool.for(chunks)
-      .withConcurrency(10)
-      .handleError((_, chunk) => {
-        errors.push(chunk)
-      })
-      .process(async (addresses) => {
-        const balances = (await curve.getBalances(addresses)) as string[]
-        for (const idx in balances) {
-          const balance = balances[idx]
-          const tokenAddress = addresses[idx]
-          results[tokenAddress] = balance
-        }
-      })
-
-    const fattenErrors = flatten(errors)
-
-    if (fattenErrors.length) {
-      await PromisePool.for(fattenErrors)
-        .handleError((error, tokenAddress) => {
-          console.error(`Unable to get user balance for ${tokenAddress}`, error)
-          results[tokenAddress] = 'NaN'
-        })
-        .process(async (tokenAddress) => {
-          const [balance] = (await curve.getBalances([tokenAddress])) as string[]
-          results[tokenAddress] = balance
-        })
-    }
-    return results
   },
 }
 

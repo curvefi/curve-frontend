@@ -47,7 +47,6 @@ export const TIME_FRAMES = {
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
-  excludeTokensBalancesMapper: {}, // tokens that cause issues when getting wallet balances
   excludePoolsMapper: {}, // remove pool from pool list and pool page
   hideSmallPoolsTvl: 10000,
   isLite: false,

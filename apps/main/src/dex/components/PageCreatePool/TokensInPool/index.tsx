@@ -48,7 +48,6 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const basePools = useStore((state) => state.pools.basePools[chainId])
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
-  const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory } = useStore(
     (state) => state.networks.networks[chainId],
@@ -69,7 +68,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
     }))
 
-    if (haveSigner && Object.keys(userBalances).length > 0 && Object.keys(tokensArray || {}).length > 0) {
+    if (haveSigner && Object.keys(tokensArray || {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
         .filter((token) => token.symbol !== '' && token.address !== '')
         .sort((a, b) => Number(b.volume) - Number(a.volume))
@@ -82,7 +81,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
-  }, [basePoolsLoading, tokensMapper, haveSigner, userBalances, userAddedTokens, basePools])
+  }, [basePoolsLoading, tokensMapper, haveSigner, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {

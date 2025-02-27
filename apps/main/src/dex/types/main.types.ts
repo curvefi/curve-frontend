@@ -24,7 +24,6 @@ export interface NetworkConfig extends BaseConfig {
   isLite: boolean
   useApi: boolean
   excludePoolsMapper: { [key: string]: boolean }
-  excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }
   poolCustomTVL: { [poolAddress: string]: string }
   poolIsWrappedOnly: { [poolAddress: string]: boolean }
   poolFilters: string[]
