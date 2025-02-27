@@ -10,6 +10,7 @@ import useStore from '@/dex/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 export type StepProgress = {
   active: number
@@ -33,7 +34,7 @@ const DetailInfoEstGas = ({
   const curve = useStore((state) => state.curve)
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
+  const { data: chainTokenUsdRate } = useUsdRate(curve?.getUsdRate, NETWORK_TOKEN)
   const gasInfo = useStore((state) => state.gas.gasInfo)
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 

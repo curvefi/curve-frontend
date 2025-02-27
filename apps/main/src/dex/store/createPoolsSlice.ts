@@ -51,6 +51,8 @@ import {
   TvlMapper,
   VolumeMapper,
 } from '@/dex/types/main.types'
+import { fetchUsdRates } from '@ui-kit/lib/entities/usd-rates'
+import { queryClient } from '@ui-kit/lib/api/query-client'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -348,14 +350,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
-      const { usdRates } = get()
       const { ...sliceState } = get()[sliceKey]
       const { chainId } = curve
       const { pool, isWrapped, tokens, tokenAddresses } = poolData
 
       const [balancesResp, usdRatesMapper] = await Promise.all([
         curvejsApi.pool.poolBalances(pool, isWrapped),
-        usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
+        fetchUsdRates(queryClient, curve.getUsdRate, tokenAddresses, true),
       ])
 
       const { balances } = balancesResp

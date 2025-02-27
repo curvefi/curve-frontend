@@ -10,6 +10,7 @@ import { formatNumberUsdRate } from '@ui/utils'
 
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -50,19 +51,12 @@ interface ChipTokenProps extends AriaButtonProps {
 
 const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const curve = useStore((state) => state.curve)
-  const usdRate = useStore((state) => state.usdRates.usdRatesMapper[tokenAddress])
-  const fetchUsdRateByToken = useStore((state) => state.usdRates.fetchUsdRateByToken)
+  const { data: usdRate } = useUsdRate(curve?.getUsdRate, tokenAddress)
   const parsedUsdRate = formatNumberUsdRate(usdRate)
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
     console.log(`Copied ${address}`)
-  }
-
-  const handleMouseEnter = (foundUsdRate?: string) => {
-    if (!foundUsdRate && curve) {
-      fetchUsdRateByToken(curve, tokenAddress)
-    }
   }
 
   const parsedTokenName = useMemo(() => {
@@ -73,7 +67,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   }, [tokenName])
 
   return (
-    <ChipTokenWrapper className={className} onMouseEnter={() => handleMouseEnter(parsedUsdRate)}>
+    <ChipTokenWrapper className={className}>
       <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => handleCopyClick(tokenAddress)}>

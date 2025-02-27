@@ -5,7 +5,6 @@ import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
 import styled, { css } from 'styled-components'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { amountsDescription } from '@/dex/components/PagePool/utils'
@@ -33,6 +32,8 @@ import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useQueryClient } from '@tanstack/react-query'
+import { fetchUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -55,13 +56,13 @@ const FormWithdraw = ({
   const formStatus = useStore((state) => state.poolWithdraw.formStatus)
   const formValues = useStore((state) => state.poolWithdraw.formValues)
   const slippage = useStore((state) => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const queryClient = useQueryClient()
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -261,9 +262,9 @@ const FormWithdraw = ({
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
 
-      if (foundCoinWithAmount && !isUndefined(usdRatesMapper[foundCoinWithAmount.tokenAddress])) {
-        const { value, tokenAddress } = foundCoinWithAmount
-        const usdRate = usdRatesMapper[tokenAddress]
+      if (foundCoinWithAmount) {
+        const usdRate = fetchUsdRate(queryClient, curve?.getUsdRate, foundCoinWithAmount.tokenAddress)
+        const { value } = foundCoinWithAmount
         if (usdRate && !isNaN(usdRate)) {
           return (Number(usdRate) * Number(value)).toString()
         }
@@ -273,7 +274,7 @@ const FormWithdraw = ({
       let usdAmountTotal = 0
 
       amounts.forEach((a) => {
-        const usdRate = usdRatesMapper[a.tokenAddress]
+        const usdRate = fetchUsdRate(queryClient, curve?.getUsdRate, a.tokenAddress)
         if (usdRate && !isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
         }
@@ -282,7 +283,7 @@ const FormWithdraw = ({
     }
 
     return ''
-  }, [formValues, usdRatesMapper])
+  }, [curve?.getUsdRate, formValues.amounts, formValues.selected, queryClient])
 
   const haveSlippage = formValues.selected !== 'lpToken'
   const activeStep = haveSigner ? getActiveStep(steps) : null

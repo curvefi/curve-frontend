@@ -23,6 +23,7 @@ import { FlexContainer } from '@ui/styled-containers'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { useUsdRates } from '@ui-kit/lib/entities/usd-rates'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
@@ -36,7 +37,6 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const { networkId } = useStore((state) => state.networks.networks[chainId])
 
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const tokenPrices = useStore((state) => state.usdRates.usdRatesMapper)
 
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -87,6 +87,12 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
 
   const token = filteredTokens.find((x) => x.address === rewardTokenId)
+
+  const curve = useStore((state) => state.curve)
+  const { data: usdRates } = useUsdRates(
+    curve.getUsdRate,
+    filteredTokens.map((x) => x.address),
+  )
 
   const onChangeAmount = useCallback(
     (amount: string) => {
@@ -153,7 +159,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
             tokens={filteredTokens}
             disabled={isDisabled}
             balances={userBalancesMapper}
-            tokenPrices={tokenPrices}
+            tokenPrices={usdRates}
             onToken={onChangeToken}
           />
         </FlexItemToken>

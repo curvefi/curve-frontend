@@ -7,12 +7,14 @@ import Box from '@ui/Box'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Tooltip from '@ui/Tooltip'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { contractCrv } from '@/dao/store/contracts'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 const CrvStats = () => {
   const { provider } = useWallet()
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
-  const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)
-  const crv = usdRatesMapper.crv
+  const curve = useStore((state) => state.curve)
+  const { data: crv, isPending: usdRatesLoading } = useUsdRate(curve?.getUsdRate, contractCrv)
 
   const noProvider = !provider
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'

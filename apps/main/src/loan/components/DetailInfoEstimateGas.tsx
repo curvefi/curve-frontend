@@ -11,6 +11,7 @@ import useStore from '@/loan/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { ChainId } from '@/loan/types/loan.types'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 export type StepProgress = {
   active: number
@@ -27,7 +28,8 @@ interface Props {
 }
 
 const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
-  const chainTokenUsdRate = useStore((state) => state.usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'])
+  const curve = useStore((state) => state.curve)
+  const { data: chainTokenUsdRate } = useUsdRate(curve?.getUsdRate, '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
   const basePlusPriorities = useStore((state) => state.gas.gasInfo?.basePlusPriority)
@@ -39,7 +41,7 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
       const { symbol, gasPricesUnit } = networks[chainId]
 
       const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * estimatedGas))
-      if (chainTokenUsdRate === 'NaN') {
+      if (Number.isNaN(chainTokenUsdRate)) {
         return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: '' }
       } else {
         const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()

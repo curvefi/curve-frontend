@@ -13,6 +13,7 @@ import useStore from '@/dao/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 export type StepProgress = {
   active: number
@@ -36,7 +37,7 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
+  const { data: chainTokenUsdRate } = useUsdRate(curve?.getUsdRate, NETWORK_TOKEN)
   const gasInfo = useStore((state) => state.gas.gasInfo)
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 

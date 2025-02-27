@@ -28,6 +28,8 @@ import {
 } from '@/dex/components/PageCreatePool/constants'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { fetchUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 type SliceState = {
   navigationIndex: number
@@ -447,35 +449,35 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       // set token prices
       if (tokenA.address !== '') {
-        const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenA.address)
+        const tokenAPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenA.address)
         initialPriceUpdates.tokenA = Number(tokenAPriceRaw)
       }
       if (tokenB.address !== '') {
-        const tokenBPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenB.address)
+        const tokenBPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenB.address)
         initialPriceUpdates.tokenB = Number(tokenBPriceRaw)
       }
       if (tokenC.address !== '') {
-        const tokenCPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenC.address)
+        const tokenCPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenC.address)
         initialPriceUpdates.tokenC = Number(tokenCPriceRaw)
       }
       if (tokenD.address !== '') {
-        const tokenDPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenD.address)
+        const tokenDPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenD.address)
         initialPriceUpdates.tokenD = Number(tokenDPriceRaw)
       }
       if (tokenE.address !== '') {
-        const tokenEPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenE.address)
+        const tokenEPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenE.address)
         initialPriceUpdates.tokenE = Number(tokenEPriceRaw)
       }
       if (tokenF.address !== '') {
-        const tokenFPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenF.address)
+        const tokenFPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenF.address)
         initialPriceUpdates.tokenF = Number(tokenFPriceRaw)
       }
       if (tokenG.address !== '') {
-        const tokenGPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenG.address)
+        const tokenGPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenG.address)
         initialPriceUpdates.tokenG = Number(tokenGPriceRaw)
       }
       if (tokenH.address !== '') {
-        const tokenHPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenH.address)
+        const tokenHPriceRaw = await fetchUsdRate(queryClient, curve.getUsdRate, tokenH.address)
         initialPriceUpdates.tokenH = Number(tokenHPriceRaw)
       }
 
@@ -593,16 +595,19 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       console.log(get().createPool.initialPrice)
     },
     refreshInitialPrice: async (curve: CurveApi) => {
-      const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(
-        curve,
+      const tokenAPriceRaw = await fetchUsdRate(
+        queryClient,
+        curve.getUsdRate,
         get().createPool.tokensInPool[TOKEN_A].address,
       )
-      const tokenBPriceRaw = await get().usdRates.fetchUsdRateByToken(
-        curve,
+      const tokenBPriceRaw = await fetchUsdRate(
+        queryClient,
+        curve.getUsdRate,
         get().createPool.tokensInPool[TOKEN_B].address,
       )
-      const tokenCPriceRaw = await get().usdRates.fetchUsdRateByToken(
-        curve,
+      const tokenCPriceRaw = await fetchUsdRate(
+        queryClient,
+        curve.getUsdRate,
         get().createPool.tokensInPool[TOKEN_C].address,
       )
       const tokenAPrice = Number(tokenAPriceRaw)

@@ -74,7 +74,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set({ connectState: { status, stage, ...(options && { options }) } })
   },
   updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
-    const { gas, loans, usdRates, ...state } = get()
+    const { gas, loans, ...state } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -98,14 +98,10 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
     await loans.fetchLoansDetails(curveApi, collateralDatas)
 
-    if (!prevCurveApi || isNetworkSwitched) {
-      usdRates.fetchAllStoredUsdRates(curveApi)
-    }
-
     state.updateGlobalStoreByKey('isLoadingApi', false)
   },
   updateLendApi: async (lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null) => {
-    const { gas, loans, usdRates, ...state } = get()
+    const { gas, loans, ...state } = get()
 
     const isNetworkSwitched = !!prevLendApi?.chainId && prevLendApi.chainId !== lendApi.chainId
     const isUserSwitched = !!prevLendApi?.signerAddress && prevLendApi.signerAddress !== lendApi.signerAddress

@@ -9,7 +9,8 @@ import uniq from 'lodash/uniq'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { log, LogStatus } from '@ui-kit/lib'
 import { weiToEther } from '@ui-kit/utils'
-import { Pool, UserBalancesMapper, PoolData, UsdRatesMapper } from '@/dex/types/main.types'
+import { Pool, UserBalancesMapper, PoolData } from '@/dex/types/main.types'
+import type { UsdRatesMapper } from '@ui-kit/lib/entities/usd-rates'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isApproved: false,

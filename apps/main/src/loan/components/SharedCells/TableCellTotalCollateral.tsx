@@ -12,6 +12,7 @@ import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@/loan/types/loan.types'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 type Props = {
   rChainId: ChainId
@@ -21,7 +22,9 @@ type Props = {
 const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
   const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+
+  const curve = useStore((state) => state.curve)
+  const { data: collateralUsdRate } = useUsdRate(curve?.getUsdRate, llamma?.collateral ?? '')
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
@@ -45,7 +48,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
     return <></>
   }
 
-  if (collateralUsdRate === 'NaN' || +collateralUsdRate === 0) {
+  if (Number.isNaN(collateralUsdRate) || +collateralUsdRate === 0) {
     return (
       <Chip tooltip={t`Unable to get USD rate`} tooltipProps={{ placement: 'bottom end' }}>
         ?

@@ -8,7 +8,6 @@ import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
-import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/lend/globalStyle'
 import Page from '@/lend/layout'
@@ -22,6 +21,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shouldForwardProp } from '@ui/styled-containers'
 import { StyleSheetManager } from 'styled-components'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 
 const PageLlammasList = dynamic(() => import('@/lend/components/PageMarketList/Page'), { ssr: false })
 const PageLoanCreate = dynamic(() => import('@/lend/components/PageLoanCreate/Page'), { ssr: false })

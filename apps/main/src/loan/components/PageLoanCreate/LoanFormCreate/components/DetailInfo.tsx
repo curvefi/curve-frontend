@@ -10,11 +10,13 @@ import useStore from '@/loan/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import DetailInfoLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 import DetailInfoNonLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 const DetailInfoComp = (props: FormDetailInfo) => {
   const { activeKeyLiqRange, formValues, isLeverage, isReady, llamma, haveSigner, steps, updateFormValues } = props
 
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+  const curve = useStore((state) => state.curve)
+  const { data: collateralUsdRate } = useUsdRate(curve?.getUsdRate, llamma?.collateral ?? '')
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)

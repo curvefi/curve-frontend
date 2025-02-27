@@ -25,7 +25,6 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({
     userAddress: signerAddress ?? '',
   })
-  const usdRateLoading = useStore((state) => state.usdRates.loading)
   const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
   const scrvUsdRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate.value)
 
@@ -62,7 +61,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="large"
               label={t`Your crvUSD Staked`}
               value={userScrvUsdBalanceInCrvUsd}
-              loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
+              loading={userBalanceLoading || exchangeRateLoading}
               unit={CRVUSD_OPTIONS}
             />
           </Grid>

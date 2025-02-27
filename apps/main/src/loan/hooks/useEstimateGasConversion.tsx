@@ -5,11 +5,12 @@ import { BN, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 import useStore from '@/loan/store/useStore'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 const useEstimateGasConversion = (gas: number) => {
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId
-  const chainTokenUsdRate = useStore().usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
+  const { data: chainTokenUsdRate } = useUsdRate(curve?.getUsdRate, '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   const basePlusPriorities = useStore().gas.gasInfo?.basePlusPriority
 
@@ -23,10 +24,10 @@ const useEstimateGasConversion = (gas: number) => {
 
     const { symbol, gasPricesUnit } = networks[chainId]
     const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * gas))
-    if (chainTokenUsdRate === 'NaN') {
+    if (Number.isNaN(chainTokenUsdRate) || !!chainTokenUsdRate) {
       return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: '' }
     } else {
-      const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
+      const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate!).toString()
       const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
       const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
       return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }

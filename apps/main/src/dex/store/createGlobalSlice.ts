@@ -13,6 +13,8 @@ import {
   RouterProps,
   Wallet,
 } from '@/dex/types/main.types'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { clearUsdRates } from '@ui-kit/lib/entities/usd-rates'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -165,7 +167,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.usdRates.resetState()
+      clearUsdRates(queryClient)
       state.userBalances.resetState()
       state.user.resetState()
       state.userBalances.resetState()
@@ -213,9 +215,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.updateGlobalStoreByKey('isLoadingApi', false)
       state.pools.fetchPricesApiPools(chainId)
       state.pools.fetchBasePools(curveApi)
-
-      // pull all api calls before isLoadingApi if it is not needed for initial load
-      state.usdRates.fetchAllStoredUsdRates(curveApi)
     } else {
       state.updateGlobalStoreByKey('isLoadingApi', false)
     }

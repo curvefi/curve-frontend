@@ -12,9 +12,10 @@ import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@/loan/types/loan.types'
+import { ChainId, CollateralDatasMapper, LoanDetailsMapper } from '@/loan/types/loan.types'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
+import { useUsdRate, useUsdRates, type UsdRatesMapper } from '@ui-kit/lib/entities/usd-rates'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -30,11 +31,14 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const chainId = curve?.chainId
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
-  const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
+  const { data: crvusdPrice } = useUsdRate(curve?.getUsdRate, CRVUSD_ADDRESS)
+  const { data: usdRatesMapper } = useUsdRates(
+    curve?.getUsdRate,
+    Object.values(collateralDatasMapper || {}).map((data) => data.llamma.collateral),
+  )
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const routerProps = useStore((state) => state.routerProps)
-  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
@@ -112,7 +116,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 function _getTvl(
   collateralDatasMapper: CollateralDatasMapper | undefined,
   loansDetailsMapper: LoanDetailsMapper | undefined,
-  usdRatesMapper: UsdRate | undefined,
+  usdRatesMapper: UsdRatesMapper | undefined,
 ) {
   let formattedTvl = '-'
   let sum = 0
@@ -131,7 +135,7 @@ function _getTvl(
         const { totalCollateral, totalStablecoin } = loansDetailsMapper[key]
         const usdRate = usdRatesMapper[collateralData.llamma.collateral]
 
-        if (usdRate === 'NaN') {
+        if (usdRate === undefined || Number.isNaN(usdRate)) {
           formattedTvl = '?'
         } else {
           const totalCollateralUsd = +(totalCollateral ?? '0') * +(usdRate ?? '0')

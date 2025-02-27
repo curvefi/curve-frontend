@@ -20,6 +20,8 @@ import { getChainSignerActiveKey, sleep } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@/dex/types/main.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { fetchUsdRates } from '@ui-kit/lib/entities/usd-rates'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -43,7 +45,6 @@ export type QuickSwapSlice = {
       fromAddress: string,
       toAddress: string,
     ): Promise<{ fromAmount: string; toAmount: string }>
-    fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
     fetchRoutesAndOutput(
       curve: CurveApi,
@@ -117,13 +118,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       return {
         fromAmount: get().userBalances.userBalancesMapper[fromAddress] ?? '0',
         toAmount: get().userBalances.userBalancesMapper[toAddress] ?? '0',
-      }
-    },
-    fetchUsdRates: async (curve, { fromAddress, toAddress }) => {
-      const usdRateMapper = get().usdRates.usdRatesMapper
-
-      if (typeof usdRateMapper[toAddress] === 'undefined' || typeof usdRateMapper[fromAddress] === 'undefined') {
-        await get().usdRates.fetchUsdRateByTokens(curve, [fromAddress, toAddress])
       }
     },
     fetchMaxAmount: async (curve, searchedParams, maxSlippage) => {
@@ -348,7 +342,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
 
       // get usdRates
-      await sliceState.fetchUsdRates(curve, searchedParams)
+      await fetchUsdRates(queryClient, curve.getUsdRate, [searchedParams.fromAddress, searchedParams.toAddress], true)
 
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
@@ -382,8 +376,10 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       )
 
       // get usd rates
-      await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, NETWORK_TOKEN])
-      const usdRatesMapper = get().usdRates.usdRatesMapper
+      const usdRatesMapper = await fetchUsdRates(queryClient, curve.getUsdRate, [
+        ...filteredUserBalancesList,
+        NETWORK_TOKEN,
+      ])
 
       // get gas
       if (typeof state.gas.gasInfo?.basePlusPriority?.[0] === 'undefined') await state.gas.fetchGasInfo(curve)

@@ -9,15 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { getErrorMessage } from '@/dao/utils'
 import { log } from '@ui-kit/lib'
-import {
-  CurveApi,
-  ChainId,
-  Provider,
-  Wallet,
-  EstimatedGas,
-  UsdRatesMapper,
-  ClaimButtonsKey,
-} from '@/dao/types/dao.types'
+import { CurveApi, ChainId, Provider, Wallet, EstimatedGas, ClaimButtonsKey } from '@/dao/types/dao.types'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
@@ -63,21 +55,6 @@ export const helpers = {
     } else {
       return results
     }
-  },
-  fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length)
-    let results: UsdRatesMapper = {}
-
-    await PromisePool.for(tokenAddresses)
-      .withConcurrency(5)
-      .handleError((error, tokenAddress) => {
-        console.error(`Unable to get usd rate for ${tokenAddress}`)
-        results[tokenAddress] = NaN
-      })
-      .process(async (tokenAddress) => {
-        results[tokenAddress] = await curve.getUsdRate(tokenAddress)
-      })
-    return results
   },
 }
 

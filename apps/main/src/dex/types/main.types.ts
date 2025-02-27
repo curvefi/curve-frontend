@@ -271,7 +271,6 @@ export type Tvl = {
   errorMessage: string
 }
 export type TvlMapper = { [poolId: string]: Tvl }
-export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
 export type UserPoolListMapper = { [poolId: string]: boolean }
 export type Volume = {
   poolId: string

@@ -12,6 +12,9 @@ import { TITLE } from '@/loan/constants'
 import { searchByText } from '@ui-kit/utils'
 import { sleep } from '@/loan/utils/helpers'
 import { ChainId, Curve, CollateralData, TitleKey } from '@/loan/types/loan.types'
+import { fetchUsdRate } from '@ui-kit/lib/entities/usd-rates'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import curve from '@curvefi/api'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -109,7 +112,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
           collateralDatas,
           ({ llamma }) => {
             const { totalCollateral, totalStablecoin } = loanMapper[llamma.id]
-            const collateralUsdRate = get().usdRates.tokens[llamma.collateral]
+            const collateralUsdRate = fetchUsdRate(queryClient, curve.getUsdRate, llamma.collateral)
             const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
             return totalCollateralUsd + Number(totalStablecoin ?? 0)
           },

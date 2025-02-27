@@ -14,6 +14,8 @@ import {
   CollateralDataCache,
   CollateralDataCacheMapper,
 } from '@/loan/types/loan.types'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { fetchUsdRates } from '@ui-kit/lib/entities/usd-rates'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -67,7 +69,7 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       get()[sliceKey].setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasMapper)
 
       // fetch collaterals USD rates
-      get().usdRates.fetchUsdRateByTokens(curve, collateralAddresses)
+      fetchUsdRates(queryClient, curve.getUsdRate, collateralAddresses)
 
       // add to cache
       get().storeCache.setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasCacheMapper)

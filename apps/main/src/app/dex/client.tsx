@@ -7,7 +7,6 @@ import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
-import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/dex/globalStyle'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
@@ -22,6 +21,7 @@ import { CurveApi } from '@/dex/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shouldForwardProp } from '@ui/styled-containers'
 import { StyleSheetManager } from 'styled-components'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 
 const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })
@@ -47,7 +47,6 @@ export const App = () => {
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
@@ -112,7 +111,6 @@ export const App = () => {
     () => {
       if (curve) {
         fetchGasInfo(curve)
-        fetchAllStoredUsdRates(curve)
         fetchPoolsVolumeTvl(curve)
 
         if (curve.signerAddress) {

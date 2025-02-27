@@ -9,6 +9,7 @@ import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
+import { useUsdRate } from '@ui-kit/lib/entities/usd-rates'
 
 const RouterSwapAlerts = ({
   formStatus,
@@ -28,13 +29,12 @@ const RouterSwapAlerts = ({
     isFullReset?: boolean,
   ) => void
 }) => {
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-
   const { error, swapError } = formStatus
   const { toAddress } = searchedParams
   const { isExchangeRateLow, isExpectedToAmount, isHighImpact, toAmountOutput } = routesAndOutput ?? {}
 
-  const toUsdRate = usdRatesMapper[toAddress]
+  const curve = useStore((state) => state.curve)
+  const { data: toUsdRate } = useUsdRate(curve?.getUsdRate, toAddress)
 
   const usdToAmount = useMemo(
     () =>

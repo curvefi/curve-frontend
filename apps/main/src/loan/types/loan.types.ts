@@ -151,7 +151,6 @@ export type RouterProps = {
   navigate: NavigateFunction
 }
 export type Theme = 'default' | 'dark' | 'chad'
-export type UsdRate = { [tokenAddress: string]: string | number }
 export type Wallet = WalletState
 
 export interface CollateralAlert extends TooltipProps {

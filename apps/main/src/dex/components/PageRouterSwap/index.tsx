@@ -39,6 +39,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CurveApi, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
+import { useUsdRate, useUsdRates } from '@ui-kit/lib/entities/usd-rates'
 
 const QuickSwap = ({
   pageLoaded,
@@ -77,7 +78,6 @@ const QuickSwap = ({
   const tokensMapperNonSmallTvl = useStore((state) => state.tokens.tokensMapperNonSmallTvl[rChainId] ?? {})
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const volumesMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
@@ -101,8 +101,8 @@ const QuickSwap = ({
   const userFromBalance = userBalancesMapper[fromAddress]
   const userToBalance = userBalancesMapper[toAddress]
 
-  const fromUsdRate = usdRatesMapper[fromAddress]
-  const toUsdRate = usdRatesMapper[toAddress]
+  const { data: fromUsdRate } = useUsdRate(curve?.getUsdRate, fromAddress)
+  const { data: toUsdRate } = useUsdRate(curve?.getUsdRate, toAddress)
 
   const tokensMapperNonSmallTvlStr = useMemo(
     () => getTokensMapperStr(tokensMapperNonSmallTvl),
@@ -140,6 +140,16 @@ const QuickSwap = ({
           volume: token?.volume ?? 0,
         })),
     [selectToList, tokensMapper, network?.networkId],
+  )
+
+  const { data: tokensFromRates } = useUsdRates(
+    curve?.getUsdRate,
+    tokensFrom.map((x) => x.address),
+  )
+
+  const { data: tokensToRates } = useUsdRates(
+    curve?.getUsdRate,
+    tokensTo.map((x) => x.address),
   )
 
   const fromToken = tokensFrom.find((x) => x.address.toLocaleLowerCase() == fromAddress)
@@ -436,7 +446,7 @@ const QuickSwap = ({
                 tokens={tokensFrom}
                 balances={userBalancesMapper}
                 disabled={isDisable || !fromToken}
-                tokenPrices={usdRatesMapper}
+                tokenPrices={tokensFromRates}
                 onToken={(token) => {
                   const fromAddress = token.address
                   const toAddress =
@@ -489,7 +499,7 @@ const QuickSwap = ({
               tokens={tokensTo}
               balances={userBalancesMapper}
               disabled={isDisable || !toToken}
-              tokenPrices={usdRatesMapper}
+              tokenPrices={tokensToRates}
               onToken={(token) => {
                 const toAddress = token.address
                 const fromAddress =

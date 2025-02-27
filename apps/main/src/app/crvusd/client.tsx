@@ -43,7 +43,6 @@ export const App: NextPage = () => {
   const curve = useStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -90,7 +89,6 @@ export const App: NextPage = () => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve) {
-        fetchAllStoredUsdRates(curve)
         fetchGasInfo(curve)
       }
     },

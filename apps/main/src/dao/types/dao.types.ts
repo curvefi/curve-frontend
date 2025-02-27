@@ -58,7 +58,6 @@ export type GasInfo = {
   l1GasPriceWei?: number
   l2GasPriceWei?: number
 }
-export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
 export type ProposalType = 'PARAMETER' | 'OWNERSHIP'
 export type ProposalResponseData = {
   voteId: number
