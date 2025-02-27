@@ -18,7 +18,7 @@ type VoteGaugeProps = {
   powerUsed: number
 }
 
-const VoteGauge: React.FC<VoteGaugeProps> = ({ gaugeData, userGaugeVoteData, powerUsed }) => {
+const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const [showDetails, setShowDetails] = useState(false)
   const { setSelectedGauge } = useStore((state) => state.gauges)
   const { veCrv } = useStore((state) => state.user.userVeCrv)

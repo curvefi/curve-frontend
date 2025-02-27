@@ -10,7 +10,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
-const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) => (
+const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
   <>
     {llammaTradesData.map((transaction, index) => (
       <TransactionRow key={`${transaction.txHash}-${transaction.idSold}-trade-${index}`}>

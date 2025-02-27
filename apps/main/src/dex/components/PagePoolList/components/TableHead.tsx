@@ -24,7 +24,7 @@ type Props = {
   updatePath(searchParams: Partial<SearchParams>): void
 }
 
-const TableHead: React.FC<Props> = ({
+const TableHead = ({
   isLite,
   isReadyRewardsApy,
   isReadyTvl,
@@ -33,7 +33,7 @@ const TableHead: React.FC<Props> = ({
   searchParams,
   tableLabels,
   updatePath,
-}) => {
+}: Props) => {
   const handleBtnClickSort = useCallback(
     (sortBy: string, sortByOrder: Order) => {
       updatePath({ sortBy: sortBy as SortKey, sortByOrder })

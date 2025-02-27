@@ -24,7 +24,7 @@ type Props = {
   title?: string
 }
 
-const SummaryClaimable: React.FC<Props> = ({ title }) => {
+const SummaryClaimable = ({ title }: Props) => {
   const {
     isLoading,
     formValues: { walletAddress },

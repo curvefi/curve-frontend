@@ -1,8 +1,7 @@
-import { FunctionComponent } from 'react'
 import { themes, type ThemeSwitcherProps } from './types'
 import IconButton from '@mui/material/IconButton'
 
-export const ThemeSwitcherButtons: FunctionComponent<ThemeSwitcherProps> = ({ theme, onChange }) =>
+export const ThemeSwitcherButtons = ({ theme, onChange }: ThemeSwitcherProps) =>
   themes.map(({ type, Component }) => (
     <IconButton
       size="small"

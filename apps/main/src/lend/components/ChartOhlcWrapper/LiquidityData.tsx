@@ -11,7 +11,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
 
-const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chainId, coins }) => (
+const LiquidityData = ({ lendControllerData, chainId, coins }: LiquidityDataProps) => (
   <>
     {coins &&
       lendControllerData.map((transaction, index) => (

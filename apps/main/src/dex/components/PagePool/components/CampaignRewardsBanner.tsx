@@ -9,7 +9,7 @@ interface CampaignRewardsBannerProps {
   address: string
 }
 
-const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ address }) => {
+const CampaignRewardsBanner = ({ address }: CampaignRewardsBannerProps) => {
   const campaignRewardsPool = useCampaignRewardsMapper()[address]
 
   if (!campaignRewardsPool) return null

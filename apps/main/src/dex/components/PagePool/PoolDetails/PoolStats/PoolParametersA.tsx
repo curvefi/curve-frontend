@@ -9,7 +9,7 @@ import Chip from '@ui/Typography/Chip'
 import Item from '@ui/Items/Item'
 import { PoolData } from '@/dex/types/main.types'
 
-const PoolParametersA: React.FC<{ parameters: PoolData['parameters'] }> = ({ parameters }) => {
+const PoolParametersA = ({ parameters }: { parameters: PoolData['parameters'] }) => {
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}
 
   const rampADetails = useMemo(() => {

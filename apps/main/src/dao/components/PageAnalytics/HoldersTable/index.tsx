@@ -12,7 +12,7 @@ import Box from '@ui/Box'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
 
-const TopHoldersTable: React.FC = () => {
+const TopHoldersTable = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
 
   const tableMinWidth = 41.875

@@ -11,7 +11,7 @@ interface SandwichMenuProps {
   onItemClick: (key: string) => void
 }
 
-const SandwichMenu: React.FC<SandwichMenuProps> = ({ className, onItemClick }) => {
+const SandwichMenu = ({ className, onItemClick }: SandwichMenuProps) => {
   const state = useOverlayTriggerState({})
   const buttonRef = useRef<HTMLButtonElement>(null)
 

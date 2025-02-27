@@ -10,10 +10,14 @@ import Tooltip from '@ui/Tooltip'
 import type React from 'react'
 import { ChainId } from '@/dex/types/main.types'
 
-const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
+const LiquidityData = ({
   lpEventsData,
   chainId,
   coins,
+}: {
+  lpEventsData: LpLiquidityEventsData[]
+  chainId: ChainId
+  coins: PricesApiCoin[]
 }) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
   const network = useStore((state) => state.networks.networks[chainId])

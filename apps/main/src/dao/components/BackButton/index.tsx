@@ -10,7 +10,7 @@ type BackButtonProps = {
   label: string
 }
 
-const BackButton: React.FC<BackButtonProps> = ({ path, label }) => {
+const BackButton = ({ path, label }: BackButtonProps) => {
   const navigate = useNavigate()
 
   return (

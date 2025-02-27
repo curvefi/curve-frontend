@@ -7,7 +7,7 @@ import Tooltip from 'ui/src/Tooltip'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import Icon from 'ui/src/Icon'
 
-const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
+const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool
 
   const hasMultiplier = !!multiplier

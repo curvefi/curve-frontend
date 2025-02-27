@@ -20,7 +20,7 @@ type UserPageProps = {
   }
 }
 
-const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) => {
+const UserPage = ({ routerParams: { rUserAddress } }: UserPageProps) => {
   const {
     veCrvHolders: { allHolders, fetchStatus },
     getVeCrvHolders,

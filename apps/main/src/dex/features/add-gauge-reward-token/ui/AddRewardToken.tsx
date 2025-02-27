@@ -20,7 +20,7 @@ import useStore from '@/dex/store/useStore'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import TxInfoBar from '@ui/TxInfoBar'
 
-export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId }) => {
+export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { data: signerAddress } = useSignerAddress()
 
   const { isFetching: isFetchingGaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId })

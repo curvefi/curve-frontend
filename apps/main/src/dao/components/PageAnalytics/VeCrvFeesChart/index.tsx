@@ -9,7 +9,7 @@ import Spinner from '../../Spinner'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import FeesBarChart from './FeesBarChart'
 
-const VeCrvFeesChart: React.FC = () => {
+const VeCrvFeesChart = () => {
   const { veCrvFees, getVeCrvFees } = useStore((state) => state.analytics)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'

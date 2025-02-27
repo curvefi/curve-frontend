@@ -53,7 +53,7 @@ const Item = ({ title, value }: { title: string; value: ReactNode }) =>
     </ListItem>
   )
 
-const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
+const TypographyDisplay = ({ variant, children, ...args }: TypographyDisplayProps) => {
   const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[
     variant
   ] as TypographyVariantDefinition

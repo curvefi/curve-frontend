@@ -23,14 +23,7 @@ type PoolStatsProps = {
   tokensMapper: TokensMapper
 } & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 
-const PoolStats: React.FC<PoolStatsProps> = ({
-  curve,
-  routerParams,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  tokensMapper,
-}) => {
+const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
 
   const { rChainId, rPoolId } = routerParams

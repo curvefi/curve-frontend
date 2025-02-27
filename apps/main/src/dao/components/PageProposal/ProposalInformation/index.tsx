@@ -14,7 +14,7 @@ type ProposalInformationProps = {
   snapshotBlock: number
 }
 
-const ProposalInformation: React.FC<ProposalInformationProps> = ({ proposal, snapshotBlock }) => {
+const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationProps) => {
   const createdDate = useMemo(
     () => new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString(),
     [proposal?.startDate],
