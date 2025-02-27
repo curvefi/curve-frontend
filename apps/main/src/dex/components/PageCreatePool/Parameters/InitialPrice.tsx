@@ -187,7 +187,7 @@ const InitialPriceSumData = styled.div`
   background-color: var(--layout--home--background-color);
   border: 1px solid var(--border-600);
   color: var(--page--text-color);
-  &:nth-of-type(2) {
+  &:nth-child(2) {
     margin-top: var(--spacing-2);
   }
 `
@@ -201,6 +201,10 @@ const InitialPriceTitle = styled.p`
 const InitialPriceSum = styled.h4`
   font-weight: var(--semi-bold);
   text-align: left;
+`
+
+const InitialPriceTokenA = styled.h4`
+  font-size: var(--font-size-3);
 `
 
 export default InitialPrice
