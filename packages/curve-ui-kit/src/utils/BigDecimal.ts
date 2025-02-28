@@ -3,10 +3,10 @@ import { BigDecimalTypes } from './BigDecimal.d'
 class BigDecimal {
   private static readonly STRING_REGEX = /^(-?)(\d*)(?:\.(\d+))?$/
 
-  private readonly _integerPart: bigint
-  private readonly _fractionalPart: bigint
-  private readonly _scale: number
-  private readonly _isNegative: boolean
+  private _integerPart: bigint
+  private _fractionalPart: bigint
+  private _scale: number
+  private _isNegative: boolean
 
   /**
    * Creates a new BigDecimal instance.
@@ -85,7 +85,7 @@ class BigDecimal {
       return !isNaN(value) && isFinite(value)
     }
 
-    return typeof value === 'bigint';
+    return typeof value === 'bigint'
   }
 
   /**
@@ -214,14 +214,6 @@ class BigDecimal {
     if (newScale <= this._scale) return this
     const scaleDiff = newScale - this._scale
     const newFractionalPart = this._fractionalPart * this.scaleFactor(scaleDiff)
-    return new BigDecimal(this._integerPart * this.scaleFactor(newScale) + newFractionalPart, newScale)
-  }
-
-  private scaleDown(newScale: number): BigDecimal {
-    if (newScale >= this._scale) return this
-    const scaleDiff = this._scale - newScale
-    const divisor = this.scaleFactor(scaleDiff)
-    const newFractionalPart = this._fractionalPart / divisor
     return new BigDecimal(this._integerPart * this.scaleFactor(newScale) + newFractionalPart, newScale)
   }
 

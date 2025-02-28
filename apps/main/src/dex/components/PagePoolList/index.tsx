@@ -1,6 +1,5 @@
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/dex/constants'

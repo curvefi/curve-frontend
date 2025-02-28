@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import Spinner from 'ui/src/Spinner/Spinner'
 import SortIcon from 'ui/src/SortIcon/SortIcon'
-import TheadButton from 'ui/src/Table/TheadButton'
+import { TheadButton } from 'ui/src/Table'
 
 export type Order = 'desc' | 'asc'
 

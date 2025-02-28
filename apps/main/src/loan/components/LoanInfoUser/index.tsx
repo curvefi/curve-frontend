@@ -19,7 +19,7 @@ import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@/loan/types/loan.types'
 
-interface Props extends Pick<PageLoanManageProps,  'llamma' | 'llammaId' | 'titleMapper'> {
+interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
 }
 

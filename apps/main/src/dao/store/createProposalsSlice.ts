@@ -297,7 +297,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const proposals = Object.values(proposalsData)
 
       const filteredProposals = filterProposals(proposals, activeFilter)
-       return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
+      return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
     },
     setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals, activeSortBy, activeSortDirection } = get()[sliceKey]

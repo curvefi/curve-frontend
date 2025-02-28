@@ -12,7 +12,6 @@ import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import Collapse from '@mui/material/Collapse'

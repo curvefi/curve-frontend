@@ -19,14 +19,6 @@ export const combineQueriesMeta = <T extends QueryOptionsArray>(
 })
 
 /** Combines the data and metadata of multiple queries into a single object. */
-const combineQueriesToList = <T extends QueryOptionsArray>(
-  results: QueryResultsArray<T>,
-): CombinedQueriesResult<T> => ({
-  data: results.map((result) => result.data),
-  ...combineQueriesMeta(results),
-})
-
-/** Combines the data and metadata of multiple queries into a single object. */
 const combineQueriesToObject = <T extends QueryOptionsArray, K extends string[]>(
   results: QueryResultsArray<T>,
   keys: K,

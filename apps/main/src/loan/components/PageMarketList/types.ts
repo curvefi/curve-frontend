@@ -51,9 +51,3 @@ export type TableLabel = {
   width?: string
   indicatorPlacement?: TheadSortButtonProps<TitleKey>['indicatorPlacement']
 }
-
-export type TableSettings = {
-  isNotSortable?: boolean
-  sortBy?: TitleKey | ''
-  sortByOrder?: Order
-}

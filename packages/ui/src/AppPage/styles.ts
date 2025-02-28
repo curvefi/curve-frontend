@@ -4,8 +4,7 @@ import { breakpoints } from 'ui/src/utils'
 
 import Box from 'ui/src/Box'
 import BoxHeader from 'ui/src/Box/BoxHeader'
-import TabContentWrapper from 'ui/src/Tab/TabContentWrapper'
-import TextEllipsis from 'ui/src/TextEllipsis'
+import { TabContentWrapper } from 'ui/src/Tab'
 
 // PAGE STYLES
 export const AppPageContainer = styled.div`

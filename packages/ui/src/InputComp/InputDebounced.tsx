@@ -3,11 +3,11 @@ import type { InputLabelProps, InputProps } from './types'
 import React from 'react'
 
 import { useInputContext } from 'ui/src/InputComp/InputProvider'
-import useDebounceValue from 'ui/src/hooks/useDebouncedValue'
+import { useDebouncedValue } from 'ui/src/hooks'
 
 import Box from 'ui/src/Box/Box'
 import Input from 'ui/src/InputComp/Input'
-import InputLabel from 'ui/src/InputComp/InputLabel'
+import { InputLabel } from 'ui/src/InputComp'
 
 const InputDebounced = ({
   className,
@@ -27,7 +27,7 @@ const InputDebounced = ({
   onChange: (value: string) => void
 }) => {
   const { disabled: contextDisabled } = useInputContext()
-  const [debouncedValue, handleInputChange] = useDebounceValue(value, delay, onChange)
+  const [debouncedValue, handleInputChange] = useDebouncedValue(value, delay, onChange)
 
   return (
     <Box grid>

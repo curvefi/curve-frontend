@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components'
 import { isInProgress, taskStepStatusStyles } from './helpers'
 import Button from 'ui/src/Button'
 import Spinner from 'ui/src/Spinner/Spinner'
-import StepModal from 'ui/src/Stepper/StepModal'
+import { StepModal } from 'ui/src/Stepper'
 
 const StepAction = ({ className, step }: { className?: string; step: Step }) => {
   const overlayTriggerState = useOverlayTriggerState({})

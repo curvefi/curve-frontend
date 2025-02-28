@@ -8,7 +8,7 @@ import useTokenAlert from '@/dex/hooks/useTokenAlert'
 
 import { Chip } from '@ui/Typography'
 import AlertBox from '@ui/AlertBox'
-import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
+import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
 import Box from '@ui/Box'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'

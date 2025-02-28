@@ -42,7 +42,6 @@ const DEFAULT_LAYOUT_HEIGHT: LayoutHeight = {
   secondaryNav: 0,
   footer: 0,
 }
-export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
 
 const DEFAULT_STATE: SliceState = {
   height: DEFAULT_LAYOUT_HEIGHT,
@@ -112,19 +111,3 @@ const createLayoutSlice = (set: SetState<State>, get: GetState<State>) => ({
 })
 
 export default createLayoutSlice
-
-export function getPageWidthClassName(pageWidth: number) {
-  if (pageWidth > 1920) {
-    return 'page-wide'
-  } else if (pageWidth > 1280 && pageWidth <= 1920) {
-    return 'page-large'
-  } else if (pageWidth > 960 && pageWidth <= 1280) {
-    return 'page-medium'
-  } else if (pageWidth > 450 && pageWidth <= 960) {
-    return 'page-small'
-  } else if (pageWidth > 321 && pageWidth <= 450) {
-    return 'page-small-x'
-  } else {
-    return 'page-small-xx'
-  }
-}

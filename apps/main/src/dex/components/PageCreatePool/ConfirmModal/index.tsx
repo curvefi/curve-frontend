@@ -1,26 +1,20 @@
-import { useRef, useMemo, useCallback } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getPath } from '@/dex/utils/utilsRouter'
-
 import useStore from '@/dex/store/useStore'
-
 import { breakpoints } from '@ui/utils/responsive'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import InternalLinkButton from '@ui/InternalLinkButton'
-import ExternalLink from '@ui/Link/ExternalLink'
 import { ROUTE } from '@/dex/constants'
 import Spinner from 'ui/src/Spinner/Spinner'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
-
 import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
 import CreatePoolButton from '@/dex/components/PageCreatePool/ConfirmModal/CreatePoolButton'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
@@ -28,7 +22,7 @@ import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSum
 import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
 import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
 import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
 
 type Props = {
   disabled?: boolean

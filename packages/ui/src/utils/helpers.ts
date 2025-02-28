@@ -49,13 +49,6 @@ export function shortenAccount(account: string, visibleLength = 4) {
   }
 }
 
-export const sizes = {
-  sm: '0.875rem', //14px
-  md: '1.125rem', // 18px
-  lg: '1.5rem', // 24px
-  xl: '1.75rem', // 28px
-}
-
 export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
   if (!tokenAddress) return
   const start = tokenAddress.slice(0, 4)

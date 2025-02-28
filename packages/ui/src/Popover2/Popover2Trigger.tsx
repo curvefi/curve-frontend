@@ -5,8 +5,8 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 import Icon from 'ui/src/Icon/Icon'
-import Popover2 from 'ui/src/Popover2/Popover2'
-import Popover2Button from 'ui/src/Popover2/Popover2Button'
+import { Popover2 } from 'ui/src/Popover2'
+import { Popover2Button } from 'ui/src/Popover2'
 
 function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) {
   let ref = React.useRef(null)
