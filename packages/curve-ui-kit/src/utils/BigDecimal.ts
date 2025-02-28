@@ -3,10 +3,10 @@ import { BigDecimalTypes } from './BigDecimal.d'
 class BigDecimal {
   private static readonly STRING_REGEX = /^(-?)(\d*)(?:\.(\d+))?$/
 
-  private _integerPart: bigint
-  private _fractionalPart: bigint
-  private _scale: number
-  private _isNegative: boolean
+  private readonly _integerPart: bigint
+  private readonly _fractionalPart: bigint
+  private readonly _scale: number
+  private readonly _isNegative: boolean
 
   /**
    * Creates a new BigDecimal instance.
@@ -85,11 +85,7 @@ class BigDecimal {
       return !isNaN(value) && isFinite(value)
     }
 
-    if (typeof value === 'bigint') {
-      return true
-    }
-
-    return false
+    return typeof value === 'bigint';
   }
 
   /**

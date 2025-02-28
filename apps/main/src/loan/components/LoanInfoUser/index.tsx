@@ -19,11 +19,11 @@ import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@/loan/types/loan.types'
 
-interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
+interface Props extends Pick<PageLoanManageProps,  'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
 }
 
-const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId, titleMapper }: Props) => {
+const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const { chartExpanded } = useStore((state) => state.ohlcCharts)

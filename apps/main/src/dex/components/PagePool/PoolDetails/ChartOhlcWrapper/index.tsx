@@ -232,7 +232,6 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
         />
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
@@ -268,7 +267,6 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
         />
       )}
       {poolInfo === 'chart' && (

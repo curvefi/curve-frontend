@@ -15,7 +15,7 @@ const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
+  usePageOnMount(params, location, navigate)
 
   useEffect(() => {
     scrollToTop()

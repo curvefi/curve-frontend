@@ -76,12 +76,6 @@ const TooltipWrapper = styled.div`
   gap: var(--spacing-2);
 `
 
-const TooltipTitle = styled.p`
-  font-size: var(--font-size-3);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
-`
-
 const TooltipColumn = styled.div`
   display: flex;
   flex-direction: column;

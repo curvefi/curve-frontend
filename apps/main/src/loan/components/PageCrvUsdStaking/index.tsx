@@ -37,10 +37,10 @@ const CrvUsdStaking = () => {
   } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
   const isUserScrvUsdBalanceZero =
-    signerAddress && userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
+    !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
   const connectedUserNoScrvUsdBalance =
-    !!signerAddress && !!walletName && !!isUserScrvUsdBalanceFetched && !!isUserScrvUsdBalanceZero
+    !!signerAddress && !!walletName && isUserScrvUsdBalanceFetched && isUserScrvUsdBalanceZero
 
   // walletName indicates the wallet is cached and will begin connecting
   const showStatsBanner =

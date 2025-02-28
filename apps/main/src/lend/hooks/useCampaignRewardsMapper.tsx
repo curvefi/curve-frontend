@@ -5,8 +5,7 @@ import useStore from '@/lend/store/useStore'
 const useCampaignRewardsMapper = () => {
   const cached = useStore((state) => state.storeCache.campaignRewardsMapper)
   const api = useStore((state) => state.campaigns.campaignRewardsMapper)
-  const campaignRewardsMapper = useMemo(() => api ?? cached ?? {}, [api, cached])
-  return campaignRewardsMapper
+  return useMemo(() => api ?? cached ?? {}, [api, cached])
 }
 
 export default useCampaignRewardsMapper

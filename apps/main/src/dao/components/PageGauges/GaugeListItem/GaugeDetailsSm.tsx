@@ -112,7 +112,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
             <StatsRow>
               <StatTitle>{t`TVL`}</StatTitle>
               <StatData>
-                {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
+                {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
                       showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',

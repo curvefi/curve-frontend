@@ -92,13 +92,6 @@ const TransactionFieldLabel = styled.p`
   opacity: 0.5;
 `
 
-const TransactionFieldValue = styled.div`
-  font-size: var(--font-size-2);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
 const ToggleField = styled(TransactionField)<{ isOpen: boolean }>`
   cursor: pointer;
   ${({ isOpen }) => isOpen && 'border-bottom: 1px solid var(--gray-500a25)'};
@@ -111,17 +104,8 @@ const ToggleTitle = styled.div`
   font-weight: var(--bold);
 `
 
-const ToggleValue = styled.div`
-  font-size: var(--font-size-2);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
 const StyledIcon = styled(Icon)`
   margin-left: var(--spacing-1);
 `
-
-const StyledDetailInfoSlippageTolerance = styled(DetailInfoSlippageTolerance)``
 
 export default TransactionDetails

@@ -78,7 +78,7 @@ const UserPage = ({ routerParams: { rUserAddress } }: UserPageProps) => {
           {activeNavKey === 'gauge_votes' && (
             <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
           )}
-          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} />}
         </Container>
       </Box>
     </Wrapper>

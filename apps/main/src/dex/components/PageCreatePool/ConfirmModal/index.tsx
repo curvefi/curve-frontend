@@ -377,34 +377,6 @@ const StyledButtonSpinner = styled(Spinner)`
   }
 `
 
-const StyledPendingSpinner = styled(Spinner)`
-  margin: var(--spacing-4) auto;
-  > div {
-    border-color: var(--page--text-color) transparent transparent transparent;
-  }
-`
-
-const Transaction = styled(ExternalLink)`
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  text-transform: none;
-  text-decoration: none;
-  background-color: var(--page--background-color);
-  padding: var(--spacing-2);
-  p {
-    font-weight: var(--bold);
-    margin-right: var(--spacing-1);
-  }
-`
-
-const StyledIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-1);
-  color: var(--page--text-color);
-`
-
 const ButtonWrapper = styled.div`
   margin: 0 var(--spacing-normal);
 `

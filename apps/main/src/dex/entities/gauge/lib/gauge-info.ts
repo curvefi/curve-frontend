@@ -11,16 +11,7 @@
  */
 
 import * as models from '@/dex/entities/gauge/model'
-import { useCombinedQueries } from '@ui-kit/lib/queries'
-import { GaugeParams } from '@ui-kit/lib/model/query'
 
-export const useGauge = ({ chainId, poolId }: GaugeParams) =>
-  useCombinedQueries([
-    models.gaugeStatus.getQueryOptions({ chainId, poolId }),
-    models.depositRewardAvailable.getQueryOptions({ chainId, poolId }),
-  ])
-
-export const { useQuery: useGaugeVersion } = models.gaugeVersion
 export const { useQuery: useIsDepositRewardAvailable } = models.depositRewardAvailable
 export const { useQuery: useGaugeManager } = models.gaugeManager
 export const { useQuery: useGaugeRewardsDistributors } = models.gaugeDistributors

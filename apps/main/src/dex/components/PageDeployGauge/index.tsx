@@ -46,7 +46,7 @@ const DeployGauge = ({ curve }: Props) => {
 
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
-  const { buttonProps: openButtonProps } = useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
+  useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
 
   const validateDeployButton = useMemo(() => {
     // validate sidechain gauge deployment

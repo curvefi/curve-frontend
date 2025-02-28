@@ -52,7 +52,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           verticalAlign="top"
           iconSize={0}
           height={32}
-          formatter={(value) => 'Relative Gauge Weight'}
+          formatter={() => 'Relative Gauge Weight'}
           wrapperStyle={{
             fontWeight: 'bold',
             fontSize: 'var(--font-size-1)',

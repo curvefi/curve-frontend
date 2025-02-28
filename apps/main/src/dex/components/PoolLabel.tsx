@@ -64,7 +64,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
 
     let foundSearchedToken = false
 
-    const highlightedTokens = tokens.map(({ symbol, address }, idx) => {
+    const highlightedTokens = tokens.map(({ symbol, address }) => {
       const isHighLight =
         searchedTerms.findIndex((searched) => {
           const parsedToken = symbol.toLowerCase()

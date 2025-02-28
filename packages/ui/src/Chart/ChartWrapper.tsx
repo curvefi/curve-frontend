@@ -384,11 +384,6 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `
 
-const TipIcon = styled(Icon)`
-  position: relative;
-  left: -2px;
-`
-
 const TipText = styled.p`
   font-size: var(--font-size-1);
   font-weight: none;

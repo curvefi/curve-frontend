@@ -20,7 +20,7 @@ export function isMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
@@ -70,7 +70,7 @@ export function getErrorMessage(error: CustomError, defaultErrorMessage: string)
       errorMessage = t`User rejected transaction`
     } else if ('data' in error && typeof error.data?.message === 'string') {
       errorMessage = error.data.message
-    } else if (typeof error.message === 'string') {
+    } else {
       errorMessage = error.message
     }
   }
@@ -106,7 +106,7 @@ export function copyToClipboard(text: string) {
     // IE specific code path to prevent textarea being shown while dialog is visible.
     return window.clipboardData.setData('Text', text)
   } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-    var textarea = document.createElement('textarea')
+    const textarea = document.createElement('textarea')
     textarea.textContent = text
     textarea.style.position = 'fixed' // Prevent scrolling to bottom of page in MS Edge.
     document.body.appendChild(textarea)

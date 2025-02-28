@@ -71,7 +71,7 @@ const TableRowContent = ({
       { className: 'left', content: <CellToken {...cellProps} type='borrowed'  module='borrow' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
-      { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
+      { className: 'center border-right', content: <CellLoanUserState {...cellProps} />, show: showBorrowSignerCell },
       { className: 'right', content: <CellBorrowRate {...cellProps} /> },
       { className: 'right', content: <CellUtilization {...cellProps}  /> },
       { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },

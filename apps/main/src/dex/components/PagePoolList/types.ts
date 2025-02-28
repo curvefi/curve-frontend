@@ -79,5 +79,3 @@ export type PoolListFilter = {
 }
 
 export type ColumnKeys = keyof typeof COLUMN_KEYS
-
-export type ShowDetailsMapper = { [poolId: string]: boolean }

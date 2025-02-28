@@ -19,7 +19,7 @@ const Tooltip = ({
       increaseZIndex?: boolean
     }
 >) => {
-  const { tooltipProps, ...rest } = useTooltip(props, state)
+  const { tooltipProps } = useTooltip(props, state)
   const charCount = typeof props.children === 'string' ? props.children.length : null
 
   const getClosePlacement = useCallback((buttonNode: HTMLButtonElement | null) => {

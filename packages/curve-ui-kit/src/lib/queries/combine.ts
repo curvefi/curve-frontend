@@ -39,17 +39,6 @@ const combineQueriesToObject = <T extends QueryOptionsArray, K extends string[]>
 })
 
 /**
- * Combines multiple queries into a single list.
- * @param queryOptions The query options to combine
- * @returns The combined queries in a list
- */
-export const useCombinedQueries = <T extends QueryOptionsArray>(queryOptions: [...T]): CombinedQueriesResult<T> =>
-  useQueries({
-    queries: queryOptions,
-    combine: combineQueriesToList,
-  })
-
-/**
  * Combines multiple queries into a single object with keys for each query
  * @param queryOptions The query options to combine
  * @param keys The keys to use for each query

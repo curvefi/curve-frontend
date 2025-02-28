@@ -50,9 +50,7 @@ export const _getScrvUsdRevenue = async (): Promise<ScrvUsdRevenue> => {
 
   const data = await getRevenue(pages, dataPerPage)
 
-  const formattedData = { ...data, epochs: organizeDataIntoEpochs(data.history) }
-
-  return formattedData
+  return { ...data, epochs: organizeDataIntoEpochs(data.history) }
 }
 
 export const { useQuery: useScrvUsdRevenue } = queryFactory({

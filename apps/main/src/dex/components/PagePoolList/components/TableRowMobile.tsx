@@ -2,7 +2,7 @@ import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 
 import { t } from '@ui-kit/lib/i18n'
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'

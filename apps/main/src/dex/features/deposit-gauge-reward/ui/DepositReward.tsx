@@ -43,7 +43,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
             <EpochInput chainId={chainId} poolId={poolId} />
             <FormErrorsDisplay errorKeys={['epoch']} component={AlertFormError} />
             <GroupedFieldsContainer>
-              <HelperFields chainId={chainId} poolId={poolId} />
+              <HelperFields />
               <GasEstimation chainId={chainId} poolId={poolId} />
             </GroupedFieldsContainer>
           </FormFieldsContainer>

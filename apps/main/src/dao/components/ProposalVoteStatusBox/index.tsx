@@ -14,8 +14,7 @@ type ProposalVoteStatusBoxProps = {
 }
 
 const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
-  const { votesFor, votesAgainst, quorumVeCrv, minAcceptQuorumPercent, minSupport, currentQuorumPercentage } =
-    proposalData
+  const { votesFor, votesAgainst, minAcceptQuorumPercent, minSupport, currentQuorumPercentage } = proposalData
 
   const totalVotes = votesFor + votesAgainst
   const support = totalVotes > 0 ? (votesFor / totalVotes) * 100 : 0

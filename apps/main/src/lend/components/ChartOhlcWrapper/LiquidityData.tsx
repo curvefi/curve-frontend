@@ -135,11 +135,6 @@ const LiquidityEventTitle = styled.span`
   }
 `
 
-const LpTokensContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
 const Nrange = styled.p`
   font-size: var(--font-size-1);
   font-weight: var(--bold);

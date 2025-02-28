@@ -13,10 +13,9 @@ import { UserLock, UserLocksSortBy, veCrvLockType } from '@/dao/types/dao.types'
 
 interface UserLocksTableProps {
   userAddress: string
-  tableMinWidth: number
 }
 
-const UserLocksTable = ({ userAddress, tableMinWidth }: UserLocksTableProps) => {
+const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const { getUserLocks, userLocksMapper, userLocksSortBy, setUserLocksSortBy } = useStore((state) => state.user)
 
   const gridTemplateColumns = '5.375rem 1fr 10rem 8rem'

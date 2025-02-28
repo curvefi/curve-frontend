@@ -48,7 +48,7 @@ const TableRowMobileContent = ({
   const content: { borrow: Content[][], supply: Content[][] } = {
     [FilterType.borrow]: [
       [
-        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: loanExists, showLine: true },
+        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
         { tableKey: TITLE.myHealth, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
       ],
       [

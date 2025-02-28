@@ -70,11 +70,5 @@ const TooltipData = styled.p`
     color: var(--chart-red);
   }
 `
-const TooltipDataNotAvailable = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  font-style: italic;
-`
 
 export default FeesBarChartTooltip

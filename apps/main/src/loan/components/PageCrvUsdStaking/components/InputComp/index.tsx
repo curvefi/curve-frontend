@@ -13,7 +13,6 @@ import NumberField from '@/loan/components/PageCrvUsdStaking/components/InputCom
 
 type InputCompProps = {
   walletBalance: string
-  walletBalanceUSD: string
   walletBalanceSymbol: string
   value: string
   isLoadingInput: boolean
@@ -28,7 +27,6 @@ const InputComp = ({
   className,
   readOnly = false,
   walletBalance,
-  walletBalanceUSD,
   walletBalanceSymbol,
   isLoadingInput,
   isLoadingBalances,
@@ -114,12 +112,6 @@ const BalancesWrapper = styled(Box)`
 const WalletBalance = styled.p`
   font-size: var(--font-size-1);
   font-weight: var(--bold);
-  white-space: nowrap;
-`
-
-const WalletBalanceUSD = styled.p`
-  font-size: var(--font-size-1);
-  opacity: 0.5;
   white-space: nowrap;
 `
 

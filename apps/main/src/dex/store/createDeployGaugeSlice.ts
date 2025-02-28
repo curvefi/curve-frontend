@@ -217,7 +217,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.stableNgFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.stableNgFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
@@ -254,7 +254,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.cryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.cryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
@@ -291,7 +291,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
@@ -328,7 +328,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.tricryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.tricryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
@@ -364,7 +364,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.factory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.factory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
@@ -410,7 +410,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.stableNgFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.stableNgFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
@@ -448,7 +448,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.cryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.cryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
@@ -486,7 +486,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
@@ -524,7 +524,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.tricryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.tricryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
@@ -562,7 +562,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.factory.getDeployedGaugeAddress(deployGaugeTx)
+            await curve.factory.getDeployedGaugeAddress(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
@@ -613,7 +613,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.stableNgFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
+            await curve.stableNgFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
@@ -652,7 +652,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.cryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
+            await curve.cryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
@@ -691,7 +691,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.twocryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
+            await curve.twocryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
@@ -730,7 +730,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.tricryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
+            await curve.tricryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
@@ -766,7 +766,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
             dismissNotificationHandler = dismissDeploying
 
-            const gaugeAddress = await curve.factory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
+            await curve.factory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'

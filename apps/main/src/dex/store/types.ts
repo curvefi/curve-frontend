@@ -14,10 +14,3 @@ export interface PricesApiPool {
   liquidity_fee_24h: number
   coins: PricesApiCoin[]
 }
-
-export interface PricesApiPoolResponse {
-  chain: string
-  page: number
-  per_page: number
-  data: PricesApiPool[]
-}

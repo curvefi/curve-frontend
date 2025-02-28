@@ -11,7 +11,7 @@ export function getIsMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
@@ -65,7 +65,7 @@ export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
 
 export function copyToClipboard(text: string) {
   if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-    var textarea = document.createElement('textarea')
+    const textarea = document.createElement('textarea')
     textarea.textContent = text
     textarea.style.position = 'fixed' // Prevent scrolling to bottom of page in MS Edge.
     document.body.appendChild(textarea)

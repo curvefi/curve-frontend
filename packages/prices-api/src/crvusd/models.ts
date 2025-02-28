@@ -43,16 +43,6 @@ export type Snapshot = {
   discountLoan: number
 }
 
-export type PoolPrice = {
-  timestamp: number
-  [token: string]: number
-}
-
-export type PriceHistogram = {
-  x: number[]
-  y: number[]
-}
-
 export type CrvUsdSupply = {
   timestamp: Date
   market: string

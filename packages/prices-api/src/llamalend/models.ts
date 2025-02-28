@@ -46,8 +46,6 @@ export type Market = {
   leverage: number
 }
 
-export type MarketPair = { long?: Market; short?: Market }
-
 export type Snapshot = {
   rate: number
   borrowApy: number

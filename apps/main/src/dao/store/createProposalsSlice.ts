@@ -23,7 +23,7 @@ import {
   TransactionState,
   UserProposalVoteResData,
 } from '@/dao/types/dao.types'
-import { useWallet, notify } from '@ui-kit/features/connect-wallet'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -297,9 +297,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const proposals = Object.values(proposalsData)
 
       const filteredProposals = filterProposals(proposals, activeFilter)
-      const sortedProposals = sortProposals(filteredProposals, activeSortBy, activeSortDirection)
-
-      return sortedProposals
+       return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
     },
     setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals, activeSortBy, activeSortDirection } = get()[sliceKey]

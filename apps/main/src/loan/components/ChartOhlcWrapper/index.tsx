@@ -1,7 +1,7 @@
-import type { LlammaLiquididationRange, LiquidationRanges } from '@ui/Chart/types'
-import { LlammaLiquidityCoins, ChartOhlcWrapperProps } from './types'
+import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
+import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
 
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -99,40 +99,33 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
     if (formValues.n && liqRangesMapper && chartOhlcData) {
       const currentPrices = liqRangesMapper[formValues.n].prices
       // flip order to match other data
-      const range = formatRange([currentPrices[1], currentPrices[0]])
-      liqRanges.new = range
+      liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
     }
 
     // current loan prices
     if (userPrices && chartOhlcData) {
-      const range = formatRange(userPrices)
-      liqRanges.current = range
+      liqRanges.current = formatRange(userPrices)
     }
     // increase loan prices
     if (increaseLoanPrices && increaseLoanPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(increaseLoanPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(increaseLoanPrices)
     }
     // decrease loan prices
     if (decreaseLoanPrices && decreaseLoanPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(decreaseLoanPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(decreaseLoanPrices)
     }
     // increase collateral prices
     if (increaseCollateralPrices && increaseCollateralPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(increaseCollateralPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(increaseCollateralPrices)
     }
     // decrease collateral prices
     if (decreaseCollateralPrices && decreaseCollateralPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(decreaseCollateralPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(decreaseCollateralPrices)
     }
 
     // deleverage prices
     if (deleveragePrices && chartOhlcData) {
-      const range = formatRange(deleveragePrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(deleveragePrices)
     }
 
     return liqRanges

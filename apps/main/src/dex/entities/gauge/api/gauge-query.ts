@@ -15,12 +15,6 @@ import { BD } from '@ui-kit/utils'
 import { GaugeQuery } from '@ui-kit/lib/model/query'
 import useStore from '@/dex/store/useStore'
 
-export const queryGaugeStatus = async ({ poolId }: GaugeQuery) => {
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return pool.gaugeStatus()
-}
-
 export const queryGaugeManager = async ({ poolId }: GaugeQuery): Promise<Address | null> => {
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
@@ -35,12 +29,6 @@ export const queryGaugeDistributors = async ({ poolId }: GaugeQuery) => {
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
   return pool.gauge.gaugeDistributors()
-}
-
-export const queryGaugeVersion = async ({ poolId }: GaugeQuery) => {
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return (await pool.gauge.gaugeVersion()) ?? null
 }
 
 export const queryIsDepositRewardAvailable = async ({ poolId }: GaugeQuery) => {

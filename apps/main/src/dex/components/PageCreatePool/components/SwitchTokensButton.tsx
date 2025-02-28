@@ -19,7 +19,6 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 type Props = {
   curve: CurveApi
-  chainId: ChainId
   from:
     | typeof TOKEN_A
     | typeof TOKEN_B
@@ -40,7 +39,7 @@ type Props = {
   className?: string
 }
 
-const SwitchTokensButton = ({ curve, chainId, from, to, disabled, className }: Props) => {
+const SwitchTokensButton = ({ curve, from, to, disabled, className }: Props) => {
   const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
     (state) => state.createPool.tokensInPool,
   )

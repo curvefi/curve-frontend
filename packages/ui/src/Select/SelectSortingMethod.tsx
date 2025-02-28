@@ -31,8 +31,4 @@ const StyledItem = styled(Item)`
   flex-wrap: no-wrap;
 `
 
-const Description = styled.p`
-  font-size: var(--font-size-2);
-`
-
 export default SelectSortingMethod

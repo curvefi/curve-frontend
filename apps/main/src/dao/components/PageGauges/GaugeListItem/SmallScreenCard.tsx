@@ -147,11 +147,6 @@ const StyledTitleComp = styled(TitleComp)`
   margin-right: auto;
 `
 
-const DataComp = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-`
-
 const GaugeDataTitle = styled.p`
   font-size: var(--font-size-1);
   text-align: right;

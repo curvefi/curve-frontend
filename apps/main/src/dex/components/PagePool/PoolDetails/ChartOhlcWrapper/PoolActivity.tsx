@@ -20,7 +20,6 @@ const PoolActivity = ({
   coins,
   tradesTokens,
   chartCombinations,
-  refetchPricesData,
 }: {
   poolAddress: string
   chainId: ChainId
@@ -28,7 +27,6 @@ const PoolActivity = ({
   coins: PricesApiCoin[]
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
-  refetchPricesData: () => void
 }) => {
   const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const {

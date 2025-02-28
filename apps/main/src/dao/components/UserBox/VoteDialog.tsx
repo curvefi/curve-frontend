@@ -14,14 +14,13 @@ import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/d
 type Props = {
   userAddress: string
   activeProposal?: ActiveProposal
-  testId?: string
   proposalId?: string
   votingPower: SnapshotVotingPower
   snapshotVotingPower: boolean
   className?: string
 }
 
-const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
+const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId }: Props) => {
   const { castVote, voteTxMapper, executeProposal, executeTxMapper } = useStore((state) => state.proposals)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])

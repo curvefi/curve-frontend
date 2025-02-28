@@ -341,10 +341,4 @@ const StyledExternalLink = styled(ExternalLink)`
   }
 `
 
-const InternalLink = styled.a`
-  color: var(--page--text-color);
-  font-weight: var(--bold);
-  text-decoration: underline;
-`
-
 export default SelectPreset

@@ -56,11 +56,6 @@ const ItemButton = styled(Button)`
   width: 100%;
 `
 
-const IconWrapper = styled.div`
-  min-width: 1.875rem; // 30px;
-  text-align: left;
-`
-
 const LabelText = styled.div`
   overflow: hidden;
 

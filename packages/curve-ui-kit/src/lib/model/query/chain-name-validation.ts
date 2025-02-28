@@ -1,5 +1,4 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '@ui-kit/lib/validation'
 import { ChainNameParams } from './root-keys'
 
 export const chainNameValidationGroup = ({ blockchainId }: ChainNameParams) =>
@@ -12,5 +11,3 @@ export const chainNameValidationGroup = ({ blockchainId }: ChainNameParams) =>
         .isValidChainName()
     })
   })
-
-export const chainNameValidationSuite = createValidationSuite(chainNameValidationGroup)

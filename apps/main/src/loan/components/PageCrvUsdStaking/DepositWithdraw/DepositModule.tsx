@@ -49,7 +49,6 @@ const DepositModule = () => {
           </Box>
           <StyledInputComp
             walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
             value={inputAmount}
             isLoadingBalances={userScrvUsdBalanceLoading}
@@ -74,7 +73,6 @@ const DepositModule = () => {
           </Box>
           <StyledInputComp
             walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
             value={preview.value}
             readOnly

@@ -47,7 +47,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
                   : 'N/A'}
               </h5>
               <h5>
-                {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
+                {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
                       showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',

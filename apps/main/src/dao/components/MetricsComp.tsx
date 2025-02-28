@@ -47,10 +47,4 @@ export const MetricsColumnData = styled.h3<{ noMargin?: boolean }>`
   margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
   font-size: var(--font-size-2);
 `
-
-export const MetricsRowData = styled.h3`
-  font-size: var(--font-size-2);
-  margin-left: var(--spacing-1);
-`
-
 export default MetricsComp

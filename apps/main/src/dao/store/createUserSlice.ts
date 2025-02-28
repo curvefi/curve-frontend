@@ -512,8 +512,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...locks].reverse()
-            state[sliceKey].userLocksMapper[address].locks = reversedEntries
+            state[sliceKey].userLocksMapper[address].locks = [...locks].reverse()
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
@@ -590,8 +589,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...votes].reverse()
-            state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].userGaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
@@ -623,8 +621,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...data.gauges].reverse()
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = reversedEntries
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = [...data.gauges].reverse()
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
@@ -679,7 +676,5 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
   },
 })
-
-const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number) => usedVeCrv < futureVeCrv
 
 export default createUserSlice

@@ -24,7 +24,7 @@ const Radio = ({
 >) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const state = React.useContext(RadioContext)
-  const { inputProps = {}, isSelected, isDisabled } = useRadio(props, state, inputRef)
+  const { inputProps = {}, isSelected } = useRadio(props, state, inputRef)
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const labelClassName = `${className} ${state.isDisabled ? 'disabled' : ''}`

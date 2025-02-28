@@ -13,10 +13,9 @@ type Props = {
   votingPower?: SnapshotVotingPower
   activeProposal?: ActiveProposal
   snapshotVotingPower: boolean
-  row?: boolean
 }
 
-const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal, row }: Props) => {
+const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
   const { wallet, connect } = useWallet()
   return (
     <Wrapper className={className}>

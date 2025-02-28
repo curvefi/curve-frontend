@@ -10,11 +10,10 @@ interface TableRowProps {
   holder: any
   sortBy: { key: string; label: string; order: 'asc' | 'desc' }
   labels: { key: string; label: string }[]
-  rank: number
   gridTemplateColumns?: string
 }
 
-const TableRow = ({ holder, sortBy, labels, rank, gridTemplateColumns }: TableRowProps) => (
+const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
   <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>

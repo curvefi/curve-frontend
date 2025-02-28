@@ -50,7 +50,6 @@ const WithdrawModule = () => {
           <StyledInputComp
             value={inputAmount}
             walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
@@ -75,7 +74,6 @@ const WithdrawModule = () => {
           <StyledInputComp
             value={preview.value}
             walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={isLoadingPreview}

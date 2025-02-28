@@ -69,14 +69,6 @@ export const AppPageFormTitleWrapper = styled.header`
   }
 `
 
-export const AppPageFormTitleContent = styled(TextEllipsis)`
-  color: var(--page--text-color);
-  font-size: var(--font-size-5);
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
-`
-
 export const AppPageFormTitleLinks = styled.div`
   color: var(--page--text-color);
   font-size: var(--font-size-2);

@@ -3,7 +3,7 @@ import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
+import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'

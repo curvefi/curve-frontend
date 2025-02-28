@@ -10,8 +10,3 @@ export const createQueryHook =
     const options = getQueryOptions(params, condition)
     return useQuery<TData, Error, TData, TQueryKey>(options)
   }
-
-export const createGetQueryData =
-  <KeysObject extends Record<keyof KeysObject & string, (keyArgs: any) => readonly any[]>>(keys: KeysObject) =>
-  <Result, Key extends keyof KeysObject = keyof KeysObject>(key: Key, keyData: Parameters<KeysObject[Key]>[0]) =>
-    queryClient.getQueryData<Result>(keys[key](keyData))

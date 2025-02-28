@@ -230,11 +230,6 @@ export const IMPLEMENTATION_IDS = (
   }
 }
 
-export const DEFAULT_INITIAL_PRICE = {
-  min: 0.000000000001,
-  max: 1000000000000,
-}
-
 // MIN-MAX PARAMS
 
 export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => ({
