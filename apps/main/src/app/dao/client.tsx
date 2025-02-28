@@ -1,11 +1,9 @@
 'use client'
 import '@/global-extensions'
-import type { NextPage } from 'next'
-import { Navigate, Route, Routes } from 'react-router'
-import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
+import { Route } from 'react-router'
+import { REFRESH_INTERVAL } from '@/dao/constants'
 import dynamic from 'next/dynamic'
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
@@ -18,20 +16,10 @@ import GlobalStyle from '@/dao/globalStyle'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { shouldForwardProp } from '@ui/styled-containers'
-import { StyleSheetManager } from 'styled-components'
+import { QueryProvider } from '@ui/QueryProvider'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 
-const Page404 = dynamic(() => import('@/dao/components/Page404/Page'), { ssr: false })
-const PageDao = dynamic(() => import('@/dao/components/PageProposals/Page'), { ssr: false })
-const PageProposal = dynamic(() => import('@/dao/components/PageProposal/Page'), { ssr: false })
-const PageGauges = dynamic(() => import('@/dao/components/PageGauges/Page'), { ssr: false })
-const PageAnalytics = dynamic(() => import('@/dao/components/PageAnalytics/Page'), { ssr: false })
-const PageUser = dynamic(() => import('@/dao/components/PageUser/Page'), { ssr: false })
-const PageGauge = dynamic(() => import('@/dao/components/PageGauge/Page'), { ssr: false })
-const PageVeCrv = dynamic(() => import('@/dao/components/PageVeCrv/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/dao/components/PageDisclaimer/Page'), { ssr: false })
-
-export const App: NextPage = () => {
+export const App = ({ children }: { children: ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
@@ -118,44 +106,16 @@ export const App: NextPage = () => {
     isPageVisible,
   )
 
-  const SubRoutes = (
-    <>
-      <Route path=":network/" element={<PageDao />} />
-      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
-      <Route path=":network/proposals" element={<PageDao />} />
-      <Route path=":network/proposals/:proposalId" element={<PageProposal />} />
-      <Route path=":network/user/:userAddress" element={<PageUser />} />
-      <Route path=":network/analytics" element={<PageAnalytics />} />
-      <Route path=":network/vecrv/:formType" element={<PageVeCrv />} />
-      <Route path=":network/gauges" element={<PageGauges />} />
-      <Route path=":network/gauges/:gaugeAddress" element={<PageGauge />} />
-    </>
-  )
-
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <GlobalStyle />
       <ThemeProvider theme={theme}>
-        {typeof window === 'undefined' || !appLoaded ? null : (
-          <HashRouter>
-            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-              <OverlayProvider>
-                <Page>
-                  <Routes>
-                    {SubRoutes}
-                    <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
-                    <Route path="/proposals/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
-                    <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
-                    <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
-                    <Route path="/analytics/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />} />
-                    <Route path="/vecrv/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />} />
-                    <Route path="404" element={<Page404 />} />
-                    <Route path="*" element={<Page404 />} />
-                  </Routes>
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
-            </StyleSheetManager>
-          </HashRouter>
+        {appLoaded && (
+          <OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <Page>{children}</Page>
+            </QueryProvider>
+          </OverlayProvider>
         )}
       </ThemeProvider>
     </div>

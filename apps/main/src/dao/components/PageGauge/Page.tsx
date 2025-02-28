@@ -1,35 +1,16 @@
-import type { NextPage } from 'next'
-
-import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+'use client'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils'
-import { scrollToTop } from '@/dao/utils'
 import usePageOnMount from '@/dao/hooks/usePageOnMount'
-
 import Gauge from '@/dao/components/PageGauge/index'
-import DocumentHead from '@/dao/layout/DocumentHead'
+import type { GaugeUrlParams } from '@/dao/types/dao.types'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
-  const { rGaugeAddress } = routerParams
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
+const Page = (params: GaugeUrlParams) => {
+  usePageOnMount()
   return (
-    <>
-      <DocumentHead title={t`Gauge - ${rGaugeAddress}`} />
-      <Container>
-        <Gauge routerParams={{ rGaugeAddress }} />
-      </Container>
-    </>
+    <Container>
+      <Gauge routerParams={params} />
+    </Container>
   )
 }
 

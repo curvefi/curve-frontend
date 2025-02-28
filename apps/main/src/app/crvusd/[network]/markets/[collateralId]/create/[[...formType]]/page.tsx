@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from 'next'
+import type { Metadata } from 'next'
 import { t } from '@ui-kit/lib/i18n'
 import CreateLoan from '@/loan/components/PageLoanCreate/Page'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'

@@ -1,31 +1,22 @@
-import type { NextPage } from 'next'
+'use client'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-
-import { ROUTE } from '@/dao/constants'
-import { getPath } from '@/dao/utils/utilsRouter'
-import { scrollToTop } from '@/dao/utils'
 import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import useStore from '@/dao/store/useStore'
-
 import Box, { BoxHeader } from '@ui/Box'
-import DocumentHead from '@/dao/layout/DocumentHead'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import IconButton from '@ui/IconButton'
 import Settings from '@/dao/layout/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { CurveApi } from '@/dao/types/dao.types'
+import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
-  const { rChainId, rFormType } = routerParams
+const Page = ({ formType: rFormType }: VeCrvUrlParams) => {
+  const { push: navigate } = useRouter()
+  const { routerParams, curve } = usePageOnMount()
+  const { rChainId } = routerParams
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
@@ -33,13 +24,7 @@ const Page: NextPage = () => {
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
   const resetState = useStore((state) => state.lockedCrv.resetState)
 
-  const toggleForm = useCallback(
-    (formType: FormType) => {
-      const pathname = getPath(params, `${ROUTE.PAGE_VECRV}/${formType}`)
-      navigate(pathname)
-    },
-    [navigate, params],
-  )
+  const toggleForm = useCallback((formType: FormType) => navigate(formType), [navigate])
 
   const fetchData = useCallback(
     async (curve: CurveApi | null, isLoadingCurve: boolean) => {
@@ -57,12 +42,11 @@ const Page: NextPage = () => {
   )
 
   // onMount
-  useEffect(() => {
-    scrollToTop()
-
-    return () => resetState()
+  useEffect(
+    () => () => resetState(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    [],
+  )
 
   // get initial data
   useEffect(() => {
@@ -72,7 +56,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`CRV Locker`} />
       <Container variant="primary" shadowed>
         <BoxHeader className="title-text">
           <IconButton hidden />

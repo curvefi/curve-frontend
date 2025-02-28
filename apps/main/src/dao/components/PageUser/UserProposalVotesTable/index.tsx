@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 
 import useStore from '@/dao/store/useStore'
 
@@ -20,7 +20,7 @@ interface UserProposalVotesTableProps {
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
   const { getUserProposalVotes, userProposalVotesMapper, userProposalVotesSortBy, setUserProposalVotesSortBy } =
     useStore((state) => state.user)
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 6rem 6rem'
 

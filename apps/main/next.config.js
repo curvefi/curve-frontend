@@ -38,6 +38,10 @@ const nextConfiguration = {
     source: '/',
     destination: '/dex',
     permanent: true
+  }, {
+    source: '/crvusd/ethereum',
+    destination: '/crvusd/ethereum/markets',
+    permanent: true
   }],
 }
 

@@ -1,12 +1,12 @@
-import type { Params } from 'react-router'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { ROUTE } from '@/dao/constants'
 import networks, { networksIdMapper } from '@/dao/networks'
-import { NetworkEnum, RouterParams } from '@/dao/types/dao.types'
+import { NetworkEnum, RouterParams, type UrlParams } from '@/dao/types/dao.types'
 
-export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
+  `${network ? `/${network}` : ''}${rerouteRoute}`
 
-export function parseParams(params: Params, chainIdNotRequired?: boolean) {
+export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { proposalId, userAddress, gaugeAddress, formType } = params
 
   const paths = window.location.hash.substring(2).split('/')

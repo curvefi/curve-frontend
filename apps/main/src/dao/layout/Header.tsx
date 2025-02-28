@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/dao/constants'
 import { getNetworkFromUrl, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { _parseRouteAndIsActive, isLoading } from '@ui/utils'
@@ -12,14 +11,15 @@ import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId } from '@/dao/types/dao.types'
+import { ChainId, type UrlParams } from '@/dao/types/dao.types'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
@@ -27,13 +27,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
-  const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const location = useLocation()
-  const { params: routerParams } = routerProps ?? {}
-  const routerNetwork = routerParams?.network ?? 'ethereum'
-  const routerPathname = location?.pathname ?? ''
+  const { network: routerNetwork } = useParams() as UrlParams
+  const routerPathname = usePathname()
 
   return (
     <NewHeader<ChainId>

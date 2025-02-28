@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -11,7 +11,7 @@ type BackButtonProps = {
 }
 
 const BackButton = ({ path, label }: BackButtonProps) => {
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   return (
     <BackButtonWrapper variant="secondary">
