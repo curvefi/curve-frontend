@@ -26,7 +26,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter }) => {
+const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
   const height = 300
   const labelWidth = 100
 

@@ -33,7 +33,7 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   campaignRewardsMapper: CampaignRewardsMapper
 }
 
-const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
+const TableRowMobile = ({
   index,
   columnKeys,
   formValues,
@@ -54,7 +54,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   handleCellClick,
   setShowDetail,
   campaignRewardsMapper,
-}) => {
+}: TableRowMobileProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId

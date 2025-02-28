@@ -16,7 +16,7 @@ type ContractsProps = {
   poolDataCacheOrApi: PoolDataCacheOrApi
 } & Pick<PageTransferProps, 'poolDataCacheOrApi'>
 
-const Contracts: React.FC<ContractsProps> = ({ rChainId, poolDataCacheOrApi }) => {
+const Contracts = ({ rChainId, poolDataCacheOrApi }: ContractsProps) => {
   const { address = '', lpToken = '', gauge } = poolDataCacheOrApi.pool
   const isSameAddress = address === lpToken
   const gaugeAddress = isValidAddress(gauge.address) ? gauge.address : ''

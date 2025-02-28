@@ -1,4 +1,5 @@
 'use client'
+import '@/global-extensions'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes, useParams } from 'react-router'
 import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'

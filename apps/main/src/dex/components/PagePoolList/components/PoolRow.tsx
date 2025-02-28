@@ -38,7 +38,7 @@ const ROUTES = {
   deposit: ROUTE.PAGE_POOL_DEPOSIT,
 }
 
-export const PoolRow: FunctionComponent<PoolRowProps> = ({
+export const PoolRow = ({
   poolId,
   index,
   isLite,
@@ -51,7 +51,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   showDetail,
   setShowDetail,
   curve,
-}) => {
+}: PoolRowProps) => {
   const navigate = useNavigate()
   const userActiveKey = getUserActiveKey(curve)
 

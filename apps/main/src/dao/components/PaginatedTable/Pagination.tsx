@@ -11,7 +11,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void
 }
 
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   const getPageNumbers = () => {
     let start = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
     let end = Math.min(start + 4, totalPages)

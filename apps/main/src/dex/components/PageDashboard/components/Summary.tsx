@@ -29,7 +29,7 @@ export const tooltipProps: TooltipProps = {
   noWrap: true,
 }
 
-const Summary: React.FC = () => {
+const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
   const tabsRef = useRef<HTMLDivElement>(null)
 

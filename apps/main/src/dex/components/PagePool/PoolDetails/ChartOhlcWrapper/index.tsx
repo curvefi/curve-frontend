@@ -16,10 +16,7 @@ import Box from '@ui/Box'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@/dex/types/main.types'
 
-const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
-  rChainId,
-  pricesApiPoolData,
-}) => {
+const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
   const theme = useUserProfileStore((state) => state.theme)
 
   const {

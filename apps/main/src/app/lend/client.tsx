@@ -1,4 +1,5 @@
 'use client'
+import '@/global-extensions'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'

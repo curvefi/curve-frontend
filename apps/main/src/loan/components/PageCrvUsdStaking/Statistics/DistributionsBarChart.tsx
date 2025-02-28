@@ -9,7 +9,7 @@ const { FontSize } = SizesAndSpaces
 
 type RevenueDistributionsBarChartProps = { data: ScrvUsdRevenue | null; height?: number }
 
-const RevenueDistributionsBarChart: React.FC<RevenueDistributionsBarChartProps> = ({ data, height = 400 }) => {
+const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributionsBarChartProps) => {
   const {
     design: { Color, Text },
   } = useTheme()

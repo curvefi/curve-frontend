@@ -1,4 +1,5 @@
 'use client'
+import '@/global-extensions'
 import { REFRESH_INTERVAL } from '@/loan/constants'
 import delay from 'lodash/delay'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'

@@ -9,7 +9,7 @@ interface CampaignRewardsBannerProps {
   supplyAddress: string
 }
 
-const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ borrowAddress, supplyAddress }) => {
+const CampaignRewardsBanner = ({ borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
   const supplyCampaignRewardsPool = useCampaignRewardsMapper()[supplyAddress]
   const borrowCampaignRewardsPool = useCampaignRewardsMapper()[borrowAddress]
 

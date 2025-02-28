@@ -12,7 +12,7 @@ import Icon from '@ui/Icon'
 import TradesData from '@/lend/components/ChartOhlcWrapper/TradesData'
 import LiquidityData from '@/lend/components/ChartOhlcWrapper/LiquidityData'
 
-const PoolActivity: React.FC<PoolActivityProps> = ({ chainId, poolAddress, coins }) => {
+const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const {
     activityFetchStatus,
     lendTradesData,

@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { AppPage } from './types'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { AppName, getAppRoot } from '@ui-kit/shared/routes'
@@ -12,7 +12,7 @@ export type PageTabsProps = {
   networkName: string
 }
 
-export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, selectedApp, networkName }) => (
+export const PageTabs = ({ pages, currentApp, selectedApp, networkName }: PageTabsProps) => (
   <TabsSwitcher
     value={currentApp == selectedApp ? pages.find((page) => page.isActive)?.route : undefined}
     options={useMemo(

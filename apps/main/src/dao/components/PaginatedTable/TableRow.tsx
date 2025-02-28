@@ -14,7 +14,7 @@ interface TableRowProps {
   gridTemplateColumns?: string
 }
 
-const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, gridTemplateColumns }) => (
+const TableRow = ({ holder, sortBy, labels, rank, gridTemplateColumns }: TableRowProps) => (
   <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>

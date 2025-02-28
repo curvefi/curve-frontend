@@ -8,10 +8,14 @@ import Tooltip from '@ui/Tooltip'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 
-const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tradesTokens: LpTradeToken[] }> = ({
+const TradesData = ({
   lpTradesData,
   chainId,
   tradesTokens,
+}: {
+  lpTradesData: LpTradesData[]
+  chainId: ChainId
+  tradesTokens: LpTradeToken[]
 }) => {
   const network = useStore((state) => state.networks.networks[chainId])
   return lpTradesData.map((transaction, index) => {

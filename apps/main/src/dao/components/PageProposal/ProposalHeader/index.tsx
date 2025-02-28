@@ -12,7 +12,7 @@ type ProposalHeaderProps = {
   voteType: string
 }
 
-const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteType }) => (
+const ProposalHeader = ({ proposal, voteId, voteType }: ProposalHeaderProps) => (
   <Wrapper>
     <SmallLabel
       className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${

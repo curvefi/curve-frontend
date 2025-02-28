@@ -16,7 +16,7 @@ import Box from '@ui/Box'
 
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 
-const Analytics: React.FC = () => {
+const Analytics = () => {
   const { getVeCrvHolders, veCrvHolders } = useStore((state) => state.analytics)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
 

@@ -13,7 +13,15 @@ import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/T
 import LiquidityData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
 import { ChainId } from '@/dex/types/main.types'
 
-const PoolActivity: React.FC<{
+const PoolActivity = ({
+  chainId,
+  poolAddress,
+  chartExpanded,
+  coins,
+  tradesTokens,
+  chartCombinations,
+  refetchPricesData,
+}: {
   poolAddress: string
   chainId: ChainId
   chartExpanded: boolean
@@ -21,7 +29,7 @@ const PoolActivity: React.FC<{
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
   refetchPricesData: () => void
-}> = ({ chainId, poolAddress, chartExpanded, coins, tradesTokens, chartCombinations, refetchPricesData }) => {
+}) => {
   const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const {
     pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },

@@ -25,10 +25,7 @@ import { FlexContainer } from '@ui/styled-containers'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { formatNumber } from '@ui/utils'
 
-export const AmountTokenInput: React.FC<{
-  chainId: ChainId
-  poolId: string
-}> = ({ chainId, poolId }) => {
+export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch, setError, clearErrors } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')

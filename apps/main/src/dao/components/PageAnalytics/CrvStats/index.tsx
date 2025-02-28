@@ -8,7 +8,7 @@ import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Tooltip from '@ui/Tooltip'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
-const CrvStats: React.FC = () => {
+const CrvStats = () => {
   const { provider } = useWallet()
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
   const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)

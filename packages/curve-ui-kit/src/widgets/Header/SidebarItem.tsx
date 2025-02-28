@@ -1,4 +1,3 @@
-import type { FunctionComponent } from 'react'
 import { ListItem } from '@mui/material'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
 import Link from '@mui/material/Link'
@@ -10,7 +9,7 @@ type SidebarItemProps = {
   child?: boolean
 }
 
-export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
+export const SidebarItem = ({ page, child }: SidebarItemProps) => (
   <ListItem disableGutters sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>
     <Button
       {...(page.route.startsWith('http')
