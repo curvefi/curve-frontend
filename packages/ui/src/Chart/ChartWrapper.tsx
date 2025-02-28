@@ -315,7 +315,6 @@ const MagnetButton = styled(Button)`
   margin-left: var(--spacing-2);
   margin-right: var(--spacing-2);
   box-shadow: none;
-  display: flex;
   display: none;
   align-items: center;
   &.active:not(:disabled) {
@@ -329,7 +328,6 @@ const MagnetButton = styled(Button)`
 const RefreshButton = styled(Button)`
   margin-left: var(--spacing-2);
   box-shadow: none;
-  display: flex;
   display: none;
   align-items: center;
   &.active:not(:disabled) {

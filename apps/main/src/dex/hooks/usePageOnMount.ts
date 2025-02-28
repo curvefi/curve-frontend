@@ -104,7 +104,11 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             } else {
               const foundNetwork = networks[walletChainId as ChainId]?.id
               if (foundNetwork) {
-                console.warn(`Network is switched to ${walletChainId}, redirecting...`, parsedParams.rChainId, parsedParams.restFullPathname)
+                console.warn(
+                  `Network is switched to ${walletChainId}, redirecting...`,
+                  parsedParams.rChainId,
+                  parsedParams.restFullPathname,
+                )
                 navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {

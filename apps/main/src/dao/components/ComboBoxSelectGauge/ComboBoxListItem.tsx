@@ -40,7 +40,7 @@ const ComboBoxListItem = ({
 const ItemButton = styled(Button)`
   ${focusVisible};
 
-  &.focus-visible,
+  &:focus-visible,
   &.active {
     color: var(--box--primary--color);
     background-color: var(--table_detail_row--active--background-color);

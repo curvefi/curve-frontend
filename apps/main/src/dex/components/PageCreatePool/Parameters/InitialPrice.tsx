@@ -8,15 +8,14 @@ import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 
 type Props = {
   curve: CurveApi
-  chainId: ChainId
   haveSigner: boolean
 }
 
-const InitialPrice = ({ curve, chainId }: Props) => {
+const InitialPrice = ({ curve }: Props) => {
   const {
     tokensInPool: { tokenA, tokenB, tokenC, tokenAmount },
     initialPrice,
@@ -69,9 +68,7 @@ const InitialPrice = ({ curve, chainId }: Props) => {
             </InputsWrapper>
             <SwitchWrapper>
               <StyledSwitchTokensButton curve={curve} from={'tokenA'} to={'tokenB'} />
-              {tokenAmount === 3 && (
-                <StyledSwitchTokensButton curve={curve} from={'tokenB'} to={'tokenC'} />
-              )}
+              {tokenAmount === 3 && <StyledSwitchTokensButton curve={curve} from={'tokenB'} to={'tokenC'} />}
             </SwitchWrapper>
           </InputSwitchWrapper>
           <InitialPriceWrapper>
@@ -183,7 +180,6 @@ const SumWrapper = styled.div`
 
 const InitialPriceSumData = styled.div`
   padding: var(--spacing-2) var(--spacing-3);
-  color: var(--box--primary--color);
   background-color: var(--layout--home--background-color);
   border: 1px solid var(--border-600);
   color: var(--page--text-color);

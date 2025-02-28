@@ -268,7 +268,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 {(tokensInPool.tokenA.address && tokensInPool.tokenB.address) !== '' && (
                   <Description>{t`Dollar prices are fetched from coingecko.`}</Description>
                 )}
-                <InitialPrice curve={curve} chainId={chainId} haveSigner={haveSigner} />
+                <InitialPrice curve={curve} haveSigner={haveSigner} />
               </InitialPriceWrapper>
               {checkInitialPrice && (
                 <TokenWarningBox
