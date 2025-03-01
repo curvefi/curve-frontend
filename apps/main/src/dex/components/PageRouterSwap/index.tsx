@@ -6,6 +6,7 @@ import type {
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
 import type { Params } from 'react-router'
+import isEmpty from 'lodash/isEmpty'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -111,8 +112,8 @@ const QuickSwap = ({
   )
 
   function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
-    if (!tokensList || tokensList.length === 0 || !tokensMapper || Object.keys(tokensMapper).length === 0) return []
-    return tokensList.map((address) => tokensMapper[address])
+    if (isEmpty(tokensList) || isEmpty(tokensMapper)) return []
+    return tokensList!.map((address) => tokensMapper[address])
   }
 
   const tokensFrom = useMemo(
