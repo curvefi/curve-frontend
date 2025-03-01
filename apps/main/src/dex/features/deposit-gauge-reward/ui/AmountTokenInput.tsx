@@ -63,7 +63,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     const filteredTokens = Object.values(tokensMapper)
       .filter(
         (token): token is Token =>
-          token !== undefined &&
+          !!token &&
           activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map((token) => ({
