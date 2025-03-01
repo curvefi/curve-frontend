@@ -67,11 +67,13 @@ export const TokenList = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search)
-      onSearch(search)
+      if (search !== debouncedSearch) {
+        setDebouncedSearch(search)
+        onSearch(search)
+      }
     }, 200)
     return () => clearTimeout(timer)
-  }, [onSearch, search])
+  }, [debouncedSearch, onSearch, search])
 
   const showFavorites = favorites.length > 0 && !debouncedSearch
 
