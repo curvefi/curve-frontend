@@ -4,7 +4,7 @@ import Switch from '@mui/material/Switch'
 import { SettingLabel, Setting } from '../Setting'
 import useUserProfileStore from '../../store'
 
-export const HideSmallPools = () => {
+export const HideSmallPoolsSetting = () => {
   const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
   const setHideSmallPools = useUserProfileStore((state) => state.setHideSmallPools)
 

@@ -1,1 +1,1 @@
-export { HideSmallPools } from './HideSmallPools'
+export { HideSmallPoolsSettings as HideSmallPools } from './HideSmallPools'
