@@ -187,7 +187,10 @@ const ComboBoxTokenPicker = ({
             setFilterBasepools(false)
             handleClose()
           }}
-          onSearch={setFilterValue}
+          onSearch={(val) => {
+            setFilterValue(val)
+            setError('')
+          }}
         />
       )}
     </>
