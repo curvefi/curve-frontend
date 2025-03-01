@@ -96,7 +96,7 @@ export const TokenList = ({
           if (aBalance !== bBalance) return bBalance - aBalance
 
           // Sort by volume in descending order
-          if (a.volume !== b.volume) return b.volume - a.volume
+          if (a.volume !== b.volume) return (b.volume ?? 0) - (a.volume ?? 0)
 
           // Finally sort by label
           return a.symbol.localeCompare(b.symbol)

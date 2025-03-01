@@ -68,7 +68,6 @@ const SelectTokenButton = ({
     chain: blockchainId,
     address: address as Address,
     symbol,
-    volume: 0,
   }))
 
   if (!overlayTriggerState.isOpen) {
@@ -92,7 +91,7 @@ const SelectTokenButton = ({
       label: [token.basePool ? 'Base pool' : '', token.userAddedToken ? 'User added' : '']
         .filter((x) => x !== '')
         .join(' - '),
-      volume: token.volume ?? 0,
+      volume: token.volume,
     }))
   }, [filterBasepools, tokens, filterValue, endsWith, basePools, chainId, blockchainId])
 
