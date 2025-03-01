@@ -42,6 +42,11 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
 
+function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
+  if (isEmpty(tokensList) || isEmpty(tokensMapper)) return []
+  return tokensList!.map((address) => tokensMapper[address])
+}
+
 const QuickSwap = ({
   pageLoaded,
   params,
@@ -110,11 +115,6 @@ const QuickSwap = ({
     () => getTokensMapperStr(tokensMapperNonSmallTvl),
     [tokensMapperNonSmallTvl],
   )
-
-  function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
-    if (isEmpty(tokensList) || isEmpty(tokensMapper)) return []
-    return tokensList!.map((address) => tokensMapper[address])
-  }
 
   const tokensFrom = useMemo(
     () =>
