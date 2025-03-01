@@ -101,7 +101,7 @@ const Swap = ({
       selectList: selectList
         .filter((token) => !!token)
         .map((token) => ({
-          chain: network?.networkId ?? '',
+          chain: network?.networkId,
           address: token?.address as Address,
           symbol: token?.symbol,
           volume: token?.volume,

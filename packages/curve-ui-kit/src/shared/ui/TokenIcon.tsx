@@ -12,14 +12,21 @@ const { IconSize } = SizesAndSpaces
 
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
-  blockchainId: string
+  blockchainId?: string
   symbol?: string
   address?: string | null
   size?: 'sm' | 'mui-sm' | 'mui-md' | 'xl'
   sx?: SystemStyleObject<Theme>
 }
 
-export const TokenIcon = ({ className = '', blockchainId, symbol = '', size = 'sm', address, sx }: TokenIconProps) => (
+export const TokenIcon = ({
+  className = '',
+  blockchainId = '',
+  symbol = '',
+  size = 'sm',
+  address,
+  sx,
+}: TokenIconProps) => (
   <Tooltip
     title={symbol}
     placement="top"

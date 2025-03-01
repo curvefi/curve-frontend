@@ -120,7 +120,7 @@ const QuickSwap = ({
       getTokensObjList(selectFromList ?? selectToList, tokensMapper)
         .filter((token) => !!token)
         .map((token) => ({
-          chain: network?.networkId ?? '',
+          chain: network?.networkId,
           address: token?.address as Address,
           symbol: token?.symbol,
           volume: token?.volume,
@@ -133,7 +133,7 @@ const QuickSwap = ({
       getTokensObjList(selectToList, tokensMapper)
         .filter((token) => !!token)
         .map((token) => ({
-          chain: network?.networkId ?? '',
+          chain: network?.networkId,
           address: token?.address as Address,
           symbol: token?.symbol,
           volume: token?.volume,
