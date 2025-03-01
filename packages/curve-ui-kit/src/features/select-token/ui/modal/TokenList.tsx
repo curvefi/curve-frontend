@@ -134,7 +134,7 @@ export const TokenList = ({
 
       {error ? (
         <Alert variant="filled" severity="error">
-          <AlertTitle>{t`${error}`}</AlertTitle>
+          <AlertTitle sx={{ '&': { height: 'auto' } }}>{t`${error}`}</AlertTitle>
         </Alert>
       ) : (
         <Stack sx={{ overflowY: 'auto' }}>
