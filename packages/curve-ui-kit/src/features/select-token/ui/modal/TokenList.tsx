@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, memo, type ReactNode } from 'react'
+import { useState, useMemo, useEffect, type ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
@@ -17,8 +17,6 @@ import { FavoriteTokens } from './FavoriteTokens'
 import { TokenOption } from './TokenOption'
 
 // Prevent all the token options from re-rendering if only the balance of a single one has changed.
-const MemoizedTokenOption = memo(TokenOption)
-
 export type TokenListCallbacks = {
   /** Callback when a token is selected */
   onToken: (token: Option) => void
@@ -143,7 +141,7 @@ export const TokenList = ({
           {options.length ? (
             <MenuList autoFocusItem autoFocus variant="menu" sx={{ paddingBlock: 0 }}>
               {options.map((token) => (
-                <MemoizedTokenOption
+                <TokenOption
                   key={token.address}
                   {...token}
                   balance={balances[token.address]}
