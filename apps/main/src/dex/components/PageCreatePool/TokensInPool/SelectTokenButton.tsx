@@ -130,6 +130,7 @@ const ComboBoxTokenPicker = ({
 
   const handleClose = () => {
     setFilterValue('')
+    setError('')
     isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
   }
 
