@@ -25,4 +25,5 @@ jobs:
           yarn config set npmRegistryServer "https://registry.npmjs.org"
           yarn config set npmAuthToken "${{ secrets.NPM_TOKEN }}"
           yarn install --immutable
+          yarn build
           yarn npm publish --access public
