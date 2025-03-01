@@ -39,6 +39,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CurveApi, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
+import type { Address } from '@ui-kit/utils'
 
 const QuickSwap = ({
   pageLoaded,
@@ -120,7 +121,7 @@ const QuickSwap = ({
         .filter((token) => !!token)
         .map((token) => ({
           chain: network?.networkId ?? '',
-          address: token?.address as `0x${string}`,
+          address: token?.address as Address,
           symbol: token?.symbol,
           label: '',
           volume: token?.volume ?? 0,
@@ -134,7 +135,7 @@ const QuickSwap = ({
         .filter((token) => !!token)
         .map((token) => ({
           chain: network?.networkId ?? '',
-          address: token?.address as `0x${string}`,
+          address: token?.address as Address,
           symbol: token?.symbol,
           label: '',
           volume: token?.volume ?? 0,

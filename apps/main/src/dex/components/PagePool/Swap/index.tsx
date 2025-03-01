@@ -36,6 +36,7 @@ import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
+import type { Address } from '@ui-kit/utils'
 
 const Swap = ({
   chainIdPoolId,
@@ -101,7 +102,7 @@ const Swap = ({
         .filter((token) => !!token)
         .map((token) => ({
           chain: network?.networkId ?? '',
-          address: token?.address as `0x${string}`,
+          address: token?.address as Address,
           symbol: token?.symbol,
           label: '',
           volume: token?.volume ?? 0,

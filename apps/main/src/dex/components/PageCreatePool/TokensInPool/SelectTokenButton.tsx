@@ -15,7 +15,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
 import Checkbox from '@ui/Checkbox'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { filterTokens } from '@ui-kit/utils'
+import { type Address, filterTokens } from '@ui-kit/utils'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
 
 type Props = {
@@ -66,7 +66,7 @@ const SelectTokenButton = ({
     ...networks[chainId].createQuickList,
   ].map(({ address, symbol }) => ({
     chain: blockchainId,
-    address: address as `0x${string}`,
+    address: address as Address,
     symbol,
     label: '',
     volume: 0,
@@ -88,7 +88,7 @@ const SelectTokenButton = ({
 
     return filteredResults.map((token) => ({
       chain: blockchainId,
-      address: token.address as `0x${string}`,
+      address: token.address as Address,
       symbol: token.symbol,
       label: [token.basePool ? 'Base pool' : '', token.userAddedToken ? 'User added' : '']
         .filter((x) => x !== '')

@@ -68,7 +68,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       )
       .map((token) => ({
         chain: networkId ?? '',
-        address: token?.address as `0x${string}`,
+        address: token?.address as Address,
         symbol: token?.symbol,
         label: '',
         volume: token?.volume ?? 0,
