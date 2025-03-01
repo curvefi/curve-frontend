@@ -42,9 +42,18 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
 
-function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
+function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined, chain?: string) {
   if (isEmpty(tokensList) || isEmpty(tokensMapper)) return []
-  return tokensList!.map((address) => tokensMapper[address])
+
+  return tokensList!
+    .map((address) => tokensMapper[address])
+    .filter((token) => !!token)
+    .map((token) => ({
+      chain,
+      address: token?.address as Address,
+      symbol: token?.symbol,
+      volume: token?.volume,
+    }))
 }
 
 const QuickSwap = ({
@@ -117,28 +126,12 @@ const QuickSwap = ({
   )
 
   const tokensFrom = useMemo(
-    () =>
-      getTokensObjList(selectFromList ?? selectToList, tokensMapper)
-        .filter((token) => !!token)
-        .map((token) => ({
-          chain: network?.networkId,
-          address: token?.address as Address,
-          symbol: token?.symbol,
-          volume: token?.volume,
-        })),
+    () => getTokensObjList(selectFromList ?? selectToList, tokensMapper, network?.networkId),
     [selectFromList, selectToList, tokensMapper, network?.networkId],
   )
 
   const tokensTo = useMemo(
-    () =>
-      getTokensObjList(selectToList, tokensMapper)
-        .filter((token) => !!token)
-        .map((token) => ({
-          chain: network?.networkId,
-          address: token?.address as Address,
-          symbol: token?.symbol,
-          volume: token?.volume,
-        })),
+    () => getTokensObjList(selectToList, tokensMapper, network?.networkId),
     [selectToList, tokensMapper, network?.networkId],
   )
 
