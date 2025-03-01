@@ -10,6 +10,7 @@ type State = {
   /** Key is either 'global' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { global: string } & Partial<Record<string, string>>
   isAdvancedMode: boolean
+  hideSmallPools: boolean
 }
 
 type Action = {
@@ -29,6 +30,7 @@ type Action = {
    */
   setMaxSlippage: (slippage: string | null, key?: string) => boolean
   setAdvancedMode: (isAdvanced: boolean) => void
+  setHideSmallPools: (hideSmallPools: boolean) => void
 }
 
 type Store = State & Action
@@ -44,6 +46,7 @@ const INITIAL_STATE: State = {
   theme: INITIAL_THEME,
   maxSlippage: { global: '0.1' },
   isAdvancedMode: false,
+  hideSmallPools: true,
 }
 
 const store: StateCreator<Store> = (set) => ({
@@ -86,6 +89,7 @@ const store: StateCreator<Store> = (set) => ({
   },
 
   setAdvancedMode: (isAdvancedMode) => set((state) => ({ ...state, isAdvancedMode })),
+  setHideSmallPools: (hideSmallPools) => set((state) => ({ ...state, hideSmallPools })),
 })
 
 const cache: PersistOptions<Store> = {

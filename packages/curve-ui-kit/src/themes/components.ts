@@ -46,6 +46,13 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } },
     },
   },
+  MuiDivider: {
+    styleOverrides: {
+      root: {
+        borderColor: design.Layer[2].Outline,
+      },
+    },
+  },
   MuiFormControlLabel: {
     styleOverrides: {
       root: { margin: '0' }, // by default there is a negative margin 🤦
@@ -94,6 +101,15 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
       inputSizeSmall: {
         height: SizesAndSpaces.ButtonSize.sm,
+      },
+    },
+  },
+  MuiList: {
+    styleOverrides: {
+      root: {
+        '&:focus': {
+          outline: 'none',
+        },
       },
     },
   },

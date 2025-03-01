@@ -268,6 +268,7 @@ export const SizesAndSpaces = {
   MinWidth: {
     table: '60rem', // 960px
     tableHeader: '50rem', // 800px
+    select: '5rem', // 80px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px

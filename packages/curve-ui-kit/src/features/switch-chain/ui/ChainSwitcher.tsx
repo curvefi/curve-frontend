@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { t } from '@ui-kit/lib/i18n'
-import { SettingsButton } from './SettingsButton'
+import { ModalSettingsButton } from '@ui-kit/shared/ui/ModalSettingsButton'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
@@ -81,7 +81,7 @@ export const ChainSwitcher = <TChainId extends number>({
               </IconButton>
             )
           }
-          footer={!isSettingsOpen && <SettingsButton onClick={openSettings} />}
+          footer={!isSettingsOpen && <ModalSettingsButton onClick={openSettings} />}
         >
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />

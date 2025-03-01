@@ -21,7 +21,6 @@ import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCr
 import createPoolSwapSlice, { PoolSwapSlice } from '@/dex/store/createPoolSwapSlice'
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
-import createSelectTokenSlice, { SelectTokenSlice } from '@/dex/store/createSelectTokenSlice'
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
 import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
 import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
@@ -45,7 +44,6 @@ export type State = GlobalSlice &
   LockedCrvSlice &
   CreatePoolSlice &
   IntegrationsSlice &
-  SelectTokenSlice &
   DeployGaugeSlice &
   CampaignRewardsSlice
 
@@ -68,7 +66,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createLockedCrvSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createIntegrationsSlice(set, get),
-  ...createSelectTokenSlice(set, get),
   ...createDeployGaugeSlice(set, get),
   ...createCampaignRewardsSlice(set, get),
 })

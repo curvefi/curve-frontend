@@ -252,7 +252,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                     <Swap
                       {...pageTransferProps}
                       chainIdPoolId={chainIdPoolId}
-                      blockchainId={networkId}
                       poolAlert={poolAlert}
                       maxSlippage={maxSlippage}
                       seed={seed}
