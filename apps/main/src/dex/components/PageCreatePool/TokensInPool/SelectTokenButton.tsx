@@ -29,7 +29,7 @@ type Props = {
   onSelectionChange: (selectedAddress: React.Key) => void
 }
 
-const ComboBoxTokenPicker = ({
+const SelectTokenButton = ({
   curve,
   disabledKeys,
   chainId,
@@ -290,4 +290,4 @@ const BasepoolLabel = styled(Chip)`
   height: 15px;
 `
 
-export default ComboBoxTokenPicker
+export default SelectTokenButton
