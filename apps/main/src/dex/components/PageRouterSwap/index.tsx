@@ -14,7 +14,7 @@ import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import { getTokensMapperStr } from '@/dex/store/createTokensSlice'
-import { getChainSignerActiveKey } from '@/dex/utils'
+import { getChainSignerActiveKey, toTokenOption } from '@/dex/utils'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
 import useSelectToList from '@/dex/components/PageRouterSwap/components/useSelectToList'
 import useStore from '@/dex/store/useStore'
@@ -48,12 +48,7 @@ function getTokensObjList(tokensList: string[] | undefined, tokensMapper: Tokens
   return tokensList!
     .map((address) => tokensMapper[address])
     .filter((token) => !!token)
-    .map((token) => ({
-      chain,
-      address: token?.address as Address,
-      symbol: token?.symbol,
-      volume: token?.volume,
-    }))
+    .map(toTokenOption(chain))
 }
 
 const QuickSwap = ({

@@ -37,6 +37,7 @@ import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/typ
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
+import { toTokenOption } from '@/dex/utils'
 
 const Swap = ({
   chainIdPoolId,
@@ -98,14 +99,7 @@ const Swap = ({
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
 
     return {
-      selectList: selectList
-        .filter((token) => !!token)
-        .map((token) => ({
-          chain: network?.networkId,
-          address: token?.address as Address,
-          symbol: token?.symbol,
-          volume: token?.volume,
-        })),
+      selectList: selectList.map(toTokenOption(network?.networkId)),
       swapTokensMapper,
     }
   }, [poolDataCacheOrApi, tokensMapper, network?.networkId])

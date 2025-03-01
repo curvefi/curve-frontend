@@ -23,6 +23,7 @@ import { FlexContainer } from '@ui/styled-containers'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { toTokenOption } from '@/dex/utils'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
@@ -66,12 +67,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           !!token &&
           activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
-      .map((token) => ({
-        chain: networkId,
-        address: token?.address as Address,
-        symbol: token?.symbol,
-        volume: token?.volume,
-      }))
+      .map(toTokenOption(networkId))
 
     const rewardTokenId = getValues('rewardTokenId')
     if (

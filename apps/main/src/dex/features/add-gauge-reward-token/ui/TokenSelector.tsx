@@ -10,6 +10,7 @@ import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
+import { toTokenOption } from '@/dex/utils'
 
 export const TokenSelector = ({
   chainId,
@@ -43,12 +44,7 @@ export const TokenSelector = ({
             isAddressEqual(rewardToken as Address, token.address as Address),
           ),
       )
-      .map((token) => ({
-        chain: network?.networkId,
-        address: token?.address as Address,
-        symbol: token?.symbol,
-        volume: token?.volume,
-      }))
+      .map(toTokenOption(network?.networkId))
   }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
 
   const selectedToken = filteredTokens.find((x) => x.address === rewardTokenId)
