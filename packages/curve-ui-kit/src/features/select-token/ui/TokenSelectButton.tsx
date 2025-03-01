@@ -16,7 +16,6 @@ const ButtonContent = ({ token, disabled }: { token: TokenOption; disabled: bool
   <Stack direction="row" gap={Spacing.xxs} alignItems="center">
     <TokenIcon
       blockchainId={token.chain}
-      symbol="" // No need for tooltip of symbol as it's displayed right next to it
       address={token.address}
       size="mui-md"
       sx={{
