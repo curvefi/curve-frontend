@@ -104,7 +104,6 @@ const Swap = ({
           chain: network?.networkId ?? '',
           address: token?.address as Address,
           symbol: token?.symbol,
-          label: '',
           volume: token?.volume ?? 0,
         })),
       swapTokensMapper,

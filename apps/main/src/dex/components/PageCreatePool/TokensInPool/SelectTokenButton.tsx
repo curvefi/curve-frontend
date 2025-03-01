@@ -68,7 +68,6 @@ const SelectTokenButton = ({
     chain: blockchainId,
     address: address as Address,
     symbol,
-    label: '',
     volume: 0,
   }))
 

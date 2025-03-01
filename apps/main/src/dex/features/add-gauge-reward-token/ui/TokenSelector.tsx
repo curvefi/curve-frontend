@@ -47,7 +47,6 @@ export const TokenSelector = ({
         chain: network?.networkId ?? '',
         address: token?.address as Address,
         symbol: token?.symbol,
-        label: '',
         volume: token?.volume ?? 0,
       }))
   }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
