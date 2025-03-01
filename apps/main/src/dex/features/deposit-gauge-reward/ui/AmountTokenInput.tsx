@@ -67,7 +67,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map((token) => ({
-        chain: networkId ?? '',
+        chain: networkId,
         address: token?.address as Address,
         symbol: token?.symbol,
         volume: token?.volume,
