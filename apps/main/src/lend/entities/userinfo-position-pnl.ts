@@ -2,6 +2,7 @@ import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { userMarketValidationGroup } from './validation/market-validation'
 
 async function _fetchUserInfoPositionPnl({
   market,
@@ -15,7 +16,7 @@ async function _fetchUserInfoPositionPnl({
 
 const positionPnlValidationSuite = createValidationSuite(
   (params: { market: OneWayMarketTemplate; userAddress: string }) => {
-    // marketValidationGroup(params)
+    userMarketValidationGroup(params)
     userAddressValidationGroup(params)
   },
 )
