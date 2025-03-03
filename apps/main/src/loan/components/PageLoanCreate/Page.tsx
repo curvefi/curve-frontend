@@ -7,7 +7,6 @@ import { breakpoints } from '@ui/utils/responsive'
 import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
-import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
@@ -89,10 +88,6 @@ const Page = (params: CollateralUrlParams) => {
     },
     [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
   )
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
 
   useEffect(() => {
     if (isLoadingApi) {

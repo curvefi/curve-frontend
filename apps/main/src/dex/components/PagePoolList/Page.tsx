@@ -1,22 +1,18 @@
-import type { NextPage } from 'next'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils/responsive'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import useStore from '@/dex/store/useStore'
-
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import PoolList from '@/dex/components/PagePoolList/index'
 import Settings from '@/dex/layout/default/Settings'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 
 enum SEARCH {
   filter = 'filter',
@@ -26,12 +22,10 @@ enum SEARCH {
   search = 'search',
 }
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: NetworkUrlParams) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
+  const { routerParams, curve } = usePageOnMount()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
 
@@ -44,10 +38,6 @@ const Page: NextPage = () => {
   const { isLite } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
 
   const TABLE_LABEL: PoolListTableLabel = useMemo(
     () => ({
@@ -83,18 +73,18 @@ const Page: NextPage = () => {
       ).toString()
 
       const pathname = getPath(params, `${ROUTE.PAGE_POOLS}?${searchPath}`)
-      navigate(pathname)
+      push(pathname)
     },
-    [defaultSortBy, navigate, params, parsedSearchParams],
+    [defaultSortBy, push, params, parsedSearchParams],
   )
 
   useEffect(() => {
     if (rChainId) {
-      const paramFilterKey = (searchParams.get(SEARCH.filter) || 'all').toLowerCase()
-      const paramSortBy = (searchParams.get(SEARCH.sortBy) || defaultSortBy).toLowerCase()
-      const paramOrder = (searchParams.get(SEARCH.order) || 'desc').toLowerCase()
-      const paramHideSmallPools = searchParams.get(SEARCH.hideSmallPools) || 'true'
-      const searchText = decodeURIComponent(searchParams.get(SEARCH.search) || '')
+      const paramFilterKey = (searchParams?.get(SEARCH.filter) || 'all').toLowerCase()
+      const paramSortBy = (searchParams?.get(SEARCH.sortBy) || defaultSortBy).toLowerCase()
+      const paramOrder = (searchParams?.get(SEARCH.order) || 'desc').toLowerCase()
+      const paramHideSmallPools = searchParams?.get(SEARCH.hideSmallPools) || 'true'
+      const searchText = decodeURIComponent(searchParams?.get(SEARCH.search) || '')
 
       // validate filter key
       const foundFilterKey = network.poolFilters.find((f) => f === paramFilterKey)
@@ -121,7 +111,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Pools`} />
       <Container $isLite={isLite}>
         {rChainId && parsedSearchParams && (
           <PoolList

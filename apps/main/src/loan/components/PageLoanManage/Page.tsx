@@ -8,7 +8,6 @@ import { breakpoints } from '@ui/utils/responsive'
 import { getCollateralListPathname, getLoanCreatePathname } from '@/loan/utils/utilsRouter'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
-import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
@@ -76,11 +75,6 @@ const Page = (params: CollateralUrlParams) => {
         : [{ label: t`Your Loan Details`, key: 'user' }],
     [isAdvancedMode],
   )
-
-  // onMount
-  useEffect(() => {
-    scrollToTop()
-  }, [])
 
   useEffect(() => {
     if (curve && !isLoadingApi) {

@@ -10,7 +10,7 @@ import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/component
 import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import useStore from '@/dex/store/useStore'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
@@ -52,7 +52,7 @@ export const PoolRow = ({
   setShowDetail,
   curve,
 }: PoolRowProps) => {
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)

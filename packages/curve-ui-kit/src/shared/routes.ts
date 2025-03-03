@@ -32,16 +32,10 @@ export const DAO_ROUTES = {
   DISCUSSION: 'https://gov.curve.fi/',
 }
 
-export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
+export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
-const appPath = {
-  main: 'dex', // todo: rename app to 'dex'
-  lend: 'lend',
-  crvusd: 'crvusd',
-  dao: 'dao',
-} as const satisfies Record<AppName, string>
 
-const getRouterRoot = (app: AppName) => (['dao', 'crvusd'].includes(app) ? '' : '/#')
+const getRouterRoot = (app: AppName) => ('lend' === app ? '/#' : '')
 
 export const getAppRoot = (app: AppName) =>
   `${
@@ -50,11 +44,11 @@ export const getAppRoot = (app: AppName) =>
         ? `http://localhost:${process.env.DEV_PORT || 300}`
         : `https://curve.fi`
       : window.location.origin
-  }${getRouterRoot(app)}/${appPath[app]}`
+  }${getRouterRoot(app)}/${app}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
-  main: {
-    root: getAppRoot('main'),
+  dex: {
+    root: getAppRoot('dex'),
     label: 'DEX',
     pages: [
       { route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },

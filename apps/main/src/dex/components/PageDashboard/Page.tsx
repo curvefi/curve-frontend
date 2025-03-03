@@ -1,40 +1,24 @@
-import type { NextPage } from 'next'
-
-import { t } from '@ui-kit/lib/i18n'
-import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+'use client'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
-
 import Dashboard from '@/dex/components/PageDashboard/index'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import Settings from '@/dex/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import Box from '@ui/Box'
 import useStore from '@/dex/store/useStore'
 import { isLoading } from '@ui/utils'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { curve, routerParams } = usePageOnMount(params, location, navigate)
+const Page = (params: NetworkUrlParams) => {
+  const { curve, routerParams } = usePageOnMount()
   const { rChainId } = routerParams
   const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
   return (
     <>
-      <DocumentHead title={t`Dashboard`} />
       {!provider ? (
         <Box display="flex" fillWidth flexJustifyContent="center">
           <ConnectWalletWrapper>

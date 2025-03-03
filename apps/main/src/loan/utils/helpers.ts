@@ -20,7 +20,7 @@ export function isMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
@@ -77,13 +77,7 @@ export function getErrorMessage(error: CustomError, defaultErrorMessage: string)
   return errorMessage
 }
 
-export function scrollToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth',
-  })
-}
+export function scrollToTop() {}
 
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   if (result.status === 'fulfilled') {

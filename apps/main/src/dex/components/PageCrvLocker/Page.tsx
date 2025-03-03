@@ -1,30 +1,23 @@
-import type { NextPage } from 'next'
+'use client'
 import type { FormType } from '@/dex/components/PageCrvLocker/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
-
 import Box, { BoxHeader } from '@ui/Box'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
 import IconButton from '@ui/IconButton'
 import Settings from '@/dex/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { CurveApi } from '@/dex/types/main.types'
+import { CurveApi, type LockedCrvUrlParams } from '@/dex/types/main.types'
+import { useRouter } from 'next/navigation'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: LockedCrvUrlParams) => {
+  const { push: navigate } = useRouter()
+  const { routerParams, curve } = usePageOnMount()
   const { rChainId, rFormType } = routerParams
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
@@ -57,12 +50,11 @@ const Page: NextPage = () => {
   )
 
   // onMount
-  useEffect(() => {
-    scrollToTop()
-
-    return () => resetState()
+  useEffect(
+    () => () => resetState(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    [],
+  )
 
   // get initial data
   useEffect(() => {
@@ -72,7 +64,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`CRV Locker`} />
       <Container variant="primary" shadowed>
         <BoxHeader className="title-text">
           <IconButton hidden />

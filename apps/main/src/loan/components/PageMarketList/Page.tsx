@@ -6,7 +6,6 @@ import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
 import { ROUTE, TITLE } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
 import { getPath } from '@/loan/utils/utilsRouter'
-import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
@@ -44,7 +43,6 @@ const Page = (params: CollateralUrlParams) => {
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)
 
   useEffect(() => {
-    scrollToTop()
     setStateByKey('initialLoaded', false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

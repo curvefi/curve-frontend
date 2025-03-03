@@ -2,7 +2,7 @@ import type { Params } from 'react-router'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'next/link'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 

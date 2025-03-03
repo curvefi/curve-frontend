@@ -47,14 +47,6 @@ export function delayAction<T>(cb: T) {
   }
 }
 
-export function scrollToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth',
-  })
-}
-
 export function sleep(ms?: number) {
   const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)
   return new Promise((resolve) => setTimeout(resolve, parsedMs))

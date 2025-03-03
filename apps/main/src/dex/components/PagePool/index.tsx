@@ -19,7 +19,7 @@ import useStore from '@/dex/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import Deposit from '@/dex/components/PagePool/Deposit'
 import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import Swap from '@/dex/components/PagePool/Swap'
@@ -66,7 +66,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
   const { tokensMapper } = useTokensMapper(rChainId)

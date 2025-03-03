@@ -1,12 +1,9 @@
 'use client'
 import '@/global-extensions'
-import dynamic from 'next/dynamic'
-import { Navigate, Route, Routes, useParams } from 'react-router'
-import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
+import { REFRESH_INTERVAL } from '@/dex/constants'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/dex/globalStyle'
@@ -20,22 +17,8 @@ import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi } from '@/dex/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { shouldForwardProp } from '@ui/styled-containers'
-import { StyleSheetManager } from 'styled-components'
 
-const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
-const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })
-const PagePoolTransfer = dynamic(() => import('@/dex/components/PagePool/Page'), { ssr: false })
-const PagePools = dynamic(() => import('@/dex/components/PagePoolList/Page'), { ssr: false })
-const PageSwap = dynamic(() => import('@/dex/components/PageRouterSwap/Page'), { ssr: false })
-const Page404 = dynamic(() => import('@/dex/components/Page404/Page'), { ssr: false })
-const PageCreatePool = dynamic(() => import('@/dex/components/PageCreatePool/Page'), { ssr: false })
-const PageDeployGauge = dynamic(() => import('@/dex/components/PageDeployGauge/Page'), { ssr: false })
-const PageIntegrations = dynamic(() => import('@/dex/components/PageIntegrations/Page'), { ssr: false })
-const PageCompensation = dynamic(() => import('@/dex/components/PageCompensation/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/dex/components/PageDisclaimer/Page'), { ssr: false })
-
-export const App = () => {
+export const App = ({ children }: { children: ReactNode }) => {
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -134,76 +117,16 @@ export const App = () => {
     isPageVisible,
   )
 
-  /**
-   * Lazily use useParams() to preserve network parameter during redirects.
-   * Using Navigate instead of direct component rendering ensures proper
-   * menu highlighting via isActive state.
-   */
-  const RootRedirect = () => {
-    const { network } = useParams()
-    return <Navigate to={`/${network ?? 'ethereum'}/pools`} />
-  }
-
-  const SubRoutes = (
-    <>
-      <Route path=":network" element={<RootRedirect />} />
-      <Route path=":network/dashboard" element={<PageDashboard />} />
-      <Route path=":network/locker" element={<PageLockedCrv />} />
-      <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
-      <Route path=":network/create-pool" element={<PageCreatePool />} />
-      <Route path=":network/deploy-gauge" element={<PageDeployGauge />} />
-      <Route path=":network/integrations" element={<PageIntegrations />} />
-      <Route path=":network/pools" element={<PagePools />} />
-      <Route path=":network/pools/:pool" element={<Navigate to="deposit" replace />} />
-      <Route path=":network/pools/:pool/:transfer" element={<PagePoolTransfer />} />
-      <Route path=":network/swap" element={<PageSwap />} />
-      <Route path=":network/compensation" element={<PageCompensation />} />
-      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
-    </>
-  )
-
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <GlobalStyle />
       <ThemeProvider theme={theme}>
-        {typeof window === 'undefined' || !appLoaded ? null : (
-          <HashRouter>
-            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-              <QueryProvider persister={persister} queryClient={queryClient}>
-                <OverlayProvider>
-                  <Page>
-                    <Routes>
-                      {SubRoutes}
-                      <Route path="/dashboard" element={<Navigate to={`/ethereum${ROUTE.PAGE_DASHBOARD}`} replace />} />
-                      <Route
-                        path="/deploy-gauge"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_DEPLOY_GAUGE}`} replace />}
-                      />
-                      <Route path="/locker" element={<Navigate to={`/ethereum${ROUTE.PAGE_LOCKER}`} replace />} />
-                      <Route
-                        path="/create-pool"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_CREATE_POOL}`} replace />}
-                      />
-                      <Route path="/integrations" element={<PageIntegrations />} />
-                      <Route path="/pools/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} replace />} />
-                      <Route path="/swap" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} replace />} />
-                      <Route
-                        path="/compensation"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_COMPENSATION}`} replace />}
-                      />
-                      <Route
-                        path="/disclaimer"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
-                      />
-                      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} />} />
-                      <Route path="404" element={<Page404 />} />
-                      <Route path="*" element={<Page404 />} />
-                    </Routes>
-                  </Page>
-                  <GlobalStyle />
-                </OverlayProvider>
-              </QueryProvider>
-            </StyleSheetManager>
-          </HashRouter>
+        {appLoaded && (
+          <OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <Page>{children}</Page>
+            </QueryProvider>
+          </OverlayProvider>
         )}
       </ThemeProvider>
     </div>

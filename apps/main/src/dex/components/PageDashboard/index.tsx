@@ -4,7 +4,7 @@ import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboardContext'
@@ -35,7 +35,7 @@ const Dashboard = ({
   params: Readonly<Params<string>>
 }) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   const activeKey = useStore((state) => state.dashboard.activeKey)
   const formValues = useStore((state) => state.dashboard.formValues)

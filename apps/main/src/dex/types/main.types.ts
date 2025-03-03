@@ -1,4 +1,4 @@
-import type { IDict, IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
+import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -19,6 +19,12 @@ export type NetworkConfigFromApi = {
   hasDepositAndStake: boolean | undefined
   hasRouter: boolean | undefined
 }
+
+export type NetworkUrlParams = { network: INetworkName }
+export type PoolUrlParams = NetworkUrlParams & { pool: string }
+export type PoolTransferUrlParams = PoolUrlParams & { transfer: string }
+export type LockedCrvUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
+export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & PoolTransferUrlParams & LockedCrvUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
   isLite: boolean
@@ -260,11 +266,7 @@ export type PageWidthClassName =
   | 'page-small'
   | 'page-small-x'
   | 'page-small-xx'
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
-}
+
 export type Tvl = {
   poolId: string
   value: string

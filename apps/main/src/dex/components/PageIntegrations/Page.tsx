@@ -1,26 +1,19 @@
+'use client'
 import type { NextPage } from 'next'
-
-import { t, Trans } from '@ui-kit/lib/i18n'
+import { Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
-
 import { ExternalLink } from '@ui/Link'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import IntegrationsComp from '@/dex/components/PageIntegrations/index'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { routerParams } = usePageOnMount(params, location, navigate, true)
+const Page = (params: NetworkUrlParams) => {
+  const { routerParams } = usePageOnMount(true)
   const { rNetworkIdx } = routerParams
   const rChainId = rNetworkIdx === -1 ? '' : routerParams.rChainId
 
@@ -28,46 +21,35 @@ const Page: NextPage = () => {
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
-    scrollToTop()
     init(rChainId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <>
-      <DocumentHead title={t`Integrations`} />
-      <Container>
-        <ContainerContent>
-          <Title>Curve Integrations</Title>
-          <Subtitle>
-            <Trans>
-              The following application all allege they are building atop the Curve ecosystem. Please note that no
-              guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all
-              risks for using any links, so please conduct your own research and exercise caution. If you observe any
-              issues with any link or would like to add to this list, please create a PR in the following Github
-              repository{' '}
-              <ExternalLink $noStyles href="https://github.com/curvefi/curve-external-integrations">
-                https://github.com/curvefi/curve-external-integrations
-              </ExternalLink>
-              .
-            </Trans>
-          </Subtitle>
-          {integrationsTags !== null ? (
-            <IntegrationsComp
-              rChainId={rChainId}
-              navigate={navigate}
-              params={params}
-              searchParams={searchParams}
-              integrationsTags={integrationsTags}
-            />
-          ) : (
-            <SpinnerWrapper>
-              <Spinner />
-            </SpinnerWrapper>
-          )}
-        </ContainerContent>
-      </Container>
-    </>
+    <Container>
+      <ContainerContent>
+        <Title>Curve Integrations</Title>
+        <Subtitle>
+          <Trans>
+            The following application all allege they are building atop the Curve ecosystem. Please note that no
+            guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks
+            for using any links, so please conduct your own research and exercise caution. If you observe any issues
+            with any link or would like to add to this list, please create a PR in the following Github repository{' '}
+            <ExternalLink $noStyles href="https://github.com/curvefi/curve-external-integrations">
+              https://github.com/curvefi/curve-external-integrations
+            </ExternalLink>
+            .
+          </Trans>
+        </Subtitle>
+        {integrationsTags === null ? (
+          <SpinnerWrapper>
+            <Spinner />
+          </SpinnerWrapper>
+        ) : (
+          <IntegrationsComp rChainId={rChainId} params={params} integrationsTags={integrationsTags} />
+        )}
+      </ContainerContent>
+    </Container>
   )
 }
 

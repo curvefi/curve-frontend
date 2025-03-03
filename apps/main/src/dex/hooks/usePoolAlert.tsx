@@ -1,20 +1,18 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
-import useStore from '@/dex/store/useStore'
-
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import Box from '@ui/Box'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
-import { PoolAlert } from '@/dex/types/main.types'
+import { PoolAlert, type UrlParams } from '@/dex/types/main.types'
+import { useParams } from 'next/navigation'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
-  const params = useStore((state) => state.routerProps?.params)
+  const params = useParams() as UrlParams
 
   return useMemo(() => {
     // Ethereum
