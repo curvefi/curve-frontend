@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useButton } from 'react-aria'
-import * as React from 'react'
 import styled from 'styled-components'
 
 import { buttonOutlinedStyles } from 'ui/src/Button/styles'

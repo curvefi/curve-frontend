@@ -1,18 +1,17 @@
 import { DismissButton, Overlay, usePopover } from 'react-aria'
 import type { AriaPopoverProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
-
-import * as React from 'react'
 import styled from 'styled-components'
+import { ReactNode, useRef } from 'react'
 
 interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
-  children: React.ReactNode
+  children: ReactNode
   portalContainer: Element
   state: OverlayTriggerState
 }
 
 function Popover2({ children, state, offset = 8, portalContainer, ...props }: PopoverProps) {
-  let popoverRef = React.useRef(null)
+  let popoverRef = useRef(null)
   let { popoverProps, underlayProps } = usePopover(
     {
       ...props,
@@ -37,7 +36,7 @@ function Popover2({ children, state, offset = 8, portalContainer, ...props }: Po
       >
         <DismissButton onDismiss={state.close} />
         {/* @ts-ignore */}
-        {React.cloneElement(children, state)}
+        {cloneElement(children, state)}
         <DismissButton onDismiss={state.close} />
       </Popover>
     </Overlay>

@@ -1,7 +1,6 @@
 import type { ButtonProps } from 'ui/src/Button/types'
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
 
-import * as React from 'react'
 import { useOverlayTriggerState } from 'react-stately'
 import { useRef } from 'react'
 import { useButton } from 'react-aria'

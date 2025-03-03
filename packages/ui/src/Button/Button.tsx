@@ -1,22 +1,20 @@
 import type { ButtonProps } from 'ui/src/Button/types'
-
-import * as React from 'react'
+import { forwardRef, ButtonHTMLAttributes, useRef } from 'react'
 import styled from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
-
 import { buttonBaseStyles } from './styles'
 import Box from 'ui/src/Box/Box'
 import Spinner from 'ui/src/Spinner/Spinner'
 
-const Button = React.forwardRef<
+const Button = forwardRef<
   HTMLButtonElement,
   ButtonProps &
-    React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    ButtonHTMLAttributes<HTMLButtonElement> & {
       className?: string
       testId?: string
     }
 >(({ className, children, loading, testId, ...props }, ref) => {
-  const buttonRef = React.useRef(null)
+  const buttonRef = useRef(null)
   const { isFocusVisible, focusProps } = useFocusRing()
 
   return (

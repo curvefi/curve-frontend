@@ -1,6 +1,5 @@
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
 
-import * as React from 'react'
 import styled from 'styled-components'
 
 import { statusColorMap } from 'ui/src/Stepper/helpers'

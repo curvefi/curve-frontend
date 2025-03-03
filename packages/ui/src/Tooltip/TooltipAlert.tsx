@@ -3,7 +3,6 @@ import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined'
 import type { AlertType } from 'ui/src/AlertBox/types'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 
-import * as React from 'react'
 import IconTooltip from 'ui/src/Tooltip/TooltipIcon'
 
 const TooltipAlert = ({

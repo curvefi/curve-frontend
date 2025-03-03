@@ -1,6 +1,5 @@
 import type { InputProps } from './types'
 
-import * as React from 'react'
 import { forwardRef, useRef } from 'react'
 
 import { StyledInput } from './styles'

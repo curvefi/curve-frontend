@@ -2,13 +2,13 @@ import type { NumberFormatOptions } from '@internationalized/number'
 import type { AriaSliderProps } from 'react-aria'
 import type { SliderState } from 'react-stately'
 
-import * as React from 'react'
 import { mergeProps, useFocusRing, useNumberFormatter, useSlider, useSliderThumb, VisuallyHidden } from 'react-aria'
 import { useSliderState } from 'react-stately'
 import styled from 'styled-components'
 
 import Spinner from 'ui/src/Spinner/Spinner'
 import SpinnerWrapper from 'ui/src/Spinner/SpinnerWrapper'
+import { RefObject, useRef } from 'react'
 
 interface Props extends AriaSliderProps {
   formatOptions: NumberFormatOptions
@@ -18,7 +18,7 @@ interface Props extends AriaSliderProps {
 }
 
 function SliderSingleThumb({ loading, hideValue, hideLabel, ...props }: Props) {
-  const trackRef = React.useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
   const numberFormatter = useNumberFormatter(props.formatOptions)
   const state = useSliderState({ ...props, numberFormatter })
   const { groupProps, trackProps, labelProps, outputProps } = useSlider(props, state, trackRef)
@@ -60,9 +60,9 @@ function SliderSingleThumb({ loading, hideValue, hideLabel, ...props }: Props) {
   )
 }
 
-function Thumb(props: { index: number; state: SliderState; trackRef: React.RefObject<HTMLDivElement | null> }) {
+function Thumb(props: { index: number; state: SliderState; trackRef: RefObject<HTMLDivElement | null> }) {
   const { state, trackRef, index } = props
-  const inputRef = React.useRef(null)
+  const inputRef = useRef(null)
   const { thumbProps, inputProps, isDragging } = useSliderThumb(
     {
       index,

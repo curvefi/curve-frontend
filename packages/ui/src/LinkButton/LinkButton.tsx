@@ -1,7 +1,6 @@
 import type { ButtonProps } from 'ui/src/Button/types'
 import type { LinkProps } from 'react-router-dom'
 
-import * as React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 

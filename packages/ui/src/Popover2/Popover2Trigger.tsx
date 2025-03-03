@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { useOverlayTrigger } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import * as React from 'react'
 import styled from 'styled-components'
 
 import Icon from 'ui/src/Icon/Icon'

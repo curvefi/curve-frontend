@@ -1,14 +1,13 @@
 import type { Node } from '@react-types/shared'
 import type { ListState } from 'react-stately'
 
-import * as React from 'react'
 import { useOption } from 'react-aria'
 import styled from 'styled-components'
+import { useRef } from 'react'
 
 function SelectModalListBoxItem<T>({ item, state }: { item: Node<T>; state: ListState<T> }) {
-  const ref = React.useRef<HTMLLIElement>(null)
+  const ref = useRef<HTMLLIElement>(null)
   const { optionProps } = useOption(item, state, ref)
-
   return (
     <StyledOption {...optionProps} ref={ref}>
       {item.rendered}

@@ -1,7 +1,6 @@
 import type { IndicatorPlacement } from './types'
 import type { ButtonProps } from 'ui/src/Button/types'
 
-import * as React from 'react'
 import styled from 'styled-components'
 
 import Spinner from 'ui/src/Spinner/Spinner'

@@ -1,17 +1,17 @@
-import * as React from 'react'
+import { useEffect, useRef } from 'react'
 
 // useInterval hook came from https://overreacted.io/making-setinterval-declarative-with-react-hooks/
 function usePageVisibleInterval<T>(callback: T, delay: number, isPageVisible: boolean) {
-  let idRef = React.useRef<NodeJS.Timer | null>(null)
-  const savedCallback = React.useRef<T | null>(null)
+  let idRef = useRef<NodeJS.Timer | null>(null)
+  const savedCallback = useRef<T | null>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof callback === 'function') {
       savedCallback.current = callback
     }
   }, [callback])
 
-  React.useEffect(() => {
+  useEffect(() => {
     function tick() {
       if (typeof savedCallback.current === 'function') {
         savedCallback.current()
@@ -25,7 +25,7 @@ function usePageVisibleInterval<T>(callback: T, delay: number, isPageVisible: bo
     }
   }, [delay])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isPageVisible && idRef.current) {
       clearInterval(idRef.current as NodeJS.Timeout)
     }

@@ -1,13 +1,11 @@
 import type { AriaRadioProps } from '@react-types/radio'
-
-import * as React from 'react'
 import styled from 'styled-components'
 import { useRadio } from '@react-aria/radio'
 import { VisuallyHidden } from '@react-aria/visually-hidden'
 import { useFocusRing } from '@react-aria/focus'
-
 import { RadioContext } from 'ui/src/Radio'
 import Box from 'ui/src/Box'
+import { useContext, useRef } from 'react'
 
 const Radio = ({
   children,
@@ -15,18 +13,15 @@ const Radio = ({
   isCustom,
   testId,
   ...props
-}: React.PropsWithChildren<
-  AriaRadioProps & {
-    className?: string
-    isCustom?: boolean // don't show radio icon if it is custom
-    testId?: string
-  }
->) => {
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const state = React.useContext(RadioContext)
+}: AriaRadioProps & {
+  className?: string
+  isCustom?: boolean // don't show radio icon if it is custom
+  testId?: string
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const state = useContext(RadioContext)
   const { inputProps = {}, isSelected } = useRadio(props, state, inputRef)
   const { isFocusVisible, focusProps } = useFocusRing()
-
   const labelClassName = `${className} ${state.isDisabled ? 'disabled' : ''}`
 
   return (

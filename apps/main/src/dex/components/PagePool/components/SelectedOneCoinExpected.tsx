@@ -1,6 +1,5 @@
 import type { Amount } from '@/dex/components/PagePool/utils'
 
-import * as React from 'react'
 import styled from 'styled-components'
 
 import { shortenTokenAddress } from '@/dex/utils'

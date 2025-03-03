@@ -1,4 +1,3 @@
-import * as React from 'react'
 import type { AriaDialogProps } from '@react-types/dialog'
 import type { AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'

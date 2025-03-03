@@ -1,33 +1,33 @@
 import type { AriaListBoxOptions, AriaOverlayProps } from 'react-aria'
 import type { SelectState } from 'react-stately'
 
-import * as React from 'react'
 import { useOverlay, DismissButton, FocusScope, usePreventScroll } from 'react-aria'
 import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils'
 
 import SelectModalListBox from 'ui/src/Select/SelectModalListBox'
+import { Key, RefObject, useRef } from 'react'
 
 function SelectModal<T>({
   menuProps,
   state,
   selectSearchOptions,
   ...props
-}: React.PropsWithChildren<
+}:
   AriaOverlayProps & {
     menuProps: AriaListBoxOptions<T>
     minWidth?: string
     mobileRightAlign?: boolean
-    popoverRef?: React.RefObject<HTMLDivElement | null>
+    popoverRef?: RefObject<HTMLDivElement | null>
     selectSearchOptions?: {
-      onSelectionChange: (key: React.Key) => void
+      onSelectionChange: (key: Key) => void
       searchFilterKeys: string[]
     }
     state: SelectState<T>
   }
->) {
-  const ref = React.useRef<HTMLDivElement>(null)
+) {
+  const ref = useRef<HTMLDivElement>(null)
   const { mobileRightAlign, popoverRef = ref, minWidth } = props
   usePreventScroll()
 

@@ -1,4 +1,3 @@
-import * as React from 'react'
 
 export type InputMinHeight = 'small' | 'medium' | 'large' | 'x-large'
 export type InputVariant = 'error' | 'warning' | 'small'

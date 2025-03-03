@@ -1,4 +1,3 @@
-import * as React from 'react'
 
 export type Size = 'x-small' | 'small' | 'medium' | 'large' | 'x-large'
 

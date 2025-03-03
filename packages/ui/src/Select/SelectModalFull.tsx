@@ -1,6 +1,5 @@
 import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
 
-import * as React from 'react'
 import styled from 'styled-components'
 
 import { delayAction } from 'ui/src/utils'

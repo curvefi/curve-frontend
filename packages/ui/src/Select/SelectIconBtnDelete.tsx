@@ -1,4 +1,3 @@
-import * as React from 'react'
 
 import { StyledBtn } from 'ui/src/Select/styles'
 import Icon from 'ui/src/Icon'
