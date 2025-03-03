@@ -40,7 +40,8 @@ const appPath = {
   crvusd: 'crvusd',
   dao: 'dao',
 } as const satisfies Record<AppName, string>
-const migratedApps: AppName[] = ['dao', 'crvusd']
+
+const getRouterRoot = (app: AppName) => (['dao', 'crvusd'].includes(app) ? '' : '/#')
 
 export const getAppRoot = (app: AppName) =>
   `${
@@ -49,7 +50,7 @@ export const getAppRoot = (app: AppName) =>
         ? `http://localhost:${process.env.DEV_PORT || 300}`
         : `https://curve.fi`
       : window.location.origin
-  }/${migratedApps.includes(app) ? app : `#/${appPath[app]}`}`
+  }${getRouterRoot(app)}/${appPath[app]}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {
@@ -91,4 +92,4 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
 }
 
 export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
-  app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`
+  app ? `${APP_LINK[app].root}${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`

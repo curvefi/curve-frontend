@@ -42,6 +42,10 @@ const nextConfiguration = {
     source: '/crvusd/ethereum',
     destination: '/crvusd/ethereum/markets',
     permanent: true
+  }, {
+    source: '/dao/ethereum',
+    destination: '/dao/ethereum/proposals',
+    permanent: true
   }],
 }
 

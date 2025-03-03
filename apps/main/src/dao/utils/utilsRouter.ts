@@ -4,7 +4,7 @@ import networks, { networksIdMapper } from '@/dao/networks'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/dao/types/dao.types'
 
 export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
-  `${network ? `/${network}` : ''}${rerouteRoute}`
+  `/dao/${network ? `/${network}` : ''}${rerouteRoute}`
 
 export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { proposalId, userAddress, gaugeAddress, formType } = params
@@ -43,7 +43,7 @@ export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
     rProposalId: proposalId,
     rUserAddress: userAddress,
     rGaugeAddress: gaugeAddress,
-    rFormType: formType,
+    rFormType: formType?.[0],
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams

@@ -17,11 +17,12 @@ export type CurveApi = typeof curveApi & { chainId: 1 }
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
+export type FormType = 'create' | 'adjust_crv' | 'adjust_date'
 export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
-export type VeCrvUrlParams = NetworkUrlParams & { formType: 'adjust_date' | 'adjust_crv' }
+export type VeCrvUrlParams = NetworkUrlParams & { formType: [FormType] }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
@@ -39,7 +40,7 @@ export type RouterParams = {
   rProposalId: string
   rUserAddress: string
   rGaugeAddress: string
-  rFormType: 'adjust_date' | 'adjust_crv'
+  rFormType: FormType
   redirectPathname: string
   restFullPathname: string
 }

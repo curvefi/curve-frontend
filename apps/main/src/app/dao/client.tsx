@@ -1,8 +1,6 @@
 'use client'
 import '@/global-extensions'
-import { Route } from 'react-router'
 import { REFRESH_INTERVAL } from '@/dao/constants'
-import dynamic from 'next/dynamic'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'

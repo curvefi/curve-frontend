@@ -12,9 +12,13 @@ import IconButton from '@ui/IconButton'
 import Settings from '@/dao/layout/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
+import { getPath } from '@/dao/utils/utilsRouter'
+import { ROUTE } from '@/dao/constants'
 
-const Page = ({ formType: rFormType }: VeCrvUrlParams) => {
-  const { push: navigate } = useRouter()
+const Page = (params: VeCrvUrlParams) => {
+  console.log(params)
+  const [rFormType] = params.formType
+  const { push } = useRouter()
   const { routerParams, curve } = usePageOnMount()
   const { rChainId } = routerParams
 
@@ -24,7 +28,10 @@ const Page = ({ formType: rFormType }: VeCrvUrlParams) => {
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
   const resetState = useStore((state) => state.lockedCrv.resetState)
 
-  const toggleForm = useCallback((formType: FormType) => navigate(formType), [navigate])
+  const toggleForm = useCallback(
+    (formType: FormType) => push(getPath(params, `${ROUTE.PAGE_VECRV}/${formType}`)),
+    [push, params],
+  )
 
   const fetchData = useCallback(
     async (curve: CurveApi | null, isLoadingCurve: boolean) => {
