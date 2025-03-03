@@ -1,12 +1,9 @@
 import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -15,7 +12,6 @@ import { formatNumber } from '@ui/utils'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import networks from '@/lend/networks'
-
 import AlertBox from '@ui/AlertBox'
 import AlertFormWarning from '@/lend/components/AlertFormWarning'
 import AlertFormError from '@/lend/components/AlertFormError'
@@ -31,13 +27,19 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 
-const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+const LoanSelfLiquidation = ({
+  rChainId,
+  rOwmId,
+  isLoaded,
+  api,
+  market,
+  userActiveKey,
+  params,
+}: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const params = useParams()
-
   const formEstGas = useStore((state) => state.loanSelfLiquidation.formEstGas)
   const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)

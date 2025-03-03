@@ -1,21 +1,17 @@
 import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
 import { formatNumber } from '@ui/utils'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { helpers } from '@/lend/lib/apiLending'
 import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
-import { useNavigate, useParams } from 'react-router-dom'
 import networks from '@/lend/networks'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
 import useStore from '@/lend/store/useStore'
-
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
@@ -35,14 +31,17 @@ import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { Api, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useRouter } from 'next/navigation'
 
-const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
-  const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps
+const LoanCreate = ({
+  isLeverage = false,
+  ...pageProps
+}: PageContentProps & { isLeverage?: boolean; params: MarketUrlParams }) => {
+  const { rChainId, rOwmId, isLoaded, api, market, userActiveKey, params } = pageProps
   const isSubscribed = useRef(false)
-  const params = useParams()
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)

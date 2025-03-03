@@ -77,8 +77,6 @@ export function getErrorMessage(error: CustomError, defaultErrorMessage: string)
   return errorMessage
 }
 
-export function scrollToTop() {}
-
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   if (result.status === 'fulfilled') {
     return result.value

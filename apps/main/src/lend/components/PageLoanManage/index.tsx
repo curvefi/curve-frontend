@@ -4,15 +4,11 @@ import type {
   LeverageFormType,
   LoanFormType,
 } from '@/lend/components/PageLoanManage/types'
-
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { useSlideTabState } from '@ui/hooks'
 import useStore from '@/lend/store/useStore'
-
 import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
 import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
@@ -20,12 +16,12 @@ import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
-import { PageContentProps } from '@/lend/types/lend.types'
+import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { useRouter } from 'next/navigation'
 
-const ManageLoan = (pageProps: PageContentProps) => {
-  const { rOwmId, rFormType, userActiveKey, market, rChainId } = pageProps
-  const params = useParams()
-  const navigate = useNavigate()
+const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
+  const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps
+  const { push: navigate } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 

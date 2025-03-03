@@ -36,11 +36,19 @@ const nextConfiguration = {
   },
   redirects: async () => [{
     source: '/',
-    destination: '/dex',
+    destination: '/dex/ethereum/pools',
+    permanent: true
+  }, {
+    source: '/dex/ethereum',
+    destination: '/dex/ethereum/pools',
     permanent: true
   }, {
     source: '/crvusd/ethereum',
     destination: '/crvusd/ethereum/markets',
+    permanent: true
+  }, {
+    source: '/lend/ethereum',
+    destination: '/lend/ethereum/markets',
     permanent: true
   }, {
     source: '/dao/ethereum',

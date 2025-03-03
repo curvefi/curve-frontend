@@ -1,12 +1,8 @@
-import type { NextPage } from 'next'
-
+'use client'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { t } from '@ui-kit/lib/i18n'
-
 import { REFRESH_INTERVAL } from '@/lend/constants'
 import { helpers } from '@/lend/lib/apiLending'
-import { scrollToTop } from '@/lend/utils/helpers'
 import networks from '@/lend/networks'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useStore from '@/lend/store/useStore'
@@ -37,14 +33,12 @@ import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps } from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isLoading } from '@ui/utils'
+import { scrollToTop } from '@/lend/utils/helpers'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
+const Page = (params: MarketUrlParams) => {
+  const { pageLoaded, routerParams, api } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
@@ -89,10 +83,6 @@ const Page: NextPage = () => {
     },
     [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
   )
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
 
   useEffect(() => {
     setLoaded(false)
@@ -167,7 +157,7 @@ const Page: NextPage = () => {
           <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
             <AppPageFormsWrapper navHeight="var(--header-height)">
               {(!isMdUp || !isAdvancedMode) && <TitleComp />}
-              {rChainId && rOwmId && <LoanCreate {...pageProps} />}
+              {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
             </AppPageFormsWrapper>
 
             {isAdvancedMode && rChainId && rOwmId && (

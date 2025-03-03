@@ -1,11 +1,8 @@
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import type { Step } from '@ui/Stepper/types'
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
-
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
@@ -18,7 +15,6 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
 import useStore from '@/lend/store/useStore'
-
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
@@ -35,14 +31,21 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { Api, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useRouter } from 'next/navigation'
 
-const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+const LoanRepay = ({
+  rChainId,
+  rOwmId,
+  isLoaded,
+  api,
+  market,
+  userActiveKey,
+  params,
+}: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const params = useParams()
-  const navigate = useNavigate()
-
+  const { push: navigate } = useRouter()
   const activeKey = useStore((state) => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])

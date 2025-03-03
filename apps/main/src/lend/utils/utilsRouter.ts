@@ -1,30 +1,30 @@
-import type { Params } from 'react-router'
 import { ROUTE } from '@/lend/constants'
 import networks, { networksIdMapper } from '@/lend/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
-import { NetworkEnum, RouterParams } from '@/lend/types/lend.types'
+import { NetworkEnum, RouterParams, type UrlParams } from '@/lend/types/lend.types'
 
-export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
+  `${network ? `/${network}` : ''}${rerouteRoute}`
 
-export function getCollateralListPathname(params: Params) {
+export function getCollateralListPathname(params: UrlParams) {
   const endPath = `${ROUTE.PAGE_MARKETS}`
   return getPath(params, endPath)
 }
 
-export function getLoanCreatePathname(params: Params, owmId: string, formType: string) {
+export function getLoanCreatePathname(params: UrlParams, owmId: string, formType: string) {
   let endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_CREATE}${formType === 'create' ? '' : `/${formType}`}`
   return getPath(params, endPath)
 }
 
-export const getLoanManagePathname = (params: Params, owmId: string, formType: string) =>
+export const getLoanManagePathname = (params: UrlParams, owmId: string, formType: string) =>
   getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
-export function getVaultPathname(params: Params, owmId: string, formType: string) {
+export function getVaultPathname(params: UrlParams, owmId: string, formType: string) {
   const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_VAULT}${formType === 'vault' ? '' : `/${formType}`}`
   return getPath(params, endPath)
 }
 
-export function parseParams(params: Params, chainIdNotRequired?: boolean) {
+export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { market, formType } = params ?? {}
   const paths = window.location.hash.substring(2).split('/')
 
@@ -47,8 +47,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   // formType
   let rFormType = ''
-  if (formType) {
-    const parsedFormType = formType.toLowerCase()
+  if (formType?.[0]) {
+    const parsedFormType = formType[0].toLowerCase()
     const keys = ['vault', 'loan', 'collateral', 'deposit', 'withdraw', 'leverage']
     if (keys.some((key) => parsedFormType === key)) {
       rFormType = parsedFormType

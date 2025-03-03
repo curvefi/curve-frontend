@@ -1,42 +1,38 @@
 import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
-import type { NavigateFunction, Params } from 'react-router'
-
 import { Trans } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/lend/constants'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { getPath } from '@/lend/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
-import { ChainId, NetworkEnum } from '@/lend/types/lend.types'
+import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/lend/types/lend.types'
+import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
+import { useRouter } from 'next/navigation'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  navigate,
   params,
   rChainId,
   searchParams,
 }: {
   integrationsTags: IntegrationsTags
-  navigate: NavigateFunction
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId | ''
-  searchParams: URLSearchParams
+  searchParams: ReadonlyURLSearchParams | null
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
-
+  const { push: navigate } = useRouter()
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)
@@ -59,7 +55,7 @@ const IntegrationsComp = ({
 
   // get filterKey from url
   const parsedSearchParams = useMemo(() => {
-    const searchParamsFilterKey = searchParams.get('filter')
+    const searchParamsFilterKey = searchParams?.get('filter')
     let parsed: { filterKey: FilterKey } = { filterKey: 'all' }
 
     if (searchParamsFilterKey) {

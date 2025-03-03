@@ -1,6 +1,5 @@
 import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ReactNode } from 'react'
 import React from 'react'
 import type { WalletState } from '@web3-onboard/core'
@@ -17,6 +16,10 @@ export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
 export type EstimatedGas = number | number[] | null
+
+export type NetworkUrlParams = { network: NetworkEnum }
+export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
+export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams & MarketUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
   smallMarketAmount: number
@@ -97,7 +100,7 @@ export type PageWidthClassName =
   | 'page-small-x'
   | 'page-small-xx'
 export type PageContentProps = {
-  params: Params
+  params: UrlParams
   rChainId: ChainId
   rOwmId: string
   rFormType: string | null
@@ -271,11 +274,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type Order = 'asc' | 'desc'
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
-}
 export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE

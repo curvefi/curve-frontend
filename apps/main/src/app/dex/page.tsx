@@ -16,6 +16,6 @@ const REDIRECTS = [
   '/disclaimer',
 ]
 
-const DaoRootPage = () => <HashRouterRedirect app="dex" redirects={REDIRECTS} />
+const DexRootPage = () => <HashRouterRedirect app="dex" redirects={REDIRECTS} />
 
-export default DaoRootPage
+export default DexRootPage
