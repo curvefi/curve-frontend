@@ -31,6 +31,11 @@ const networksConfig = {
     showInSelectNetwork: true,
     pricesData: true,
   },
+  146: {
+    isActiveNetwork: true,
+    showInSelectNetwork: true,
+    pricesData: false,
+  },
   100: {},
   1284: {},
   137: {},
