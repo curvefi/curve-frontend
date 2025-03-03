@@ -39,7 +39,7 @@ const DetailInfoEstGas = ({
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
-    let resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
+    const resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
     if (estimatedGas && basePlusPriority) {
       const { symbol, gasPricesUnit } = networks[chainId]
       let gasCostInWei = 0

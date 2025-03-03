@@ -235,7 +235,7 @@ const LoanCreate = ({
   // steps
   useEffect(() => {
     if (curve && llamma) {
-      let updatedSteps = getSteps(
+      const updatedSteps = getSteps(
         activeKey,
         curve,
         isLeverage,

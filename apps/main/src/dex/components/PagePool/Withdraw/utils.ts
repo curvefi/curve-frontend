@@ -31,7 +31,7 @@ export function getTokensText(
   { claimableCrv, claimableRewards }: FormValues,
   { isClaimCrv, isClaimRewards }: FormStatus,
 ) {
-  let message = []
+  const message = []
 
   if (isClaimCrv) {
     message.push(`CRV ${claimableCrv}`)

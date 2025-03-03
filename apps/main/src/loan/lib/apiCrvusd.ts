@@ -58,7 +58,7 @@ const helpers = {
     const collaterals = curve.getLlammaList()
 
     // set mappers
-    let llammasMapper: { [llammaId: string]: Llamma } = {}
+    const llammasMapper: { [llammaId: string]: Llamma } = {}
     for (const idx in collaterals) {
       const collateralName = collaterals[idx]
       const llamma = curve.getLlamma(collateralName)
@@ -69,7 +69,7 @@ const helpers = {
   },
   getUsdRate: async (api: Curve, tokenAddress: string) => {
     log('getUsdRate', tokenAddress)
-    let resp: { usdRate: string | number; error: string } = { usdRate: 0, error: '' }
+    const resp: { usdRate: string | number; error: string } = { usdRate: 0, error: '' }
     try {
       resp.usdRate = await api.getUsdRate(tokenAddress)
       return resp
@@ -82,7 +82,7 @@ const helpers = {
   },
   getTotalSupply: async (api: Curve) => {
     log('getTotalSupply', api.chainId)
-    let resp = { total: '', minted: '', pegKeepersDebt: '', error: '' }
+    const resp = { total: '', minted: '', pegKeepersDebt: '', error: '' }
     try {
       const fetchedTotalSupply = await api.totalSupply()
       return { ...fetchedTotalSupply, error: '' }
@@ -277,7 +277,7 @@ const detailInfo = {
   },
   userBalances: async (llamma: Llamma) => {
     log('userBalances', llamma.collateralSymbol)
-    let resp = { stablecoin: '0', collateral: '0', error: '' }
+    const resp = { stablecoin: '0', collateral: '0', error: '' }
     try {
       const fetchedBalances = await llamma.wallet.balances()
       resp.stablecoin = fetchedBalances.stablecoin
@@ -291,7 +291,7 @@ const detailInfo = {
   },
   userTokenBalance: async (api: Curve, token: string) => {
     log('userTokenBalance', token)
-    let resp = { balance: '', error: '' }
+    const resp = { balance: '', error: '' }
 
     try {
       const tokenBalances = await api.getBalances([token])
@@ -307,7 +307,7 @@ const detailInfo = {
 const loanCreate = {
   exists: async (llamma: Llamma, signerAddress: string) => {
     log('loanExists', llamma.collateralSymbol)
-    let resp = { loanExists: false, error: '' }
+    const resp = { loanExists: false, error: '' }
     try {
       if (signerAddress) {
         resp.loanExists = await llamma.loanExists(signerAddress)
@@ -329,7 +329,7 @@ const loanCreate = {
     maxSlippage: string,
   ) => {
     log('loanEstGas', llamma.collateralSymbol, collateral, debt, n, maxSlippage)
-    let resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
 
     try {
       resp.isApproved = isLeverage
@@ -455,8 +455,8 @@ const loanCreate = {
     const bands = Array.from({ length: +maxBands - +minBands + 1 }, (_, i) => i + minBands)
     const haveCollateral = +collateral > 0
     const haveDebt = +debt > 0
-    let liqRangesList: LiqRange[] = []
-    let liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
+    const liqRangesList: LiqRange[] = []
+    const liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
     let sliderIdx = 0
 
     const [maxRecvsResults, loanBandsResults, loanPricesResults] = await Promise.allSettled([
@@ -508,7 +508,7 @@ const loanCreate = {
   },
   maxRecv: async (activeKey: string, llamma: Llamma, collateral: string, n: number) => {
     log('maxRecv', llamma.collateralSymbol, collateral, n)
-    let resp = { activeKey, maxRecv: '', error: '' }
+    const resp = { activeKey, maxRecv: '', error: '' }
 
     try {
       resp.maxRecv = await llamma.createLoanMaxRecv(collateral, n)
@@ -532,7 +532,7 @@ const loanCreate = {
   },
   approve: async (activeKey: string, provider: Provider, llamma: Llamma, isLeverage: boolean, collateral: string) => {
     log('createLoanApprove', llamma.collateralSymbol, isLeverage ? 'leverage' : '', collateral)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = isLeverage
         ? await llamma.leverage.createLoanApprove(collateral)
@@ -576,7 +576,7 @@ const loanIncrease = {
     const parsedCollateral = collateral || '0'
     const parsedDebt = debt || '0'
     log('estGasApproval', activeKey, llamma.collateralSymbol, parsedCollateral, parsedDebt)
-    let resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
 
     try {
       resp.isApproved = await llamma.borrowMoreIsApproved(parsedCollateral)
@@ -635,7 +635,7 @@ const loanIncrease = {
     }
   },
   maxRecv: async (llamma: Llamma, collateral: string) => {
-    let resp = { maxRecv: '', error: '' }
+    const resp = { maxRecv: '', error: '' }
 
     try {
       const parsedCollateral = collateral || '0'
@@ -651,7 +651,7 @@ const loanIncrease = {
   approve: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     const parsedCollateral = collateral || '0'
     log('borrowMoreApprove', llamma.collateralSymbol, parsedCollateral)
-    let resp = { hashes: [] as string[], error: '' }
+    const resp = { hashes: [] as string[], error: '' }
 
     try {
       resp.hashes = await llamma.borrowMoreApprove(parsedCollateral)
@@ -667,7 +667,7 @@ const loanIncrease = {
     const parsedCollateral = collateral || '0'
     const parsedDebt = debt || '0'
     log('borrowMore', llamma.collateralSymbol, parsedCollateral, parsedDebt)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.borrowMore(parsedCollateral, parsedDebt)
@@ -684,7 +684,7 @@ const loanIncrease = {
 const loanDecrease = {
   estGasApproval: async (activeKey: string, llamma: Llamma, debt: string, isFullRepay: boolean) => {
     log('estGasApproval', llamma.collateralSymbol, isFullRepay, debt)
-    let resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
 
     try {
       resp.isApproved = isFullRepay ? await llamma.fullRepayIsApproved() : await llamma.repayIsApproved(debt)
@@ -728,7 +728,7 @@ const loanDecrease = {
   },
   approve: async (activeKey: string, provider: Provider, llamma: Llamma, debt: string, isFullRepay: boolean) => {
     log('repayApprove', llamma.collateralSymbol, isFullRepay, debt)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
 
     try {
       resp.hashes = isFullRepay ? await llamma.fullRepayApprove() : await llamma.repayApprove(debt)
@@ -742,7 +742,7 @@ const loanDecrease = {
   },
   repay: async (activeKey: string, provider: Provider, llamma: Llamma, debt: string, isFullRepay: boolean) => {
     log('repay', llamma.collateralSymbol, isFullRepay, debt)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = isFullRepay ? await llamma.fullRepay() : await llamma.repay(debt)
@@ -759,7 +759,7 @@ const loanDecrease = {
 const loanLiquidate = {
   estGasApproval: async (llamma: Llamma, maxSlippage: string) => {
     log('estGasApproval', llamma.collateralSymbol, maxSlippage)
-    let resp = { isApproved: false, estimatedGas: 0, error: '', warning: '' }
+    const resp = { isApproved: false, estimatedGas: 0, error: '', warning: '' }
 
     try {
       resp.isApproved = await llamma.selfLiquidateIsApproved()
@@ -806,7 +806,7 @@ const loanLiquidate = {
   },
   approve: async (provider: Provider, llamma: Llamma) => {
     log('selfLiquidateApprove', llamma.collateralSymbol)
-    let resp = { hashes: [] as string[], error: '' }
+    const resp = { hashes: [] as string[], error: '' }
     try {
       resp.hashes = await llamma.selfLiquidateApprove()
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -819,7 +819,7 @@ const loanLiquidate = {
   },
   liquidate: async (provider: Provider, llamma: Llamma, slippage: string) => {
     log('selfLiquidate', llamma.collateralSymbol, slippage)
-    let resp = { hash: '', error: '' }
+    const resp = { hash: '', error: '' }
     try {
       resp.hash = await llamma.selfLiquidate(+slippage)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -835,7 +835,7 @@ const loanLiquidate = {
 const collateralIncrease = {
   estGasApproval: async (activeKey: string, llamma: Llamma, collateral: string) => {
     log('estGasApproval', llamma.collateralSymbol, collateral)
-    let resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
 
     try {
       resp.isApproved = await llamma.addCollateralIsApproved(collateral)
@@ -879,7 +879,7 @@ const collateralIncrease = {
   },
   approve: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     log('addCollateralApprove', llamma.collateralSymbol, collateral)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
 
     try {
       resp.hashes = await llamma.addCollateralApprove(collateral)
@@ -893,7 +893,7 @@ const collateralIncrease = {
   },
   addCollateral: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     log('addCollateral', llamma.collateralSymbol, collateral)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.addCollateral(collateral)
@@ -914,7 +914,7 @@ const collateralIncrease = {
 const collateralDecrease = {
   estGas: async (activeKey: string, llamma: Llamma, collateral: string) => {
     log('estGas', llamma.collateralSymbol, collateral)
-    let resp = { activeKey, estimatedGas: 0, error: '' }
+    const resp = { activeKey, estimatedGas: 0, error: '' }
 
     try {
       resp.estimatedGas = await llamma.removeCollateralEstimateGas(collateral)
@@ -931,7 +931,7 @@ const collateralDecrease = {
   },
   max: async (llamma: Llamma) => {
     log('collateralDecrease', llamma.collateralSymbol, llamma)
-    let resp = { maxRemovable: '', error: '' }
+    const resp = { maxRemovable: '', error: '' }
 
     try {
       const maxRemovable = await llamma.maxRemovable()
@@ -970,7 +970,7 @@ const collateralDecrease = {
   },
   removeCollateral: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     log('removeCollateral', llamma.collateralSymbol, collateral)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.removeCollateral(collateral)
@@ -998,7 +998,7 @@ const swap = {
     maxSlippage: string,
   ) => {
     log('estGasApproval', llamma.collateralSymbol, item1Key, item2Key, amount, maxSlippage)
-    let resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
 
     try {
       resp.isApproved = await llamma.swapIsApproved(+item1Key, amount)
@@ -1040,7 +1040,7 @@ const swap = {
   max: async (llamma: Llamma, formValues: SwapFormValues) => {
     const { item1Key, item2Key } = formValues
     log('swapMax', llamma.collateralSymbol, item1Key, item2Key)
-    let resp = { maxSwappable: '', error: '' }
+    const resp = { maxSwappable: '', error: '' }
 
     try {
       resp.maxSwappable = await llamma.maxSwappable(+item1Key, +item2Key)
@@ -1054,7 +1054,7 @@ const swap = {
   approve: async (activeKey: string, provider: Provider, llamma: Llamma, formValues: SwapFormValues) => {
     const { item1Key, item1 } = formValues
     log('swapApprove', llamma.collateralSymbol, item1Key, item1)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
 
     try {
       resp.hashes = await llamma.swapApprove(+item1Key, item1)
@@ -1075,7 +1075,7 @@ const swap = {
   ) => {
     const { item1Key, item2Key, item1 } = formValues
     log('swap', llamma.collateralSymbol, item1Key, item2Key, item1, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.swap(+item1Key, +item2Key, item1, +maxSlippage)
@@ -1093,7 +1093,7 @@ const loanDeleverage = {
   // no approval is needed for deleverage
   estGas: async (activeKey: string, llamma: Llamma, collateral: string, maxSlippage: string) => {
     log('estGas', llamma.collateralSymbol, collateral, maxSlippage)
-    let resp = { activeKey, estimatedGas: 0, error: '' }
+    const resp = { activeKey, estimatedGas: 0, error: '' }
 
     try {
       resp.estimatedGas = await llamma.deleverage.estimateGas.repay(collateral, +maxSlippage)
@@ -1113,7 +1113,7 @@ const loanDeleverage = {
     userState: UserLoanDetails['userState'],
   ) => {
     log('detailInfoDeleverage', llamma.collateralSymbol, collateral, address)
-    let resp: FormDetailInfoDeleverage = {
+    const resp: FormDetailInfoDeleverage = {
       receiveStablecoin: '',
       isAvailable: false,
       isFullRepayment: false,
@@ -1171,7 +1171,7 @@ const loanDeleverage = {
   },
   repay: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string, maxSlippage: string) => {
     log('deleverageRepay', llamma.collateralSymbol, collateral, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.deleverage.repay(collateral, +maxSlippage)

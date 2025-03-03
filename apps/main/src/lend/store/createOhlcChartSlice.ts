@@ -225,10 +225,10 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           throw new Error('No LLAMMA OHLC data found. Data may be unavailable for this pool.')
         }
 
-        let volumeArray: VolumeData[] = []
-        let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: OraclePriceData[] = []
-        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+        const volumeArray: VolumeData[] = []
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -316,10 +316,10 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           end,
         })
 
-        let volumeArray: VolumeData[] = []
-        let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: OraclePriceData[] = []
-        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+        const volumeArray: VolumeData[] = []
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -415,9 +415,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           throw new Error('No oracle OHLC data found. Data may be unavailable for this pool.')
         }
 
-        let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: OraclePriceData[] = []
-        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -503,9 +503,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           end,
         })
 
-        let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: OraclePriceData[] = []
-        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()

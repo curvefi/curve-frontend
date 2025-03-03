@@ -85,7 +85,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawToken: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      let cFormValues = cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { pool } = poolData
       const { signerAddress } = curve
 
@@ -145,7 +145,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawLpToken: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      let cFormValues = cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { signerAddress } = curve
       const { pool } = poolData
 
@@ -194,7 +194,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawCustom: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      let cFormValues = cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { pool } = poolData
       const { signerAddress } = curve
 
@@ -307,7 +307,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const storedFormStatus = get()[sliceKey].formStatus
 
       // update form values
-      let cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       let activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
       get()[sliceKey].setStateByKeys({
         activeKey,
@@ -489,7 +489,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
       }
       if (resp && resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -524,7 +524,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const { pool } = poolData
       const resp = await curvejsApi.poolWithdraw.unstake(activeKey, provider, pool, formValues.stakedLpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -562,7 +562,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         ? await curvejsApi.poolWithdraw.claimCrv(activeKey, provider, pool)
         : await curvejsApi.poolWithdraw.claimRewards(activeKey, provider, pool)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.isClaimCrv = false

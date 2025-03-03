@@ -8,8 +8,8 @@ interface DialogProps extends AriaDialogProps {
 }
 
 function Dialog({ title, children, ...props }: DialogProps) {
-  let ref = useRef(null)
-  let { dialogProps, titleProps } = useDialog(props, ref)
+  const ref = useRef(null)
+  const { dialogProps, titleProps } = useDialog(props, ref)
 
   return (
     <div {...dialogProps} ref={ref} style={{ padding: 30 }}>

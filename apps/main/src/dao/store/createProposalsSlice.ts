@@ -125,7 +125,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           page++
         }
 
-        let proposalsObject: { [voteId: string]: ProposalData } = {}
+        const proposalsObject: { [voteId: string]: ProposalData } = {}
 
         for (const proposal of results) {
           const minAcceptQuorumPercent = (+proposal.min_accept_quorum / 1e18) * 100

@@ -11,8 +11,8 @@ interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
 }
 
 function Popover2({ children, state, offset = 8, portalContainer, ...props }: PopoverProps) {
-  let popoverRef = useRef(null)
-  let { popoverProps, underlayProps } = usePopover(
+  const popoverRef = useRef(null)
+  const { popoverProps, underlayProps } = usePopover(
     {
       ...props,
       offset,

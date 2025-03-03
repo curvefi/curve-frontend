@@ -20,7 +20,7 @@ function DialogFormWarning({
   setConfirmed: Dispatch<SetStateAction<boolean>>
 }) {
   const getHighPriceImpactWarning = useCallback((priceImpact: PriceImpact) => {
-    let resp = { title: '', warning: '' }
+    const resp = { title: '', warning: '' }
     const { priceImpact: priceImpactPercent, swapFrom, swapTo } = priceImpact
     resp.title = t`High price impact!`
     resp.warning = t`There is a price impact of ${formatNumber(priceImpactPercent, {

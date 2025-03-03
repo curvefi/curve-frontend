@@ -19,7 +19,7 @@ const TableButtonFiltersMobile = ({
   filterKey: string
   updateRouteFilterKey(filterKey: string): void
 }) => {
-  let overlayTriggerState = useOverlayTriggerState({})
+  const overlayTriggerState = useOverlayTriggerState({})
 
   const handleClose = () => {
     if (getIsMobile()) {

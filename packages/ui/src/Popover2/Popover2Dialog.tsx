@@ -11,8 +11,8 @@ interface DialogProps extends AriaDialogProps {
 }
 
 function Popover2Dialog({ title, children, ...props }: DialogProps) {
-  let ref = useRef(null)
-  let { dialogProps, titleProps } = useDialog(props, ref)
+  const ref = useRef(null)
+  const { dialogProps, titleProps } = useDialog(props, ref)
 
   return (
     <Wrapper {...dialogProps} className={props.className} ref={ref}>

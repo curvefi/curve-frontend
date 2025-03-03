@@ -199,7 +199,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       const loadingFormEstGas = storedFormEstGas[activeKey] ??
         storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
-      let loadingDetailInfo = cloneDeep(
+      const loadingDetailInfo = cloneDeep(
         storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
       )
       loadingDetailInfo.loading = true

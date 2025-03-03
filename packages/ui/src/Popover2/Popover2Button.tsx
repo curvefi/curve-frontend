@@ -9,8 +9,8 @@ import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
 export type ButtonVariant = 'outlined'
 
 function Popover2Button({ buttonVariant, ...props }) {
-  let ref = props.buttonRef
-  let { buttonProps } = useButton(props, ref)
+  const ref = props.buttonRef
+  const { buttonProps } = useButton(props, ref)
 
   return (
     <Wrapper variant={buttonVariant}>

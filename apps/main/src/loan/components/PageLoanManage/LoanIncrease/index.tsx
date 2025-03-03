@@ -110,7 +110,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       const haveCollateral = +collateral > 0
       const haveDebt = +debt > 0
 
-      let notifyMessage =
+      const notifyMessage =
         haveCollateral && haveDebt
           ? t`Please confirm borrowing of ${formValues.debt} ${getTokenName(llamma).stablecoin} and adding ${
               formValues.collateral

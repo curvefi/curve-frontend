@@ -31,7 +31,7 @@ const SummarySelfLiquidate = ({
   }, [stateBorrowed, stateDebt, walletBorrowed])
 
   const returnToWallet = useMemo(() => {
-    let amounts: { value: string | number; symbol: string }[] = []
+    const amounts: { value: string | number; symbol: string }[] = []
 
     // return to wallet from state collateral
     if (+stateCollateral > 0) {

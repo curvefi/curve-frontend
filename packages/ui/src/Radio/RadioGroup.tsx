@@ -17,8 +17,8 @@ const RadioGroup = ({
     className?: string
     testId?: string
   }) => {
-  let state = useRadioGroupState(props)
-  let { radioGroupProps } = useRadioGroup(props, state)
+  const state = useRadioGroupState(props)
+  const { radioGroupProps } = useRadioGroup(props, state)
 
   return (
     <RadioGroupContainer data-testid={`radio-group-${testId}`} {...radioGroupProps} className={className}>

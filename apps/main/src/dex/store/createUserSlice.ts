@@ -62,7 +62,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
     fetchUserPoolList: async (curve) => {
       const userActiveKey = getUserActiveKey(curve)
-      let parsedUserPoolList: { [poolId: string]: boolean } = {}
+      const parsedUserPoolList: { [poolId: string]: boolean } = {}
 
       try {
         get()[sliceKey].setStateByKeys({

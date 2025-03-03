@@ -37,7 +37,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
-      let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const campaignRewardsMapper: CampaignRewardsMapper = {}
       const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key

@@ -142,7 +142,7 @@ function CalendarCell({ state, date }) {
 }
 
 function DatePicker(props) {
-  let { locale } = useLocale()
+  const { locale } = useLocale()
   const state = useDatePickerState(props)
   const ref = useRef<HTMLDivElement>(null)
 

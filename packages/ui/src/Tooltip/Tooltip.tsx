@@ -21,7 +21,7 @@ const Tooltip = ({
   const charCount = typeof props.children === 'string' ? props.children.length : null
 
   const getClosePlacement = useCallback((buttonNode: HTMLButtonElement | null) => {
-    let placement: IsClosePlacement = { top: false, bottom: false, left: false, right: false }
+    const placement: IsClosePlacement = { top: false, bottom: false, left: false, right: false }
 
     if (buttonNode) {
       const { top, left, bottom, right } = buttonNode.getBoundingClientRect()

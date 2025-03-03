@@ -281,7 +281,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
     // use local storage data till actual data returns
     setSortAndFilterCachedData: (rChainId, searchParams, poolDatasCached, volumeMapperCached, tvlMapperCached) => {
-      let { activeKey, formStatus, ...sliceState } = get()[sliceKey]
+      const { activeKey, formStatus, ...sliceState } = get()[sliceKey]
 
       const { sortBy, sortByOrder } = searchParams
 

@@ -21,7 +21,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: OneWayMarketTemplate) {
   const { userCollateral, userBorrowed } = formValues
-  let list = []
+  const list = []
 
   if (+userCollateral > 0) list.push({ value: formValues.userCollateral, symbol: collateral_token.symbol })
   if (+userBorrowed > 0) list.push({ value: formValues.userBorrowed, symbol: borrowed_token.symbol })

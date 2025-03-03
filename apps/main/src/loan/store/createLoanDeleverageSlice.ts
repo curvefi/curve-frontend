@@ -67,13 +67,13 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       const storedUserDetails = get().loans.userDetailsMapper[llammaId]
 
       // set formValues, reset status
-      let cFormValues: FormValues = cloneDeep({
+      const cFormValues: FormValues = cloneDeep({
         ...storedFormValues,
         ...updatedFormValues,
         collateralError: '',
       })
-      let activeKey = getActiveKey(llammaId, cFormValues, maxSlippage)
-      let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const activeKey = getActiveKey(llammaId, cFormValues, maxSlippage)
+      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       get()[sliceKey].setStateByKeys({
         activeKey,
         formValues: cloneDeep(cFormValues),
@@ -90,7 +90,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       const isSoftLiquidation = userStatus?.colorKey === 'soft_liquidation'
 
       // fetch details
-      let fDetailInfo = await get()[sliceKey].fetchDetailInfo(
+      const fDetailInfo = await get()[sliceKey].fetchDetailInfo(
         activeKey,
         curve,
         llamma,
@@ -121,7 +121,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         //   fetch est gas
         if (!cFormValues.collateralError && cFormStatus.error !== 'error-full-repayment-required') {
           // fetch est gas
-          let clonedStoredFormEstGas = cloneDeep(storedFormEstGas)
+          const clonedStoredFormEstGas = cloneDeep(storedFormEstGas)
           clonedStoredFormEstGas.loading = true
           get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: clonedStoredFormEstGas })
           get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues, maxSlippage)
@@ -156,7 +156,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true
-        let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+        const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
         cFormStatus.isApproved = get()[sliceKey].formStatus.isApproved
 
         if (resp.error) {

@@ -36,7 +36,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
-      let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const campaignRewardsMapper: CampaignRewardsMapper = {}
       const {
         networks: { networks },
       } = get()

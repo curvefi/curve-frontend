@@ -210,7 +210,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     },
     filterLeverageMarkets: (markets) => markets.filter((m) => m.leverage.hasLeverage()),
     sortByCollateral: (api, markets, marketMapping) => {
-      let { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
+      const { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
 
       const parsedTableRowsSettings: { [tokenAddress: string]: TableSettings } = {}
 
@@ -257,7 +257,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     },
     setFormValues: async (rChainId, api, marketMapping, shouldRefetch) => {
       const { markets, user } = get()
-      let {
+      const {
         activeKey: prevActiveKey,
         initialLoaded,
         searchParams,

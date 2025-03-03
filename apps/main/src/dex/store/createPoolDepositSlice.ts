@@ -97,7 +97,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       return get().user.walletBalances[userPoolActiveKey] ?? (await get().user.fetchUserPoolInfo(curve, poolId, true))
     },
     fetchExpected: async (activeKey, chainId, formType, pool, formValues) => {
-      let { amounts, isWrapped } = formValues
+      const { amounts, isWrapped } = formValues
       const depositExpectedFn =
         formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositExpected : curvejsApi.poolDeposit.depositAndStakeExpected
 
@@ -115,7 +115,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       })
     },
     fetchMaxAmount: async (activeKey, chainId, pool, { tokenAddress, idx }) => {
-      let cFormValues = cloneDeep(get()[sliceKey].formValues)
+      const cFormValues = cloneDeep(get()[sliceKey].formValues)
       const userBalance = get().userBalances.userBalancesMapper[tokenAddress] ?? ''
 
       if (tokenAddress.toLowerCase() === NETWORK_TOKEN) {
@@ -179,7 +179,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchSlippage: async (activeKey, chainId, formType, pool, formValues, maxSlippage) => {
-      let { amounts: cFormAmounts, isWrapped } = formValues
+      const { amounts: cFormAmounts, isWrapped } = formValues
       const amounts = parseAmountsForAPI(cFormAmounts)
       const resp =
         formType === 'DEPOSIT'
@@ -214,7 +214,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const storedFormStatus = get()[sliceKey].formStatus
 
       // update form values, form status, activeKey
-      let cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       let activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
       get()[sliceKey].setStateByKeys({
         activeKey,
@@ -426,7 +426,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -469,7 +469,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         maxSlippage,
       )
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -539,7 +539,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''

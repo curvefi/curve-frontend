@@ -9,10 +9,10 @@ interface Props extends AriaSwitchProps {
 }
 
 function Switch({ isActive, ...props }: Props) {
-  let state = useToggleState({ ...props })
-  let ref = useRef(null)
-  let { inputProps } = useSwitch({ ...props, 'aria-label': 'Toggle switch' }, state, ref)
-  let { isFocusVisible, focusProps } = useFocusRing()
+  const state = useToggleState({ ...props })
+  const ref = useRef(null)
+  const { inputProps } = useSwitch({ ...props, 'aria-label': 'Toggle switch' }, state, ref)
+  const { isFocusVisible, focusProps } = useFocusRing()
 
   return (
     <StyledSwitch>

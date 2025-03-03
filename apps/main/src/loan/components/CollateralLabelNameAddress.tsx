@@ -11,9 +11,9 @@ interface ButtonProps extends AriaButtonProps {
 }
 
 const Button = ({ className, ...props }: ButtonProps) => {
-  let ref = useRef(null)
-  let { buttonProps, isPressed } = useButton(props, ref)
-  let { children } = props
+  const ref = useRef(null)
+  const { buttonProps, isPressed } = useButton(props, ref)
+  const { children } = props
 
   return (
     <ChipPoolCopyButton className={`${className} ${isPressed ? 'isPressed' : ''}`} {...buttonProps} ref={ref}>

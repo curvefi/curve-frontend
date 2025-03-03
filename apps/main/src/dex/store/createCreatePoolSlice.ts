@@ -412,7 +412,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       tokenG: TokenState,
       tokenH: TokenState,
     ) => {
-      let tokensInPoolUpdates = {
+      const tokensInPoolUpdates = {
         ...get().createPool.tokensInPool,
         tokenA,
         tokenB,
@@ -441,7 +441,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         ngAssetType: tokenB.basePool ? 0 : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
       }
 
-      let initialPriceUpdates = {
+      const initialPriceUpdates = {
         ...get().createPool.initialPrice,
       }
 

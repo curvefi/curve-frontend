@@ -370,7 +370,7 @@ export function _getActiveKey(
   { userCollateral, userBorrowed, debt, n }: FormValues,
   maxSlippage: string,
 ) {
-  let activeKey = `${_parseActiveKey(api, market)}${n}`
+  const activeKey = `${_parseActiveKey(api, market)}${n}`
   return {
     activeKey: `${activeKey}-${userCollateral}-${userBorrowed}-${debt}-${maxSlippage}`,
     activeKeyMax: `${activeKey}-${userCollateral}-${userBorrowed}`,

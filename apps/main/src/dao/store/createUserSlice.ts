@@ -210,7 +210,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       try {
         const pagination = 1000
         let page = 1
-        let results: { [proposalId: string]: UserProposalVoteData } = {}
+        const results: { [proposalId: string]: UserProposalVoteData } = {}
 
         while (true) {
           const ownershipVotesRes = await fetch(

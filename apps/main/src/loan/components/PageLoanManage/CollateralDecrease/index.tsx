@@ -161,7 +161,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         },
       }
 
-      let stepsKey: StepKey[] = ['REMOVE']
+      const stepsKey: StepKey[] = ['REMOVE']
 
       return stepsKey.map((k) => stepsObj[k])
     },

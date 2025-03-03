@@ -62,13 +62,13 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
   const selectedLiqRange = useMemo(() => {
-    let liqRanges: LiquidationRanges = {
+    const liqRanges: LiquidationRanges = {
       current: null,
       new: null,
     }
 
     const formatRange = (liqRange: string[]) => {
-      let range: LlammaLiquididationRange = {
+      const range: LlammaLiquididationRange = {
         price1: [],
         price2: [],
       }

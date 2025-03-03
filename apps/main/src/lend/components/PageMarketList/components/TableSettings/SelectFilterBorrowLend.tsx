@@ -19,7 +19,7 @@ const SelectFilterBorrowLend = ({
   const updateRouteFilterKey = useCallback(
     (filterTypeKey: FilterTypeKey) => {
       const tableLabels = tableLabelsSelector[filterTypeKey]
-      let updatedSearchParams: Partial<SearchParams> = { ...searchParams }
+      const updatedSearchParams: Partial<SearchParams> = { ...searchParams }
       updatedSearchParams.filterTypeKey = filterTypeKey
 
       // change borrow key

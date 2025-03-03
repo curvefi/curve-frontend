@@ -119,9 +119,9 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
     },
     setFormValues: async (rChainId, curve) => {
       const { collaterals, storeCache } = get()
-      let { formStatus, initialLoaded, result, searchParams, ...sliceState } = get()[sliceKey]
+      const { formStatus, initialLoaded, result, searchParams, ...sliceState } = get()[sliceKey]
 
-      let activeKey = getActiveKey(rChainId, searchParams)
+      const activeKey = getActiveKey(rChainId, searchParams)
       sliceState.setStateByKeys({
         activeKey,
         formStatus: { ...formStatus, noResult: false, isLoading: true },

@@ -10,9 +10,9 @@ function Button(
     isHideTopBorder?: boolean
   },
 ) {
-  let ref = useRef<HTMLButtonElement>(null)
-  let { buttonProps } = useButton(props, ref)
-  let { className = '', children, isHideTopBorder } = props
+  const ref = useRef<HTMLButtonElement>(null)
+  const { buttonProps } = useButton(props, ref)
+  const { className = '', children, isHideTopBorder } = props
 
   return (
     <StyledButton className={className} isHideTopBorder={isHideTopBorder} {...buttonProps} ref={ref}>

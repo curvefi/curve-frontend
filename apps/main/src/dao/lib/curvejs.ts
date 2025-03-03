@@ -35,7 +35,7 @@ export const helpers = {
     throw new Error('Unable to initialize curvejs without wallet or rpcUrl')
   },
   fetchL1GasPrice: async (curve: CurveApi) => {
-    let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
+    const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
       if (networks[curve.chainId].gasL2) {
         const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
@@ -63,7 +63,7 @@ export const helpers = {
   },
   fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
     log('fetchUsdRates', tokenAddresses.length)
-    let results: UsdRatesMapper = {}
+    const results: UsdRatesMapper = {}
 
     await PromisePool.for(tokenAddresses)
       .withConcurrency(5)
@@ -81,7 +81,7 @@ export const helpers = {
 const lockCrv = {
   vecrvInfo: async (activeKey: string, curve: CurveApi, walletAddress: string) => {
     log('vecrvInfo', curve.chainId, walletAddress)
-    let resp = {
+    const resp = {
       activeKey,
       resp: {
         crv: '',
@@ -130,7 +130,7 @@ const lockCrv = {
     days: number,
   ) => {
     log('createLock', lockedAmount, utcDate.toString(), days)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.createLock(lockedAmount, days)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -149,7 +149,7 @@ const lockCrv = {
     days: number | null,
   ) => {
     log('lockCrvEstGasApproval', formType, lockedAmount, days)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved =
@@ -178,7 +178,7 @@ const lockCrv = {
   },
   lockCrvApprove: async (activeKey: string, provider: Provider, curve: CurveApi, lockedAmount: string) => {
     log('userLockCrvApprove', lockedAmount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await curve.boosting.approve(lockedAmount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -191,7 +191,7 @@ const lockCrv = {
   },
   increaseAmount: async (activeKey: string, curve: CurveApi, provider: Provider, lockedAmount: string) => {
     log('increaseAmount', lockedAmount)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.increaseAmount(lockedAmount)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -204,7 +204,7 @@ const lockCrv = {
   },
   increaseUnlockTime: async (activeKey: string, provider: Provider, curve: CurveApi, days: number) => {
     log('increaseUnlockTime', days)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.increaseUnlockTime(days)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -217,7 +217,7 @@ const lockCrv = {
   },
   withdrawLockedCrv: async (curve: CurveApi, provider: Provider, walletAddress: string) => {
     log('withdrawLockedCrv', curve.chainId)
-    let resp = { walletAddress, hash: '', error: '' }
+    const resp = { walletAddress, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.withdrawLockedCrv()
       await helpers.waitForTransaction(resp.hash, provider)
@@ -230,7 +230,7 @@ const lockCrv = {
   },
   claimFees: async (activeKey: string, curve: CurveApi, provider: Provider, key: ClaimButtonsKey) => {
     log('claimFees', curve.chainId, key)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       const isClaim3Crv = key === ClaimButtonsKey['3CRV']

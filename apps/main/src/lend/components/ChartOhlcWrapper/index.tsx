@@ -82,13 +82,13 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   }, [chartLlammaOhlc.oraclePriceData, chartOraclePoolOhlc.oraclePriceData, selectedChartIndex])
 
   const selectedLiqRange = useMemo(() => {
-    let liqRanges: LiquidationRanges = {
+    const liqRanges: LiquidationRanges = {
       current: null,
       new: null,
     }
 
     const formatRange = (liqRange: string[]) => {
-      let range: LlammaLiquididationRange = {
+      const range: LlammaLiquididationRange = {
         price1: [],
         price2: [],
       }

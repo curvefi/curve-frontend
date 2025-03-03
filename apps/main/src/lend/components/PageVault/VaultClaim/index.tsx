@@ -117,7 +117,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         },
       }
 
-      let stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
+      const stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
 
       return stepsKey.map((k) => stepsObj[k])
     },

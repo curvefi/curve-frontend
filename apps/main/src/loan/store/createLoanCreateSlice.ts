@@ -256,7 +256,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         const loadingFormEstGas = storedFormEstGas[activeKey] ??
           storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
-        let loadingDetailInfo = isLeverage
+        const loadingDetailInfo = isLeverage
           ? cloneDeep(
               storedDetailInfoLeverage[activeKey] ??
                 storedDetailInfoLeverage[prevActiveKey] ??
@@ -296,7 +296,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         }
 
         // update debtError
-        let debtError = maxRecv && +maxRecv > 0 ? (+formValues.debt > +maxRecv ? 'too-much' : '') : ''
+        const debtError = maxRecv && +maxRecv > 0 ? (+formValues.debt > +maxRecv ? 'too-much' : '') : ''
         get()[sliceKey].setStateByKey('formValues', { ...clonedFormValues, debtError })
 
         // fetch liq ranges

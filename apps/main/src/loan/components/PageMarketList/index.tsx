@@ -110,7 +110,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
     { titleKey: TITLE.totalCollateral, className: 'right', width: '260px' },
   ]
 
-  let colSpan = isMdUp ? 9 : 4
+  const colSpan = isMdUp ? 9 : 4
 
   return (
     <Wrapper>

@@ -7,9 +7,9 @@ import { Popover2 } from 'ui/src/Popover2'
 import { Popover2Button } from 'ui/src/Popover2'
 
 function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) {
-  let ref = useRef(null)
-  let state = useOverlayTriggerState(props)
-  let { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
+  const ref = useRef(null)
+  const state = useOverlayTriggerState(props)
+  const { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
 
   return (
     <>

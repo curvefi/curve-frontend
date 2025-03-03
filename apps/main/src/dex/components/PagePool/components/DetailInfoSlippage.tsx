@@ -17,7 +17,7 @@ type SlippageDetail = {
 
 const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Props) => {
   const { isBold, label, tip, variant } = useMemo(() => {
-    let slippageDetail: SlippageDetail = {
+    const slippageDetail: SlippageDetail = {
       isBold: false,
       label: t`Slippage`,
       tip: '',

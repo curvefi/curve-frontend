@@ -31,7 +31,7 @@ const DetailsBandsChart = ({ llammaId, llamma }: { llammaId: string; llamma: Lla
   const { oraclePrice, oraclePriceBand } = priceInfo ?? {}
 
   const chartBandBalancesData = useMemo(() => {
-    let data = [...(bandsBalances ?? [])]
+    const data = [...(bandsBalances ?? [])]
     if (data?.length > 0 && typeof oraclePriceBand === 'number') {
       const firstN = data[0].n
       const lastN = data[data.length - 1].n

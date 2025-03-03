@@ -77,7 +77,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
         const [integrationsTagsResult] = await Promise.allSettled([
           httpFetcher(networks[parsedChainId]?.integrations.tagsUrl),
         ])
-        let integrationsTags = fulfilledValue(integrationsTagsResult)
+        const integrationsTags = fulfilledValue(integrationsTagsResult)
         get()[sliceKey].setStateByKey('integrationsTags', parseIntegrationsTags(integrationsTags))
       }
     },

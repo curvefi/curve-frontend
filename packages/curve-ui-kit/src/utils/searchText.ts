@@ -15,7 +15,7 @@ export function groupSearchTerms(searchText: string) {
     .trim()
     .split(/[, ]+/)
     .reduce((prev, t) => {
-      let term = t.toLowerCase()
+      const term = t.toLowerCase()
 
       if (term.startsWith('0x')) {
         prev.addresses.push(t)
@@ -50,7 +50,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
   let results: SearchTermsFuseResult<T> = fuse.search(searchTerms[0])
   searchTerms.forEach((term, idx) => {
     if (idx === 0) return
-    let termResults = fuse.search(term)
+    const termResults = fuse.search(term)
     results = results.filter((r) => termResults.some((termResult) => termResult.item === r.item))
   })
 
@@ -59,7 +59,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
 
 // should return any pool/market that have any of the searched addresses
 function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens: string[]; other?: string[] }) {
-  let uniqueResults: { tokens: SearchTermsFuseResult<T>; other: SearchTermsFuseResult<T> } = { tokens: [], other: [] }
+  const uniqueResults: { tokens: SearchTermsFuseResult<T>; other: SearchTermsFuseResult<T> } = { tokens: [], other: [] }
 
   if (keys.tokens) {
     const fuse = new Fuse<T>(datas, {

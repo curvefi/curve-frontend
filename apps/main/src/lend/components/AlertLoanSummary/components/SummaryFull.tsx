@@ -17,7 +17,7 @@ const SummaryFull = ({
 
   const [balance, returnToWallet] = useMemo(() => {
     let balance = 0
-    let returnToWallet: { value: number | string; symbol: string }[] = []
+    const returnToWallet: { value: number | string; symbol: string }[] = []
 
     if (+receive > 0) {
       const repayTotal = +receive + +stateBorrowed

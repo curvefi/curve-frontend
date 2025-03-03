@@ -21,8 +21,8 @@ import Dialog from './Dialog'
 import Popover from './Popover'
 
 function Button(props) {
-  let ref = useRef(null)
-  let { buttonProps } = useButton(props, ref)
+  const ref = useRef(null)
+  const { buttonProps } = useButton(props, ref)
   return (
     <button {...buttonProps} ref={ref}>
       {props.children}
@@ -31,15 +31,15 @@ function Button(props) {
 }
 
 function RangeCalendar(props) {
-  let { locale } = useLocale()
-  let state = useRangeCalendarState({
+  const { locale } = useLocale()
+  const state = useRangeCalendarState({
     ...props,
     locale,
     createCalendar,
   })
 
-  let ref = useRef(null)
-  let { calendarProps, prevButtonProps, nextButtonProps, title } = useRangeCalendar(props, state, ref)
+  const ref = useRef(null)
+  const { calendarProps, prevButtonProps, nextButtonProps, title } = useRangeCalendar(props, state, ref)
 
   return (
     <CalendarStyles {...calendarProps} ref={ref}>
@@ -104,8 +104,8 @@ function CalendarCell({ state, date }) {
 }
 
 function DateSegment({ segment, state }) {
-  let ref = useRef(null)
-  let { segmentProps } = useDateSegment(segment, state, ref)
+  const ref = useRef(null)
+  const { segmentProps } = useDateSegment(segment, state, ref)
 
   return (
     <DateSegmentStyles {...segmentProps} ref={ref} className={`segment ${segment.isPlaceholder ? 'placeholder' : ''}`}>
@@ -115,15 +115,15 @@ function DateSegment({ segment, state }) {
 }
 
 function DateField(props) {
-  let { locale } = useLocale()
-  let state = useDateFieldState({
+  const { locale } = useLocale()
+  const state = useDateFieldState({
     ...props,
     locale,
     createCalendar,
   })
 
-  let ref = useRef(null)
-  let { labelProps, fieldProps } = useDateField(props, state, ref)
+  const ref = useRef(null)
+  const { labelProps, fieldProps } = useDateField(props, state, ref)
 
   return (
     <DateFieldStyles>
@@ -138,9 +138,9 @@ function DateField(props) {
 }
 
 function DateRangePicker(props) {
-  let state = useDateRangePickerState(props)
-  let ref = useRef(null)
-  let { labelProps, groupProps, startFieldProps, endFieldProps, buttonProps, dialogProps, calendarProps } =
+  const state = useDateRangePickerState(props)
+  const ref = useRef(null)
+  const { labelProps, groupProps, startFieldProps, endFieldProps, buttonProps, dialogProps, calendarProps } =
     useDateRangePicker(props, state, ref)
 
   return (

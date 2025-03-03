@@ -40,7 +40,7 @@ const ExpectedSwapDetails = ({
 
   useEffect(() => {
     setData((prev) => ({ ...stateDefault, height: prev.height }))
-    let state = { height: '', data: [] as Hop[] }
+    const state = { height: '', data: [] as Hop[] }
 
     if (routesRef.current) {
       const { height } = routesRef.current.getBoundingClientRect()

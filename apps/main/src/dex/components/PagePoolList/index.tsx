@@ -84,7 +84,7 @@ const PoolList = ({
   }, [isLite, tvlMapper, volumeMapper])
 
   const columnKeys = useMemo(() => {
-    let keys: ColumnKeys[] = []
+    const keys: ColumnKeys[] = []
     if (showInPoolColumn) keys.push(COLUMN_KEYS.inPool)
     keys.push(COLUMN_KEYS.poolName)
 

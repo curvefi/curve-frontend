@@ -19,7 +19,7 @@ type Props = {
 }
 
 const TableSortDialog = ({ className = '', tableLabel }: Props) => {
-  let overlayTriggerState = useOverlayTriggerState({})
+  const overlayTriggerState = useOverlayTriggerState({})
 
   const {
     formValues: { sortBy, sortByOrder },

@@ -161,7 +161,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         },
       }
 
-      let stepsKey: StepKey[] = ['REMOVE']
+      const stepsKey: StepKey[] = ['REMOVE']
 
       return stepsKey.map((k) => stepsObj[k])
     },

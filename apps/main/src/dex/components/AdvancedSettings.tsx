@@ -40,7 +40,7 @@ const DEFAULT_FORM_VALUES: FormValues = {
 const MIN_SLIPPAGE = 0.005
 
 function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: string) {
-  let updatedFormValues = { ...formValues }
+  const updatedFormValues = { ...formValues }
   const defaultSelected = propsMaxSlippage
   const isDefaultCustomValue = Number(defaultSelected) !== 0.1 && Number(defaultSelected) !== 0.5
 

@@ -53,7 +53,7 @@ export function getLiquidationStatus(
   userIsCloseToLiquidation: boolean,
   userStateStablecoin: string,
 ) {
-  let userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
+  const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
     tooltip: '',
@@ -123,7 +123,7 @@ export async function getChartBandBalancesData(
     }
   })
 
-  let parsedBandBalances = []
+  const parsedBandBalances = []
   for (const idx in results) {
     const r = results[idx]
     parsedBandBalances.unshift(r)
@@ -161,7 +161,7 @@ export function getWalletProvider(wallet: Wallet) {
 
 export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   const smallAmount = 0.00000001
-  let resp = cloneDeep(userLoss)
+  const resp = cloneDeep(userLoss)
   resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
   resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
 

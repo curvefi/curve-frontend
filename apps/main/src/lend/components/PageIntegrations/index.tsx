@@ -57,7 +57,7 @@ const IntegrationsComp = ({
   // get filterKey from url
   const parsedSearchParams = useMemo(() => {
     const searchParamsFilterKey = searchParams.get('filter')
-    let parsed: { filterKey: FilterKey } = { filterKey: 'all' }
+    const parsed: { filterKey: FilterKey } = { filterKey: 'all' }
 
     if (searchParamsFilterKey) {
       parsed.filterKey = (integrationsTags?.[searchParamsFilterKey]?.id ?? 'all') as FilterKey

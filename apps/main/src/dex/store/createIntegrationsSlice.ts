@@ -205,7 +205,7 @@ function parseIntegrationsList(
       for (const n of networks) {
         parsedNetworks[n] = true
       }
-      let parsedTags: { [tag: string]: boolean } = {}
+      const parsedTags: { [tag: string]: boolean } = {}
       for (const n of tags) {
         if (n !== 'crvusd') {
           parsedTags[n] = true

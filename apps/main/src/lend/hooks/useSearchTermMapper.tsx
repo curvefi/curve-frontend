@@ -21,7 +21,7 @@ export function parseSearchTermMapper(
 ) {
   if (!searchedByAddresses || !searchTermMapper || !market) return undefined
 
-  let parsed = { ...searchTermMapper }
+  const parsed = { ...searchTermMapper }
   const { collateral_token, borrowed_token } = market
 
   Object.keys(searchedByAddresses).forEach((key) => {

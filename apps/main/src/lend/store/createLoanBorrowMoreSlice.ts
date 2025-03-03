@@ -189,14 +189,14 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       const { formStatus, formValues, maxRecv, ...sliceState } = get()[sliceKey]
 
       // update activeKey, formValues
-      let cFormValues: FormValues = {
+      const cFormValues: FormValues = {
         ...formValues,
         ...partialFormValues,
         userCollateralError: '',
         userBorrowedError: '',
         debtError: '',
       }
-      let cFormStatus: FormStatus = {
+      const cFormStatus: FormStatus = {
         ...DEFAULT_FORM_STATUS,
         isApproved: formStatus.isApproved,
         isApprovedCompleted: formStatus.isApprovedCompleted,

@@ -15,7 +15,7 @@ function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 
   labelsMapper,
   updatePath,
 }: TableSortSelectProps<T>) {
-  let overlayTriggerState = useOverlayTriggerState({})
+  const overlayTriggerState = useOverlayTriggerState({})
 
   const handleRadioGroupChange = (updatedSortValue: string) => {
     const [sortBy, sortByOrder] = updatedSortValue.split('-')

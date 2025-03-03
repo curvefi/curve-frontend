@@ -11,7 +11,7 @@ export interface InputMessageProps {
 const InputMessage = ({ message }: InputMessageProps) => {
   const { inputVariant } = useInputContext() ?? {}
 
-  let IconComp = useMemo(() => {
+  const IconComp = useMemo(() => {
     if (inputVariant === 'error') {
       return <Icon name="Misuse" size={20} />
     } else if (inputVariant === 'warning') {

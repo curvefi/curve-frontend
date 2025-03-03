@@ -155,13 +155,13 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         const userClaimables = fulfilledValue(userClaimableResult)
 
         // get pool's
-        let poolDatas = poolList.map((poolId: string) => poolDataMapper[poolId])
+        const poolDatas = poolList.map((poolId: string) => poolDataMapper[poolId])
 
         // get missing rewards
         await poolsState.fetchMissingPoolsRewardsApy(chainId, poolDatas)
 
         // get searched address's dashboard data
-        let dashboardDataMapper: DashboardDataMapper = {}
+        const dashboardDataMapper: DashboardDataMapper = {}
         await PromisePool.for(poolDatas)
           .withConcurrency(10)
           .process(async ({ pool }, idx) => {
@@ -244,12 +244,12 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       } = get()
 
       // update formValues
-      let formValues = { ...storedFormValues, ...updatedFormValues }
+      const formValues = { ...storedFormValues, ...updatedFormValues }
       formValues.walletAddress = (formValues.walletAddress ?? '').toLowerCase()
 
-      let activeKey = getActiveKey(rChainId, formValues)
-      let isValidAddress = isAddress(formValues.walletAddress as Address)
-      let storedDashboardData = storedDashboardDatasMapper[formValues.walletAddress]
+      const activeKey = getActiveKey(rChainId, formValues)
+      const isValidAddress = isAddress(formValues.walletAddress as Address)
+      const storedDashboardData = storedDashboardDatasMapper[formValues.walletAddress]
 
       sliceState.setStateByKeys({
         activeKey,
@@ -312,7 +312,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       dashboardDatas = sliceState.sortFn(chainId, sortBy, sortByOrder, dashboardDatas)
 
       // update result
-      let poolIds = dashboardDatas.map(({ poolId }) => poolId)
+      const poolIds = dashboardDatas.map(({ poolId }) => poolId)
 
       sliceState.setStateByKey('dashboardDataPoolIds', { [activeKey]: poolIds })
       sliceState.setStateByKeys({
@@ -380,7 +380,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update form
-      let cFormStatus: FormStatus = {
+      const cFormStatus: FormStatus = {
         ...DEFAULT_FORM_STATUS,
         formType: 'VECRV',
         formProcessing: true,
@@ -389,7 +389,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       sliceState.setStateByKey('formStatus', cFormStatus)
 
       await gas.fetchGasInfo(curve)
-      let resp = await curvejsApi.lockCrv.withdrawLockedCrv(curve, provider, walletAddress)
+      const resp = await curvejsApi.lockCrv.withdrawLockedCrv(curve, provider, walletAddress)
 
       cFormStatus.formProcessing = false
       cFormStatus.step = ''

@@ -42,7 +42,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
 
     fetchDetails: async (provider) => {
       const state = get()
-      let { detailsMapper, ...sliceState } = get()[sliceKey]
+      const { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
         if (Object.keys(detailsMapper).length > 0) return
@@ -56,7 +56,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
           provider,
         )
 
-        let results: DetailsMapper = {}
+        const results: DetailsMapper = {}
 
         await PromisePool.for(contracts)
           .handleError((error) => {
@@ -85,7 +85,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
     },
     fetchEstCallerProfit: async (provider, pegKeeperAddress) => {
       const state = get()
-      let { detailsMapper, ...sliceState } = get()[sliceKey]
+      const { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
         const idx = PEG_KEEPERS_ADDRESSES.indexOf(pegKeeperAddress)
@@ -103,7 +103,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
     },
     fetchUpdate: async (curve, pegKeeperAddress) => {
       const { gas, ...state } = get()
-      let { formStatus, ...sliceState } = get()[sliceKey]
+      const { formStatus, ...sliceState } = get()[sliceKey]
 
       const { provider } = useWallet.getState()
       if (!provider) return { hash: '', error: 'no provider' }

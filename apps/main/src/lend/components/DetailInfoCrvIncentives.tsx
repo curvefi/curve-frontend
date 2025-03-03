@@ -37,7 +37,7 @@ const DetailInfoCrvIncentives = ({
   const { crvBase = '', incentivesObj = [] } = tooltipValues ?? {}
 
   const data = useMemo(() => {
-    let data: Data[] = []
+    const data: Data[] = []
 
     if (!isGaugeAddressInvalid) {
       if (+crvBase > 0) {
@@ -109,7 +109,7 @@ function _getDataApr(
   gaugeTotalSupply: number | null,
   lpTokenAmount: string,
 ) {
-  let resp = { aprCurr: formatNumber(currApr, FORMAT_OPTIONS.PERCENT), aprNew: '', ratio: 0 }
+  const resp = { aprCurr: formatNumber(currApr, FORMAT_OPTIONS.PERCENT), aprNew: '', ratio: 0 }
 
   if (+currApr > 0 && gaugeTotalSupply && +(gaugeTotalSupply || '0') > 0 && +lpTokenAmount > 0) {
     const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupply

@@ -75,7 +75,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         const fetchedResp = await curvejsApi.lockCrv.vecrvInfo(activeKey, curve, curve.signerAddress)
 
         if (fetchedResp.error) {
-          let storedFormStatus = cloneDeep(get()[sliceKey].formStatus)
+          const storedFormStatus = cloneDeep(get()[sliceKey].formStatus)
           storedFormStatus.error = fetchedResp.error
           get()[sliceKey].setStateByKey('formStatus', cloneDeep(storedFormStatus))
         }
@@ -101,7 +101,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormValues.lockedAmtError = ''
       cFormValues.lockedAmtError = ''
 
-      let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.error = ''
 
       if (isFullReset) {
@@ -136,8 +136,8 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
     },
 
     fetchEstGasApproval: async (activeKey, curve, rFormType, formValues) => {
-      let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-      let cFormEstGas = cloneDeep({ ...DEFAULT_FORM_EST_GAS, loading: true })
+      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const cFormEstGas = cloneDeep({ ...DEFAULT_FORM_EST_GAS, loading: true })
 
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, cloneDeep(cFormEstGas))
 
@@ -167,7 +167,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
-      let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.formProcessing = true
       cFormStatus.step = 'APPROVAL'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))

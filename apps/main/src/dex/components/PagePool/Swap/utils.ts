@@ -43,7 +43,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: PoolDataCacheOrApi) {
   const { tokenAddresses, tokensCountBy } = poolDataCacheOrApi
-  let swapTokensMapper: { [tokenAddress: string]: Token } = {}
+  const swapTokensMapper: { [tokenAddress: string]: Token } = {}
 
   for (const idx in tokenAddresses) {
     const address = tokenAddresses[idx]

@@ -264,7 +264,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   // steps
   useEffect(() => {
     if (isLoaded && api && market) {
-      let updatedSteps = getSteps(
+      const updatedSteps = getSteps(
         activeKey,
         api,
         market,
