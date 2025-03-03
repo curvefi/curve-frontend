@@ -45,7 +45,7 @@ const PegKeeperContent = ({ rChainId, pegKeeperAddress, pool }: Props) => {
           <PegKeeperForm rChainId={rChainId} poolName={poolName} pegKeeperAddress={pegKeeperAddress} />
           <StyledLinks>
             <TextCaption isBold isCaps>{t`View:`}</TextCaption>
-            <StyledExternalLink href={`${APP_LINK.dex.root}#/ethereum/pools/${pool.id}/deposit`}>
+            <StyledExternalLink href={`${APP_LINK.dex.root}/ethereum/pools/${pool.id}/deposit`}>
               Pool
             </StyledExternalLink>
             <StyledExternalLink href={`https://etherscan.io/address/${pegKeeperAddress}`}>Contract</StyledExternalLink>

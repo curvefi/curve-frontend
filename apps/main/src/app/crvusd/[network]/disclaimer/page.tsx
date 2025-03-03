@@ -1,12 +1,8 @@
 import { t } from '@ui-kit/lib/i18n'
-import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import type { Metadata } from 'next'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import type { DisclaimerTabId } from '@ui-kit/widgets/Disclaimer/Disclaimer'
-
-const { Spacing } = SizesAndSpaces
 
 export const metadata: Metadata = { title: t`Risk Disclaimer - Curve` }
 
@@ -15,18 +11,8 @@ type DisclaimerPageProps = {
   searchParams: Promise<{ tab?: DisclaimerTabId }>
 }
 
-const DisclaimerPage = async ({ searchParams }: DisclaimerPageProps) => (
-  <Stack
-    alignItems="center"
-    gap={Spacing.xl}
-    sx={{
-      marginInline: 'auto',
-      marginBlockStart: Spacing.xl,
-      marginBlockEnd: Spacing.xxl,
-    }}
-  >
-    <Disclaimer {...await searchParams} />
-  </Stack>
+const DisclaimerPage = async ({ params, searchParams }: DisclaimerPageProps) => (
+  <Disclaimer tab="crvusd" {...await params} {...await searchParams} />
 )
 
 export default DisclaimerPage

@@ -22,34 +22,42 @@ const TABS = [
 
 export type DisclaimerTabId = (typeof TABS)[number]['value']
 
-type Props = { tab?: DisclaimerTabId }
-
-export const Disclaimer = ({ tab }: Props) => (
+export const Disclaimer = ({ tab, network }: { tab: DisclaimerTabId; network: string }) => (
   <Stack
+    alignItems="center"
+    gap={Spacing.xl}
     sx={{
-      maxWidth: MaxWidth.disclaimer,
-      paddingInline: Spacing.md,
+      marginInline: 'auto',
+      marginBlockStart: Spacing.xl,
+      marginBlockEnd: Spacing.xxl,
     }}
-    data-testid="disclaimer"
   >
     <Stack
-      direction={{
-        mobile: 'column-reverse',
-        tablet: 'row',
+      sx={{
+        maxWidth: MaxWidth.disclaimer,
+        paddingInline: Spacing.md,
       }}
-      justifyContent="space-between"
-      spacing={Spacing.md}
+      data-testid="disclaimer"
     >
-      <TabsSwitcher variant="contained" value={tab} options={[...TABS]} />
-      <LastUpdated />
-    </Stack>
+      <Stack
+        direction={{
+          mobile: 'column-reverse',
+          tablet: 'row',
+        }}
+        justifyContent="space-between"
+        spacing={Spacing.md}
+      >
+        <TabsSwitcher variant="contained" value={tab} options={[...TABS]} />
+        <LastUpdated />
+      </Stack>
 
-    <TabPanel>
-      {tab === 'dex' && <Dex />}
-      {tab === 'lend' && <LlamaLend />}
-      {tab === 'crvusd' && <CrvUsd />}
-      {tab === 'scrvusd' && <SCrvUsd />}
-      <Footer />
-    </TabPanel>
+      <TabPanel>
+        {tab === 'dex' && <Dex />}
+        {tab === 'lend' && <LlamaLend network={network} />}
+        {tab === 'crvusd' && <CrvUsd />}
+        {tab === 'scrvusd' && <SCrvUsd />}
+        <Footer />
+      </TabPanel>
+    </Stack>
   </Stack>
 )

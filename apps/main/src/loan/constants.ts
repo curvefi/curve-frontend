@@ -77,7 +77,7 @@ export const PEG_KEEPERS = {
   '0xfb726f57d251ab5c731e5c64ed4f5f94351ef9f3': {
     address: '0xfb726f57d251ab5c731e5c64ed4f5f94351ef9f3',
     token: 'USDT',
-    poolUrl: BASE_URL + '#/ethereum/pools/factory-crvusd-1/deposit',
+    poolUrl: `${BASE_URL}/ethereum/pools/factory-crvusd-1/deposit`,
     pool: {
       id: 'factory-crvusd-1',
       name: 'crvUSD/USDT',
