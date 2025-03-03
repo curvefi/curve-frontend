@@ -70,7 +70,7 @@ export const POOL_PRESETS: PRESETS = {
       stableSwapFee: '0.01',
       stableA: '1000',
       maExpTime: '600',
-      offpegFeeMultiplier: '5',
+      offpegFeeMultiplier: '10',
     },
   },
   1: {
@@ -82,7 +82,7 @@ export const POOL_PRESETS: PRESETS = {
       stableSwapFee: '0.04',
       stableA: '100',
       maExpTime: '600',
-      offpegFeeMultiplier: '2',
+      offpegFeeMultiplier: '20',
     },
   },
   2: {
@@ -94,7 +94,7 @@ export const POOL_PRESETS: PRESETS = {
       stableSwapFee: '0.01',
       stableA: '500',
       maExpTime: '600',
-      offpegFeeMultiplier: '5',
+      offpegFeeMultiplier: '10',
     },
   },
   // cryptoswap
