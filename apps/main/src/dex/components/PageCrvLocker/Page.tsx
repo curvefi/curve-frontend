@@ -12,10 +12,10 @@ import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
 import IconButton from '@ui/IconButton'
 import Settings from '@/dex/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { CurveApi, type FormUrlParams } from '@/dex/types/main.types'
+import { CurveApi, type CrvLockerUrlParams } from '@/dex/types/main.types'
 import { useRouter } from 'next/navigation'
 
-const Page = (params: FormUrlParams) => {
+const Page = (params: CrvLockerUrlParams) => {
   const { push: navigate } = useRouter()
   const { routerParams, curve } = usePageOnMount()
   const { rChainId, rFormType } = routerParams

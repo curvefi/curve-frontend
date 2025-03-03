@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import type { FormUrlParams } from '@/dex/types/main.types'
+import type { CrvLockerUrlParams } from '@/dex/types/main.types'
 import CrvLocker from '@/dex/components/PageCrvLocker/Page'
 
-type LockedCrvPageProps = { params: Promise<FormUrlParams> }
+type LockedCrvPageProps = { params: Promise<CrvLockerUrlParams> }
 
 export const metadata: Metadata = { title: 'Curve - CRV Locker' }
 

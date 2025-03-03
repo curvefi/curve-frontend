@@ -20,9 +20,9 @@ export type NetworkConfigFromApi = {
 }
 
 export type NetworkUrlParams = { network: INetworkName }
-export type PoolUrlParams = NetworkUrlParams & { pool: string }
-export type FormUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
-export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & FormUrlParams>
+export type PoolUrlParams = NetworkUrlParams & { pool: string; formType: [] | [RFormType] }
+export type CrvLockerUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
+export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
   isLite: boolean

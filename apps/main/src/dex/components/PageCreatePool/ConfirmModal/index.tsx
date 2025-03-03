@@ -23,7 +23,7 @@ import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensI
 import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
 import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
 import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
-import { useParams, useRouter, useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 type Props = {
   disabled?: boolean
