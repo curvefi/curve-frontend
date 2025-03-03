@@ -1,3 +1,4 @@
+import { Chain } from 'curve-ui-kit/src/utils'
 import sortBy from 'lodash/sortBy'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
@@ -15,46 +16,46 @@ const DEFAULT_NETWORK_CONFIG = {
 }
 
 const networksConfig = {
-  1: {
+  [Chain.Ethereum]: {
     hideMarketsInUI: { 'one-way-market-19': true },
     isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
-  10: {
+  [Chain.Optimism]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
-  252: {
+  [Chain.Fraxtal]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: true,
   },
-  146: {
+  [Chain.Sonic]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
     pricesData: false,
   },
-  100: {},
-  1284: {},
-  137: {},
-  2222: {},
-  250: {},
-  42161: {
+  [Chain.Gnosis]: {},
+  [Chain.Moonbeam]: {},
+  [Chain.Polygon]: {},
+  [Chain.Kava]: {},
+  [Chain.Fantom]: {},
+  [Chain.Arbitrum]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
     marketListShowOnlyInSmallMarkets: { 'one-way-market-7': true },
     pricesData: true,
   },
-  43114: {},
-  42220: {},
-  1313161554: {},
-  324: {},
-  8453: {},
-  56: {},
-  196: {},
-  5000: {},
+  [Chain.Avalanche]: {},
+  [Chain.Celo]: {},
+  [Chain.Aurora]: {},
+  [Chain.ZkSync]: {},
+  [Chain.Base]: {},
+  [Chain.Bsc]: {},
+  [Chain.XLayer]: {},
+  [Chain.Mantle]: {},
 }
 
 export const { networks, networksIdMapper, selectNetworkList } = Object.entries(networksConfig).reduce(
