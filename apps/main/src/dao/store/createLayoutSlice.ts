@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { LayoutHeight } from '@/dao/store/types'
-
 import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
 import { PageWidthClassName } from '@/dao/types/dao.types'

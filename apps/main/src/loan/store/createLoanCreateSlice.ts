@@ -8,9 +8,7 @@ import type {
   MaxRecvLeverage,
 } from '@/loan/components/PageLoanCreate/types'
 import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_DETAIL_INFO_LEVERAGE,
   DEFAULT_FORM_STATUS,

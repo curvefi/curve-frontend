@@ -1,5 +1,4 @@
 import type { Params } from 'react-router'
-
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { CurveApi, ChainId } from '@/dex/types/main.types'

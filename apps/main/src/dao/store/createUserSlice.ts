@@ -1,10 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
-
 import { Contract } from 'ethers'
 import produce from 'immer'
-
 import { SEVEN_DAYS } from '@/dao/constants'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
 import { contractVeCRV } from '@/dao/store/contracts'

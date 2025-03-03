@@ -6,9 +6,7 @@ import type {
   FormStatus,
   FormValues,
 } from '@/lend/components/PageLoanManage/LoanBorrowMore/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import {
   _parseValues,

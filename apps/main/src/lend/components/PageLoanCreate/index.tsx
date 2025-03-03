@@ -1,12 +1,9 @@
 import type { FormType } from '@/lend/components/PageLoanCreate/types'
-
 import { useMemo, useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
-
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 import { PageContentProps } from '@/lend/types/lend.types'

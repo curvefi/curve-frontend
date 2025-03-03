@@ -1,6 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { Chip } from '@ui/Typography'
 
 type Props = {

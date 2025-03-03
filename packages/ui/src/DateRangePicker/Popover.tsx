@@ -4,7 +4,7 @@ import type { AriaPopoverProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 
 interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
-  children: React.ReactNode
+  children: ReactNode
   state: OverlayTriggerState
 }
 

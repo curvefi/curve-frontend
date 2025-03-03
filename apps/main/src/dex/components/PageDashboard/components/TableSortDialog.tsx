@@ -1,11 +1,7 @@
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
-
-import React from 'react'
 import styled from 'styled-components'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-
 import { Chip } from '@ui/Typography'
 import { Radio, RadioGroup } from '@ui/Radio'
 import Box from '@ui/Box'

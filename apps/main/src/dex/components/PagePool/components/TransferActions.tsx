@@ -1,16 +1,13 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
-
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
-
 import AlertBox from '@ui/AlertBox'
 import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
 import { useSignerAddress } from '@/dex/entities/signer'
+import { ReactNode } from 'react'
 
 const TransferActions = ({
   children,
@@ -19,11 +16,12 @@ const TransferActions = ({
   poolData,
   routerParams,
   userPoolBalances,
-}: React.PropsWithChildren<
+}:
   {
     loading?: boolean
+    children: ReactNode
   } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed' | 'userPoolBalances'>
->) => {
+) => {
   const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])

@@ -1,8 +1,6 @@
 import type { SelectProps } from 'ui/src/Select/Select'
-
 import { Item } from 'react-stately'
 import styled from 'styled-components'
-
 import Select from 'ui/src/Select'
 
 interface SelectSortingMethodProps<T extends object> extends Omit<SelectProps<T>, 'children'> {

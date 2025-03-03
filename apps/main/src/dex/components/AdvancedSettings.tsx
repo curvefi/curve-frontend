@@ -1,12 +1,9 @@
 import type { InputVariant } from '@ui/InputComp/types'
-
-import React, { useEffect, useState } from 'react'
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import { Trans, t } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import { Radio, RadioGroup } from '@ui/Radio'
 import Box from '@ui/Box'
@@ -25,8 +22,9 @@ type FormValues = {
 }
 
 export type AdvancedSettingsProps = {
+  children?: ReactNode
   className?: string
-  buttonIcon?: React.ReactNode
+  buttonIcon?: ReactNode
   maxSlippage: string
   stateKey: string
   testId?: string
@@ -63,7 +61,7 @@ export const AdvancedSettings = ({
   maxSlippage,
   stateKey, // object key for slippage state
   testId,
-}: React.PropsWithChildren<AdvancedSettingsProps>) => {
+}: AdvancedSettingsProps) => {
   const overlayTriggerState = useOverlayTriggerState({})
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
@@ -91,7 +89,7 @@ export const AdvancedSettings = ({
     setFormValues(updatedFormValues)
   }
 
-  const handleInpChangeCustomSlippage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInpChangeCustomSlippage = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const updatedFormValues: FormValues = {
       selected: 'custom',

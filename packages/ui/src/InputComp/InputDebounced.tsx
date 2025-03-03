@@ -1,10 +1,6 @@
 import type { InputLabelProps, InputProps } from './types'
-
-import React from 'react'
-
 import { useInputContext } from 'ui/src/InputComp/InputProvider'
 import { useDebouncedValue } from 'ui/src/hooks'
-
 import Box from 'ui/src/Box/Box'
 import Input from 'ui/src/InputComp/Input'
 import { InputLabel } from 'ui/src/InputComp'

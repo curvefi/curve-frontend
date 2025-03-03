@@ -1,5 +1,4 @@
 import type { SearchTermMapper, SearchTermKey } from '@/lend/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 

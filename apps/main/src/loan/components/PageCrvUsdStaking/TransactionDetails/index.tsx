@@ -1,16 +1,13 @@
 import styled from 'styled-components'
 import { useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
 import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
 import { formatNumber } from '@ui/utils'
 import { isLoading, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
-
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 import { useWallet } from '@ui-kit/features/connect-wallet'

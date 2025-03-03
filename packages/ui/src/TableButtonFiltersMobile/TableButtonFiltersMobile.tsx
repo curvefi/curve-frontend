@@ -1,8 +1,6 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-
 import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
-
 import { RadioGroup } from 'ui/src/Radio'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'

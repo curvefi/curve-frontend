@@ -1,16 +1,13 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   DEFAULT_USER_LOCKED_CRV_INFO,
 } from '@/dex/components/PageCrvLocker/utils'
-
 import { formatNumber, shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import dayjs from '@ui-kit/lib/dayjs'

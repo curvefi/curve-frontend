@@ -1,11 +1,9 @@
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
 import { zip } from 'lodash'
-
 import useStore from '@/dex/store/useStore'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
-
 import { Chip } from '@ui/Typography'
 import AlertBox from '@ui/AlertBox'
 import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
@@ -16,7 +14,7 @@ import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type PoolListProps = {
-  quickViewValue?: string | React.ReactNode | null
+  quickViewValue?: ReactNode
   searchText?: string
   searchTextByTokensAndAddresses?: { [address: string]: boolean }
   searchTextByOther?: { [address: string]: boolean }

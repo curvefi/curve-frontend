@@ -1,9 +1,7 @@
-import React, { useCallback, useMemo } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
@@ -19,7 +17,7 @@ function DialogFormWarning({
   health?: { warningTitle: string; warning: string } | null
   priceImpact?: PriceImpact | null
   confirmed: boolean
-  setConfirmed: React.Dispatch<React.SetStateAction<boolean>>
+  setConfirmed: Dispatch<SetStateAction<boolean>>
 }) {
   const getHighPriceImpactWarning = useCallback((priceImpact: PriceImpact) => {
     let resp = { title: '', warning: '' }

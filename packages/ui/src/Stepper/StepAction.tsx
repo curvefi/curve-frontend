@@ -1,11 +1,9 @@
 import type { ButtonProps } from 'ui/src/Button/types'
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
-
 import { useOverlayTriggerState } from 'react-stately'
 import { useRef } from 'react'
 import { useButton } from 'react-aria'
 import styled, { css } from 'styled-components'
-
 import { isInProgress, taskStepStatusStyles } from './helpers'
 import Button from 'ui/src/Button'
 import Spinner from 'ui/src/Spinner/Spinner'

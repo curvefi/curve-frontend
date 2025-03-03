@@ -1,14 +1,15 @@
-import { usePreventScroll, OverlayContainer } from '@react-aria/overlays'
+import { OverlayContainer, usePreventScroll } from '@react-aria/overlays'
 import { FocusScope } from '@react-aria/focus'
 import styled from 'styled-components'
-import React from 'react'
+import { ReactNode } from 'react'
 
 interface Props {
+  children: ReactNode
   isOpen: boolean
 }
 
 // TODO: consolidate with overlay-container.tsx
-const Overlay = ({ children, isOpen, ...rest }: React.PropsWithChildren<Props>) => {
+const Overlay = ({ children, isOpen, ...rest }: Props) => {
   usePreventScroll({ isDisabled: !isOpen })
 
   return (

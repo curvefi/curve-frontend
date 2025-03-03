@@ -1,9 +1,7 @@
 import type { PropsWithChildren } from 'react'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BoxProps } from '@ui/Box/types'
-
 import styled from 'styled-components'
-
 import { Chip } from '@ui/Typography'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'

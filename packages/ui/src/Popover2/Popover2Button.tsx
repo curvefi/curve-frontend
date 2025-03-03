@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
-
 import { buttonOutlinedStyles } from 'ui/src/Button/styles'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 import DividerHorizontal from 'ui/src/DividerHorizontal'

@@ -1,11 +1,9 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
-
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
-
 import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import { TITLE } from '@/loan/constants'

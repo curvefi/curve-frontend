@@ -1,6 +1,5 @@
 import type { ImplementationId } from '@/dex/components/PageCreatePool/types'
 import BigNumber from 'bignumber.js'
-
 import { t } from '@ui-kit/lib/i18n'
 import { NativeToken } from '@/dex/types/main.types'
 

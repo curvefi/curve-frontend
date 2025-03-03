@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-
 import useStore from '@/lend/store/useStore'
 
 const useCampaignRewardsMapper = () => {

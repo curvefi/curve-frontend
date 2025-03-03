@@ -1,11 +1,9 @@
 import type { NextPage } from 'next'
 import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { REFRESH_INTERVAL } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
 import { getCollateralListPathname, getLoanCreatePathname } from '@/loan/utils/utilsRouter'
@@ -16,7 +14,6 @@ import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
-
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,

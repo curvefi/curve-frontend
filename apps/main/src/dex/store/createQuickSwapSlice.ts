@@ -8,11 +8,9 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
-
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import orderBy from 'lodash/orderBy'
-
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/dex/components/PageRouterSwap/utils'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'

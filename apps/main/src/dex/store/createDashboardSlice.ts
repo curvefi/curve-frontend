@@ -13,10 +13,8 @@ import type {
   SortId,
   WalletPoolData,
 } from '@/dex/components/PageDashboard/types'
-
 import { PromisePool } from '@supercharge/promise-pool'
 import orderBy from 'lodash/orderBy'
-
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'

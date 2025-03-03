@@ -1,5 +1,3 @@
-import React from 'react'
-
 import DetailsLoan from '@/lend/components/DetailsMarket/components/DetailsLoan'
 import DetailsSupply from '@/lend/components/DetailsMarket/components/DetailsSupply'
 import { MarketListType, PageContentProps } from '@/lend/types/lend.types'

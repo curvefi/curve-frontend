@@ -1,12 +1,9 @@
 import type { TableSortSelectProps } from 'ui/src/TableSort/types'
-
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { delayAction } from 'ui/src/utils/helpers'
 import { getLabel } from 'ui/src/TableSort/utils'
-
 import Chip from 'ui/src/Typography/Chip'
 import Box from 'ui/src/Box'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'

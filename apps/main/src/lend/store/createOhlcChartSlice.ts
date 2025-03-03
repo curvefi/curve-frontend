@@ -12,9 +12,7 @@ import type {
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
-
 import produce from 'immer'
-
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 

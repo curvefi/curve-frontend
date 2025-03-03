@@ -8,9 +8,7 @@ import type {
   FormStatus,
   FormValues,
 } from '@/lend/components/PageLoanCreate/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { _parseValue, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { _parseActiveKey } from '@/lend/utils/helpers'

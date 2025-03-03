@@ -1,11 +1,9 @@
 import type { NextPage } from 'next'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils/responsive'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -13,7 +11,6 @@ import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import useStore from '@/dex/store/useStore'
-
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import PoolList from '@/dex/components/PagePoolList/index'
 import Settings from '@/dex/layout/default/Settings'

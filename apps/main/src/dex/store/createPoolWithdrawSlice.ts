@@ -5,9 +5,7 @@ import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import curvejsApi from '@/dex/lib/curvejs'
 import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import { isBonus, isHighSlippage, shortenTokenAddress } from '@/dex/utils'

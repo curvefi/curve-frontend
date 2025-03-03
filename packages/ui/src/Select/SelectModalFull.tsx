@@ -1,9 +1,6 @@
 import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
-
 import styled from 'styled-components'
-
 import { delayAction } from 'ui/src/utils'
-
 import { Radio, RadioGroup } from 'ui/src/Radio'
 import DelayRender from 'ui/src/DelayRender'
 import ModalDialog from 'ui/src/Dialog'

@@ -2,13 +2,12 @@
 import { useOverlayTrigger } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
-
 import Icon from 'ui/src/Icon/Icon'
 import { Popover2 } from 'ui/src/Popover2'
 import { Popover2Button } from 'ui/src/Popover2'
 
 function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) {
-  let ref = React.useRef(null)
+  let ref = useRef(null)
   let state = useOverlayTriggerState(props)
   let { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
 
@@ -33,7 +32,7 @@ function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) 
       </Popover2Button>
       {state.isOpen && (
         <Popover2 {...props} triggerRef={ref} state={state}>
-          {React.cloneElement(children as React.ReactElement<React.PropsWithChildren>, { ...overlayProps, ...state })}
+          {cloneElement(children as ReactElement<PropsWithChildren>, { ...overlayProps, ...state })}
         </Popover2>
       )}
     </>

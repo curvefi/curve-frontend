@@ -1,17 +1,14 @@
 import type { NextPage } from 'next'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dao/constants'
 import { getPath } from '@/dao/utils/utilsRouter'
 import { scrollToTop } from '@/dao/utils'
 import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import useStore from '@/dao/store/useStore'
-
 import Box, { BoxHeader } from '@ui/Box'
 import DocumentHead from '@/dao/layout/DocumentHead'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'

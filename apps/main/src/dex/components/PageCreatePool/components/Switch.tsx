@@ -1,5 +1,4 @@
 import type { AriaSwitchProps } from 'react-aria'
-
 import { useRef } from 'react'
 import { useToggleState } from 'react-stately'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'

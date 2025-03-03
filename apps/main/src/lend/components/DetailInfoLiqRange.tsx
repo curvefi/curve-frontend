@@ -1,12 +1,9 @@
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
-
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import { Chip } from '@ui/Typography'
 import Button from '@ui/Button'
 import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
@@ -33,7 +30,7 @@ const DetailInfoLiqRange = ({
 }: {
   rChainId: ChainId
   rOwmId: string
-  detailInfoLeverage?: React.ReactNode
+  detailInfoLeverage?: ReactNode
   bands: [number, number]
   healthMode: HealthMode | null
   isEditLiqRange?: boolean

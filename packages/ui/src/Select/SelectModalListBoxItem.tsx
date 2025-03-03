@@ -1,6 +1,5 @@
 import type { Node } from '@react-types/shared'
 import type { ListState } from 'react-stately'
-
 import { useOption } from 'react-aria'
 import styled from 'styled-components'
 import { useRef } from 'react'

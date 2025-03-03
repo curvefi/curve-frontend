@@ -4,7 +4,6 @@ import { devtools, persist } from 'zustand/middleware'
 import { type PersistOptions } from 'zustand/middleware/persist'
 import merge from 'lodash/merge'
 import debounce from 'lodash/debounce'
-
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
 import createNetworksSlice, { NetworksSlice } from '@/dex/store/createNetworksSlice'
 import createGasSlice, { GasSlice } from '@/dex/store/createGasSlice'

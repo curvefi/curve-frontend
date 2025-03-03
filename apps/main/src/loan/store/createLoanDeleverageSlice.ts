@@ -2,9 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_STATUS,

@@ -2,11 +2,9 @@ import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
-
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
-
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
 import { useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRouter'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'

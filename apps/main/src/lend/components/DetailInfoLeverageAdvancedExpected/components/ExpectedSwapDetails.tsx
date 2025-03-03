@@ -1,5 +1,5 @@
 import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-import React, { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import networks from '@/lend/networks'
 import Box from '@ui/Box'
@@ -26,7 +26,7 @@ const ExpectedSwapDetails = ({
   DetailInfoLeverageExpectedProps,
   'rChainId' | 'swapFromAmounts' | 'swapToAmounts' | 'routeImage' | 'avgPrice'
 > & {
-  label: React.ReactNode
+  label: ReactNode
   loading: boolean
   swapFromSymbol: string
   swapFromAddress: string

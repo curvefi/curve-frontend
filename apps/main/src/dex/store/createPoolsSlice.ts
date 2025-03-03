@@ -16,7 +16,6 @@ import type {
   TimeOptions,
 } from '@ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
-
 import { PromisePool } from '@supercharge/promise-pool'
 import countBy from 'lodash/countBy'
 import produce from 'immer'
@@ -25,7 +24,6 @@ import chunk from 'lodash/chunk'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
-
 import { INVALID_ADDRESS } from '@/dex/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
 import { log } from '@ui-kit/lib/logging'

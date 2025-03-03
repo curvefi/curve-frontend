@@ -1,11 +1,9 @@
 import type { FormStatus, FormValues, RoutesAndOutput, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import useStore from '@/dex/store/useStore'
-
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'

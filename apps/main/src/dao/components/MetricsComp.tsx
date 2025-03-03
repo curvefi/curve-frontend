@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-
 import Box from 'ui/src/Box/Box'
 import Loader from 'ui/src/Loader/Loader'
+import { ReactNode } from 'react'
 
 interface Props {
   loading: boolean
   title: string
-  data: React.ReactNode
+  data: ReactNode
   className?: string
   row?: boolean
 }

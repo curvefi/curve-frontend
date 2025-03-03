@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { breakpoints, formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
 import Tooltip, { TooltipIcon } from '@ui/Tooltip'

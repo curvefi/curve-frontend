@@ -1,5 +1,5 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
 import Box from 'ui/src/Box/Box'
 import Loader from 'ui/src/Loader/Loader'
 
@@ -7,17 +7,18 @@ type Variant = 'error' | 'warning' | 'success' | ''
 type Size = 'xs' | 'sm' | 'md' | 'lg'
 
 type Props = {
-  action?: React.ReactNode
+  children: ReactNode
+  action?: ReactNode
   className?: string
   isBold?: boolean | null
   isDivider?: boolean
   isMultiLine?: boolean
-  label?: string | React.ReactNode
+  label?: ReactNode
   loading?: boolean
   loadingSkeleton?: [number, number]
   size?: Size
   textLeft?: boolean
-  tooltip?: React.ReactNode
+  tooltip?: ReactNode
   variant?: Variant
 }
 
@@ -34,7 +35,7 @@ const DetailInfo = ({
   children,
   size = 'sm',
   ...props
-}: React.PropsWithChildren<Props>) => {
+}: Props) => {
   const classNames = `${className} ${isDivider ? 'divider' : ''}`
 
   return (

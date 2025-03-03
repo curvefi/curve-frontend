@@ -1,6 +1,5 @@
 import type { Params } from 'react-router'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import { ChainId, Curve, CollateralDataCacheOrApi, LoanDetails, TitleKey, TitleMapper } from '@/loan/types/loan.types'
 

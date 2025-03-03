@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils/responsive'
 import Box from 'ui/src/Box'
 import Image from 'next/image'

@@ -1,10 +1,7 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { TITLE } from '@/lend/constants'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import { ContentWrapper, DarkContent, SubTitle, Wrapper } from '@/lend/components/DetailsMarket/styles'
 import Box from '@ui/Box'
 import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
@@ -19,6 +16,7 @@ import MarketParameters from '@/lend/components/DetailsMarket/components/MarketP
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { MarketListType, PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import { ReactNode } from 'react'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper, userActiveKey } = pageProps
@@ -31,7 +29,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
     size: 'md' as const,
   }
 
-  const contents: { titleKey: TitleKey; content: React.ReactNode }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode }[][] = [
     [
       { titleKey: TITLE.tokenCollateral, content: <CellToken {...cellProps} type="collateral" module="borrow" /> },
       { titleKey: TITLE.tokenBorrow, content: <CellToken {...cellProps} type="borrowed" module="borrow" /> },

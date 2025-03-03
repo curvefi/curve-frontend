@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 type Props = {
@@ -6,8 +7,8 @@ type Props = {
   isAlignRight?: boolean
   isBorderBottom?: boolean
   isOneLine?: boolean
-  label?: string | React.ReactNode
-  children?: React.ReactNode
+  label?: ReactNode
+  children?: ReactNode
 }
 
 const Stats = ({
@@ -18,7 +19,7 @@ const Stats = ({
   isOneLine,
   label,
   children,
-}: React.PropsWithChildren<Props>) => {
+}: Props) => {
   const classNames = `${className} stats`.trim()
   return (
     <DetailInfo

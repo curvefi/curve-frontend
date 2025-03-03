@@ -1,11 +1,7 @@
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
-
-import React from 'react'
 import styled from 'styled-components'
-
 import { focusVisible } from '@ui/utils'
 import { shortenTokenAddress } from '@ui/utils'
-
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'

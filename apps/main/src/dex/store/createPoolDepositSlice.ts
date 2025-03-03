@@ -10,10 +10,8 @@ import type {
   FormValues,
   LoadMaxAmount,
 } from '@/dex/components/PagePool/Deposit/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,

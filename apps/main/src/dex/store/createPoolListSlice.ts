@@ -11,11 +11,9 @@ import type {
 } from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
-
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
-
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { parseSearchTermResults } from '@/dex/components/PagePoolList/utils'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'

@@ -8,12 +8,10 @@ import type {
   SearchTermResult,
   TableSettings,
 } from '@/lend/components/PageMarketList/types'
-
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
 import uniqBy from 'lodash/uniqBy'
-
 import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/lend/components/PageMarketList/utils'
 import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
 import { TITLE } from '@/lend/constants'

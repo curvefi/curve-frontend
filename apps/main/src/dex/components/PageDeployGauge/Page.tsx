@@ -1,15 +1,11 @@
 import type { NextPage } from 'next'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
-
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import DeployGauge from '@/dex/components/PageDeployGauge/index'
-
 import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import { CurveApi } from '@/dex/types/main.types'

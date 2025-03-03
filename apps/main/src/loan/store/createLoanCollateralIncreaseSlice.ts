@@ -2,7 +2,6 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
-
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,

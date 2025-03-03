@@ -1,11 +1,8 @@
 import { LiquidityDataProps } from './types'
-
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import networks from '@/lend/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'

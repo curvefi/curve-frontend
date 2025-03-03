@@ -1,7 +1,5 @@
 import type { TimeOptions } from './types'
-
 import styled from 'styled-components'
-
 import DialogSelectContent from 'ui/src/Chart/DialogSelectTimeOptionContent'
 import Popover, { Popover2Dialog } from 'ui/src/Popover2'
 

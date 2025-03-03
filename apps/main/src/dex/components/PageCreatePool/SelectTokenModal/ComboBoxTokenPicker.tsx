@@ -30,7 +30,7 @@ type Props = {
   blockchainId: string
   selectedAddress: string
   tokens: CreateToken[]
-  onSelectionChange: (selectedAddress: React.Key) => void
+  onSelectionChange: (selectedAddress: Key) => void
 }
 
 type TokenQueryType = '' | 'LOADING' | 'ERROR' | 'DISABLED'

@@ -1,7 +1,4 @@
-import React from 'react'
-
 import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
-
 import Chip from '@ui/Typography/Chip'
 import Box from '@ui/Box'
 import CampaignRewardsRow from '@/lend/components/CampaignRewardsRow'

@@ -1,9 +1,8 @@
 import type { AriaTooltipProps } from 'react-aria'
+import { mergeProps, useTooltip } from 'react-aria'
 import type { TooltipTriggerState } from 'react-stately'
 import type { IsClosePlacement, TooltipProps } from 'ui/src/Tooltip/types'
-
-import React, { useCallback } from 'react'
-import { useTooltip, mergeProps } from 'react-aria'
+import { ReactNode, useCallback } from 'react'
 import styled from 'styled-components'
 
 const Tooltip = ({
@@ -11,14 +10,13 @@ const Tooltip = ({
   state,
   increaseZIndex = false,
   ...props
-}: React.PropsWithChildren<
-  AriaTooltipProps &
-    TooltipProps & {
-      buttonNode: HTMLButtonElement | null
-      state: TooltipTriggerState
-      increaseZIndex?: boolean
-    }
->) => {
+}: AriaTooltipProps &
+  TooltipProps & {
+    children: ReactNode
+    buttonNode: HTMLButtonElement | null
+    state: TooltipTriggerState
+    increaseZIndex?: boolean
+  }) => {
   const { tooltipProps } = useTooltip(props, state)
   const charCount = typeof props.children === 'string' ? props.children.length : null
 

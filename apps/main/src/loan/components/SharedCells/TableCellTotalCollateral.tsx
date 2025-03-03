@@ -2,11 +2,9 @@ import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import useStore from '@/loan/store/useStore'
-
 import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'

@@ -1,6 +1,4 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import DialogSelectContent from '@/dex/components/PageDeployGauge/components/DialogSelectContent'
 import Popover, { Popover2Dialog } from '@ui/Popover2'
 

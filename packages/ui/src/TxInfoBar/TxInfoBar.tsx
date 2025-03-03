@@ -1,13 +1,13 @@
 import styled from 'styled-components'
-
 import { RCExternal } from 'ui/src/images'
 import { ExternalLink } from 'ui/src/Link'
 import IconButton from 'ui/src/IconButton'
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'
+import { ReactNode } from 'react'
 
 type Props = {
-  description: string | React.ReactNode
+  description: ReactNode
   txHash: string | string[]
   onClose?: () => void
 }

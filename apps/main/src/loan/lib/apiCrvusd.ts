@@ -4,7 +4,6 @@ import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/P
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import { BrowserProvider } from 'ethers'
 import PromisePool from '@supercharge/promise-pool'
-
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
 import {
   getChartBandBalancesData,

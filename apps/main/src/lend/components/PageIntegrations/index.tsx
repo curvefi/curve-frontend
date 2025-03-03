@@ -1,19 +1,16 @@
 import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
-
 import { Trans } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/lend/constants'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { getPath } from '@/lend/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'

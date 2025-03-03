@@ -1,11 +1,8 @@
 import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
-
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dex/store/useStore'
-
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import Button from '@ui/Button'
 import ChartWrapper from '@ui/Chart'

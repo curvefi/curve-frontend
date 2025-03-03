@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts'
+import { ReactNode } from 'react'
 
 type Props<T> = {
   data: T[]
   dataKey: keyof T & string
-  CustomTooltip: React.ComponentType<TooltipProps<any, any>>
+  CustomTooltip: (props: TooltipProps<any, any>) => ReactNode
 }
 
 const COLORS = [
@@ -67,7 +68,7 @@ const BarChartComponent = <T extends Record<string, any>>({ data, dataKey, Custo
           />
           <Tooltip content={(props) => <CustomTooltip {...props} />} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={dataKey as string} label={false}>
-            {data.map((entry, index) => (
+            {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

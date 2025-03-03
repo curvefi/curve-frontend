@@ -1,14 +1,11 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
-
 import { formatNumber } from '@ui/utils'
-
 import Icon from 'ui/src/Icon'
 import Box from 'ui/src/Box'
 import Loader from '@ui/Loader'
 import Button from 'ui/src/Button'
-
 import NumberField from '@/loan/components/PageCrvUsdStaking/components/InputComp/NumberField'
 
 type InputCompProps = {

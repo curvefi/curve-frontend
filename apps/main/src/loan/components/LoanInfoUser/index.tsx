@@ -1,15 +1,12 @@
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { getHealthMode } from '@/loan/components/DetailInfoHealth'
 import useStore from '@/loan/store/useStore'
-
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
 import Box from '@ui/Box'
 import PoolInfoData from '@/loan/components/ChartOhlcWrapper'

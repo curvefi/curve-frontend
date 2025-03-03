@@ -1,11 +1,8 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
-
 import Box from '@ui/Box'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {

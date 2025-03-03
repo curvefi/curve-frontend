@@ -2,7 +2,7 @@ import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoan
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/CollateralDecrease/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralDecreaseSlice'
@@ -57,7 +57,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const network = networks[rChainId]
   const { chainId, haveSigner } = curveProps(curve)

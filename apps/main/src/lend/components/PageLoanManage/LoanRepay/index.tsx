@@ -1,11 +1,9 @@
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import type { Step } from '@ui/Stepper/types'
-
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
@@ -18,7 +16,6 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
 import useStore from '@/lend/store/useStore'
-
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
@@ -63,7 +60,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { state } = userLoanDetails || {}

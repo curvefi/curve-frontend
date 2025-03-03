@@ -1,5 +1,4 @@
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
-
 import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 import { BasePool } from '@/dex/types/main.types'
 

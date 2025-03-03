@@ -1,14 +1,11 @@
 import type { InputVariant } from '@ui/InputComp/types'
-
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useState } from 'react'
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import { delayAction } from '@/lend/utils/helpers'
 import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import { Chip } from '@ui/Typography'
 import { Radio, RadioGroup } from '@ui/Radio'
 import Box from '@ui/Box'
@@ -27,8 +24,9 @@ type FormValues = {
 }
 
 type Props = {
+  children?: ReactNode
   className?: string
-  buttonIcon?: React.ReactNode
+  buttonIcon?: ReactNode
   maxSlippage: string
 }
 
@@ -55,7 +53,7 @@ function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: str
  * If saved, it is custom slippage and should be used globally.
  * If custom slippage is not saved, set 0.1 for stablecoin and 0.5 for crypto.
  */
-export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: React.PropsWithChildren<Props>) => {
+export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
   const isMobile = useStore((state) => state.isMobile)
 
@@ -92,7 +90,7 @@ export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: React.P
     setFormValues(updatedFormValues)
   }
 
-  const handleInpChangeCustomSlippage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInpChangeCustomSlippage = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const updatedFormValues: FormValues = {
       selected: 'custom',

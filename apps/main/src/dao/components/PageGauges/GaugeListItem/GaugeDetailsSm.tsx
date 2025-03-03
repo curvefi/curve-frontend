@@ -1,11 +1,8 @@
-import React from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
 import networks from '@/dao/networks'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-
 import { ExternalLink } from '@ui/Link'
 import Box from '@ui/Box'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'

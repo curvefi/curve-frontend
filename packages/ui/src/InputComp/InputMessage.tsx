@@ -1,8 +1,6 @@
 import type { InputVariant } from './types'
-
 import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { useInputContext } from './InputProvider'
 import Icon from 'ui/src/Icon/Icon'
 

@@ -1,13 +1,10 @@
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
 import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
-
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
-
 import Button from '@ui/Button'
 import ChartWrapper from '@ui/Chart'
 import Icon from '@ui/Icon'

@@ -1,7 +1,5 @@
 import type { InputProps } from './types'
-
 import { forwardRef, useRef } from 'react'
-
 import { StyledInput } from './styles'
 
 const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string }>(

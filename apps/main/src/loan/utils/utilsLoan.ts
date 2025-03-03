@@ -1,5 +1,4 @@
 import type { StepStatus } from '@ui/Stepper/types'
-
 import { formatNumber } from '@ui/utils'
 import { Llamma } from '@/loan/types/loan.types'
 

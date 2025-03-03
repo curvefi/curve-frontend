@@ -7,7 +7,6 @@ import type {
   ChartColors,
 } from './types'
 import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
-
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'

@@ -10,10 +10,8 @@ import type {
   TimeOptions,
   VolumeData,
 } from './types'
-
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import Button from 'ui/src/Button/Button'
 import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'

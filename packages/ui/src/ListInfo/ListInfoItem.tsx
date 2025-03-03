@@ -1,10 +1,7 @@
 import type { TooltipProps } from 'ui/src/Tooltip/types'
-
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactNode } from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils'
-
 import Chip from 'ui/src/Typography/Chip'
 import Icon from 'ui/src/Icon'
 
@@ -12,11 +9,11 @@ type Props = TooltipProps & {
   className?: string
   isFull?: boolean
   as?: string
-  mainValue?: string | React.ReactNode
-  title: string | React.ReactNode
+  mainValue?: ReactNode
+  title: ReactNode
   titleNoCap?: boolean
   titleDescription?: string
-  tooltip?: string | React.ReactNode
+  tooltip?: ReactNode
   tooltipProps?: TooltipProps
 }
 
