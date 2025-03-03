@@ -6,24 +6,31 @@ import { userMarketValidationGroup } from './validation/market-validation'
 
 async function _fetchUserInfoPositionLeverage({
   market,
+  rOwmId,
   userAddress,
 }: {
   market: OneWayMarketTemplate
+  rOwmId: string
   userAddress: string
 }) {
   return market.currentLeverage(userAddress)
 }
 
 const positionLeverageValidationSuite = createValidationSuite(
-  (params: { market: OneWayMarketTemplate; userAddress: string }) => {
+  (params: { market: OneWayMarketTemplate; rOwmId: string; userAddress: string }) => {
     userMarketValidationGroup(params)
     userAddressValidationGroup(params)
   },
 )
 
 export const { useQuery: useUserInfoPositionLeverage } = queryFactory({
-  queryKey: (params: { market: OneWayMarketTemplate; userAddress: string }) =>
-    ['userInfoPositionLeverage', { market: params.market }, { userAddress: params.userAddress }] as const,
+  queryKey: (params: { market: OneWayMarketTemplate; rOwmId: string; userAddress: string }) =>
+    [
+      'userInfoPositionLeverage',
+      { market: params.market },
+      { rOwmId: params.rOwmId },
+      { userAddress: params.userAddress },
+    ] as const,
   queryFn: _fetchUserInfoPositionLeverage,
   staleTime: '5m',
   validationSuite: positionLeverageValidationSuite,

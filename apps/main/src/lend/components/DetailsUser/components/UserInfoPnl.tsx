@@ -5,10 +5,18 @@ import styled from 'styled-components'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 import { useUserInfoPositionPnl } from '@/lend/entities/userinfo-position-pnl'
 
-export const UserInfoPnl = ({ market, api }: { market: OneWayMarketTemplate; api: Api | null }) => {
+export const UserInfoPnl = ({
+  market,
+  api,
+  rOwmId,
+}: {
+  market: OneWayMarketTemplate
+  api: Api | null
+  rOwmId: string
+}) => {
   const { signerAddress } = api ?? {}
 
-  const { data: pnl } = useUserInfoPositionPnl({ market, userAddress: signerAddress ?? '' })
+  const { data: pnl } = useUserInfoPositionPnl({ market, rOwmId, userAddress: signerAddress ?? '' })
 
   return <Pnl pnl={pnl?.percentage}>{pnl ? formatNumber(+pnl.percentage, { ...FORMAT_OPTIONS.PERCENT }) : '-'}</Pnl>
 }

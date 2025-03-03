@@ -6,24 +6,31 @@ import { userMarketValidationGroup } from './validation/market-validation'
 
 async function _fetchUserInfoPositionPnl({
   market,
+  rOwmId,
   userAddress,
 }: {
   market: OneWayMarketTemplate
+  rOwmId: string
   userAddress: string
 }) {
   return market.currentPnL(userAddress)
 }
 
 const positionPnlValidationSuite = createValidationSuite(
-  (params: { market: OneWayMarketTemplate; userAddress: string }) => {
+  (params: { market: OneWayMarketTemplate; rOwmId: string; userAddress: string }) => {
     userMarketValidationGroup(params)
     userAddressValidationGroup(params)
   },
 )
 
 export const { useQuery: useUserInfoPositionPnl } = queryFactory({
-  queryKey: (params: { market: OneWayMarketTemplate; userAddress: string }) =>
-    ['userInfoPositionPnl', { market: params.market }, { userAddress: params.userAddress }] as const,
+  queryKey: (params: { market: OneWayMarketTemplate; rOwmId: string; userAddress: string }) =>
+    [
+      'userInfoPositionPnl',
+      { market: params.market },
+      { rOwmId: params.rOwmId },
+      { userAddress: params.userAddress },
+    ] as const,
   queryFn: _fetchUserInfoPositionPnl,
   staleTime: '5m',
   validationSuite: positionPnlValidationSuite,

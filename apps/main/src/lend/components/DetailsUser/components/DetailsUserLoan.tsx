@@ -58,8 +58,8 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     [
       { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
-      { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl market={market!} api={api} /> },
-      { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage market={market!} api={api} /> },
+      { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl market={market!} api={api} rOwmId={rOwmId} /> },
+      { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage market={market!} api={api} rOwmId={rOwmId} /> },
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <CellLiquidationRange {...cellProps} type='range' /> },
