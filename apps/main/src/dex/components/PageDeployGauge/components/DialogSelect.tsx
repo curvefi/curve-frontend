@@ -2,15 +2,15 @@ import styled from 'styled-components'
 import DialogSelectContent from '@/dex/components/PageDeployGauge/components/DialogSelectContent'
 import Popover, { Popover2Dialog } from '@ui/Popover2'
 
-type Props = {
-  currentData: string | null
-  data: string[]
+type Props<T> = {
+  currentData: T | null
+  data: T[]
   isDisabled: boolean
   label: string
-  setCurrentData: (data: string) => void
+  setCurrentData: (data: T) => void
 }
 
-const DialogSelect = ({ currentData, data, setCurrentData, isDisabled, label }: Props) => (
+const DialogSelect = <T extends string>({ currentData, data, setCurrentData, isDisabled, label }: Props<T>) => (
   <Popover
     buttonProps={{ isDisabled }}
     placement="bottom"

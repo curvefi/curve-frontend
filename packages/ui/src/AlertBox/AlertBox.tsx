@@ -1,19 +1,11 @@
 import type { AlertBoxProps } from 'ui/src/AlertBox/types'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 
-const AlertBox = ({
-  className,
-  alertType,
-  children,
-  title,
-  limitHeight,
-  handleBtnClose,
-  ...props
-}: AlertBoxProps) => {
+const AlertBox = ({ className, alertType, children, title, limitHeight, handleBtnClose, ...props }: AlertBoxProps) => {
   const [enabledHeightToggle, setEnabledHeightToggle] = useState(false)
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =

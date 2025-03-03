@@ -48,12 +48,12 @@ export type DeployGaugeSlice = {
   [sliceKey]: SliceState & {
     setCurveNetworks: () => void
     setSidechainGauge: (bool: boolean) => void
-    setCurrentPoolType: (poolType: PoolType | string) => void
+    setCurrentPoolType: (poolType: PoolType) => void
     setCurrentSidechain: (chainName: string) => void
     setPoolAddress: (poolAddress: string) => void
     setLpTokenAddress: (lpTokenAddress: string) => void
     setLinkPoolAddress: (linkPoolAddress: string) => void
-    setSidechainNav: (number: number) => void
+    setSidechainNav: (number: SidechainNav) => void
     deployGauge: (curve: CurveApi, gaugeType: GaugeType, deploymentType: DeploymentType, isLite?: boolean) => void
     resetState: () => void
   }

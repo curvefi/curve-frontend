@@ -11,19 +11,17 @@ function SelectModal<T>({
   state,
   selectSearchOptions,
   ...props
-}:
-  AriaOverlayProps & {
-    menuProps: AriaListBoxOptions<T>
-    minWidth?: string
-    mobileRightAlign?: boolean
-    popoverRef?: RefObject<HTMLDivElement | null>
-    selectSearchOptions?: {
-      onSelectionChange: (key: Key) => void
-      searchFilterKeys: string[]
-    }
-    state: SelectState<T>
+}: AriaOverlayProps & {
+  menuProps: AriaListBoxOptions<T>
+  minWidth?: string
+  mobileRightAlign?: boolean
+  popoverRef?: RefObject<HTMLDivElement | null>
+  selectSearchOptions?: {
+    onSelectionChange: (key: Key) => void
+    searchFilterKeys: string[]
   }
-) {
+  state: SelectState<T>
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const { mobileRightAlign, popoverRef = ref, minWidth } = props
   usePreventScroll()

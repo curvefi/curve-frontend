@@ -1,17 +1,25 @@
-// @ts-nocheck
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
 import { buttonOutlinedStyles } from 'ui/src/Button/styles'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 import DividerHorizontal from 'ui/src/DividerHorizontal'
-import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
+import SelectIconBtnDelete, { SelectIconBtnDeleteProps } from 'ui/src/Select/SelectIconBtnDelete'
+import { AriaButtonOptions } from '@react-aria/button'
+import { CSSProperties, ReactNode, RefObject } from 'react'
 
 export type ButtonVariant = 'outlined'
 
-function Popover2Button({ buttonVariant, ...props }) {
+export type Popover2ButtonProps = AriaButtonOptions<'button'> &
+  SelectIconBtnDeleteProps & {
+    buttonVariant?: ButtonVariant
+    buttonRef: RefObject<HTMLButtonElement | null>
+    buttonStyles?: CSSProperties
+    children: ReactNode
+  }
+
+function Popover2Button({ buttonVariant, ...props }: Popover2ButtonProps) {
   const ref = props.buttonRef
   const { buttonProps } = useButton(props, ref)
-
   return (
     <Wrapper variant={buttonVariant}>
       <Button {...buttonProps} variant={buttonVariant} ref={ref} style={props.buttonStyles}>

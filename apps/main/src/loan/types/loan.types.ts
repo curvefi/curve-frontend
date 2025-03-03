@@ -163,9 +163,6 @@ export interface CollateralAlert extends TooltipProps {
 }
 
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<
-  TITLE,
-  { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }
->
+export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

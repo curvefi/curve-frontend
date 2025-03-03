@@ -92,8 +92,8 @@ const FieldDatePicker = ({
         minValue={toCalendarDate(minUtcDate)}
         maxValue={maxUtcDate ? toCalendarDate(maxUtcDate) : null}
         value={utcDate}
-        onChange={(val: DateValue) => {
-          if (curve) handleInpEstUnlockedDays(curve, val)
+        onChange={(val) => {
+          if (curve && val) handleInpEstUnlockedDays(curve, val)
         }}
         quickActionValue={quickActionValue}
         quickActions={

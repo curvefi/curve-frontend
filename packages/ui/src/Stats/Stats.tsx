@@ -11,15 +11,7 @@ type Props = {
   children?: ReactNode
 }
 
-const Stats = ({
-  className,
-  description,
-  isAlignRight,
-  isBorderBottom,
-  isOneLine,
-  label,
-  children,
-}: Props) => {
+const Stats = ({ className, description, isAlignRight, isBorderBottom, isOneLine, label, children }: Props) => {
   const classNames = `${className} stats`.trim()
   return (
     <DetailInfo

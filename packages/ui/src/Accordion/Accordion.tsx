@@ -28,14 +28,12 @@ const Accordion = ({
   defaultOpen,
   isHideTopBorder,
   ...props
-}:
-  AriaButtonProps & {
-    className?: string
-    btnLabel: ReactNode
-    defaultOpen?: boolean
-    isHideTopBorder?: boolean
-  }
-) => {
+}: AriaButtonProps & {
+  className?: string
+  btnLabel: ReactNode
+  defaultOpen?: boolean
+  isHideTopBorder?: boolean
+}) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
   const [show, setShow] = useState(defaultOpen ?? false)

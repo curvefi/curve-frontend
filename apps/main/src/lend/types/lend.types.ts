@@ -278,7 +278,4 @@ export type RouterProps = {
 export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<
-  TITLE,
-  { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }
->
+export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>

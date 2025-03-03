@@ -2,12 +2,12 @@ import type { AriaDialogProps } from 'react-aria'
 import { useDialog } from 'react-aria'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 import styled from 'styled-components'
-import { ReactNode, useRef } from 'react'
+import { cloneElement, ReactElement, ReactNode, useRef } from 'react'
 
-interface DialogProps extends AriaDialogProps {
+export interface DialogProps extends AriaDialogProps {
   className?: string
   title?: ReactNode
-  children: ReactNode
+  children: ReactElement<AriaDialogProps>
 }
 
 function Popover2Dialog({ title, children, ...props }: DialogProps) {
@@ -21,7 +21,6 @@ function Popover2Dialog({ title, children, ...props }: DialogProps) {
           {title}
         </h3>
       )}
-      {/* @ts-ignore */}
       {cloneElement(children, props)}
     </Wrapper>
   )

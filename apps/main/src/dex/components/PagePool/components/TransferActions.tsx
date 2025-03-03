@@ -16,12 +16,10 @@ const TransferActions = ({
   poolData,
   routerParams,
   userPoolBalances,
-}:
-  {
-    loading?: boolean
-    children: ReactNode
-  } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed' | 'userPoolBalances'>
-) => {
+}: {
+  loading?: boolean
+  children: ReactNode
+} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed' | 'userPoolBalances'>) => {
   const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])

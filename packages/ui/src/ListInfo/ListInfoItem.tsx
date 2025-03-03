@@ -1,11 +1,12 @@
 import type { TooltipProps } from 'ui/src/Tooltip/types'
-import { PropsWithChildren, ReactNode } from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 import { breakpoints } from 'ui/src/utils'
 import Chip from 'ui/src/Typography/Chip'
 import Icon from 'ui/src/Icon'
 
 type Props = TooltipProps & {
+  children: ReactNode
   className?: string
   isFull?: boolean
   as?: string
@@ -28,7 +29,7 @@ const ListInfoItem = ({
   tooltip,
   tooltipProps,
   ...props
-}: PropsWithChildren<Props>) => {
+}: Props) => {
   const { mainValue } = props
   const isMain = 'mainValue' in props
   const parsedTitleOpacity = isMain ? 1 : null

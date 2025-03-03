@@ -31,9 +31,7 @@ import InputProvider from '@ui/InputComp'
 import ShadowedBox from '@ui/ShadowedBox'
 import { CSSProperties, ReactNode, RefObject, useRef } from 'react'
 
-const Popover = (
-  props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>, children: ReactNode },
-) => {
+const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null)
   const { popoverRef = ref, isOpen, onClose, children } = props
 
@@ -113,9 +111,7 @@ function ListBox<T extends {}>(
   )
 }
 
-function Button(
-  props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties },
-) {
+function Button(props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties }) {
   const ref = props.buttonRef
   const { buttonProps } = useButton(props, ref)
 

@@ -7,11 +7,7 @@ type ItemCompProps = {
   $marginTop?: string
 }
 
-const Item = ({
-  label,
-  value,
-  ...props
-}: ItemCompProps & { label: ReactNode; value: ReactNode }) => (
+const Item = ({ label, value, ...props }: ItemCompProps & { label: ReactNode; value: ReactNode }) => (
   <ItemComp {...props}>
     <span>{label}</span>
     <span>{value}</span>

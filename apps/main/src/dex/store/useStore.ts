@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { create, type GetState, type SetState } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { type PersistOptions } from 'zustand/middleware/persist'
@@ -81,7 +80,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   partialize: ({ storeCache }: State) => ({ storeCache }),
   merge,
   storage: {
-    getItem: (name) => JSON.parse(localStorage.getItem(name)),
+    getItem: (name) => JSON.parse(localStorage.getItem(name)!),
     // debounce storage to avoid performance issues serializing too often. The item can be large.
     setItem: debounce((name, value) => {
       const json = JSON.stringify(value)
