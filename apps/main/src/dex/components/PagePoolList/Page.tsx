@@ -1,3 +1,4 @@
+'use client'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'

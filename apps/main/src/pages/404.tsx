@@ -1,11 +1,10 @@
 import Error404 from '@ui/Error404'
 import type { NextPage } from 'next'
-
-import DocumentHead from '@/dex/layout/default/DocumentHead'
+import { t } from '@ui-kit/lib/i18n'
 
 const Page404: NextPage = () => (
   <>
-    <DocumentHead title="Error 404" />
+    <title>{t`Error 404` + ' - Curve'}</title>
     <Error404 />
   </>
 )

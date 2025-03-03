@@ -1,6 +1,5 @@
 import type { FormValues } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
-import type { Params } from 'react-router'
 import { useFocusRing } from '@react-aria/focus'
 import { Trans } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
@@ -16,7 +15,7 @@ import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
-import { ChainId, NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
@@ -26,7 +25,7 @@ const IntegrationsComp = ({
   rChainId,
 }: {
   integrationsTags: IntegrationsTags
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
   const { push: navigate } = useRouter()

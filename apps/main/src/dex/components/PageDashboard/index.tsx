@@ -1,5 +1,4 @@
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
-import type { Params } from 'react-router'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +22,7 @@ import TableRowMobile from '@/dex/components/PageDashboard/components/TableRowMo
 import TableRowNoResult from '@/dex/components/PageDashboard/components/TableRowNoResult'
 import TableSortDialog from '@/dex/components/PageDashboard/components/TableSortDialog'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { CurveApi, ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
 
 const Dashboard = ({
   curve,
@@ -32,7 +31,7 @@ const Dashboard = ({
 }: {
   curve: CurveApi | null
   rChainId: ChainId
-  params: Readonly<Params<string>>
+  params: NetworkUrlParams
 }) => {
   const isSubscribed = useRef(false)
   const { push: navigate } = useRouter()

@@ -37,7 +37,7 @@ export type AppName = (typeof AppNames)[number]
 
 const getRouterRoot = (app: AppName) => ('lend' === app ? '/#' : '')
 
-export const getAppRoot = (app: AppName) =>
+const getAppRoot = (app: AppName) =>
   `${
     typeof window === 'undefined'
       ? ['development', 'test'].includes(process.env.NODE_ENV!)

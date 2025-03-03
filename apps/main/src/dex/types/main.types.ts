@@ -1,6 +1,5 @@
 import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
-import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
@@ -22,9 +21,8 @@ export type NetworkConfigFromApi = {
 
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { pool: string }
-export type PoolTransferUrlParams = PoolUrlParams & { transfer: string }
-export type LockedCrvUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
-export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & PoolTransferUrlParams & LockedCrvUrlParams>
+export type FormUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
+export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & FormUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
   isLite: boolean
@@ -77,7 +75,17 @@ export type CurrencyReserves = {
   totalUsd: string
 }
 export type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
-export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
+export const FormTypes = [
+  'deposit',
+  'withdraw',
+  'swap',
+  'adjust_crv',
+  'adjust_date',
+  'create',
+  'manage-gauge',
+  '',
+] as const
+export type RFormType = (typeof FormTypes)[number]
 export type RouterParams = {
   rChainId: ChainId
   rNetwork: NetworkEnum

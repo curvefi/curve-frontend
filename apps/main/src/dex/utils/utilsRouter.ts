@@ -1,13 +1,13 @@
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { useMemo } from 'react'
-import { NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
+import { FormTypes, NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
 
 export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
   `/dex/${network ? `/${network}` : ''}${rerouteRoute}`
 
 export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean) {
-  const { pool, transfer, formType } = params
+  const { pool, formType } = params
   const paths = window.location.hash.substring(2).split('/')
 
   const network = useNetworkFromUrl()
@@ -33,30 +33,9 @@ export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean)
 
   let rFormType: RouterParams['rFormType'] = ''
 
-  // formType
-  if (transfer) {
-    const parsedTransfer = transfer.toLowerCase()
-    if (parsedTransfer === 'deposit') {
-      rFormType = 'deposit'
-    } else if (parsedTransfer === 'withdraw') {
-      rFormType = 'withdraw'
-    } else if (parsedTransfer === 'swap') {
-      rFormType = 'swap'
-    } else if (parsedTransfer === 'manage-gauge') {
-      rFormType = 'manage-gauge'
-    }
-  }
-
-  // locked crv formType
   if (formType?.[0]) {
     const type = formType[0].toLowerCase()
-    if (type === 'adjust_crv') {
-      rFormType = 'adjust_crv'
-    } else if (type === 'adjust_date') {
-      rFormType = 'adjust_date'
-    } else if (type === 'create') {
-      rFormType = 'create'
-    }
+    rFormType = FormTypes.find((t) => t == type) ?? ''
   }
 
   const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
