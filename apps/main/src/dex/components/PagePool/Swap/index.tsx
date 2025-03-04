@@ -36,7 +36,6 @@ import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
-import type { Address } from '@ui-kit/utils'
 import { toTokenOption } from '@/dex/utils'
 
 const Swap = ({
