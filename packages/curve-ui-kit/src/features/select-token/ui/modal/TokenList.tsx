@@ -69,9 +69,10 @@ export const TokenList = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (search !== debouncedSearch) {
-        setDebouncedSearch(search)
-        onSearch(search)
+      const searchTrimmed = search.trim()
+      if (searchTrimmed !== debouncedSearch) {
+        setDebouncedSearch(searchTrimmed)
+        onSearch(searchTrimmed)
       }
     }, 200)
     return () => clearTimeout(timer)
