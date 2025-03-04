@@ -1,10 +1,10 @@
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import type { CellContext } from '@tanstack/react-table'
-import { formatNumber, getImageBaseUrl } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import TokenIcon from '@/loan/components/TokenIcon'
 import Tooltip from '@mui/material/Tooltip'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 export const PriceCell = ({ getValue, row }: CellContext<LlamaMarket, number>) => {
   const value = getValue()
@@ -20,7 +20,7 @@ export const PriceCell = ({ getValue, row }: CellContext<LlamaMarket, number>) =
       <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
-          <TokenIcon imageBaseUrl={getImageBaseUrl(chain)} address={address} token={symbol} size="mui-md" />
+          <TokenIcon blockchainId={chain} address={address} symbol={symbol} size="mui-md" />
         </Stack>
       </Tooltip>
       <Tooltip title={usdTooltip}>
