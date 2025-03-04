@@ -1,20 +1,11 @@
-import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api } from '@/lend/types/lend.types'
+import useStore from '@/lend/store/useStore'
 
-import { useUserInfoPositionLeverage } from '@/lend/entities/userinfo-position-leverage'
+export const UserInfoLeverage = ({ userActiveKey }: { userActiveKey: string }) => {
+  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
-export const UserInfoLeverage = ({
-  market,
-  rOwmId,
-  api,
-}: {
-  market: OneWayMarketTemplate
-  rOwmId: string
-  api: Api | null
-}) => {
-  const { signerAddress } = api ?? {}
+  const { details, error } = resp ?? {}
 
-  const { data: leverage } = useUserInfoPositionLeverage({ market, rOwmId, userAddress: signerAddress ?? '' })
+  if (error) return '?'
 
-  return <>{leverage ? `${Number(leverage).toFixed(2)}x` : '-'}</>
+  return <>{details?.leverage ? `${Number(details.leverage).toFixed(2)}x` : '-'}</>
 }

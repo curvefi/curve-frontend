@@ -1,24 +1,19 @@
-import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api } from '@/lend/types/lend.types'
 import styled from 'styled-components'
 
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
-import { useUserInfoPositionPnl } from '@/lend/entities/userinfo-position-pnl'
+import useStore from '@/lend/store/useStore'
+export const UserInfoPnl = ({ userActiveKey }: { userActiveKey: string }) => {
+  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
-export const UserInfoPnl = ({
-  market,
-  api,
-  rOwmId,
-}: {
-  market: OneWayMarketTemplate
-  api: Api | null
-  rOwmId: string
-}) => {
-  const { signerAddress } = api ?? {}
+  const { details, error } = resp ?? {}
 
-  const { data: pnl } = useUserInfoPositionPnl({ market, rOwmId, userAddress: signerAddress ?? '' })
+  if (error) return '?'
 
-  return <Pnl pnl={pnl?.percentage}>{pnl ? formatNumber(+pnl.percentage, { ...FORMAT_OPTIONS.PERCENT }) : '-'}</Pnl>
+  return (
+    <Pnl pnl={details?.pnl?.percentage}>
+      {details?.pnl ? formatNumber(+details.pnl.percentage, { ...FORMAT_OPTIONS.PERCENT }) : '-'}
+    </Pnl>
+  )
 }
 
 const Pnl = styled.span<{ pnl: string | undefined }>`
