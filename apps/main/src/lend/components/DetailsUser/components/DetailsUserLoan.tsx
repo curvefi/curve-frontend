@@ -40,6 +40,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
   const { signerAddress } = api ?? {}
 
+  const pricesApiAvailable = networks[rChainId]?.pricesData
   const showConnectWallet = typeof signerAddress !== 'undefined' && !signerAddress
   const foundLoan = typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists
   const isSoftLiquidation = userLoanDetails?.status?.colorKey === 'soft_liquidation'
@@ -58,19 +59,23 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     [
       { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
-      { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
-      { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} /> },
+      ...(pricesApiAvailable ? [
+        { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
+        { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} /> },
+      ] : []),
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <CellLiquidationRange {...cellProps} type='range' /> },
       { titleKey: TITLE.liquidationBandRange, content: <CellLiquidationRange {...cellProps} type='band' />, show: isAdvancedMode },
       { titleKey: TITLE.liquidationRangePercent, content: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvancedMode },
     ],
-    [
-      { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
-      { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
-      { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
-    ],
+    ...(pricesApiAvailable ? [
+      [
+        { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
+        { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
+        { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
+      ]
+    ] : []),
     [
       { titleKey: TITLE.llammaBalances, content: <CellLlammaBalances {...cellProps} /> }
     ]

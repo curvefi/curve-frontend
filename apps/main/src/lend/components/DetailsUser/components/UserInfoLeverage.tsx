@@ -7,5 +7,7 @@ export const UserInfoLeverage = ({ userActiveKey }: { userActiveKey: string }) =
 
   if (error) return '?'
 
-  return <>{details?.leverage ? `${Number(details.leverage).toFixed(2)}x` : '-'}</>
+  return (
+    <>{!details?.leverage || !isFinite(Number(details.leverage)) ? '-' : `${Number(details.leverage).toFixed(2)}x`}</>
+  )
 }
