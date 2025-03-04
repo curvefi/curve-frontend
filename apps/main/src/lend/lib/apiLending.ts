@@ -45,6 +45,7 @@ import {
   UserMarketBalances,
   FutureRates,
   Wallet,
+  UserLoss,
 } from '@/lend/types/lend.types'
 
 export const helpers = {
@@ -489,7 +490,7 @@ const user = {
       })
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, loss] =
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand] =
           await Promise.all([
             market.userState(),
             market.userHealth(),
@@ -499,8 +500,21 @@ const user = {
             market.userPrices(),
             market.userBandsBalances(),
             market.oraclePriceBand(),
-            market.userLoss(),
           ])
+
+        // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
+        let loss: UserLoss
+        try {
+          loss = await market.userLoss()
+        } catch (error) {
+          console.error('Failed to fetch user loss:', error)
+          loss = {
+            deposited_collateral: '0',
+            current_collateral_estimation: '0',
+            loss: '0',
+            loss_pct: '0',
+          }
+        }
 
         const resp = await market.stats.bandsInfo()
         const { liquidationBand } = resp ?? {}
