@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, type ReactNode } from 'react'
+import uniqBy from 'lodash/uniqBy'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
@@ -10,6 +11,7 @@ import TextField from '@mui/material/TextField'
 import SearchIcon from '@mui/icons-material/Search'
 
 import { t } from '@ui-kit/lib/i18n'
+import { searchByText } from '@ui-kit/utils/searchText'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -79,9 +81,17 @@ export const TokenList = ({
 
   // List of all token options
   const options = useMemo(() => {
-    const tokensFiltered = tokens.filter((token) =>
-      `${token.symbol}${token.address}`.toLocaleLowerCase().includes(debouncedSearch.toLocaleLowerCase()),
-    )
+    let tokensFiltered = tokens
+
+    // Apply search only if meaningful. searchByText returns nothing is the search is an empty string.
+    if (debouncedSearch) {
+      const { addressesResult, tokensResult } = searchByText(debouncedSearch, tokens, ['symbol', 'name'], {
+        tokens: ['address'],
+        other: [],
+      })
+
+      tokensFiltered = uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
+    }
 
     return disableSorting
       ? tokensFiltered
