@@ -410,7 +410,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { chainId, signerAddress } = curve
 
       const selectToList = Object.entries(tokensMapper)
-        .map(([_, v]) => v!)
+        .map(([_, v]) => v)
+        .filter((token) => !!token)
         .map(({ address }) => address)
 
       sliceState.setStateByActiveKey('selectToList', chainId.toString(), selectToList)
