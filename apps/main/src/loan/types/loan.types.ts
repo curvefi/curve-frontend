@@ -1,7 +1,6 @@
 import { BrowserProvider } from 'ethers'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
-import type { NavigateFunction, Location, Params } from 'react-router'
 import type { ReactNode } from 'react'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
@@ -10,6 +9,11 @@ import type lendingApi from '@curvefi/lending-api'
 import type { BaseConfig } from '@ui/utils'
 import curvejsApi from '@/loan/lib/apiCrvusd'
 import { TITLE } from '@/loan/constants'
+
+export type NetworkUrlParams = { network: INetworkName }
+type CollateralExtraParams = { collateralId: string; formType?: string[] }
+export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
+export type UrlParams = Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = 1
@@ -144,11 +148,6 @@ export type UserWalletBalances = {
   stablecoin: string
   collateral: string
   error: string
-}
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
 }
 export type Theme = 'default' | 'dark' | 'chad'
 export type UsdRate = { [tokenAddress: string]: string | number }

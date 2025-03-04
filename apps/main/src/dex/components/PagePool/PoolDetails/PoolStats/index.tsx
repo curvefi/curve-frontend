@@ -16,7 +16,8 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
 import { InternalLink } from '@ui/Link'
-import { TokensMapper, PoolAlert } from '@/dex/types/main.types'
+import { PoolAlert, TokensMapper, type UrlParams } from '@/dex/types/main.types'
+import { useParams } from 'next/navigation'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null
@@ -25,18 +26,15 @@ type PoolStatsProps = {
 
 const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-
   const { rChainId, rPoolId } = routerParams
   const { chainId } = curve ?? {}
-
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
-  const params = useStore((state) => state.routerProps?.params)
 
   const poolId = poolData?.pool?.id
 
-  const risksPathname = params && getPath(params, `/disclaimer`)
+  const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
 
   // fetch stats
   useEffect(() => {
@@ -67,13 +65,11 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
                   </ExternalLink>
                 </AlertBox>
               )}
-              {params && (
-                <AlertBox alertType="info" flexAlignItems="center">
-                  <InternalLink $noStyles href={risksPathname} target="_blank">
-                    {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
-                  </InternalLink>
-                </AlertBox>
-              )}
+              <AlertBox alertType="info" flexAlignItems="center">
+                <InternalLink $noStyles href={risksPathname} target="_blank">
+                  {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
+                </InternalLink>
+              </AlertBox>
             </Box>
           </Box>
         </MainStatsWrapper>

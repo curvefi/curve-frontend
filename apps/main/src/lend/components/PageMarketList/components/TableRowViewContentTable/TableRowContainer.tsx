@@ -1,25 +1,23 @@
 import type { TableRowProps } from '@/lend/components/PageMarketList/types'
-
 import React, { useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 import { helpers } from '@/lend/lib/apiLending'
 import { parseSearchTermMapper } from '@/lend/hooks/useSearchTermMapper'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import TableRowMobile from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import { useParams, useRouter } from 'next/navigation'
+import type { NetworkUrlParams } from '@/lend/types/lend.types'
 
 const TableRowContainer = (
   props: Omit<TableRowProps, 'market' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>,
 ) => {
   const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
-  const params = useParams()
-  const navigate = useNavigate()
+  const params = useParams() as NetworkUrlParams
+  const { push: navigate } = useRouter()
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)

@@ -1,33 +1,15 @@
-import type { NextPage } from 'next'
-
-import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+'use client'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils'
-import { scrollToTop } from '@/dao/utils'
 import usePageOnMount from '@/dao/hooks/usePageOnMount'
-
 import Analytics from '@/dao/components/PageAnalytics/index'
-import DocumentHead from '@/dao/layout/DocumentHead'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
+const Page = () => {
+  usePageOnMount()
   return (
-    <>
-      <DocumentHead title={'Analytics'} />
-      <Container>
-        <Analytics />
-      </Container>
-    </>
+    <Container>
+      <Analytics />
+    </Container>
   )
 }
 

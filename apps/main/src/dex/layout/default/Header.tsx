@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
@@ -14,6 +13,7 @@ import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, Networks } from '@/dex/types/main.types'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
+import { usePathname, useRouter } from 'next/navigation'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -21,7 +21,7 @@ const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const navigate = useNavigate()
+  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const chainId = useStore((state) => state.curve?.chainId)
@@ -40,9 +40,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const location = useLocation()
   const network = networks[rChainId]
-  const routerPathname = location?.pathname ?? ''
+  const routerPathname = usePathname()
   const restPartialPathname = useRestPartialPathname()
 
   return (
@@ -50,7 +49,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       networkName={rNetwork}
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
-      currentApp="main"
+      currentApp="dex"
       isLite={network?.isLite}
       pages={useMemo(
         () =>
@@ -64,7 +63,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
                     },
                   ]
                 : []),
-              ...APP_LINK.main.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+              ...APP_LINK.dex.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
             ],
             routerPathname,
             rNetwork,
@@ -79,11 +78,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`/${network}/${restPartialPathname}`)
+              push(`/${network}/${restPartialPathname}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, networks, navigate, restPartialPathname, updateConnectState],
+          [rChainId, networks, push, restPartialPathname, updateConnectState],
         ),
       }}
       WalletProps={{

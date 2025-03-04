@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
-import { getNetworkFromUrl } from '@/loan/utils/utilsRouter'
+import { parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
@@ -10,6 +10,8 @@ import useStore from '@/loan/store/useStore'
 import Header from '@/loan/layout/Header'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
+import type { UrlParams } from '@/loan/types/loan.types'
+import { useParams } from 'next/navigation'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const { wallet } = useWallet()
@@ -19,10 +21,9 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
   const updateConnectState = useStore((state) => state.updateConnectState)
-
   const [networkSwitch, setNetworkSwitch] = useState('')
-
-  const { rChainId, rNetwork } = getNetworkFromUrl()
+  const params = useParams() as UrlParams
+  const { rChainId, rNetwork } = parseNetworkFromUrl(params)
 
   const showSwitchNetworkMessage =
     isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { CONNECT_STAGE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { curveProps } from '@/dex/lib/utils'
@@ -29,7 +29,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   const { rChainId, rNetwork } = useNetworkFromUrl()
 
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(

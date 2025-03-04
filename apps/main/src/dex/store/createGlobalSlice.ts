@@ -5,14 +5,7 @@ import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
 import curvejsApi from '@/dex/lib/curvejs'
-import {
-  CurveApi,
-  ChainId,
-  NetworkConfigFromApi,
-  PageWidthClassName,
-  RouterProps,
-  Wallet,
-} from '@/dex/types/main.types'
+import { CurveApi, ChainId, NetworkConfigFromApi, PageWidthClassName, Wallet } from '@/dex/types/main.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -45,7 +38,6 @@ type GlobalState = {
   loaded: boolean
   pageWidthPx: number | null
   pageWidth: PageWidthClassName | null
-  routerProps: RouterProps | null
   showScrollButton: boolean
 }
 
@@ -93,7 +85,6 @@ const DEFAULT_STATE = {
     secondaryNav: 0,
     footer: 0,
   },
-  routerProps: null,
   showScrollButton: false,
 } satisfies GlobalState
 

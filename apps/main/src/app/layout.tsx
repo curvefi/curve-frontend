@@ -22,12 +22,10 @@ const injectHeader = `
   })()
 `
 
+// noinspection HtmlRequiredTitleElement // title is injected via metadata
 const Layout = ({ children }: { children: ReactNode }) => (
   <html style={RootCssProperties}>
     <head>
-      {/* Primary Meta Tags */}
-      <title>Curve.fi</title>
-      <meta name="title" content="Curve.fi" />
       <meta
         name="description"
         content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
@@ -60,6 +58,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
       <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="theme-color" content="#ffffff" />
+      <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
       <script dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
       <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
       <style dangerouslySetInnerHTML={{ __html: baseCss }} />

@@ -1,8 +1,5 @@
 import type { PageCollateralList, TableRowProps } from '@/loan/components/PageMarketList/types'
-
 import React, { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { parseSearchTermMapper } from '@/loan/hooks/useSearchTermMapper'
 import networks from '@/loan/networks'
@@ -11,6 +8,8 @@ import useStore from '@/loan/store/useStore'
 import TableRow from '@/loan/components/PageMarketList/components/TableRow/TableRow'
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
+
+import { useRouter } from 'next/navigation'
 
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
@@ -31,7 +30,7 @@ const TableRowResult = ({
   ...props
 }: Props) => {
   const { searchTermMapper } = props
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
@@ -47,13 +46,8 @@ const TableRowResult = ({
     [collateralDataCachedOrApi, searchTermMapper, searchedByAddresses],
   )
 
-  const handleCellClick = () => {
-    if (loanExists) {
-      navigate(getLoanManagePathname(params, collateralId, 'loan'))
-    } else {
-      navigate(getLoanCreatePathname(params, collateralId))
-    }
-  }
+  const handleCellClick = () =>
+    push(loanExists ? getLoanManagePathname(params, collateralId, 'loan') : getLoanCreatePathname(params, collateralId))
 
   const tableRowProps = {
     collateralDataCachedOrApi,

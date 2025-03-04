@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import useStore from '@/dex/store/useStore'
 import { shortenTokenAddress } from '@/dex/utils'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
@@ -20,7 +20,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
   const networks = useStore((state) => state.networks.networks)
 
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (

@@ -54,7 +54,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="main" networkName={rNetwork} />
+      <Footer appName="dex" networkName={rNetwork} />
     </Container>
   )
 }

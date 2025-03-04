@@ -1,8 +1,6 @@
-import type { Params } from 'react-router'
-
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { CurveApi, ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
 
 export type FormStatus = {
   error: string
@@ -66,7 +64,7 @@ export type PagePoolList = {
   rChainId: ChainId
   curve: CurveApi | null
   isLite: boolean
-  params: Params
+  params: NetworkUrlParams
   tableLabels: PoolListTableLabel
   searchParams: SearchParams
   searchTermMapper: SearchTermMapper
@@ -79,5 +77,3 @@ export type PoolListFilter = {
 }
 
 export type ColumnKeys = keyof typeof COLUMN_KEYS
-
-export type ShowDetailsMapper = { [poolId: string]: boolean }

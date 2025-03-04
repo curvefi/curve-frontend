@@ -1,14 +1,13 @@
-import type { Params } from 'react-router'
-
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { useMemo } from 'react'
-import { NetworkEnum, RouterParams } from '@/dex/types/main.types'
+import { FormTypes, NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
 
-export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
+  `/dex/${network ? `/${network}` : ''}${rerouteRoute}`
 
-export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
-  const { pool, transfer, lockedCrvFormType } = params
+export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean) {
+  const { pool, formType } = params
   const paths = window.location.hash.substring(2).split('/')
 
   const network = useNetworkFromUrl()
@@ -34,30 +33,9 @@ export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
 
   let rFormType: RouterParams['rFormType'] = ''
 
-  // formType
-  if (transfer) {
-    const parsedTransfer = transfer.toLowerCase()
-    if (parsedTransfer === 'deposit') {
-      rFormType = 'deposit'
-    } else if (parsedTransfer === 'withdraw') {
-      rFormType = 'withdraw'
-    } else if (parsedTransfer === 'swap') {
-      rFormType = 'swap'
-    } else if (parsedTransfer === 'manage-gauge') {
-      rFormType = 'manage-gauge'
-    }
-  }
-
-  // locked crv formType
-  if (lockedCrvFormType) {
-    const formType = lockedCrvFormType.toLowerCase()
-    if (formType === 'adjust_crv') {
-      rFormType = 'adjust_crv'
-    } else if (formType === 'adjust_date') {
-      rFormType = 'adjust_date'
-    } else if (formType === 'create') {
-      rFormType = 'create'
-    }
+  if (formType?.[0]) {
+    const type = formType[0].toLowerCase()
+    rFormType = FormTypes.find((t) => t == type) ?? ''
   }
 
   const parsedPathname = `${network.rNetwork}/${rSubdirectory}`

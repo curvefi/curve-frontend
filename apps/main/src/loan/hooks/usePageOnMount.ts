@@ -1,4 +1,3 @@
-import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
@@ -6,13 +5,16 @@ import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
-import { getNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
+import { parseNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
 import { initCurveJs, initLendApi } from '@/loan/utils/utilsCurvejs'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { ChainId, PageProps, Wallet } from '@/loan/types/loan.types'
+import { ChainId, PageProps, type UrlParams, Wallet } from '@/loan/types/loan.types'
+import { useParams, useRouter } from 'next/navigation'
 
-function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
+function usePageOnMount(chainIdNotRequired?: boolean) {
+  const params = useParams() as UrlParams
+  const { push: navigate } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
 
@@ -197,11 +199,10 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         console.warn(`Network ${routerNetwork} is not active, redirecting to default network`)
         navigate(`/ethereum${ROUTE.PAGE_MARKETS}`)
       } else {
-        updateGlobalStoreByKey('routerProps', { params, location, navigate })
         if (walletName) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [getNetworkFromUrl().rChainId, false])
+          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parseNetworkFromUrl(params).rChainId, false])
         }
       }
     }
@@ -211,7 +212,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (connectState.status || connectState.stage) {
       if (isSuccess(connectState)) {
-        updateGlobalStoreByKey('routerProps', { params, location, navigate })
       } else if (isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)) {
         handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {

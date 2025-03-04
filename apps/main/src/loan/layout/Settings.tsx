@@ -24,7 +24,7 @@ const Settings = ({ showScrollButton }: Props) => {
     <Wrapper>
       <StyledScrollUpButton
         className={showScrollButton && scrollY > 30 ? 'pop-in' : ''}
-        show={showScrollButton ? scrollY > 30 : false}
+        $show={showScrollButton ? scrollY > 30 : false}
         variant="icon-filled"
         onClick={handleScrollTopClick}
       >
@@ -35,7 +35,7 @@ const Settings = ({ showScrollButton }: Props) => {
 }
 
 type ScrollUpButtonProps = {
-  show: boolean
+  $show: boolean
 }
 
 const popIn = keyframes`

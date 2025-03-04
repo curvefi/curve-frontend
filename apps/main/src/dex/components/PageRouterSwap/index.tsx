@@ -5,7 +5,6 @@ import type {
   SearchedParams,
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
-import type { Params } from 'react-router'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -38,7 +37,7 @@ import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, CurveApi, Token, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, Token, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 
 const QuickSwap = ({
@@ -51,7 +50,7 @@ const QuickSwap = ({
   redirect,
 }: {
   pageLoaded: boolean
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId
   searchedParams: SearchedParams
   tokensMapper: TokensMapper

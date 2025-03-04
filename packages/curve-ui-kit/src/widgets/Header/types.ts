@@ -4,8 +4,6 @@ import { RefObject } from 'react'
 import { AppName } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 
-export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
-
 export type AppPage = {
   route: string
   label: string
@@ -47,10 +45,3 @@ export type BaseHeaderProps<TChainId = number> = {
 export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
   isMdUp: boolean
 }
-
-export const APP_NAMES = {
-  main: 'Curve',
-  lend: 'LLAMALEND',
-  crvusd: 'crvUSD',
-  dao: 'DAO',
-} as const

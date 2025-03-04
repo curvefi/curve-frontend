@@ -1,32 +1,16 @@
-import type { NextPage } from 'next'
-
-import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+'use client'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils'
-import { scrollToTop } from '@/dao/utils'
 import usePageOnMount from '@/dao/hooks/usePageOnMount'
-
 import UserPage from '@/dao/components/PageUser/index'
-import DocumentHead from '@/dao/layout/DocumentHead'
+import type { UserUrlParams } from '@/dao/types/dao.types'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
-  const { rUserAddress } = routerParams
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
+const Page = (props: UserUrlParams) => {
+  usePageOnMount()
   return (
     <>
-      <DocumentHead title={`veCRV Holder - ${rUserAddress}`} />
       <Container>
-        <UserPage routerParams={{ rUserAddress }} />
+        <UserPage routerParams={props} />
       </Container>
     </>
   )

@@ -2,7 +2,6 @@ import type { Step } from '@ui/Stepper/types'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils/responsive'
@@ -22,8 +21,9 @@ import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi } from '@/dex/types/main.types'
+import { CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useParams } from 'next/navigation'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -33,7 +33,7 @@ const FormVecrv = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
-  const params = useParams()
+  const params = useParams() as NetworkUrlParams
   const isSubscribed = useRef(false)
 
   const activeKeyVecrv = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
@@ -131,7 +131,7 @@ const FormVecrv = () => {
   return (
     <>
       <StyledTitle>veCRV</StyledTitle>{' '}
-      {params && <AdjustVecrvLink href={getPath(params, adjustVecrvUrl)}>{t`Adjust veCrv`}</AdjustVecrvLink>}
+      <AdjustVecrvLink href={getPath(params, adjustVecrvUrl)}>{t`Adjust veCrv`}</AdjustVecrvLink>
       {isLockExpired ? (
         <Wrapper>
           <div>

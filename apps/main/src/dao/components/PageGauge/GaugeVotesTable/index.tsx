@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 
 import useStore from '@/dao/store/useStore'
 
@@ -20,7 +20,7 @@ interface GaugeVotesTableProps {
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
   const { getGaugeVotes, gaugeVotesMapper, gaugeVotesSortBy, setGaugeVotesSortBy } = useStore((state) => state.gauges)
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '5.3125rem 1fr 1fr'
 

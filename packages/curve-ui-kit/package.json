@@ -68,6 +68,7 @@
     "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
+    "pino-pretty": "^v7.6.0",
     "storybook": "^8.5.3",
     "tsconfig": "*",
     "type-fest": "^4.34.1",

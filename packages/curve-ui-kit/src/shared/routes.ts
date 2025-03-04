@@ -32,21 +32,21 @@ export const DAO_ROUTES = {
   DISCUSSION: 'https://gov.curve.fi/',
 }
 
-export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
+export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const getAppRoot = (app: AppName) =>
+const getAppRoot = (app: AppName) =>
   `${
     typeof window === 'undefined'
       ? ['development', 'test'].includes(process.env.NODE_ENV!)
         ? `http://localhost:${process.env.DEV_PORT || 300}`
         : `https://curve.fi`
       : window.location.origin
-  }/${app === 'main' ? 'dex' : app}`
+  }/${app}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
-  main: {
-    root: getAppRoot('main'),
+  dex: {
+    root: getAppRoot('dex'),
     label: 'DEX',
     pages: [
       { route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
@@ -84,4 +84,4 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
 }
 
 export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
-  app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`
+  app ? `${APP_LINK[app].root}${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`

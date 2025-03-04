@@ -24,16 +24,14 @@ import { MetricsTitle } from '@/dao/components/MetricsComp'
 import BackButton from '../BackButton'
 import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
-import { ProposalType } from '@/dao/types/dao.types'
+import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type ProposalProps = {
-  routerParams: {
-    rProposalId: string
-  }
+  routerParams: ProposalUrlParams
 }
 
-const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
+const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
   const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(

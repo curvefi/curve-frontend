@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 
 import { shortenTokenAddress, formatNumber } from '@ui/utils'
 import useStore from '@/dao/store/useStore'
@@ -19,7 +19,7 @@ type Props = {
 const Voters = ({ totalVotes, rProposalId, className }: Props) => {
   const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
   const currentProposal = useStore((state) => state.proposals.proposalMapper[rProposalId])
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   return (
     <Wrapper className={className}>

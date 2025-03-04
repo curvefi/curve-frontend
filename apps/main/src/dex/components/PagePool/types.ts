@@ -1,4 +1,3 @@
-import { Params } from 'react-router'
 import {
   Balances,
   CurveApi,
@@ -8,6 +7,8 @@ import {
   PoolData,
   PoolDataCache,
   PoolAlert,
+  type NetworkUrlParams,
+  type PoolUrlParams,
 } from '@/dex/types/main.types'
 
 export type EstimatedGas = {
@@ -33,7 +34,7 @@ export type Seed = {
 
 export type PageTransferProps = {
   curve: CurveApi | null
-  params: Params
+  params: PoolUrlParams
   routerParams: { rChainId: ChainId; rPoolId: string; rFormType: RFormType }
   hasDepositAndStake: boolean
   poolData: PoolData | undefined

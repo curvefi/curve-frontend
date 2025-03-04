@@ -1,19 +1,17 @@
 import type { AlertType } from '@ui/AlertBox/types'
-
 import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
-
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
+import { useParams, useRouter } from 'next/navigation'
+import type { UrlParams } from '@/lend/types/lend.types'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
-  const params = useParams()
-  const navigate = useNavigate()
+  const params = useParams() as UrlParams
+  const { push: navigate } = useRouter()
 
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
 

@@ -11,11 +11,11 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import { useLocation } from 'react-router-dom'
 import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
 import { t } from '@ui-kit/lib/i18n'
 import GlobalBanner from '@ui/Banner'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
+import { usePathname } from 'next/navigation'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -45,7 +45,7 @@ export const MobileHeader = <TChainId extends number>({
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
-  const { pathname } = useLocation()
+  const pathname = usePathname()
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 

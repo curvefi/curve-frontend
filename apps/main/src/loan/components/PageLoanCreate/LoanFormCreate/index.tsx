@@ -380,7 +380,7 @@ const LoanCreate = ({
         {txInfoBar}
         {steps && <Stepper steps={steps} />}
         {formStatus.isComplete && llamma && (
-          <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, llamma.id, 'loan')}>
+          <LinkButton variant="filled" size="large" href={getLoanManagePathname(params, llamma.id, 'loan')}>
             Manage loan
           </LinkButton>
         )}

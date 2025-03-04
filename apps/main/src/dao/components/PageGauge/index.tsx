@@ -8,14 +8,13 @@ import GaugeHeader from './GaugeHeader'
 import GaugeMetrics from './GaugeMetrics'
 import GaugeVotesTable from './GaugeVotesTable'
 import BackButton from '../BackButton'
+import type { GaugeUrlParams } from '@/dao/types/dao.types'
 
 type GaugeProps = {
-  routerParams: {
-    rGaugeAddress: string
-  }
+  routerParams: GaugeUrlParams
 }
 
-const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
+const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
   const { gaugeMapper, gaugesLoading } = useStore((state) => state.gauges)
 

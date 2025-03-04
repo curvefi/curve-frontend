@@ -1,17 +1,14 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import Stack from '@mui/material/Stack'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
 import { Header, Paragraph, Section } from '../Section'
 import { List } from '../List'
-import { getAppRoot } from '@ui-kit/shared/routes'
+import { APP_LINK } from '@ui-kit/shared/routes'
 
 const { Spacing } = SizesAndSpaces
 
@@ -117,7 +114,7 @@ export const SCrvUsd = () => (
 
       <Paragraph>
         {t`Read the`}{' '}
-        <Link color="textSecondary" href={`${getAppRoot('crvusd')}#/ethereum/risk-disclaimer`} target="_blank">
+        <Link color="textSecondary" href={`${APP_LINK.crvusd.root}/ethereum/risk-disclaimer`} target="_blank">
           {t`crvUSD Risk Disclaimer`}
         </Link>{' '}
         {t`for a more detailed overview of risks related to crvUSD.`}

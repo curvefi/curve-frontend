@@ -41,7 +41,7 @@ const UserInformation = () => {
             {t`You can acquire it on the open markets or borrow it in the LLAMALEND markets.`}
           </Typography>
           <Typography variant="bodyMRegular">
-            {t`We recommend using Curve's`} <Link href={APP_LINK.main.root}>QuickSwap</Link>
+            {t`We recommend using Curve's`} <Link href={APP_LINK.dex.root}>QuickSwap</Link>
             {t`, or alternatively an aggregator like`}{' '}
             <Link href="https://swap.cow.fi/#/1/swap/WETH/crvUSD">Cowswap</Link>.
           </Typography>

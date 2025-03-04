@@ -1,7 +1,7 @@
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
 import ProposalsFilters from './components/ProposalsFilters'
@@ -31,7 +31,7 @@ const Proposals = () => {
     proposals,
   } = useStore((state) => state.proposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const navigate = useNavigate()
+  const { push: navigate } = useRouter()
 
   const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
   const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
