@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'

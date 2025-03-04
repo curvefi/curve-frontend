@@ -45,7 +45,6 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     },
     tokensInPool,
     swapType,
-    poolPresetIndex: poolPresetIdx,
     updateStableSwapFee,
     updateMidFee,
     updateOutFee,
@@ -62,7 +61,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     refreshInitialPrice,
     initialPrice,
   } = useStore((state) => state.createPool)
-  const poolPresetIndex = poolPresetIdx!
+  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex!)
   const networks = useStore((state) => state.networks.networks)
 
   const [stableFeeValue, setStableFeeValue] = useState<string>(stableSwapFee)

@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { isLoading } from '@ui/utils'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'

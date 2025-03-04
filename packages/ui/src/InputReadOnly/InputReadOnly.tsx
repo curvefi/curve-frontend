@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 type Size = 'md' | 'lg'
 

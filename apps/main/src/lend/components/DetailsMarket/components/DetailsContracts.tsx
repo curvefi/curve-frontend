@@ -24,14 +24,8 @@ const DetailsContracts = ({
   const contracts: { borrow: ContractItems[]; supply: ContractItems[] } = {
     borrow: [
       [
-        {
-          label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />,
-          address: addresses?.collateral_token,
-        },
-        {
-          label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />,
-          address: addresses?.borrowed_token,
-        },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
       ],
       [
         { label: 'AMM', address: addresses?.amm },
@@ -41,24 +35,14 @@ const DetailsContracts = ({
     ],
     supply: [
       [
-        {
-          label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />,
-          address: addresses?.borrowed_token,
-        },
-        {
-          label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />,
-          address: addresses?.collateral_token,
-        },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
       ],
       [
         { label: t`Vault`, address: addresses?.vault },
-        {
-          label: t`Gauge`,
-          address: addresses?.gauge,
-          invalidText: addresses?.gauge === INVALID_ADDRESS ? t`No gauge` : '',
-        },
+        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === INVALID_ADDRESS ? t`No gauge` : '' }
       ],
-    ],
+    ]
   }
 
   return (
