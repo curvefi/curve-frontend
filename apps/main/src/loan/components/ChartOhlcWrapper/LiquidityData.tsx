@@ -35,7 +35,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
                   <StyledTokenIcon
                     size="sm"
                     blockchainId={networks[chainId].networkId}
-                    symbol={coins.collateral.symbol}
+                    tooltip={coins.collateral.symbol}
                     address={coins.collateral.address}
                   />
                 </LiquidityEventRow>
@@ -56,7 +56,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        symbol={coins.collateral.symbol}
+                        tooltip={coins.collateral.symbol}
                         address={coins.collateral.address}
                       />
                     </LiquidityEventRow>
@@ -72,7 +72,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        symbol={coins.crvusd.symbol}
+                        tooltip={coins.crvusd.symbol}
                         address={coins.crvusd.address}
                       />
                     </LiquidityEventRow>

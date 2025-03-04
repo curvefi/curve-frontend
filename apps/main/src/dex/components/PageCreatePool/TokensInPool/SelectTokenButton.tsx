@@ -139,7 +139,7 @@ const SelectTokenButton = ({
           <>
             <ButtonTokenIcon
               blockchainId={blockchainId}
-              symbol={selectedToken.symbol}
+              tooltip={selectedToken.symbol}
               address={selectedToken.address}
             />
             <LabelTextWrapper>

@@ -13,7 +13,7 @@ const { IconSize } = SizesAndSpaces
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
   blockchainId?: string
-  symbol?: string
+  tooltip?: string
   address?: string | null
   size?: 'sm' | 'mui-sm' | 'mui-md' | 'xl'
   sx?: SystemStyleObject<Theme>
@@ -22,13 +22,13 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
 export const TokenIcon = ({
   className = '',
   blockchainId = '',
-  symbol = '',
+  tooltip = '',
   size = 'sm',
   address,
   sx,
 }: TokenIconProps) => (
   <Tooltip
-    title={symbol}
+    title={tooltip}
     placement="top"
     slotProps={{
       popper: {
@@ -41,9 +41,9 @@ export const TokenIcon = ({
   >
     <Box
       component="img"
-      data-testid={`token-icon-${symbol}`}
+      data-testid={`token-icon-${tooltip}`}
       className={`${className}`}
-      alt={symbol}
+      alt={tooltip}
       onError={({ currentTarget }) => {
         currentTarget.src = DEFAULT_IMAGE
       }}

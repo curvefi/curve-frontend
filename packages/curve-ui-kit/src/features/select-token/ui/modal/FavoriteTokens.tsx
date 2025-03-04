@@ -29,7 +29,7 @@ export const FavoriteTokens = ({ tokens, onToken }: Props) => (
         <Chip
           key={token.address}
           size="small"
-          icon={<TokenIcon blockchainId={token.chain} symbol={token.symbol} address={token.address} size="mui-md" />}
+          icon={<TokenIcon blockchainId={token.chain} tooltip={token.symbol} address={token.address} size="mui-md" />}
           clickable={true}
           label={token.symbol}
           onClick={() => onToken(token)}
