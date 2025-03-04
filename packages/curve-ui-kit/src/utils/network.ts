@@ -16,4 +16,5 @@ export enum Chain {
   Fraxtal = 252,
   XLayer = 196,
   Mantle = 5000,
+  Sonic = 146,
 }
