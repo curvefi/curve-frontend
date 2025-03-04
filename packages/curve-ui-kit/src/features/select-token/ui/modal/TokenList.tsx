@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect, type ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
@@ -133,8 +135,26 @@ export const TokenList = ({
       )}
 
       {error ? (
-        <Alert variant="filled" severity="error">
-          <AlertTitle sx={{ '&': { height: 'auto' } }}>{t`${error}`}</AlertTitle>
+        <Alert
+          variant="filled"
+          severity="error"
+          action={
+            <Button color="ghost" size="extraSmall" onClick={() => navigator.clipboard.writeText(error)}>
+              Copy
+            </Button>
+          }
+          sx={{
+            position: 'relative',
+            '& .MuiAlert-action': {
+              position: 'absolute',
+              right: Spacing.xs,
+              padding: 0,
+              margin: 0,
+            },
+          }}
+        >
+          <AlertTitle>Could not create token list</AlertTitle>
+          <Box sx={{ wordWrap: 'break-word' }}>{t`${error}`}</Box>
         </Alert>
       ) : (
         <Stack sx={{ overflowY: 'auto' }}>
