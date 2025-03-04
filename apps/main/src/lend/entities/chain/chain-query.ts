@@ -7,7 +7,7 @@ import { ChainId } from '@/lend/types/lend.types'
 export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
   queryFn: async (chainId: ChainQuery<ChainId>): Promise<string[]> => {
-    const useAPI = chainId.chainId === 146 ? false : true // disable API for sonic
+    const useAPI = chainId.chainId !== 146 // disable API for sonic
 
     const api = useStore.getState().api!
     await api.oneWayfactory.fetchMarkets(useAPI)
