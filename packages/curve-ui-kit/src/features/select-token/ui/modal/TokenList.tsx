@@ -79,7 +79,7 @@ export const TokenList = ({
 
   // List of all token options
   const options = useMemo(() => {
-    const tokensFiltered = [...tokens].filter((token) =>
+    const tokensFiltered = tokens.filter((token) =>
       `${token.symbol}${token.address}`.toLocaleLowerCase().includes(debouncedSearch.toLocaleLowerCase()),
     )
 
