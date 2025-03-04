@@ -11,6 +11,8 @@ import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress 
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import { UserGaugeVote, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 interface UserGaugeVotesTableProps {
   userAddress: string
@@ -65,7 +67,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(`/ethereum/gauges/${gaugeVote.gauge}`)
+              navigate(getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`))
             }}
             className="right-padding"
           >

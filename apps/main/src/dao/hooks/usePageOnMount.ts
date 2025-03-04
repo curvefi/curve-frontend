@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/dao/constants'
-import { getNetworkFromUrl, parseParams } from '@/dao/utils/utilsRouter'
+import { getNetworkFromUrl, getPath, parseParams } from '@/dao/utils/utilsRouter'
 import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
@@ -94,7 +94,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
               const foundNetwork = networks[walletChainId as ChainId]?.id
               if (foundNetwork) {
                 console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-                navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+                navigate(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -144,7 +144,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
                 parsedParams,
                 error,
               )
-              navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+              navigate(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -201,7 +201,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-          navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+          navigate(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
         } else {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }

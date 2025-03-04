@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import type { DisclaimerTabId } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 
-export const metadata: Metadata = { title: t`Risk Disclaimer - Curve` }
+export const metadata: Metadata = { title: t`Risk Disclaimer - Curve Lend` }
 
 type DisclaimerPageProps = {
   params: Promise<NetworkUrlParams>

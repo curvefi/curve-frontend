@@ -13,6 +13,8 @@ import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Icon from '@ui/Icon'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { SortByFilterProposals } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 const Proposals = () => {
   const {
@@ -50,7 +52,7 @@ const Proposals = () => {
 
   const handleProposalClick = useCallback(
     (rProposalId: string) => {
-      navigate(`/ethereum/proposals/${rProposalId}`)
+      navigate(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${rProposalId}`))
     },
     [navigate],
   )

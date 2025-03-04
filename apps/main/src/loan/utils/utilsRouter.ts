@@ -27,7 +27,7 @@ export function getLoanCreatePathname(
 export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: string, formType: ManageFormType) =>
   getPath(params, `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
-const splitPath = () => window.location.pathname.substring(2).split('/')
+const splitPath = () => window.location.pathname.substring(1).split('/')
 
 export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { collateralId, formType } = params

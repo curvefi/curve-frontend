@@ -26,7 +26,7 @@ export function getVaultPathname(params: UrlParams, owmId: string, formType: str
 
 export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { market, formType } = params ?? {}
-  const paths = window.location.hash.substring(2).split('/')
+  const paths = window.location.pathname.substring(1).split('/')
 
   const network = getNetworkFromUrl()
 
@@ -57,8 +57,8 @@ export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
 
   const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
-    window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(rSubdirectory))
+    window.location.pathname.startsWith(parsedPathname) ||
+    (chainIdNotRequired && window.location.pathname.startsWith(rSubdirectory))
       ? ''
       : parsedPathname
 
@@ -74,7 +74,7 @@ export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
 }
 
 export function getNetworkFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
   const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum
 
@@ -102,13 +102,13 @@ export function getNetworkFromUrl() {
 }
 
 export function getRestFullPathname() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const { rNetworkIdx } = getNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
 }
 
 export function getRestPartialPathname() {
-  let restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  let restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const lastIdx = restPathnames.length - 1
   if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
     restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]

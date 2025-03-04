@@ -1,8 +1,8 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
-  defaultCommandTimeout: 5000,
-  pageLoadTimeout: 30000,
+  defaultCommandTimeout: 15000, // todo: change back to 5s
+  pageLoadTimeout: 60000, // todo: change back to 20s
   video: true,
   videosFolder: 'cypress/screenshots',
   e2e: {

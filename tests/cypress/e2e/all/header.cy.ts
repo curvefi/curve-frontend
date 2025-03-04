@@ -29,7 +29,7 @@ describe('Header', () => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       appPath = oneAppPath()
-      cy.visit(appPath, {
+      cy.visit(`/${appPath}/`, {
         onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
       waitIsLoaded(appPath)

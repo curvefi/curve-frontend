@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/dao/constants'
-import { getNetworkFromUrl, getRestFullPathname } from '@/dao/utils/utilsRouter'
+import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { _parseRouteAndIsActive, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/dao/networks'
@@ -50,7 +50,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`/${network}/${getRestFullPathname()}`)
+              navigate(getPath({ network }, `/${getRestFullPathname()}`))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },

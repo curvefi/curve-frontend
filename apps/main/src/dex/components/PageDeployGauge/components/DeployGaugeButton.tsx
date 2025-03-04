@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { CONNECT_STAGE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { curveProps } from '@/dex/lib/utils'
-import { useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { getPath, useNetworkFromUrl, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
 import {
   STABLESWAP,
@@ -39,11 +39,12 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const restFullPathname = useRestFullPathname()
 
   const handleConnectEth = () => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
     updateGlobalStoreByKey('isLoadingApi', true)
-    navigate(`/${window.location.hash.substring(2).replace(rNetwork, networks[1].id)}`)
+    navigate(getPath({ network: 'ethereum' }, restFullPathname))
   }
 
   const handleClick = async () => {

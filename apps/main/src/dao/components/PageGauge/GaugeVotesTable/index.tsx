@@ -7,11 +7,13 @@ import useStore from '@/dao/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 import { TOP_HOLDERS } from '@/dao/constants'
 
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils/'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber, shortenTokenAddress } from '@ui/utils/'
 
 import PaginatedTable from '@/dao/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
+import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
+import { getEthPath, getPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 interface GaugeVotesTableProps {
   gaugeAddress: string
@@ -20,7 +22,7 @@ interface GaugeVotesTableProps {
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
   const { getGaugeVotes, gaugeVotesMapper, gaugeVotesSortBy, setGaugeVotesSortBy } = useStore((state) => state.gauges)
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '5.3125rem 1fr 1fr'
 
@@ -69,7 +71,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(`/ethereum/user/${gaugeVote.user}`)
+              push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`))
             }}
             className="right-padding"
           >

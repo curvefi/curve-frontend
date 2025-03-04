@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/lend/constants'
-import { getNetworkFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
+import { getNetworkFromUrl, getPath, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/lend/networks'
@@ -13,7 +13,7 @@ import { type Theme } from '@mui/material/styles'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, type UrlParams } from '@/lend/types/lend.types'
+import { ChainId, type NetworkEnum, type UrlParams } from '@/lend/types/lend.types'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
@@ -22,7 +22,7 @@ const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
@@ -54,14 +54,15 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
         onChange: useCallback(
           (selectedChainId: ChainId) => {
             if (chainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              const [currPath] = window.location.hash.split('?')
-              const path = currPath.endsWith('markets') ? getRestFullPathname() : getRestPartialPathname()
-              navigate(`/${network}/${path}`)
+              const network = networks[selectedChainId as ChainId].id as NetworkEnum
+              const path = window.location.pathname.endsWith('markets')
+                ? getRestFullPathname()
+                : getRestPartialPathname()
+              push(getPath({ network }, path))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
           },
-          [chainId, updateConnectState, navigate],
+          [chainId, updateConnectState, push],
         ),
       }}
       WalletProps={{
