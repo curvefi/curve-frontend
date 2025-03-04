@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
-
 import useStore from '@/dao/store/useStore'
-
 import Box from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Icon from '@ui/Icon'

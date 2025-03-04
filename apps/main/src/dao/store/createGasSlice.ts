@@ -1,8 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { httpFetcher } from '@/dao/utils'
 import { log } from '@ui-kit/lib'
@@ -145,7 +143,7 @@ async function calcBasePlusPriority(gasFeeDataWei: {
   max: number[] | null
   priority: number[] | null
 }) {
-  let result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
+  const result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
     basePlusPriority: [] as number[],
   }
 

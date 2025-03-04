@@ -1,7 +1,5 @@
 import styled from 'styled-components'
-
 import { shortenTokenAddress } from 'ui/src/utils'
-
 import Icon from 'ui/src/Icon'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import Spinner from 'ui/src/Spinner'

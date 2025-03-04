@@ -1,10 +1,7 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import Button from '@ui/Button'
 import TextCaption from '@ui/TextCaption'
 

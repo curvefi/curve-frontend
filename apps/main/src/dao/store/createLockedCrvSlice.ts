@@ -1,17 +1,14 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-
 import networks from '@/dao/networks'
 import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   DEFAULT_USER_LOCKED_CRV_INFO,
 } from '@/dao/components/PageVeCrv/utils'
-
 import { formatNumber, shortenAccount } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import {
@@ -79,7 +76,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         const fetchedResp = await fn(activeKey, curve, curve.signerAddress)
 
         if (fetchedResp.error) {
-          let storedFormStatus = cloneDeep(get()[sliceKey].formStatus)
+          const storedFormStatus = cloneDeep(get()[sliceKey].formStatus)
           storedFormStatus.error = fetchedResp.error
           get()[sliceKey].setStateByKey('formStatus', cloneDeep(storedFormStatus))
         }
@@ -105,7 +102,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormValues.lockedAmtError = ''
       cFormValues.lockedAmtError = ''
 
-      let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.error = ''
 
       if (isFullReset) {
@@ -140,8 +137,8 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
     },
 
     fetchEstGasApproval: async (activeKey, curve, rFormType, formValues) => {
-      let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-      let cFormEstGas = cloneDeep({ ...DEFAULT_FORM_EST_GAS, loading: true })
+      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const cFormEstGas = cloneDeep({ ...DEFAULT_FORM_EST_GAS, loading: true })
 
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, cloneDeep(cFormEstGas))
 
@@ -166,7 +163,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
-      let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.formProcessing = true
       cFormStatus.step = 'APPROVAL'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))

@@ -7,7 +7,6 @@ import type {
   ChartColors,
 } from './types'
 import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
-
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -119,7 +118,7 @@ const CandleChart = ({
       width: wrapperRef.current.clientWidth,
       height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
       timeScale: {
-        timeVisible: timeOption === 'day' ? false : true,
+        timeVisible: timeOption !== 'day',
       },
       rightPriceScale: {
         autoScale: true,
@@ -172,13 +171,13 @@ const CandleChart = ({
           priceFormat: {
             type: 'custom',
             formatter: (price: any) => {
-              let [whole, fraction] = price.toString().split('.')
+              const [, fraction] = price.toString().split('.')
 
               if (!fraction) {
                 return price.toFixed(4)
               }
 
-              let nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
 
               // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
               // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
@@ -203,13 +202,13 @@ const CandleChart = ({
           priceFormat: {
             type: 'custom',
             formatter: (price: any) => {
-              let [whole, fraction] = price.toString().split('.')
+              const [, fraction] = price.toString().split('.')
 
               if (!fraction) {
                 return price.toFixed(4)
               }
 
-              let nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
 
               // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
               // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
@@ -238,13 +237,13 @@ const CandleChart = ({
           priceFormat: {
             type: 'custom',
             formatter: (price: any) => {
-              let [whole, fraction] = price.toString().split('.')
+              const [, fraction] = price.toString().split('.')
 
               if (!fraction) {
                 return price.toFixed(4)
               }
 
-              let nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
 
               // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
               // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
@@ -269,13 +268,13 @@ const CandleChart = ({
           priceFormat: {
             type: 'custom',
             formatter: (price: any) => {
-              let [whole, fraction] = price.toString().split('.')
+              const [, fraction] = price.toString().split('.')
 
               if (!fraction) {
                 return price.toFixed(4)
               }
 
-              let nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
 
               // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
               // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
@@ -321,13 +320,13 @@ const CandleChart = ({
         priceFormat: {
           type: 'custom',
           formatter: (price: any) => {
-            let [whole, fraction] = price.toString().split('.')
+            const [, fraction] = price.toString().split('.')
 
             if (!fraction) {
               return price.toFixed(4)
             }
 
-            let nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+            const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
 
             // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
             // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.

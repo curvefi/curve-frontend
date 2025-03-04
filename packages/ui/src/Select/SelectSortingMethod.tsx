@@ -1,8 +1,6 @@
 import type { SelectProps } from 'ui/src/Select/Select'
-
 import { Item } from 'react-stately'
 import styled from 'styled-components'
-
 import Select from 'ui/src/Select'
 
 interface SelectSortingMethodProps<T extends object> extends Omit<SelectProps<T>, 'children'> {
@@ -29,10 +27,6 @@ export function SelectSortingMethod<T extends object>({ description, ...props }:
 const StyledItem = styled(Item)`
   display: flex;
   flex-wrap: no-wrap;
-`
-
-const Description = styled.p`
-  font-size: var(--font-size-2);
 `
 
 export default SelectSortingMethod

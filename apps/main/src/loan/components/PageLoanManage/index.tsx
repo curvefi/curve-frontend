@@ -4,17 +4,14 @@ import type {
   LoanFormType,
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useStore from '@/loan/store/useStore'
-
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'

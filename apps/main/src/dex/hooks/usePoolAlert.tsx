@@ -1,12 +1,10 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
-
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import Box from '@ui/Box'

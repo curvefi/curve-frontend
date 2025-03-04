@@ -1,6 +1,5 @@
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { ExchangeOutput, FormStatus, FormValues } from '@/dex/components/PagePool/Swap/types'
-
 import sortBy from 'lodash/sortBy'
 import cloneDeep from 'lodash/cloneDeep'
 import { Token, TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
@@ -44,7 +43,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: PoolDataCacheOrApi) {
   const { tokenAddresses, tokensCountBy } = poolDataCacheOrApi
-  let swapTokensMapper: { [tokenAddress: string]: Token } = {}
+  const swapTokensMapper: { [tokenAddress: string]: Token } = {}
 
   for (const idx in tokenAddresses) {
     const address = tokenAddresses[idx]

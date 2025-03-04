@@ -1,9 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import { CONNECT_STAGE, ConnectState } from '@ui/utils'
-
 import produce from 'immer'
-
 import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import { log } from '@/loan/utils/helpers'

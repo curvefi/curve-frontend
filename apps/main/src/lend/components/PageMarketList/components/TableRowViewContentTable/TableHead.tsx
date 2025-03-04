@@ -1,14 +1,11 @@
 import type { TableLabel, PageMarketList, FilterTypeKey } from '@/lend/components/PageMarketList/types'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-
-import React from 'react'
 import styled from 'styled-components'
-
 import { _showContent } from '@/lend/utils/helpers'
 import useStore from '@/lend/store/useStore'
-
 import { Thead, Th, TheadSortButton } from '@ui/Table'
 import { Order, TitleKey } from '@/lend/types/lend.types'
+import { Fragment } from 'react'
 
 const TableHead = ({
   address,
@@ -58,7 +55,7 @@ const TableHead = ({
             const isVisible = _showContent(show)
 
             return (
-              <React.Fragment key={key}>
+              <Fragment key={key}>
                 {isVisible && !label && <Th></Th>}
                 {isVisible && label && (
                   <Th className={className} $first={isFirst} $last={isLast}>
@@ -75,7 +72,7 @@ const TableHead = ({
                     )}
                   </Th>
                 )}
-              </React.Fragment>
+              </Fragment>
             )
           })}
         </tr>

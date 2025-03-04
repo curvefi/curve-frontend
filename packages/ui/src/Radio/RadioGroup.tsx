@@ -1,27 +1,24 @@
 import type { AriaRadioGroupProps, RadioGroupProps } from '@react-types/radio'
-
-import * as React from 'react'
 import styled, { css } from 'styled-components'
 import { useRadioGroup } from '@react-aria/radio'
 import { useRadioGroupState } from '@react-stately/radio'
-
 import { mediaQueries } from 'ui/src/utils/responsive'
 import { RadioContext } from 'ui/src/Radio'
+import { ReactNode } from 'react'
 
 const RadioGroup = ({
   children,
   className,
   testId,
   ...props
-}: React.PropsWithChildren<
-  RadioGroupProps &
-    AriaRadioGroupProps & {
-      className?: string
-      testId?: string
-    }
->) => {
-  let state = useRadioGroupState(props)
-  let { radioGroupProps } = useRadioGroup(props, state)
+}: RadioGroupProps &
+  AriaRadioGroupProps & {
+    children: ReactNode
+    className?: string
+    testId?: string
+  }) => {
+  const state = useRadioGroupState(props)
+  const { radioGroupProps } = useRadioGroup(props, state)
 
   return (
     <RadioGroupContainer data-testid={`radio-group-${testId}`} {...radioGroupProps} className={className}>

@@ -101,7 +101,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
-    let resp: NetworkConfigFromApi = {
+    const resp: NetworkConfigFromApi = {
       hasDepositAndStake: undefined,
       hasRouter: undefined,
     }

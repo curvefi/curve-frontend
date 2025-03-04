@@ -3,7 +3,7 @@ import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoan
 import type { Step } from '@ui/Stepper/types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/loan/store/createLoanSwap'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
@@ -57,7 +57,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
 

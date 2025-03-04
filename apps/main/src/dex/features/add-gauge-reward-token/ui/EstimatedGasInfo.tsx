@@ -1,4 +1,3 @@
-import React from 'react'
 import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
 import { useEstimateGasAddRewardToken } from '@/dex/entities/gauge'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'

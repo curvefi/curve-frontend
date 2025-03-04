@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
-
 import useStore from '@/loan/store/useStore'
-
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
@@ -37,10 +35,10 @@ const CrvUsdStaking = () => {
   } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
   const isUserScrvUsdBalanceZero =
-    signerAddress && userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
+    !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
   const connectedUserNoScrvUsdBalance =
-    !!signerAddress && !!walletName && !!isUserScrvUsdBalanceFetched && !!isUserScrvUsdBalanceZero
+    !!(signerAddress && walletName && isUserScrvUsdBalanceFetched && isUserScrvUsdBalanceZero)
 
   // walletName indicates the wallet is cached and will begin connecting
   const showStatsBanner =

@@ -1,11 +1,9 @@
 import type { NextPage } from 'next'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/lend/constants'
 import { getPath } from '@/lend/utils/utilsRouter'
 import { scrollToTop } from '@/lend/utils/helpers'
@@ -13,7 +11,6 @@ import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
 import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
-
 import { AppPageContainer } from '@ui/AppPage'
 import DocumentHead from '@/lend/layout/DocumentHead'
 import MarketList from '@/lend/components/PageMarketList/index'

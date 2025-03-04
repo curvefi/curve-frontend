@@ -2,7 +2,7 @@ import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/compo
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
 import { amountsDescription, tokensDescription } from '@/dex/components/PagePool/utils'
@@ -55,7 +55,7 @@ const FormDeposit = ({
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress

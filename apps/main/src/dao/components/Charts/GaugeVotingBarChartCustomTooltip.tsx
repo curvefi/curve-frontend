@@ -1,11 +1,8 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 
 const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
@@ -68,11 +65,4 @@ const TooltipData = styled.p`
     color: var(--chart-red);
   }
 `
-const TooltipDataNotAvailable = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  font-style: italic;
-`
-
 export default BarChartCustomTooltip

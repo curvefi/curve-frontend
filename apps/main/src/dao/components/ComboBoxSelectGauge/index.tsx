@@ -1,14 +1,11 @@
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
-
 import Fuse from 'fuse.js'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import { t } from '@ui-kit/lib/i18n'
-
 import { delayAction } from '@/dao/utils'
 import useStore from '@/dao/store/useStore'
-
 import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import ModalDialog from '@ui/Dialog'

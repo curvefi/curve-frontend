@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import { ReactNode, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
@@ -11,7 +11,7 @@ import Header from '@/loan/layout/Header'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 
-const BaseLayout = ({ children }: { children: React.ReactNode }) => {
+const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')

@@ -1,13 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import BigNumber from 'bignumber.js'
-
 import useStore from '@/loan/store/useStore'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
-
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-
 import Box from '@ui/Box'
 import {
   ErrorText,
@@ -50,7 +47,6 @@ const WithdrawModule = () => {
           <StyledInputComp
             value={inputAmount}
             walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
@@ -75,7 +71,6 @@ const WithdrawModule = () => {
           <StyledInputComp
             value={preview.value}
             walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={isLoadingPreview}

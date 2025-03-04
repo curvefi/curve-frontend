@@ -1,7 +1,5 @@
 import type { StepStatus } from './types'
-
 import styled, { css } from 'styled-components'
-
 import { statusColorMap } from './helpers'
 
 type StepNumberConnector = {

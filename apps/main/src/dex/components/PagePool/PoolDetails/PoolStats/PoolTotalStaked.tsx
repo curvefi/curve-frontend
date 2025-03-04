@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
 import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'

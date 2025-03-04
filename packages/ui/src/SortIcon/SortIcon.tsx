@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils/responsive'
 import Icon from 'ui/src/Icon/Icon'
 

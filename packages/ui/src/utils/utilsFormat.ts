@@ -47,7 +47,7 @@ export function getDecimal(val: number | string, defaultDecimal: number) {
 }
 
 export function getFractionDigitsOptions(val: number | string | undefined | null, defaultDecimal: number) {
-  let formatOptions: NumberFormatOptions = {}
+  const formatOptions: NumberFormatOptions = {}
   if (val && Number(val) >= 0) {
     const decimal = getDecimal(val, defaultDecimal)
     formatOptions.minimumFractionDigits = decimal
@@ -70,7 +70,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
     } else if (isNaN(Number(val))) {
       return '?'
     } else {
-      let parsedOptions: NumberFormatOptions = { ...numberFormatOptions, useGrouping: true }
+      const parsedOptions: NumberFormatOptions = { ...numberFormatOptions, useGrouping: true }
       if (parsedOptions.currency === 'USD') {
         parsedOptions.style = 'currency'
       }

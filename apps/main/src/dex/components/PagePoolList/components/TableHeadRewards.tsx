@@ -1,9 +1,6 @@
 import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
 import type { SortKey } from '@/dex/components/PagePoolList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
-
 import Box from '@ui/Box'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TheadSortButton, { type TheadSortButtonProps } from '@ui/Table/TheadSortButton'

@@ -1,10 +1,7 @@
 import type { AdvancedSettingsProps } from '@/dex/components/AdvancedSettings'
-
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import DetailInfo from '@ui/DetailInfo'
 import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import Icon from '@ui/Icon'

@@ -249,7 +249,7 @@ async function calcBasePlusPriority(
   },
   networks: Record<number, NetworkConfig>,
 ) {
-  let result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
+  const result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
     basePlusPriority: [] as number[],
   }
 

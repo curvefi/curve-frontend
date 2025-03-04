@@ -1,15 +1,3 @@
-/**
- * @file entities/gauge/types.ts
- * @description This file defines TypeScript types and interfaces related to gauges in the Curve.fi DApp.
- * It's part of the 'gauge' entity in the FSD architecture.
- *
- * The types defined here are used throughout the gauge-related components and functions,
- * ensuring type safety and consistency in gauge operations.
- *
- * These types are essential for maintaining a well-typed codebase and improving
- * developer experience when working with gauge-related functionality.
- */
-
 import type { Address } from 'viem'
 import { FieldsOf } from '@ui-kit/lib/validation'
 import { GaugeQuery } from '@ui-kit/lib/model/query'

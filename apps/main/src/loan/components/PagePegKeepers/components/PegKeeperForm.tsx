@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { breakpoints, formatNumber } from '@ui/utils'
@@ -27,7 +27,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
 
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = curve || {}
 

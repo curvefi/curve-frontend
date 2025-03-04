@@ -1,14 +1,11 @@
 import type { DateValue } from '@internationalized/date'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
 import dayjs from '@ui-kit/lib/dayjs'
-
 import { Chip } from '@ui/Typography'
 import Button from '@ui/Button'
 import DatePicker from '@ui/DatePicker'
@@ -95,8 +92,8 @@ const FieldDatePicker = ({
         minValue={toCalendarDate(minUtcDate)}
         maxValue={maxUtcDate ? toCalendarDate(maxUtcDate) : null}
         value={utcDate}
-        onChange={(val: DateValue) => {
-          if (curve) handleInpEstUnlockedDays(curve, val)
+        onChange={(val: DateValue | null) => {
+          if (curve && val) handleInpEstUnlockedDays(curve, val)
         }}
         quickActionValue={quickActionValue}
         quickActions={

@@ -1,10 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
-
 import networks from '@/dao/networks'
 import { SEVEN_DAYS, TOP_HOLDERS } from '@/dao/constants'
 import { helpers } from '@/dao/lib/curvejs'
-
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
@@ -23,7 +21,7 @@ import {
   TransactionState,
   UserProposalVoteResData,
 } from '@/dao/types/dao.types'
-import { useWallet, notify } from '@ui-kit/features/connect-wallet'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -127,7 +125,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           page++
         }
 
-        let proposalsObject: { [voteId: string]: ProposalData } = {}
+        const proposalsObject: { [voteId: string]: ProposalData } = {}
 
         for (const proposal of results) {
           const minAcceptQuorumPercent = (+proposal.min_accept_quorum / 1e18) * 100
@@ -297,9 +295,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const proposals = Object.values(proposalsData)
 
       const filteredProposals = filterProposals(proposals, activeFilter)
-      const sortedProposals = sortProposals(filteredProposals, activeSortBy, activeSortDirection)
-
-      return sortedProposals
+      return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
     },
     setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals, activeSortBy, activeSortDirection } = get()[sliceKey]

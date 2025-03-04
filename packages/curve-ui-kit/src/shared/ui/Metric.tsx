@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import Skeleton from '@mui/material/Skeleton'
@@ -7,7 +6,6 @@ import Snackbar from '@mui/material/Snackbar'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'

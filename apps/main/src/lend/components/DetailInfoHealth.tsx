@@ -1,10 +1,8 @@
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import ExternalLink from 'ui/src/Link/ExternalLink'
@@ -43,7 +41,7 @@ const DetailInfoHealth = ({
   isManage: boolean
   isValidFormValues?: boolean
   loading: boolean
-  setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
+  setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)

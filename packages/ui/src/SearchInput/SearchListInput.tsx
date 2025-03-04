@@ -1,10 +1,9 @@
-import React from 'react'
 import { useFocusRing } from '@react-aria/focus'
+import { InputHTMLAttributes } from 'react'
 import styled from 'styled-components'
-
 import SearchInput from 'ui/src/SearchInput/index'
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
   searchText: string
   handleInputChange(val: string): void

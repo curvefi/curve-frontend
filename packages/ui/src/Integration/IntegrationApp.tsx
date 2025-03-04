@@ -1,13 +1,10 @@
 import type { IntegrationApp, IntegrationsTags } from 'ui/src/Integration/types'
-
-import React from 'react'
 import styled, { css } from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils/responsive'
-
 import Box from 'ui/src/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import IntegrationAppTag from 'ui/src/Integration/IntegrationAppTag'
+import { ReactNode } from 'react'
 
 const IntegrationAppComp = ({
   appUrl,
@@ -21,7 +18,7 @@ const IntegrationAppComp = ({
   integrationsTags,
 }: IntegrationApp & {
   filterKey: string
-  integrationsAppNetworks: React.ReactNode | null
+  integrationsAppNetworks: ReactNode
   integrationsTags: IntegrationsTags
   imageUrl: string | null
 }) => {

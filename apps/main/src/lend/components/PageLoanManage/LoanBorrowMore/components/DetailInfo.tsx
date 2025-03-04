@@ -1,14 +1,12 @@
 import type { Step } from '@ui/Stepper/types'
-
-import React from 'react'
 import useStore from '@/lend/store/useStore'
-
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import { Dispatch, SetStateAction } from 'react'
 
 const DetailInfo = ({
   rChainId,
@@ -23,7 +21,7 @@ const DetailInfo = ({
   activeStep: number | null
   healthMode: HealthMode
   steps: Step[]
-  setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
+  setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
   const detailInfo = useStore((state) => state.loanBorrowMore.detailInfo[activeKey])

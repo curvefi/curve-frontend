@@ -1,12 +1,11 @@
 import type { ChipProps } from 'ui/src/Typography/types'
-
-import * as React from 'react'
 import styled from 'styled-components'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
+import { PropsWithChildren, useRef } from 'react'
 
-const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: string }>) => {
+const Chip = ({ as, ...props }: PropsWithChildren<ChipProps & { as?: string }>) => {
   const { children, className, tooltip, tooltipProps, ...rest } = props
-  const ref = React.useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   const LabelComp = () => (
     <Label {...rest} {...(tooltip ? {} : { as })} className={className} ref={ref}>

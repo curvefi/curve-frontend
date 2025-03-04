@@ -12,7 +12,7 @@ export function parseSearchParams(
   const pFilterKey = searchParams?.get('filter')
   const pNetworkId = searchParams?.get('networkId')
 
-  let parsed: { filterKey: FilterKey; filterNetworkId: string } = {
+  const parsed: { filterKey: FilterKey; filterNetworkId: string } = {
     filterKey: 'all',
     filterNetworkId: (pNetworkId ?? rChainId ?? '').toString(),
   }

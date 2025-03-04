@@ -4,24 +4,6 @@ export type ChartType = 'swap' | 'crvusd' | 'poolPage'
 export type TimeOptions = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
-export const DEFAULT_CHART_COLORS: ChartColors = {
-  backgroundColor: '#fafafa',
-  lineColor: '#2962FF',
-  textColor: 'black',
-  areaTopColor: '#2962FF',
-  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
-  chartGreenColor: '#2962FF',
-  chartRedColor: '#ef5350',
-  chartLabelColor: '#9B7DFF',
-  chartVolumeRed: '#ef53507e',
-  chartVolumeGreen: '#26a6997e',
-  chartOraclePrice: '#3360c9c0',
-  rangeColor: '#dfb316',
-  rangeColorA25: '#dfb4167f',
-  rangeColorOld: '#ab792f',
-  rangeColorA25Old: '#ab792f25',
-}
-
 export type ChartColors = {
   backgroundColor: string
   lineColor: string
@@ -111,23 +93,6 @@ export interface LpPriceApiResponse {
   data: LpPriceOhlcData[]
 }
 
-export interface LpExchangeRateObject {
-  main_token: string
-  reference_token: string
-  chain: string
-  address: string
-  data: LpPriceOhlcData[]
-}
-
-export interface ChartDataObject {
-  main_token?: string
-  reference_token?: string
-  chain: string
-  address: string
-  label?: string
-  data: LpPriceOhlcData[]
-}
-
 export interface LpTradeToken {
   symbol: string
   address: string
@@ -162,22 +127,6 @@ export interface LpTradesData {
   time: string
   transaction_hash: string
   buyer: string
-  usd_fee: number
-}
-
-export interface PricesTradesData {
-  sold_id: number
-  bought_id: number
-  tokens_sold: number
-  tokens_sold_usd: number
-  tokens_bought: number
-  tokens_bought_usd: number
-  price: number
-  block_number: number
-  time: string
-  transaction_hash: string
-  buyer: string
-  fee: number
   usd_fee: number
 }
 

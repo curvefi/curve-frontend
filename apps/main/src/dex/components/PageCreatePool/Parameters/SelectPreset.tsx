@@ -1,16 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useParams } from 'react-router-dom'
 import { getPath } from '@/dex/utils/utilsRouter'
-
 import { breakpoints } from '@ui/utils/responsive'
 import useStore from '@/dex/store/useStore'
-
 import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
-
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
@@ -18,9 +15,9 @@ import SelectButton from '@/dex/components/PageCreatePool/components/SelectButto
 import { ExternalLink } from '@ui/Link'
 
 type Props = {
-  setStableFeeValue: React.Dispatch<React.SetStateAction<string>>
-  setMidValue: React.Dispatch<React.SetStateAction<string>>
-  setOutValue: React.Dispatch<React.SetStateAction<string>>
+  setStableFeeValue: Dispatch<SetStateAction<string>>
+  setMidValue: Dispatch<SetStateAction<string>>
+  setOutValue: Dispatch<SetStateAction<string>>
 }
 
 const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) => {
@@ -339,12 +336,6 @@ const StyledExternalLink = styled(ExternalLink)`
   &:hover {
     cursor: pointer;
   }
-`
-
-const InternalLink = styled.a`
-  color: var(--page--text-color);
-  font-weight: var(--bold);
-  text-decoration: underline;
 `
 
 export default SelectPreset

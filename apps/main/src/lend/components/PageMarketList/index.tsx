@@ -1,12 +1,9 @@
 import type { PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'
-
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-
 import { FilterType } from '@/lend/components/PageMarketList/utils'
 import { _getActiveKey } from '@/lend/store/createMarketListSlice'
 import useStore from '@/lend/store/useStore'
-
 import { REFRESH_INTERVAL } from '@/lend/constants'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import MarketListNoResult from '@/lend/components/PageMarketList/components/MarketListNoResult'

@@ -1,7 +1,7 @@
-import * as React from 'react'
+import { RefObject, useEffect, useState } from 'react'
 
-function useHeightResizeObserver(elementRef: React.RefObject<Element | null>) {
-  const [height, setHeight] = React.useState<number | null>(null)
+function useHeightResizeObserver(elementRef: RefObject<Element | null>) {
+  const [height, setHeight] = useState<number | null>(null)
 
   const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
     const updatedHeight = Math.round(updatedEntry?.contentRect.height || 0)
@@ -17,7 +17,7 @@ function useHeightResizeObserver(elementRef: React.RefObject<Element | null>) {
     })
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const node = elementRef?.current
 
     if (!node) return

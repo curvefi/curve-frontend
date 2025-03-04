@@ -1,11 +1,8 @@
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
@@ -29,7 +26,7 @@ const DetailInfoLiqRange = ({
   handleLiqRangesEdit,
 }: {
   bands: [number, number]
-  detailInfoLeverage?: React.ReactNode
+  detailInfoLeverage?: ReactNode
   healthMode: HealthMode | null
   isEditLiqRange?: boolean
   isManage?: boolean

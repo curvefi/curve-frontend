@@ -1,32 +1,36 @@
-// @ts-nocheck
-import type { AriaButtonProps } from 'react-aria'
-import type { DateFieldStateOptions } from 'react-stately'
-
+import type { AriaButtonProps, DateValue } from 'react-aria'
 import {
   useButton,
   useCalendar,
   useCalendarCell,
   useCalendarGrid,
   useDateField,
-  useDateSegment,
   useDatePicker,
+  useDateSegment,
   useLocale,
 } from 'react-aria'
-import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { useCalendarState, useDateFieldState, useDatePickerState } from 'react-stately'
-import React, { useEffect } from 'react'
+import { createCalendar, getWeeksInMonth } from '@internationalized/date'
+import { ReactNode, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-
 import Box from 'ui/src/Box'
 import Chip from 'ui/src/Typography/Chip'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import InputProvider from 'ui/src/InputComp'
 import ModalDialog from 'ui/src/Dialog'
+import { DateFieldState } from '@react-stately/datepicker'
+import { AriaDateFieldOptions } from '@react-aria/datepicker'
+import { AriaCalendarProps } from '@react-types/calendar'
+import { AriaCalendarCellProps, AriaCalendarGridProps } from '@react-aria/calendar'
+import { CalendarState, RangeCalendarState } from '@react-stately/calendar'
+import { AriaDatePickerProps, DatePickerProps } from '@react-types/datepicker'
+import dayjs from 'curve-ui-kit/src/lib/dayjs'
+import { InputProviderProps } from '../InputComp/InputProvider'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details
 function Button(props: AriaButtonProps) {
-  const ref = React.useRef<HTMLButtonElement>(null)
+  const ref = useRef<HTMLButtonElement>(null)
   const { buttonProps } = useButton(props, ref)
 
   return (
@@ -36,8 +40,10 @@ function Button(props: AriaButtonProps) {
   )
 }
 
-function DateField({ state, ...props }) {
-  const ref = React.useRef<HTMLDivElement>(null)
+type DateFieldProps<T extends DateValue> = AriaDateFieldOptions<T> & { state: DateFieldState }
+
+function DateField<T extends DateValue>({ state, ...props }: DateFieldProps<T>) {
+  const ref = useRef<HTMLDivElement>(null)
   const { labelProps, fieldProps } = useDateField(props, state, ref)
 
   return (
@@ -53,10 +59,9 @@ function DateField({ state, ...props }) {
   )
 }
 
-function DateSegment({ segment, state }) {
-  const ref = React.useRef<HTMLDivElement>(null)
+function DateSegment({ segment, state }: { state: DateFieldState; segment: Parameters<typeof useDateSegment>[0] }) {
+  const ref = useRef<HTMLDivElement>(null)
   const { segmentProps } = useDateSegment(segment, state, ref)
-
   return (
     <div {...segmentProps} ref={ref} className={`segment ${segment.isPlaceholder ? 'placeholder' : ''}`}>
       {segment.text}
@@ -64,7 +69,7 @@ function DateSegment({ segment, state }) {
   )
 }
 
-function Calendar(props) {
+function Calendar<T extends DateValue>(props: AriaCalendarProps<T>) {
   const { locale } = useLocale()
   const state = useCalendarState({
     ...props,
@@ -72,8 +77,8 @@ function Calendar(props) {
     createCalendar,
   })
 
-  const ref = React.useRef<HTMLDivElement>(null)
-  const { calendarProps, prevButtonProps, nextButtonProps, title } = useCalendar(props, state, ref)
+  const ref = useRef<HTMLDivElement>(null)
+  const { calendarProps, prevButtonProps, nextButtonProps, title } = useCalendar(props, state)
 
   return (
     <CalendarWrapper {...calendarProps} ref={ref} className="calendar">
@@ -93,7 +98,7 @@ function Calendar(props) {
   )
 }
 
-function CalendarGrid({ state, ...props }) {
+function CalendarGrid({ state, ...props }: AriaCalendarGridProps & { state: CalendarState | RangeCalendarState }) {
   const { locale } = useLocale()
   const { gridProps, headerProps, weekDays } = useCalendarGrid(props, state)
 
@@ -122,8 +127,8 @@ function CalendarGrid({ state, ...props }) {
   )
 }
 
-function CalendarCell({ state, date }) {
-  const ref = React.useRef<HTMLDivElement>(null)
+function CalendarCell({ state, date }: AriaCalendarCellProps & { state: CalendarState | RangeCalendarState }) {
+  const ref = useRef<HTMLDivElement>(null)
   const { cellProps, buttonProps, isSelected, isOutsideVisibleRange, isDisabled, isUnavailable, formattedDate } =
     useCalendarCell({ date }, state, ref)
 
@@ -143,13 +148,18 @@ function CalendarCell({ state, date }) {
   )
 }
 
-function DatePicker(props) {
-  let { locale } = useLocale()
+function DatePicker<T extends DateValue>(
+  props: AriaDatePickerProps<T> & { quickActionValue?: dayjs.Dayjs | null; quickActions?: ReactNode } & {
+    inputProviderProps: Partial<InputProviderProps> & { hasError?: boolean; showError?: boolean; id: string }
+    dateFieldProps?: Omit<DatePickerProps<T>, 'locale' | 'createCalendar'>
+  },
+) {
+  const { locale } = useLocale()
   const state = useDatePickerState(props)
-  const ref = React.useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   const { groupProps, labelProps, fieldProps, buttonProps, calendarProps } = useDatePicker(props, state, ref)
-  const dateFieldProps: DateFieldStateOptions = { ...fieldProps, ...props.dateFieldProps }
+  const dateFieldProps: AriaDateFieldOptions<T> = { ...fieldProps, ...props.dateFieldProps }
 
   const dateFieldState = useDateFieldState({
     ...dateFieldProps,

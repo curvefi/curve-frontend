@@ -1,11 +1,8 @@
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils'
-
 import Box from 'ui/src/Box'
 import BoxHeader from 'ui/src/Box/BoxHeader'
-import TabContentWrapper from 'ui/src/Tab/TabContentWrapper'
-import TextEllipsis from 'ui/src/TextEllipsis'
+import { TabContentWrapper } from 'ui/src/Tab'
 
 // PAGE STYLES
 export const AppPageContainer = styled.div`
@@ -67,14 +64,6 @@ export const AppPageFormTitleWrapper = styled.header`
     padding-top: var(--spacing-normal);
     padding-left: 0;
   }
-`
-
-export const AppPageFormTitleContent = styled(TextEllipsis)`
-  color: var(--page--text-color);
-  font-size: var(--font-size-5);
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
 `
 
 export const AppPageFormTitleLinks = styled.div`

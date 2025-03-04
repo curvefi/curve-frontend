@@ -1,8 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
-
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import { Item } from '@ui/Items'
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'

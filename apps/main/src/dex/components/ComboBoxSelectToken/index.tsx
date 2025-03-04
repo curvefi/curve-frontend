@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { Key, useCallback, useEffect, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
@@ -37,7 +37,7 @@ const ComboBoxTokens = ({
   title: string
   tokens: Token[] | undefined
   onOpen?: () => void
-  onSelectionChange: (selectedAddress: React.Key) => void
+  onSelectionChange: (selectedAddress: Key) => void
 }) => {
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
@@ -57,7 +57,7 @@ const ComboBoxTokens = ({
     [endsWith, setStateByKey],
   )
 
-  const handleOnSelectChange = (tokenAddress: React.Key) => {
+  const handleOnSelectChange = (tokenAddress: Key) => {
     onSelectionChange(tokenAddress)
     handleClose()
   }

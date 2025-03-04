@@ -1,9 +1,7 @@
 import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import Button from '@ui/Button'
 import ExpectedLabel from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedLabel'
 import ExpectedSummary from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSummary'

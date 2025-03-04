@@ -1,9 +1,5 @@
 import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLoanCreate/types'
-
-import React from 'react'
-
 import useStore from '@/lend/store/useStore'
-
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import DetailInfoEstGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'

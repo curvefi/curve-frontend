@@ -1,11 +1,8 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import Stack from '@mui/material/Stack'
-
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTabFromQueryString } from '@ui-kit/hooks/useTabFromQueryString'
-
 import { LastUpdated } from './LastUpdated'
 import { Footer } from './Footer'
 import { TabPanel } from './TabPanel'

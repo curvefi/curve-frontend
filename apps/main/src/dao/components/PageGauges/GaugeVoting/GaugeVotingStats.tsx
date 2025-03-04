@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
 import { formatNumber, shortenTokenAddress } from '@ui/utils'
 import { calculateUserPowerStale } from './utils'
-
 import Box from '@ui/Box'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'

@@ -1,10 +1,8 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { formatDate, formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 import type { Locker } from '@curvefi/prices-api/dao'
 

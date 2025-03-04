@@ -14,7 +14,7 @@ const { Spacing } = SizesAndSpaces
 
 const UserInformation = () => {
   const {
-    design: { Layer, Text },
+    design: { Layer },
   } = useTheme()
 
   return (

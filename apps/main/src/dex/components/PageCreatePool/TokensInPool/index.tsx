@@ -608,7 +608,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           flexJustifyContent="center"
           className={`${swapType === CRYPTOSWAP ? 'extra-margin-top' : ''}`}
         >
-          <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_A} to={TOKEN_B} />
+          <SwitchTokensButton curve={curve} from={TOKEN_A} to={TOKEN_B} />
         </SwitchWrapper>
         {/* Token B */}
         <SelectToken
@@ -629,7 +629,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               flexJustifyContent="center"
               className={`${swapType === CRYPTOSWAP ? 'extra-margin-top' : ''}`}
             >
-              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_B} to={TOKEN_C} />
+              <SwitchTokensButton curve={curve} from={TOKEN_B} to={TOKEN_C} />
             </SwitchWrapper>
             {/* Token C */}
             <SelectToken
@@ -649,7 +649,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         {tokensInPool.tokenAmount > 3 && (
           <>
             <SwitchWrapper flex flexJustifyContent="center">
-              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_C} to={TOKEN_D} />
+              <SwitchTokensButton curve={curve} from={TOKEN_C} to={TOKEN_D} />
             </SwitchWrapper>
             {/* Token D */}
             <SelectToken
@@ -669,7 +669,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         {tokensInPool.tokenAmount > 4 && (
           <>
             <SwitchWrapper flex flexJustifyContent="center">
-              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_D} to={TOKEN_E} />
+              <SwitchTokensButton curve={curve} from={TOKEN_D} to={TOKEN_E} />
             </SwitchWrapper>
             {/* Token D */}
             <SelectToken
@@ -689,7 +689,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         {tokensInPool.tokenAmount > 5 && (
           <>
             <SwitchWrapper flex flexJustifyContent="center">
-              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_E} to={TOKEN_F} />
+              <SwitchTokensButton curve={curve} from={TOKEN_E} to={TOKEN_F} />
             </SwitchWrapper>
             {/* Token D */}
             <SelectToken
@@ -709,7 +709,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         {tokensInPool.tokenAmount > 6 && (
           <>
             <SwitchWrapper flex flexJustifyContent="center">
-              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_F} to={TOKEN_G} />
+              <SwitchTokensButton curve={curve} from={TOKEN_F} to={TOKEN_G} />
             </SwitchWrapper>
             {/* Token D */}
             <SelectToken
@@ -729,7 +729,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         {tokensInPool.tokenAmount > 7 && (
           <>
             <SwitchWrapper flex flexJustifyContent="center">
-              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_G} to={TOKEN_H} />
+              <SwitchTokensButton curve={curve} from={TOKEN_G} to={TOKEN_H} />
             </SwitchWrapper>
             {/* Token D */}
             <SelectToken

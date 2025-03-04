@@ -1,11 +1,8 @@
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import useStore from '@/dao/store/useStore'
-
 import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'

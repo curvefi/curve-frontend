@@ -1,13 +1,11 @@
 import type { FormStatus } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationTag } from '@ui/Integration/types'
-
-import React from 'react'
 import { Item } from 'react-stately'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import Icon from '@ui/Icon'
 import Select from '@ui/Select'
+import { Key } from 'react'
 
 const SelectIntegrationTags = ({
   integrationsTagsList,
@@ -18,7 +16,7 @@ const SelectIntegrationTags = ({
   integrationsTagsList: IntegrationTag[]
   filterKey: string
   formStatus: FormStatus
-  updatePath({ filterKey, filterNetworkId }: { filterKey?: React.Key; filterNetworkId?: React.Key }): void
+  updatePath({ filterKey, filterNetworkId }: { filterKey?: Key; filterNetworkId?: Key }): void
 }) => (
   <Select
     aria-label={t`Select tag`}

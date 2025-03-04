@@ -1,7 +1,4 @@
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
-
-import React from 'react'
-
 import Compensation from '@/dex/components/PageCompensation/components/Compensation'
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 

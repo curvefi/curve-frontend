@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
@@ -39,7 +39,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress

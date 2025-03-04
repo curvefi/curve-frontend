@@ -1,14 +1,11 @@
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useRef, useState } from 'react'
-
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react'
 import { FilterType } from '@/lend/components/PageMarketList/utils'
 import { TITLE } from '@/lend/constants'
 import { _showContent } from '@/lend/utils/helpers'
 import useStore from '@/lend/store/useStore'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
 import { Tr, Td, CellInPool } from '@ui/Table'
 import CellLoanUserState from '@/lend/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/lend/components/SharedCellData/CellLoanUserHealth'
@@ -24,7 +21,7 @@ import { TitleKey } from '@/lend/types/lend.types'
 
 type Content = {
   className: string
-  content: React.ReactNode
+  content: ReactNode
   show?: boolean
   title?: TitleKey
 }
@@ -71,7 +68,7 @@ const TableRowContent = ({
       { className: 'left', content: <CellToken {...cellProps} type='borrowed'  module='borrow' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
-      { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
+      { className: 'center border-right', content: <CellLoanUserState {...cellProps} />, show: showBorrowSignerCell },
       { className: 'right', content: <CellBorrowRate {...cellProps} /> },
       { className: 'right', content: <CellUtilization {...cellProps}  /> },
       { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },
@@ -94,14 +91,14 @@ const TableRowContent = ({
     const visible = _showContent(show)
 
     return (
-      <React.Fragment key={`content${idx}`}>
+      <Fragment key={`content${idx}`}>
         {visible && isInMarketCell && content}
         {visible && !isInMarketCell && (
           <Td key={idx} className={className} $first={isFirst} $last={isLast}>
             {content}
           </Td>
         )}
-      </React.Fragment>
+      </Fragment>
     )
   })
 }

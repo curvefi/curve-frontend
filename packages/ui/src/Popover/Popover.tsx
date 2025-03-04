@@ -1,22 +1,21 @@
 import type { AriaOverlayProps } from 'react-aria'
-
-import * as React from 'react'
 import styled from 'styled-components'
-
 import { useOverlay, DismissButton } from '@react-aria/overlays'
 import { FocusScope } from '@react-aria/focus'
+import { ReactNode, RefObject, useRef } from 'react'
 
 interface Props extends AriaOverlayProps {
-  popoverRef: React.RefObject<HTMLDivElement | null>
+  popoverRef: RefObject<HTMLDivElement | null>
+  children: ReactNode
 }
 
-const Popover = (props: React.PropsWithChildren<Props>) => {
-  let ref = React.useRef<HTMLDivElement>(null)
-  let { popoverRef = ref, isOpen, onClose, children } = props
+const Popover = (props: Props) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const { popoverRef = ref, isOpen, onClose, children } = props
 
   // Handle events that should cause the popup to close,
   // e.g. blur, clicking outside, or pressing the escape key.
-  let { overlayProps } = useOverlay(
+  const { overlayProps } = useOverlay(
     {
       isOpen,
       onClose,

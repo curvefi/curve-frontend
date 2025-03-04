@@ -1,14 +1,10 @@
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import React from 'react'
-
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageLoanCreate/utils'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-
 import DetailInfo from '@ui/DetailInfo'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'

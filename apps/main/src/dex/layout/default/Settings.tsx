@@ -1,6 +1,5 @@
 import useStore from '@/dex/store/useStore'
 import styled, { keyframes } from 'styled-components'
-
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 

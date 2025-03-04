@@ -1,8 +1,5 @@
-import React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
-
 import { formatDate, formatNumber } from 'ui/src/utils'
-
 import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
 import { LocksDaily } from '@curvefi/prices-api/dao'
 

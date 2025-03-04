@@ -2,10 +2,8 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-
 import SettingsIcon from '@mui/icons-material/Settings'
 import CloseIcon from '@mui/icons-material/Close'
-
 import { LlamaImg } from '@ui/images'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { addressShort, type Address } from '@ui-kit/utils'

@@ -1,6 +1,5 @@
-import React, { Ref } from 'react'
+import { forwardRef, Ref } from 'react'
 import styled from 'styled-components'
-
 import Button from 'ui/src/Button/Button'
 
 export type GlobalBannerProps = {
@@ -12,7 +11,7 @@ export type GlobalBannerProps = {
   ref: Ref<HTMLDivElement>
 }
 
-const GlobalBanner = React.forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
+const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   (
     { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
     ref,

@@ -4,7 +4,7 @@ import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
@@ -84,7 +84,7 @@ const Swap = ({
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress

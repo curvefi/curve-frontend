@@ -1,6 +1,5 @@
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
-import React from 'react'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'

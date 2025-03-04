@@ -1,10 +1,6 @@
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
-
-import React from 'react'
-
 import { DEFAULT_DETAIL_INFO } from '@/loan/components/PageLoanManage/utils'
 import useStore from '@/loan/store/useStore'
-
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'

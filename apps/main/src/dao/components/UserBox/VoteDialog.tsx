@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
 import { formatNumber } from '@ui/utils'
-
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
@@ -14,14 +12,13 @@ import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/d
 type Props = {
   userAddress: string
   activeProposal?: ActiveProposal
-  testId?: string
   proposalId?: string
   votingPower: SnapshotVotingPower
   snapshotVotingPower: boolean
   className?: string
 }
 
-const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
+const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId }: Props) => {
   const { castVote, voteTxMapper, executeProposal, executeTxMapper } = useStore((state) => state.proposals)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])

@@ -1,11 +1,8 @@
-import React from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
 import networks from '@/dao/networks'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-
 import { ExternalLink } from '@ui/Link'
 import Box from '@ui/Box'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
@@ -112,7 +109,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
             <StatsRow>
               <StatTitle>{t`TVL`}</StatTitle>
               <StatData>
-                {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
+                {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
                       showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',

@@ -1,13 +1,10 @@
 import type { ButtonProps } from 'ui/src/Button/types'
 import type { ConnectState } from 'ui/src/utils'
-
 import styled from 'styled-components'
-import * as React from 'react'
-
 import { isLoading, isSuccess, shortenAccount } from 'ui/src/utils'
-
 import Button from 'ui/src/Button/index'
 import type { Address } from 'curve-ui-kit/src/utils'
+import { ButtonHTMLAttributes } from 'react'
 
 type Status = 'success' | 'loading' | ''
 
@@ -18,7 +15,7 @@ function ConnectWallet({
   handleClick,
   ...props
 }: ButtonProps &
-  React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  ButtonHTMLAttributes<HTMLButtonElement> & {
     className?: string
     testId?: string
     connectState: ConnectState

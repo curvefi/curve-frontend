@@ -1,10 +1,7 @@
-import React from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useEffect } from 'react'
-
+import { Fragment, useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
-
 import { USER_VOTES_TABLE_LABELS } from './constants'
 import Box from '@ui/Box'
 import PaginatedTable from '@/dao/components/PaginatedTable'
@@ -92,7 +89,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
           setSortBy={(key) => setUserGaugeVoteWeightsSortBy(userAddress ?? '', key as UserGaugeVoteWeightSortBy)}
           getData={() => getUserGaugeVoteWeights(userAddress ?? '')}
           renderRow={(gauge, index) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <GaugeListItemWrapper>
                 <GaugeListItem
                   gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
@@ -110,7 +107,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
                   userGaugeVote={true}
                 />
               </SmallScreenCardWrapper>
-            </React.Fragment>
+            </Fragment>
           )}
           gridTemplateColumns={gridTemplateColumns}
           smallScreenBreakpoint={smallScreenBreakpoint}

@@ -1,10 +1,6 @@
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-
-import React from 'react'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { tooltipProps } from '@/dex/components/PageDashboard/components/Summary'
-
 import { Chip } from '@ui/Typography'
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 

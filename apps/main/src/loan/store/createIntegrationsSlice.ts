@@ -2,12 +2,10 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { FilterKey, FormStatus, FormValues } from '@/loan/components/PageIntegrations/types'
 import type { IntegrationApp, IntegrationsTags } from '@ui/Integration/types'
-
 import Fuse from 'fuse.js'
 import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 import sortBy from 'lodash/sortBy'
-
 import { fulfilledValue, httpFetcher } from '@/loan/utils/helpers'
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
@@ -78,7 +76,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
         const [integrationsTagsResult] = await Promise.allSettled([
           httpFetcher(networks[parsedChainId]?.integrations.tagsUrl),
         ])
-        let integrationsTags = fulfilledValue(integrationsTagsResult)
+        const integrationsTags = fulfilledValue(integrationsTagsResult)
         get()[sliceKey].setStateByKey('integrationsTags', parseIntegrationsTags(integrationsTags))
       }
     },

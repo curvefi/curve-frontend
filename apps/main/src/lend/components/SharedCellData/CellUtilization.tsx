@@ -1,9 +1,7 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import Chip from '@ui/Typography/Chip'
 import CellUtilizationTooltip from '@/lend/components/SharedCellData/CellUtilizationTooltip'
 import ProgressBar from '@ui/ProgressBar'

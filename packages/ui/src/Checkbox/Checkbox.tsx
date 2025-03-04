@@ -1,5 +1,4 @@
 import type { ToggleProps } from '@react-types/checkbox'
-
 import { useRef } from 'react'
 import styled from 'styled-components'
 import { useCheckbox } from '@react-aria/checkbox'

@@ -1,13 +1,10 @@
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
-
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import { Curve, Llamma } from '@/loan/types/loan.types'

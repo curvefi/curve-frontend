@@ -1,10 +1,7 @@
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
-
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
-
 import ChartBandBalances from '@/loan/components/ChartBandBalances'
 import { Llamma, BandsBalancesData } from '@/loan/types/loan.types'
 
@@ -34,7 +31,7 @@ const DetailsBandsChart = ({ llammaId, llamma }: { llammaId: string; llamma: Lla
   const { oraclePrice, oraclePriceBand } = priceInfo ?? {}
 
   const chartBandBalancesData = useMemo(() => {
-    let data = [...(bandsBalances ?? [])]
+    const data = [...(bandsBalances ?? [])]
     if (data?.length > 0 && typeof oraclePriceBand === 'number') {
       const firstN = data[0].n
       const lastN = data[data.length - 1].n

@@ -1,10 +1,8 @@
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanIncrease/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import {
   DEFAULT_DETAIL_INFO,
@@ -18,7 +16,6 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -68,7 +65,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
 
@@ -113,7 +110,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       const haveCollateral = +collateral > 0
       const haveDebt = +debt > 0
 
-      let notifyMessage =
+      const notifyMessage =
         haveCollateral && haveDebt
           ? t`Please confirm borrowing of ${formValues.debt} ${getTokenName(llamma).stablecoin} and adding ${
               formValues.collateral

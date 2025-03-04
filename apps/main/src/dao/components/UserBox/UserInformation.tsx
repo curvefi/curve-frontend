@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-
 import useStore from '@/dao/store/useStore'
 import { shortenTokenAddress, formatNumber } from '@ui/utils'
-
 import { TooltipIcon } from '@ui/Tooltip'
 import Loader from 'ui/src/Loader/Loader'
 import InternalLink from '@ui/Link/InternalLink'

@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dex/store/useStore'
 import { curveProps } from '@/dex/lib/utils'
-
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import AlertBox from '@ui/AlertBox'

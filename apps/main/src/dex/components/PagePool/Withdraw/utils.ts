@@ -1,5 +1,4 @@
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
-
 import { t } from '@ui-kit/lib/i18n'
 
 export const DEFAULT_FORM_VALUES: FormValues = {
@@ -32,7 +31,7 @@ export function getTokensText(
   { claimableCrv, claimableRewards }: FormValues,
   { isClaimCrv, isClaimRewards }: FormStatus,
 ) {
-  let message = []
+  const message = []
 
   if (isClaimCrv) {
     message.push(`CRV ${claimableCrv}`)

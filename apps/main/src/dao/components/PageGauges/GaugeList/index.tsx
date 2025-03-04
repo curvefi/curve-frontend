@@ -1,13 +1,10 @@
 import styled from 'styled-components'
-import React, { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, Key, Fragment } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
-
 import SearchInput from '@ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
 import ErrorMessage from '@/dao/components/ErrorMessage'
@@ -37,7 +34,7 @@ const GaugesList = () => {
   }, [gaugesLoading, searchValue, setGauges, gaugeListSortBy])
 
   const handleSortChange = useCallback(
-    (key: React.Key) => {
+    (key: Key) => {
       setGaugeListSortBy(key as SortByFilterGaugesKeys)
       setGauges(searchValue)
     },
@@ -93,14 +90,14 @@ const GaugesList = () => {
             setSortBy={handleSortChange}
             getData={() => getGauges(true)}
             renderRow={(gauge, index) => (
-              <React.Fragment key={index}>
+              <Fragment key={index}>
                 <GaugeListItemWrapper>
                   <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
                 </GaugeListItemWrapper>
                 <SmallScreenCardWrapper>
                   <SmallScreenCard gaugeData={gauge} />
                 </SmallScreenCardWrapper>
-              </React.Fragment>
+              </Fragment>
             )}
             gridTemplateColumns={gridTemplateColumns}
             smallScreenBreakpoint={smallScreenBreakpoint}

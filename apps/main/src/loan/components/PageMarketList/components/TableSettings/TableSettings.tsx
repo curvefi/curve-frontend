@@ -1,12 +1,8 @@
 import type { PageCollateralList, TableLabel } from '@/loan/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-
 import SelectFilterType from '@/loan/components/PageMarketList/components/TableSettings/SelectFilterType'
 import SearchListInput from '@ui/SearchInput/SearchListInput'
 

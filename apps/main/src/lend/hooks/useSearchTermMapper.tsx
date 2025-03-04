@@ -1,5 +1,4 @@
 import type { SearchTermMapper, SearchTermKey } from '@/lend/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
@@ -22,7 +21,7 @@ export function parseSearchTermMapper(
 ) {
   if (!searchedByAddresses || !searchTermMapper || !market) return undefined
 
-  let parsed = { ...searchTermMapper }
+  const parsed = { ...searchTermMapper }
   const { collateral_token, borrowed_token } = market
 
   Object.keys(searchedByAddresses).forEach((key) => {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { shortenAccount } from '@ui/utils'

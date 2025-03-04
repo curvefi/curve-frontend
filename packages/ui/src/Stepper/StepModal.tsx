@@ -1,19 +1,17 @@
 import type { StepActionModal } from 'ui/src/Stepper/types'
 import type { OverlayTriggerState } from '@react-stately/overlays'
-
-import * as React from 'react'
 import { useButton } from 'react-aria'
-
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
 import ModalDialog from 'ui/src/Dialog/ModalDialog'
+import { type MouseEvent, useEffect, useRef } from 'react'
 
 interface StepModalProps extends Pick<StepActionModal, 'modal'> {
   overlayTriggerState: OverlayTriggerState
 }
 
-const StepModal = ({ modal, overlayTriggerState }: React.PropsWithChildren<StepModalProps>) => {
-  const closeButtonRef = React.useRef<HTMLButtonElement>(null)
+const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: closeButtonProps } = useButton({}, closeButtonRef)
 
   const { title, testId, content, cancelBtnProps, primaryBtnProps, primaryBtnLabel } = modal
@@ -25,12 +23,12 @@ const StepModal = ({ modal, overlayTriggerState }: React.PropsWithChildren<StepM
     overlayTriggerState.close()
   }
 
-  const handlePrimaryBtnClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
+  const handlePrimaryBtnClick = (evt: MouseEvent<HTMLButtonElement>) => {
     if (typeof onClick === 'function') onClick(evt)
     overlayTriggerState.close()
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof modal.initFn === 'function') modal.initFn()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

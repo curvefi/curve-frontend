@@ -1,4 +1,3 @@
-import React from 'react'
 import { getBackgroundUrl } from '@ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'

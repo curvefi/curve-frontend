@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
@@ -11,7 +11,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeightResizeObserver } from '@ui/hooks'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 
-const BaseLayout = ({ children }: { children: React.ReactNode }) => {
+const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const elHeight = useHeightResizeObserver(globalAlertRef)

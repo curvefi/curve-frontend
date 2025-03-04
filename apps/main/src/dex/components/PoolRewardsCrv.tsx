@@ -1,9 +1,7 @@
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Icon from '@ui/Icon'

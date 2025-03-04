@@ -1,8 +1,6 @@
 import type { ChipProps } from 'ui/src/Typography/types'
-
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from 'ui/src/utils'
 import Chip from 'ui/src/Typography/Chip'
 import TextCaption from 'ui/src/TextCaption'

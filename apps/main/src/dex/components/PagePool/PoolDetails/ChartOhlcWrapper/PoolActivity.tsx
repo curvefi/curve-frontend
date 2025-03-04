@@ -1,11 +1,8 @@
 import type { LpTradeToken, PricesApiCoin } from '@ui/Chart/types'
-
 import { useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import useStore from '@/dex/store/useStore'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Button from '@ui/Button/Button'
 import Icon from '@ui/Icon'
@@ -20,7 +17,6 @@ const PoolActivity = ({
   coins,
   tradesTokens,
   chartCombinations,
-  refetchPricesData,
 }: {
   poolAddress: string
   chainId: ChainId
@@ -28,7 +24,6 @@ const PoolActivity = ({
   coins: PricesApiCoin[]
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
-  refetchPricesData: () => void
 }) => {
   const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const {

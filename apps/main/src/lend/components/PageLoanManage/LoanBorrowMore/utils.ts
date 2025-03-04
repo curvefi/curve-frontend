@@ -21,7 +21,7 @@ export function _getStepTokensStr(
   { userCollateral, userCollateralError, userBorrowed, userBorrowedError }: FormValues,
   { collateral_token, borrowed_token }: OneWayMarketTemplate,
 ) {
-  let list = []
+  const list = []
   const haveUserCollateral = +userCollateral > 0
   const haveUserBorrowed = +userBorrowed > 0
 

@@ -1,10 +1,8 @@
 import type { NextPage } from 'next'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-
 import { REFRESH_INTERVAL } from '@/lend/constants'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import { helpers } from '@/lend/lib/apiLending'
@@ -13,7 +11,6 @@ import networks from '@/lend/networks'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
-
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,

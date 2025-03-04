@@ -1,12 +1,9 @@
 import type { InputLabelProps, InputProps } from 'ui/src/InputComp/types'
-
-import * as React from 'react'
 import styled from 'styled-components'
-
 import Box from 'ui/src/Box/Box'
 import Input from 'ui/src/InputComp/Input'
-import InputLabel from 'ui/src/InputComp/InputLabel'
-import InputMessage from 'ui/src/InputComp/InputMessage'
+import { InputLabel, InputMessage } from 'ui/src/InputComp'
+import { ChangeEventHandler } from 'react'
 
 const InputField = ({
   className,
@@ -20,7 +17,7 @@ const InputField = ({
   labelProps: InputLabelProps
   message?: string
   testId?: string
-  onChange?: React.ChangeEventHandler<HTMLInputElement>
+  onChange?: ChangeEventHandler<HTMLInputElement>
 }) => (
   <>
     <Box className={className}>

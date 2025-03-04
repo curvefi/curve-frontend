@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
@@ -8,10 +8,11 @@ const FormActions = ({
   haveSigner,
   loading,
   children,
-}: React.PropsWithChildren<{
+}: {
   haveSigner: boolean
   loading: boolean
-}>) => {
+  children: ReactNode
+}) => {
   const connectWallet = useStore((s) => s.updateConnectState)
   return (
     <>

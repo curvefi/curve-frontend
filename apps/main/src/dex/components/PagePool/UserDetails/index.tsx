@@ -1,6 +1,6 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import { shortenTokenAddress } from '@/dex/utils'

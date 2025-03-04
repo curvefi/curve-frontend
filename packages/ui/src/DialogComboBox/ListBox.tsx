@@ -1,17 +1,15 @@
 import type { AriaListBoxOptions } from 'react-aria'
 import type { Node } from '@react-types/shared'
 import type { ListState } from '@react-stately/list'
-
-import React, { useEffect, useRef, useState } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { useListBox, useOption } from '@react-aria/listbox'
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & {
     activeKey: string
-    listBoxRef: React.RefObject<HTMLUListElement | null>
+    listBoxRef: RefObject<HTMLUListElement | null>
     state: ListState<any>
     testId?: string
   },

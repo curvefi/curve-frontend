@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import type { Step } from '@ui/Stepper/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import styled from 'styled-components'
@@ -36,7 +36,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress

@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { zip } from 'lodash'
-
 import { breakpoints } from '@ui/utils'
 import networks from '@/loan/networks'
-
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { ChainId } from '@/loan/types/loan.types'
 

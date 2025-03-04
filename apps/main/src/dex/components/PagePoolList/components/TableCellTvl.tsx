@@ -1,5 +1,4 @@
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import { Tvl } from '@/dex/types/main.types'
 

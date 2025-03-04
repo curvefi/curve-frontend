@@ -1,13 +1,10 @@
 import type { ComboBoxSelectTokenProps } from '@/dex/components/ComboBoxSelectToken/types'
-
-import React, { useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import chunk from 'lodash/chunk'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import useStore from '@/dex/store/useStore'
-
 import { RCEditClear } from '@ui/images'
 import { StyledInput } from '@ui/InputComp/styles'
 import Box from '@ui/Box/Box'
@@ -85,7 +82,7 @@ const ComboBox = ({
                       placeholder={t`Search by token name or address`}
                       type="search"
                       value={filterValue}
-                      onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) =>
+                      onChange={({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
                         handleInpChange(value, tokens)
                       }
                       onKeyDown={(evt) => {

@@ -1,11 +1,8 @@
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
-
 import { Contract, ContractRunner, Interface } from 'ethers'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
-
 import { getErrorMessage } from '@/dex/utils'
-
 import AlertFormError from '@/dex/components/AlertFormError'
 import Box from '@ui/Box'
 import Compensations from '@/dex/components/PageCompensation/components/Compensations'

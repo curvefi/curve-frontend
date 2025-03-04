@@ -1,11 +1,7 @@
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import React from 'react'
-
 import { isValidAddress } from '@/dex/utils'
-
 import ChipInactive from '@/dex/components/ChipInactive'
 import AddGaugeLink from '@/dex/components/PagePool/components/AddGaugeLink'
 import ContractComp from '@/dex/components/PagePool/components/ContractComp'

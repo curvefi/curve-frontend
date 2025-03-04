@@ -1,11 +1,7 @@
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
-
-import React from 'react'
 import styled from 'styled-components'
-
 import { focusVisible } from '@ui/utils'
 import { shortenTokenAddress } from '@ui/utils'
-
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
@@ -40,7 +36,7 @@ const ComboBoxListItem = ({
 const ItemButton = styled(Button)`
   ${focusVisible};
 
-  &.focus-visible,
+  &:focus-visible,
   &.active {
     color: var(--box--primary--color);
     background-color: var(--table_detail_row--active--background-color);
@@ -54,11 +50,6 @@ const ItemButton = styled(Button)`
   grid-template-columns: auto 1fr auto;
   height: 50px;
   width: 100%;
-`
-
-const IconWrapper = styled.div`
-  min-width: 1.875rem; // 30px;
-  text-align: left;
 `
 
 const LabelText = styled.div`

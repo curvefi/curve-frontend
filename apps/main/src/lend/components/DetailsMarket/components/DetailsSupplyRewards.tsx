@@ -1,12 +1,9 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled, { css } from 'styled-components'
-
 import { handleClickCopy, shortenTokenName } from '@/lend/utils/helpers'
 import { breakpoints, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import networks from '@/lend/networks'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
-
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
 import ChipInactive from '@/lend/components/ChipInactive'

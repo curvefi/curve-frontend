@@ -5,7 +5,7 @@ import { useFocusRing } from '@react-aria/focus'
 import { Trans } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import styled from 'styled-components'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { Key, useCallback, useEffect, useMemo } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -59,7 +59,7 @@ const IntegrationsComp = ({
   )
 
   const updatePath = useCallback(
-    ({ filterKey, filterNetworkId }: { filterKey?: React.Key; filterNetworkId?: React.Key }) => {
+    ({ filterKey, filterNetworkId }: { filterKey?: Key; filterNetworkId?: Key }) => {
       const pSearchParams = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
       let pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}`)
 
@@ -123,7 +123,7 @@ const IntegrationsComp = ({
             items={visibleNetworksList}
             minWidth="8.5em"
             selectedKey={filterNetworkId}
-            onSelectionChange={(filterNetworkId: React.Key) => updatePath({ filterNetworkId })}
+            onSelectionChange={(filterNetworkId: Key) => updatePath({ filterNetworkId })}
             onSelectionDelete={
               filterNetworkId && +filterNetworkId !== rChainId
                 ? () => updatePath({ filterNetworkId: rChainId })

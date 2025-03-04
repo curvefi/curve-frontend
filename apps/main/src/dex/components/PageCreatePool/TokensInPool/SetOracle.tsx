@@ -1,11 +1,8 @@
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
-
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { debounce } from 'lodash'
-
 import useStore from '@/dex/store/useStore'
-
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import Box from '@ui/Box'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'

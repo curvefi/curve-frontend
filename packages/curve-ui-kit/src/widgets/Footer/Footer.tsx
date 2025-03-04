@@ -1,11 +1,9 @@
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
-
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AppName } from '@ui-kit/shared/routes'
 import { LlamaImg } from '@ui/images'
-
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'

@@ -1,8 +1,6 @@
 import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
-
 import styled from 'styled-components'
 import Image from 'next/image'
-
 import Tooltip from 'ui/src/Tooltip'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import Icon from 'ui/src/Icon'

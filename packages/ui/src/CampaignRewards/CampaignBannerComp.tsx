@@ -1,7 +1,5 @@
 import type { CampaignRewardsBannerCompProps } from './types'
-
 import styled from 'styled-components'
-
 import { ExternalLink } from 'ui/src/Link'
 import { RCPointsIcon } from 'ui/src/images'
 import RewardsCompSmall from './CampaignRewardsComp'

@@ -1,11 +1,13 @@
 import styled, { keyframes } from 'styled-components'
-import React, { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 type Props = {
+  children: ReactNode
   prevVal: string | number | null | undefined
   newVal: string | number | null | undefined
 }
-const CompareValues = ({ children, prevVal, newVal }: React.PropsWithChildren<Props>) => {
+
+const CompareValues = ({ children, prevVal, newVal }: Props) => {
   const [indicator, setIndicator] = useState('')
 
   useEffect(() => {

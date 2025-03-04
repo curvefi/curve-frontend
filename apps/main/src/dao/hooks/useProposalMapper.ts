@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-
 import useStore from '@/dao/store/useStore'
 
 const useProposalMapper = () => {

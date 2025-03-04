@@ -1,15 +1,11 @@
 import type { TableRowProps } from '@/loan/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useRef } from 'react'
+import { Fragment, ReactNode, useRef } from 'react'
 import styled from 'styled-components'
-
 import networks from '@/loan/networks'
-
 import { TITLE } from '@/loan/constants'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
-import { Tr, Td, CellInPool } from '@ui/Table'
+import { CellInPool, Td, Tr } from '@ui/Table'
 import TokenLabel from '@/loan/components/TokenLabel'
 import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
@@ -41,7 +37,7 @@ const TableRow = ({
   }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean; className?: string }[] = [
+  const contents: { titleKey: TitleKey; content: ReactNode; show?: boolean; className?: string }[] = [
     { titleKey: TITLE.isInMarket, content: <CellInPool isIn={loanExists} type='market' tooltip={loanExists ? t`You have a balance in this market`: ''} />, show: loanExists || someLoanExists },
     { titleKey: TITLE.name, content: <TokenLabel showAlert {...props} type="collateral" size='lg' minHeight={35} /> },
     { titleKey: TITLE.myHealth, content: <TableCellUser {...props} type='health' />, show: someLoanExists, className: 'right' },
@@ -62,14 +58,14 @@ const TableRow = ({
         const isVisible = !(typeof show !== 'undefined' && !show)
 
         return (
-          <React.Fragment key={`td${idx}`}>
+          <Fragment key={`td${idx}`}>
             {isVisible && isInMarket && content}
             {isVisible && !isInMarket && (
               <Td $first={isFirst} $last={isLast} className={className}>
                 {content}
               </Td>
             )}
-          </React.Fragment>
+          </Fragment>
         )
       })}
     </StyledTr>

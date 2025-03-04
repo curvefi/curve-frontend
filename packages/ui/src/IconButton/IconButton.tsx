@@ -1,9 +1,6 @@
 import type { IconButtonProps } from './types'
-
-import * as React from 'react'
 import { forwardRef, useRef } from 'react'
 import { useFocusRing } from '@react-aria/focus'
-
 import { StyledIconButton } from './styles'
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps & { className?: string; testId?: string }>(

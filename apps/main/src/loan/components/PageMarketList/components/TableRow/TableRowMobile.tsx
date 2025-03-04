@@ -1,14 +1,10 @@
 import type { TableRowProps } from '@/loan/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useRef } from 'react'
+import { Dispatch, Fragment, ReactNode, SetStateAction, useRef } from 'react'
 import styled from 'styled-components'
-
 import networks from '@/loan/networks'
-
 import { TITLE } from '@/loan/constants'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
 import { Tr, CellInPool } from '@ui/Table'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -35,7 +31,7 @@ const TableRowMobile = ({
 }: TableRowProps & {
   showDetail: string
   titleMapper: TitleMapper
-  setShowDetail: React.Dispatch<React.SetStateAction<string>>
+  setShowDetail: Dispatch<SetStateAction<string>>
 }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
@@ -51,7 +47,7 @@ const TableRowMobile = ({
   }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean; isBorder?: boolean }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode; show?: boolean; isBorder?: boolean }[][] = [
     [
       { titleKey: TITLE.myHealth, content: <TableCellUser {...props} type='health' />, show: loanExists },
       { titleKey: TITLE.myDebt, content: <TableCellUser {...props} type='debt' />, show: loanExists, isBorder: true }
@@ -97,10 +93,10 @@ const TableRowMobile = ({
                   return (
                     <ListInfoItems key={`contents${idx}`}>
                       {groupedTds.map(({ titleKey, content, isBorder }, idx) => (
-                        <React.Fragment key={`td${idx}`}>
+                        <Fragment key={`td${idx}`}>
                           <ListInfoItem {...titleMapper[titleKey]}>{content}</ListInfoItem>
                           {isBorder && <hr />}
-                        </React.Fragment>
+                        </Fragment>
                       ))}
                     </ListInfoItems>
                   )

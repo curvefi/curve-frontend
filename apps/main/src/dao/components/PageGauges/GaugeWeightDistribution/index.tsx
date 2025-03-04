@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-
 import useStore from '@/dao/store/useStore'
-
 import BarChartComponent from '../../Charts/BarChartComponent'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import ErrorMessage from '@/dao/components/ErrorMessage'

@@ -1,11 +1,8 @@
 import type { InputLabelProps } from './types'
-
-import * as React from 'react'
 import styled from 'styled-components'
-
 import { useInputContext } from 'ui/src/InputComp/InputProvider'
-
 import Loader from 'ui/src/Loader'
+import { useEffect, useRef, useState } from 'react'
 
 const InputLabel = ({
   className,
@@ -15,13 +12,13 @@ const InputLabel = ({
   testId,
   ...props
 }: InputLabelProps & { testId?: string }) => {
-  const descriptionRef = React.useRef<HTMLSpanElement | null>(null)
+  const descriptionRef = useRef<HTMLSpanElement | null>(null)
   const { id } = useInputContext()
-  const [skeleton, setSkeleton] = React.useState<[number, number] | null>(null)
+  const [skeleton, setSkeleton] = useState<[number, number] | null>(null)
 
   const descriptionEl = descriptionRef.current
 
-  React.useEffect(() => {
+  useEffect(() => {
     const { offsetWidth, offsetHeight } = descriptionEl ?? {}
     if (offsetWidth && offsetHeight && description !== '-') {
       setSkeleton([offsetWidth > 10 ? offsetWidth : 20, offsetHeight - 4] as [number, number])

@@ -1,11 +1,8 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
-
 import Box from '@ui/Box'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
@@ -74,12 +71,6 @@ const TooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-`
-
-const TooltipTitle = styled.p`
-  font-size: var(--font-size-3);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
 `
 
 const TooltipColumn = styled.div`

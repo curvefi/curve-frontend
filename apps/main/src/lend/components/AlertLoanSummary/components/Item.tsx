@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import React from 'react'
+import { ReactNode } from 'react'
 
 type ItemCompProps = {
   $isDivider?: boolean
@@ -7,11 +7,7 @@ type ItemCompProps = {
   $marginTop?: string
 }
 
-const Item = ({
-  label,
-  value,
-  ...props
-}: ItemCompProps & { label: string | React.ReactNode; value: string | React.ReactNode | undefined }) => (
+const Item = ({ label, value, ...props }: ItemCompProps & { label: ReactNode; value: ReactNode }) => (
   <ItemComp {...props}>
     <span>{label}</span>
     <span>{value}</span>

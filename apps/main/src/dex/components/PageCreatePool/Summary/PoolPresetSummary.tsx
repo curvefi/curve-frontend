@@ -1,6 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
 import useStore from '@/dex/store/useStore'
-
 import {
   CategoryDataRow,
   SummaryDataTitle,

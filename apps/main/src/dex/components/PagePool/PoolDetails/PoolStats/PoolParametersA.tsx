@@ -1,9 +1,7 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
-
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import Chip from '@ui/Typography/Chip'
 import Item from '@ui/Items/Item'

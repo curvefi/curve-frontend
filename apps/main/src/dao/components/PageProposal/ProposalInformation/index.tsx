@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-
 import { shortenTokenAddress, convertToLocaleTimestamp } from '@ui/utils'
-
 import Box from '@ui/Box'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { InternalLink } from '@ui/Link'

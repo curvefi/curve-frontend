@@ -1,7 +1,6 @@
 import { t, Trans } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
-
 import ExternalLink from '@ui/Link/ExternalLink'
 import { AlertType } from '@/loan/types/loan.types'
 
@@ -9,7 +8,7 @@ type TokenAlert = {
   alertType: AlertType
   isInformationOnly?: boolean
   tokenAddress: string
-  message: string | React.ReactNode
+  message: ReactNode
 }
 
 const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null =>

@@ -1,8 +1,5 @@
-import React from 'react'
-
 import { formatNumber } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-
 import Box from '@ui/Box'
 import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
 import ListInfoItem from '@ui/ListInfo'

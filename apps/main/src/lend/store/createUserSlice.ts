@@ -1,8 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { log } from '@ui-kit/lib/logging'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'

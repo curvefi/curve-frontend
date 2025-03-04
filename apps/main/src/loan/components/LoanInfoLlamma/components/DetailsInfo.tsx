@@ -1,13 +1,13 @@
 import { TITLE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
 import networks from '@/loan/networks'
-
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import TokenLabel from '@/loan/components/TokenLabel'
 import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
 import TableCellUtilization from '@/loan/components/SharedCells/TableCellUtilization'
 import { ChainId, TitleKey, TitleMapper } from '@/loan/types/loan.types'
+import { ReactNode } from 'react'
 
 const DetailsInfo = ({
   rChainId,
@@ -31,7 +31,7 @@ const DetailsInfo = ({
   }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey; content: React.ReactNode; }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode; }[][] = [
     [
       { titleKey: TITLE.tokenCollateral, content: <TokenLabel {...props} type="collateral" /> },
       { titleKey: TITLE.tokenBorrow, content: <TokenLabel {...props} type="borrow" /> },

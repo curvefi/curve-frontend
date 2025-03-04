@@ -1,7 +1,5 @@
 import type { ButtonProps } from 'ui/src/Button/types'
-
 import { css } from 'styled-components'
-
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 
 export const buttonFilledStyles = css`

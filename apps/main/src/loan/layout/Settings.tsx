@@ -1,7 +1,5 @@
 import styled, { keyframes } from 'styled-components'
-
 import useStore from '@/loan/store/useStore'
-
 import Icon from '@ui/Icon'
 import Button from '@ui/Button'
 

@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
 import { LogoImg, RCLogoText } from '@ui/images'
 import { styled } from '@mui/material/styles'

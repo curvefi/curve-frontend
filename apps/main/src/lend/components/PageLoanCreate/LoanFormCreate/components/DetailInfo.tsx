@@ -1,11 +1,8 @@
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import type { DetailInfoCompAdditionalProps, DetailInfoCompProps } from '@/lend/components/PageLoanCreate/types'
-
-import React, { useMemo } from 'react'
-
+import { useMemo } from 'react'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import useStore from '@/lend/store/useStore'
-
 import DetailInfoNonLeverage from '@/lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
 import DetailInfoLeverage from '@/lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 import { PageContentProps } from '@/lend/types/lend.types'

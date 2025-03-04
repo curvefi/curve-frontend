@@ -1,9 +1,7 @@
 import type { PoolType } from '@/dex/components/PageDeployGauge/types'
-
 import { useEffect, useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import useStore from '@/dex/store/useStore'
 import {
   TWOCOINCRYPTOSWAP,
@@ -12,7 +10,6 @@ import {
   STABLESWAPOLD,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
-
 import Box from '@ui/Box'
 import TextInput from '@/dex/components/PageDeployGauge/components/TextInput'
 import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'

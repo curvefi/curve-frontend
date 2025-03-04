@@ -1,7 +1,7 @@
 import { notify } from '@ui-kit/features/connect-wallet'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultStake/types'
 import type { Step } from '@ui/Stepper/types'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -36,7 +36,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const resetState = useStore((state) => state.vaultStake.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
 

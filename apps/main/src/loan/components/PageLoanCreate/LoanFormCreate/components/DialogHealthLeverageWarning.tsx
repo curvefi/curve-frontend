@@ -1,11 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
-
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
 import { HealthMode } from '@/loan/types/loan.types'
+import { Dispatch, SetStateAction } from 'react'
 
 function DialogHealthLeverageWarning({
   confirmed,
@@ -13,7 +12,7 @@ function DialogHealthLeverageWarning({
   setConfirmed,
 }: HealthMode & {
   confirmed: boolean
-  setConfirmed: React.Dispatch<React.SetStateAction<boolean>>
+  setConfirmed: Dispatch<SetStateAction<boolean>>
 }) {
   const handleInpChange = (isConfirmed: boolean) => {
     setConfirmed(isConfirmed)

@@ -7,7 +7,6 @@ import type {
 } from 'react-aria'
 import type { ComboBoxStateOptions, ListState } from 'react-stately'
 import type { Node } from '@react-types/shared'
-
 import {
   DismissButton,
   FocusScope,
@@ -24,20 +23,16 @@ import {
 } from 'react-aria'
 import { useComboBoxState } from 'react-stately'
 import styled from 'styled-components'
-import React from 'react'
-
 import { breakpoints } from '@ui/utils/responsive'
-
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import InputProvider from '@ui/InputComp'
 import ShadowedBox from '@ui/ShadowedBox'
+import { CSSProperties, ReactNode, RefObject, useRef } from 'react'
 
-const Popover = (
-  props: React.PropsWithChildren<AriaOverlayProps & { popoverRef: React.RefObject<HTMLDivElement | null> }>,
-) => {
-  const ref = React.useRef<HTMLDivElement>(null)
+const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode }) => {
+  const ref = useRef<HTMLDivElement>(null)
   const { popoverRef = ref, isOpen, onClose, children } = props
 
   const { overlayProps } = useOverlay(
@@ -61,7 +56,7 @@ const Popover = (
 }
 
 function Option<T extends {}>({ item, state }: AriaOptionProps & { state: ListState<T>; item: Node<T> }) {
-  const ref = React.useRef<HTMLLIElement>(null)
+  const ref = useRef<HTMLLIElement>(null)
   const { optionProps, isFocused } = useOption({ key: item.key }, state, ref)
   const { focusProps } = useFocusRing()
 
@@ -100,9 +95,9 @@ function ListBoxSection<T extends {}>({
 }
 
 function ListBox<T extends {}>(
-  props: AriaListBoxOptions<T> & { listBoxRef: React.RefObject<HTMLUListElement | null>; state: ListState<T> },
+  props: AriaListBoxOptions<T> & { listBoxRef: RefObject<HTMLUListElement | null>; state: ListState<T> },
 ) {
-  const ref = React.useRef<HTMLUListElement>(null)
+  const ref = useRef<HTMLUListElement>(null)
   const { listBoxRef = ref, state } = props
   const { listBoxProps } = useListBox(props, state, listBoxRef)
 
@@ -116,9 +111,7 @@ function ListBox<T extends {}>(
   )
 }
 
-function Button(
-  props: AriaButtonProps & { buttonRef: React.RefObject<HTMLButtonElement | null>; style?: React.CSSProperties },
-) {
+function Button(props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties }) {
   const ref = props.buttonRef
   const { buttonProps } = useButton(props, ref)
 
@@ -130,10 +123,10 @@ function Button(
 }
 
 function ComboBoxAddress<T extends {}>(props: ComboBoxStateOptions<T>) {
-  const buttonRef = React.useRef<HTMLButtonElement>(null)
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const listBoxRef = React.useRef<HTMLUListElement>(null)
-  const popoverRef = React.useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const listBoxRef = useRef<HTMLUListElement>(null)
+  const popoverRef = useRef<HTMLDivElement>(null)
 
   const { contains } = useFilter({ sensitivity: 'base' })
   const state = useComboBoxState({ ...props, defaultFilter: contains })

@@ -3,15 +3,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo, useRef } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'
-
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
-
 import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
 import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
 import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
 import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
-
 import Box, { BoxHeader } from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Switch from '@ui/Switch/Switch'
@@ -46,7 +43,7 @@ const DeployGauge = ({ curve }: Props) => {
 
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
-  const { buttonProps: openButtonProps } = useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
+  useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
 
   const validateDeployButton = useMemo(() => {
     // validate sidechain gauge deployment

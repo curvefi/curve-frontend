@@ -1,17 +1,15 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import Button from '@ui/Button'
 
-type Props = {
-  data: string[]
-  currentData: string | null
-  setCurrentData: (data: string) => void
+type Props<T> = {
+  data: T[]
+  currentData: T | null
+  setCurrentData: (data: T) => void
   close?: () => void
 }
 
-const DialogSelectContent = ({ data, currentData, setCurrentData, ...props }: Props) => {
-  const handleClick = (data: string) => {
+const DialogSelectContent = <T extends string>({ data, currentData, setCurrentData, ...props }: Props<T>) => {
+  const handleClick = (data: T) => {
     setCurrentData(data)
     if (props.close) {
       props.close()

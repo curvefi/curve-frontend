@@ -1,4 +1,3 @@
-import React from 'react'
 import { LoaderWrapper } from './styled'
 import Loader from '../Loader'
 

@@ -1,10 +1,6 @@
 import type { BoxProps } from '@ui/Box/types'
-
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
-
 import { FieldsTitle } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import Box from '@ui/Box'

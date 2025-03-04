@@ -1,5 +1,4 @@
 import type { FormStatus, MarketListMapper, SearchTermResult } from '@/lend/components/PageMarketList/types'
-
 import sortBy from 'lodash/sortBy'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { FuseResult } from 'fuse.js'
@@ -22,8 +21,8 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
 }
 
 export function _getMarketList(markets: OneWayMarketTemplate[]) {
-  let marketListMapper: MarketListMapper = {}
-  let marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
+  const marketListMapper: MarketListMapper = {}
+  const marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
 
   markets.forEach(({ id, collateral_token, borrowed_token }) => {
     const { address: cAddress, symbol: cSymbol } = collateral_token

@@ -1,13 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { ChainId } from '@/loan/types/loan.types'

@@ -1,6 +1,4 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { formatNumber } from 'ui/src/utils'
 import AlertBox from 'ui/src/AlertBox'
 import Box from 'ui/src/Box'

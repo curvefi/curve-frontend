@@ -1,12 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
-
 import { XIcon } from '@ui-kit/shared/icons/XIcon'
 import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
 import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
@@ -20,7 +18,6 @@ import { TelegramCNIcon } from '@ui-kit/shared/icons/TelegramCNIcon'
 import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
 import { RiskDisclaimersIcon } from '@ui-kit/shared/icons/RiskDisclaimersIcon'
 import { SectionProps } from './Section'
-
 import { AppName } from '@ui-kit/shared/routes'
 
 function getDisclaimersTab(appName: AppName) {

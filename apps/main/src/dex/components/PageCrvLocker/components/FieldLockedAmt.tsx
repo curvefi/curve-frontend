@@ -1,11 +1,7 @@
 import type { FormType, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 

@@ -1,10 +1,8 @@
 import type { Content } from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
-
-import React, { useCallback, useRef } from 'react'
+import { Fragment, useCallback, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { FilterType } from '@/lend/components/PageMarketList/utils'
 import { TITLE } from '@/lend/constants'
 import { _showContent } from '@/lend/utils/helpers'
@@ -48,7 +46,7 @@ const TableRowMobileContent = ({
   const content: { borrow: Content[][], supply: Content[][] } = {
     [FilterType.borrow]: [
       [
-        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: loanExists, showLine: true },
+        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
         { tableKey: TITLE.myHealth, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
       ],
       [
@@ -81,7 +79,7 @@ const TableRowMobileContent = ({
                 const showLine = details.some(({ showLine }) => showLine)
 
                 return (
-                  <React.Fragment key={key}>
+                  <Fragment key={key}>
                     {isVisible && (
                       <>
                         <ListInfoItems>
@@ -89,16 +87,16 @@ const TableRowMobileContent = ({
                             const visible = _showContent(show)
 
                             return (
-                              <React.Fragment key={`${key}info${idx}`}>
+                              <Fragment key={`${key}info${idx}`}>
                                 {visible && <ListInfoItem {...titleMapper[tableKey]}>{content}</ListInfoItem>}
-                              </React.Fragment>
+                              </Fragment>
                             )
                           })}
                         </ListInfoItems>
                         {showLine && <hr />}
                       </>
                     )}
-                  </React.Fragment>
+                  </Fragment>
                 )
               })}
             </Content>

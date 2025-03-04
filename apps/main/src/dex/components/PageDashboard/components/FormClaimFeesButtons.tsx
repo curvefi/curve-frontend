@@ -1,6 +1,15 @@
 import type { ButtonProps } from '@ui/Button/types'
 import type { Step } from '@ui/Stepper/types'
-import React, { useCallback, useMemo, useState } from 'react'
+import {
+  ButtonHTMLAttributes,
+  Dispatch,
+  Fragment,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
@@ -23,8 +32,8 @@ const FormClaimFeesButtons = ({
   loading: boolean
   walletAddress: string
   steps: Step[]
-  setSteps: React.Dispatch<React.SetStateAction<Step[]>>
-  setTxInfoBar: React.Dispatch<React.SetStateAction<React.ReactNode>>
+  setSteps: Dispatch<SetStateAction<Step[]>>
+  setTxInfoBar: Dispatch<SetStateAction<ReactNode>>
 }) => {
   const { curve, isValidAddress } = useDashboardContext()
   const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
@@ -42,7 +51,7 @@ const FormClaimFeesButtons = ({
     const claimCrvUSD = +(claimFeesAmounts?.crvUSD ?? '0')
     const noClaimFees = claim3Crv + claimCrvUSD === 0
 
-    const buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps = {
+    const buttonProps: ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps = {
       disabled: loadingClaimFees || !signerAddress || noClaimFees || !isValidAddress,
       loading: loadingClaimFees || formProcessing,
       variant: 'filled',
@@ -112,7 +121,7 @@ const FormClaimFeesButtons = ({
         const isSuccess = key === claimingKey && steps?.[0]?.status === 'succeeded'
         return (
           (show || isSuccess) && (
-            <React.Fragment key={key}>
+            <Fragment key={key}>
               {isSuccess ? (
                 <Stepper steps={steps} />
               ) : (
@@ -124,7 +133,7 @@ const FormClaimFeesButtons = ({
                   {label}
                 </Button>
               )}
-            </React.Fragment>
+            </Fragment>
           )
         )
       })}

@@ -10,12 +10,9 @@ import {
   YAxis,
 } from 'recharts'
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { HeathColorKey } from '@/lend/types/lend.types'

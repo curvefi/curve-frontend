@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'

@@ -1,12 +1,10 @@
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 import type { TooltipTriggerProps } from 'react-stately'
-
-import React, { useCallback, useState } from 'react'
-import { breakpoints, getIsMobile } from 'ui/src/utils'
 import { useTooltipTriggerState } from 'react-stately'
+import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
+import { breakpoints, getIsMobile } from 'ui/src/utils'
 import { useTooltipTrigger } from 'react-aria'
 import styled from 'styled-components'
-
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip/Tooltip'
 
@@ -22,21 +20,20 @@ function TooltipButton({
   iconStyles = {},
   as,
   ...props
-}: React.PropsWithChildren<
-  TooltipTriggerProps &
-    TooltipProps & {
-      as?: string
-      className?: string
-      tooltip: React.ReactNode | string
-      showIcon?: boolean
-      customIcon?: React.ReactNode
-      increaseZIndex?: boolean
-      onClick?: () => void
-      iconStyles?: IconStyles
-    }
->) {
+}: TooltipTriggerProps &
+  TooltipProps & {
+    children?: ReactNode
+    as?: string
+    className?: string
+    tooltip: ReactNode
+    showIcon?: boolean
+    customIcon?: ReactNode
+    increaseZIndex?: boolean
+    onClick?: () => void
+    iconStyles?: IconStyles
+  }) {
   const state = useTooltipTriggerState({ delay: 0, ...props })
-  const ref = React.useRef<HTMLButtonElement | null>(null)
+  const ref = useRef<HTMLButtonElement | null>(null)
   const { triggerProps, tooltipProps } = useTooltipTrigger(props, state, ref)
 
   const [scrollY, setScrollY] = useState<number | null>(null)
@@ -49,7 +46,7 @@ function TooltipButton({
   }, [scrollY, state])
 
   const handleBtnClick = useCallback(
-    (evt: React.MouseEvent<HTMLButtonElement>) => {
+    (evt: MouseEvent<HTMLButtonElement>) => {
       if (typeof triggerProps.onClick === 'function') triggerProps.onClick(evt)
       if (typeof onClick === 'function') onClick()
 

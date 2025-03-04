@@ -1,9 +1,6 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import Chip from '@ui/Typography/Chip'
 import Icon from '@ui/Icon'
 

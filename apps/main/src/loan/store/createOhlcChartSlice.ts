@@ -10,9 +10,7 @@ import type {
 } from 'ui/src/Chart/types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
-
 import produce from 'immer'
-
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 

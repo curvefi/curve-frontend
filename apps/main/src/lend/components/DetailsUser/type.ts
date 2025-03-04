@@ -1,12 +1,11 @@
 import type { TooltipProps } from '@ui/Tooltip/types'
-
-import React from 'react'
 import { TitleKey } from '@/lend/types/lend.types'
+import { ReactNode } from 'react'
 
 export type Content = {
   titleKey: TitleKey
-  value: React.ReactNode
-  tooltip?: React.ReactNode | string
+  value: ReactNode
+  tooltip?: ReactNode
   tooltipProps?: TooltipProps
   className?: string
   show?: boolean

@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import useStore from '@/lend/store/useStore'
-
 import { INVALID_ADDRESS } from '@/lend/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { getTotalApr } from '@/lend/utils/utilsRewards'

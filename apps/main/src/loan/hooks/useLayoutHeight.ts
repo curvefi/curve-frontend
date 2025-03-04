@@ -1,10 +1,8 @@
 import type { LayoutHeight } from '@/loan/store/types'
-
-import React, { useEffect } from 'react'
-
+import { RefObject, useEffect } from 'react'
 import useStore from '@/loan/store/useStore'
 
-function useLayoutHeight(elementRef: React.RefObject<Element | null>, key: keyof LayoutHeight) {
+function useLayoutHeight(elementRef: RefObject<Element | null>, key: keyof LayoutHeight) {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
 

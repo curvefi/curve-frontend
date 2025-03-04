@@ -5,7 +5,7 @@ import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { curvejsValidationSuite } from './validation/curvejs-validation'
 
-async function _fetchAppStatsTvl({ chainId }: ChainParams<ChainId>) {
+async function _fetchAppStatsTvl(_: ChainParams<ChainId>) {
   const curve = useStore.getState().curve
 
   const { getTVL } = curvejsApi.network

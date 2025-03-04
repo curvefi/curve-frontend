@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { ChangeEvent } from 'react'
 
 interface NumberFieldProps {
   className?: string
@@ -12,7 +13,7 @@ interface NumberFieldProps {
 }
 
 const NumberField = ({ value, isDisabled = false, onChange, maxDecimals = 18, onFocus, onBlur }: NumberFieldProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     // Allow numbers and both . and , as decimal separators
     if (!/^\d*[.,]?\d*$/.test(value)) return
@@ -21,7 +22,7 @@ const NumberField = ({ value, isDisabled = false, onChange, maxDecimals = 18, on
     // Remove leading zeros
     const cleanValue = normalizedValue.replace(/^0+(\d)/, '$1')
     // Prevent more than maxDecimals decimal places
-    const [whole, decimal] = cleanValue.split('.')
+    const [, decimal] = cleanValue.split('.')
     if (decimal && decimal.length > maxDecimals) return
 
     onChange?.(cleanValue === '' ? '0' : cleanValue)

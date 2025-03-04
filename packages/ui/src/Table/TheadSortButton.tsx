@@ -1,28 +1,24 @@
 import type { IndicatorPlacement } from './types'
 import type { ButtonProps } from 'ui/src/Button/types'
-
-import * as React from 'react'
 import styled from 'styled-components'
-
 import Spinner from 'ui/src/Spinner/Spinner'
 import SortIcon from 'ui/src/SortIcon/SortIcon'
-import TheadButton from 'ui/src/Table/TheadButton'
+import { TheadButton } from 'ui/src/Table'
+import { ButtonHTMLAttributes } from 'react'
 
 export type Order = 'desc' | 'asc'
 
-export type TheadSortButtonProps<T> = React.PropsWithChildren<
-  React.ButtonHTMLAttributes<HTMLButtonElement> &
-    ButtonProps & {
-      disabled?: boolean
-      indicatorPlacement?: IndicatorPlacement
-      loading?: boolean
-      nowrap?: boolean
-      sortIdKey: T
-      sortBy: T | ''
-      sortByOrder: Order
-      handleBtnClickSort: (sortBy: string, sortByOrder: Order) => void
-    }
->
+export type TheadSortButtonProps<T> = ButtonHTMLAttributes<HTMLButtonElement> &
+  ButtonProps & {
+    disabled?: boolean
+    indicatorPlacement?: IndicatorPlacement
+    loading?: boolean
+    nowrap?: boolean
+    sortIdKey: T
+    sortBy: T | ''
+    sortByOrder: Order
+    handleBtnClickSort: (sortBy: string, sortByOrder: Order) => void
+  }
 
 const TheadSortButton = ({
   children,

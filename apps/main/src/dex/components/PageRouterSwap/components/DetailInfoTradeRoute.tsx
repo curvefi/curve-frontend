@@ -1,9 +1,7 @@
 import type { Params } from 'react-router'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { RCCircle } from '@ui/images'
 import Box from '@ui/Box'
 import DetailInfoTradeRouteRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'

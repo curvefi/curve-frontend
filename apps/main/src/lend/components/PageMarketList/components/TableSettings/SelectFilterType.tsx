@@ -1,10 +1,7 @@
 import type { SearchParams, TableLabel } from '@/lend/components/PageMarketList/types'
-
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
-
 import useStore from '@/lend/store/useStore'
-
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 import { TitleMapper } from '@/lend/types/lend.types'
@@ -46,7 +43,7 @@ const SelectFilterType = ({
 
           return prev
         },
-        {} as { [label: string]: { name: string | React.ReactNode } },
+        {} as { [label: string]: { name: ReactNode } },
       ),
     [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, titleMapper],
   )

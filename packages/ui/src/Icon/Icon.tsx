@@ -1,5 +1,4 @@
 import type { CarbonIconProps } from '@carbon/icons-react'
-
 import {
   ArrowUp,
   ArrowUpRight,

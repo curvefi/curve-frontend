@@ -8,12 +8,10 @@ import type {
   SearchTermResult,
   TableSettings,
 } from '@/lend/components/PageMarketList/types'
-
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
 import uniqBy from 'lodash/uniqBy'
-
 import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/lend/components/PageMarketList/utils'
 import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
 import { TITLE } from '@/lend/constants'
@@ -212,7 +210,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     },
     filterLeverageMarkets: (markets) => markets.filter((m) => m.leverage.hasLeverage()),
     sortByCollateral: (api, markets, marketMapping) => {
-      let { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
+      const { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
 
       const parsedTableRowsSettings: { [tokenAddress: string]: TableSettings } = {}
 
@@ -259,7 +257,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     },
     setFormValues: async (rChainId, api, marketMapping, shouldRefetch) => {
       const { markets, user } = get()
-      let {
+      const {
         activeKey: prevActiveKey,
         initialLoaded,
         searchParams,

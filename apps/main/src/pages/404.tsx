@@ -1,6 +1,5 @@
 import Error404 from '@ui/Error404'
 import type { NextPage } from 'next'
-
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 
 const Page404: NextPage = () => (

@@ -1,7 +1,6 @@
 import round from 'lodash/round'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import Box from '@ui/Box'

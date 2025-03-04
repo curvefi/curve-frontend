@@ -1,5 +1,4 @@
 import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/loan/components/PageLoanCreate/types'
-
 import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
 import { Llamma } from '@/loan/types/loan.types'
 

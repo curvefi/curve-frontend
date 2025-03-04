@@ -1,9 +1,7 @@
-import { useEffect } from 'react'
+import { MouseEvent, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
 import ErrorMessage from '@/dao/components/ErrorMessage'
@@ -32,7 +30,7 @@ const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistory
         <ErrorWrapper $minHeight={minHeight} onClick={(e) => e.stopPropagation()}>
           <ErrorMessage
             message={t`Error fetching historical gauge weights data`}
-            onClick={(e?: React.MouseEvent) => {
+            onClick={(e?: MouseEvent) => {
               e?.stopPropagation()
               getHistoricGaugeWeights(gaugeAddress)
             }}

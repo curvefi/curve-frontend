@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
 import { StyledButton } from '@/dex/features/add-gauge-reward-token/ui/styled'
 import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/dex/entities/gauge'

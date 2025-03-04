@@ -1,6 +1,5 @@
 import InputProvider, { InputDebounced } from '@ui/InputComp'
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import type { Address } from 'viem'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'

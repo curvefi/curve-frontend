@@ -1,5 +1,4 @@
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
-
 import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 import { BasePool } from '@/dex/types/main.types'
 
@@ -63,7 +62,7 @@ export const checkParameters = (
   tokenB: TokenState,
   tokenC: TokenState,
   tricryptoEnabled: boolean,
-  poolPresetIndex: number,
+  poolPresetIndex: number | null,
 ) => {
   if (poolPresetIndex === null) return false
   if (swapType === STABLESWAP) return stableSwapFee !== null
@@ -80,16 +79,8 @@ export const checkPoolInfo = (
   swapType: SwapType,
   poolSymbol: string,
   poolName: string,
-  assetType: string,
-) => {
-  if (swapType === STABLESWAP) {
-    if (stableswapNg) {
-      return poolSymbol !== '' && poolName !== ''
-    }
-    return poolSymbol !== '' && poolName !== '' && assetType !== null
-  }
-  return poolSymbol !== '' && poolName !== ''
-}
+  assetType: string | null,
+) => poolSymbol !== '' && poolName !== '' && (swapType == STABLESWAP || stableswapNg || assetType !== null)
 
 export const checkOracle = (oracle: string) => oracle.length === 42
 

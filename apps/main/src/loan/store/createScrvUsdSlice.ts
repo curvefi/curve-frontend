@@ -490,8 +490,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       ]) ?? { crvUSD: '0', scrvUSD: '0' }
 
       try {
-        let response = ''
-
+        let response
         if (flag === 'deposit') {
           response = await lendApi.st_crvUSD.previewDeposit(amount)
         } else if (amount === userBalance.scrvUSD) {

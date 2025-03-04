@@ -1,7 +1,6 @@
 import { t, Trans } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import ExternalLink from '@ui/Link/ExternalLink'
 import { PoolAlert } from '@/dex/types/main.types'
 

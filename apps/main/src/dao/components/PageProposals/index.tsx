@@ -2,7 +2,7 @@ import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useNavigate } from 'react-router-dom'
-import { useCallback, useEffect } from 'react'
+import { Key, useCallback, useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
 import ProposalsFilters from './components/ProposalsFilters'
 import Proposal from './Proposal'
@@ -38,7 +38,7 @@ const Proposals = () => {
   const isError = proposalsLoadingState === 'ERROR'
 
   const handleSortingMethodChange = useCallback(
-    (key: React.Key) => {
+    (key: Key) => {
       setActiveSortBy(key as SortByFilterProposals)
     },
     [setActiveSortBy],

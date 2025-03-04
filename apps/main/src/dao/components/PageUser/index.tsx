@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useState } from 'react'
-
 import useStore from '@/dao/store/useStore'
-
 import Box from '@ui/Box'
 import UserStats from './UserStats'
 import UserHeader from './UserHeader'
@@ -78,7 +76,7 @@ const UserPage = ({ routerParams: { rUserAddress } }: UserPageProps) => {
           {activeNavKey === 'gauge_votes' && (
             <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
           )}
-          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} />}
         </Container>
       </Box>
     </Wrapper>

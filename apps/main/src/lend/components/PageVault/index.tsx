@@ -1,13 +1,10 @@
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/lend/components/PageVault/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { useSlideTabState } from '@ui/hooks'
 import useStore from '@/lend/store/useStore'
-
 import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
 import VaultDepositMint from '@/lend/components/PageVault/VaultDepositMint'

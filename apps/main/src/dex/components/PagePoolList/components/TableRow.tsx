@@ -1,13 +1,9 @@
 import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
-
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
-
+import { Fragment, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
 import { Td, Tr, CellInPool } from '@ui/Table'
 import Box from '@ui/Box'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
@@ -66,7 +62,7 @@ const TableRow = ({
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
       {columnKeys.map((columnKey, idx) => (
-        <React.Fragment key={`tRow${columnKey}${idx}`}>
+        <Fragment key={`tRow${columnKey}${idx}`}>
           {columnKey === COLUMN_KEYS.inPool && (
             <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
           )}
@@ -151,7 +147,7 @@ const TableRow = ({
               <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
             </Td>
           )}
-        </React.Fragment>
+        </Fragment>
       ))}
     </LazyItem>
   )

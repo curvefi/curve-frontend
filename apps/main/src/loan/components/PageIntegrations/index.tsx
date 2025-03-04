@@ -1,19 +1,16 @@
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { NavigateFunction, Params } from 'react-router'
-
 import { Trans } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/loan/constants'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { getPath } from '@/loan/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
@@ -60,7 +57,7 @@ const IntegrationsComp = ({
   // get filterKey from url
   const parsedSearchParams = useMemo(() => {
     const searchParamsFilterKey = searchParams.get('filter')
-    let parsed: { filterKey: FilterKey } = { filterKey: 'all' }
+    const parsed: { filterKey: FilterKey } = { filterKey: 'all' }
 
     if (searchParamsFilterKey) {
       parsed.filterKey = (integrationsTags?.[searchParamsFilterKey]?.id ?? 'all') as FilterKey

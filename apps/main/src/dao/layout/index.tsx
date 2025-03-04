@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
@@ -9,7 +9,7 @@ import useStore from '@/dao/store/useStore'
 import Header from '@/dao/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
 
-const BaseLayout = ({ children }: { children: React.ReactNode }) => {
+const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const globalAlertHeight = useHeightResizeObserver(globalAlertRef)

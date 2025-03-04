@@ -1,7 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { useMemo } from 'react'
-
 import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'

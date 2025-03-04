@@ -1,13 +1,10 @@
 import type { ChipProps } from '@ui/Typography/types'
-
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { buttonOutlinedStyles } from '@ui/Button/styles'
 import useStore from '@/lend/store/useStore'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
-
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
 import ChipInactive from '@/lend/components/ChipInactive'

@@ -1,9 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
-
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 

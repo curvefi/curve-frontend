@@ -1,15 +1,12 @@
 import type { TooltipProps } from '@ui/Tooltip/types'
-
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { Item, Section } from 'react-stately'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import { shortenAccount } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import useStore from '@/dex/store/useStore'
-
 import Box from '@ui/Box'
 import ComboBoxAddress from '@/dex/components/PageDashboard/components/ComboBoxAddress'
 import FormClaimFees from '@/dex/components/PageDashboard/components/FormClaimFees'

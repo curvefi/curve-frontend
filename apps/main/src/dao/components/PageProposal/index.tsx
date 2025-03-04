@@ -1,14 +1,11 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo } from 'react'
-
 import useStore from '@/dao/store/useStore'
 import { copyToClipboard } from '@/dao/utils'
 import { breakpoints } from '@ui/utils'
-
 import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
 import useProposalMapper from '@/dao/hooks/useProposalMapper'
-
 import IconButton from '@ui/IconButton'
 import Tooltip from '@ui/Tooltip'
 import Box from '@ui/Box'

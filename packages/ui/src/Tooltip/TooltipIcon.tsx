@@ -1,18 +1,15 @@
 import type { TooltipProps } from 'ui/src/Tooltip/types'
-
-import React from 'react'
-
 import TooltipButton, { IconStyles } from 'ui/src/Tooltip/TooltipButton'
+import { ReactNode } from 'react'
 
 const TooltipIcon = ({
   children,
   customIcon,
   ...props
-}: React.PropsWithChildren<
-  TooltipProps & {
-    iconStyles?: IconStyles
-    customIcon?: React.ReactNode
-  }
->) => <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
+}: TooltipProps & {
+  children: ReactNode
+  iconStyles?: IconStyles
+  customIcon?: ReactNode
+}) => <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
 
 export default TooltipIcon

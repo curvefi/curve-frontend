@@ -1,7 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
 import { RCCircle } from '@ui/images'
 import Box from '@ui/Box'

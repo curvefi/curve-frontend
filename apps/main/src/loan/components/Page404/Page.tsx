@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-
 import DocumentHead from '@/loan/layout/DocumentHead'
 import Error404 from '@ui/Error404'
 

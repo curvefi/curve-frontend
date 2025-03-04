@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import useStore from '@/loan/store/useStore'
-
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'

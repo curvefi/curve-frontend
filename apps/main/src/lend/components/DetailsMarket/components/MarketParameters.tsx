@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
@@ -67,7 +65,7 @@ const MarketParameters = ({
           {details.map(({ label, value, formatOptions, title, isError, isRow, isAdvance, tooltip }) => {
             const show = typeof isAdvance === 'undefined' || (isAdvance && isAdvancedMode)
             return (
-              <React.Fragment key={label}>
+              <Fragment key={label}>
                 {show ? (
                   <>
                     {title && <SubTitle>{title}</SubTitle>}
@@ -90,7 +88,7 @@ const MarketParameters = ({
                     )}
                   </>
                 ) : null}
-              </React.Fragment>
+              </Fragment>
             )
           })}
         </div>

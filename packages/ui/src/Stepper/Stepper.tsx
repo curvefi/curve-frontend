@@ -1,10 +1,6 @@
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
-
-import * as React from 'react'
 import styled from 'styled-components'
-
 import { statusColorMap } from 'ui/src/Stepper/helpers'
-
 import { RCCross, RCCheck } from 'ui/src/images'
 import Box from 'ui/src/Box/Box'
 import StepAction from 'ui/src/Stepper/StepAction'
@@ -27,7 +23,7 @@ type StepNumberProps = {
   steps: Step[]
 }
 
-const StepNumber = ({ index, step, steps }: React.PropsWithChildren<StepNumberProps>) => (
+const StepNumber = ({ index, step, steps }: StepNumberProps) => (
   <StepNumberContainer flex flexColumn flexAlignItems="center">
     <StepNumberConnector visible={index > 0} status={step.status} direction="up" />
     <Number className="custom-font" flex flexAlignItems="center" flexJustifyContent="center" status={step.status}>

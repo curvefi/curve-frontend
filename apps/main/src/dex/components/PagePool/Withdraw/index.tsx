@@ -1,12 +1,9 @@
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { isValidAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
-
 import { SlideTabs, SlideTab } from '@ui/TabSlide'
 import { StyledTabSlide } from '@/dex/components/PagePool/styles'
 import FormClaim from '@/dex/components/PagePool/Withdraw/components/FormClaim'

@@ -2,7 +2,6 @@ import type { State } from '@/lend/store/useStore'
 import type { GetState, SetState } from 'zustand'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
-
 import campaigns from '@external-rewards'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
@@ -38,7 +37,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
-      let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const campaignRewardsMapper: CampaignRewardsMapper = {}
       const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key

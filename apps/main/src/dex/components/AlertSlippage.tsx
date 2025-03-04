@@ -1,6 +1,5 @@
 import { Trans } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import AlertBox from '@ui/AlertBox'
 

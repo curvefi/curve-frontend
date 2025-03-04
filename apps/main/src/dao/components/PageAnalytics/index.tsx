@@ -1,11 +1,8 @@
 import { SubNavItem } from '@/dao/components/SubNav/types'
-
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
-
 import CrvStats from './CrvStats'
 import VeCrvFees from './VeCrvFeesTable'
 import DailyLocks from './DailyLocksChart'

@@ -1,9 +1,7 @@
 import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/lend/constants'
 import { formatNumber } from '@ui/utils'
@@ -15,7 +13,6 @@ import networks from '@/lend/networks'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
 import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
 import useStore from '@/lend/store/useStore'
-
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
@@ -70,7 +67,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral } = detailInfoLeverage ?? {}
@@ -267,7 +264,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   // steps
   useEffect(() => {
     if (isLoaded && api && market) {
-      let updatedSteps = getSteps(
+      const updatedSteps = getSteps(
         activeKey,
         api,
         market,

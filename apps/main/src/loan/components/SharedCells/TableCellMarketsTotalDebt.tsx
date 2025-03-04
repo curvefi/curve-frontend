@@ -1,11 +1,8 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { ROUTE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
-
 import InternalLink from '@ui/Link/InternalLink'
 import TextCaption from '@ui/TextCaption'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'

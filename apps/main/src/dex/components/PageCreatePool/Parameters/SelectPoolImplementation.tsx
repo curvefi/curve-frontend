@@ -1,10 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dex/store/useStore'
-
 import { IMPLEMENTATION_IDS } from '@/dex/components/PageCreatePool/constants'
-
 import Checkbox from '@ui/Checkbox'
 import Tooltip from '@ui/Tooltip'
 import Icon from '@ui/Icon'

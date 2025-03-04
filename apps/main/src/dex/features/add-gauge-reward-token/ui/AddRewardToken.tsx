@@ -1,6 +1,6 @@
 import { vestResolver } from '@hookform/resolvers/vest'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zeroAddress } from 'viem'
 import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'

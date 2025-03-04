@@ -1,9 +1,7 @@
 import { t } from '@ui-kit/lib/i18n'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-
 import { themes } from '@ui-kit/features/switch-theme/types'
-
 import { SettingLabel, Setting } from '../Setting'
 import useUserProfileStore from '../../store'
 

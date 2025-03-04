@@ -1,24 +1,22 @@
 import type { AriaDialogProps } from '@react-types/dialog'
 import type { AriaOverlayProps } from 'react-aria'
+import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventScroll } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
-
-import { Overlay, FocusScope, useButton, useDialog, usePreventScroll, useModalOverlay } from 'react-aria'
-import React, { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import useStore from '@/dex/store/useStore'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import IconButton from '@ui/IconButton'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
-  footerContent?: React.ReactNode
+  footerContent?: ReactNode
   maxWidth?: string
   noContentPadding?: boolean
   title: string
   state: OverlayTriggerState
+  children: ReactNode
 }
 
 const ModalDialog = ({
@@ -29,7 +27,7 @@ const ModalDialog = ({
   state,
   title,
   ...props
-}: React.PropsWithChildren<Props>) => {
+}: Props) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 

@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { BN, formatNumber, formatNumberUsdRate } from '@ui/utils'
-
 import Chip from '@ui/Typography/Chip'
 
 const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {

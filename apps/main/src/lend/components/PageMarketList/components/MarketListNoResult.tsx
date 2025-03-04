@@ -1,11 +1,8 @@
 import type { PageMarketList } from '@/lend/components/PageMarketList/types'
-
 import { t, Trans } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { Filter } from '@/lend/components/PageMarketList/utils'
-
 import { shortenAccount } from '@ui/utils'
 import Box from '@ui/Box'
 import AlertBox from '@ui/AlertBox'

@@ -1,11 +1,8 @@
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 import type { Order, SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
-
 import styled from 'styled-components'
-
 import { TITLE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
-
 import { Th, Thead, TheadSortButton } from '@ui/Table'
 import TooltipIcon from '@ui/Tooltip/TooltipIcon'
 import { TitleKey, TitleMapper } from '@/loan/types/loan.types'

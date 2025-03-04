@@ -1,9 +1,7 @@
+import { MouseEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useState, useEffect } from 'react'
-
 import useStore from '@/dao/store/useStore'
-
 import Box from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Icon from '@ui/Icon'
@@ -12,7 +10,6 @@ import ErrorMessage from '@/dao/components/ErrorMessage'
 import InternalLinkButton from '@/dao/components/InternalLinkButton'
 import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
 import Button from '@ui/Button'
-
 import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
 import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import GaugeListColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeListColumns'
@@ -78,7 +75,7 @@ const GaugeListItem = ({
       </DataComp>
       {open && (
         <OpenContainer
-          onClick={(e?: React.MouseEvent) => {
+          onClick={(e?: MouseEvent) => {
             e?.stopPropagation()
           }}
         >
@@ -92,7 +89,7 @@ const GaugeListItem = ({
               <ErrorWrapper onClick={(e) => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
-                  onClick={(e?: React.MouseEvent) => {
+                  onClick={(e?: MouseEvent) => {
                     e?.stopPropagation()
                     getHistoricGaugeWeights(gaugeData.address)
                   }}

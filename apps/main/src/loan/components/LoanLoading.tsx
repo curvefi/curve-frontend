@@ -1,12 +1,12 @@
-import React from 'react'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { ReactNode } from 'react'
 
 type Props = {
+  children: ReactNode
   loaded: boolean
 }
 
-const LoanLoading = ({ children, loaded }: React.PropsWithChildren<Props>) =>
+const LoanLoading = ({ children, loaded }: Props) =>
   !loaded ? (
     <SpinnerWrapper>
       <Spinner />

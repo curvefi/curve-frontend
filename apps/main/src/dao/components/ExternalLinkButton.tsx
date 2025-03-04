@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import Icon from '@ui/Icon'
 import Button from '@ui/Button'
+import { ReactNode } from 'react'
 
 type ExternalLinkIconButtonProps = {
   href: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
 interface StyledButtonProps {

@@ -1,14 +1,11 @@
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { getPath } from '@/dex/utils/utilsRouter'
-
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'

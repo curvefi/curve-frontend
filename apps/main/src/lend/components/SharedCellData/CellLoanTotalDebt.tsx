@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'

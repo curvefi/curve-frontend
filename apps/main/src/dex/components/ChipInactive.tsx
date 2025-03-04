@@ -1,9 +1,5 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import Chip from '@ui/Typography/Chip'
-
-const ChipInactive = ({ children }: React.PropsWithChildren<{}>) => <StyledInactiveChip>{children}</StyledInactiveChip>
 
 const StyledInactiveChip = styled(Chip)`
   opacity: 0.7;
@@ -12,4 +8,4 @@ const StyledInactiveChip = styled(Chip)`
   margin-left: auto;
 `
 
-export default ChipInactive
+export default StyledInactiveChip

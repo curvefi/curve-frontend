@@ -1,6 +1,5 @@
 import Box from '@ui/Box'
 import useStore from '@/lend/store/useStore'
-
 import { formatNumber } from '@ui/utils'
 
 const DetailsUserSupplyStakedUnstaked = ({ userActiveKey }: { userActiveKey: string }) => {

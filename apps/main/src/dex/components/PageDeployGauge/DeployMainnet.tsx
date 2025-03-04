@@ -10,7 +10,6 @@ import {
   STABLESWAP,
   STABLESWAPOLD,
 } from '@/dex/components/PageDeployGauge/constants'
-
 import Box from '@ui/Box/Box'
 import TextInput from '@/dex/components/PageDeployGauge/components/TextInput'
 import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'

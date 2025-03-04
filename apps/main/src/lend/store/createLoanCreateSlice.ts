@@ -8,9 +8,7 @@ import type {
   FormStatus,
   FormValues,
 } from '@/lend/components/PageLoanCreate/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { _parseValue, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { _parseActiveKey } from '@/lend/utils/helpers'
@@ -372,7 +370,7 @@ export function _getActiveKey(
   { userCollateral, userBorrowed, debt, n }: FormValues,
   maxSlippage: string,
 ) {
-  let activeKey = `${_parseActiveKey(api, market)}${n}`
+  const activeKey = `${_parseActiveKey(api, market)}${n}`
   return {
     activeKey: `${activeKey}-${userCollateral}-${userBorrowed}-${debt}-${maxSlippage}`,
     activeKeyMax: `${activeKey}-${userCollateral}-${userBorrowed}`,

@@ -1,13 +1,12 @@
 import type { TooltipProps } from '@ui/Tooltip/types'
-
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertType, ChainId } from '@/lend/types/lend.types'
 
 export type MarketAlert = TooltipProps & {
   alertType: AlertType
   isDisableDeposit?: boolean // disallow user from supply deposit
-  message: string | React.ReactNode
+  message: ReactNode
 }
 
 type Alerts = { [chainId: number]: { [owmId: string]: MarketAlert } }

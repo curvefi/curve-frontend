@@ -1,12 +1,10 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
 import useStore from '@/dao/store/useStore'
 import networks from '@/dao/networks'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import Box from '@ui/Box'
 import CopyIconButton from '@/dao/components/CopyIconButton'
