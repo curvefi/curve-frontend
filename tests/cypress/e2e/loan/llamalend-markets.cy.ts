@@ -28,7 +28,7 @@ describe('LlamaLend Markets', () => {
     mockMintSnapshots()
 
     cy.viewport(width, height)
-    cy.visit('/crvusd/ethereum/beta-markets', {
+    cy.visit('/crvusd/ethereum/beta-markets/', {
       onBeforeLoad: (win) => {
         win.localStorage.clear()
         isDarkMode = checkIsDarkMode(win)

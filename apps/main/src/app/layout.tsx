@@ -22,12 +22,10 @@ const injectHeader = `
   })()
 `
 
+// noinspection HtmlRequiredTitleElement // title is injected via metadata
 const Layout = ({ children }: { children: ReactNode }) => (
   <html style={RootCssProperties}>
     <head>
-      {/* Primary Meta Tags */}
-      <title>Curve.fi</title>
-      <meta name="title" content="Curve.fi" />
       <meta
         name="description"
         content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
