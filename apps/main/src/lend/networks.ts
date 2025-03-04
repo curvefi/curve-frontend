@@ -35,7 +35,7 @@ const networksConfig = {
   [Chain.Sonic]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
-    pricesData: false,
+    pricesData: true,
   },
   [Chain.Gnosis]: {},
   [Chain.Moonbeam]: {},
