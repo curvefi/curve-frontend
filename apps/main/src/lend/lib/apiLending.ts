@@ -476,6 +476,7 @@ const user = {
   fetchLoansDetails: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
     let results: { [userActiveKey: string]: UserLoanDetails } = {}
+    const { signerAddress } = api
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -489,18 +490,31 @@ const user = {
       })
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, loss] =
-          await Promise.all([
-            market.userState(),
-            market.userHealth(),
-            market.userHealth(false),
-            market.userRange(),
-            market.userBands(),
-            market.userPrices(),
-            market.userBandsBalances(),
-            market.oraclePriceBand(),
-            market.userLoss(),
-          ])
+        const [
+          state,
+          healthFull,
+          healthNotFull,
+          range,
+          bands,
+          prices,
+          bandsBalances,
+          oraclePriceBand,
+          loss,
+          leverage,
+          pnl,
+        ] = await Promise.all([
+          market.userState(),
+          market.userHealth(),
+          market.userHealth(false),
+          market.userRange(),
+          market.userBands(),
+          market.userPrices(),
+          market.userBandsBalances(),
+          market.oraclePriceBand(),
+          market.userLoss(),
+          market.currentLeverage(signerAddress),
+          market.currentPnL(signerAddress),
+        ])
 
         const resp = await market.stats.bandsInfo()
         const { liquidationBand } = resp ?? {}
@@ -531,6 +545,8 @@ const user = {
             range,
             prices,
             loss,
+            leverage,
+            pnl,
             status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',
