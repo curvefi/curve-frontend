@@ -35,8 +35,6 @@ export const DAO_ROUTES = {
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-const getRouterRoot = (app: AppName) => ('lend' === app ? '/#' : '')
-
 const getAppRoot = (app: AppName) =>
   `${
     typeof window === 'undefined'
@@ -44,7 +42,7 @@ const getAppRoot = (app: AppName) =>
         ? `http://localhost:${process.env.DEV_PORT || 300}`
         : `https://curve.fi`
       : window.location.origin
-  }${getRouterRoot(app)}/${app}`
+  }/${app}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   dex: {

@@ -12,7 +12,8 @@ describe('Disclaimers', () => {
         // Navigate to risk disclaimer from footer.
         cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
         cy.get(`[data-testid='footer'] a`).contains('disclaimer', { matchCase: false }).click()
-        cy.url().should('match', /\/disclaimer(\?tab=(lend|crvusd))?$/)
+        cy.url().should('match', /\/disclaimer\/?(\?tab=(lend|crvusd))?$/)
+        cy.get(`[data-testid='disclaimer']`).should('be.visible')
       })
     })
   })

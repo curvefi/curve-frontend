@@ -1,3 +1,4 @@
+'use server'
 import { getMarkets } from '@curvefi/prices-api/crvusd'
 import { Chain } from '@curvefi/prices-api'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
