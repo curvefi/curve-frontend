@@ -1,12 +1,11 @@
 'use client'
-import { t, Trans } from '@ui-kit/lib/i18n'
+import { Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useStore from '@/lend/store/useStore'
 import { ExternalLink } from '@ui/Link'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
@@ -27,7 +26,6 @@ const Page = (params: NetworkUrlParams) => {
 
   return (
     <>
-      <DocumentHead title={t`Integrations`} />
       <Container>
         <ContainerContent>
           <Title>Curve Integrations</Title>

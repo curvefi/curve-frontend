@@ -18,7 +18,6 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
 import LoanMange from '@/lend/components/PageLoanManage/index'
@@ -145,8 +144,6 @@ const Page = (params: MarketUrlParams) => {
 
   return (
     <>
-      <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
-
       {provider ? (
         <>
           {chartExpanded && networks[rChainId].pricesData && (

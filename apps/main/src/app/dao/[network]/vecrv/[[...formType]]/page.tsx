@@ -4,7 +4,7 @@ import PageVeCrv from '@/dao/components/PageVeCrv/Page'
 
 type VeCrvPageProps = { params: Promise<VeCrvUrlParams> }
 
-export const metadata: Metadata = { title: 'Curve - CRV Locker' }
+export const metadata: Metadata = { title: 'CRV Locker - Curve' }
 
 const VeCrvPage = async ({ params }: VeCrvPageProps) => <PageVeCrv {...await params} />
 

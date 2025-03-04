@@ -4,7 +4,7 @@ import MarketList from '@/lend/components/PageMarketList/Page'
 
 type MarketListPageProps = { params: Promise<NetworkUrlParams> }
 
-export const metadata: Metadata = { title: 'Curve - MarketList' }
+export const metadata: Metadata = { title: 'Markets - Curve Lend' }
 
 const MarketListPage = async ({ params }: MarketListPageProps) => <MarketList {...await params} />
 

@@ -19,7 +19,7 @@ export type EstimatedGas = number | number[] | null
 
 export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
-export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams & MarketUrlParams>
+export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
   smallMarketAmount: number

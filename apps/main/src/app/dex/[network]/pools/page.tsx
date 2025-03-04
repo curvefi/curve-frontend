@@ -4,7 +4,7 @@ import type { NetworkUrlParams } from '@/dex/types/main.types'
 
 type PoolListPageProps = { params: Promise<NetworkUrlParams> }
 
-export const metadata: Metadata = { title: 'Curve - Pools' }
+export const metadata: Metadata = { title: 'Pools - Curve' }
 
 const PoolListPage = async ({ params }: PoolListPageProps) => <PoolList {...await params} />
 

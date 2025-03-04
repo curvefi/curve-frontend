@@ -4,7 +4,7 @@ import Swap from '@/dex/components/PageRouterSwap/Page'
 
 type SwapPageProps = { params: Promise<NetworkUrlParams> }
 
-export const metadata: Metadata = { title: 'Curve - Swap' }
+export const metadata: Metadata = { title: 'Swap - Curve' }
 
 const SwapPage = async ({ params }: SwapPageProps) => <Swap {...await params} />
 

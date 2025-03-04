@@ -16,7 +16,6 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUser from '@/lend/components/DetailsUser'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
@@ -53,8 +52,6 @@ const Page = (params: MarketUrlParams) => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
-  const { borrowed_token } = market ?? {}
-
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
 
@@ -125,7 +122,6 @@ const Page = (params: MarketUrlParams) => {
 
   return (
     <>
-      <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
       {provider ? (
         <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
           <AppPageFormsWrapper navHeight="var(--nav-height)">

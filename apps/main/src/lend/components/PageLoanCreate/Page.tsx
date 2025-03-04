@@ -16,7 +16,6 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
@@ -58,8 +57,6 @@ const Page = (params: MarketUrlParams) => {
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
-
-  const { borrowed_token, collateral_token } = market ?? {}
   const userActiveKey = helpers.getUserActiveKey(api, market!)
 
   const fetchInitial = useCallback(
@@ -129,65 +126,62 @@ const Page = (params: MarketUrlParams) => {
     userActiveKey,
   }
 
+  if (!provider) {
+    return (
+      <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+        <ConnectWalletPrompt
+          description={t`Connect your wallet to view market`}
+          connectText={t`Connect`}
+          loadingText={t`Connecting`}
+          connectWallet={() => connectWallet()}
+          isLoading={isLoading(connectState)}
+        />
+      </Box>
+    )
+  }
   return (
     <>
-      <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Create Loan`} />
-
-      {provider ? (
-        <>
-          {chartExpanded && networks[rChainId].pricesData && (
-            <PriceAndTradesExpandedContainer>
-              <Box flex padding="0 0 var(--spacing-2)">
-                <ExpandButton
-                  variant={'select'}
-                  onClick={() => {
-                    setChartExpanded()
-                  }}
-                >
-                  {chartExpanded ? 'Minimize' : 'Expand'}
-                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-                </ExpandButton>
-              </Box>
-              <PriceAndTradesExpandedWrapper variant="secondary">
-                <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
-              </PriceAndTradesExpandedWrapper>
-            </PriceAndTradesExpandedContainer>
-          )}
-
-          <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
-            <AppPageFormsWrapper navHeight="var(--header-height)">
-              {(!isMdUp || !isAdvancedMode) && <TitleComp />}
-              {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
-            </AppPageFormsWrapper>
-
-            {isAdvancedMode && rChainId && rOwmId && (
-              <AppPageInfoWrapper>
-                {isMdUp && <TitleComp />}
-                <Box margin="0 0 var(--spacing-2)">
-                  <CampaignRewardsBanner
-                    borrowAddress={market?.addresses?.controller || ''}
-                    supplyAddress={market?.addresses?.vault || ''}
-                  />
-                </Box>
-                <AppPageInfoContentWrapper variant="secondary">
-                  <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
-                  <DetailsMarket {...pageProps} type="borrow" />
-                </AppPageInfoContentWrapper>
-              </AppPageInfoWrapper>
-            )}
-          </AppPageFormContainer>
-        </>
-      ) : (
-        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWalletPrompt
-            description={t`Connect your wallet to view market`}
-            connectText={t`Connect`}
-            loadingText={t`Connecting`}
-            connectWallet={() => connectWallet()}
-            isLoading={isLoading(connectState)}
-          />
-        </Box>
+      {chartExpanded && networks[rChainId].pricesData && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex padding="0 0 var(--spacing-2)">
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
       )}
+
+      <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
+        <AppPageFormsWrapper navHeight="var(--header-height)">
+          {(!isMdUp || !isAdvancedMode) && <TitleComp />}
+          {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
+        </AppPageFormsWrapper>
+
+        {isAdvancedMode && rChainId && rOwmId && (
+          <AppPageInfoWrapper>
+            {isMdUp && <TitleComp />}
+            <Box margin="0 0 var(--spacing-2)">
+              <CampaignRewardsBanner
+                borrowAddress={market?.addresses?.controller || ''}
+                supplyAddress={market?.addresses?.vault || ''}
+              />
+            </Box>
+            <AppPageInfoContentWrapper variant="secondary">
+              <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
+              <DetailsMarket {...pageProps} type="borrow" />
+            </AppPageInfoContentWrapper>
+          </AppPageInfoWrapper>
+        )}
+      </AppPageFormContainer>
     </>
   )
 }

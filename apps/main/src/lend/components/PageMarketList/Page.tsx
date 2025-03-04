@@ -10,7 +10,6 @@ import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
 import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { AppPageContainer } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import MarketList from '@/lend/components/PageMarketList/index'
 import Settings from '@/lend/layout/Settings'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
@@ -114,7 +113,6 @@ const Page = (params: NetworkUrlParams) => {
 
   return (
     <>
-      <DocumentHead title={t`Markets`} />
       {provider ? (
         <StyledAppPageContainer $maxWidth={parsedSearchParams?.filterTypeKey === 'supply' ? '990px' : ''}>
           {rChainId && parsedSearchParams && (

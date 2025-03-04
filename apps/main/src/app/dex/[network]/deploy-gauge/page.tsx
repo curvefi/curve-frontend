@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import DeployGauge from '@/dex/components/PageDeployGauge/Page'
 
-export const metadata: Metadata = { title: 'Curve - Deploy Gauge' }
+export const metadata: Metadata = { title: 'Deploy Gauge - Curve' }
 
 const DeployGaugePage = async () => <DeployGauge />
 

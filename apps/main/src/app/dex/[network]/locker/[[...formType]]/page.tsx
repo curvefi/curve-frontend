@@ -4,7 +4,7 @@ import CrvLocker from '@/dex/components/PageCrvLocker/Page'
 
 type CrvLockerPageProps = { params: Promise<CrvLockerUrlParams> }
 
-export const metadata: Metadata = { title: 'Curve - CRV Locker' }
+export const metadata: Metadata = { title: 'CRV Locker - Curve' }
 
 const CrvLockerPage = async ({ params }: CrvLockerPageProps) => <CrvLocker {...await params} />
 
