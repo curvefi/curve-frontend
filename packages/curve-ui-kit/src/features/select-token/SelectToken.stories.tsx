@@ -37,6 +37,48 @@ const defaultTokens: TokenOption[] = [
     label: 'Maker DAI',
     volume: 4,
   },
+  {
+    chain: 'ethereum',
+    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+    symbol: 'WBTC',
+    label: 'Wrapped Bitcoin',
+    volume: 5,
+  },
+  {
+    chain: 'ethereum',
+    address: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+    symbol: 'CRV',
+    label: 'Curve DAO Token',
+    volume: 6,
+  },
+  {
+    chain: 'ethereum',
+    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    symbol: 'WETH',
+    label: 'Wrapped Ether',
+    volume: 7,
+  },
+  {
+    chain: 'ethereum',
+    address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+    symbol: 'LINK',
+    label: 'Chainlink',
+    volume: 8,
+  },
+  {
+    chain: 'ethereum',
+    address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
+    symbol: 'AAVE',
+    label: 'Aave',
+    volume: 9,
+  },
+  {
+    chain: 'ethereum',
+    address: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+    symbol: 'UNI',
+    label: 'Uniswap',
+    volume: 10,
+  },
 ]
 
 const defaultBalances = {

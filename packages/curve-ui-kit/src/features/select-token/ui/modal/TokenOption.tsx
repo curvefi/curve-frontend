@@ -10,6 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 import type { TokenOption as Option } from '../../types'
+import { addressShort } from '@ui-kit/utils'
 
 export type TokenOptionCallbacks = {
   onToken: () => void
@@ -26,6 +27,7 @@ export type Props = Option & TokenOptionCallbacks & TokenOptionsProps
 export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice, disabled, onToken }: Props) => {
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0 > 0)
+  const showAddress = !hasBalance
 
   return (
     <MenuItem
@@ -53,6 +55,11 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
         {hasBalanceUsd && (
           <Typography variant="bodyXsRegular" color="textSecondary">
             {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD)}
+          </Typography>
+        )}
+        {showAddress && (
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            {addressShort(address)}
           </Typography>
         )}
       </Stack>
