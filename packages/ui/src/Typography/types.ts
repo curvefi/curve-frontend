@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import type { CSSProperties, JSX, ReactNode } from 'react'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 type ValueOf<T> = T[keyof T]
@@ -15,11 +15,11 @@ export type ChipProps = {
   isNotBold?: boolean
   isNumber?: boolean
   isMono?: boolean
-  fontVariantNumeric?: ValueOf<Pick<React.CSSProperties, 'fontVariantNumeric'>>
+  fontVariantNumeric?: ValueOf<Pick<CSSProperties, 'fontVariantNumeric'>>
   maxWidth?: string
   noWrap?: boolean
   opacity?: number
   size?: ChipSize
-  tooltip?: string | React.ReactNode
+  tooltip?: ReactNode
   tooltipProps?: TooltipProps
 }

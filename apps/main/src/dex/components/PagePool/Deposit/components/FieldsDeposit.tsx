@@ -40,7 +40,7 @@ const FieldsDeposit = ({
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
 
   const handleFormAmountChange = (value: string, idx: number) => {
-    let clonedFrmAmounts = cloneDeep(formValues.amounts)
+    const clonedFrmAmounts = cloneDeep(formValues.amounts)
     clonedFrmAmounts[idx].value = value
 
     updateFormValues(

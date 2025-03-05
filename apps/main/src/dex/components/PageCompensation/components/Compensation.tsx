@@ -1,6 +1,6 @@
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'
 import { getErrorMessage, shortenTokenAddress } from '@/dex/utils'
@@ -45,7 +45,7 @@ const Compensation = ({
 
   const [error, setError] = useState('')
   const [step, setStep] = useState('')
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const handleCloseErrorClick = useCallback(() => {
     setStep('')
@@ -53,7 +53,7 @@ const Compensation = ({
   }, [])
 
   const handleClaimClick = useCallback(
-    async (activeKey: string, contract: EtherContract['contract'], balance: number) => {
+    async (_: string, contract: EtherContract['contract'], balance: number) => {
       if (!curve) return
       const notifyMessage = t`Please confirm claim ${balance} compensation.`
       const { dismiss } = notify(notifyMessage, 'pending')

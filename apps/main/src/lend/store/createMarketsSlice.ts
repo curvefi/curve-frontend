@@ -135,7 +135,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
       const sliceState = get()[sliceKey]
-      let resp = { pricePerShare: '', error: '' }
+      const resp = { pricePerShare: '', error: '' }
 
       const { pricePerShare: foundPricePerShare } = sliceState.vaultPricePerShare[chainId]?.[owm.id] ?? {}
       if (foundPricePerShare && +foundPricePerShare > 0 && !shouldRefetch) {

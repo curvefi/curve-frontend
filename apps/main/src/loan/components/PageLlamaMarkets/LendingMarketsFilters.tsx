@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid2'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { capitalize } from 'lodash'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import Typography from '@mui/material/Typography'

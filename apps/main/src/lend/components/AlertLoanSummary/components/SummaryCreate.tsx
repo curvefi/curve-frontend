@@ -1,10 +1,6 @@
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
-
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { format } from '@/lend/components/AlertLoanSummary/utils'
-
 import Item from '@/lend/components/AlertLoanSummary/components/Item'
 
 const SummaryCreate = ({

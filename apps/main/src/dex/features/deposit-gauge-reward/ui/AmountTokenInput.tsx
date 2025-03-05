@@ -1,12 +1,12 @@
+import { MouseEvent, useCallback, useMemo } from 'react'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { t } from '@ui-kit/lib/i18n'
-import { useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
-import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
+import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
   FlexItemMaxBtn,
@@ -100,7 +100,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   )
 
   const onMaxButtonClick = useCallback(
-    (e?: React.MouseEvent<HTMLButtonElement>) => {
+    (e?: MouseEvent<HTMLButtonElement>) => {
       e?.preventDefault()
       if (!tokenBalance) return
       setValue('amount', tokenBalance, { shouldValidate: true })

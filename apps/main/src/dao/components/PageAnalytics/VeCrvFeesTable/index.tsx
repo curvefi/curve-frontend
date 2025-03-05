@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
-
 import useStore from '@/dao/store/useStore'
 import { formatDate, formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 import Spinner from '../../Spinner'
 import ErrorMessage from '@/dao/components/ErrorMessage'

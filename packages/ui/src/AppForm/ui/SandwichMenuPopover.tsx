@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { Key, RefObject, useRef } from 'react'
 import { useOverlayTrigger, useSelect } from 'react-aria'
 import { Item, useSelectState } from 'react-stately'
 import styled from 'styled-components'
@@ -11,7 +11,7 @@ type SandwichMenuItem = {
 
 interface SandwichMenuPopoverProps {
   onClose: () => void
-  triggerRef: React.RefObject<HTMLButtonElement | null>
+  triggerRef: RefObject<HTMLButtonElement | null>
   onItemClick: (key: string) => void
 }
 
@@ -22,7 +22,7 @@ const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuP
 
   const state = useSelectState<SandwichMenuItem>({
     isOpen: true,
-    onSelectionChange: (key: React.Key) => {
+    onSelectionChange: (key: Key) => {
       onItemClick(key.toString())
     },
     items: menuItems,
@@ -35,7 +35,7 @@ const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuP
       label: 'Pool Management',
       items: menuItems,
       children: ({ id, name }: SandwichMenuItem) => <StyledItem key={id}>{name}</StyledItem>,
-      onSelectionChange: (key: React.Key) => {
+      onSelectionChange: (key: Key) => {
         onItemClick(key.toString())
         onClose()
       },

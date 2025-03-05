@@ -1,8 +1,8 @@
-import React from 'react'
 import { PageContentProps, UserLoanState, UserMarketBalances } from '@/lend/types/lend.types'
+import { ReactNode } from 'react'
 
 export type AlertSummaryProps = Pick<PageContentProps, 'market'> & {
-  pendingMessage: React.ReactNode
+  pendingMessage: ReactNode
   receive: string | undefined
   formValueStateDebt?: string | undefined
   formValueStateCollateral?: string
@@ -14,7 +14,7 @@ export type AlertSummaryProps = Pick<PageContentProps, 'market'> & {
 }
 
 export type SummaryProps = Omit<AlertSummaryProps, 'market' | 'type'> & {
-  title: React.ReactNode
+  title: ReactNode
   borrowedSymbol: string
   collateralSymbol: string
 }

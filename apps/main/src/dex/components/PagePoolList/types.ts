@@ -1,5 +1,4 @@
 import type { Params } from 'react-router'
-
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
@@ -78,5 +77,3 @@ export type PoolListFilter = {
 }
 
 export type ColumnKeys = keyof typeof COLUMN_KEYS
-
-export type ShowDetailsMapper = { [poolId: string]: boolean }

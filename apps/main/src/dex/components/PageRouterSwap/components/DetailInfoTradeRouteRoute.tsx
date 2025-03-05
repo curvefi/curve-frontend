@@ -1,15 +1,12 @@
 import type { Params } from 'react-router'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
-
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
-
 import { ExternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'

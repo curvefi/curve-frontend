@@ -1,9 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
-
-import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
+import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { CollateralData, CollateralDataCache } from '@/loan/types/loan.types'

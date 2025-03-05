@@ -11,7 +11,7 @@ export function getIsMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
@@ -49,13 +49,6 @@ export function shortenAccount(account: string, visibleLength = 4) {
   }
 }
 
-export const sizes = {
-  sm: '0.875rem', //14px
-  md: '1.125rem', // 18px
-  lg: '1.5rem', // 24px
-  xl: '1.75rem', // 28px
-}
-
 export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
   if (!tokenAddress) return
   const start = tokenAddress.slice(0, 4)
@@ -65,7 +58,7 @@ export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
 
 export function copyToClipboard(text: string) {
   if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-    var textarea = document.createElement('textarea')
+    const textarea = document.createElement('textarea')
     textarea.textContent = text
     textarea.style.position = 'fixed' // Prevent scrolling to bottom of page in MS Edge.
     document.body.appendChild(textarea)

@@ -1,5 +1,4 @@
 import type { SearchTermKey, SearchTermMapper } from '@/loan/components/PageMarketList/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import { CollateralDataCacheOrApi } from '@/loan/types/loan.types'
 
@@ -17,7 +16,7 @@ export function parseSearchTermMapper(
 ) {
   if (!searchedByAddresses || !searchTermMapper || !collateralDataCachedOrApi) return undefined
 
-  let parsed = { ...searchTermMapper }
+  const parsed = { ...searchTermMapper }
   const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma
 
   Object.keys(searchedByAddresses).forEach((key) => {

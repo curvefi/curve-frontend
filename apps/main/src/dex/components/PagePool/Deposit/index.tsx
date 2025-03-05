@@ -1,7 +1,7 @@
 import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { isValidAddress } from '@/dex/utils'
 import useStore from '@/dex/store/useStore'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
@@ -80,7 +80,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ formType, label }, idx) => {
               if (formType === 'DEPOSIT_STAKE' && !hasDepositAndStake) {
-                return <React.Fragment key={label}></React.Fragment>
+                return <Fragment key={label}></Fragment>
               }
 
               return (

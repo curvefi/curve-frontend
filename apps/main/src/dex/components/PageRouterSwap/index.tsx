@@ -9,7 +9,7 @@ import type { Params } from 'react-router'
 import isEmpty from 'lodash/isEmpty'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
@@ -102,7 +102,7 @@ const QuickSwap = ({
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { fromAddress, toAddress } = searchedParams
 

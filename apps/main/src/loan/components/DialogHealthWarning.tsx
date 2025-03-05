@@ -1,14 +1,13 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
-
 import AlertBox from '@ui/AlertBox'
 import Checkbox from '@ui/Checkbox'
 import { HealthMode } from '@/loan/types/loan.types'
+import { Dispatch, SetStateAction } from 'react'
 
 interface Props extends HealthMode {
   confirmed: boolean
-  setConfirmed: React.Dispatch<React.SetStateAction<boolean>>
+  setConfirmed: Dispatch<SetStateAction<boolean>>
 }
 
 function DialogHealthWarning({ confirmed, warningTitle, warning, setConfirmed }: Props) {

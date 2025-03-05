@@ -4,7 +4,6 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { weiToEther } from '@ui-kit/utils'
-
 import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'

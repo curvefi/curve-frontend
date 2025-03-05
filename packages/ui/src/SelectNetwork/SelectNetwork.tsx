@@ -1,9 +1,6 @@
 import type { ConnectState } from 'ui/src/utils'
 import type { SelectProps } from 'ui/src/Select/Select'
-
-import * as React from 'react'
 import { Item } from 'react-stately'
-
 import Select from 'ui/src/Select'
 import SelectNetworkItem from 'ui/src/SelectNetwork/SelectNetworkItem'
 

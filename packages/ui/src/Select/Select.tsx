@@ -1,24 +1,24 @@
 import { AriaSelectOptions, HiddenSelect, useSelect } from 'react-aria'
 import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 import { useSelectState } from 'react-stately'
-import * as React from 'react'
 import styled from 'styled-components'
 import { getIsFullScreen } from 'ui/src/utils'
 import Icon from 'ui/src/Icon/Icon'
 import SelectBtn from 'ui/src/Select/SelectBtn'
 import SelectModal from 'ui/src/Select/SelectModal'
 import SelectModalFull from 'ui/src/Select/SelectModalFull'
+import { CSSProperties, ReactNode, useRef } from 'react'
 
 export interface SelectProps<T extends object>
   extends Omit<ReactStatelySelectProps<T>, 'children'>,
     AriaSelectOptions<T> {
-  buttonStyles?: React.CSSProperties
+  buttonStyles?: CSSProperties
   className?: string
   loading?: boolean
   minWidth?: string
   noLabelChange?: boolean // do not update label to select key
   mobileRightAlign?: boolean // right align dropdown list on small width
-  selectedItemLabel?: string | React.ReactNode // selected button label that is different from list
+  selectedItemLabel?: ReactNode // selected button label that is different from list
   onSelectionDelete?: () => void
   selectSearchOptions?: {
     searchFilterKeys: string[]
@@ -33,7 +33,7 @@ function Select<T extends object>({
   ...props
 }: SelectProps<T>) {
   const state = useSelectState(props)
-  const buttonRef = React.useRef<HTMLButtonElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const { labelProps, triggerProps, menuProps } = useSelect(props, state, buttonRef)
 
   const title = props['aria-label'] || 'Select'

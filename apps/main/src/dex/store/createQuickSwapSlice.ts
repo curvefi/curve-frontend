@@ -8,10 +8,8 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
-
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
-
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/dex/components/PageRouterSwap/utils'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
@@ -108,7 +106,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
     fetchUserBalances: async (curve, fromAddress, toAddress) => {
       const { userBalancesMapper, fetchUserBalancesByTokens } = get().userBalances
 
-      let fetchTokensList = []
+      const fetchTokensList = []
       if (fromAddress && typeof userBalancesMapper[fromAddress] === 'undefined') fetchTokensList.push(fromAddress)
       if (toAddress && typeof userBalancesMapper[toAddress] === 'undefined') fetchTokensList.push(toAddress)
 
@@ -310,7 +308,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const storedUserBalancesMapper = state.userBalances.userBalancesMapper
 
       // update formStatus, form values, reset errors
-      let cFormValues = cloneDeep(
+      const cFormValues = cloneDeep(
         isRefetch
           ? storedFormValues
           : isFullReset
@@ -322,8 +320,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
               },
       )
 
-      let activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
-      let cFormStatus = cloneDeep(isRefetch ? { ...storedFormStatus, swapError: '' } : DEFAULT_FORM_STATUS)
+      const activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
+      const cFormStatus = cloneDeep(isRefetch ? { ...storedFormStatus, swapError: '' } : DEFAULT_FORM_STATUS)
 
       get()[sliceKey].setStateByKeys({
         activeKey,
@@ -621,7 +619,7 @@ function getRouterWarningModal(
   const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
   const exchangeRate = (+parsedToAmount / +fromAmount).toString()
   const exchangeValues = { toAmount: parsedToAmount, toToken }
-  let modalTypeObj = { ...exchangeValues, title: swapModalProps.title }
+  const modalTypeObj = { ...exchangeValues, title: swapModalProps.title }
   const modalType = {
     lowExchangeRate: { ...modalTypeObj, lowExchangeRate: true as boolean, exchangeRate },
     priceImpact: { ...modalTypeObj, priceImpact: true as boolean, value: priceImpact },

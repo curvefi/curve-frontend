@@ -1,6 +1,5 @@
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/dex/constants'
@@ -87,7 +86,7 @@ const PoolList = ({
   }, [isLite, tvlMapper, volumeMapper])
 
   const columnKeys = useMemo(() => {
-    let keys: ColumnKeys[] = []
+    const keys: ColumnKeys[] = []
     if (showInPoolColumn) keys.push(COLUMN_KEYS.inPool)
     keys.push(COLUMN_KEYS.poolName)
 
@@ -237,13 +236,5 @@ const PoolList = ({
     </>
   )
 }
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-`
 
 export default PoolList

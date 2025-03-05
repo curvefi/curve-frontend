@@ -1,6 +1,4 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import Checkbox from '@ui/Checkbox'
 import { PoolData } from '@/dex/types/main.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'

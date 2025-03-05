@@ -1,7 +1,5 @@
 import styled from 'styled-components'
-
 import useStore from '@/dex/store/useStore'
-
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'

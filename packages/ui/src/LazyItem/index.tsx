@@ -1,6 +1,5 @@
 import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 type Props = {

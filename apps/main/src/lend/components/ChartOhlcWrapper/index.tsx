@@ -1,13 +1,10 @@
-import type { LlammaLiquididationRange, LiquidationRanges } from '@ui/Chart/types'
+import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
-
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/lend/store/useStore'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
-
 import Button from '@ui/Button'
 import ChartWrapper from '@ui/Chart'
 import Icon from '@ui/Icon'
@@ -85,13 +82,13 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   }, [chartLlammaOhlc.oraclePriceData, chartOraclePoolOhlc.oraclePriceData, selectedChartIndex])
 
   const selectedLiqRange = useMemo(() => {
-    let liqRanges: LiquidationRanges = {
+    const liqRanges: LiquidationRanges = {
       current: null,
       new: null,
     }
 
     const formatRange = (liqRange: string[]) => {
-      let range: LlammaLiquididationRange = {
+      const range: LlammaLiquididationRange = {
         price1: [],
         price2: [],
       }
@@ -120,47 +117,39 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       if (liqRangesMapper[formValues.n].prices.length !== 0) {
         const currentPrices = liqRangesMapper[formValues.n].prices
         // flip order to match other data
-        const range = formatRange([currentPrices[1], currentPrices[0]])
-        liqRanges.new = range
+        liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
       } else {
         const currentPrices = loanCreateDetailInfo?.prices
 
         if (currentPrices) {
-          const range = formatRange([currentPrices[0], currentPrices[1]])
-          liqRanges.new = range
+          liqRanges.new = formatRange([currentPrices[0], currentPrices[1]])
         }
       }
     }
 
     // current loan prices
     if (userPrices && currentChart.data) {
-      const range = formatRange(userPrices)
-      liqRanges.current = range
+      liqRanges.current = formatRange(userPrices)
     }
     // increase loan prices
     if (borrowMorePrices && borrowMorePrices.length !== 0 && currentChart.data) {
-      const range = formatRange(borrowMorePrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(borrowMorePrices)
     }
     // decrease loan prices
     if (repayLoanPrices && repayLoanPrices.length !== 0 && currentChart.data) {
-      const range = formatRange(repayLoanPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(repayLoanPrices)
     }
     // increase collateral prices
     if (addCollateralPrices && addCollateralPrices.length !== 0 && currentChart.data) {
-      const range = formatRange(addCollateralPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(addCollateralPrices)
     }
     // decrease collateral prices
     if (removeCollateralPrices && removeCollateralPrices.length !== 0 && currentChart.data) {
-      const range = formatRange(removeCollateralPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(removeCollateralPrices)
     }
     // // deleverage prices
     if (repayLeveragePrices && currentChart.data) {
-      const range = formatRange(repayLeveragePrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(repayLeveragePrices)
     }
 
     return liqRanges

@@ -1,10 +1,8 @@
 import Image from 'next/image'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
-
 import {
   Wrapper,
   ApprovalStep,
@@ -18,7 +16,6 @@ import {
   DividerLine,
   ResetButton,
 } from './styles'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Spinner from '@ui/Spinner'

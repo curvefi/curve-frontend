@@ -1,10 +1,8 @@
+import { ReactNode } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
-
 import { CONNECT_STAGE } from '@/lend/constants'
 import { isLoading } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 
@@ -12,10 +10,11 @@ const LoanFormConnect = ({
   haveSigner,
   loading,
   children,
-}: React.PropsWithChildren<{
+}: {
   haveSigner: boolean
   loading?: boolean
-}>) => {
+  children: ReactNode
+}) => {
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
 

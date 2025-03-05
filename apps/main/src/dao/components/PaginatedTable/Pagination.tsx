@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
@@ -14,7 +13,7 @@ interface PaginationProps {
 const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   const getPageNumbers = () => {
     let start = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
-    let end = Math.min(start + 4, totalPages)
+    const end = Math.min(start + 4, totalPages)
 
     if (end - start < 4) {
       start = Math.max(1, end - 4)

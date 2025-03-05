@@ -1,8 +1,6 @@
 import type { OverlayTriggerState } from '@react-stately/overlays'
-
-import React, { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import { useButton } from '@react-aria/button'
-
 import IconButton from 'ui/src/IconButton'
 
 const OpenDialogIconButton = ({
@@ -10,11 +8,12 @@ const OpenDialogIconButton = ({
   children,
   overlayTriggerState,
   testId,
-}: React.PropsWithChildren<{
+}: {
+  children: ReactNode
   className?: string
   overlayTriggerState: OverlayTriggerState
   testId?: string
-}>) => {
+}) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
 

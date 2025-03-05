@@ -1,8 +1,6 @@
 import type { AlertBoxProps } from '@ui/AlertBox/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
-
+import { useMemo } from 'react'
 import AlertBox from '@ui/AlertBox'
 import { AlertType } from '@/loan/types/loan.types'
 
@@ -16,7 +14,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: AlertFormWarningKey | string
 }
 
-const LoanFormAlertWarning = ({ errorKey, ...props }: React.PropsWithChildren<Props>) => {
+const LoanFormAlertWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     const messages: { [key: AlertFormWarningKey | string]: { message: string; alertType?: AlertType } } = {
       [ALERT_FORM_WARNING_KEYS['warning-exchange-rate-low']]: {

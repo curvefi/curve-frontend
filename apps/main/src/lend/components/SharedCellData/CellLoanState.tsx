@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import Box from '@ui/Box'
 import Chip from 'ui/src/Typography/Chip'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'

@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import Stack from '@mui/material/Stack'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
@@ -45,7 +46,7 @@ const ChartHeader = <T extends string>({
   setActiveTimeOption,
   hideExpandChart = false,
 }: ChartHeaderProps<T>) => {
-  const handleChartOption = (event: React.MouseEvent<HTMLElement>, key: T) => {
+  const handleChartOption = (_: MouseEvent<HTMLElement>, key: T) => {
     // ensure that one option is always selected by checking null
     if (key !== null) setActiveChartOption(key)
   }

@@ -1,11 +1,7 @@
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
-
 import { Trans } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
-
 import useStore from '@/loan/store/useStore'
-
 import { Td, Tr } from '@ui/Table'
 import Button from '@ui/Button'
 import ExternalLink from 'ui/src/Link/ExternalLink'

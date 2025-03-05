@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import { FunctionComponent, useCallback, useLayoutEffect, useMemo, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'

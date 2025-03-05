@@ -3,10 +3,9 @@ import { useFormContext } from 'react-hook-form'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { FlexContainer } from '@ui/styled-containers'
-import { ChainId } from '@/dex/types/main.types'
 import useStore from '@/dex/store/useStore'
 
-export const HelperFields = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+export const HelperFields = () => {
   const { watch } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')

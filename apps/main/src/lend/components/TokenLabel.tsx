@@ -1,10 +1,7 @@
 import type { BoxProps } from '@ui/Box/types'
-
 import styled from 'styled-components'
-
 import { copyToClipboard } from '@/lend/utils/helpers'
 import networks from '@/lend/networks'
-
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'

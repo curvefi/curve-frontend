@@ -1,11 +1,8 @@
 import { LiquidityDataProps } from './types'
-
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import networks from '@/lend/networks'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Chip } from '@ui/Typography'
@@ -133,11 +130,6 @@ const LiquidityEventTitle = styled.span`
   &.remove {
     color: var(--chart-red);
   }
-`
-
-const LpTokensContainer = styled.div`
-  display: flex;
-  flex-direction: column;
 `
 
 const Nrange = styled.p`
