@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
@@ -17,6 +18,31 @@ import { FavoriteTokens } from './FavoriteTokens'
 import { TokenOption } from './TokenOption'
 import { SearchInput } from './SearchInput'
 import { ErrorAlert } from './ErrorAlert'
+
+type TokenSectionProps = Required<Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>> &
+  Required<Pick<TokenListCallbacks, 'onToken'>> & {
+    title: string
+  }
+
+const TokenSection = ({ title, tokens, balances, tokenPrices, disabledTokens, onToken }: TokenSectionProps) =>
+  tokens.length ? (
+    <>
+      <CardHeader title={title} size="small" />
+      <Divider />
+      <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
+        {tokens.map((token) => (
+          <TokenOption
+            key={token.address}
+            {...token}
+            balance={balances[token.address]}
+            tokenPrice={tokenPrices[token.address]}
+            onToken={() => onToken(token)}
+            disabled={disabledTokens.includes(token.address)}
+          />
+        ))}
+      </MenuList>
+    </>
+  ) : null
 
 // Prevent all the token options from re-rendering if only the balance of a single one has changed.
 export type TokenListCallbacks = {
@@ -63,44 +89,49 @@ export const TokenList = ({
   onSearch,
 }: Props) => {
   const [search, setSearch] = useState('')
-
   const showFavorites = favorites.length > 0 && !search
 
-  // List of all token options
-  const options = useMemo(() => {
-    let tokensFiltered = tokens
+  const tokensFiltered = useMemo(() => {
+    if (!search) return tokens
 
-    // Apply search only if meaningful. searchByText returns nothing is the search is an empty string.
-    if (search) {
-      const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol', 'name'], {
-        tokens: ['address'],
-        other: [],
-      })
+    const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol', 'name'], {
+      tokens: ['address'],
+      other: [],
+    })
 
-      tokensFiltered = uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
+    return uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
+  }, [tokens, search])
+
+  const { myTokens, allTokens } = useMemo(() => {
+    const myTokens = tokensFiltered.filter((token) => +(balances[token.address] ?? 0) > 0)
+    const allTokens = tokensFiltered.filter((token) => +(balances[token.address] ?? 0) === 0)
+
+    if (!disableSorting) {
+      const sortFn = (a: Option, b: Option) => {
+        const aBalance = +(balances[a.address] ?? 0)
+        const bBalance = +(balances[b.address] ?? 0)
+
+        // Compare USD balances first (including existence check)
+        const aBalanceUsd = (tokenPrices[a.address] ?? 0) * aBalance
+        const bBalanceUsd = (tokenPrices[b.address] ?? 0) * bBalance
+        if (aBalanceUsd !== bBalanceUsd) return bBalanceUsd - aBalanceUsd
+
+        // If USD balances are equal, compare raw balances
+        if (aBalance !== bBalance) return bBalance - aBalance
+
+        // Sort by volume in descending order
+        if (a.volume !== b.volume) return (b.volume ?? 0) - (a.volume ?? 0)
+
+        // Finally sort by label
+        return a.symbol.localeCompare(b.symbol)
+      }
+
+      myTokens.sort(sortFn)
+      allTokens.sort(sortFn)
     }
 
-    return disableSorting
-      ? tokensFiltered
-      : tokensFiltered.sort((a, b) => {
-          const aBalance = +(balances[a.address] ?? 0)
-          const bBalance = +(balances[b.address] ?? 0)
-
-          // Compare USD balances first (including existence check)
-          const aBalanceUsd = (tokenPrices[a.address] ?? 0) * aBalance
-          const bBalanceUsd = (tokenPrices[b.address] ?? 0) * bBalance
-          if (aBalanceUsd !== bBalanceUsd) return bBalanceUsd - aBalanceUsd
-
-          // If USD balances are equal, compare raw balances
-          if (aBalance !== bBalance) return bBalance - aBalance
-
-          // Sort by volume in descending order
-          if (a.volume !== b.volume) return (b.volume ?? 0) - (a.volume ?? 0)
-
-          // Finally sort by label
-          return a.symbol.localeCompare(b.symbol)
-        })
-  }, [tokens, search, disableSorting, balances, tokenPrices])
+    return { myTokens, allTokens }
+  }, [tokensFiltered, disableSorting, balances, tokenPrices])
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
@@ -113,42 +144,35 @@ export const TokenList = ({
         />
       )}
 
-      {showFavorites && (
-        <>
-          <FavoriteTokens tokens={favorites} onToken={onToken} />
-          <Divider />
-        </>
-      )}
-
-      {customOptions && (
-        <>
-          {customOptions}
-          <Divider />
-        </>
-      )}
+      {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
+      {showFavorites && customOptions && <Divider />}
+      {customOptions}
 
       {error ? (
         <ErrorAlert error={error} />
+      ) : myTokens.length + allTokens.length === 0 ? (
+        <Alert variant="filled" severity="info">
+          <AlertTitle>{t`No tokens found`}</AlertTitle>
+        </Alert>
       ) : (
         <Stack sx={{ overflowY: 'auto' }}>
-          {options.length ? (
-            <MenuList autoFocusItem autoFocus variant="menu" sx={{ paddingBlock: 0 }}>
-              {options.map((token) => (
-                <TokenOption
-                  key={token.address}
-                  {...token}
-                  balance={balances[token.address]}
-                  tokenPrice={tokenPrices[token.address]}
-                  onToken={() => onToken(token)}
-                  disabled={disabledTokens.includes(token.address)}
-                />
-              ))}
-            </MenuList>
-          ) : (
-            <Alert variant="filled" severity="info">
-              <AlertTitle>{t`No tokens found`}</AlertTitle>
-            </Alert>
-          )}
+          <TokenSection
+            title={t`My tokens`}
+            tokens={myTokens}
+            balances={balances}
+            tokenPrices={tokenPrices}
+            disabledTokens={disabledTokens}
+            onToken={onToken}
+          />
+
+          <TokenSection
+            title={t`All tokens`}
+            tokens={allTokens}
+            balances={balances}
+            tokenPrices={tokenPrices}
+            disabledTokens={disabledTokens}
+            onToken={onToken}
+          />
         </Stack>
       )}
     </Stack>
