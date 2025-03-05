@@ -40,7 +40,7 @@ export type TokenListProps = {
   /** Whether to show the search input field */
   showSearch: boolean
   /** Custom error message to display (e.g., when tokens failed to load) */
-  error: string
+  error?: string
   /** List of token addresses that should be disabled/unselectable */
   disabledTokens: string[]
   /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */

@@ -54,7 +54,7 @@ const SelectTokenButton = ({
   const { basePools, basePoolsLoading } = useStore((state) => state.pools)
   const { swapType } = useStore((state) => state.createPool)
 
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string>()
   const [filterValue, setFilterValue] = useState('')
   const [filterBasepools, setFilterBasepools] = useState(false)
 
@@ -128,7 +128,7 @@ const SelectTokenButton = ({
 
   const handleClose = () => {
     setFilterValue('')
-    setError('')
+    setError(undefined)
     isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
   }
 
@@ -188,7 +188,7 @@ const SelectTokenButton = ({
           }}
           onSearch={(val) => {
             setFilterValue(val)
-            setError('')
+            setError(undefined)
           }}
         />
       )}
