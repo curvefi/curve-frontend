@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import { t } from '@ui-kit/lib/i18n'
 import { searchByText } from '@ui-kit/utils/searchText'
@@ -70,6 +71,7 @@ const TokenSection = ({
             variant="link"
             color="ghost"
             size="medium"
+            endIcon={<ExpandMoreIcon />}
             onClick={onShowAll}
             // Override variant button height to match menu list item height
             sx={{ '&': { height: `${ButtonSize.md} !important` } }}
