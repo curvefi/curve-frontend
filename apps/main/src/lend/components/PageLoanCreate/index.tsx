@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params } = pageProps
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const resetState = useStore((state) => state.loanCreate.resetState)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
@@ -39,7 +39,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         activeFormKey={!rFormType ? 'create' : (rFormType as string)}
         handleClick={(key: string) => {
           resetState({ rChainId, rOwmId, key })
-          navigate(getLoanCreatePathname(params, rOwmId, key))
+          push(getLoanCreatePathname(params, rOwmId, key))
         }}
       />
 

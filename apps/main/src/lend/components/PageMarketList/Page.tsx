@@ -28,7 +28,7 @@ enum SEARCH {
 }
 
 const Page = (params: NetworkUrlParams) => {
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const searchParams = useSearchParams()
   const { pageLoaded, routerParams, api } = usePageOnMount()
   const searchTermMapper = useSearchTermMapper()
@@ -85,8 +85,7 @@ const Page = (params: NetworkUrlParams) => {
       ].filter(([, v]) => v),
     ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
-    navigate(pathname)
+    push(getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`))
   }
 
   useEffect(() => {

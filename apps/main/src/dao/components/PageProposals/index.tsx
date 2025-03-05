@@ -33,7 +33,7 @@ const Proposals = () => {
     proposals,
   } = useStore((state) => state.proposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
   const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
@@ -52,9 +52,9 @@ const Proposals = () => {
 
   const handleProposalClick = useCallback(
     (rProposalId: string) => {
-      navigate(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${rProposalId}`))
+      push(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${rProposalId}`))
     },
-    [navigate],
+    [push],
   )
 
   useEffect(() => {

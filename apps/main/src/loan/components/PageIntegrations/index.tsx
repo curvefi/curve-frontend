@@ -29,7 +29,7 @@ const IntegrationsComp = ({
   rChainId: ChainId | ''
 }) => {
   const searchParams = useSearchParams()
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const formStatus = useStore((state) => state.integrations.formStatus)
@@ -70,10 +70,8 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) => {
-    const pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`)
-    navigate(pathname)
-  }
+  const updateRouteFilterKey = (filterKey: FilterKey) =>
+    push(getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`))
 
   const parsedResults = results === null ? integrationsList : results
 

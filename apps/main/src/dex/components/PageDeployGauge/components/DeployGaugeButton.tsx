@@ -29,8 +29,8 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const { push: navigate } = useRouter()
-  const { rChainId, rNetwork } = useNetworkFromUrl()
+  const { push: push } = useRouter()
+  const { rChainId } = useNetworkFromUrl()
 
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
     (state) => state.deployGauge,
@@ -44,7 +44,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const handleConnectEth = () => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
     updateGlobalStoreByKey('isLoadingApi', true)
-    navigate(getPath({ network: 'ethereum' }, restFullPathname))
+    push(getPath({ network: 'ethereum' }, restFullPathname))
   }
 
   const handleClick = async () => {

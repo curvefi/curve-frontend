@@ -33,7 +33,7 @@ import { isLoading } from '@ui/utils'
 import { useRouter } from 'next/navigation'
 
 const Page = (params: CollateralUrlParams) => {
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const { routerParams, curve } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
@@ -94,7 +94,7 @@ const Page = (params: CollateralUrlParams) => {
       setLoaded(false)
     } else if (curve) {
       if (!llamma) {
-        navigate(getCollateralListPathname(params))
+        push(getCollateralListPathname(params))
       } else {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
@@ -108,7 +108,7 @@ const Page = (params: CollateralUrlParams) => {
   // redirect if loan exists
   useEffect(() => {
     if (!loaded && llamma && loanExists) {
-      navigate(getLoanManagePathname(params, llamma.id, 'loan'))
+      push(getLoanManagePathname(params, llamma.id, 'loan'))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, loanExists])
@@ -116,7 +116,7 @@ const Page = (params: CollateralUrlParams) => {
   //  redirect if form is leverage but no leverage option
   useEffect(() => {
     if (llamma && rFormType === 'leverage' && !hasLeverage(llamma)) {
-      navigate(getLoanCreatePathname(params, llamma.id))
+      push(getLoanCreatePathname(params, llamma.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, rFormType, llamma])

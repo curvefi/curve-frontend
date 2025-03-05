@@ -29,8 +29,8 @@ import AlertBox from '@ui/AlertBox'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
@@ -47,7 +47,7 @@ import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters
 import { useGaugeManager } from '@/dex/entities/gauge'
 import { BlockSkeleton } from '@ui/skeleton'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
-import { isAddressEqual, type Address } from 'viem'
+import { type Address, isAddressEqual } from 'viem'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
@@ -66,7 +66,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
   const { tokensMapper } = useTokensMapper(rChainId)
@@ -184,10 +184,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
-      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
-      navigate(pathname)
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`))
     },
-    [navigate, params],
+    [push, params],
   )
 
   useEffect(() => {

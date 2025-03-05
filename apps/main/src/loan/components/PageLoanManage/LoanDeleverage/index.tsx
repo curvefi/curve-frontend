@@ -53,7 +53,7 @@ const LoanDeleverage = ({
   rChainId,
 }: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'>) => {
   const isSubscribed = useRef(false)
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.loanDeleverage.activeKey)
   const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
@@ -122,7 +122,7 @@ const LoanDeleverage = ({
               if (resp.loanExists) {
                 updateFormValues({}, '', true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -130,7 +130,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, params, rChainId, updateFormValues],
+    [activeKey, collateralName, fetchStepRepay, push, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

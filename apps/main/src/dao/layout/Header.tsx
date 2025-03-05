@@ -19,7 +19,7 @@ type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerPro
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
@@ -50,11 +50,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(getPath({ network }, `/${getRestFullPathname()}`))
+              push(getPath({ network }, `/${getRestFullPathname()}`))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, navigate, updateConnectState],
+          [rChainId, push, updateConnectState],
         ),
       }}
       WalletProps={{

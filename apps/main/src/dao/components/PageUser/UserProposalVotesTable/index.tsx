@@ -18,7 +18,7 @@ interface UserProposalVotesTableProps {
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
   const { getUserProposalVotes, userProposalVotesMapper, userProposalVotesSortBy, setUserProposalVotesSortBy } =
     useStore((state) => state.user)
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 6rem 6rem'
 
@@ -56,7 +56,7 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(
+              push(
                 getEthPath(
                   `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.vote_id}-${proposalVote.vote_type.toUpperCase()}`,
                 ),

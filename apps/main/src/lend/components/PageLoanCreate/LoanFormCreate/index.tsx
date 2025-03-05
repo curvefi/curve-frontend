@@ -41,7 +41,7 @@ const LoanCreate = ({
 }: PageContentProps & { isLeverage?: boolean; params: MarketUrlParams }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey, params } = pageProps
   const isSubscribed = useRef(false)
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)
@@ -406,7 +406,7 @@ const LoanCreate = ({
             size="large"
             onClick={() => {
               setStateByKeyMarkets('marketDetailsView', 'user')
-              navigate(getLoanManagePathname(params, rOwmId, 'loan'))
+              push(getLoanManagePathname(params, rOwmId, 'loan'))
             }}
           >
             Manage loan

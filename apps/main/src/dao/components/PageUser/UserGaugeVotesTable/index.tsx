@@ -19,7 +19,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   const { getUserGaugeVotes, userGaugeVotesMapper, userGaugeVotesSortBy, setUserGaugeVotesSortBy } = useStore(
     (state) => state.user,
   )
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr'
 
@@ -63,7 +63,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`))
+              push(getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`))
             }}
             className="right-padding"
           >

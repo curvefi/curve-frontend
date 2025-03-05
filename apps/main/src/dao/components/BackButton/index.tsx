@@ -10,11 +10,10 @@ type BackButtonProps = {
 }
 
 const BackButton = ({ path, label }: BackButtonProps) => {
-  const { push: navigate } = useRouter()
-
+  const { push } = useRouter()
   return (
     <BackButtonWrapper variant="secondary">
-      <StyledButton variant="text" onClick={() => navigate(path)}>
+      <StyledButton variant="text" onClick={() => push(path)}>
         <Icon name="ArrowLeft" size={16} />
         {label}
       </StyledButton>

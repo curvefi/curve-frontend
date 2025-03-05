@@ -45,7 +45,7 @@ const LoanRepay = ({
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const activeKey = useStore((state) => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
@@ -111,7 +111,7 @@ const LoanRepay = ({
               if (resp.loanExists) {
                 updateFormValues(DEFAULT_FORM_VALUES, '', true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -120,7 +120,7 @@ const LoanRepay = ({
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
     },
-    [activeKey, fetchStepRepay, navigate, params, rChainId, updateFormValues],
+    [activeKey, fetchStepRepay, push, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

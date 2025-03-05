@@ -17,7 +17,7 @@ const TableRowContainer = (
 ) => {
   const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
   const params = useParams() as NetworkUrlParams
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
@@ -47,11 +47,11 @@ const TableRowContainer = (
     }
 
     if (filterTypeKey === 'supply') {
-      navigate(getVaultPathname(params, owmId, 'deposit'))
+      push(getVaultPathname(params, owmId, 'deposit'))
     } else if (loanExists) {
-      navigate(getLoanManagePathname(params, owmId, 'loan'))
+      push(getLoanManagePathname(params, owmId, 'loan'))
     } else {
-      navigate(getLoanCreatePathname(params, owmId, 'create'))
+      push(getLoanCreatePathname(params, owmId, 'create'))
     }
   }
 

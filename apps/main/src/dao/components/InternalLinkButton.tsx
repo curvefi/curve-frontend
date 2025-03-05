@@ -13,14 +13,14 @@ type InternalLinkButtonProps = {
 }
 
 const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const params = useParams() as UrlParams
   return (
     <StyledInternalLink
       size={smallSize ? 'small' : undefined}
       onClick={(e) => {
         e.preventDefault()
-        navigate(getPath(params, to))
+        push(getPath(params, to))
       }}
     >
       {children}

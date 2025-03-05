@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo } from 'react'
 import useStore from '@/dao/store/useStore'
-import { copyToClipboard } from '@/dao/utils'
+import { copyToClipboard, getEthPath } from '@/dao/utils'
 import { breakpoints } from '@ui/utils'
 import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
 import useProposalMapper from '@/dao/hooks/useProposalMapper'
@@ -23,6 +23,7 @@ import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
 import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type ProposalProps = {
   routerParams: ProposalUrlParams
@@ -98,7 +99,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
 
   return (
     <Wrapper>
-      <BackButton path="/ethereum/proposals" label={t`Back to proposals`} />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">

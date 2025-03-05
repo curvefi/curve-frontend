@@ -20,7 +20,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
   const networks = useStore((state) => state.networks.networks)
 
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (
@@ -93,9 +93,10 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
             <Step>
               <Disclaimer>{t`Step 1 and Step 2 must be completed using the same wallet`}</Disclaimer>
             </Step>
+            {/* TODO: `linkPoolAddress` is never set */}
             {deploymentStatus.mirror.status === 'SUCCESS' && linkPoolAddress !== '' && (
               <LinkContainer>
-                <InternalLinkButton onClick={() => navigate(linkPoolAddress)} title={t`Visit the pool`} />
+                <InternalLinkButton onClick={() => push(linkPoolAddress)} title={t`Visit the pool`} />
               </LinkContainer>
             )}
           </Content>

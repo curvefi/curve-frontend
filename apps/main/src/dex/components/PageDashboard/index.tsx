@@ -34,7 +34,7 @@ const Dashboard = ({
   params: NetworkUrlParams
 }) => {
   const isSubscribed = useRef(false)
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.dashboard.activeKey)
   const formValues = useStore((state) => state.dashboard.formValues)
@@ -101,9 +101,9 @@ const Dashboard = ({
   const updatePath = useCallback(
     (poolId: string) => {
       const encodePoolId = encodeURIComponent(poolId)
-      navigate(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
     },
-    [navigate, params],
+    [push, params],
   )
 
   const colSpan = isXSmDown ? 1 : 5

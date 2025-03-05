@@ -10,7 +10,7 @@ import type { UrlParams } from '@/lend/types/lend.types'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
   const params = useParams() as UrlParams
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
 
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
 
@@ -25,7 +25,7 @@ const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: 
           size="large"
           onClick={() => {
             setStateByKeyMarkets('marketDetailsView', 'market')
-            navigate(getLoanCreatePathname(params, owmId, 'create'))
+            push(getLoanCreatePathname(params, owmId, 'create'))
           }}
         >
           Create loan

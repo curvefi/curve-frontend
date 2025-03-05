@@ -36,7 +36,7 @@ import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { useRouter } from 'next/navigation'
 
 const Page = (params: CollateralUrlParams) => {
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const { curve, routerParams } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
@@ -79,18 +79,18 @@ const Page = (params: CollateralUrlParams) => {
   useEffect(() => {
     if (curve && !isLoadingApi) {
       if (!rChainId || !rCollateralId || !rFormType) {
-        navigate(getCollateralListPathname(params))
+        push(getCollateralListPathname(params))
       } else if (curve.signerAddress && llamma) {
         ;(async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
           if (!fetchedLoanDetails.loanExists.loanExists) {
             resetUserDetailsState(llamma)
-            navigate(getLoanCreatePathname(params, rCollateralId))
+            push(getLoanCreatePathname(params, rCollateralId))
           }
           setLoaded(true)
         })()
       } else {
-        navigate(getCollateralListPathname(params))
+        push(getCollateralListPathname(params))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +99,7 @@ const Page = (params: CollateralUrlParams) => {
   useEffect(() => {
     if (!loaded && loanExists && !loanExists.loanExists) {
       resetUserDetailsState(llamma)
-      navigate(getLoanCreatePathname(params, rCollateralId))
+      push(getLoanCreatePathname(params, rCollateralId))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, loanExists])
@@ -107,7 +107,7 @@ const Page = (params: CollateralUrlParams) => {
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
     if (llamma && rFormType === 'deleverage' && !hasDeleverage(llamma)) {
-      navigate(getLoanCreatePathname(params, llamma.id))
+      push(getLoanCreatePathname(params, llamma.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, rFormType, llamma])
@@ -194,7 +194,7 @@ const Page = (params: CollateralUrlParams) => {
                       setSelectedTab(key)
                     } else {
                       resetUserDetailsState(llamma)
-                      navigate(getLoanCreatePathname(params, rCollateralId))
+                      push(getLoanCreatePathname(params, rCollateralId))
                     }
                   }}
                 >

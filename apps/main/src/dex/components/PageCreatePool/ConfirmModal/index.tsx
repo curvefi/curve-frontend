@@ -52,7 +52,7 @@ const ConfirmModal = ({
     resetState,
   } = useStore((state) => state.createPool)
 
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const params = useParams() as UrlParams
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
@@ -162,7 +162,7 @@ const ConfirmModal = ({
                         <StyledLinkButtonWrapper>
                           <InternalLinkButton
                             onClick={() => {
-                              navigate(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
+                              push(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
                               resetState()
                             }}
                             title={t`Go to pool`}

@@ -28,7 +28,7 @@ const IntegrationsComp = ({
   params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
 
@@ -59,7 +59,7 @@ const IntegrationsComp = ({
   const updatePath = useCallback(
     ({ filterKey, filterNetworkId }: { filterKey?: Key; filterNetworkId?: Key }) => {
       const pSearchParams = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
-      let pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}`)
+      let pathname = getPath(params, ROUTE.PAGE_INTEGRATIONS)
 
       // get filter Key
       let pFilterKey = filterKey ?? pSearchParams.filterKey ?? ''
@@ -71,9 +71,9 @@ const IntegrationsComp = ({
       pFilterNetworkId = pFilterNetworkId && pFilterNetworkId == rChainId ? '' : pFilterNetworkId
       if (pFilterNetworkId) pathname += `${pFilterKey ? '&' : '?'}networkId=${pFilterNetworkId}`
 
-      navigate(pathname)
+      push(pathname)
     },
-    [integrationsTags, navigate, params, rChainId, searchParams, visibleNetworksList],
+    [integrationsTags, push, params, rChainId, searchParams, visibleNetworksList],
   )
 
   const filterKeyLabel = useMemo(() => {

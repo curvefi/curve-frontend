@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation'
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
@@ -61,12 +61,12 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const handleTabClick = useCallback(
     (cb: () => void) => {
       if (typeof loanExistsResp !== 'undefined' && !loanExistsResp.loanExists) {
-        navigate(getLoanCreatePathname(params, rOwmId, 'create'))
+        push(getLoanCreatePathname(params, rOwmId, 'create'))
       } else if (typeof cb === 'function') {
         cb()
       }
     },
-    [loanExistsResp, navigate, params, rOwmId],
+    [loanExistsResp, push, params, rOwmId],
   )
 
   // init campaignRewardsMapper
@@ -90,7 +90,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
       <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'loan' : (rFormType as string)}
-        handleClick={(key: string) => navigate(getLoanManagePathname(params, rOwmId, key))}
+        handleClick={(key: string) => push(getLoanManagePathname(params, rOwmId, key))}
       />
 
       <AppFormContentWrapper grid gridRowGap={3} padding>

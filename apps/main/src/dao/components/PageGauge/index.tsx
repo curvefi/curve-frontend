@@ -7,6 +7,8 @@ import GaugeMetrics from './GaugeMetrics'
 import GaugeVotesTable from './GaugeVotesTable'
 import BackButton from '../BackButton'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type GaugeProps = {
   routerParams: GaugeUrlParams
@@ -22,7 +24,7 @@ const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) =>
 
   return (
     <Wrapper>
-      <BackButton path="/ethereum/gauges" label="Back to gauges" />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label="Back to gauges" />
       <GaugePageContainer variant="secondary">
         <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />

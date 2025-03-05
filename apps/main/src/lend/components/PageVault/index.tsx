@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
@@ -53,7 +53,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
       <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
-        handleClick={(key) => navigate(getVaultPathname(params, rOwmId, key))}
+        handleClick={(key) => push(getVaultPathname(params, rOwmId, key))}
       />
 
       <AppFormContentWrapper>
@@ -61,7 +61,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
-              {tabs.map(({ label, formType }, idx) => (
+              {tabs.map(({ label }, idx) => (
                 <AppFormSlideTab
                   key={label}
                   disabled={selectedTabIdx === idx}

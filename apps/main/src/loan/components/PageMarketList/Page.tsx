@@ -26,7 +26,7 @@ enum SEARCH {
 }
 
 const Page = (params: CollateralUrlParams) => {
-  const { push: navigate } = useRouter()
+  const { push: push } = useRouter()
   const searchParams = useSearchParams()
   const { pageLoaded, routerParams, curve } = usePageOnMount()
   const titleMapper = useTitleMapper()
@@ -61,8 +61,7 @@ const Page = (params: CollateralUrlParams) => {
       ].filter(([, v]) => v),
     ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
-    navigate(pathname)
+    push(getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`))
   }
 
   useEffect(() => {
