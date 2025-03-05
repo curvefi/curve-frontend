@@ -26,7 +26,7 @@ export type TokenSectionProps = Required<
   Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
 > &
   Required<Pick<TokenListCallbacks, 'onToken'>> & {
-    title: string
+    title?: string
     showAll: boolean
     /** Amount of options to show before a 'Show more' buttons appears if count exceeds limit */
     limit: number
@@ -51,7 +51,7 @@ const TokenSection = ({
 
   return (
     <>
-      <CardHeader title={title} size="small" />
+      {title && <CardHeader title={title} size="small" />}
       <Divider />
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
         {displayTokens.map((token) => (
@@ -211,7 +211,7 @@ export const TokenList = ({
           />
 
           <TokenSection
-            title={t`All tokens`}
+            title={myTokens.length > 0 ? t`All tokens` : undefined}
             tokens={allTokens}
             balances={balances}
             tokenPrices={tokenPrices}
