@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -7,8 +7,6 @@ import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
-import SearchIcon from '@mui/icons-material/Search'
 
 import { t } from '@ui-kit/lib/i18n'
 import { searchByText } from '@ui-kit/utils/searchText'
@@ -19,6 +17,7 @@ const { Spacing } = SizesAndSpaces
 import type { TokenOption as Option } from '../../types'
 import { FavoriteTokens } from './FavoriteTokens'
 import { TokenOption } from './TokenOption'
+import { SearchInput } from './SearchInput'
 
 // Prevent all the token options from re-rendering if only the balance of a single one has changed.
 export type TokenListCallbacks = {
@@ -65,28 +64,16 @@ export const TokenList = ({
   onSearch,
 }: Props) => {
   const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const searchTrimmed = search.trim()
-      if (searchTrimmed !== debouncedSearch) {
-        setDebouncedSearch(searchTrimmed)
-        onSearch(searchTrimmed)
-      }
-    }, 200)
-    return () => clearTimeout(timer)
-  }, [debouncedSearch, onSearch, search])
-
-  const showFavorites = favorites.length > 0 && !debouncedSearch
+  const showFavorites = favorites.length > 0 && !search
 
   // List of all token options
   const options = useMemo(() => {
     let tokensFiltered = tokens
 
     // Apply search only if meaningful. searchByText returns nothing is the search is an empty string.
-    if (debouncedSearch) {
-      const { addressesResult, tokensResult } = searchByText(debouncedSearch, tokens, ['symbol', 'name'], {
+    if (search) {
+      const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol', 'name'], {
         tokens: ['address'],
         other: [],
       })
@@ -114,20 +101,16 @@ export const TokenList = ({
           // Finally sort by label
           return a.symbol.localeCompare(b.symbol)
         })
-  }, [tokens, disableSorting, debouncedSearch, balances, tokenPrices])
+  }, [tokens, search, disableSorting, balances, tokenPrices])
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
       {showSearch && (
-        <TextField
-          fullWidth
-          placeholder={t`Search name or paste address`}
-          onChange={(e) => setSearch(e.target.value)}
-          slotProps={{ input: { startAdornment: <SearchIcon /> } }}
-          variant="outlined"
-          value={search}
-          name="tokenName"
-          autoFocus
+        <SearchInput
+          onSearch={(val) => {
+            setSearch(val)
+            onSearch(val)
+          }}
         />
       )}
 
