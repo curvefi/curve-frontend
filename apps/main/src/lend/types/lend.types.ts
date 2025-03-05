@@ -251,6 +251,8 @@ export type UserLoanDetails = {
     range: number | null
     state: { collateral: string; borrowed: string; debt: string; N: string }
     status: { label: string; colorKey: HeathColorKey; tooltip: string }
+    leverage: string
+    pnl: Record<string, string>
   } | null
   error: string
 }
