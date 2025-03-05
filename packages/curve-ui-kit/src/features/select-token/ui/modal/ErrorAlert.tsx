@@ -30,7 +30,7 @@ export const ErrorAlert = ({ error }: Props) => (
       },
     }}
   >
-    <AlertTitle>Could not create token list</AlertTitle>
+    <AlertTitle>{t`Could not create token list`}</AlertTitle>
     <Box sx={{ wordWrap: 'break-word' }}>{t`${error}`}</Box>
   </Alert>
 )
