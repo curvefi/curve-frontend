@@ -40,8 +40,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
         }),
       }}
     >
-      {/* I'm abusing the symbol here to deliberately show a tooltip for the address instead */}
-      <TokenIcon blockchainId={chain} tooltip={address} address={address} size="xl" />
+      <TokenIcon blockchainId={chain} address={address} size="xl" />
 
       <Stack flexGrow={1}>
         <Typography variant="bodyMBold">{symbol}</Typography>
