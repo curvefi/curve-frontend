@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
@@ -29,39 +32,55 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0 > 0)
   const showAddress = !hasBalance
 
+  const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
+
   return (
-    <MenuItem
-      onClick={disabled ? undefined : onToken}
-      sx={{
-        minHeight: IconSize.xxl,
-        ...(disabled && {
-          opacity: 0.5,
-          cursor: 'not-allowed',
-        }),
-      }}
-    >
-      <TokenIcon blockchainId={chain} address={address} size="xl" />
+    <InvertTheme inverted={isHover}>
+      <MenuItem
+        onClick={disabled ? undefined : onToken}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        sx={{
+          minHeight: IconSize.xxl,
+          '&': { transition: `background-color ${TransitionFunction}` },
+          ...(disabled && {
+            opacity: 0.5,
+            cursor: 'not-allowed',
+          }),
+        }}
+      >
+        <TokenIcon blockchainId={chain} address={address} size="xl" />
 
-      <Stack flexGrow={1}>
-        <Typography variant="bodyMBold">{symbol}</Typography>
-        <Typography variant="bodyXsRegular" color="textSecondary">
-          {label}
-        </Typography>
-      </Stack>
+        <Stack flexGrow={1}>
+          <Typography variant="bodyMBold" color="textPrimary">
+            {symbol}
+          </Typography>
 
-      <Stack direction="column" alignItems="end">
-        {hasBalance && <Typography variant="bodyMBold">{formatNumber(balance)}</Typography>}
-        {hasBalanceUsd && (
           <Typography variant="bodyXsRegular" color="textSecondary">
-            {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD)}
+            {label}
           </Typography>
-        )}
-        {showAddress && (
-          <Typography variant="bodyXsRegular" color="textTertiary">
-            {addressShort(address)}
-          </Typography>
-        )}
-      </Stack>
-    </MenuItem>
+        </Stack>
+
+        <Stack direction="column" alignItems="end">
+          {hasBalance && (
+            <Typography variant="bodyMBold" color="textPrimary">
+              {formatNumber(balance)}
+            </Typography>
+          )}
+
+          {hasBalanceUsd && (
+            <Typography variant="bodyXsRegular" color="textSecondary">
+              {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD)}
+            </Typography>
+          )}
+
+          {showAddress && (
+            <Typography variant="bodyXsRegular" color="textTertiary">
+              {addressShort(address)}
+            </Typography>
+          )}
+        </Stack>
+      </MenuItem>
+    </InvertTheme>
   )
 }
