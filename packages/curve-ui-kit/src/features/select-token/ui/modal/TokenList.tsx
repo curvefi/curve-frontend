@@ -61,8 +61,8 @@ const TokenSection = ({
             {...token}
             balance={balances[token.address]}
             tokenPrice={tokenPrices[token.address]}
-            onToken={() => onToken(token)}
             disabled={disabledTokens.includes(token.address)}
+            onToken={() => onToken(token)}
           />
         ))}
         {hasMore && !showAll && (

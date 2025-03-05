@@ -40,6 +40,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
         onClick={disabled ? undefined : onToken}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        tabIndex={0}
         sx={{
           minHeight: IconSize.xxl,
           '&': { transition: `background-color ${TransitionFunction}` },
