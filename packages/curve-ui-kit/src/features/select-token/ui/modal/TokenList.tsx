@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import uniqBy from 'lodash/uniqBy'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
@@ -11,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { searchByText } from '@ui-kit/utils/searchText'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 import type { TokenOption as Option } from '../../types'
 import { FavoriteTokens } from './FavoriteTokens'
@@ -19,18 +20,41 @@ import { TokenOption } from './TokenOption'
 import { SearchInput } from './SearchInput'
 import { ErrorAlert } from './ErrorAlert'
 
-type TokenSectionProps = Required<Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>> &
+export type Section = 'my' | 'all'
+
+export type TokenSectionProps = Required<
+  Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
+> &
   Required<Pick<TokenListCallbacks, 'onToken'>> & {
     title: string
+    showAll: boolean
+    /** Amount of options to show before a 'Show more' buttons appears if count exceeds limit */
+    limit: number
+    onShowAll: () => void
   }
 
-const TokenSection = ({ title, tokens, balances, tokenPrices, disabledTokens, onToken }: TokenSectionProps) =>
-  tokens.length ? (
+const TokenSection = ({
+  title,
+  showAll,
+  limit,
+  tokens,
+  balances,
+  tokenPrices,
+  disabledTokens,
+  onToken,
+  onShowAll,
+}: TokenSectionProps) => {
+  if (!tokens.length) return null
+
+  const hasMore = tokens.length > limit
+  const displayTokens = showAll ? tokens : tokens.slice(0, limit)
+
+  return (
     <>
       <CardHeader title={title} size="small" />
       <Divider />
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {tokens.map((token) => (
+        {displayTokens.map((token) => (
           <TokenOption
             key={token.address}
             {...token}
@@ -40,9 +64,23 @@ const TokenSection = ({ title, tokens, balances, tokenPrices, disabledTokens, on
             disabled={disabledTokens.includes(token.address)}
           />
         ))}
+        {hasMore && !showAll && (
+          <Button
+            fullWidth
+            variant="link"
+            color="ghost"
+            size="medium"
+            onClick={onShowAll}
+            // Override variant button height to match menu list item height
+            sx={{ '&': { height: `${ButtonSize.md} !important` } }}
+          >
+            {t`Show more`}
+          </Button>
+        )}
       </MenuList>
     </>
-  ) : null
+  )
+}
 
 // Prevent all the token options from re-rendering if only the balance of a single one has changed.
 export type TokenListCallbacks = {
@@ -89,6 +127,10 @@ export const TokenList = ({
   onSearch,
 }: Props) => {
   const [search, setSearch] = useState('')
+  const [sections, setSections] = useState<Record<Section, boolean>>({
+    my: false,
+    all: false,
+  })
   const showFavorites = favorites.length > 0 && !search
 
   const tokensFiltered = useMemo(() => {
@@ -162,6 +204,9 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
+            limit={5}
+            showAll={sections.my || !!search}
+            onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
             onToken={onToken}
           />
 
@@ -171,6 +216,9 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
+            limit={10}
+            showAll={sections.all || !!search}
+            onShowAll={() => setSections((prev) => ({ ...prev, all: true }))}
             onToken={onToken}
           />
         </Stack>
