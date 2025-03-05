@@ -42,6 +42,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
     <InvertTheme inverted={isHover || isFocusVisible}>
       <MenuItem
         ref={menuItem}
+        // disabled={disabled} breaks `cursor: 'not-allowed'`
         onClick={disabled ? undefined : onToken}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
