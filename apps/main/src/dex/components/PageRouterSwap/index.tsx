@@ -13,7 +13,6 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import { getTokensMapperStr } from '@/dex/store/createTokensSlice'
 import { getChainSignerActiveKey, toTokenOption } from '@/dex/utils'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
 import useSelectToList from '@/dex/components/PageRouterSwap/components/useSelectToList'
@@ -83,7 +82,6 @@ const QuickSwap = ({
   const isPageVisible = useStore((state) => state.isPageVisible)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const tokensMapperNonSmallTvl = useStore((state) => state.tokens.tokensMapperNonSmallTvl[rChainId] ?? {})
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
@@ -112,11 +110,6 @@ const QuickSwap = ({
 
   const fromUsdRate = usdRatesMapper[fromAddress]
   const toUsdRate = usdRatesMapper[toAddress]
-
-  const tokensMapperNonSmallTvlStr = useMemo(
-    () => getTokensMapperStr(tokensMapperNonSmallTvl),
-    [tokensMapperNonSmallTvl],
-  )
 
   const tokensFrom = useMemo(
     () => getTokensObjList(selectFromList ?? selectToList, tokensMapper, network?.networkId),
