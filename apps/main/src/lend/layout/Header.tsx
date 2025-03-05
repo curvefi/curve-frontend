@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/lend/constants'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
-import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
+import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -14,7 +14,7 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, type NetworkEnum, type UrlParams } from '@/lend/types/lend.types'
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -25,17 +25,12 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const { push } = useRouter()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-
   const { rNetwork } = getNetworkFromUrl()
-
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
-
   const routerParams = useParams() as UrlParams
-  const routerPathname = usePathname()
-  const routerNetwork = routerParams?.network
 
   return (
     <NewHeader<ChainId>
@@ -43,10 +38,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentApp="lend"
-      pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.lend.pages, routerPathname, routerNetwork),
-        [routerNetwork, routerPathname],
-      )}
+      pages={APP_LINK.lend.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

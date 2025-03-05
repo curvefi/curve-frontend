@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/dao/constants'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
-import { _parseRouteAndIsActive, isLoading } from '@ui/utils'
+import { isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/dao/networks'
 import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
@@ -38,10 +38,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentApp="dao"
-      pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.dao.pages, routerPathname, routerNetwork),
-        [routerNetwork, routerPathname],
-      )}
+      pages={APP_LINK.dao.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

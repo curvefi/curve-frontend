@@ -36,7 +36,7 @@ export type BaseHeaderProps<TChainId = number> = {
   WalletProps: ConnectWalletIndicatorProps
   BannerProps: GlobalBannerProps
   height: string
-  pages: AppPage[]
+  pages: AppRoute[]
   sections: NavigationSection[]
   appStats?: { label: string; value: string }[]
   networkName: string

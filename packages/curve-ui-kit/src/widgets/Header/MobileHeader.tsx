@@ -1,7 +1,7 @@
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import { BaseHeaderProps } from './types'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import Stack from '@mui/material/Stack'
@@ -11,7 +11,7 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
+import { APP_LINK, AppName, findCurrentRoute, getAppUrl } from '@ui-kit/shared/routes'
 import { t } from '@ui-kit/lib/i18n'
 import GlobalBanner from '@ui/Banner'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
@@ -46,6 +46,7 @@ export const MobileHeader = <TChainId extends number>({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
+  const currentRoute = useMemo(() => findCurrentRoute(pathname, pages), [pathname, pages])
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
@@ -88,20 +89,32 @@ export const MobileHeader = <TChainId extends number>({
                 <HeaderStats appStats={appStats} />
               </Stack>
 
-              <SidebarSection title={APP_LINK[currentApp].label} pages={pages} />
+              <SidebarSection
+                title={APP_LINK[currentApp].label}
+                pages={pages.map(({ route, label }) => ({
+                  label: label(),
+                  route: getAppUrl(route, networkName, currentApp),
+                  isActive: route === currentRoute,
+                }))}
+              />
 
-              {Object.entries(APP_LINK)
-                .filter(([appName]) => appName != currentApp)
-                .map(([appName, { label, pages }]) => (
-                  <SidebarSection
-                    key={appName}
-                    title={label}
-                    pages={pages.map(({ route, label }) => ({
-                      label: label(),
-                      route: externalAppUrl(route, networkName, appName as AppName),
-                    }))}
-                  />
-                ))}
+              {useMemo(
+                () =>
+                  Object.entries(APP_LINK)
+                    .filter(([appName]) => appName != currentApp)
+                    .map(([appName, { label, pages }]) => (
+                      <SidebarSection
+                        key={appName}
+                        title={label}
+                        pages={pages.map(({ route, label }) => ({
+                          label: label(),
+                          route: getAppUrl(route, networkName, appName as AppName),
+                          isActive: false,
+                        }))}
+                      />
+                    )),
+                [currentApp, networkName],
+              )}
 
               {sections.map(({ title, links }) => (
                 <SidebarSection key={title} title={title} pages={links} />

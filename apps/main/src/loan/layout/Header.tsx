@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
 import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
-import { _parseRouteAndIsActive, formatNumber, isLoading } from '@ui/utils'
+import { formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { visibleNetworksList } from '@/loan/networks'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
@@ -49,10 +49,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentApp="crvusd"
-      pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.crvusd.pages, routerPathname, routerNetwork),
-        [routerNetwork, routerPathname],
-      )}
+      pages={APP_LINK.crvusd.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

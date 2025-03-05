@@ -36,14 +36,7 @@ export const DAO_ROUTES = {
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-const getAppRoot = (app: AppName) =>
-  `${
-    typeof window === 'undefined'
-      ? ['development', 'test'].includes(process.env.NODE_ENV!)
-        ? `http://localhost:${process.env.DEV_PORT || 300}`
-        : `https://curve.fi`
-      : window.location.origin
-  }/${app}`
+const getAppRoot = (app: AppName) => `/${app}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   dex: {
@@ -84,5 +77,13 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
   },
 }
 
-export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
-  app ? `${APP_LINK[app].root}${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`
+export const getAppUrl = (route: string, networkName: string, app: AppName) =>
+  `${APP_LINK[app].root}/${networkName}${route}`
+
+export const findCurrentRoute = (pathname: string, pages: { route: string }[]) => {
+  const [_app, _network, ...route] = pathname.split('/').slice(1)
+  const routePath = `/${route.join('/')}`
+  const page = pages.find((p) => p.route.startsWith(routePath))
+  console.log(page?.route, JSON.stringify(pages), { routePath, pathname })
+  return page?.route
+}
