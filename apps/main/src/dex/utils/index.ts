@@ -1,6 +1,5 @@
 import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
-import { shortenAccount } from '@ui/utils'
 import type { ChainId, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
@@ -116,9 +115,6 @@ export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => 
 
 export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
   chainId && poolId ? `${chainId}-${poolId}` : ''
-
-export const getChainSignerActiveKey = (chainId: ChainId | null, signerAddress: string | undefined) =>
-  chainId && signerAddress ? `${chainId}-${shortenAccount(signerAddress)}` : ''
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 

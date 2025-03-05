@@ -13,9 +13,8 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import { getChainSignerActiveKey, toTokenOption } from '@/dex/utils'
+import { toTokenOption } from '@/dex/utils'
 import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
-import useSelectToList from '@/dex/components/PageRouterSwap/components/useSelectToList'
 import useStore from '@/dex/store/useStore'
 import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
 import AlertBox from '@ui/AlertBox'
@@ -40,15 +39,6 @@ import { ChainId, CurveApi, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
 
-function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined, chain?: string) {
-  if (isEmpty(tokensList) || isEmpty(tokensMapper)) return []
-
-  return tokensList!
-    .map((address) => tokensMapper[address])
-    .filter((token) => !!token)
-    .map(toTokenOption(chain))
-}
-
 const QuickSwap = ({
   pageLoaded,
   params,
@@ -71,9 +61,7 @@ const QuickSwap = ({
   const curve = useStore((state) => state.curve)
   const { chainId, signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(rChainId)
-  const { selectToList } = useSelectToList(rChainId)
-  const selectFromList = useStore((state) => state.quickSwap.selectFromList[chainSignerActiveKey])
-  const chainSignerActiveKey = getChainSignerActiveKey(rChainId, signerAddress)
+  const tokenList = useStore((state) => state.quickSwap.tokenList[rChainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
@@ -85,13 +73,11 @@ const QuickSwap = ({
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const volumesMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
-  const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
-  const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
+  const updateTokenList = useStore((state) => state.quickSwap.updateTokenList)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
@@ -111,18 +97,18 @@ const QuickSwap = ({
   const fromUsdRate = usdRatesMapper[fromAddress]
   const toUsdRate = usdRatesMapper[toAddress]
 
-  const tokensFrom = useMemo(
-    () => getTokensObjList(selectFromList ?? selectToList, tokensMapper, network?.networkId),
-    [selectFromList, selectToList, tokensMapper, network?.networkId],
-  )
+  const tokens = useMemo(() => {
+    if (isEmpty(tokenList) || isEmpty(tokensMapper)) return []
 
-  const tokensTo = useMemo(
-    () => getTokensObjList(selectToList, tokensMapper, network?.networkId),
-    [selectToList, tokensMapper, network?.networkId],
-  )
+    return tokenList!
+      .map((address) => tokensMapper[address])
+      .filter((token) => !!token)
+      .map(toTokenOption(network?.networkId))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenList, tokensMapperStr, network?.networkId])
 
-  const fromToken = tokensFrom.find((x) => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokensTo.find((x) => x.address.toLocaleLowerCase() == toAddress)
+  const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const updateFormValues = useCallback(
     (
@@ -340,17 +326,10 @@ const QuickSwap = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
 
-  // fromToken list
   useEffect(() => {
-    setSelectFromList(isReady ? curve : null, selectToList)
+    updateTokenList(isReady ? curve : null, tokensMapper)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress])
-
-  // toToken list
-  useEffect(() => {
-    setSelectToList(isReady ? curve : null, tokensMapper)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, tokensMapperStr, volumesMapper])
+  }, [isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['15s'], isPageVisible)
@@ -412,7 +391,7 @@ const QuickSwap = ({
 
               <TokenSelector
                 selectedToken={fromToken}
-                tokens={tokensFrom}
+                tokens={tokens}
                 balances={userBalancesMapper}
                 disabled={isDisable || !fromToken}
                 tokenPrices={usdRatesMapper}
@@ -465,7 +444,7 @@ const QuickSwap = ({
             />
             <TokenSelector
               selectedToken={toToken}
-              tokens={tokensTo}
+              tokens={tokens}
               balances={userBalancesMapper}
               disabled={isDisable || !toToken}
               tokenPrices={usdRatesMapper}
