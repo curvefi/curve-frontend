@@ -1,7 +1,5 @@
 import { ChainOption } from '@ui-kit/features/switch-chain'
-
 import sortBy from 'lodash/sortBy'
-
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { Chain } from '@ui-kit/utils'
 import curvejsApi from '@/dao/lib/curvejs'

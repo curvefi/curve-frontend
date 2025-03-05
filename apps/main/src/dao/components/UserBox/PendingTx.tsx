@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import Spinner from 'ui/src/Spinner'
 import Box from 'ui/src/Box'
 

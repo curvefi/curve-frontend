@@ -1,5 +1,3 @@
-import React from 'react'
-
 import Icon from 'ui/src/Icon'
 
 const TableButtonFiltersMobileItemIcon = ({ color }: { color?: string }) => (

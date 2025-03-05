@@ -1,7 +1,7 @@
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { ReactNode } from 'react'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
@@ -58,7 +58,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
 

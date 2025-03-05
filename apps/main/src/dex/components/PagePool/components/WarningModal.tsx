@@ -1,14 +1,13 @@
 import { Trans } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import Checkbox from '@ui/Checkbox'
 import AlertBox from '@ui/AlertBox'
+import { Dispatch, SetStateAction } from 'react'
 
 type SharedProps = {
   confirmed: boolean
-  setConfirmed: React.Dispatch<React.SetStateAction<boolean>>
+  setConfirmed: Dispatch<SetStateAction<boolean>>
 }
 
 interface SlippageType extends SharedProps {

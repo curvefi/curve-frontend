@@ -1,11 +1,9 @@
 import type { FormValues, Route } from '@/dex/components/PageRouterSwap/types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import type { FormStatus } from '@/dex/components/PageRouterSwap/types'
-
 import isUndefined from 'lodash/isUndefined'
 import orderBy from 'lodash/orderBy'
 import uniq from 'lodash/uniq'
-
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { log, LogStatus } from '@ui-kit/lib'
 import { weiToEther } from '@ui-kit/utils'

@@ -1,10 +1,7 @@
 import type { ComboBoxSelectTokenProps } from '@/dex/components/ComboBoxSelectToken/types'
-
-import React, { useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import styled from 'styled-components'
-
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
-
 import SelectTokenListItem from '@/dex/components/ComboBoxSelectToken/ComboBoxListItem'
 import { Token } from '@/dex/types/main.types'
 
@@ -18,7 +15,7 @@ const SelectTokenListChunk = ({
   dialogClose,
   handleOnSelectChange,
 }: Pick<ComboBoxSelectTokenProps, 'testId' | 'blockchainId' | 'showBalances'> & {
-  inputRef?: React.RefObject<HTMLInputElement | null>
+  inputRef?: RefObject<HTMLInputElement | null>
   selectedToken: string
   tokens: Token[]
   dialogClose: () => void

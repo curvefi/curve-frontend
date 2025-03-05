@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import isUndefined from 'lodash/isUndefined'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 

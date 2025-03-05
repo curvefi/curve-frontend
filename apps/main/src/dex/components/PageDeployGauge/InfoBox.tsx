@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
 import AlertBox from '@ui/AlertBox'

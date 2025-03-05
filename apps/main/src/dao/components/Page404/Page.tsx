@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-
 import DocumentHead from '@/dao/layout/DocumentHead'
 import Error404 from '@ui/Error404'
 

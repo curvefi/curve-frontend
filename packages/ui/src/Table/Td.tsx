@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils'
 
 const Td = styled.td<{ $first?: boolean; $last?: boolean }>`

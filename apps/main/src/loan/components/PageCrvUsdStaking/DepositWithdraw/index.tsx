@@ -2,10 +2,8 @@ import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNa
 import { DepositWithdrawModule } from '@/loan/components/PageCrvUsdStaking/types'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-
 import useStore from '@/loan/store/useStore'
 import { SUB_NAV_ITEMS } from '@/loan/components/PageCrvUsdStaking/DepositWithdraw/constants'
-
 import SubNav from '@/loan/components/PageCrvUsdStaking/components/SubNav'
 import TransactionDetails from '@/loan/components/PageCrvUsdStaking/TransactionDetails'
 import DepositModule from '@/loan/components/PageCrvUsdStaking/DepositWithdraw/DepositModule'

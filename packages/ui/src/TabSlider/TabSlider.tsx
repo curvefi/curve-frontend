@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { SlideTab, SlideTabs } from '../TabSlide'
 import styled from 'styled-components'
 import TabSlide from '../TabSlide/SlideTabsWrapper'
@@ -62,7 +62,7 @@ const TabSlider = <T,>({ tabs, activeTab, onTabChange, isTabVisible = () => true
       <SlideTabs ref={tabsRef}>
         {tabs.map((tab, idx) => {
           if (!isTabVisible(tab)) {
-            return <React.Fragment key={tab.label}></React.Fragment>
+            return <Fragment key={tab.label}></Fragment>
           }
 
           return (

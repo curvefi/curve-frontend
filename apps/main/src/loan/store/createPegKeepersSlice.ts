@@ -1,11 +1,9 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { DetailsMapper, FormStatus } from '@/loan/components/PagePegKeepers/types'
-
 import PromisePool from '@supercharge/promise-pool'
 import { ethers } from 'ethers'
 import crvusdjsApi from '@/loan/lib/apiCrvusd'
-
 import { DEFAULT_FORM_STATUS } from '@/loan/components/PagePegKeepers/utils'
 import { PEG_KEEPERS_ADDRESSES } from '@/loan/constants'
 import { Curve, Provider } from '@/loan/types/loan.types'
@@ -44,7 +42,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
 
     fetchDetails: async (provider) => {
       const state = get()
-      let { detailsMapper, ...sliceState } = get()[sliceKey]
+      const { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
         if (Object.keys(detailsMapper).length > 0) return
@@ -58,7 +56,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
           provider,
         )
 
-        let results: DetailsMapper = {}
+        const results: DetailsMapper = {}
 
         await PromisePool.for(contracts)
           .handleError((error) => {
@@ -87,7 +85,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
     },
     fetchEstCallerProfit: async (provider, pegKeeperAddress) => {
       const state = get()
-      let { detailsMapper, ...sliceState } = get()[sliceKey]
+      const { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
         const idx = PEG_KEEPERS_ADDRESSES.indexOf(pegKeeperAddress)
@@ -105,7 +103,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
     },
     fetchUpdate: async (curve, pegKeeperAddress) => {
       const { gas, ...state } = get()
-      let { formStatus, ...sliceState } = get()[sliceKey]
+      const { formStatus, ...sliceState } = get()[sliceKey]
 
       const { provider } = useWallet.getState()
       if (!provider) return { hash: '', error: 'no provider' }

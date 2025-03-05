@@ -1,22 +1,17 @@
 import { useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
-
 import { LOCKS_LABELS } from '../constants'
-
 import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
-
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/TableRow'
 import { UserLock, UserLocksSortBy, veCrvLockType } from '@/dao/types/dao.types'
 
 interface UserLocksTableProps {
   userAddress: string
-  tableMinWidth: number
 }
 
-const UserLocksTable = ({ userAddress, tableMinWidth }: UserLocksTableProps) => {
+const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const { getUserLocks, userLocksMapper, userLocksSortBy, setUserLocksSortBy } = useStore((state) => state.user)
 
   const gridTemplateColumns = '5.375rem 1fr 10rem 8rem'

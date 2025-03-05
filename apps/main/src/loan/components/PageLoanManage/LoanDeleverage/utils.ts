@@ -1,5 +1,4 @@
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
-
 import {
   DEFAULT_DETAIL_INFO as DETAIL_INFO,
   DEFAULT_FORM_STATUS as FORM_STATUS,

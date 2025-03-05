@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'

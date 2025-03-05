@@ -1,5 +1,4 @@
 import type { ChangeEvent } from 'react'
-
 import { useCallback, useEffect, useState } from 'react'
 
 function useDebounceValue(initialVal: string, delay: number, callback: (value: string) => void) {

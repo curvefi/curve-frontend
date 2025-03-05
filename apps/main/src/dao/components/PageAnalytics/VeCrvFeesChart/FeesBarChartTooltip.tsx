@@ -1,11 +1,8 @@
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
-
 import Box from '@ui/Box'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 
@@ -69,12 +66,6 @@ const TooltipData = styled.p`
   &.negative {
     color: var(--chart-red);
   }
-`
-const TooltipDataNotAvailable = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  font-style: italic;
 `
 
 export default FeesBarChartTooltip

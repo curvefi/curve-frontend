@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 type Props = {
@@ -7,19 +7,11 @@ type Props = {
   isAlignRight?: boolean
   isBorderBottom?: boolean
   isOneLine?: boolean
-  label?: string | React.ReactNode
-  children?: React.ReactNode
+  label?: ReactNode
+  children?: ReactNode
 }
 
-const Stats = ({
-  className,
-  description,
-  isAlignRight,
-  isBorderBottom,
-  isOneLine,
-  label,
-  children,
-}: React.PropsWithChildren<Props>) => {
+const Stats = ({ className, description, isAlignRight, isBorderBottom, isOneLine, label, children }: Props) => {
   const classNames = `${className} stats`.trim()
   return (
     <DetailInfo

@@ -1,10 +1,8 @@
 import type { SetState, GetState } from 'zustand'
 import type { PersistOptions } from 'zustand/middleware/persist'
-
 import { devtools, persist } from 'zustand/middleware'
 import { create } from 'zustand'
 import merge from 'lodash/merge'
-
 import createAppSlice, { AppSlice } from '@/dao/store/createAppSlice'
 import createCacheSlice, { CacheSlice } from '@/dao/store/createCacheSlice'
 import createGasSlice, { GasSlice } from '@/dao/store/createGasSlice'
