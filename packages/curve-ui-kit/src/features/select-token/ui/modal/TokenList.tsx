@@ -138,7 +138,7 @@ export const TokenList = ({
   const tokensFiltered = useMemo(() => {
     if (!search) return tokens
 
-    const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol', 'name'], {
+    const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol'], {
       tokens: ['address'],
       other: [],
     })
