@@ -21,7 +21,7 @@ export const PageTabs = ({ pages, currentRoute, networkName, selectedApp }: Page
           label: label(),
           value: route,
           component: target ? Link : RouterLink,
-          href: `${APP_LINK[selectedApp].root}/${networkName}${route}`,
+          href: target ? route : `${APP_LINK[selectedApp].root}/${networkName}${route}`,
           target,
         })),
       [networkName, pages, selectedApp],
