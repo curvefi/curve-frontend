@@ -83,5 +83,5 @@ export const getAppUrl = (route: string, networkName: string, app: AppName) =>
 export const findCurrentRoute = (pathname: string, pages: { route: string }[]) => {
   const [_, _app, _network, ...route] = pathname.split('/')
   const routePath = `/${route.join('/')}`
-  return pages.find((p) => p.route.startsWith(routePath))?.route
+  return pages.find((p) => routePath.startsWith(p.route))?.route
 }
