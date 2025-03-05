@@ -8,7 +8,7 @@ import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber, shorte
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
-import { getEthPath, getPath } from '@/dao/utils'
+import { getEthPath } from '@/dao/utils'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 interface GaugeVotesTableProps {

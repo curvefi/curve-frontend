@@ -7,7 +7,6 @@ import {
   PoolData,
   PoolDataCache,
   PoolAlert,
-  type NetworkUrlParams,
   type PoolUrlParams,
 } from '@/dex/types/main.types'
 

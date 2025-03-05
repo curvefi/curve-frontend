@@ -5,13 +5,12 @@ import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
-import { parseNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
+import { getPath, parseNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
 import { initCurveJs, initLendApi } from '@/loan/utils/utilsCurvejs'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { ChainId, PageProps, type UrlParams, Wallet } from '@/loan/types/loan.types'
+import { ChainId, type NetworkEnum, PageProps, type UrlParams, Wallet } from '@/loan/types/loan.types'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import { getPath } from '@/dao/utils'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
@@ -126,7 +125,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
               const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
               if (foundNetwork && isActiveNetwork) {
                 console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-                navigate(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
+                navigate(getPath({ network: foundNetwork as NetworkEnum }, `/${parsedParams.restFullPathname}`))
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -176,7 +175,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
                 parsedParams,
                 error,
               )
-              navigate(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
+              navigate(getPath({ network: foundNetwork as NetworkEnum }, `/${parsedParams.restFullPathname}`))
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -242,7 +241,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-          navigate(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
+          navigate(getPath({ network: foundNetwork as NetworkEnum }, `/${parsedParams.restFullPathname}`))
         } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }

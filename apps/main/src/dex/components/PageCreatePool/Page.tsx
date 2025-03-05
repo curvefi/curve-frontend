@@ -1,5 +1,4 @@
 'use client'
-import type { NextPage } from 'next'
 import styled from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
