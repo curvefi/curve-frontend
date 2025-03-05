@@ -25,13 +25,7 @@ export type TokenSelectorModalProps = {
 
 export type Props = TokenListProps & TokenSelectorModalCallbacks & TokenSelectorModalProps
 
-export const TokenSelectorModal = ({
-  isOpen,
-  showManageList: showSettings,
-  compact,
-  onClose,
-  ...tokenListProps
-}: Props) => {
+export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, ...tokenListProps }: Props) => {
   const [isManageListOpen, openManageList, closeManageList] = useSwitch()
 
   return (
@@ -51,7 +45,7 @@ export const TokenSelectorModal = ({
           /* Settings button is temporarily disabled in the footer.
           This will be repurposed as a token list configuration page in the future.
           The wiring is kept in place to avoid removing and re-implementing later. */
-          false && showSettings && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
+          false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
         }
         sx={{
           ...(compact && {
