@@ -18,7 +18,8 @@ export const defineMuiCardHeader = (
         {
           props: { size: 'small' },
           style: {
-            minHeight: Sizing.md.desktop,
+            minHeight: 'auto',
+            maxHeight: Sizing.md.desktop,
             padding: `${Spacing.md.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
           },
         },
