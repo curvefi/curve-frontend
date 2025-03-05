@@ -52,8 +52,13 @@ const TokenSection = ({
 
   return (
     <>
-      {title && <CardHeader title={title} size="small" />}
-      <Divider />
+      {title && (
+        <>
+          <CardHeader title={title} size="small" />
+          <Divider />
+        </>
+      )}
+
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
         {displayTokens.map((token) => (
           <TokenOption
@@ -65,6 +70,7 @@ const TokenSection = ({
             onToken={() => onToken(token)}
           />
         ))}
+
         {hasMore && !showAll && (
           <Button
             fullWidth
