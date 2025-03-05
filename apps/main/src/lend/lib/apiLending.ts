@@ -1,10 +1,8 @@
 import type { LiqRange } from '@/lend/store/types'
 import type { StepStatus } from '@ui/Stepper/types'
-
 import PromisePool from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
-
 import { INVALID_ADDRESS } from '@/lend/constants'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
 import { BN, shortenAccount } from '@ui/utils'
@@ -12,38 +10,38 @@ import networks from '@/lend/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/lend/shared/config'
 import {
-  ChainId,
   Api,
-  Provider,
-  EstimatedGas,
-  MaxRecvLeverageResp,
-  LiqRangeResp,
-  DetailInfoResp,
-  DetailInfoLeverageResp,
-  ExpectedCollateral,
-  ExpectedBorrowed,
-  HeathColorKey,
-  MarketStatParameters,
   BandsBalances,
   BandsBalancesArr,
-  ParsedBandsBalances,
-  MarketStatBands,
-  MarketStatTotals,
-  MarketStatAmmBalances,
-  MarketStatCapAndAvailable,
+  ChainId,
+  DetailInfoLeverageResp,
+  DetailInfoResp,
+  EstimatedGas,
+  ExpectedBorrowed,
+  ExpectedCollateral,
+  FutureRates,
+  HeathColorKey,
+  LiqRangeResp,
   MarketMaxLeverage,
   MarketPrices,
   MarketRates,
-  MarketTotalLiquidity,
-  MarketsTotalCollateralValueMapper,
-  RewardOther,
-  RewardCrv,
   MarketRewards,
+  MarketStatAmmBalances,
+  MarketStatBands,
+  MarketStatCapAndAvailable,
+  MarketStatParameters,
+  MarketStatTotals,
+  MarketsTotalCollateralValueMapper,
+  MarketTotalLiquidity,
+  MaxRecvLeverageResp,
+  ParsedBandsBalances,
+  Provider,
+  RewardCrv,
+  RewardOther,
+  UserLoanDetails,
   UserLoanHealth,
   UserLoanState,
-  UserLoanDetails,
   UserMarketBalances,
-  FutureRates,
   Wallet,
 } from '@/lend/types/lend.types'
 
@@ -72,7 +70,7 @@ export const helpers = {
     return BN(val1).isGreaterThan(val2)
   },
   fetchCustomGasFees: async (curve: Api) => {
-    let resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
+    const resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
     try {
       resp.customFeeData = await curve.getGasInfoForL2()
       return resp
@@ -83,7 +81,7 @@ export const helpers = {
     }
   },
   fetchL2GasPrice: async (api: Api) => {
-    let resp = { l2GasPriceWei: 0, error: '' }
+    const resp = { l2GasPriceWei: 0, error: '' }
     try {
       resp.l2GasPriceWei = await api.getGasPriceFromL2()
       return resp
@@ -94,7 +92,7 @@ export const helpers = {
     }
   },
   fetchL1AndL2GasPrice: async (api: Api) => {
-    let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
+    const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
       if (networks[api.chainId].gasL2) {
         // const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([api.getGasPriceFromL2(), api.getGasPriceFromL1()])
@@ -131,7 +129,7 @@ export const helpers = {
 const market = {
   fetchStatsParameters: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsParameters', markets.length)
-    let results: { [id: string]: MarketStatParameters } = {}
+    const results: { [id: string]: MarketStatParameters } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -147,7 +145,7 @@ const market = {
   },
   fetchStatsBands: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsBands', markets.length)
-    let results: { [id: string]: MarketStatBands } = {}
+    const results: { [id: string]: MarketStatBands } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, { id }) => {
@@ -190,7 +188,7 @@ const market = {
   },
   fetchStatsAmmBalances: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsAmmBalances', markets.length)
-    let results: { [id: string]: MarketStatAmmBalances } = {}
+    const results: { [id: string]: MarketStatAmmBalances } = {}
     const useMultiCall = markets.length > 1
 
     await PromisePool.for(markets)
@@ -208,7 +206,7 @@ const market = {
   },
   fetchStatsCapAndAvailable: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsCapAndAvailable', markets.length)
-    let results: { [id: string]: MarketStatCapAndAvailable } = {}
+    const results: { [id: string]: MarketStatCapAndAvailable } = {}
     const useMultiCall = markets.length > 1
 
     await PromisePool.for(markets)
@@ -226,7 +224,7 @@ const market = {
   },
   fetchStatsTotals: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsTotals', markets.length)
-    let results: { [id: string]: MarketStatTotals } = {}
+    const results: { [id: string]: MarketStatTotals } = {}
     const useMultiCall = markets.length > 1
 
     await PromisePool.for(markets)
@@ -244,7 +242,7 @@ const market = {
   },
   fetchMarketsPrices: async (markets: OneWayMarketTemplate[]) => {
     log('fetchMarketsPrices', markets.length)
-    let results: { [id: string]: MarketPrices } = {}
+    const results: { [id: string]: MarketPrices } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -276,7 +274,7 @@ const market = {
   fetchMarketsRates: async (markets: OneWayMarketTemplate[]) => {
     log('fetchMarketsRates', markets.length)
     const useMultiCall = markets.length > 1
-    let results: { [id: string]: MarketRates } = {}
+    const results: { [id: string]: MarketRates } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -293,7 +291,7 @@ const market = {
   },
   fetchMarketsVaultsTotalLiquidity: async (markets: OneWayMarketTemplate[]) => {
     log('fetchMarketsVaultsTotalLiquidity', markets.length)
-    let results: { [id: string]: MarketTotalLiquidity } = {}
+    const results: { [id: string]: MarketTotalLiquidity } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -311,10 +309,10 @@ const market = {
   fetchMarketsVaultsRewards: async (markets: OneWayMarketTemplate[]) => {
     const useMultiCall = markets.length > 1
     log('fetchMarketsVaultsRewards', markets.length)
-    let results: { [id: string]: MarketRewards } = {}
+    const results: { [id: string]: MarketRewards } = {}
 
     await PromisePool.for(markets).process(async (market) => {
-      let resp: MarketRewards = {
+      const resp: MarketRewards = {
         rewards: {
           other: [],
           crv: [0, 0],
@@ -328,7 +326,7 @@ const market = {
       } else {
         const isRewardsOnly = market.vault.rewardsOnly()
 
-        let rewards: { other: RewardOther[]; crv: RewardCrv[] } = {
+        const rewards: { other: RewardOther[]; crv: RewardCrv[] } = {
           other: [],
           crv: [0, 0],
         }
@@ -355,7 +353,7 @@ const market = {
   },
   fetchMarketsMaxLeverage: async (markets: OneWayMarketTemplate[]) => {
     log('fetchMarketsMaxLeverage', markets.length)
-    let results: { [id: string]: MarketMaxLeverage } = {}
+    const results: { [id: string]: MarketMaxLeverage } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -372,7 +370,7 @@ const market = {
   },
   fetchMarketsTotalCollateralValue: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchMarketsTotalCollateralValue', markets.length)
-    let results: MarketsTotalCollateralValueMapper = {}
+    const results: MarketsTotalCollateralValueMapper = {}
     const useMultiCall = markets.length > 1
 
     await PromisePool.for(markets)
@@ -417,7 +415,7 @@ const market = {
 const user = {
   fetchLoansExists: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUserLoansExists', api.chainId, markets.length)
-    let results: { [userActiveKey: string]: { owmId: string; loanExists: boolean; error: string } } = {}
+    const results: { [userActiveKey: string]: { owmId: string; loanExists: boolean; error: string } } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -436,7 +434,7 @@ const user = {
   },
   fetchLoansDetailsHealth: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetailsHealth', api.chainId, markets.length)
-    let results: { [userActiveKey: string]: UserLoanHealth } = {}
+    const results: { [userActiveKey: string]: UserLoanHealth } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -456,7 +454,7 @@ const user = {
   },
   fetchLoansDetailsState: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetailsState', api.chainId, markets.length)
-    let results: { [userActiveKey: string]: UserLoanState } = {}
+    const results: { [userActiveKey: string]: UserLoanState } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -475,7 +473,7 @@ const user = {
   },
   fetchLoansDetails: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
-    let results: { [userActiveKey: string]: UserLoanDetails } = {}
+    const results: { [userActiveKey: string]: UserLoanDetails } = {}
     const { signerAddress } = api
 
     await PromisePool.for(markets)
@@ -557,7 +555,7 @@ const user = {
   },
   fetchMarketBalances: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersMarketBalances', api.chainId, markets.length)
-    let results: { [userActiveKey: string]: UserMarketBalances } = {}
+    const results: { [userActiveKey: string]: UserMarketBalances } = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -576,7 +574,7 @@ const user = {
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const resp = await market.wallet.balances()
-        let vaultSharesConverted = +resp.vaultShares > 0 ? await market.vault.convertToAssets(resp.vaultShares) : '0'
+        const vaultSharesConverted = +resp.vaultShares > 0 ? await market.vault.convertToAssets(resp.vaultShares) : '0'
         results[userActiveKey] = { ...resp, vaultSharesConverted, error: '' }
       })
 
@@ -587,7 +585,7 @@ const user = {
 const loanCreate = {
   maxLeverage: async (market: OneWayMarketTemplate, n: number) => {
     log('maxLeverage', n)
-    let resp = { n, maxLeverage: '', error: '' }
+    const resp = { n, maxLeverage: '', error: '' }
 
     try {
       resp.maxLeverage = await market.leverage.maxLeverage(n)
@@ -609,7 +607,7 @@ const loanCreate = {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
     log(isLeverage ? 'maxRecvLeverage' : 'maxRecv', userBorrowed, userCollateral, n)
-    let resp = { activeKey, maxRecv: '', error: '' }
+    const resp = { activeKey, maxRecv: '', error: '' }
 
     try {
       if (isLeverage) {
@@ -635,7 +633,7 @@ const loanCreate = {
     userCollateral = userCollateral || '0'
     debt = debt || '0'
     log('detailInfo', userCollateral, debt, n, 'futureRates', [0, debt])
-    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+    const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
         market.createLoanHealth(userCollateral, debt, n, undefined),
@@ -675,7 +673,7 @@ const loanCreate = {
     userBorrowed = userBorrowed || '0'
     debt = debt || '0'
     log('detailInfoLeverage', userCollateral, userBorrowed, debt, n, maxSlippage, 'futureRates', [0, debt])
-    let resp: {
+    const resp: {
       activeKey: string
       resp:
         | (DetailInfoLeverageResp & { expectedCollateral: ExpectedCollateral | null; routeImage: string | null })
@@ -746,8 +744,8 @@ const loanCreate = {
 
     const { minBands, maxBands } = market
     const bands = Array.from({ length: +maxBands - +minBands + 1 }, (_, i) => i + minBands)
-    let liqRangesList: LiqRange[] = []
-    let liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
+    const liqRangesList: LiqRange[] = []
+    const liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
     let sliderIdx = 0
 
     if (isLeverage) {
@@ -830,7 +828,7 @@ const loanCreate = {
     userBorrowed = userBorrowed || '0'
     debt = debt || '0'
     log(isLeverage ? 'estGasApprovalLeverage' : 'estGasApproval', userCollateral, userBorrowed, debt, n, maxSlippage)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = isLeverage
@@ -894,7 +892,7 @@ const loanBorrowMore = {
   maxRecv: async (market: OneWayMarketTemplate, activeKey: string, userCollateral: string) => {
     userCollateral = userCollateral || '0'
     log('maxRecv', userCollateral)
-    let resp = { activeKey, maxRecv: '', error: '' }
+    const resp = { activeKey, maxRecv: '', error: '' }
 
     try {
       const maxRecv = await market.borrowMoreMaxRecv(userCollateral)
@@ -916,7 +914,7 @@ const loanBorrowMore = {
     userBorrowed = userBorrowed || '0'
     log('maxRecvLeverage', userCollateral, userBorrowed)
 
-    let resp: { activeKey: string; maxRecv: MaxRecvLeverageResp | null; error: string } = {
+    const resp: { activeKey: string; maxRecv: MaxRecvLeverageResp | null; error: string } = {
       activeKey,
       maxRecv: null,
       error: '',
@@ -941,7 +939,7 @@ const loanBorrowMore = {
     userCollateral = userCollateral || '0'
     debt = debt || '0'
     log('loanBorrowMoreHealthsBandsPrices', userCollateral, debt, 'futureRates', [0, debt])
-    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+    const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
 
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
@@ -982,7 +980,7 @@ const loanBorrowMore = {
     userBorrowed = userBorrowed || '0'
     debt = debt || '0'
     log('detailInfoLeverage', userCollateral, userBorrowed, debt, 'futureRates', [0, debt], slippage)
-    let resp: {
+    const resp: {
       activeKey: string
       resp:
         | (DetailInfoLeverageResp & {
@@ -1043,7 +1041,7 @@ const loanBorrowMore = {
     userBorrowed = userBorrowed || '0'
     debt = debt || '0'
     log(isLeverage ? 'estGasApprovalLeverage' : 'estGasApproval', userCollateral, userBorrowed, debt, maxSlippage)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = isLeverage
@@ -1117,7 +1115,7 @@ const loanRepay = {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
     log('repayIsAvailableLeverage', stateCollateral, userCollateral, userBorrowed)
-    let resp: { repayIsAvailable: boolean | null; error: string } = { repayIsAvailable: null, error: '' }
+    const resp: { repayIsAvailable: boolean | null; error: string } = { repayIsAvailable: null, error: '' }
 
     try {
       resp.repayIsAvailable = await market.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed)
@@ -1137,7 +1135,7 @@ const loanRepay = {
     userStateDebt: string,
   ) => {
     log('detailInfo', userBorrowed)
-    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+    const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
 
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
@@ -1180,7 +1178,7 @@ const loanRepay = {
     userBorrowed = userBorrowed || '0'
     log('detailInfoLeverage', stateCollateral, userCollateral, userBorrowed, maxSlippage)
 
-    let resp: {
+    const resp: {
       activeKey: string
       resp:
         | (DetailInfoLeverageResp & {
@@ -1281,7 +1279,7 @@ const loanRepay = {
       isFullRepay,
       maxSlippage,
     )
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = isLeverage
@@ -1382,7 +1380,7 @@ const loanSelfLiquidation = {
   },
   estGasApproval: async (market: OneWayMarketTemplate, maxSlippage: string) => {
     log('loanSelfLiquidationEstGasApproval', market.collateral_token.symbol, maxSlippage)
-    let resp = { isApproved: false, estimatedGas: null as EstimatedGas, error: '', warning: '' }
+    const resp = { isApproved: false, estimatedGas: null as EstimatedGas, error: '', warning: '' }
 
     try {
       resp.isApproved = await market.selfLiquidateIsApproved()
@@ -1417,7 +1415,7 @@ const loanCollateralAdd = {
     address?: string,
   ) => {
     log('detailInfo', collateral)
-    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+    const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
         signerAddress ? market.addCollateralHealth(collateral, true, address) : '',
@@ -1442,7 +1440,7 @@ const loanCollateralAdd = {
   },
   estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, collateral: string) => {
     log('estGasApproval', collateral)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = await market.addCollateralIsApproved(collateral)
@@ -1480,7 +1478,7 @@ const loanCollateralAdd = {
 const loanCollateralRemove = {
   maxRemovable: async (market: OneWayMarketTemplate) => {
     log('loanCollateralRemoveMax', market.collateral_token.symbol)
-    let resp = { maxRemovable: '', error: '' }
+    const resp = { maxRemovable: '', error: '' }
 
     try {
       const maxRemovable = await market.maxRemovable()
@@ -1500,7 +1498,7 @@ const loanCollateralRemove = {
     address?: string,
   ) => {
     log('loanCollateralRemoveHealthPricesBands', market.collateral_token.symbol, collateral)
-    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+    const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
         signerAddress ? market.removeCollateralHealth(collateral, true, address) : '',
@@ -1525,7 +1523,7 @@ const loanCollateralRemove = {
   },
   estGas: async (activeKey: string, market: OneWayMarketTemplate, collateral: string) => {
     log('loanCollateralRemoveEstGas', market.collateral_token.symbol, collateral)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.estimatedGas = await market.removeCollateralEstimateGas(collateral)
@@ -1556,7 +1554,7 @@ const loanCollateralRemove = {
 const vaultDeposit = {
   max: async (market: OneWayMarketTemplate) => {
     log('vaultDepositMax', market.id)
-    let resp = { max: '', error: '' }
+    const resp = { max: '', error: '' }
 
     try {
       resp.max = await market.vault.maxDeposit()
@@ -1569,7 +1567,7 @@ const vaultDeposit = {
   },
   detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultDepositPreview', market.id, amount, 'futureRates', [amount, 0])
-    let resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
+    const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
       preview: '',
       futureRates: null,
@@ -1592,7 +1590,7 @@ const vaultDeposit = {
   },
   estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultDepositEstGas', market.id, amount)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = await market.vault.depositIsApproved(amount)
@@ -1608,7 +1606,7 @@ const vaultDeposit = {
   },
   approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
     log('vaultDepositApprove', market.id, amount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await market.vault.depositApprove(amount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1637,7 +1635,7 @@ const vaultDeposit = {
 const vaultMint = {
   max: async (market: OneWayMarketTemplate) => {
     log('vaultMintMax', market.id)
-    let resp = { max: '', error: '' }
+    const resp = { max: '', error: '' }
 
     try {
       resp.max = await market.vault.maxMint()
@@ -1650,7 +1648,7 @@ const vaultMint = {
   },
   detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultMintPreview', market.id, amount, 'futureRates', [amount, 0])
-    let resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
+    const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
       preview: '',
       futureRates: null,
@@ -1673,7 +1671,7 @@ const vaultMint = {
   },
   estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultMintEstGasApproval', market.id, amount)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = await market.vault.mintIsApproved(amount)
@@ -1689,7 +1687,7 @@ const vaultMint = {
   },
   approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
     log('vaultMintApprove', market.id, amount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await market.vault.mintApprove(amount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1718,7 +1716,7 @@ const vaultMint = {
 const vaultStake = {
   estGasApproval: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultStakeEstGasApproval', market.id, amount)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved = await market.vault.stakeIsApproved(amount)
@@ -1734,7 +1732,7 @@ const vaultStake = {
   },
   approve: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
     log('vaultStakeApprove', market.id, amount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await market.vault.stakeApprove(amount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1763,7 +1761,7 @@ const vaultStake = {
 const vaultWithdraw = {
   max: async (market: OneWayMarketTemplate) => {
     log('vaultWithdrawMax', market.id)
-    let resp = { max: '', error: '' }
+    const resp = { max: '', error: '' }
 
     try {
       resp.max = await market.vault.maxWithdraw()
@@ -1776,7 +1774,7 @@ const vaultWithdraw = {
   },
   detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultWithdrawPreviewFutureRates', market.id, amount, 'futureRates', [`-${amount}`, 0])
-    let resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
+    const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
       preview: '',
       futureRates: null,
@@ -1799,7 +1797,7 @@ const vaultWithdraw = {
   },
   estGas: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultWithdrawEstGas', market.id, amount)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.estimatedGas = await market.vault.estimateGas.withdraw(amount)
@@ -1838,7 +1836,7 @@ const vaultWithdraw = {
 const vaultRedeem = {
   max: async (market: OneWayMarketTemplate) => {
     log('vaultRedeemMax', market.id)
-    let resp = { max: '', error: '' }
+    const resp = { max: '', error: '' }
 
     try {
       resp.max = await market.vault.maxRedeem()
@@ -1851,7 +1849,7 @@ const vaultRedeem = {
   },
   detailInfo: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultRedeemPreview', market.id, amount)
-    let resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
+    const resp: { activeKey: string; preview: string; futureRates: FutureRates | null; error: string } = {
       activeKey,
       preview: '',
       futureRates: null,
@@ -1871,7 +1869,7 @@ const vaultRedeem = {
   },
   estGas: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultRedeemEstGas', market.id, amount)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.estimatedGas = await market.vault.estimateGas.redeem(amount)
@@ -1900,7 +1898,7 @@ const vaultRedeem = {
 const vaultUnstake = {
   estGas: async (activeKey: string, market: OneWayMarketTemplate, amount: string) => {
     log('vaultUnstakeEstGas', market.id, amount)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.estimatedGas = await market.vault.estimateGas.unstake(amount)
@@ -1933,7 +1931,7 @@ const vaultUnstake = {
 const vaultClaim = {
   claimable: async (userActiveKey: string, market: OneWayMarketTemplate) => {
     log('vaultClaimable', market.id)
-    let resp = {
+    const resp = {
       userActiveKey,
       claimable: { crv: '', rewards: [] as { token: string; symbol: string; amount: string }[] },
       error: '',
@@ -2013,7 +2011,7 @@ function _getWalletProvider(wallet: Wallet) {
 }
 
 function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: boolean, userStateStablecoin: string) {
-  let userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
+  const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
     tooltip: '',
@@ -2090,7 +2088,7 @@ async function _fetchChartBandBalancesData(
     } as ParsedBandsBalances
   })
 
-  let parsedBandBalances = []
+  const parsedBandBalances = []
   for (const idx in results) {
     const r = results[idx]
     parsedBandBalances.unshift(r)
@@ -2104,7 +2102,7 @@ function _filterZeroApy(others: RewardOther[]) {
 }
 
 async function approve(activeKey: string, approveFn: () => Promise<string[]>, provider: Provider) {
-  let resp = { activeKey, hashes: [] as string[], error: '' }
+  const resp = { activeKey, hashes: [] as string[], error: '' }
   try {
     resp.hashes = await approveFn()
     await helpers.waitForTransactions(resp.hashes, provider)
@@ -2117,7 +2115,7 @@ async function approve(activeKey: string, approveFn: () => Promise<string[]>, pr
 }
 
 async function submit(activeKey: string, submitFn: () => Promise<string>, provider: Provider) {
-  let resp = { activeKey, hash: '', error: '' }
+  const resp = { activeKey, hash: '', error: '' }
   try {
     resp.hash = await submitFn()
     await helpers.waitForTransaction(resp.hash, provider)
@@ -2130,7 +2128,7 @@ async function submit(activeKey: string, submitFn: () => Promise<string>, provid
 }
 
 function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | undefined>, slippage: string) {
-  let resp = { priceImpact: fulfilledValue(priceImpactResp) ?? 'N/A', isHighPriceImpact: false }
+  const resp = { priceImpact: fulfilledValue(priceImpactResp) ?? 'N/A', isHighPriceImpact: false }
 
   if (resp.priceImpact === 'N/A') return resp
 

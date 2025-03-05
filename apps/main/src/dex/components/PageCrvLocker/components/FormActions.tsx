@@ -11,7 +11,7 @@ const FormActions = ({
 }: {
   haveSigner: boolean
   loading: boolean
-  children?: ReactNode | undefined
+  children?: ReactNode
 }) => {
   const connectWallet = useStore((s) => s.updateConnectState)
   return (

@@ -1,10 +1,7 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { TITLE } from '@/lend/constants'
 import { breakpoints } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import AlertNoVaultSharesFound from '@/lend/components/AlertNoVaultSharesFound'
 import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
@@ -13,6 +10,7 @@ import DetailsConnectWallet from '@/lend/components/DetailsUser/components/Detai
 import DetailsUserSupplyStakedUnstaked from '@/lend/components/DetailsUser/components/DetailsUserSupplyStakedUnstaked'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import { ReactNode } from 'react'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, userActiveKey, market, titleMapper } = pageProps
@@ -35,7 +33,7 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
   }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey, content: React.ReactNode }[][] = [
+  const contents: { titleKey: TitleKey, content: ReactNode }[][] = [
     [
       { titleKey: TITLE.tokenSupply, content: <CellToken {...cellProps} type="borrowed" module="supply" /> },
     ],

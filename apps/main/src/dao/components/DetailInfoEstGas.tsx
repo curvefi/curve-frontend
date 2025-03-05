@@ -3,13 +3,11 @@ import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { NETWORK_TOKEN } from '@/dao/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
@@ -41,7 +39,7 @@ const DetailInfoEstGas = ({
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
-    let resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
+    const resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
     if (estimatedGas && basePlusPriority) {
       const { symbol, gasPricesUnit } = networks[chainId]
       let gasCostInWei = 0

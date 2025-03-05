@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'
 import { shortenTokenAddress } from '@/dex/utils'
@@ -8,6 +7,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import { ReactNode } from 'react'
 
 const ContractComp = ({
   address,
@@ -20,9 +20,9 @@ const ContractComp = ({
   address: string
   rChainId: ChainId
   isLargeNumber?: boolean
-  label: string | React.ReactNode
+  label: ReactNode
   showBottomBorder: boolean
-  action?: React.ReactNode
+  action?: ReactNode
 }) => {
   const network = useStore((state) => state.networks.networks[rChainId])
   const handleCopyClick = (address: string) => {

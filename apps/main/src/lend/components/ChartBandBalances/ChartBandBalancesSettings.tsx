@@ -1,5 +1,3 @@
-import React from 'react'
-
 import ChartBandBalancesSettingsContent from '@/lend/components/ChartBandBalances/ChartBandBalancesSettingsContent'
 import Icon from '@ui/Icon'
 import Popover, { Popover2Dialog } from '@ui/Popover2'

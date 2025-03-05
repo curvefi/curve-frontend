@@ -1,12 +1,9 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { TITLE } from '@/lend/constants'
 import { _showContent } from '@/lend/utils/helpers'
 import { breakpoints } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import networks from '@/lend/networks'
-
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
 import Box from '@ui/Box'
@@ -26,6 +23,7 @@ import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import { ReactNode } from 'react'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
@@ -55,7 +53,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey, content: React.ReactNode, show?: boolean }[][] = [
+  const contents: { titleKey: TitleKey, content: ReactNode, show?: boolean }[][] = [
     [
       { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },

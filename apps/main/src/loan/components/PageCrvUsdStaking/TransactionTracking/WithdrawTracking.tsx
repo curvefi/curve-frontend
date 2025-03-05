@@ -1,8 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
-
 import {
   Wrapper,
   MainTransactionStep,
@@ -13,7 +11,6 @@ import {
   StyledRCPinBottom,
   ResetButton,
 } from './styles'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Spinner from '@ui/Spinner'

@@ -2,7 +2,7 @@ import type { FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanL
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
@@ -15,7 +15,7 @@ import useStore from '@/loan/store/useStore'
 import networks from '@/loan/networks'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import AlertFormError from '@/loan/components/AlertFormError'
-import AlertInfoSelfLiquidation from '@ui/AlertBox/AlertInfoSelfLiquidation'
+import { AlertInfoSelfLiquidation } from '@ui/AlertBox'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import InputReadOnly from '@ui/InputReadOnly'
@@ -48,7 +48,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { stablecoin = '', collateral = '' } = getTokenName(llamma) ?? {}
 

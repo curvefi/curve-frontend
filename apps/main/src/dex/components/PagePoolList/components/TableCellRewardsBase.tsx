@@ -1,8 +1,5 @@
-import React from 'react'
-
 import { LARGE_APY } from '@/dex/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
 import { Chip } from '@ui/Typography'
 import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'

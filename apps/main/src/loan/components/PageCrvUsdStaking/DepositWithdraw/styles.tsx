@@ -1,7 +1,5 @@
 import styled from 'styled-components'
-
 import Icon from '@ui/Icon'
-
 import InputComp from '@/loan/components/PageCrvUsdStaking/components/InputComp'
 
 export const SelectorBox = styled.div`

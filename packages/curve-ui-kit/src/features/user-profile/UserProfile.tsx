@@ -1,6 +1,5 @@
 import Drawer from '@mui/material/Drawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
 import { Home } from './home'
 
 type Props = {

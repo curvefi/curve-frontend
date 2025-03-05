@@ -9,7 +9,6 @@
  * providing a clean interface for components to interact with gauge data.
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
-
 import * as api from '@/dex/entities/gauge/api'
 import type {
   AddRewardMutation,

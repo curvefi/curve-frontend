@@ -1,9 +1,7 @@
 import styled from 'styled-components'
-
 import networks from '@/dao/networks'
 import { copyToClipboard } from '@/dao/utils'
 import { TOP_HOLDERS } from '@/dao/constants'
-
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'

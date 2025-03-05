@@ -2,7 +2,6 @@ import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ReactNode } from 'react'
-import React from 'react'
 import type { WalletState } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@ui/Tooltip/types'
@@ -112,7 +111,7 @@ export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidati
 export type HealthMode = {
   percent: string
   colorKey: HeathColorKey
-  icon: ReactNode | null
+  icon: ReactNode
   message: string | null
   warningTitle: string
   warning: string
@@ -281,7 +280,4 @@ export type RouterProps = {
 export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<
-  TITLE,
-  { title: string | React.ReactNode; tooltip?: string | React.ReactNode; tooltipProps?: TooltipProps }
->
+export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>

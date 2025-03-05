@@ -1,10 +1,8 @@
 import type { AriaNumberFieldProps } from 'react-aria'
-
 import { useRef } from 'react'
 import styled from 'styled-components'
 import { useNumberFieldState } from 'react-stately'
 import { useLocale, useNumberField } from 'react-aria'
-
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'

@@ -1,11 +1,8 @@
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
-
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import styled from 'styled-components'
-
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
 import { Tr, Td } from '@ui/Table'
 import PoolLabel from '@/dex/components/PoolLabel'
 import TableCellBalances from '@/dex/components/PageDashboard/components/TableCellBalances'

@@ -1,12 +1,8 @@
 import type { FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import React from 'react'
-
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'

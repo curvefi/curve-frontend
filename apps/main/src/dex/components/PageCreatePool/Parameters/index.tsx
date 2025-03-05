@@ -45,7 +45,6 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     },
     tokensInPool,
     swapType,
-    poolPresetIndex,
     updateStableSwapFee,
     updateMidFee,
     updateOutFee,
@@ -62,6 +61,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     refreshInitialPrice,
     initialPrice,
   } = useStore((state) => state.createPool)
+  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex!)
   const networks = useStore((state) => state.networks.networks)
 
   const [stableFeeValue, setStableFeeValue] = useState<string>(stableSwapFee)
@@ -268,7 +268,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 {(tokensInPool.tokenA.address && tokensInPool.tokenB.address) !== '' && (
                   <Description>{t`Dollar prices are fetched from coingecko.`}</Description>
                 )}
-                <InitialPrice curve={curve} chainId={chainId} haveSigner={haveSigner} />
+                <InitialPrice curve={curve} haveSigner={haveSigner} />
               </InitialPriceWrapper>
               {checkInitialPrice && (
                 <TokenWarningBox
