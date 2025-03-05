@@ -4,8 +4,6 @@ import { RefObject } from 'react'
 import { AppName } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 
-export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
-
 export type AppPage = {
   route: string
   label: string

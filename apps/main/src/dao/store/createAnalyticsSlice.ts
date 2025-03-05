@@ -1,6 +1,5 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
-
 import produce from 'immer'
 import { Contract } from 'ethers'
 import { contractVeCRV, contractCrv } from '@/dao/store/contracts'

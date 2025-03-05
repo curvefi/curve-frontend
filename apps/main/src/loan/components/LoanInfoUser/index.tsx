@@ -1,15 +1,12 @@
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { getHealthMode } from '@/loan/components/DetailInfoHealth'
 import useStore from '@/loan/store/useStore'
-
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
 import Box from '@ui/Box'
 import PoolInfoData from '@/loan/components/ChartOhlcWrapper'
@@ -19,11 +16,11 @@ import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@/loan/types/loan.types'
 
-interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
+interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
 }
 
-const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId, titleMapper }: Props) => {
+const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const { chartExpanded } = useStore((state) => state.ohlcCharts)

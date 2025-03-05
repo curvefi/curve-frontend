@@ -2,9 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
@@ -140,7 +138,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       const loadingFormEstGas = storedFormEstGas[activeKey] ??
         storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
-      let loadingDetailInfo = cloneDeep(
+      const loadingDetailInfo = cloneDeep(
         storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
       )
       const parsedPrices = loadingLRPrices(loadingDetailInfo.prices)

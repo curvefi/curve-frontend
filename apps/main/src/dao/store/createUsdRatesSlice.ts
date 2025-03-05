@@ -1,8 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { NETWORK_TOKEN } from '@/dao/constants'
 import curvejsApi from '@/dao/lib/curvejs'
 import { CurveApi, UsdRatesMapper } from '@/dao/types/dao.types'

@@ -1,10 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
-
 import { Contract } from 'ethers'
 import produce from 'immer'
-
 import { SEVEN_DAYS } from '@/dao/constants'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
 import { contractVeCRV } from '@/dao/store/contracts'
@@ -212,7 +210,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       try {
         const pagination = 1000
         let page = 1
-        let results: { [proposalId: string]: UserProposalVoteData } = {}
+        const results: { [proposalId: string]: UserProposalVoteData } = {}
 
         while (true) {
           const ownershipVotesRes = await fetch(
@@ -512,8 +510,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...locks].reverse()
-            state[sliceKey].userLocksMapper[address].locks = reversedEntries
+            state[sliceKey].userLocksMapper[address].locks = [...locks].reverse()
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
@@ -590,8 +587,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...votes].reverse()
-            state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].userGaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
@@ -623,8 +619,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...data.gauges].reverse()
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = reversedEntries
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = [...data.gauges].reverse()
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
@@ -679,7 +674,5 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
   },
 })
-
-const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number) => usedVeCrv < futureVeCrv
 
 export default createUserSlice

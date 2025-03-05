@@ -2,8 +2,7 @@ import { Eip1193BridgeV6 } from '@/tools/Eip1193BridgeV6'
 import { ethers } from 'ethers'
 
 export function injectMetamaskProvider(win: Cypress.AUTWindow, wallet: ethers.HDNodeWallet) {
-  const eip1193BridgeProvider = new Eip1193BridgeV6(wallet)
-  win.ethereum = eip1193BridgeProvider
+  win.ethereum = new Eip1193BridgeV6(wallet)
   win.ethereum.isMetaMask = true
 }
 

@@ -1,11 +1,11 @@
 import styled from 'styled-components'
-
 import IconButton from '@ui/IconButton'
 import Icon from '@ui/Icon'
+import { MouseEvent } from 'react'
 
 type Props = {
   message: string
-  onClick?: (e?: React.MouseEvent) => void
+  onClick?: (e?: MouseEvent) => void
 }
 
 const ErrorMessage = ({ message, onClick }: Props) => (

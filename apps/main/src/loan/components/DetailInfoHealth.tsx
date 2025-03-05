@@ -1,12 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { getIsUserCloseToLiquidation } from '@/loan/utils/utilsCurvejs'
 import { parseHealthPercent } from '@/loan/utils/utilsLoan'
 import { formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import ExternalLink from '@ui/Link/ExternalLink'
@@ -43,7 +41,7 @@ const DetailInfoHealth = ({
   loading: boolean
   loanDetails: Partial<LoanDetails> | undefined
   userLoanDetails: UserLoanDetails | undefined
-  setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
+  setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const [currentHealthMode, setCurrentHealthMode] = useState(DEFAULT_HEALTH_MODE)
 

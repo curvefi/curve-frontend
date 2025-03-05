@@ -1,20 +1,19 @@
-import type { PropsWithChildren } from 'react'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BoxProps } from '@ui/Box/types'
-
 import styled from 'styled-components'
-
 import { Chip } from '@ui/Typography'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
+import { ReactNode } from 'react'
 
-type Props = {
+type Props = BoxProps & {
+  children: ReactNode
   title: string
   tooltip?: string
   tooltipProps?: TooltipProps
 }
 
-const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: PropsWithChildren<Props & BoxProps>) => (
+const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: Props) => (
   <span {...props}>
     {tooltip ? (
       <StyledChip tooltip={tooltip} tooltipProps={tooltipProps} isBlock isBold>

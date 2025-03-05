@@ -1,11 +1,8 @@
 import type { SortId } from '@/dex/components/PageDashboard/types'
-
 import styled from 'styled-components'
-
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
-
 import { Chip } from '@ui/Typography'
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'

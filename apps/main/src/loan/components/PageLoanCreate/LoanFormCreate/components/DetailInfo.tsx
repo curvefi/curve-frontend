@@ -1,12 +1,9 @@
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
-
+import { useMemo } from 'react'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-
 import DetailInfo from '@ui/DetailInfo'
 import DetailInfoLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 import DetailInfoNonLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'

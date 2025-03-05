@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom'
 import Image from 'next/image'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
-
 import { LogoImg, RCLogoText } from '@ui/images'
 
 export const CurveLogoLink = ({ className, hideLabel }: { className?: string; hideLabel?: boolean }) => (

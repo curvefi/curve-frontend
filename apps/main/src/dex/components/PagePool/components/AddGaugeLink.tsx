@@ -1,19 +1,16 @@
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
-
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import { getPath } from '@/dex/utils/utilsRouter'
 import useStore from '@/dex/store/useStore'
 import {
-  TWOCOINCRYPTOSWAP,
-  TWOCOINCRYPTOSWAPNG,
-  THREECOINCRYPTOSWAP,
   STABLESWAP,
   STABLESWAPOLD,
+  THREECOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
-
 import InteralLinkButton from '@ui/InternalLinkButton'
 import { ChainId } from '@/dex/types/main.types'
 

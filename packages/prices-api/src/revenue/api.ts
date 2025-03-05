@@ -50,9 +50,7 @@ export async function getDistributions(options?: Options) {
       (resp) => resp.distributions.map(Parsers.parseDistribution),
     )
 
-  const distributions = await paginate(fs, 1, 100)
-
-  return distributions
+  return await paginate(fs, 1, 100)
 }
 
 export async function getCowSwapSettlements(timestamp?: number, options?: Options) {

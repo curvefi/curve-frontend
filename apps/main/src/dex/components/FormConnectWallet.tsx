@@ -1,18 +1,11 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
-
+import { ReactNode } from 'react'
 import { isLoading } from '@ui/utils'
-
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import useStore from '@/dex/store/useStore'
 
-const FormConnectWallet = ({
-  loading,
-  children,
-}: React.PropsWithChildren<{
-  loading: boolean
-}>) => {
+const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
   const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
   const connectWallet = useStore((s) => s.updateConnectState)

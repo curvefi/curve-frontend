@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import useStore from '@/lend/store/useStore'
-
 import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@ui/utils'
 import { useTokenUsdRate } from '@/lend/entities/token'
 import { useOneWayMarket } from '@/lend/entities/chain'

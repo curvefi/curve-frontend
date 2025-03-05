@@ -1,10 +1,6 @@
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 
 type Props = Pick<WalletPoolData, 'claimableCrv' | 'claimableOthers' | 'claimablesTotalUsd'> & {

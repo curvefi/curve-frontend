@@ -1,18 +1,27 @@
-// @ts-nocheck
+import { cloneElement, ReactElement, ReactNode, useRef } from 'react'
 import { useOverlayTrigger } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import * as React from 'react'
 import styled from 'styled-components'
-
 import Icon from 'ui/src/Icon/Icon'
-import Popover2 from 'ui/src/Popover2/Popover2'
-import Popover2Button from 'ui/src/Popover2/Popover2Button'
+import { Popover2, Popover2Button } from 'ui/src/Popover2'
+import { PopoverProps } from './Popover2'
+import { OverlayTriggerProps } from '@react-types/overlays'
+import { DialogProps } from './Popover2Dialog'
+import { Popover2ButtonProps } from './Popover2Button'
 
-function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) {
-  let ref = React.useRef(null)
-  let state = useOverlayTriggerState(props)
-  let { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
+type Props = Partial<PopoverProps> &
+  OverlayTriggerProps &
+  Pick<Popover2ButtonProps, 'buttonVariant' | 'buttonStyles' | 'onSelectionDelete'> & {
+    label: ReactNode
+    showExpandIcon?: boolean
+    buttonProps?: Partial<Popover2ButtonProps>
+    children: ReactElement<DialogProps>
+  }
 
+function Popover2Trigger({ label, children, showExpandIcon = false, ...props }: Props) {
+  const ref = useRef(null)
+  const state = useOverlayTriggerState(props)
+  const { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
   return (
     <>
       <Popover2Button
@@ -34,7 +43,7 @@ function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) 
       </Popover2Button>
       {state.isOpen && (
         <Popover2 {...props} triggerRef={ref} state={state}>
-          {React.cloneElement(children as React.ReactElement<React.PropsWithChildren>, { ...overlayProps, ...state })}
+          {cloneElement(children, { ...overlayProps, ...state })}
         </Popover2>
       )}
     </>

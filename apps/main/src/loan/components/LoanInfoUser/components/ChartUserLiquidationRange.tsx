@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react'
-
+import { useMemo } from 'react'
 import useStore from '@/loan/store/useStore'
-
 import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { HealthMode } from '@/loan/types/loan.types'

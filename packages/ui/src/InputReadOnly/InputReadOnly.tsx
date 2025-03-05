@@ -1,14 +1,15 @@
 import styled from 'styled-components'
-import React from 'react'
+import { ReactNode } from 'react'
 
 type Size = 'md' | 'lg'
 
 type Props = {
   title: string
   size?: Size
+  children: ReactNode
 }
 
-const InputReadyOnly = ({ children, size = 'md', title }: React.PropsWithChildren<Props>) => (
+const InputReadyOnly = ({ children, size = 'md', title }: Props) => (
   <Wrapper size={size}>
     <Title>{title}</Title>
     <Content>{children}</Content>

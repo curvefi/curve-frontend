@@ -1,5 +1,4 @@
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import {
   Bar,
@@ -15,12 +14,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import React, { useMemo } from 'react'
+import { Dispatch, useMemo } from 'react'
 import styled from 'styled-components'
-
 import { BN, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
@@ -47,7 +44,7 @@ const ChartBandBalances = ({
   oraclePriceBand: number | null | undefined
   showLiquidationIndicator: boolean
   title: string
-  setBrushIndex: React.Dispatch<BrushStartEndIndex>
+  setBrushIndex: Dispatch<BrushStartEndIndex>
 }) => {
   const { borrowed_token, collateral_token } = market ?? {}
   const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)

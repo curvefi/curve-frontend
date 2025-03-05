@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 

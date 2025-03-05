@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import type { Step } from '@ui/Stepper/types'
@@ -59,7 +59,7 @@ const FormDepositStake = ({
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress

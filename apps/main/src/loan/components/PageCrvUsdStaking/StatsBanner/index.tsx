@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import { useTheme } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import { Stack } from '@mui/material'

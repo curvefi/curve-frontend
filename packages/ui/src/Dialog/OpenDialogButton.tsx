@@ -1,15 +1,14 @@
 import type { ButtonProps } from 'ui/src/Button/types'
 import type { OverlayTriggerState } from '@react-stately/overlays'
-
 import { useButton } from 'react-aria'
-import React, { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import styled from 'styled-components'
-
 import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
 import Button from 'ui/src/Button'
 import Icon from 'ui/src/Icon/Icon'
 
 interface OpenDialogButtonProps extends ButtonProps {
+  children: ReactNode
   overlayTriggerState: OverlayTriggerState
   showBorder?: boolean
   showCaret?: boolean
@@ -21,7 +20,7 @@ const OpenDialogButton = ({
   showBorder,
   showCaret,
   ...props
-}: React.PropsWithChildren<OpenDialogButtonProps>) => {
+}: OpenDialogButtonProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps } = useButton(
     { onPress: () => (getIsMobile() ? delayAction(overlayTriggerState.open) : overlayTriggerState.open()) },

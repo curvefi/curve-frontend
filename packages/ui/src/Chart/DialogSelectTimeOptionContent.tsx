@@ -1,7 +1,5 @@
 import type { TimeOptions } from './types'
-
 import styled from 'styled-components'
-
 import Button from 'ui/src/Button/Button'
 
 type Props = {

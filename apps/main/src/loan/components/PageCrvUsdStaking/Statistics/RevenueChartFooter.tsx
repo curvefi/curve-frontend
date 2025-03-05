@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import Stack from '@mui/material/Stack'
@@ -14,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 type Props = {
   timeOptions: TimeOption[]
   activeTimeOption: TimeOption
-  setActiveTimeOption: (event: React.MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
+  setActiveTimeOption: (event: MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
 }
 
 const LegendSet = ({ label, dash, legendColor }: { label: string; dash: string; legendColor: string }) => (

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import { shortenTokenAddress } from '@ui/utils'
 import networks from '@/dao/networks'
 import Box from '@ui/Box'

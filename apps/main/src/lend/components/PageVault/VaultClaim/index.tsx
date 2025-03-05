@@ -1,15 +1,12 @@
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 import type { Step } from '@ui/Stepper/types'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
@@ -34,7 +31,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const resetState = useStore((state) => state.vaultClaim.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { crv = '0', rewards = [] } = claimable?.claimable ?? {}
@@ -120,7 +117,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         },
       }
 
-      let stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
+      const stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
 
       return stepsKey.map((k) => stepsObj[k])
     },

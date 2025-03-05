@@ -1,6 +1,4 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { Chip } from 'ui/src/Typography'
 import Icon from 'ui/src/Icon'
 

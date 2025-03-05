@@ -7,8 +7,8 @@ import type { WalletState } from '@web3-onboard/core'
 import type { BaseConfig } from '@ui/utils'
 import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
-import React from 'react'
 import { IGaugePool } from '@curvefi/api/lib/pools/subClasses/gaugePool'
+import { ReactNode } from 'react'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>
@@ -291,7 +291,7 @@ export interface PoolAlert extends TooltipProps {
   isCloseOnTooltipOnly?: boolean
   isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
-  message: string | React.ReactNode
+  message: ReactNode
 }
 
 export type EstimatedGas = number | number[] | null
