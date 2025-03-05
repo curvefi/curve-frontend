@@ -40,7 +40,6 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId, CurveApi, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
-import type { Address } from '@ui-kit/utils'
 
 function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined, chain?: string) {
   if (isEmpty(tokensList) || isEmpty(tokensMapper)) return []
@@ -83,7 +82,6 @@ const QuickSwap = ({
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
-  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const tokensMapperNonSmallTvl = useStore((state) => state.tokens.tokensMapperNonSmallTvl[rChainId] ?? {})
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
@@ -357,9 +355,9 @@ const QuickSwap = ({
 
   // toToken list
   useEffect(() => {
-    setSelectToList(isReady ? curve : null, hideSmallPools ? tokensMapperNonSmallTvl : tokensMapper)
+    setSelectToList(isReady ? curve : null, tokensMapper)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hideSmallPools, isReady, tokensMapperStr, tokensMapperNonSmallTvlStr, volumesMapper])
+  }, [isReady, tokensMapperStr, volumesMapper])
 
   // re-fetch data
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['15s'], isPageVisible)
