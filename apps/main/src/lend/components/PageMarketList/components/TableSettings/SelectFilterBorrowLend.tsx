@@ -1,8 +1,6 @@
 import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '@/lend/components/PageMarketList/types'
-
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import styled from 'styled-components'
-
 import TableButtonFilters from '@ui/TableButtonFilters'
 
 const SelectFilterBorrowLend = ({
@@ -21,7 +19,7 @@ const SelectFilterBorrowLend = ({
   const updateRouteFilterKey = useCallback(
     (filterTypeKey: FilterTypeKey) => {
       const tableLabels = tableLabelsSelector[filterTypeKey]
-      let updatedSearchParams: Partial<SearchParams> = { ...searchParams }
+      const updatedSearchParams: Partial<SearchParams> = { ...searchParams }
       updatedSearchParams.filterTypeKey = filterTypeKey
 
       // change borrow key

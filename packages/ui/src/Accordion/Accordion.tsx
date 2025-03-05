@@ -1,8 +1,8 @@
 import type { AriaButtonProps } from 'react-aria'
-import * as React from 'react'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
 function Button(
   props: AriaButtonProps & {
@@ -10,9 +10,9 @@ function Button(
     isHideTopBorder?: boolean
   },
 ) {
-  let ref = React.useRef<HTMLButtonElement>(null)
-  let { buttonProps } = useButton(props, ref)
-  let { className = '', children, isHideTopBorder } = props
+  const ref = useRef<HTMLButtonElement>(null)
+  const { buttonProps } = useButton(props, ref)
+  const { className = '', children, isHideTopBorder } = props
 
   return (
     <StyledButton className={className} isHideTopBorder={isHideTopBorder} {...buttonProps} ref={ref}>
@@ -28,17 +28,15 @@ const Accordion = ({
   defaultOpen,
   isHideTopBorder,
   ...props
-}: React.PropsWithChildren<
-  AriaButtonProps & {
-    className?: string
-    btnLabel: string | React.ReactNode
-    defaultOpen?: boolean
-    isHideTopBorder?: boolean
-  }
->) => {
-  const contentRef = React.useRef<HTMLDivElement>(null)
+}: AriaButtonProps & {
+  className?: string
+  btnLabel: ReactNode
+  defaultOpen?: boolean
+  isHideTopBorder?: boolean
+}) => {
+  const contentRef = useRef<HTMLDivElement>(null)
 
-  const [show, setShow] = React.useState(defaultOpen ?? false)
+  const [show, setShow] = useState(defaultOpen ?? false)
 
   const { scrollHeight } = contentRef.current ?? {}
 
@@ -51,7 +49,7 @@ const Accordion = ({
     }
   }
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (defaultOpen && contentRef.current) {
       contentRef.current.style.maxHeight = MAX_HEIGHT
     }

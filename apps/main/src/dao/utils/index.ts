@@ -10,7 +10,7 @@ export function copyToClipboard(text: string) {
     // IE specific code path to prevent textarea being shown while dialog is visible.
     return window.clipboardData.setData('Text', text)
   } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-    var textarea = document.createElement('textarea')
+    const textarea = document.createElement('textarea')
     textarea.textContent = text
     textarea.style.position = 'fixed' // Prevent scrolling to bottom of page in MS Edge.
     document.body.appendChild(textarea)
@@ -57,6 +57,5 @@ export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'
-  const chainId = Chain[upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
-  return chainId
+  return Chain[upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
 }

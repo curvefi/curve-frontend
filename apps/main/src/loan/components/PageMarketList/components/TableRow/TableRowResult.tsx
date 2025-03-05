@@ -1,21 +1,19 @@
 import type { PageCollateralList, TableRowProps } from '@/loan/components/PageMarketList/types'
-import React, { useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { parseSearchTermMapper } from '@/loan/hooks/useSearchTermMapper'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-
 import TableRow from '@/loan/components/PageMarketList/components/TableRow/TableRow'
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
-
 import { useRouter } from 'next/navigation'
 
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
     showDetail: string
     someLoanExists: boolean
-    setShowDetail: React.Dispatch<React.SetStateAction<string>>
+    setShowDetail: Dispatch<SetStateAction<string>>
   }
 
 const TableRowResult = ({

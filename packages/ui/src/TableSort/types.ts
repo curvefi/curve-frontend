@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 export interface TableSortSelectProps<T> {
   className?: string
@@ -10,7 +10,7 @@ export interface TableSortSelectProps<T> {
 
 export type LabelsMapper = {
   [label: string]: {
-    name: string | React.ReactNode
+    name: ReactNode
     mobile?: string
   }
 }

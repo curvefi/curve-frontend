@@ -1,10 +1,8 @@
 import type { LiqRange, LiqRangeSliderIdx } from '@/loan/store/types'
 import type { FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import SliderSingleThumb from '@ui/SliderSingleThumb'
 
 const DetailInfoLiqRangeEdit = ({
@@ -17,7 +15,7 @@ const DetailInfoLiqRangeEdit = ({
   handleSelLiqRange,
 }: {
   bands: [number, number]
-  detailInfoLeverage?: React.ReactNode
+  detailInfoLeverage?: ReactNode
   liqRanges: LiqRange[]
   loading: boolean
   minBands: number | undefined

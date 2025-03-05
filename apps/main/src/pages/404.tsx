@@ -1,5 +1,4 @@
 import Error404 from '@ui/Error404'
-import type { NextPage } from 'next'
 import { t } from '@ui-kit/lib/i18n'
 
 const Page404 = () => (

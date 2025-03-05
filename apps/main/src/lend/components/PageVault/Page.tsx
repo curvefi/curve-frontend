@@ -1,6 +1,6 @@
 'use client'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@/lend/constants'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'

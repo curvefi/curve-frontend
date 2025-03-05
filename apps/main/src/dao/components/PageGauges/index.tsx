@@ -1,14 +1,10 @@
 import { SubNavItem } from '@/dao/components/SubNav/types'
-
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-
 import Box from '@ui/Box'
-
 import GaugesList from './GaugeList'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 import GaugeVoting from './GaugeVoting'

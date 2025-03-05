@@ -1,8 +1,6 @@
 import Stack from '@mui/material/Stack'
-
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
 import { UserProfileHeader } from './Header'
 import { Settings } from '../settings'
 

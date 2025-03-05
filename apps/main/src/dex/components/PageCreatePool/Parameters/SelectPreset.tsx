@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useButton } from '@react-aria/button'
@@ -16,9 +16,9 @@ import type { UrlParams } from '@/dex/types/main.types'
 import { useParams } from 'next/navigation'
 
 type Props = {
-  setStableFeeValue: React.Dispatch<React.SetStateAction<string>>
-  setMidValue: React.Dispatch<React.SetStateAction<string>>
-  setOutValue: React.Dispatch<React.SetStateAction<string>>
+  setStableFeeValue: Dispatch<SetStateAction<string>>
+  setMidValue: Dispatch<SetStateAction<string>>
+  setOutValue: Dispatch<SetStateAction<string>>
 }
 
 const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) => {

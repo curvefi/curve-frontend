@@ -1,14 +1,10 @@
 import { useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useRouter } from 'next/navigation'
-
 import useStore from '@/dao/store/useStore'
-
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 import { TOP_HOLDERS } from '@/dao/constants'
-
 import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber, shortenTokenAddress } from '@ui/utils/'
-
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'

@@ -1,10 +1,8 @@
 import type { ComboBoxStateOptions } from 'react-stately'
-
-import React, { useRef } from 'react'
+import { ChangeEvent, ReactNode, useRef } from 'react'
 import { useButton, useComboBox, useFocusRing } from 'react-aria'
 import { useComboBoxState } from '@react-stately/combobox'
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils/responsive'
 import { RCEditClear } from 'ui/src/images'
 import { StyledInput } from 'ui/src/InputComp/styles'
@@ -25,7 +23,7 @@ function ComboBox<T extends object>({
 }: ComboBoxStateOptions<T> & {
   activeKey: string
   onClose?: () => void
-  quickList?: React.ReactNode
+  quickList?: ReactNode
   listBoxHeight?: string
   isListboxOpenPermanently: boolean
   showSearch?: boolean
@@ -78,7 +76,7 @@ function ComboBox<T extends object>({
                 data-testid={`inp-search-${testId}`}
                 ref={inputRef}
                 type="search"
-                onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+                onChange={({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
                   // override inputProps onChange
                   updateFilterValue(value)
                 }}

@@ -96,7 +96,7 @@ export function useRestFullPathname() {
 }
 
 export function useRestPartialPathname() {
-  let restPathnames = window.location.pathname.substring(1).split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const lastIdx = restPathnames.length - 1
   if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
     restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]

@@ -1,7 +1,4 @@
-import React from 'react'
-
 import useStore from '@/lend/store/useStore'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 const SMALL_NUMBER = 0.0001

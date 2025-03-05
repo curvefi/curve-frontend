@@ -3,7 +3,7 @@ import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
@@ -73,7 +73,7 @@ const LoanDeleverage = ({
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
   const { userState } = userLoanDetails || {}

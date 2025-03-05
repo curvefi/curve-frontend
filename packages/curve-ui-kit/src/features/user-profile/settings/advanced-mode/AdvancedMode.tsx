@@ -1,6 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
 import Switch from '@mui/material/Switch'
-
 import { SettingLabel, Setting } from '../Setting'
 import useUserProfileStore from '../../store'
 

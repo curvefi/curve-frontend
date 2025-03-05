@@ -1,9 +1,7 @@
 import type { AriaTextFieldProps } from 'react-aria'
-
 import { useTextField } from 'react-aria'
 import { useRef } from 'react'
 import styled from 'styled-components'
-
 import InputProvider from '@ui/InputComp'
 
 interface Props extends AriaTextFieldProps {

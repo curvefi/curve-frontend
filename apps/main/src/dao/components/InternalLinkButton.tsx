@@ -4,10 +4,11 @@ import { InternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
 import { useParams, useRouter } from 'next/navigation'
 import type { UrlParams } from '@/dao/types/dao.types'
+import { ReactNode } from 'react'
 
 type InternalLinkButtonProps = {
   to: string
-  children: React.ReactNode
+  children: ReactNode
   smallSize?: boolean
 }
 

@@ -1,8 +1,5 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { shortenTokenAddress } from '@/dex/utils'
-
 import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'

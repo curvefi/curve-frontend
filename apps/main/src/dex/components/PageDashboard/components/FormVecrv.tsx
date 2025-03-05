@@ -1,6 +1,6 @@
 import type { Step } from '@ui/Stepper/types'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
@@ -45,7 +45,7 @@ const FormVecrv = () => {
   const network = useStore((state) => curve && state.networks.networks[curve.chainId])
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const parsedFormStatus = formStatus.formType === 'VECRV' ? formStatus : DEFAULT_FORM_STATUS
   const { veCrv, veCrvPct } = dashboardVecrvInfo ?? {}

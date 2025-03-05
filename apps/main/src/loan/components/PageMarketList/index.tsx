@@ -1,15 +1,12 @@
 import type { PageCollateralList, TableLabel } from '@/loan/components/PageMarketList/types'
-
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { REFRESH_INTERVAL, TITLE } from '@/loan/constants'
 import { breakpoints } from '@ui/utils'
 import { getActiveKey } from '@/loan/store/createCollateralListSlice'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody, Tr } from '@ui/Table'
 import TableHead from '@/loan/components/PageMarketList/components/TableHead/TableHead'
@@ -113,7 +110,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
     { titleKey: TITLE.totalCollateral, className: 'right', width: '260px' },
   ]
 
-  let colSpan = isMdUp ? 9 : 4
+  const colSpan = isMdUp ? 9 : 4
 
   return (
     <Wrapper>

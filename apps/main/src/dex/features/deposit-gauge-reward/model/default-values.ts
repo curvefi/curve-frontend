@@ -5,6 +5,6 @@ import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/
 export const DepositRewardDefaultValues: DepositRewardFormValues = {
   rewardTokenId: zeroAddress,
   amount: '',
-  epoch: 1 * TIME_FRAMES.WEEK,
+  epoch: TIME_FRAMES.WEEK,
   step: DepositRewardStep.APPROVAL,
 } as const

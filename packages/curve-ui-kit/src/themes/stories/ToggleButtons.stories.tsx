@@ -3,17 +3,14 @@ import { useState } from 'storybook/internal/preview-api' // Intentionally, can'
 import type { Meta, StoryObj } from '@storybook/react'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight'
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify'
-
 import FormatBoldIcon from '@mui/icons-material/FormatBold'
 import FormatItalicIcon from '@mui/icons-material/FormatItalic'
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined'
 import FormatColorFillIcon from '@mui/icons-material/FormatColorFill'
-
 import CheckIcon from '@mui/icons-material/Check'
 
 const meta: Meta<typeof ToggleButtonGroup> = {
@@ -42,7 +39,7 @@ export const Exclusive: Story = {
   render: (args) => {
     const [alignment, setAlignment] = useState('left')
 
-    const handleAlignment = (_: React.MouseEvent<HTMLElement>, newAlignment: string) => {
+    const handleAlignment = (_: MouseEvent<HTMLElement>, newAlignment: string) => {
       if (newAlignment) {
         setAlignment(newAlignment)
       }
@@ -74,7 +71,7 @@ export const Multiple: Story = {
   render: (args) => {
     const [formats, setFormats] = useState(['bold', 'italic'])
 
-    const handleFormat = (_: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    const handleFormat = (_: MouseEvent<HTMLElement>, newFormats: string[]) => {
       setFormats(newFormats)
     }
 
@@ -120,7 +117,7 @@ export const Text: Story = {
   render: (args) => {
     const [alignment, setAlignment] = useState('left')
 
-    const handleAlignment = (_: React.MouseEvent<HTMLElement>, newAlignment: string | null) => {
+    const handleAlignment = (_: MouseEvent<HTMLElement>, newAlignment: string | null) => {
       if (newAlignment) {
         setAlignment(newAlignment)
       }

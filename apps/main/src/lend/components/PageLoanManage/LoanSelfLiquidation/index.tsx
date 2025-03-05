@@ -1,7 +1,7 @@
 import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { NOFITY_MESSAGE } from '@/lend/constants'
@@ -55,7 +55,7 @@ const LoanSelfLiquidation = ({
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { state } = userDetails ?? {}

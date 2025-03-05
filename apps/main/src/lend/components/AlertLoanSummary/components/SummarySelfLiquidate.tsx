@@ -1,11 +1,8 @@
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
-
+import { useMemo } from 'react'
 import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@ui-kit/utils'
 import { format } from '@/lend/components/AlertLoanSummary/utils'
-
 import Item from '@/lend/components/AlertLoanSummary/components/Item'
 
 const SummarySelfLiquidate = ({
@@ -34,7 +31,7 @@ const SummarySelfLiquidate = ({
   }, [stateBorrowed, stateDebt, walletBorrowed])
 
   const returnToWallet = useMemo(() => {
-    let amounts: { value: string | number; symbol: string }[] = []
+    const amounts: { value: string | number; symbol: string }[] = []
 
     // return to wallet from state collateral
     if (+stateCollateral > 0) {

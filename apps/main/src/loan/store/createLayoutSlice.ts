@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import type { LayoutHeight } from '@/loan/store/types'
-
 import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
 import { PageWidthClassName } from '@/loan/types/loan.types'

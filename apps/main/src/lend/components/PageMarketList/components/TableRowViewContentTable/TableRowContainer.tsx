@@ -1,5 +1,5 @@
 import type { TableRowProps } from '@/lend/components/PageMarketList/types'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 import { helpers } from '@/lend/lib/apiLending'
 import { parseSearchTermMapper } from '@/lend/hooks/useSearchTermMapper'

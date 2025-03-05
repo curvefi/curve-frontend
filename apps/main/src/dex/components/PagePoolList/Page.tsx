@@ -1,7 +1,7 @@
 'use client'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { breakpoints } from '@ui/utils/responsive'
@@ -12,8 +12,7 @@ import useStore from '@/dex/store/useStore'
 import PoolList from '@/dex/components/PagePoolList/index'
 import Settings from '@/dex/layout/default/Settings'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 enum SEARCH {
   filter = 'filter',

@@ -1,9 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
-
 import { TITLE } from '@/lend/constants'
 import { breakpoints } from '@ui/utils'
-
 import { ContentWrapper, DarkContent } from '@/lend/components/DetailsMarket/styles'
 import Box from '@ui/Box'
 import CellCap from '@/lend/components/SharedCellData/CellCap'
@@ -15,6 +12,7 @@ import DetailsContracts from '@/lend/components/DetailsMarket/components/Details
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { MarketListType, PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import { ReactNode } from 'react'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper } = pageProps
@@ -26,7 +24,7 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
     size: 'md' as const,
   }
 
-  const contents: { titleKey: TitleKey; content: React.ReactNode }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode }[][] = [
     [
       { titleKey: TITLE.tokenSupply, content: <CellToken {...cellProps} type="borrowed" module="supply" /> },
       { titleKey: TITLE.tokenCollateral, content: <CellToken {...cellProps} type="collateral" module="supply" /> },

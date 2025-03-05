@@ -10,7 +10,6 @@ import {
   YAxis,
 } from 'recharts'
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import inRange from 'lodash/inRange'
 import styled from 'styled-components'
 import { formatNumber } from '@ui/utils'

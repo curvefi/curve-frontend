@@ -1,7 +1,6 @@
-import * as React from 'react'
-
 import Image from 'next/image'
 import styled from 'styled-components'
+import { SyntheticEvent, useState } from 'react'
 
 export type Props = {
   label: string
@@ -10,9 +9,9 @@ export type Props = {
 }
 
 const SelectNetworkItem = ({ label, src, fallbackSrc }: Props) => {
-  const [errorOccurred, setErrorOccurred] = React.useState(false)
+  const [errorOccurred, setErrorOccurred] = useState(false)
 
-  const handleOnError = (evt: React.SyntheticEvent<HTMLImageElement, Event>, fallbackSrc: string) => {
+  const handleOnError = (evt: SyntheticEvent<HTMLImageElement, Event>, fallbackSrc: string) => {
     if (errorOccurred) return
 
     setErrorOccurred(true)

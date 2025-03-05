@@ -1,8 +1,5 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
-
 import DetailInfo from '@ui/DetailInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

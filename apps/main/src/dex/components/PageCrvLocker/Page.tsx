@@ -1,7 +1,7 @@
 'use client'
 import type { FormType } from '@/dex/components/PageCrvLocker/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'

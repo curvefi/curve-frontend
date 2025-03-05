@@ -10,7 +10,6 @@ import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
-
 import InteralLinkButton from '@ui/InternalLinkButton'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { useParams } from 'next/navigation'

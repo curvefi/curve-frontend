@@ -24,11 +24,8 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
   const [activeTab, setActiveTab] = useState<TabValue>('add_reward')
   const { data: signerAddress } = useSignerAddress()
 
-  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({ chainId, poolId })
-  const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
-    chainId,
-    poolId,
-  })
+  const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
 
   const isGaugeManager = useMemo(
     () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress),

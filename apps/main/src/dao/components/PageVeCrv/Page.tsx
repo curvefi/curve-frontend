@@ -2,8 +2,10 @@
 import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { t } from '@ui-kit/lib/i18n'
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
+import { ROUTE } from '@/dao/constants'
+import { getPath } from '@/dao/utils/utilsRouter'
 import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import useStore from '@/dao/store/useStore'
 import Box, { BoxHeader } from '@ui/Box'
@@ -12,8 +14,6 @@ import IconButton from '@ui/IconButton'
 import Settings from '@/dao/layout/Settings'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
-import { getPath } from '@/dao/utils/utilsRouter'
-import { ROUTE } from '@/dao/constants'
 
 const Page = (params: VeCrvUrlParams) => {
   console.log(params)

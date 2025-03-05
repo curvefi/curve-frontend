@@ -1,8 +1,6 @@
 import Grid from '@mui/material/Grid2'
 import Typography from '@mui/material/Typography'
-
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
 import { Link, LinkProps } from './Link'
 import type { AppName } from '@ui-kit/shared/routes'
 

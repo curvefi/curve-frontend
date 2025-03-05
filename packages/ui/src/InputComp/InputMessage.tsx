@@ -1,8 +1,6 @@
 import type { InputVariant } from './types'
-
 import { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { useInputContext } from './InputProvider'
 import Icon from 'ui/src/Icon/Icon'
 
@@ -13,7 +11,7 @@ export interface InputMessageProps {
 const InputMessage = ({ message }: InputMessageProps) => {
   const { inputVariant } = useInputContext() ?? {}
 
-  let IconComp = useMemo(() => {
+  const IconComp = useMemo(() => {
     if (inputVariant === 'error') {
       return <Icon name="Misuse" size={20} />
     } else if (inputVariant === 'warning') {

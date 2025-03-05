@@ -1,5 +1,4 @@
 import type { AlertType } from '@ui/AlertBox/types'
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'

@@ -2,7 +2,7 @@
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { Contract, Interface } from 'ethers'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Box, { BoxHeader } from '@ui/Box'

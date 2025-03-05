@@ -17,7 +17,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
 
   // form tabs
   const FORM_TYPES = useMemo(() => {
-    let forms: { key: FormType; label: string }[] = [{ label: t`Create Loan`, key: 'create' }]
+    const forms: { key: FormType; label: string }[] = [{ label: t`Create Loan`, key: 'create' }]
 
     if (market?.leverage.hasLeverage()) {
       forms.push({ label: t`Leverage`, key: 'leverage' })

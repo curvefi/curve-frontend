@@ -12,7 +12,7 @@ export function getCollateralListPathname(params: UrlParams) {
 }
 
 export function getLoanCreatePathname(params: UrlParams, owmId: string, formType: string) {
-  let endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_CREATE}${formType === 'create' ? '' : `/${formType}`}`
+  const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_CREATE}${formType === 'create' ? '' : `/${formType}`}`
   return getPath(params, endPath)
 }
 
@@ -108,7 +108,7 @@ export function getRestFullPathname() {
 }
 
 export function getRestPartialPathname() {
-  let restPathnames = window.location.pathname.substring(1).split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const lastIdx = restPathnames.length - 1
   if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
     restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]

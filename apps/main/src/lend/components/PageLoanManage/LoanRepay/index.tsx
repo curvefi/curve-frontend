@@ -1,7 +1,7 @@
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import type { Step } from '@ui/Stepper/types'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
@@ -66,7 +66,7 @@ const LoanRepay = ({
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { state } = userLoanDetails || {}

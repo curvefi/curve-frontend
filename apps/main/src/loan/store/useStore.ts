@@ -1,9 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import { create } from 'zustand'
-
 import { devtools, persist } from 'zustand/middleware'
 import merge from 'lodash/merge'
-
 import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
 import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
 import createLayoutSlice, { AppLayoutSlice } from '@/loan/store/createLayoutSlice'

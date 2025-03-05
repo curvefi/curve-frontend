@@ -1,13 +1,10 @@
 import type { AriaButtonProps } from 'react-aria'
-
 import { useButton } from 'react-aria'
 import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import useStore from '@/dex/store/useStore'
-
 import { copyToClipboard } from '@/dex/lib/utils'
 import { formatNumberUsdRate } from '@ui/utils'
-
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 
@@ -16,10 +13,9 @@ interface ButtonProps extends AriaButtonProps {
 }
 
 const Button = ({ className, ...props }: ButtonProps) => {
-  let ref = useRef(null)
-  let { buttonProps, isPressed } = useButton(props, ref)
-  let { children } = props
-
+  const ref = useRef(null)
+  const { buttonProps, isPressed } = useButton(props, ref)
+  const { children } = props
   return (
     <ChipTokenCopyButton className={`${className} ${isPressed ? 'isPressed' : ''}`} {...buttonProps} ref={ref}>
       {children}

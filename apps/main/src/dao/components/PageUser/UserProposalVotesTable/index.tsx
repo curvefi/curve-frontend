@@ -1,13 +1,9 @@
 import { useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useRouter } from 'next/navigation'
-
 import useStore from '@/dao/store/useStore'
-
 import { VOTES_LABELS } from '../constants'
-
 import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
-
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import { UserProposalVoteData, UserProposalVotesSortBy } from '@/dao/types/dao.types'

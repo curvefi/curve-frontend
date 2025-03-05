@@ -1,7 +1,5 @@
 import styled from 'styled-components'
-
 import useStore from '@/dao/store/useStore'
-
 import Box from '@ui/Box'
 import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
 import GaugeHeader from './GaugeHeader'

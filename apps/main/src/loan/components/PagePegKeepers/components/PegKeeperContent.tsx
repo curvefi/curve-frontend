@@ -1,10 +1,7 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { breakpoints, formatNumber, type NumberFormatOptions } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
 import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'

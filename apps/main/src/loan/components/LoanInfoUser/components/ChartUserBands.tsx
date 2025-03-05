@@ -1,10 +1,7 @@
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
-
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
-
 import ChartBandBalances from '@/loan/components/ChartBandBalances'
 import { Llamma } from '@/loan/types/loan.types'
 

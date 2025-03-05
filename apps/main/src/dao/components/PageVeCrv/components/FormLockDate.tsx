@@ -1,11 +1,9 @@
 import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
 import { REFRESH_INTERVAL } from '@/dao/constants'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
@@ -14,7 +12,6 @@ import dayjs from '@ui-kit/lib/dayjs'
 import networks from '@/dao/networks'
 import usePageVisibleInterval from '@/dao/hooks/usePageVisibleInterval'
 import useStore from '@/dao/store/useStore'
-
 import AlertBox from '@ui/AlertBox'
 import AlertFormError from '@/dao/components/AlertFormError'
 import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
@@ -38,7 +35,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = curve ?? {}
   const haveSigner = !!signerAddress

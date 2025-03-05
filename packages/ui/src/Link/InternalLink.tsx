@@ -6,7 +6,7 @@ import RouterLink from 'next/link'
 
 export interface InternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
 
-const InternalLink = ({ children, href = '', ...props }: React.PropsWithChildren<InternalLinkProps>) => (
+const InternalLink = ({ children, href = '', ...props }: InternalLinkProps) => (
   <StyledLink {...props} href={href}>
     {children}
   </StyledLink>

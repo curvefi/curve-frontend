@@ -1,7 +1,7 @@
 'use client'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/lend/constants'
 import { getPath } from '@/lend/utils/utilsRouter'

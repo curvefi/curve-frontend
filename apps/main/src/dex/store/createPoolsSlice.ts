@@ -16,7 +16,6 @@ import type {
   TimeOptions,
 } from '@ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
-
 import { PromisePool } from '@supercharge/promise-pool'
 import countBy from 'lodash/countBy'
 import produce from 'immer'
@@ -25,7 +24,6 @@ import chunk from 'lodash/chunk'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
-
 import { INVALID_ADDRESS } from '@/dex/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
 import { log } from '@ui-kit/lib/logging'
@@ -222,7 +220,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         })
 
       // update volumeMapper
-      let volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
+      const volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
       sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
 
       //  update cache
@@ -360,7 +358,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       const { balances } = balancesResp
       const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
-      let crTokens: CurrencyReservesToken[] = []
+      const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
 
@@ -520,7 +518,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const response = await fetch(`https://prices.curve.fi/v1/chains/${networkName}`)
           const data: PricesApiPoolResponse = await response.json()
 
-          let pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
+          const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
           data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
 
           set(

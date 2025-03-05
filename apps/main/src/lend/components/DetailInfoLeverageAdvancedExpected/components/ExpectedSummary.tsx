@@ -1,12 +1,9 @@
 import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import type { BreakdownItem } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-
-import React from 'react'
 import styled from 'styled-components'
-
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
-
 import Icon from '@ui/Icon'
+import { ReactNode } from 'react'
 
 const ExpectedSummary = ({
   label,
@@ -21,7 +18,7 @@ const ExpectedSummary = ({
   DetailInfoLeverageExpectedProps,
   'swapFromAmounts' | 'swapToAmounts' | 'nonSwapAmount' | 'total' | '$minWidth'
 > & {
-  label: React.ReactNode
+  label: ReactNode
   swapFromSymbol: string
   swapToSymbol: string
 }) => (

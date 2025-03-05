@@ -11,7 +11,6 @@ import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import InternalLinkButton from '@ui/InternalLinkButton'
-import ExternalLink from '@ui/Link/ExternalLink'
 import { ROUTE } from '@/dex/constants'
 import Spinner from 'ui/src/Spinner/Spinner'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
@@ -370,34 +369,6 @@ const StyledButtonSpinner = styled(Spinner)`
   > div {
     border-color: var(--button--color) transparent transparent transparent;
   }
-`
-
-const StyledPendingSpinner = styled(Spinner)`
-  margin: var(--spacing-4) auto;
-  > div {
-    border-color: var(--page--text-color) transparent transparent transparent;
-  }
-`
-
-const Transaction = styled(ExternalLink)`
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  text-transform: none;
-  text-decoration: none;
-  background-color: var(--page--background-color);
-  padding: var(--spacing-2);
-  p {
-    font-weight: var(--bold);
-    margin-right: var(--spacing-1);
-  }
-`
-
-const StyledIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-1);
-  color: var(--page--text-color);
 `
 
 const ButtonWrapper = styled.div`

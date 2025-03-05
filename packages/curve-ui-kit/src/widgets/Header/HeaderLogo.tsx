@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
 import { LogoImg, RCLogoText } from '@ui/images'
 import type { SxProps, Theme } from '@mui/material/styles'

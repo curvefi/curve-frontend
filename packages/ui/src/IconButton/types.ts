@@ -1,8 +1,8 @@
-import * as React from 'react'
+import { ButtonHTMLAttributes } from 'react'
 
 export type Size = 'x-small' | 'small' | 'medium' | 'large' | 'x-large'
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   hidden?: boolean
   opacity?: number
   padding?: number

@@ -1,10 +1,7 @@
 import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
-
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
 import DetailInfo from '@ui/DetailInfo'

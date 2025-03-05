@@ -1,5 +1,4 @@
 'use server'
-
 import memoizee from 'memoizee'
 import curveJS from '@curvefi/api'
 import { NetworkConfig, type PoolUrlParams } from '@/dex/types/main.types'
