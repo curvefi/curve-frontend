@@ -5,20 +5,20 @@ import { AppName } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 
 export type AppPage = {
-  route: string
+  route: string // this is the full pathname to the page, including leading slash, the app name and the network
   label: string
   isActive?: boolean
   target?: '_self' | '_blank' // note this is only used for external routes
 }
 
 export type AppRoute = {
-  route: string
+  route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank' // note this is only used for external routes
 }
 
 export type AppRoutes = {
-  root: string
+  root: string // root to the application, e.g. /dex
   label: string
   pages: AppRoute[]
 }

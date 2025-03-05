@@ -192,7 +192,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       const isActiveNetwork = routerNetworkId ? (networks[routerNetworkId]?.isActiveNetwork ?? false) : false
 
       if (!isActiveNetwork) {
-        console.warn(`network in router (${routerNetworkId}) is not active, redirecting to default network`)
+        console.warn(`network in router (${JSON.stringify(params)}) is not active, redirecting to default network`)
         push(getPath({ network: 'ethereum' }, ROUTE.PAGE_SWAP))
       } else {
         if (walletName) {

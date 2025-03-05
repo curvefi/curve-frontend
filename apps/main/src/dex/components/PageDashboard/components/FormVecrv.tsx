@@ -122,16 +122,18 @@ const FormVecrv = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, lockedAmount, parsedFormStatus])
 
-  const adjustVecrvUrl = `${ROUTE.PAGE_LOCKER}${
-    +signerVecrvInfo?.lockedAmountAndUnlockTime.lockedAmount > 0
-      ? ROUTE.PAGE_LOCKER_ADJUST_CRV
-      : ROUTE.PAGE_LOCKER_CREATE
-  }`
+  const adjustVecrvUrl = getPath(
+    params,
+    `${ROUTE.PAGE_LOCKER}${
+      +signerVecrvInfo?.lockedAmountAndUnlockTime.lockedAmount > 0
+        ? ROUTE.PAGE_LOCKER_ADJUST_CRV
+        : ROUTE.PAGE_LOCKER_CREATE
+    }`,
+  )
 
   return (
     <>
-      <StyledTitle>veCRV</StyledTitle>{' '}
-      <AdjustVecrvLink href={getPath(params, adjustVecrvUrl)}>{t`Adjust veCrv`}</AdjustVecrvLink>
+      <StyledTitle>veCRV</StyledTitle> <AdjustVecrvLink href={adjustVecrvUrl}>{t`Adjust veCrv`}</AdjustVecrvLink>
       {isLockExpired ? (
         <Wrapper>
           <div>

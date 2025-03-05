@@ -7,14 +7,14 @@ import RouterLink from 'next/link'
 
 export type PageTabsProps = {
   pages: AppRoute[]
-  currentRoute: string | undefined
+  currentRoute: string | undefined | null
   selectedApp: AppName
   networkName: string
 }
 
 export const PageTabs = ({ pages, currentRoute, networkName, selectedApp }: PageTabsProps) => (
   <TabsSwitcher
-    value={currentRoute}
+    value={currentRoute ?? undefined}
     options={useMemo(
       () =>
         pages.map(({ label, route, target }) => ({

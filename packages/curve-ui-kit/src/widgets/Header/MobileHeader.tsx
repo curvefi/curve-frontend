@@ -46,7 +46,7 @@ export const MobileHeader = <TChainId extends number>({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
-  const currentRoute = useMemo(() => findCurrentRoute(pathname, pages), [pathname, pages])
+  const currentRoute = useMemo(() => pathname && findCurrentRoute(pathname, pages), [pathname, pages])
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 

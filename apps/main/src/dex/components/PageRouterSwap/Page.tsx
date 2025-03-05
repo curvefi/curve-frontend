@@ -15,8 +15,7 @@ import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const Page = (params: NetworkUrlParams) => {
   const { push } = useRouter()
@@ -45,17 +44,10 @@ const Page = (params: NetworkUrlParams) => {
   const paramsMaxSlippage = searchParams?.get('slippage')
 
   const redirect = useCallback(
-    (toAddress: string, fromAddress: string) => {
-      let pathname = ''
-      if (fromAddress && toAddress) {
-        pathname += `?from=${fromAddress}&to=${toAddress}`
-      } else if (fromAddress) {
-        pathname += `?from=${fromAddress}`
-      } else if (toAddress) {
-        pathname += `?to=${toAddress}`
-      }
-      if (pathname && pathname !== searchParams?.toString()) {
-        push(getPath(params, `${ROUTE.PAGE_SWAP}${pathname}`))
+    (to: string, from: string) => {
+      const search = from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''
+      if (search !== searchParams?.toString()) {
+        push(getPath(params, `${ROUTE.PAGE_SWAP}${search}`))
       }
     },
     [searchParams, push, params],

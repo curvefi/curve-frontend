@@ -36,7 +36,7 @@ export const DesktopHeader = <TChainId extends number>({
 }: BaseHeaderProps<TChainId>) => {
   const [selectedApp, setSelectedApp] = useState<AppName>(currentApp)
   const pathname = usePathname()
-  const currentRoute = useMemo(() => findCurrentRoute(pathname, pages), [pathname, pages])
+  const currentRoute = useMemo(() => pathname && findCurrentRoute(pathname, pages), [pathname, pages])
 
   const theme = useUserProfileStore((state) => state.theme)
   const setTheme = useUserProfileStore((state) => state.setTheme)
