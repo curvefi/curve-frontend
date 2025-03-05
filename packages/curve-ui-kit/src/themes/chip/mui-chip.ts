@@ -115,7 +115,7 @@ export const defineMuiChip = (
           '& .MuiChip-icon': { marginInline: 0 },
           '& .MuiChip-label': { paddingInline: 0 },
         },
-        '&:hover': {
+        '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
           color: Chips.Hover.Label,
