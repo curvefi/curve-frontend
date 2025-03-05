@@ -1,8 +1,8 @@
 import type { FormDetailInfo, FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
 import type { InpError } from '@/lend/components/PageLoanCreate/types'
 import type { Step } from '@ui/Stepper/types'
-import React from 'react'
 import { ExpectedBorrowed, PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import { Dispatch, SetStateAction } from 'react'
 
 export type FormValues = {
   stateCollateral: string
@@ -28,7 +28,7 @@ export type DetailProps = Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' |
   healthMode: HealthMode
   isFullRepay: boolean
   steps: Step[]
-  setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
+  setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }
 
 export type FormDetailInfoLeverage = FormDetailInfo & {

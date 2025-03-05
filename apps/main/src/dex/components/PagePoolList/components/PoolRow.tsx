@@ -7,7 +7,7 @@ import type {
 import { ROUTE } from '@/dex/constants'
 import TableRowMobile from '@/dex/components/PagePoolList/components/TableRowMobile'
 import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import useStore from '@/dex/store/useStore'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
@@ -38,7 +38,7 @@ const ROUTES = {
   deposit: ROUTE.PAGE_POOL_DEPOSIT,
 }
 
-export const PoolRow: FunctionComponent<PoolRowProps> = ({
+export const PoolRow = ({
   poolId,
   index,
   isLite,
@@ -51,7 +51,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   showDetail,
   setShowDetail,
   curve,
-}) => {
+}: PoolRowProps) => {
   const navigate = useNavigate()
   const userActiveKey = getUserActiveKey(curve)
 

@@ -2,12 +2,13 @@ import { oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/
 import { oneToken } from '@/support/helpers/tokens'
 import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend/responses'
 
-const LendingChains = ['ethereum', 'fraxtal', 'arbitrum']
+const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
+type Chain = (typeof LendingChains)[number]
 
 export const mockLendingChains = () =>
   cy.intercept('https://prices.curve.fi/v1/lending/chains', { body: { data: LendingChains } })
 
-const oneLendingPool = (chain: string, utilization: number): GetMarketsResponse['data'][number] => {
+const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['data'][number] => {
   const collateral = oneToken(chain)
   const borrowed = oneToken(chain)
   const collateralBalance = oneFloat()
@@ -57,18 +58,28 @@ const oneLendingPool = (chain: string, utilization: number): GetMarketsResponse[
   }
 }
 
-export const mockLendingVaults = () =>
+function oneLendingVaultResponse(chain: Chain) {
+  const count = oneInt(2, 20)
+  const data = [
+    ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
+    // add a pool with a fixed vault address to test campaign rewards
+    ...(chain == 'ethereum'
+      ? [{ ...oneLendingPool(chain, oneFloat()), vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b' }]
+      : []),
+  ]
+  return { chain, count: data.length, data }
+}
+
+type LendingVaultsResponse = ReturnType<typeof oneLendingVaultResponse>
+export type LendingVaultResponses = Record<Chain, LendingVaultsResponse>
+
+export const createLendingVaultResponses = (): LendingVaultResponses =>
+  Object.fromEntries(LendingChains.map((c) => [c, oneLendingVaultResponse(c)])) as LendingVaultResponses
+
+export const mockLendingVaults = (responses: LendingVaultResponses) =>
   cy.intercept('https://prices.curve.fi/v1/lending/markets/*', (req) => {
-    const chain = new URL(req.url).pathname.split('/').pop()!
-    const count = oneInt(2, 20)
-    const data = [
-      ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
-      // add a pool with a fixed vault address to test campaign rewards
-      ...(chain == 'ethereum'
-        ? [{ ...oneLendingPool(chain, oneFloat()), vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b' }]
-        : []),
-    ]
-    req.reply({ chain, count: data.length, data })
+    const chain = new URL(req.url).pathname.split('/').pop() as Chain
+    req.reply(responses[chain])
   })
 
 export const mockLendingSnapshots = () =>

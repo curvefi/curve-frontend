@@ -1,8 +1,5 @@
-import React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-
 import { formatDate, formatNumber } from 'ui/src/utils'
-
 import FeesBarChartTooltip from './FeesBarChartTooltip'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 
@@ -11,7 +8,7 @@ type FeesBarChartProps = {
   height?: number
 }
 
-const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => (
+const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
   <ResponsiveContainer width="100%" height={height} debounce={200}>
     <BarChart
       width={500}

@@ -6,6 +6,7 @@ import {
   connectMetamask,
   createJsonRpcProvider,
   createRandomWallet,
+  cyForEach,
   dataTestId,
   prepareMetamaskWallet,
   tokenBalance,
@@ -14,6 +15,7 @@ import { createSofLiquidationLoan } from './lend'
 
 // helpers
 Cypress.Commands.add('dataTestId', dataTestId)
+Cypress.Commands.add('forEach', cyForEach)
 
 // providers
 Cypress.Commands.add('createJsonRpcProvider', createJsonRpcProvider)

@@ -1,6 +1,6 @@
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
@@ -11,7 +11,7 @@ interface SandwichMenuProps {
   onItemClick: (key: string) => void
 }
 
-const SandwichMenu: React.FC<SandwichMenuProps> = ({ className, onItemClick }) => {
+const SandwichMenu = ({ className, onItemClick }: SandwichMenuProps) => {
   const state = useOverlayTriggerState({})
   const buttonRef = useRef<HTMLButtonElement>(null)
 

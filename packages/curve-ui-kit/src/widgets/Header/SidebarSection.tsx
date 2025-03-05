@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { List, ListSubheader } from '@mui/material'
 import { SidebarItem } from './SidebarItem'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
@@ -11,7 +11,7 @@ interface SidebarSectionProps {
   children?: ReactNode
 }
 
-export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, title, children }) => (
+export const SidebarSection = ({ pages, title, children }: SidebarSectionProps) => (
   <List
     subheader={
       <ListSubheader disableSticky sx={{ padding: 0 }}>

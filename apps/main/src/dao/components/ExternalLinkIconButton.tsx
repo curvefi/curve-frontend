@@ -1,13 +1,13 @@
 import styled from 'styled-components'
-
 import TooltipButton from '@ui/Tooltip'
 import { ExternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
+import { ReactNode } from 'react'
 
 type ExternalLinkIconButtonProps = {
   href: string
   tooltip: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (

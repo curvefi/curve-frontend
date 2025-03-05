@@ -2,10 +2,8 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
-
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import cloneDeep from 'lodash/cloneDeep'
-
 import { FormWarning } from '@/lend/components/AlertFormWarning'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import apiLending from '@/lend/lib/apiLending'

@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
-
 import useStore from '@/loan/store/useStore'
-
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
@@ -15,6 +13,7 @@ import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Fade from '@mui/material/Fade'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
+import { every } from 'lodash'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -37,16 +36,21 @@ const CrvUsdStaking = () => {
   } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
   const isUserScrvUsdBalanceZero =
-    signerAddress && userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
+    !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
-  const connectedUserNoScrvUsdBalance =
-    !!signerAddress && !!walletName && !!isUserScrvUsdBalanceFetched && !!isUserScrvUsdBalanceZero
+  const connectedUserNoScrvUsdBalance = [
+    signerAddress,
+    walletName,
+    isUserScrvUsdBalanceFetched,
+    isUserScrvUsdBalanceZero,
+  ].every(Boolean)
 
   // walletName indicates the wallet is cached and will begin connecting
   const showStatsBanner =
-    !walletName || connectedUserNoScrvUsdBalance || !signerAddress
-      ? true
-      : !connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero
+    !walletName ||
+    connectedUserNoScrvUsdBalance ||
+    !signerAddress ||
+    (!connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)

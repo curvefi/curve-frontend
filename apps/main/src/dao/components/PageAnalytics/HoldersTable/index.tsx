@@ -1,18 +1,15 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
-
 import { shortenTokenAddress, formatNumber, formatDate } from '@ui/utils'
 import { TOP_HOLDERS } from '@/dao/constants'
-
 import PaginatedTable, { Column } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import Box from '@ui/Box'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
 
-const TopHoldersTable: React.FC = () => {
+const TopHoldersTable = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
 
   const tableMinWidth = 41.875

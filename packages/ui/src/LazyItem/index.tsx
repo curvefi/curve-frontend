@@ -1,6 +1,5 @@
-import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
+import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.
  */
-const LazyItem: FunctionComponent<Props> = ({ children, id, style, ...props }) => {
+const LazyItem = ({ children, id, style, ...props }: Props) => {
   const ref = useRef<HTMLDivElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 

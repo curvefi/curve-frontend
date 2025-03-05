@@ -1,11 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
 import { StyledButton } from '@/dex/features/add-gauge-reward-token/ui/styled'
 import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
 import { ChainId } from '@/dex/types/main.types'
 
-export const FormActions: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const FormActions = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     formState: { isValid, isSubmitting },
     watch,

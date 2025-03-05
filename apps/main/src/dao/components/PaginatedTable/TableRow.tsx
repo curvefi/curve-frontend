@@ -1,20 +1,16 @@
 import type { InternalLinkProps } from '@ui/Link/InternalLink'
-
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import { InternalLink } from '@ui/Link'
 
 interface TableRowProps {
   holder: any
   sortBy: { key: string; label: string; order: 'asc' | 'desc' }
   labels: { key: string; label: string }[]
-  rank: number
   gridTemplateColumns?: string
 }
 
-const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, gridTemplateColumns }) => (
+const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
   <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>

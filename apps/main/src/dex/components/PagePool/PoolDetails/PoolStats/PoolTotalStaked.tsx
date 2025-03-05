@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import { formatNumber } from '@ui/utils'
 import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
@@ -11,7 +10,7 @@ interface PoolTotalStakedProps {
   poolDataCacheOrApi: PoolDataCacheOrApi
 }
 
-const PoolTotalStaked: React.FC<PoolTotalStakedProps> = ({ poolDataCacheOrApi }) => {
+const PoolTotalStaked = ({ poolDataCacheOrApi }: PoolTotalStakedProps) => {
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
 
   return (

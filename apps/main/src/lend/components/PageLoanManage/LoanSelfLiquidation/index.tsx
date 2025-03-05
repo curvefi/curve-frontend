@@ -1,12 +1,10 @@
 import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -15,7 +13,6 @@ import { formatNumber } from '@ui/utils'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import networks from '@/lend/networks'
-
 import AlertBox from '@ui/AlertBox'
 import AlertFormWarning from '@/lend/components/AlertFormWarning'
 import AlertFormError from '@/lend/components/AlertFormError'
@@ -53,7 +50,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { state } = userDetails ?? {}

@@ -1,8 +1,6 @@
 import styled from 'styled-components'
-
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 import { isReady, isLoading, isIdle } from '@/loan/components/PageCrvUsdStaking/utils'
-
 import Loader from '@ui/Loader'
 import Tooltip from '@ui/Tooltip'
 import Icon from '@ui/Icon'
@@ -19,7 +17,7 @@ type FieldValueProps = {
   }
 }
 
-const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null, symbol = null }) => {
+const FieldValue = ({ value, fetchStatus, gas, symbol }: FieldValueProps) => {
   if (gas) {
     return (
       <TransactionFieldValue>
@@ -47,7 +45,7 @@ const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null,
 
   return (
     <TransactionFieldValue>
-      {formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {symbol && symbol}
+      {formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {symbol}
     </TransactionFieldValue>
   )
 }

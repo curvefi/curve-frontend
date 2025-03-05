@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
@@ -10,7 +9,7 @@ type BackButtonProps = {
   label: string
 }
 
-const BackButton: React.FC<BackButtonProps> = ({ path, label }) => {
+const BackButton = ({ path, label }: BackButtonProps) => {
   const navigate = useNavigate()
 
   return (

@@ -1,16 +1,13 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useState, useEffect } from 'react'
-
+import { MouseEvent, useEffect, useState } from 'react'
 import useStore from '@/dao/store/useStore'
-
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import InternalLinkButton from '@/dao/components/InternalLinkButton'
-
 import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
 import TitleComp from './TitleComp'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
@@ -25,13 +22,13 @@ type Props = {
   addUserVote?: boolean
 }
 
-const SmallScreenCard: React.FC<Props> = ({
+const SmallScreenCard = ({
   gaugeData,
   userGaugeWeightVoteData,
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
-}) => {
+}: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights, gaugeListSortBy } = useStore((state) => state.gauges)
   const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
@@ -91,7 +88,7 @@ const SmallScreenCard: React.FC<Props> = ({
       </Box>
       {open && (
         <OpenContainer
-          onClick={(e?: React.MouseEvent) => {
+          onClick={(e?: MouseEvent) => {
             e?.stopPropagation()
           }}
         >
@@ -105,7 +102,7 @@ const SmallScreenCard: React.FC<Props> = ({
               <ErrorWrapper onClick={(e) => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
-                  onClick={(e?: React.MouseEvent) => {
+                  onClick={(e?: MouseEvent) => {
                     e?.stopPropagation()
                     getHistoricGaugeWeights(gaugeData.address)
                   }}
@@ -145,11 +142,6 @@ const GaugeBox = styled.div<{ addUserVote: boolean }>`
 
 const StyledTitleComp = styled(TitleComp)`
   margin-right: auto;
-`
-
-const DataComp = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
 `
 
 const GaugeDataTitle = styled.p`

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 
@@ -82,7 +81,7 @@ const LinkStyles = styled.a<StylesProps>`
       margin-left: var(--spacing-3);
     }
   }
-  &:nth-child(1) {
+  &:nth-of-type(1) {
     margin-bottom: var(--spacing-narrow);
     @media (min-width: 36.75rem) {
       margin-bottom: auto;

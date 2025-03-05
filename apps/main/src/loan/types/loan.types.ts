@@ -74,7 +74,7 @@ export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidati
 export type HealthMode = {
   percent: string
   colorKey: HeathColorKey
-  icon: ReactNode | null
+  icon: ReactNode
   message: string | null
   warningTitle: string
   warning: string
@@ -159,13 +159,10 @@ export interface CollateralAlert extends TooltipProps {
   isCloseOnTooltipOnly?: boolean
   isDeprecated?: boolean
   address: string
-  message: string | ReactNode
+  message: ReactNode
 }
 
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<
-  TITLE,
-  { title: string | ReactNode; tooltip?: string | ReactNode; tooltipProps?: TooltipProps }
->
+export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

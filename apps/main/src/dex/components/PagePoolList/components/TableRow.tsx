@@ -1,13 +1,9 @@
 import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
-
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
-
+import { Fragment, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
 import { Td, Tr, CellInPool } from '@ui/Table'
 import Box from '@ui/Box'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
@@ -41,7 +37,7 @@ export type TableRowProps = {
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }
 
-const TableRow: FunctionComponent<TableRowProps> = ({
+const TableRow = ({
   index,
   poolId,
   formValues,
@@ -59,14 +55,14 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   volumeCached,
   volume,
   handleCellClick,
-}) => {
+}: TableRowProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
       {columnKeys.map((columnKey, idx) => (
-        <React.Fragment key={`tRow${columnKey}${idx}`}>
+        <Fragment key={`tRow${columnKey}${idx}`}>
           {columnKey === COLUMN_KEYS.inPool && (
             <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
           )}
@@ -151,7 +147,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
             </Td>
           )}
-        </React.Fragment>
+        </Fragment>
       ))}
     </LazyItem>
   )
@@ -160,7 +156,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.
  */
-export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
+export const LazyItem = ({ children, id, style, ...props }: HTMLAttributes<HTMLTableRowElement>) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 

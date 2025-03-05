@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import Box from '@ui/Box'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 
@@ -9,7 +8,7 @@ type NoTableDataProps = {
   refetchData: () => void
 }
 
-const NoTableData: React.FC<NoTableDataProps> = ({ height, noDataMessage, refetchData }) => (
+const NoTableData = ({ height, noDataMessage, refetchData }: NoTableDataProps) => (
   <Wrapper height={height}>
     <ErrorMessage message={noDataMessage} onClick={refetchData} />
   </Wrapper>

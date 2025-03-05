@@ -10,7 +10,7 @@ import ErrorMessage from '@/dao/components/ErrorMessage'
 import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 import type { Locker } from '@curvefi/prices-api/dao'
 
-const TopLockers: React.FC = () => {
+const TopLockers = () => {
   const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(
     (state) => state.analytics,
   )

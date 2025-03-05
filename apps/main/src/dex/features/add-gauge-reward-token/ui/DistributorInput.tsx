@@ -1,12 +1,11 @@
 import InputProvider, { InputDebounced } from '@ui/InputComp'
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import type { Address } from 'viem'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemDistributor, SubTitle } from './styled'
 
-export const DistributorInput: React.FC<{ disabled: boolean }> = ({ disabled }) => {
+export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
   const { setValue, formState, trigger, watch } = useFormContext<AddRewardFormValues>()
   const distributorId = watch('distributorId')
 

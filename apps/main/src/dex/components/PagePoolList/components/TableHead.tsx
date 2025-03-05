@@ -1,12 +1,9 @@
 import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
-
 import { Th, Thead, TheadSortButton } from '@ui/Table'
 import Box from '@ui/Box'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
@@ -24,7 +21,7 @@ type Props = {
   updatePath(searchParams: Partial<SearchParams>): void
 }
 
-const TableHead: React.FC<Props> = ({
+const TableHead = ({
   isLite,
   isReadyRewardsApy,
   isReadyTvl,
@@ -33,7 +30,7 @@ const TableHead: React.FC<Props> = ({
   searchParams,
   tableLabels,
   updatePath,
-}) => {
+}: Props) => {
   const handleBtnClickSort = useCallback(
     (sortBy: string, sortByOrder: Order) => {
       updatePath({ sortBy: sortBy as SortKey, sortByOrder })
@@ -54,7 +51,7 @@ const TableHead: React.FC<Props> = ({
     <>
       <colgroup>
         {columnKeys.map((columnKey, idx) => (
-          <React.Fragment key={`col${columnKey}${idx}`}>
+          <Fragment key={`col${columnKey}${idx}`}>
             {columnKey === COLUMN_KEYS.inPool && <ColInPool className="row-in-pool" />}
             {columnKey === COLUMN_KEYS.poolName && <Col className="left pool" />}
             {columnKey === COLUMN_KEYS.rewardsLite && <Col className="right" />}
@@ -68,13 +65,13 @@ const TableHead: React.FC<Props> = ({
             {columnKey === COLUMN_KEYS.volume && <col className="right" />}
             {columnKey === COLUMN_KEYS.tvl && isLite && <Col className="right tvl" />}
             {columnKey === COLUMN_KEYS.tvl && !isLite && <col className="right" />}
-          </React.Fragment>
+          </Fragment>
         ))}
       </colgroup>
       <StyledThead>
         <tr>
           {columnKeys.map((columnKey, idx) => (
-            <React.Fragment key={`thead${columnKey}${idx}`}>
+            <Fragment key={`thead${columnKey}${idx}`}>
               {columnKey === COLUMN_KEYS.inPool && (
                 <th key={columnKey} className="in-pool">
                   {' '}
@@ -160,7 +157,7 @@ const TableHead: React.FC<Props> = ({
                   </StyledTheadSortButton>
                 </Th>
               )}
-            </React.Fragment>
+            </Fragment>
           ))}
         </tr>
       </StyledThead>

@@ -1,11 +1,8 @@
 import type { Seed } from '@/dex/components/PagePool/types'
-
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { formatNumber } from '@ui/utils'
-
 import AlertBox from '@ui/AlertBox'
 import { PoolData } from '@/dex/types/main.types'
 

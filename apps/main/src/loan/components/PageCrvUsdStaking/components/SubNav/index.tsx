@@ -1,7 +1,5 @@
 import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNav/types'
-
 import styled from 'styled-components'
-
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 
@@ -13,7 +11,7 @@ interface SubNavProps {
   setNavChange: (key: string) => void
 }
 
-const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested, className }) => (
+const SubNav = ({ activeKey, navItems, setNavChange, nested, className }: SubNavProps) => (
   <NavWrapper nested={nested} className={className}>
     {navItems.map((item) => (
       <ButtonWrapper key={item.key}>

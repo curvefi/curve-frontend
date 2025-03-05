@@ -33,7 +33,7 @@ type SliceState = {
   navigationIndex: number
   swapType: SwapType
   advanced: boolean
-  poolPresetIndex: number
+  poolPresetIndex: number | null
   tokensInPool: {
     tokenAmount: number
     metaPoolToken: boolean
@@ -74,7 +74,7 @@ type SliceState = {
   }
   poolName: string
   poolSymbol: string
-  assetType: string
+  assetType: string | null
   implementation: ImplementationId
   validation: {
     poolType: boolean
@@ -98,7 +98,7 @@ type SliceState = {
 export type CreatePoolSlice = {
   createPool: SliceState & {
     setNavigationIndex: (index: number) => void
-    updateSwapType: (swaptype: string, chainId: ChainId) => void
+    updateSwapType: (type: SwapType, chainId: ChainId) => void
     updateAdvanced: (boolean: boolean) => void
     updatePoolPresetIndex: (presetIndex: number) => void
     resetPoolPresetIndex: () => void
@@ -115,12 +115,11 @@ export type CreatePoolSlice = {
       tokenH: TokenState,
     ) => void
     clearToken: (tokenId: TokenId) => void
-    updateStandardToggle: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => void
     updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => void
-    updateInitialPrice: (priceA: number, priceB: number, priceC?: number) => void
+    updateInitialPrice: (priceA: number, priceB: number, priceC: number) => void
     updateTokenPrice: (tokenId: TokenId, price: number) => void
     refreshInitialPrice: (curve: CurveApi) => void
     updateStableSwapFee: (fee: string) => void
@@ -151,7 +150,7 @@ export type CreatePoolSlice = {
 export const DEFAULT_CREATE_POOL_STATE = {
   navigationIndex: 0,
   advanced: false,
-  swapType: '',
+  swapType: '' as const,
   poolPresetIndex: null,
   tokensInPool: {
     tokenAmount: 2,
@@ -262,13 +261,13 @@ export const DEFAULT_CREATE_POOL_STATE = {
     txSuccess: false,
     transaction: null,
     txLink: '',
-    fetchPoolState: '',
+    fetchPoolStatus: '',
     poolAddress: '',
     poolId: '',
     lpTokenAddress: '',
     errorMessage: null,
   },
-}
+} as const satisfies SliceState
 
 const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   const initialPrice = new BigNumber(tokenB).div(new BigNumber(tokenA)).toNumber()
@@ -412,7 +411,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       tokenG: TokenState,
       tokenH: TokenState,
     ) => {
-      let tokensInPoolUpdates = {
+      const tokensInPoolUpdates = {
         ...get().createPool.tokensInPool,
         tokenA,
         tokenB,
@@ -441,7 +440,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         ngAssetType: tokenB.basePool ? 0 : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
       }
 
-      let initialPriceUpdates = {
+      const initialPriceUpdates = {
         ...get().createPool.initialPrice,
       }
 
@@ -640,13 +639,13 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.createPool.parameters.outFee = fee
         }),
       ),
-    updateStableA: (value: number) =>
+    updateStableA: (value: number | string) =>
       set(
         produce((state) => {
           state.createPool.parameters.stableA = new BigNumber(value).toString()
         }),
       ),
-    updateCryptoA: (value: number) =>
+    updateCryptoA: (value: number | string) =>
       set(
         produce((state) => {
           state.createPool.parameters.cryptoA = new BigNumber(value).toString()

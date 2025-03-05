@@ -1,13 +1,10 @@
 import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
-
 import { t } from '@ui-kit/lib/i18n'
-import React, { FunctionComponent, useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 import styled from 'styled-components'
-
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { formatNumber } from '@ui/utils'
-
 import { CellInPool } from '@ui/Table'
 import { LazyItem, type TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
 import Button from '@ui/Button'
@@ -28,12 +25,12 @@ import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
   themeType: ThemeKey
-  setShowDetail: React.Dispatch<React.SetStateAction<string>>
+  setShowDetail: Dispatch<SetStateAction<string>>
   tableLabel: PoolListTableLabel
   campaignRewardsMapper: CampaignRewardsMapper
 }
 
-const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
+const TableRowMobile = ({
   index,
   columnKeys,
   formValues,
@@ -54,7 +51,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   handleCellClick,
   setShowDetail,
   campaignRewardsMapper,
-}) => {
+}: TableRowMobileProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId

@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useState } from 'react'
-
 import useStore from '@/dao/store/useStore'
-
 import Box from '@ui/Box'
 import UserStats from './UserStats'
 import UserHeader from './UserHeader'
@@ -20,7 +18,7 @@ type UserPageProps = {
   }
 }
 
-const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) => {
+const UserPage = ({ routerParams: { rUserAddress } }: UserPageProps) => {
   const {
     veCrvHolders: { allHolders, fetchStatus },
     getVeCrvHolders,
@@ -78,7 +76,7 @@ const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) =
           {activeNavKey === 'gauge_votes' && (
             <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
           )}
-          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} />}
         </Container>
       </Box>
     </Wrapper>

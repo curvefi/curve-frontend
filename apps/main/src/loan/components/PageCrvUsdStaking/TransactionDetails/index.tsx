@@ -1,18 +1,14 @@
 import styled from 'styled-components'
 import { useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/loan/store/useStore'
 import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
 import { formatNumber } from '@ui/utils'
 import { isLoading, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
-
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
-
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import FieldValue from '@/loan/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import Collapse from '@mui/material/Collapse'
@@ -21,7 +17,7 @@ type TransactionDetailsProps = {
   className?: string
 }
 
-const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
+const TransactionDetails = ({ className }: TransactionDetailsProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { signerAddress } = useWallet()
   const { preview, scrvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
@@ -92,13 +88,6 @@ const TransactionFieldLabel = styled.p`
   opacity: 0.5;
 `
 
-const TransactionFieldValue = styled.div`
-  font-size: var(--font-size-2);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
 const ToggleField = styled(TransactionField)<{ isOpen: boolean }>`
   cursor: pointer;
   ${({ isOpen }) => isOpen && 'border-bottom: 1px solid var(--gray-500a25)'};
@@ -111,17 +100,8 @@ const ToggleTitle = styled.div`
   font-weight: var(--bold);
 `
 
-const ToggleValue = styled.div`
-  font-size: var(--font-size-2);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
 const StyledIcon = styled(Icon)`
   margin-left: var(--spacing-1);
 `
-
-const StyledDetailInfoSlippageTolerance = styled(DetailInfoSlippageTolerance)``
 
 export default TransactionDetails

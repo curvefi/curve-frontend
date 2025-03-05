@@ -1,6 +1,6 @@
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/dex/store/useStore'
@@ -15,11 +15,14 @@ import Contracts from '@/dex/components/PagePool/PoolDetails/PoolStats/Contracts
 import PoolParametersA from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
 import type { PoolParameters } from '@/dex/types/main.types'
 
-const PoolParameters: React.FC<
-  {
-    parameters: PoolParameters
-  } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
-> = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
+const PoolParameters = ({
+  parameters,
+  poolData,
+  poolDataCacheOrApi,
+  routerParams,
+}: {
+  parameters: PoolParameters
+} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
   const { rChainId, rPoolId } = routerParams
   const { pricesApi } = useStore((state) => state.networks.networks[rChainId])
   const isLite = useStore((state) => state.networks.networks[rChainId]?.isLite)

@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import SmallLabel from '@/dao/components/SmallLabel'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import VoteCountdown from '@/dao/components/VoteCountdown'
@@ -12,7 +11,7 @@ type ProposalHeaderProps = {
   voteType: string
 }
 
-const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteType }) => (
+const ProposalHeader = ({ proposal, voteId, voteType }: ProposalHeaderProps) => (
   <Wrapper>
     <SmallLabel
       className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${

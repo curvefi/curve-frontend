@@ -1,25 +1,24 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { ROUTE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
-
 import InternalLink from '@ui/Link/InternalLink'
 import TextCaption from '@ui/TextCaption'
+import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
 const TableCellMarketsTotalDebt = () => {
-  const totalSupplyResp = useStore((state) => state.crvusdTotalSupply)
+  const chainId = useStore((state) => state.curve?.chainId)
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
-  const { total, minted, pegKeepersDebt, error } = totalSupplyResp ?? {}
+  const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}
 
   const formattedDebtFraction =
-    total === '' && minted === '' ? '-' : formatNumber(((+total - +minted) / +total) * 100, FORMAT_OPTIONS.PERCENT)
+    !total || !minted ? '-' : formatNumber(((+total - +minted) / +total) * 100, FORMAT_OPTIONS.PERCENT)
 
   return (
     <>
-      {typeof totalSupplyResp === 'undefined' ? null : error ? (
+      {typeof crvusdTotalSupply === 'undefined' ? null : error ? (
         '?'
       ) : (
         <StyledTotalSupply>

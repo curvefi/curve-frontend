@@ -1,6 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { copyToClipboard } from '@/dex/lib/utils'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'

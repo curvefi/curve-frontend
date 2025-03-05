@@ -35,6 +35,15 @@ export const DAO_ROUTES = {
 export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
+export const getAppRoot = (app: AppName) =>
+  `${
+    typeof window === 'undefined'
+      ? ['development', 'test'].includes(process.env.NODE_ENV!)
+        ? `http://localhost:${process.env.DEV_PORT || 300}`
+        : `https://curve.fi`
+      : window.location.origin
+  }/${app === 'main' ? 'dex' : app}`
+
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {
     root: getAppRoot('main'),
@@ -72,30 +81,6 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
       { route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
   },
-}
-
-export function getAppRoot(app: AppName, developmentPort = 3000) {
-  const path = app === 'main' ? 'dex' : app
-  if (process.env.NODE_ENV === 'development') {
-    return `http://localhost:${developmentPort}/${path}`
-  }
-  if (typeof window !== 'undefined') {
-    const { host } = window.location
-    if (host.startsWith('staging')) {
-      return `https://staging.curve.fi/${path}`
-    }
-    if (host.endsWith('vercel.app')) {
-      const branchPrefix = /curve-dapp(-lend|-crvusd|-dao)?-(.*)-curvefi.vercel.app/.exec(host)?.[2]
-      if (branchPrefix) {
-        return `https://curve-dapp-${branchPrefix}-curvefi.vercel.app/${path}`
-      }
-      return `https://${host}/${path}`
-    }
-    if (!host.endsWith('curve.fi')) {
-      console.warn(`Unexpected host: ${host}`)
-    }
-  }
-  return `https://curve.fi/${path}`
 }
 
 export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>

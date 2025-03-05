@@ -1,6 +1,5 @@
 import type { ImplementationId } from '@/dex/components/PageCreatePool/types'
 import BigNumber from 'bignumber.js'
-
 import { t } from '@ui-kit/lib/i18n'
 import { NativeToken } from '@/dex/types/main.types'
 
@@ -70,7 +69,7 @@ export const POOL_PRESETS: PRESETS = {
       stableSwapFee: '0.01',
       stableA: '1000',
       maExpTime: '600',
-      offpegFeeMultiplier: '5',
+      offpegFeeMultiplier: '10',
     },
   },
   1: {
@@ -82,7 +81,7 @@ export const POOL_PRESETS: PRESETS = {
       stableSwapFee: '0.04',
       stableA: '100',
       maExpTime: '600',
-      offpegFeeMultiplier: '2',
+      offpegFeeMultiplier: '20',
     },
   },
   2: {
@@ -94,7 +93,7 @@ export const POOL_PRESETS: PRESETS = {
       stableSwapFee: '0.01',
       stableA: '500',
       maExpTime: '600',
-      offpegFeeMultiplier: '5',
+      offpegFeeMultiplier: '10',
     },
   },
   // cryptoswap
@@ -228,11 +227,6 @@ export const IMPLEMENTATION_IDS = (
       description: t`A more gas-efficient implementation that can be used when every token in the pool has 18 decimals and returns True on success / reverts on error`,
     },
   }
-}
-
-export const DEFAULT_INITIAL_PRICE = {
-  min: 0.000000000001,
-  max: 1000000000000,
 }
 
 // MIN-MAX PARAMS

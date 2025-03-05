@@ -16,7 +16,7 @@ import {
 } from '@/loan/components/PageLlamaMarkets/columns'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
 export const LendingMarketsTable = ({
   onReload,
@@ -57,7 +57,7 @@ export const LendingMarketsTable = ({
       <DataTable
         table={table}
         headerHeight={headerHeight}
-        rowHeight="3xl"
+        rowSx={{ height: { ...Sizing['3xl'], mobile: 77 } }} // the 3xl is too small in mobile (64px)
         emptyText={isError ? t`Could not load markets` : t`No markets found`}
       >
         <TableFilters

@@ -1,7 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-
 import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
-
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 
 interface CampaignRewardsBannerProps {
@@ -9,7 +7,7 @@ interface CampaignRewardsBannerProps {
   supplyAddress: string
 }
 
-const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ borrowAddress, supplyAddress }) => {
+const CampaignRewardsBanner = ({ borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
   const supplyCampaignRewardsPool = useCampaignRewardsMapper()[supplyAddress]
   const borrowCampaignRewardsPool = useCampaignRewardsMapper()[borrowAddress]
 

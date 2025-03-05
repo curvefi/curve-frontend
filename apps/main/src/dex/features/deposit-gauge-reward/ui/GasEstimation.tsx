@@ -1,4 +1,3 @@
-import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
@@ -6,10 +5,7 @@ import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from 
 import { FlexContainer } from '@ui/styled-containers'
 import { ChainId } from '@/dex/types/main.types'
 
-export const GasEstimation: React.FC<{
-  chainId: ChainId
-  poolId: string
-}> = ({ chainId, poolId }) => {
+export const GasEstimation = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {
     watch,
     formState: { isValid },

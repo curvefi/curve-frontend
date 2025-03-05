@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
@@ -27,7 +26,7 @@ type RewardsProps = {
   rewardsApy: RewardsApy | undefined
 }
 
-const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
+const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const campaignRewardsMapper = useCampaignRewardsMapper()

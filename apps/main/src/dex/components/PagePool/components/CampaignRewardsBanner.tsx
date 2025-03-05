@@ -1,15 +1,13 @@
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
-
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 
 interface CampaignRewardsBannerProps {
   address: string
 }
 
-const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ address }) => {
+const CampaignRewardsBanner = ({ address }: CampaignRewardsBannerProps) => {
   const campaignRewardsPool = useCampaignRewardsMapper()[address]
 
   if (!campaignRewardsPool) return null

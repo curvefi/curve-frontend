@@ -1,5 +1,4 @@
 import type { Params } from 'react-router'
-
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { useMemo } from 'react'
@@ -118,7 +117,7 @@ export function useRestFullPathname() {
 }
 
 export function useRestPartialPathname() {
-  let restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
   const lastIdx = restPathnames.length - 1
   if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
     restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]

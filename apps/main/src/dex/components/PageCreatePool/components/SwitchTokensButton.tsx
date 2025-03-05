@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dex/store/useStore'
 import {
   TOKEN_A,
@@ -12,14 +11,12 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
-
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 
 type Props = {
   curve: CurveApi
-  chainId: ChainId
   from:
     | typeof TOKEN_A
     | typeof TOKEN_B
@@ -40,7 +37,7 @@ type Props = {
   className?: string
 }
 
-const SwitchTokensButton = ({ curve, chainId, from, to, disabled, className }: Props) => {
+const SwitchTokensButton = ({ curve, from, to, disabled, className }: Props) => {
   const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
     (state) => state.createPool.tokensInPool,
   )

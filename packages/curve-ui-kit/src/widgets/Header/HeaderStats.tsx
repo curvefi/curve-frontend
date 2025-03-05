@@ -1,4 +1,3 @@
-import { FunctionComponent } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
@@ -6,7 +5,7 @@ export type HeaderStatsProps = {
   appStats?: { label: string; value: string }[]
 }
 
-export const HeaderStats: FunctionComponent<HeaderStatsProps> = ({ appStats }) =>
+export const HeaderStats = ({ appStats }: HeaderStatsProps) =>
   appStats?.map(({ label, value }) => (
     <Box key={label} display="inline-flex" alignItems="baseline">
       {/* add ellipsis*/}

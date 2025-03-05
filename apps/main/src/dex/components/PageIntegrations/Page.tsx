@@ -1,15 +1,12 @@
 import type { NextPage } from 'next'
-
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
-
 import { ExternalLink } from '@ui/Link'
 import DocumentHead from '@/dex/layout/default/DocumentHead'
 import IntegrationsComp from '@/dex/components/PageIntegrations/index'

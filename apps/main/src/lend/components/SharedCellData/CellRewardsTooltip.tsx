@@ -1,8 +1,7 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import TextCaption from '@ui/TextCaption'
+import { Fragment } from 'react'
 
 const CellRewardsTooltip = ({
   className = '',
@@ -57,10 +56,10 @@ const CellRewardsTooltip = ({
         <span>{t`Incentives APR`}</span>{' '}
         <span>
           {tooltipValues.incentives.map((incentive) => (
-            <React.Fragment key={incentive}>
+            <Fragment key={incentive}>
               {incentive}
               <br />
-            </React.Fragment>
+            </Fragment>
           ))}
         </span>
       </TooltipItem>

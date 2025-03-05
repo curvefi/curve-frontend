@@ -1,10 +1,8 @@
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
-
 import { useEffect, useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import useStore from '@/lend/store/useStore'
-
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
 import { helpers } from '@/lend/lib/apiLending'
 import ChartBandBalances from '@/lend/components/ChartBandBalances'

@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
-
 import useStore from '@/dao/store/useStore'
-
 import Box from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Icon from '@ui/Icon'
@@ -18,7 +16,7 @@ type VoteGaugeProps = {
   powerUsed: number
 }
 
-const VoteGauge: React.FC<VoteGaugeProps> = ({ gaugeData, userGaugeVoteData, powerUsed }) => {
+const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const [showDetails, setShowDetails] = useState(false)
   const { setSelectedGauge } = useStore((state) => state.gauges)
   const { veCrv } = useStore((state) => state.user.userVeCrv)

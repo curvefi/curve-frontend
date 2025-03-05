@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 interface VoteCountdownProps {
@@ -6,7 +6,7 @@ interface VoteCountdownProps {
   className?: string
 }
 
-const VoteCountdown: React.FC<VoteCountdownProps> = ({ startDate, className }) => {
+const VoteCountdown = ({ startDate, className }: VoteCountdownProps) => {
   const [timeRemaining, setTimeRemaining] = useState('')
 
   useEffect(() => {

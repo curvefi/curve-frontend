@@ -1,4 +1,3 @@
-import * as React from 'react'
 import styled, { keyframes } from 'styled-components'
 
 type SpinnerProps = {
@@ -49,13 +48,13 @@ const StyledSpinner = styled.div<StyledSpinnerProps>`
     border-color: ${({ isDisabled }) => getSpinnerColor(isDisabled)} transparent transparent transparent;
   }
 
-  div:nth-child(1) {
+  div:nth-of-type(1) {
     animation-delay: -0.45s;
   }
-  div:nth-child(2) {
+  div:nth-of-type(2) {
     animation-delay: -0.3s;
   }
-  div:nth-child(3) {
+  div:nth-of-type(3) {
     animation-delay: -0.15s;
   }
 `

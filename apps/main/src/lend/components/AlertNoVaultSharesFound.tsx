@@ -1,11 +1,8 @@
-import React from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
-
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import AlertBox from '@ui/AlertBox'
 import InternalLink from '@ui/Link/InternalLink'

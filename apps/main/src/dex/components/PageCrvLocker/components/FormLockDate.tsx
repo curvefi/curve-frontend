@@ -2,7 +2,7 @@ import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/d
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
-import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_FORM_EST_GAS } from '@/dex/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/dex/constants'
@@ -36,7 +36,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const network = useStore((state) => state.networks.networks[rChainId])
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = curve ?? {}
   const haveSigner = !!signerAddress

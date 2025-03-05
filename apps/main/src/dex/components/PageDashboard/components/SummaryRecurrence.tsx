@@ -1,9 +1,7 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-
 import {
   StyledStats,
   SummaryInnerContent,
@@ -26,7 +24,7 @@ type TotalAll = {
 
 type Props = { title?: string }
 
-const TotalRecurrence: React.FC<Props> = ({ title }) => {
+const TotalRecurrence = ({ title }: Props) => {
   const {
     isLoading,
     formValues: { walletAddress },

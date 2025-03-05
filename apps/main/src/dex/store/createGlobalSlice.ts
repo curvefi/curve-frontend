@@ -101,7 +101,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
-    let resp: NetworkConfigFromApi = {
+    const resp: NetworkConfigFromApi = {
       hasDepositAndStake: undefined,
       hasRouter: undefined,
     }
@@ -219,7 +219,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
       state.usdRates.fetchAllStoredUsdRates(curveApi)
-      state.pools.fetchTotalVolumeAndTvl(curveApi)
     } else {
       state.updateGlobalStoreByKey('isLoadingApi', false)
     }

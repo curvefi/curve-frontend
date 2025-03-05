@@ -1,11 +1,8 @@
 import { SubNavItem } from '@/dao/components/SubNav/types'
-
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dao/store/useStore'
-
 import CrvStats from './CrvStats'
 import VeCrvFees from './VeCrvFeesTable'
 import DailyLocks from './DailyLocksChart'
@@ -16,7 +13,7 @@ import Box from '@ui/Box'
 
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 
-const Analytics: React.FC = () => {
+const Analytics = () => {
   const { getVeCrvHolders, veCrvHolders } = useStore((state) => state.analytics)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
 

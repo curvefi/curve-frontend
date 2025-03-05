@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
@@ -12,6 +12,8 @@ import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, Networks } from '@/dex/types/main.types'
+import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
+import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -22,16 +24,17 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
+  const chainId = useStore((state) => state.curve?.chainId)
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
-  const tvlTotal = useStore((state) => state.pools.tvlTotal)
-  const volumeTotal = useStore((state) => state.pools.volumeTotal)
-  const volumeCryptoShare = useStore((state) => state.pools.volumeCryptoShare)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+
+  const { data: tvlTotal } = useAppStatsTvl({ chainId })
+  const { data: volumeTotal } = useAppStatsVolume({ chainId })
 
   const { rChainId, rNetwork } = useNetworkFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
@@ -106,9 +109,9 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           : [
               {
                 label: t`Daily Volume`,
-                value: formatNumber(volumeTotal, { currency: 'USD', notation: 'compact' }),
+                value: formatNumber(volumeTotal?.totalVolume, { currency: 'USD', notation: 'compact' }),
               },
-              { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
+              { label: t`Crypto Volume Share`, value: formatNumber(volumeTotal?.cryptoShare, FORMAT_OPTIONS.PERCENT) },
             ]),
       ]}
       sections={sections}

@@ -1,7 +1,5 @@
 import type { RewardsPool } from 'ui/src/CampaignRewards/types'
-
 import styled from 'styled-components'
-
 import CampaignRewardsComp from 'ui/src/CampaignRewards/CampaignRewardsComp'
 
 interface Props {
@@ -9,7 +7,7 @@ interface Props {
   mobile?: boolean
 }
 
-const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) => (
+const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
   <Container mobile={mobile}>
     {rewardItems.map((rewardItem: RewardsPool, index: number) => (
       <CampaignRewardsComp

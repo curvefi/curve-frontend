@@ -16,7 +16,6 @@ import type {
   TimeOptions,
 } from '@ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
-
 import { PromisePool } from '@supercharge/promise-pool'
 import countBy from 'lodash/countBy'
 import produce from 'immer'
@@ -25,7 +24,6 @@ import chunk from 'lodash/chunk'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
-
 import { INVALID_ADDRESS } from '@/dex/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
 import { log } from '@ui-kit/lib/logging'
@@ -66,10 +64,7 @@ type SliceState = {
     [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
   }
   tvlMapper: { [chainId: string]: TvlMapper }
-  tvlTotal: number | null
   volumeMapper: { [chainId: string]: VolumeMapper }
-  volumeTotal: number | null
-  volumeCryptoShare: number | null
   pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
   pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
@@ -106,7 +101,6 @@ export type PoolsSlice = {
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
-    fetchTotalVolumeAndTvl(curve: CurveApi): Promise<void>
     setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
     fetchPricesApiPools: (chainId: ChainId) => Promise<void>
@@ -156,10 +150,7 @@ const DEFAULT_STATE: SliceState = {
   rewardsApyMapper: {},
   stakedMapper: {},
   tvlMapper: {},
-  tvlTotal: null,
   volumeMapper: {},
-  volumeTotal: null,
-  volumeCryptoShare: null,
   pricesApiPoolsMapper: {},
   pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
@@ -229,7 +220,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         })
 
       // update volumeMapper
-      let volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
+      const volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
       sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
 
       //  update cache
@@ -367,7 +358,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       const { balances } = balancesResp
       const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
-      let crTokens: CurrencyReservesToken[] = []
+      const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
 
@@ -489,25 +480,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         console.error(error)
       }
     },
-    fetchTotalVolumeAndTvl: async (curve) => {
-      log('fetchTotalVolumeAndTvl', curve.chainId)
-      const { chainId } = curve
-      const {
-        networks: { networks },
-      } = get()
-      const { isLite } = networks[chainId]
-      const { getTVL, getVolume } = curvejsApi.network
-
-      const [tvlResult, volumeResult] = await Promise.allSettled([getTVL(curve), !isLite && getVolume(curve)])
-      const tvl = fulfilledValue(tvlResult) || 0
-      const volumeObj = fulfilledValue(volumeResult) || { totalVolume: 0, cryptoVolume: 0, cryptoShare: 0 }
-
-      get()[sliceKey].setStateByKeys({
-        tvlTotal: tvl,
-        volumeTotal: volumeObj.totalVolume,
-        volumeCryptoShare: volumeObj.cryptoShare,
-      })
-    },
     setPoolIsWrapped: (poolData, isWrapped) => {
       const curve = get().curve
       const chainId = curve.chainId
@@ -546,7 +518,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const response = await fetch(`https://prices.curve.fi/v1/chains/${networkName}`)
           const data: PricesApiPoolResponse = await response.json()
 
-          let pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
+          const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
           data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
 
           set(
@@ -898,11 +870,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       sliceState.setStateByActiveKey('tvlMapper', strChainId, {})
       sliceState.setStateByActiveKey('volumeMapper', strChainId, {})
       sliceState.setStateByActiveKey('poolsMapper', strChainId, {})
-      sliceState.setStateByKeys({
-        tvlTotal: 0,
-        volumeTotal: 0,
-        volumeCryptoShare: 0,
-      })
     },
 
     // slice helpers

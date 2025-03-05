@@ -1,8 +1,5 @@
-import React from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
-
 import { formatDate, formatNumber } from 'ui/src/utils'
-
 import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
 import { LocksDaily } from '@curvefi/prices-api/dao'
 
@@ -11,7 +8,7 @@ type PositiveAndNegativeBarChartProps = {
   height?: number
 }
 
-const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = ({ data, height = 500 }) => (
+const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegativeBarChartProps) => (
   <ResponsiveContainer width="100%" height={height} debounce={200}>
     <BarChart
       width={500}

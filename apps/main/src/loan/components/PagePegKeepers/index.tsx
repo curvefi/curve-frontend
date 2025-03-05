@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import { breakpoints } from '@ui/utils/responsive'
 import useStore from '@/loan/store/useStore'
-
 import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/loan/constants'
 import { usePageVisibleInterval } from '@ui/hooks'
-
 import PegKeeperContent from '@/loan/components/PagePegKeepers/components/PegKeeperContent'
 import { ChainId, Provider } from '@/loan/types/loan.types'
 

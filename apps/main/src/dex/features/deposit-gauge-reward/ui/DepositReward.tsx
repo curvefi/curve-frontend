@@ -17,10 +17,7 @@ import AlertFormError from '@/dex/components/AlertFormError'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { ChainId } from '@/dex/types/main.types'
 
-export const DepositReward: React.FC<{
-  chainId: ChainId
-  poolId: string
-}> = ({ chainId, poolId }) => {
+export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
@@ -46,7 +43,7 @@ export const DepositReward: React.FC<{
             <EpochInput chainId={chainId} poolId={poolId} />
             <FormErrorsDisplay errorKeys={['epoch']} component={AlertFormError} />
             <GroupedFieldsContainer>
-              <HelperFields chainId={chainId} poolId={poolId} />
+              <HelperFields />
               <GasEstimation chainId={chainId} poolId={poolId} />
             </GroupedFieldsContainer>
           </FormFieldsContainer>

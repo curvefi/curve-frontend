@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
-
 import useStore from '@/dao/store/useStore'
 import { convertToLocaleTimestamp, formatNumber } from '@ui/utils'
-
 import Button from '@ui/Button'
 import NumberField from './NumberField'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
@@ -19,12 +17,7 @@ type VoteGaugeFieldProps = {
   newVote?: boolean
 }
 
-const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
-  powerUsed,
-  userGaugeVoteData,
-  userVeCrv,
-  newVote = false,
-}) => {
+const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
   const { canVote, nextVoteTime, userPower, gaugeAddress } = userGaugeVoteData
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed

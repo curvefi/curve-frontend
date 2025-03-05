@@ -1,12 +1,11 @@
 import styled from 'styled-components'
-
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 interface SpinnnerProps {
   height: string
 }
 
-const SpinnerComponent: React.FC<SpinnnerProps> = ({ height }) => (
+const SpinnerComponent = ({ height }: SpinnnerProps) => (
   <StyledSpinnerWrapper height={height}>
     <Spinner />
   </StyledSpinnerWrapper>

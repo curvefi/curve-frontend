@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfiguration = {
-  output: 'export',
   compiler: {
     styledComponents: true
   },
@@ -35,12 +34,11 @@ const nextConfiguration = {
     // !! WARN !!
     // ignoreBuildErrors: true,
   },
-  // todo: setup redirect when we get rid of {output: 'export'}
-  // redirects: async () => [{
-  //   source: '/',
-  //   destination: '/dex',
-  //   permanent: true
-  // }],
+  redirects: async () => [{
+    source: '/',
+    destination: '/dex',
+    permanent: true
+  }],
 }
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

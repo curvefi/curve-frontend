@@ -1,11 +1,8 @@
 import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
-
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-
 import useStore from '@/dex/store/useStore'
-
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import Button from '@ui/Button'
 import ChartWrapper from '@ui/Chart'
@@ -16,10 +13,7 @@ import Box from '@ui/Box'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { ChainId } from '@/dex/types/main.types'
 
-const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
-  rChainId,
-  pricesApiPoolData,
-}) => {
+const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
   const theme = useUserProfileStore((state) => state.theme)
 
   const {
@@ -235,7 +229,6 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
         />
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
@@ -271,7 +264,6 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
         />
       )}
       {poolInfo === 'chart' && (

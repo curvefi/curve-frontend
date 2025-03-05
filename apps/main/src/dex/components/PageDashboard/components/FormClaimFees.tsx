@@ -1,15 +1,12 @@
 import type { Step } from '@ui/Stepper/types'
-
-import React, { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { formatNumber } from '@ui/utils'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import useStore from '@/dex/store/useStore'
-
 import AlertFormError from '@/dex/components/AlertFormError'
 import FormClaimFeesButtons from '@/dex/components/PageDashboard/components/FormClaimFeesButtons'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
@@ -19,7 +16,7 @@ export enum claimButtonsKey {
   crvUSD = 'crvUSD',
 }
 
-const FormClaimFees: React.FC = () => {
+const FormClaimFees = () => {
   const {
     activeKey,
     isLoading,
@@ -30,7 +27,7 @@ const FormClaimFees: React.FC = () => {
   const formStatus = useStore((state) => state.dashboard.formStatus)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const parsedFormStatus = formStatus.formType === 'CLAIMABLE_FEES' ? formStatus : DEFAULT_FORM_STATUS
 
