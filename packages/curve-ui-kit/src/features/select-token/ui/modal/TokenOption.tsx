@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -8,6 +9,7 @@ import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useClassObserver } from '@ui-kit/hooks/useClassObserver'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
@@ -32,11 +34,14 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0 > 0)
   const showAddress = !hasBalance
 
+  const menuItem = useRef<HTMLLIElement>(null)
+  const isFocusVisible = useClassObserver(menuItem, 'Mui-focusVisible')
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
 
   return (
-    <InvertTheme inverted={isHover}>
+    <InvertTheme inverted={isHover || isFocusVisible}>
       <MenuItem
+        ref={menuItem}
         onClick={disabled ? undefined : onToken}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -44,6 +49,16 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
         sx={{
           minHeight: IconSize.xxl,
           '&': { transition: `background-color ${TransitionFunction}` },
+          /**
+           * Rely on the theme inverter for focus visible design.
+           * I'm tired and for now this is the best I could achieve.
+           * Needs to be generalized somehow, and also the background color
+           * isn't exactly the same as if it's hovered. This is for another PR
+           */
+          '&.Mui-focusVisible': {
+            backgroundColor: (t) => t.design['Layer'][1].Fill,
+            '.MuiTypography-root': { '--mui-palette-text-primary': 'inherit' },
+          },
           ...(disabled && {
             opacity: 0.5,
             cursor: 'not-allowed',
