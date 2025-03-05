@@ -88,9 +88,7 @@ const SelectTokenButton = ({
       chain: blockchainId,
       address: token.address as Address,
       symbol: token.symbol,
-      label: [token.basePool ? 'Base pool' : '', token.userAddedToken ? 'User added' : '']
-        .filter((x) => x !== '')
-        .join(' - '),
+      label: [token.basePool && 'Base pool', token.userAddedToken && 'User added'].filter(Boolean).join(' - '),
       volume: token.volume,
     }))
   }, [filterBasepools, tokens, filterValue, endsWith, basePools, chainId, blockchainId])
