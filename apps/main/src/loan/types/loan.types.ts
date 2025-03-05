@@ -13,7 +13,7 @@ import { TITLE } from '@/loan/constants'
 export type NetworkUrlParams = { network: INetworkName }
 type CollateralExtraParams = { collateralId: string; formType?: string[] }
 export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
-export type UrlParams = Partial<CollateralUrlParams>
+export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = 1

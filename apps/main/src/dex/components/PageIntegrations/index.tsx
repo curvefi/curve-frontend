@@ -28,7 +28,7 @@ const IntegrationsComp = ({
   params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
 

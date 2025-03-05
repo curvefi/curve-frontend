@@ -17,7 +17,7 @@ const TableRowContainer = (
 ) => {
   const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
   const params = useParams() as NetworkUrlParams
-  const { push: push } = useRouter()
+  const { push } = useRouter()
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)

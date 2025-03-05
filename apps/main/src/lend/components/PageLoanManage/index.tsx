@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation'
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 

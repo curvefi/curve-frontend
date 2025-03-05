@@ -29,7 +29,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const { rChainId } = useNetworkFromUrl()
 
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(

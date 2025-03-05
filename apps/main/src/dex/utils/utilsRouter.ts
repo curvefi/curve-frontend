@@ -3,8 +3,7 @@ import useStore from '@/dex/store/useStore'
 import { useMemo } from 'react'
 import { FormTypes, NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
 
-export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
-  `/dex/${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dex/${network}${rerouteRoute}`
 
 export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { pool, formType } = params

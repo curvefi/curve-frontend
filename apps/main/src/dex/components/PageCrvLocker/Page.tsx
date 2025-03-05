@@ -16,7 +16,7 @@ import { type CrvLockerUrlParams, CurveApi } from '@/dex/types/main.types'
 import { useRouter } from 'next/navigation'
 
 const Page = (params: CrvLockerUrlParams) => {
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const { routerParams, curve } = usePageOnMount()
   const { rChainId, rFormType } = routerParams
 

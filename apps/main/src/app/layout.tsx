@@ -1,6 +1,6 @@
 import { RootCssProperties } from '@ui-kit/themes/typography'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import baseCss from '@ui/styles/base.css'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
 
@@ -59,7 +59,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="theme-color" content="#ffffff" />
       <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
-      <script dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
+      <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
       <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
       <style dangerouslySetInnerHTML={{ __html: baseCss }} />
     </head>

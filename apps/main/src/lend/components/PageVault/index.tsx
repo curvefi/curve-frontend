@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)

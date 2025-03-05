@@ -30,6 +30,7 @@ export const DAO_ROUTES = {
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
   DISCUSSION: 'https://gov.curve.fi/',
+  PAGE_DISCLAIMER: '/disclaimer',
 }
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const

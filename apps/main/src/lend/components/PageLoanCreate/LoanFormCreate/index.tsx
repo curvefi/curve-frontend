@@ -41,7 +41,7 @@ const LoanCreate = ({
 }: PageContentProps & { isLeverage?: boolean; params: MarketUrlParams }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey, params } = pageProps
   const isSubscribed = useRef(false)
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)

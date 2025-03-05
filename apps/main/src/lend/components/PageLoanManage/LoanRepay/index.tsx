@@ -45,7 +45,7 @@ const LoanRepay = ({
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const activeKey = useStore((state) => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])

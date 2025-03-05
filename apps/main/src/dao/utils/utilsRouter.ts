@@ -3,8 +3,7 @@ import { ROUTE } from '@/dao/constants'
 import networks, { networksIdMapper } from '@/dao/networks'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/dao/types/dao.types'
 
-export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
-  `/dao/${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dao/${network}${rerouteRoute}`
 
 export const getEthPath = (route: string) => getPath({ network: 'ethereum' }, route)
 

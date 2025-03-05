@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/lend/constants'
-import { getNetworkFromUrl, getPath, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
+import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/lend/networks'
@@ -55,10 +55,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (chainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id as NetworkEnum
-              const path = window.location.pathname.endsWith('markets')
-                ? getRestFullPathname()
-                : getRestPartialPathname()
-              push(getPath({ network }, path))
+              push(getPath({ network }, `/${getRestFullPathname()}`))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
           },

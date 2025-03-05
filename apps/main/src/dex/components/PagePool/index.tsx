@@ -66,7 +66,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
   const { tokensMapper } = useTokensMapper(rChainId)

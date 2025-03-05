@@ -3,8 +3,7 @@ import networks, { networksIdMapper } from '@/lend/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/lend/types/lend.types'
 
-export const getPath = ({ network }: UrlParams, rerouteRoute: string) =>
-  `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/lend/${network}${rerouteRoute}`
 
 export const getCollateralListPathname = (params: UrlParams) => getPath(params, ROUTE.PAGE_MARKETS)
 
@@ -98,22 +97,4 @@ export function getRestFullPathname() {
   const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const { rNetworkIdx } = getNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
-}
-
-export function getRestPartialPathname() {
-  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
-  const lastIdx = restPathnames.length - 1
-  if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
-    restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]
-  }
-  const { rNetworkIdx } = getNetworkFromUrl()
-  let endIdx = restPathnames.length
-  let found = false
-  ;['markets'].forEach((p) => {
-    if (!found && restPathnames.indexOf(p) !== -1) {
-      found = true
-      endIdx = restPathnames.indexOf(p) + 1
-    }
-  })
-  return restPathnames.slice(rNetworkIdx + 1, endIdx).join('/')
 }

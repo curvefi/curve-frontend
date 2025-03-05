@@ -26,7 +26,7 @@ enum SEARCH {
 }
 
 const Page = (params: CollateralUrlParams) => {
-  const { push: push } = useRouter()
+  const { push } = useRouter()
   const searchParams = useSearchParams()
   const { pageLoaded, routerParams, curve } = usePageOnMount()
   const titleMapper = useTitleMapper()

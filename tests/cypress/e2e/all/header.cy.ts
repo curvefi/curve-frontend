@@ -78,11 +78,11 @@ describe('Header', () => {
       if (['crvusd', 'dao'].includes(appPath)) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
-        cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('include', `/ethereum`)
+        cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('include', `/dex/ethereum`)
         return
       }
       switchEthToArbitrum()
-      cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('include', `/arbitrum`)
+      cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('include', `/dex/arbitrum`)
     })
   })
 
@@ -149,13 +149,13 @@ describe('Header', () => {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
-        cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/ethereum/pools`)
+        cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/ethereum/pools`)
         return
       }
 
       switchEthToArbitrum()
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/arbitrum/pools`)
+      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/arbitrum/pools`)
     })
   })
 
