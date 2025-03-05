@@ -69,13 +69,13 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       { titleKey: TITLE.liquidationBandRange, content: <CellLiquidationRange {...cellProps} type='band' />, show: isAdvancedMode },
       { titleKey: TITLE.liquidationRangePercent, content: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvancedMode },
     ],
-    ...(pricesApiAvailable ? [
-      [
-        { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
+    [
+      { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
+      ...(pricesApiAvailable ? [
         { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
         { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
-      ]
-    ] : []),
+      ] : []),
+    ],
     [
       { titleKey: TITLE.llammaBalances, content: <CellLlammaBalances {...cellProps} /> }
     ]
