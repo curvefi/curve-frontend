@@ -16,6 +16,7 @@ import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 
 interface PoolRowProps {
   poolId: string
@@ -52,7 +53,7 @@ export const PoolRow = ({
   setShowDetail,
   curve,
 }: PoolRowProps) => {
-  const { push: navigate } = useRouter()
+  const { push } = useRouter()
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)
@@ -84,9 +85,9 @@ export const PoolRow = ({
       if (nodeName === 'A') {
         return // prevent click-through link from tooltip
       }
-      navigate(`${poolId}${ROUTES[formType ?? 'deposit']}`)
+      push(getPath({ network: network.id }, `${ROUTE.PAGE_POOLS}/${poolId}${ROUTES[formType ?? 'deposit']}`))
     },
-    [navigate, poolId],
+    [push, network.id, poolId],
   )
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
+import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/dex/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -78,7 +78,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              push(`/${network}/${restPartialPathname}`)
+              push(getPath({ network }, `/${restPartialPathname}`))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },

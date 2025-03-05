@@ -1,16 +1,15 @@
 import { useCallback, useMemo } from 'react'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
 
 export function useSortFromQueryString(defaultSort: SortingState) {
   const search = useSearchParams()
-  const pathname = usePathname()
   const { push } = useRouter()
   const sort = useMemo(() => parseSort(search, defaultSort), [defaultSort, search])
   const onChange: OnChangeFn<SortingState> = useCallback(
-    (newSort) => push(`${pathname}?${updateSort(search, typeof newSort == 'function' ? newSort(sort) : newSort)}`),
-    [push, pathname, search, sort],
+    (newSort) => push(updateSort(search, typeof newSort == 'function' ? newSort(sort) : newSort)),
+    [push, search, sort],
   )
   return [sort, onChange] as const
 }
