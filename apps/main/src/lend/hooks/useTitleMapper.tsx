@@ -59,6 +59,8 @@ const useTitleMapper = (): TitleMapper => ({
     tooltipProps: { minWidth: '300px' },
   },
   llammaBalances: { title: t`LLAMMA Balances` },
+  profitAndLoss: { title: t`PNL` },
+  positionCurrentLeverage: { title: t`Position leverage` },
 })
 
 export default useTitleMapper

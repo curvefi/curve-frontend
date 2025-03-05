@@ -58,4 +58,6 @@ export enum TITLE {
   lossAmount = 'lossAmount',
   lossPercent = 'lossPercent',
   llammaBalances = 'llammaBalances',
+  profitAndLoss = 'profitAndLoss',
+  positionCurrentLeverage = 'positionCurrentLeverage',
 }
