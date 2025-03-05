@@ -29,35 +29,33 @@ export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, .
   const [isManageListOpen, openManageList, closeManageList] = useSwitch()
 
   return (
-    isOpen != null && (
-      <ModalDialog
-        open={isOpen}
-        onClose={onClose}
-        title={isManageListOpen ? t`Manage Token List` : t`Select Token`}
-        titleAction={
-          isManageListOpen && (
-            <IconButton onClick={closeManageList}>
-              <ArrowBackIcon />
-            </IconButton>
-          )
-        }
-        footer={
-          /* Settings button is temporarily disabled in the footer.
+    <ModalDialog
+      open={isOpen}
+      onClose={onClose}
+      title={isManageListOpen ? t`Manage Token List` : t`Select Token`}
+      titleAction={
+        isManageListOpen && (
+          <IconButton onClick={closeManageList}>
+            <ArrowBackIcon />
+          </IconButton>
+        )
+      }
+      footer={
+        /* Settings button is temporarily disabled in the footer.
           This will be repurposed as a token list configuration page in the future.
           The wiring is kept in place to avoid removing and re-implementing later. */
-          false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
-        }
-        sx={{
-          ...(compact && {
-            '& .MuiPaper-root': {
-              height: 'auto',
-              minHeight: 'auto',
-            },
-          }),
-        }}
-      >
-        {isManageListOpen ? <ManageTokenList /> : <TokenList {...tokenListProps} />}
-      </ModalDialog>
-    )
+        false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
+      }
+      sx={{
+        ...(compact && {
+          '& .MuiPaper-root': {
+            height: 'auto',
+            minHeight: 'auto',
+          },
+        }),
+      }}
+    >
+      {isManageListOpen ? <ManageTokenList /> : <TokenList {...tokenListProps} />}
+    </ModalDialog>
   )
 }

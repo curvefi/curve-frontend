@@ -40,29 +40,26 @@ export const TokenSelector = ({
   return (
     <>
       <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} sx={sx} />
-
-      {isOpen && (
-        <TokenSelectorModal
-          tokens={tokens}
-          balances={balances}
-          tokenPrices={tokenPrices}
-          favorites={favorites}
-          showSearch={showSearch}
-          showManageList={showManageList}
-          isOpen={isOpen}
-          compact={compact}
-          error={error}
-          disabledTokens={disabledTokens}
-          disableSorting={disableSorting}
-          customOptions={customOptions}
-          onClose={closeModal}
-          onToken={(token) => {
-            toggleModal()
-            onToken?.(token)
-          }}
-          onSearch={(search) => onSearch?.(search)}
-        />
-      )}
+      <TokenSelectorModal
+        tokens={tokens}
+        balances={balances}
+        tokenPrices={tokenPrices}
+        favorites={favorites}
+        showSearch={showSearch}
+        showManageList={showManageList}
+        isOpen={!!isOpen}
+        compact={compact}
+        error={error}
+        disabledTokens={disabledTokens}
+        disableSorting={disableSorting}
+        customOptions={customOptions}
+        onClose={closeModal}
+        onToken={(token) => {
+          toggleModal()
+          onToken?.(token)
+        }}
+        onSearch={(search) => onSearch?.(search)}
+      />
     </>
   )
 }
