@@ -379,7 +379,7 @@ const Swap = ({
                 tokens={selectList}
                 disabled={isDisabled || selectList.length === 0}
                 showSearch={false}
-                showSettings={false}
+                showManageList={false}
                 compact
                 onToken={(token) => {
                   const val = token.address
@@ -462,7 +462,7 @@ const Swap = ({
               tokens={selectList}
               disabled={isDisabled || selectList.length === 0}
               showSearch={false}
-              showSettings={false}
+              showManageList={false}
               compact
               onToken={(token) => {
                 const val = token.address

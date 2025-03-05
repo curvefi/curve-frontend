@@ -117,7 +117,7 @@ const meta: Meta<typeof TokenSelector> = {
     tokenPrices: defaultTokenPrices,
     disabled: false,
     showSearch: true,
-    showSettings: true,
+    showManageList: true,
     compact: false,
     error: '',
     disabledTokens: defaultDisabledTokens,
@@ -149,9 +149,9 @@ const meta: Meta<typeof TokenSelector> = {
       control: 'boolean',
       description: 'Shows search input in token selector modal',
     },
-    showSettings: {
+    showManageList: {
       control: 'boolean',
-      description: 'Shows settings button in token selector modal footer',
+      description: 'Shows token list management options (currently disabled in UI but wired for future use)',
     },
     compact: {
       control: 'boolean',
