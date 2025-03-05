@@ -21,7 +21,7 @@ export type ModalDialogProps = {
 }
 
 export const ModalDialog = ({ children, open, onClose, title, titleAction, footer, sx }: ModalDialogProps) => (
-  <Dialog open={open} onClose={onClose} sx={sx}>
+  <Dialog open={open} onClose={onClose} sx={sx} disableRestoreFocus>
     <Card
       sx={{
         ...SizesAndSpaces.ModalHeight.sm,
