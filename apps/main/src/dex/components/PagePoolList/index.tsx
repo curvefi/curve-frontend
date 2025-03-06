@@ -14,6 +14,7 @@ import TableHeadMobile from '@/dex/components/PagePoolList/components/TableHeadM
 import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@/dex/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const PoolList = ({
   rChainId,
@@ -45,6 +46,7 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -102,6 +104,7 @@ const PoolList = ({
         rChainId,
         isLite,
         searchParams,
+        hideSmallPools,
         typeof poolDataMapper !== 'undefined' ? poolDatas : undefined,
         poolDatasCached,
         rewardsApyMapper ?? {},
@@ -114,19 +117,20 @@ const PoolList = ({
       )
     },
     [
+      setFormValues,
+      rChainId,
       isLite,
-      campaignRewardsMapper,
+      hideSmallPools,
       poolDataMapper,
       poolDatas,
       poolDatasCached,
-      rChainId,
       rewardsApyMapper,
-      setFormValues,
+      volumeMapper,
+      volumeMapperCached,
       tvlMapper,
       tvlMapperCached,
       userPoolList,
-      volumeMapper,
-      volumeMapperCached,
+      campaignRewardsMapper,
     ],
   )
 
@@ -146,7 +150,7 @@ const PoolList = ({
 
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams])
+  }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams, hideSmallPools])
 
   // init campaignRewardsMapper
   useEffect(() => {

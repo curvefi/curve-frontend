@@ -18,7 +18,7 @@ const HopSteps = ({
 }) => (
   <>
     <Wrapper>
-      <StyledTokenIcon blockchainId={blockchainId} symbol={fromTokenAddress} address={fromTokenAddress} />
+      <StyledTokenIcon blockchainId={blockchainId} tooltip={fromTokenAddress} address={fromTokenAddress} />
       <StepsWrapper>
         {steps.map((l, idx) => (
           <StepsListItem key={`${l.name}${l.part}${idx}`} isBold>

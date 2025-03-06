@@ -24,7 +24,7 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   )
   return (
     <>
-      <TokenIcon blockchainId={chain} symbol={symbol} address={address} size="mui-md" />
+      <TokenIcon blockchainId={chain} tooltip={symbol} address={address} size="mui-md" />
       <Typography component="span" variant="bodyMBold">
         {symbol}
       </Typography>

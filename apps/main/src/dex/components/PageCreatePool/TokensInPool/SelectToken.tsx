@@ -20,7 +20,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
-import ComboBoxTokenPicker from '@/dex/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
+import SelectTokenButton from './SelectTokenButton'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
 import Icon from '@ui/Icon'
@@ -101,7 +101,7 @@ const SelectToken = ({
             </Box>
           </LabelRow>
         )}
-      <ComboBoxTokenPicker
+      <SelectTokenButton
         curve={curve}
         haveSigner={haveSigner}
         disabledKeys={disabledTokens}
