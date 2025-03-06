@@ -17,6 +17,8 @@ import DetailsConnectWallet from '@/lend/components/DetailsUser/components/Detai
 import DetailsUserLoanAlertSoftLiquidation from '@/lend/components/DetailsUser/components/DetailsUserLoanAlertSoftLiquidation'
 import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import DetailsUserLoanChartLiquidationRange from '@/lend/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
+import { UserInfoPnl } from '@/lend/components/DetailsUser/components/UserInfoPnl'
+import { UserInfoLeverage } from '@/lend/components/DetailsUser/components/UserInfoLeverage'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -36,6 +38,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
   const { signerAddress } = api ?? {}
 
+  const pricesApiAvailable = networks[rChainId]?.pricesData
   const showConnectWallet = typeof signerAddress !== 'undefined' && !signerAddress
   const foundLoan = typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists
   const isSoftLiquidation = userLoanDetails?.status?.colorKey === 'soft_liquidation'
@@ -54,6 +57,10 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     [
       { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
+      ...(pricesApiAvailable ? [
+        { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
+        { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} /> },
+      ] : []),
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <CellLiquidationRange {...cellProps} type='range' /> },
@@ -62,8 +69,10 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     ],
     [
       { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
-      { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
-      { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
+      ...(pricesApiAvailable ? [
+        { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
+        { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
+      ] : []),
     ],
     [
       { titleKey: TITLE.llammaBalances, content: <CellLlammaBalances {...cellProps} /> }

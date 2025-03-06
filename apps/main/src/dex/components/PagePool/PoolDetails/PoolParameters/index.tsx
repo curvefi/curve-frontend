@@ -129,7 +129,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                         <StyledTokenIcon
                           size="sm"
                           blockchainId={network?.networkId ?? ''}
-                          symbol={token}
+                          tooltip={token}
                           address={poolData.tokenAddresses[idx]}
                         />
                         <ExternalLinkToken>{token}</ExternalLinkToken>

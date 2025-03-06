@@ -1,7 +1,8 @@
 import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
-import { shortenAccount } from '@ui/utils'
-import { ChainId } from '@/dex/types/main.types'
+import type { ChainId, Token } from '@/dex/types/main.types'
+import type { TokenOption } from '@ui-kit/features/select-token'
+import type { Address } from '@ui-kit/utils'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
 export function isMobile() {
@@ -115,7 +116,21 @@ export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => 
 export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
   chainId && poolId ? `${chainId}-${poolId}` : ''
 
-export const getChainSignerActiveKey = (chainId: ChainId | null, signerAddress: string | undefined) =>
-  chainId && signerAddress ? `${chainId}-${shortenAccount(signerAddress)}` : ''
-
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
+
+/**
+ * Converts a Token object to a TokenOption object
+ *
+ * @param chain - Optional chain identifier
+ * @returns A function that takes a Token and returns a TokenOption with the specified chain
+ * @example
+ * const tokens = tokensList.map(toTokenOption('ethereum'))
+ */
+export const toTokenOption =
+  (chain?: string) =>
+  (token: Token): TokenOption => ({
+    chain,
+    address: token.address as Address,
+    symbol: token.symbol,
+    volume: token.volume,
+  })

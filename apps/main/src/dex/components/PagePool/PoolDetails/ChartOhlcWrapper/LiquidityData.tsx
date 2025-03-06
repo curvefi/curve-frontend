@@ -48,7 +48,7 @@ const LiquidityData = ({
                             <StyledTokenIcon
                               size="sm"
                               blockchainId={network?.networkId}
-                              symbol={coins[index].symbol}
+                              tooltip={coins[index].symbol}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }
@@ -75,7 +75,7 @@ const LiquidityData = ({
                             <StyledTokenIcon
                               size="sm"
                               blockchainId={network?.networkId}
-                              symbol={coins[index].symbol}
+                              tooltip={coins[index].symbol}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }

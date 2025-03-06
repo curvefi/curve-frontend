@@ -13,7 +13,6 @@ import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Fade from '@mui/material/Fade'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
-import { every } from 'lodash'
 
 const { MaxWidth } = SizesAndSpaces
 

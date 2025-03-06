@@ -1,6 +1,5 @@
 import InputProvider from '@ui/InputComp'
 import styled from 'styled-components'
-import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 
 export const StyledInputProvider = styled(InputProvider)`
   width: 100%;
@@ -19,10 +18,6 @@ export const FlexItemMaxBtn = styled.div`
 
 export const FlexItemToken = styled.div`
   flex: 0 0 120px;
-`
-
-export const StyledTokenComboBox = styled(TokenComboBox)`
-  height: var(--height-x-large);
 `
 
 export const EpochLabel = styled.label`

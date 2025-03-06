@@ -80,7 +80,7 @@ const FieldToken = ({
         />
       )}
       <Box flex flexAlignItems="center">
-        <TokenIcon blockchainId={blockchainId} symbol={token} address={tokenAddress} />
+        <TokenIcon blockchainId={blockchainId} tooltip={token} address={tokenAddress} />
       </Box>
     </InputProvider>
   )

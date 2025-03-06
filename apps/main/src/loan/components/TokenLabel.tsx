@@ -47,7 +47,7 @@ const TokenLabel = ({
           </AlertTooltipIcon>
         </TooltipIconWrapper>
       )}
-      <TokenIcon blockchainId={blockchainId} symbol={symbol} address={tokenAddress} />{' '}
+      <TokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} />{' '}
       <Label size={size}>{symbol}</Label>
     </Wrapper>
   )

@@ -475,6 +475,7 @@ const user = {
   fetchLoansDetails: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
     const results: { [userActiveKey: string]: UserLoanDetails } = {}
+    const { signerAddress } = api
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -488,7 +489,8 @@ const user = {
       })
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand] =
+
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
           await Promise.all([
             market.userState(),
             market.userHealth(),
@@ -498,6 +500,8 @@ const user = {
             market.userPrices(),
             market.userBandsBalances(),
             market.oraclePriceBand(),
+            market.currentLeverage(signerAddress),
+            market.currentPnL(signerAddress),
           ])
 
         // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
@@ -537,6 +541,8 @@ const user = {
             range,
             prices,
             loss,
+            leverage,
+            pnl,
             status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',
