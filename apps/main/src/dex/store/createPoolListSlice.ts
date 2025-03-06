@@ -162,7 +162,16 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         ? poolDatas
         : poolDatas.filter(({ pool }) => +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl)
     },
-    sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, campaignRewardsMapper, isCrvRewardsEnabled) => {
+    sortFn: (
+      sortKey,
+      order,
+      poolDatas,
+      rewardsApyMapper,
+      tvlMapper,
+      volumeMapper,
+      campaignRewardsMapper,
+      isCrvRewardsEnabled,
+    ) => {
       if (poolDatas.length === 0) {
         return poolDatas
       } else if (sortKey === 'name') {
@@ -227,7 +236,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         networks: { networks },
         [sliceKey]: { activeKey, formStatus, result: storedResults, ...sliceState },
       } = get()
-      const {isCrvRewardsEnabled} = networks?.[rChainId] ?? {}
+      const { isCrvRewardsEnabled } = networks?.[rChainId] ?? {}
 
       const { searchText, filterKey, sortBy, sortByOrder } = searchParams
 
