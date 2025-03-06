@@ -34,6 +34,7 @@ export type SortKey =
   | 'rewardsBase'
   | 'rewardsCrv'
   | 'rewardsOther'
+  | 'rewardsLite'
   | 'tvl'
   | 'volume'
   | 'points'

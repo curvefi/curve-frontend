@@ -360,6 +360,7 @@ const defaultNetworks = Object.entries({
       ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
+      isCrvRewardsEnabled: true,
     } as NetworkConfig
     return prev
   },
@@ -397,6 +398,7 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
               twocryptoFactory: true,
               tricryptoFactory: true,
               isLite: true,
+              isCrvRewardsEnabled: chainId == 146, // only enabled for sonic
               isTestnet: config.isTestnet,
             }
             return prev
