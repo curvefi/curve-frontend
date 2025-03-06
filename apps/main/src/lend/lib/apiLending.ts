@@ -1,14 +1,7 @@
-import type { LiqRange } from '@/lend/store/types'
-import type { StepStatus } from '@ui/Stepper/types'
-import PromisePool from '@supercharge/promise-pool'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
 import { INVALID_ADDRESS } from '@/lend/constants'
-import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { BN, shortenAccount } from '@ui/utils'
 import networks from '@/lend/networks'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/lend/shared/config'
+import type { LiqRange } from '@/lend/store/types'
 import {
   Api,
   BandsBalances,
@@ -41,10 +34,17 @@ import {
   UserLoanDetails,
   UserLoanHealth,
   UserLoanState,
+  UserLoss,
   UserMarketBalances,
   Wallet,
-  UserLoss,
 } from '@/lend/types/lend.types'
+import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import PromisePool from '@supercharge/promise-pool'
+import type { StepStatus } from '@ui/Stepper/types'
+import { BN, shortenAccount } from '@ui/utils'
+import cloneDeep from 'lodash/cloneDeep'
+import sortBy from 'lodash/sortBy'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {
@@ -501,17 +501,11 @@ const user = {
           ])
 
         // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
-        let loss: UserLoss
+        let loss: UserLoss | undefined
         try {
           loss = await market.userLoss()
         } catch (error) {
           console.error('Failed to fetch user loss:', error)
-          loss = {
-            deposited_collateral: '0',
-            current_collateral_estimation: '0',
-            loss: '0',
-            loss_pct: '0',
-          }
         }
 
         const resp = await market.stats.bandsInfo()
