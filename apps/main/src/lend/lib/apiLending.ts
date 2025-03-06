@@ -1,14 +1,7 @@
-import type { LiqRange } from '@/lend/store/types'
-import type { StepStatus } from '@ui/Stepper/types'
-import PromisePool from '@supercharge/promise-pool'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
 import { INVALID_ADDRESS } from '@/lend/constants'
-import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { BN, shortenAccount } from '@ui/utils'
 import networks from '@/lend/networks'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/lend/shared/config'
+import type { LiqRange } from '@/lend/store/types'
 import {
   Api,
   BandsBalances,
@@ -41,9 +34,17 @@ import {
   UserLoanDetails,
   UserLoanHealth,
   UserLoanState,
+  UserLoss,
   UserMarketBalances,
   Wallet,
 } from '@/lend/types/lend.types'
+import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import PromisePool from '@supercharge/promise-pool'
+import type { StepStatus } from '@ui/Stepper/types'
+import { BN, shortenAccount } from '@ui/utils'
+import cloneDeep from 'lodash/cloneDeep'
+import sortBy from 'lodash/sortBy'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {
@@ -488,31 +489,28 @@ const user = {
       })
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
-        const [
-          state,
-          healthFull,
-          healthNotFull,
-          range,
-          bands,
-          prices,
-          bandsBalances,
-          oraclePriceBand,
-          loss,
-          leverage,
-          pnl,
-        ] = await Promise.all([
-          market.userState(),
-          market.userHealth(),
-          market.userHealth(false),
-          market.userRange(),
-          market.userBands(),
-          market.userPrices(),
-          market.userBandsBalances(),
-          market.oraclePriceBand(),
-          market.userLoss(),
-          market.currentLeverage(signerAddress),
-          market.currentPnL(signerAddress),
-        ])
+
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
+          await Promise.all([
+            market.userState(),
+            market.userHealth(),
+            market.userHealth(false),
+            market.userRange(),
+            market.userBands(),
+            market.userPrices(),
+            market.userBandsBalances(),
+            market.oraclePriceBand(),
+            market.currentLeverage(signerAddress),
+            market.currentPnL(signerAddress),
+          ])
+
+        // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
+        let loss: UserLoss | undefined
+        try {
+          loss = await market.userLoss()
+        } catch (error) {
+          console.error('Failed to fetch user loss:', error)
+        }
 
         const resp = await market.stats.bandsInfo()
         const { liquidationBand } = resp ?? {}
