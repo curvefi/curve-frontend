@@ -22,31 +22,30 @@ import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormC
 import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
 import { httpFetcher } from '@/dex/lib/utils'
 import {
+  _parseRoutesAndOutput,
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
-  _parseRoutesAndOutput,
 } from '@/dex/utils/utilsSwap'
 import { log } from '@ui-kit/lib/logging'
 import useStore from '@/dex/store/useStore'
 import {
-  CurveApi,
   ChainId,
+  ClaimableReward,
+  CurveApi,
+  EstimatedGas,
   NetworkConfig,
   Pool,
+  PoolData,
+  PoolParameters,
   Provider,
-  ClaimableReward,
   RewardCrv,
   RewardOther,
   RewardsApy,
-  PoolParameters,
-  UserBalancesMapper,
-  PoolData,
   UsdRatesMapper,
-  EstimatedGas,
+  UserBalancesMapper,
 } from '@/dex/types/main.types'
 import memoizee from 'memoizee'
-import { Chain } from '@ui-kit/utils'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
