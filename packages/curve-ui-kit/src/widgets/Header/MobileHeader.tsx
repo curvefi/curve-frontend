@@ -1,6 +1,6 @@
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import { BaseHeaderProps } from './types'
+import { AppPage, BaseHeaderProps } from './types'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
@@ -62,11 +62,13 @@ export const MobileHeader = <TChainId extends number>({
         .map(([appName, { label, pages }]) => ({
           appName,
           title: label,
-          pages: pages.map(({ route, label }) => ({
-            label: label(),
-            route: getAppUrl(route, networkName, appName as AppName),
-            isActive: false,
-          })),
+          pages: pages.map(
+            ({ route, label }): AppPage => ({
+              label: label(),
+              route: getAppUrl(route, networkName, appName as AppName),
+              isActive: false,
+            }),
+          ),
         })),
     [currentApp, networkName],
   )
