@@ -1,4 +1,3 @@
-'use client'
 import { ReactNode, Children } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

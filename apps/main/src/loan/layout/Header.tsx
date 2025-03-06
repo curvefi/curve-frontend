@@ -12,7 +12,7 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
@@ -39,9 +39,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const { data: dailyVolume } = useAppStatsDailyVolume({})
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
-
-  const { network: routerNetwork = 'ethereum' } = params
-  const routerPathname = usePathname()
 
   return (
     <NewHeader<ChainId>

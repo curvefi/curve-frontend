@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/dao/constants'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
@@ -11,8 +11,8 @@ import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, type UrlParams } from '@/dao/types/dao.types'
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import { ChainId } from '@/dao/types/dao.types'
+import { useRouter } from 'next/navigation'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -28,9 +28,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   const updateConnectState = useStore((state) => state.updateConnectState)
-
-  const { network: routerNetwork } = useParams() as UrlParams
-  const routerPathname = usePathname()
 
   return (
     <NewHeader<ChainId>

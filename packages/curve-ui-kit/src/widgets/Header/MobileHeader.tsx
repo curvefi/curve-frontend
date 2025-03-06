@@ -55,6 +55,21 @@ export const MobileHeader = <TChainId extends number>({
     startWalletConnection()
   }, [startWalletConnection, closeSidebar])
 
+  const otherAppSections = useMemo(
+    () =>
+      Object.entries(APP_LINK)
+        .filter(([appName]) => appName != currentApp)
+        .map(([appName, { label, pages }]) => ({
+          appName,
+          title: label,
+          pages: pages.map(({ route, label }) => ({
+            label: label(),
+            route: getAppUrl(route, networkName, appName as AppName),
+            isActive: false,
+          })),
+        })),
+    [currentApp, networkName],
+  )
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
@@ -98,23 +113,9 @@ export const MobileHeader = <TChainId extends number>({
                 }))}
               />
 
-              {useMemo(
-                () =>
-                  Object.entries(APP_LINK)
-                    .filter(([appName]) => appName != currentApp)
-                    .map(([appName, { label, pages }]) => (
-                      <SidebarSection
-                        key={appName}
-                        title={label}
-                        pages={pages.map(({ route, label }) => ({
-                          label: label(),
-                          route: getAppUrl(route, networkName, appName as AppName),
-                          isActive: false,
-                        }))}
-                      />
-                    )),
-                [currentApp, networkName],
-              )}
+              {otherAppSections.map(({ appName, ...props }) => (
+                <SidebarSection key={appName} {...props} />
+              ))}
 
               {sections.map(({ title, links }) => (
                 <SidebarSection key={title} title={title} pages={links} />

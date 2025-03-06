@@ -13,8 +13,8 @@ import { type Theme } from '@mui/material/styles'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, type NetworkEnum, type UrlParams } from '@/lend/types/lend.types'
-import { useParams, useRouter } from 'next/navigation'
+import { ChainId, type NetworkEnum } from '@/lend/types/lend.types'
+import { useRouter } from 'next/navigation'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -30,7 +30,6 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
-  const routerParams = useParams() as UrlParams
 
   return (
     <NewHeader<ChainId>

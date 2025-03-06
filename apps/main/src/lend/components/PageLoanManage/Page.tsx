@@ -62,7 +62,6 @@ const Page = (params: MarketUrlParams) => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
-  const { borrowed_token, collateral_token } = market ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)

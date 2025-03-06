@@ -7,6 +7,8 @@ import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@curvefi/prices-api'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
 import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
+import { getPath } from '@/loan/utils/utilsRouter'
+import { NetworkEnum } from '@/loan/types/loan.types'
 
 export enum LlamaMarketType {
   Mint = 'Mint',
@@ -139,7 +141,10 @@ const convertMintMarket = (
   rates: { borrow: rate, lend: null },
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-  url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
+  url: getPath(
+    { network: chain as NetworkEnum },
+    `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
+  ),
   isFavorite: favoriteMarkets.has(address),
   rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,

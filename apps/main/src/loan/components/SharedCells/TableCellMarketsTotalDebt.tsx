@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-import InternalLink from '@ui/Link/InternalLink'
 import TextCaption from '@ui/TextCaption'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
@@ -27,13 +26,6 @@ const TableCellMarketsTotalDebt = () => {
 const StyledTotalSupply = styled.div`
   display: grid;
   grid-gap: 0.1rem;
-`
-
-const StyledLink = styled(InternalLink)`
-  color: inherit;
-  font-size: var(--font-size-2);
-  margin-top: var(--spacing-2);
-  text-transform: initial;
 `
 
 export default TableCellMarketsTotalDebt

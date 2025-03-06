@@ -12,7 +12,7 @@ import useStore from '@/loan/store/useStore'
 import { isLoading } from '@ui/utils'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 
-const Page = ({ network }: NetworkUrlParams) => {
+const Page = (_: NetworkUrlParams) => {
   const { routerParams } = usePageOnMount()
   const { rChainId } = routerParams
 
