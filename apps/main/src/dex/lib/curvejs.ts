@@ -22,28 +22,28 @@ import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormC
 import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
 import { httpFetcher } from '@/dex/lib/utils'
 import {
+  _parseRoutesAndOutput,
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
-  _parseRoutesAndOutput,
 } from '@/dex/utils/utilsSwap'
 import { log } from '@ui-kit/lib/logging'
 import useStore from '@/dex/store/useStore'
 import {
-  CurveApi,
   ChainId,
+  ClaimableReward,
+  CurveApi,
+  EstimatedGas,
   NetworkConfig,
   Pool,
+  PoolData,
+  PoolParameters,
   Provider,
-  ClaimableReward,
   RewardCrv,
   RewardOther,
   RewardsApy,
-  PoolParameters,
-  UserBalancesMapper,
-  PoolData,
   UsdRatesMapper,
-  EstimatedGas,
+  UserBalancesMapper,
 } from '@/dex/types/main.types'
 import memoizee from 'memoizee'
 
@@ -293,7 +293,7 @@ const pool = {
       error: {},
     }
 
-    const { isLite, chainId } = network
+    const { isLite, chainId, isCrvRewardsEnabled } = network
 
     // get base vAPY
     if (!isLite) {
@@ -353,19 +353,16 @@ const pool = {
     }
 
     // crv rewards
-    if (!isLite) {
+    if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
+      resp.error['crv'] = true
+    }
+    if (crvResult.status === 'fulfilled' && !!crvResult.value) {
+      const [baseApy] = crvResult.value
       const crv = fulfilledValue(crvResult)
-      if (crvResult.status === 'rejected') {
-        resp.error['crv'] = true
-      }
-      if (crvResult.status === 'fulfilled' && !!crvResult.value) {
-        const [baseApy] = crvResult.value
-        if (crv && baseApy && !Number.isNaN(baseApy)) {
-          resp.crv = crv
-        }
+      if (crv && baseApy && !Number.isNaN(baseApy)) {
+        resp.crv = crv
       }
     }
-
     return resp
   },
   poolTokens: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoins : p.underlyingCoins),
