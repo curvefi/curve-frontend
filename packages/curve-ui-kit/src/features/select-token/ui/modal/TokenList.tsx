@@ -79,8 +79,8 @@ const TokenSection = ({
             size="medium"
             endIcon={<ExpandMoreIcon />}
             onClick={onShowAll}
-            // Override variant button height to match menu list item height
-            sx={{ '&': { height: `${ButtonSize.md} !important` } }}
+            // Override variant button height to match menu list item height, so !important is required over '&'.
+            sx={{ height: `${ButtonSize.md} !important` }}
           >
             {t`Show more`}
           </Button>
