@@ -47,6 +47,7 @@ const PoolList = ({
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
   const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
+  const isCrvRewardsEnabled = useStore((state) => state.networks.networks[rChainId]?.isCrvRewardsEnabled)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -209,7 +210,7 @@ const PoolList = ({
                   key={poolId}
                   index={index}
                   columnKeys={columnKeys}
-                  isLite={isLite}
+                  isCrvRewardsEnabled={isCrvRewardsEnabled}
                   poolId={poolId}
                   rChainId={rChainId}
                   searchParams={searchParams}

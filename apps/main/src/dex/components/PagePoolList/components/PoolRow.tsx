@@ -20,7 +20,7 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 interface PoolRowProps {
   poolId: string
   index: number
-  isLite: boolean
+  isCrvRewardsEnabled: boolean
   rChainId: ChainId
   columnKeys: ColumnKeys[]
   searchParams: SearchParams
@@ -41,7 +41,7 @@ const ROUTES = {
 export const PoolRow = ({
   poolId,
   index,
-  isLite,
+  isCrvRewardsEnabled,
   rChainId,
   columnKeys,
   searchParams,
@@ -91,7 +91,7 @@ export const PoolRow = ({
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
-    isLite,
+    isCrvRewardsEnabled,
     formValues,
     searchParams,
     isInPool,
