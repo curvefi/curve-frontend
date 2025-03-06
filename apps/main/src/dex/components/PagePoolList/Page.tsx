@@ -49,7 +49,7 @@ const Page: NextPage = () => {
     () => ({
       name: { name: t`Pool` },
       ...(isLite
-        ? { rewardsOtherLite: { name: t`Rewards`, mobile: t`Rewards` } }
+        ? { rewardsLite: { name: t`Rewards`, mobile: t`Rewards` } }
         : {
             rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
             rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
