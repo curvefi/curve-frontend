@@ -1,2 +1,2 @@
-export { TokenSelector } from './ui/TokenSelector'
 export * from './types'
+export { TokenSelector } from './ui/TokenSelector'

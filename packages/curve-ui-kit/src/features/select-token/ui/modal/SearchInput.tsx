@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
-import TextField from '@mui/material/TextField'
 import SearchIcon from '@mui/icons-material/Search'
+import TextField from '@mui/material/TextField'
 import { t } from '@ui-kit/lib/i18n'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   onSearch: (search: string) => void

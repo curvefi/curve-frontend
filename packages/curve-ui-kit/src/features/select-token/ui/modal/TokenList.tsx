@@ -1,5 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
-import uniqBy from 'lodash/uniqBy'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
@@ -7,19 +6,18 @@ import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-
 import { t } from '@ui-kit/lib/i18n'
-import { searchByText } from '@ui-kit/utils/searchText'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { searchByText } from '@ui-kit/utils/searchText'
+import uniqBy from 'lodash/uniqBy'
+import { useMemo, useState, type ReactNode } from 'react'
+import type { TokenOption as Option } from '../../types'
+import { ErrorAlert } from './ErrorAlert'
+import { FavoriteTokens } from './FavoriteTokens'
+import { SearchInput } from './SearchInput'
+import { TokenOption } from './TokenOption'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
-
-import type { TokenOption as Option } from '../../types'
-import { FavoriteTokens } from './FavoriteTokens'
-import { TokenOption } from './TokenOption'
-import { SearchInput } from './SearchInput'
-import { ErrorAlert } from './ErrorAlert'
 
 export type Section = 'my' | 'all'
 
