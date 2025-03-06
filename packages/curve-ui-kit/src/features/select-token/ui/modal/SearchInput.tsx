@@ -1,7 +1,8 @@
 import SearchIcon from '@mui/icons-material/Search'
 import TextField from '@mui/material/TextField'
+import useDebounce from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 type Props = {
   onSearch: (search: string) => void
@@ -9,19 +10,15 @@ type Props = {
 }
 
 export const SearchInput = ({ onSearch, debounceMs = 200 }: Props) => {
-  const [search, setSearch] = useState('')
-  const lastSearch = useRef(search)
+  const lastSearch = useRef('')
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const trimmed = search.trim()
-      if (trimmed !== lastSearch.current) {
-        lastSearch.current = trimmed
-        onSearch(trimmed)
-      }
-    }, debounceMs)
-    return () => clearTimeout(timer)
-  }, [onSearch, search, debounceMs])
+  const [search, setSearch] = useDebounce('', debounceMs, (value) => {
+    const trimmed = value.trim()
+    if (trimmed !== lastSearch.current) {
+      lastSearch.current = trimmed
+      onSearch(trimmed)
+    }
+  })
 
   return (
     <TextField
