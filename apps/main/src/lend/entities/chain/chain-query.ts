@@ -1,16 +1,14 @@
-import { apiValidationGroup, chainValidationGroup } from './validation'
-import { ChainParams, ChainQuery, queryFactory } from '@ui-kit/lib/model/query'
 import useStore from '@/lend/store/useStore'
-import { createValidationSuite } from '@ui-kit/lib/validation'
 import { ChainId } from '@/lend/types/lend.types'
+import { ChainParams, ChainQuery, queryFactory } from '@ui-kit/lib/model/query'
+import { createValidationSuite } from '@ui-kit/lib/validation'
+import { apiValidationGroup, chainValidationGroup } from './validation'
 
 export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
-  queryFn: async (chainId: ChainQuery<ChainId>): Promise<string[]> => {
-    const useAPI = chainId.chainId !== 146 // disable API for sonic
-
+  queryFn: async (_: ChainQuery<ChainId>): Promise<string[]> => {
     const api = useStore.getState().api!
-    await api.oneWayfactory.fetchMarkets(useAPI)
+    await api.oneWayfactory.fetchMarkets(true)
     return api.oneWayfactory.getMarketList()
   },
   staleTime: '5m',
