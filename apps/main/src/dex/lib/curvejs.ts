@@ -46,6 +46,7 @@ import {
   EstimatedGas,
 } from '@/dex/types/main.types'
 import memoizee from 'memoizee'
+import { Chain } from '@ui-kit/utils'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -293,7 +294,7 @@ const pool = {
       error: {},
     }
 
-    const { isLite, chainId } = network
+    const { isLite, chainId, isCrvRewardsEnabled } = network
 
     // get base vAPY
     if (!isLite) {
@@ -353,19 +354,16 @@ const pool = {
     }
 
     // crv rewards
-    if (!isLite) {
+    if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
+      resp.error['crv'] = true
+    }
+    if (crvResult.status === 'fulfilled' && !!crvResult.value) {
+      const [baseApy] = crvResult.value
       const crv = fulfilledValue(crvResult)
-      if (crvResult.status === 'rejected') {
-        resp.error['crv'] = true
-      }
-      if (crvResult.status === 'fulfilled' && !!crvResult.value) {
-        const [baseApy] = crvResult.value
-        if (crv && baseApy && !Number.isNaN(baseApy)) {
-          resp.crv = crv
-        }
+      if (crv && baseApy && !Number.isNaN(baseApy)) {
+        resp.crv = crv
       }
     }
-
     return resp
   },
   poolTokens: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoins : p.underlyingCoins),
