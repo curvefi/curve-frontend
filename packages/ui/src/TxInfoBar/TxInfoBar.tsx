@@ -59,6 +59,7 @@ const StyledInfoBar = styled(Box)`
 
 const InfoTitle = styled.span`
   font-weight: var(--font-weight--bold);
+  word-break: break-all;
 `
 
 export default TxInfoBar
