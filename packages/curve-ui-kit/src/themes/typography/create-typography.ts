@@ -1,7 +1,7 @@
 import { type TypographyOptions } from '@mui/material/styles/createTypography'
 import { basicMuiTheme } from '../basic-theme'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
-import { Sizing } from '../design/0_primitives'
+import { Sizing, TransitionFunction } from '../design/0_primitives'
 import { DesignSystem } from '../design'
 import { Fonts } from './fonts'
 import { Breakpoint } from '@mui/material'
@@ -61,6 +61,7 @@ const variant = ({
     marginRight: `calc(${letterSpacing} * -1)`,
   }),
   textTransform: textCase,
+  transition: `color ${TransitionFunction}`,
   ...(!(fontSize in FontSize) && { fontSize }),
   ...(!(lineHeight in LineHeight) && { lineHeight }),
   ...responsiveValues(fontSize, lineHeight, 'mobile'),

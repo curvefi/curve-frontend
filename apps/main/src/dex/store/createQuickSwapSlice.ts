@@ -9,13 +9,11 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import cloneDeep from 'lodash/cloneDeep'
-import isEqual from 'lodash/isEqual'
-import orderBy from 'lodash/orderBy'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/dex/components/PageRouterSwap/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
 import { NETWORK_TOKEN } from '@/dex/constants'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
-import { getChainSignerActiveKey, sleep } from '@/dex/utils'
+import { sleep } from '@/dex/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@/dex/types/main.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
@@ -29,8 +27,7 @@ type SliceState = {
   formValues: FormValues
   isMaxLoading: boolean
   routesAndOutput: { [activeKey: string]: RoutesAndOutput }
-  selectToList: { [chainId: string]: string[] | undefined } //sorted by pool's volume and hideSmallPools
-  selectFromList: { [chainSignerActiveKey: string]: string[] | undefined }
+  tokenList: { [chainSignerActiveKey: string]: string[] | undefined }
 }
 
 const sliceKey = 'quickSwap'
@@ -63,8 +60,7 @@ export type QuickSwapSlice = {
 
     // select token list
     setPoolListFormValues(hideSmallPools: boolean): void
-    setSelectToList(curve: CurveApi | null, tokensMapper: TokensMapper): void
-    setSelectFromList(curve: CurveApi | null, selectToList: string[] | undefined): Promise<void>
+    updateTokenList(curve: CurveApi | null, tokensMapper: TokensMapper): Promise<void>
 
     // steps
     fetchStepApprove(
@@ -96,8 +92,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
   isMaxLoading: false,
   routesAndOutput: {},
-  selectToList: {},
-  selectFromList: {},
+  tokenList: {},
 }
 
 const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): QuickSwapSlice => ({
@@ -360,63 +355,29 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       storedPoolListFormValues.hideSmallPools = hideSmallPools
       get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
-    setSelectFromList: async (curve, selectToList) => {
+    updateTokenList: async (curve, tokensMapper) => {
       const state = get()
       const sliceState = state[sliceKey]
 
-      if (!curve || !selectToList || (selectToList && selectToList.length === 0)) return
+      if (!curve || Object.keys(tokensMapper).length === 0) return
+      const { chainId } = curve
 
-      const { chainId, signerAddress } = curve
+      const tokens = Object.entries(tokensMapper)
+        .map(([_, v]) => v)
+        .filter((token) => !!token)
+        .map(({ address }) => address)
 
-      if (!signerAddress) return
+      sliceState.setStateByActiveKey('tokenList', chainId.toString(), tokens)
 
-      const chainSignerActiveKey = getChainSignerActiveKey(chainId, signerAddress)
-      const storedSelectFromList = sliceState.selectFromList[chainSignerActiveKey]
-
-      // get user balances
-      await state.userBalances.fetchUserBalancesByTokens(curve, selectToList)
+      // Get user balances
+      await state.userBalances.fetchUserBalancesByTokens(curve, tokens)
       const userBalancesMapper = get().userBalances.userBalancesMapper
       const filteredUserBalancesList = Object.keys(userBalancesMapper).filter(
         (k) => +(userBalancesMapper[k] ?? '0') > 0,
       )
 
-      // get usd rates
+      // Get prices of user balance tokens
       await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, NETWORK_TOKEN])
-      const usdRatesMapper = get().usdRates.usdRatesMapper
-
-      // get gas
-      if (typeof state.gas.gasInfo?.basePlusPriority?.[0] === 'undefined') await state.gas.fetchGasInfo(curve)
-      const firstBasePlusPriority = get().gas.gasInfo?.basePlusPriority?.[0] ?? 0
-
-      // sort list
-      const selectFromList = sortTokensByGasFees(
-        userBalancesMapper,
-        usdRatesMapper,
-        selectToList,
-        firstBasePlusPriority,
-      )
-
-      const isSame = isEqual(storedSelectFromList, selectFromList)
-
-      if (!isSame) sliceState.setStateByKey('selectFromList', { [chainSignerActiveKey]: selectFromList })
-    },
-    setSelectToList: (curve, tokensMapper) => {
-      const state = get()
-      const sliceState = state[sliceKey]
-
-      if (!curve || Object.keys(tokensMapper).length === 0) return
-
-      const { chainId, signerAddress } = curve
-
-      const selectToList = orderBy(
-        Object.entries(tokensMapper).map(([_, v]) => v!),
-        ({ volume }) => (typeof volume !== 'undefined' ? +volume : 0),
-        ['desc'],
-      ).map(({ address }) => address)
-
-      sliceState.setStateByActiveKey('selectToList', chainId.toString(), selectToList)
-
-      if (signerAddress) sliceState.setSelectFromList(curve, selectToList)
     },
 
     // steps
@@ -637,11 +598,6 @@ function getRouterWarningModal(
     return modalType[swapModalProps.type]
   }
   return null
-}
-
-export function getTokensObjList(tokensList: string[] | undefined, tokensMapper: TokensMapper | undefined) {
-  if (!tokensList || tokensList.length === 0 || !tokensMapper || Object.keys(tokensMapper).length === 0) return []
-  return tokensList.map((address) => tokensMapper[address])
 }
 
 export default createQuickSwapSlice

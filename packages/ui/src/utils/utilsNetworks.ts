@@ -163,6 +163,13 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     nativeCurrencySymbol: 'MNT',
     explorerUrl: 'https://mantlescan.xyz/',
   },
+  [Chain.Sonic]: {
+    id: 'sonic',
+    chainId: Chain.Sonic,
+    rpcUrl: `https://rpc.soniclabs.com`,
+    nativeCurrencySymbol: 'S',
+    explorerUrl: 'https://sonicscan.org/',
+  },
 }
 
 export type BaseConfig = {

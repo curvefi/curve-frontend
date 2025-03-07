@@ -41,7 +41,7 @@ export function TokenIcons({ tokens, ...props }: Props) {
             key={`${address}${idx}`}
             {...props}
             address={address}
-            symbol={symbol}
+            tooltip={symbol}
             sx={{
               ...(isNotFirstRow && {
                 marginTop: '-6px',

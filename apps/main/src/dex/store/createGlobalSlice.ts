@@ -193,9 +193,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       return
     }
 
-    // default hideSmallPools to false if poolIds length < 10
-    state.poolList.setStateByKey('formValues', { ...state.poolList.formValues, hideSmallPools: poolIds.length > 10 })
-
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
       chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}

@@ -26,6 +26,7 @@ export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlP
 
 export interface NetworkConfig extends BaseConfig {
   isLite: boolean
+  isCrvRewardsEnabled: boolean
   useApi: boolean
   excludePoolsMapper: { [key: string]: boolean }
   excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }

@@ -1,6 +1,5 @@
 import Button from '@ui/Button'
 import styled from 'styled-components'
-import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 
 export const FlexItemToken = styled.div`
   flex: 0 0 auto;
@@ -21,8 +20,4 @@ export const StyledButton = styled(Button)`
   height: var(--height-medium);
   max-width: 100%;
   box-sizing: border-box;
-`
-
-export const StyledTokenComboBox = styled(TokenComboBox)`
-  height: var(--height-medium);
 `

@@ -94,12 +94,12 @@ const TableHead = ({
                 <Th className="right">
                   <TheadSortButton
                     className="right"
-                    sortIdKey="rewardsOther"
+                    sortIdKey="rewardsLite"
                     nowrap
                     {...props}
                     loading={!isReadyRewardsApy}
                   >
-                    {tableLabels.rewardsOtherLite.name} tAPR
+                    {tableLabels.rewardsLite.name} tAPR
                     <IconTooltip placement="top">{REWARDS_OTHER_TOOLTIP}</IconTooltip>
                   </TheadSortButton>
                 </Th>

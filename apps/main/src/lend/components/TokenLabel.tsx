@@ -32,7 +32,7 @@ const TokenLabel = ({
       <StyledTokenIcon
         size="sm"
         blockchainId={isVisible ? networks[rChainId].networkId : ''}
-        symbol={symbol}
+        tooltip={symbol}
         address={address}
       />
       <ExternalLinkToken>{symbol}</ExternalLinkToken>

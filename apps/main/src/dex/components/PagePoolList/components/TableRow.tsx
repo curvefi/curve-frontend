@@ -4,7 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Fragment, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-import { Td, Tr, CellInPool } from '@ui/Table'
+import { CellInPool, Td, Tr } from '@ui/Table'
 import Box from '@ui/Box'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
 import PoolLabel from '@/dex/components/PoolLabel'
@@ -14,11 +14,11 @@ import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import { RewardsApy, PoolData, PoolDataCache, Tvl, Volume } from '@/dex/types/main.types'
+import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
 
 export type TableRowProps = {
   index: number
-  isLite: boolean
+  isCrvRewardsEnabled: boolean
   poolId: string
   formValues: FormValues
   isInPool: boolean
@@ -40,6 +40,7 @@ export type TableRowProps = {
 const TableRow = ({
   index,
   poolId,
+  isCrvRewardsEnabled,
   formValues,
   isInPool,
   blockchainId,
@@ -84,9 +85,16 @@ const TableRow = ({
           {columnKey === COLUMN_KEYS.rewardsLite && (
             <Td className="right">
               <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
-                {rewardsApy && (
-                  <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
-                )}
+                {rewardsApy &&
+                  (isCrvRewardsEnabled ? (
+                    <TableCellRewardsCrv
+                      isHighlight={sortBy === 'rewardsCrv'}
+                      poolData={poolData}
+                      rewardsApy={rewardsApy}
+                    />
+                  ) : (
+                    <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
+                  ))}
                 {poolData && campaignRewardsMapper[poolData.pool.address] && (
                   <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
                 )}

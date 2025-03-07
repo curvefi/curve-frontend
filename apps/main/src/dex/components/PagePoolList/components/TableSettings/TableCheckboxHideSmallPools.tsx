@@ -1,23 +1,19 @@
-import type { SearchParams } from '@/dex/components/PagePoolList/types'
 import { t } from '@ui-kit/lib/i18n'
 import Checkbox from '@ui/Checkbox'
 import { PoolData } from '@/dex/types/main.types'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
-const TableCheckboxHideSmallPools = ({
-  searchParams,
-  poolDatasCachedOrApi,
-  updatePath,
-}: {
-  searchParams: SearchParams
-  poolDatasCachedOrApi: PoolData[]
-  updatePath(updatedSearchParams: Partial<SearchParams>): void
-}) => {
-  const isDisabled = searchParams.filterKey === 'user' || poolDatasCachedOrApi.length < 10
+const TableCheckboxHideSmallPools = ({ poolDatasCachedOrApi }: { poolDatasCachedOrApi: PoolData[] }) => {
+  const isDisabled = poolDatasCachedOrApi.length < 10
+
+  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
+  const setHideSmallPools = useUserProfileStore((state) => state.setHideSmallPools)
+
   return (
     <Checkbox
       isDisabled={isDisabled}
-      isSelected={isDisabled ? false : searchParams.hideSmallPools}
-      onChange={(val) => updatePath({ hideSmallPools: val })}
+      isSelected={isDisabled ? false : hideSmallPools}
+      onChange={(val) => setHideSmallPools(val)}
     >
       {t`Hide very small pools`}
     </Checkbox>

@@ -1,11 +1,11 @@
+import { TITLE } from '@/lend/constants'
+import type lendingApi from '@curvefi/lending-api'
 import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { ReactNode } from 'react'
 import type { WalletState } from '@web3-onboard/core'
-import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import { TITLE } from '@/lend/constants'
 import { ethers } from 'ethers'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
@@ -246,7 +246,7 @@ export type UserLoanDetails = {
     bandsBalances: ParsedBandsBalances[]
     bandsPct: string
     isCloseToLiquidation: boolean
-    loss: UserLoss
+    loss?: UserLoss
     prices: string[]
     range: number | null
     state: { collateral: string; borrowed: string; debt: string; N: string }

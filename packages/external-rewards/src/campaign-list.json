@@ -6,9 +6,6 @@
     "campaign": "Etherfi.json"
   },
   {
-    "campaign": "PufferFinance.json"
-  },
-  {
     "campaign": "Renzo.json"
   },
   {
@@ -82,5 +79,8 @@
   },
   {
     "campaign": "Pumpbtc.json"
+  },
+  {
+    "campaign": "Carrot.json"
   }
 ]

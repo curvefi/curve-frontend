@@ -16,12 +16,14 @@ const CellLoss = ({ userActiveKey, type }: { userActiveKey: string; type: 'amoun
       ) : !details ? (
         '-'
       ) : type === 'amount' ? (
-        <>{Number(loss) <= SMALL_NUMBER || Number(loss) === 0 ? 0 : formatNumber(loss)}</>
+        <>{loss === undefined ? '?' : Number(loss) <= SMALL_NUMBER || Number(loss) === 0 ? 0 : formatNumber(loss)}</>
       ) : type === 'percent' ? (
         <>
-          {Number(loss_pct) <= SMALL_NUMBER || Number(loss_pct) === 0
-            ? 0
-            : formatNumber(loss_pct, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}
+          {loss_pct === undefined
+            ? '?'
+            : Number(loss_pct) <= SMALL_NUMBER || Number(loss_pct) === 0
+              ? 0
+              : formatNumber(loss_pct, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}
         </>
       ) : null}
     </>

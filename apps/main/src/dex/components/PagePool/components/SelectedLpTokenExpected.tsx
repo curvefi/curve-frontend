@@ -36,7 +36,7 @@ const SelectedLpTokenExpected = ({
         <Box key={tokenAddress} as="li" flex flexAlignItems="center">
           <StyledTokenIcon
             blockchainId={blockchainId}
-            symbol={symbol}
+            tooltip={symbol}
             address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
           />{' '}
           {symbol}
