@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import Loader from '@ui/Loader'
 import { Radio, RadioGroup } from '@ui/Radio'
 import Spacer from '@ui/Spacer'
@@ -10,6 +9,7 @@ import TextEllipsis from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { shortenAddress } from '@ui-kit/utils'
 
 const SelectedOneCoinExpected = ({
   amounts,
@@ -58,7 +58,7 @@ const SelectedOneCoinExpected = ({
                 tooltip={symbol}
                 address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
               />{' '}
-              {symbol} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}
+              {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
               <Spacer />
               {loading ? (
                 <Loader skeleton={[90, 20]} />

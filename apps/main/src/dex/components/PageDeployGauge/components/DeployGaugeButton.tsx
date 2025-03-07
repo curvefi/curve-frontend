@@ -12,12 +12,12 @@ import { CONNECT_STAGE } from '@/dex/constants'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import { getPath, useNetworkFromUrl, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface Props {
   disabled: boolean
@@ -99,7 +99,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
             deploymentStatus.sidechain.status === 'SUCCESS' && (
               <InfoLinkBarWrapper>
                 <StyledInfoLinkBar
-                  description={t`Tx: Gauge for ${shortenTokenAddress(lpTokenAddress)} deployed`}
+                  description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
                   link={networks[chainId].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
                 />
               </InfoLinkBarWrapper>
@@ -108,7 +108,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
             deploymentStatus.mirror.status === 'SUCCESS' && (
               <InfoLinkBarWrapper>
                 <StyledInfoLinkBar
-                  description={t`Tx: Gauge for ${shortenTokenAddress(lpTokenAddress)} deployed`}
+                  description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
                   link={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
                 />
               </InfoLinkBarWrapper>
@@ -178,7 +178,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
       {deploymentStatus.mainnet.transaction && deploymentStatus.mainnet.status === 'SUCCESS' && (
         <InfoLinkBarWrapper>
           <StyledInfoLinkBar
-            description={t`Tx: Gauge for ${shortenTokenAddress(lpTokenAddress)} deployed`}
+            description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
             link={networks[chainId].scanTxPath(deploymentStatus.mainnet.transaction.hash)}
           />
         </InfoLinkBarWrapper>

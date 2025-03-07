@@ -3,10 +3,10 @@ import { useButton } from 'react-aria'
 import type { AriaButtonProps } from 'react-aria'
 import styled from 'styled-components'
 import { copyToClipboard } from '@/dex/lib/utils'
-import { shortenTokenAddress } from '@/dex/utils'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -60,7 +60,7 @@ const ChipPool = ({
 
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
-      return `${shortenTokenAddress(poolAddress)}`
+      return `${shortenAddress(poolAddress)}`
     }
     return poolAddress
   }, [poolAddress])

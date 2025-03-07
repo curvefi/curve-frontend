@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { TOP_HOLDERS } from '@/dao/constants'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
-import { formatNumber, shortenTokenAddress } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
+import { shortenAddress } from '@ui-kit/utils'
 import CustomTooltip from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
@@ -35,7 +36,7 @@ const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
       return TOP_HOLDERS[address].title
     }
 
-    return user.length > 15 ? (shortenTokenAddress(user)?.toString() ?? user) : user
+    return user.length > 15 ? (shortenAddress(user)?.toString() ?? user) : user
   }
 
   const dataFormatted = data.map((x) => ({

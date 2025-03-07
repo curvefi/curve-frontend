@@ -5,9 +5,10 @@ import { ProposalData } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import { InternalLink } from '@ui/Link'
-import { convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
+import { convertToLocaleTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 
 type ProposalInformationProps = {
   proposal: ProposalData
@@ -29,7 +30,7 @@ const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationPro
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
         <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
-          {shortenTokenAddress(proposal?.creator)}
+          {shortenAddress(proposal?.creator)}
         </StyledInternalLink>
       </Box>
       <Box>

@@ -4,10 +4,10 @@ import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStat
 import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
+import { shortenAddress } from '@ui-kit/utils'
 
 const ContractComp = ({
   address,
@@ -37,7 +37,7 @@ const ContractComp = ({
             <Box flex flexDirection="column">
               {label}
               <StyledExternalLink href={network.scanAddressPath(address)}>
-                {shortenTokenAddress(address)}
+                {shortenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
             </Box>
@@ -50,7 +50,7 @@ const ContractComp = ({
             <Label>{label}</Label>
             <span>
               <StyledExternalLink href={network.scanAddressPath(address)}>
-                {shortenTokenAddress(address)}
+                {shortenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
               <StyledIconButton size="medium" onClick={() => handleCopyClick(address)}>

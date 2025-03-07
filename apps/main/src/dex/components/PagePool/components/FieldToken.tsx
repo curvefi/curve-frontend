@@ -1,9 +1,10 @@
 import { ethAddress } from 'viem'
-import { shortenTokenAddress, shortenTokenName } from '@/dex/utils'
+import { shortenTokenName } from '@/dex/utils'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   idx: number
@@ -63,7 +64,7 @@ const FieldToken = ({
         type="number"
         value={value}
         labelProps={{
-          label: `${shortenTokenName(token)} ${haveSameTokenName ? shortenTokenAddress(tokenAddress) : ''} ${
+          label: `${shortenTokenName(token)} ${haveSameTokenName ? shortenAddress(tokenAddress) : ''} ${
             showAvailableBalance ? `${t`Avail.`} ` : ''
           }`,
           descriptionLoading: showAvailableBalance && balanceLoading,

@@ -3,10 +3,11 @@ import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
-import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
+import { copyToClipboard } from '@/loan/utils/helpers'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -24,7 +25,7 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
       <strong>{title}</strong>
       <span>
         <StyledExternalLink isMono href={networks[chainId]?.scanAddressPath(address)}>
-          {shortenTokenAddress(address)}
+          {shortenAddress(address)}
           <Icon name="Launch" size={16} />
         </StyledExternalLink>
         <CopyIconButton size="medium" onClick={() => handleBtnClickCopy(address)}>

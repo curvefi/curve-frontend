@@ -3,13 +3,13 @@ import styled from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import InternalLinkButton from '@ui/InternalLinkButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   chainId: ChainId
@@ -52,7 +52,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                     href={networks[sidechain].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
-                    {shortenTokenAddress(deploymentStatus.sidechain.transaction.hash)}
+                    {shortenAddress(deploymentStatus.sidechain.transaction.hash)}
                     <StyledIcon name={'Launch'} size={16} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
@@ -84,7 +84,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                     href={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
-                    {shortenTokenAddress(deploymentStatus.mirror.transaction.hash)}
+                    {shortenAddress(deploymentStatus.mirror.transaction.hash)}
                     <StyledIcon name={'Launch'} size={16} />
                   </Transaction>
                 </SuccessfulTransactionInfo>

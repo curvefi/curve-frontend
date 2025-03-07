@@ -2,9 +2,10 @@ import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
-import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
+import { copyToClipboard } from '@/loan/utils/helpers'
 import Icon from '@ui/Icon'
 import { breakpoints } from '@ui/utils/responsive'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -66,7 +67,7 @@ const CollateralLabelNameAddress = ({
 
   const parsedAddress = useMemo(() => {
     if (displayAddress) {
-      return `${shortenTokenAddress(displayAddress)}`
+      return `${shortenAddress(displayAddress)}`
     }
     return displayAddress
   }, [displayAddress])

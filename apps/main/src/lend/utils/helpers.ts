@@ -38,13 +38,6 @@ export function isMobile() {
 
 export const isDevelopment = process.env.NODE_ENV === 'development'
 
-export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
-  if (!tokenAddress) return
-  const start = tokenAddress.slice(0, 4)
-  const end = tokenAddress.slice(-4)
-  return startOnly ? start : `${start}...${end}`
-}
-
 export function removeExtraSpaces(str: string) {
   return str.replace(/ +(?= )/g, '').trim()
 }

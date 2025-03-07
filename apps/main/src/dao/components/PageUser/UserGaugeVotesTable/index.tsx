@@ -5,9 +5,10 @@ import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/Pagi
 import useStore from '@/dao/store/useStore'
 import { UserGaugeVote, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
+import { formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 import { GAUGE_VOTES_LABELS } from '../constants'
 
 interface UserGaugeVotesTableProps {
@@ -67,7 +68,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
             }}
             className="right-padding"
           >
-            {shortenTokenAddress(gaugeVote.gauge)}
+            {shortenAddress(gaugeVote.gauge)}
           </TableDataLink>
         </TableRowWrapper>
       )}

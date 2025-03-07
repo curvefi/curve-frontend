@@ -49,13 +49,6 @@ export function shortenAccount(account: string, visibleLength = 4) {
   }
 }
 
-export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
-  if (!tokenAddress) return
-  const start = tokenAddress.slice(0, 4)
-  const end = tokenAddress.slice(-4)
-  return startOnly ? start : `${start}...${end}`
-}
-
 export function copyToClipboard(text: string) {
   if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
     const textarea = document.createElement('textarea')

@@ -8,8 +8,9 @@ import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
-import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
+import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined
@@ -35,7 +36,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`Gauge`}
             data={
               <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.address || '')}</StyledMetricsColumnData>
+                <StyledMetricsColumnData>{shortenAddress(gaugeData?.address || '')}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
                     href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
@@ -140,7 +141,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               title={t`Pool`}
               data={
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
+                  <StyledMetricsColumnData>{shortenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
                   <BigScreenButtonsWrapper>
                     <ExternalLinkIconButton
                       href={gaugeExternalLink}

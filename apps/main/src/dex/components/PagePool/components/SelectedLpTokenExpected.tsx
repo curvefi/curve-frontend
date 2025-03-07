@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import Box from '@ui/Box'
 import Loader from '@ui/Loader'
 import Spacer from '@ui/Spacer'
@@ -9,6 +8,7 @@ import TextEllipsis from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { shortenAddress } from '@ui-kit/utils'
 
 const SelectedLpTokenExpected = ({
   amounts,
@@ -40,7 +40,7 @@ const SelectedLpTokenExpected = ({
             address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
           />{' '}
           {symbol}
-          {haveSameTokenName && <Chip>{shortenTokenAddress(tokenAddress)}</Chip>}
+          {haveSameTokenName && <Chip>{shortenAddress(tokenAddress)}</Chip>}
           <Spacer />
           {loading ? (
             <Loader skeleton={[90, 20]} />

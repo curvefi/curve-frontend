@@ -4,10 +4,11 @@ import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
 import { StyledStats } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
-import { copyToClipboard, shortenTokenAddress } from '@/lend/utils/helpers'
+import { copyToClipboard } from '@/lend/utils/helpers'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -34,7 +35,7 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
             isNumber={isValidAddress}
             href={isValidAddress ? networks[chainId]?.scanAddressPath(address) : ''}
           >
-            <strong>{address === 'NaN' ? 'no gauge' : shortenTokenAddress(address)}</strong>
+            <strong>{address === 'NaN' ? 'no gauge' : shortenAddress(address)}</strong>
             <Icon name="Launch" size={16} />
           </StyledExternalLink>
           <CopyIconButton

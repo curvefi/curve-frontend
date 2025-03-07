@@ -6,11 +6,11 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { ChainId, NetworkEnum, type UrlParams } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import TextEllipsis from '@ui/TextEllipsis'
+import { shortenAddress } from '@ui-kit/utils'
 
 const DetailInfoTradeRouteRoute = ({
   params,
@@ -23,8 +23,8 @@ const DetailInfoTradeRouteRoute = ({
   routesLength: number
   tokensNameMapper: { [address: string]: string }
 }) => {
-  const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenTokenAddress(route.inputCoinAddress) ?? ''
-  const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenTokenAddress(route.outputCoinAddress) ?? ''
+  const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
+  const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const networkId = params?.network ? networksIdMapper[params.network.toLowerCase() as NetworkEnum] : null

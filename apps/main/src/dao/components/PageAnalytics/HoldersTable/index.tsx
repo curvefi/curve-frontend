@@ -7,9 +7,10 @@ import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'
-import { shortenTokenAddress, formatNumber, formatDate } from '@ui/utils'
+import { formatNumber, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 
 const TopHoldersTable = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
@@ -45,7 +46,7 @@ const TopHoldersTable = () => {
               <span style={{ textDecoration: 'underline' }}>
                 {TOP_HOLDERS[holder.user.toLowerCase()]
                   ? TOP_HOLDERS[holder.user.toLowerCase()].title
-                  : shortenTokenAddress(holder.user)}
+                  : shortenAddress(holder.user)}
               </span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>

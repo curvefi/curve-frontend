@@ -6,9 +6,10 @@ import { TOP_HOLDERS } from '@/dao/constants'
 import useStore from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber, shortenTokenAddress } from '@ui/utils/'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 
 interface GaugeVotesTableProps {
@@ -73,7 +74,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
           >
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
-              : shortenTokenAddress(gaugeVote.user)}
+              : shortenAddress(gaugeVote.user)}
           </TableDataLink>
         </TableRowWrapper>
       )}

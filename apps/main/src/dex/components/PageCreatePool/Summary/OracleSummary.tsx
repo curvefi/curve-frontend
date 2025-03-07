@@ -10,9 +10,9 @@ import {
 import type { TokenState } from '@/dex/components/PageCreatePool/types'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import Icon from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   chainId: ChainId
@@ -74,11 +74,11 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
           <SummaryData>
             {token.oracleAddress.length === 42 ? (
               <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
-                {shortenTokenAddress(token.oracleAddress)}
+                {shortenAddress(token.oracleAddress)}
                 <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
               </AddressLink>
             ) : token.oracleAddress.length > 13 ? (
-              shortenTokenAddress(token.oracleAddress)
+              shortenAddress(token.oracleAddress)
             ) : (
               token.oracleAddress
             )}

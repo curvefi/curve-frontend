@@ -6,9 +6,10 @@ import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
-import { shortenTokenAddress, formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   totalVotes: number
@@ -58,7 +59,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                       push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`))
                     }}
                   >
-                    {vote.topHolder ? vote.topHolder : shortenTokenAddress(vote.voter)}
+                    {vote.topHolder ? vote.topHolder : shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
                 <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>

@@ -4,7 +4,6 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
-import { shortenTokenAddress } from '@/dex/utils'
 import Box from '@ui/Box'
 import Stats from '@ui/Stats'
 import Table from '@ui/Table'
@@ -147,7 +146,7 @@ const MySharesStats = ({
                   label={
                     tokenObj && poolData.tokensCountBy[token] > 1 ? (
                       <span>
-                        {token} <Chip>{shortenTokenAddress(tokenObj.address)}</Chip>
+                        {token} <Chip>{shortenAddress(tokenObj.address)}</Chip>
                       </span>
                     ) : (
                       token
