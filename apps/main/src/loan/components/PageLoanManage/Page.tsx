@@ -11,7 +11,7 @@ import { getTokenName } from '@/loan/utils/utilsLoan'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
-import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import {

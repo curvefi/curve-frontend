@@ -9,7 +9,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import MarketListNoResult from '@/lend/components/PageMarketList/components/MarketListNoResult'
 import MarketListItemContent from '@/lend/components/PageMarketList/components/MarketListItemContent'
 import TableSettings from '@/lend/components/PageMarketList/components/TableSettings/TableSettings'
-import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useOneWayMarketMapping } from '@/lend/entities/chain'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

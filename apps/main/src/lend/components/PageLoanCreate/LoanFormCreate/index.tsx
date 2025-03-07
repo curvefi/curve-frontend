@@ -11,7 +11,7 @@ import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCrea
 import { useNavigate, useParams } from 'react-router-dom'
 import networks from '@/lend/networks'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
-import usePageVisibleInterval from '@ui/hooks/usePageVisibleInterval'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import useStore from '@/lend/store/useStore'
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import Accordion from '@ui/Accordion'
