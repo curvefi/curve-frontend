@@ -6,6 +6,7 @@ import { ROUTE } from '@/dao/constants'
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
+import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
@@ -139,22 +140,33 @@ export const App: NextPage = () => {
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
             <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-              <OverlayProvider>
-                <Page>
-                  <Routes>
-                    {SubRoutes}
-                    <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
-                    <Route path="/proposals/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
-                    <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
-                    <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
-                    <Route path="/analytics/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />} />
-                    <Route path="/vecrv/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />} />
-                    <Route path="404" element={<Page404 />} />
-                    <Route path="*" element={<Page404 />} />
-                  </Routes>
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Routes>
+                      {SubRoutes}
+                      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
+                      <Route
+                        path="/proposals/*"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />}
+                      />
+                      <Route path="/user/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_USER}`} replace />} />
+                      <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
+                      <Route
+                        path="/analytics/*"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_ANALYTICS}`} replace />}
+                      />
+                      <Route
+                        path="/vecrv/*"
+                        element={<Navigate to={`/ethereum${ROUTE.PAGE_VECRV_CREATE}`} replace />}
+                      />
+                      <Route path="404" element={<Page404 />} />
+                      <Route path="*" element={<Page404 />} />
+                    </Routes>
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
             </StyleSheetManager>
           </HashRouter>
         )}
