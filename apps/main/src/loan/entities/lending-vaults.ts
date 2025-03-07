@@ -2,9 +2,11 @@ import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/quer
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import {
   getMarkets,
+  getUserMarketEarnings,
   getUserMarkets,
   getUserMarketStats,
   Market,
+  type UserMarketEarnings,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
 import { getSupportedLendingChains } from '@/loan/entities/chains'
@@ -27,20 +29,23 @@ export const { getQueryOptions: getLendingVaultOptions, invalidate: invalidateLe
   validationSuite: EmptyValidationSuite,
 })
 
-export type UserLendingVault = UserMarketStats & { chain: Chain }
+export type UserLendingVault = { stats: UserMarketStats; earnings: UserMarketEarnings; chain: Chain }
 
 export const { getQueryOptions: getUserLendingVaultsOptions, invalidate: invalidateUserLendingVaults } = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['user-lending-vaults', { userAddress }, 'v1'] as const,
+  queryKey: ({ userAddress }: UserParams) => ['user-lending-vaults', { userAddress }, 'v2'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Address, UserLendingVault>> => {
     const chains = await getSupportedLendingChains()
     const markets = await Promise.all(
       chains.map(async (chain) => {
         const markets = await getUserMarkets(userAddress, chain, {})
         return Promise.all(
-          markets.map(async ({ controller }) => [
-            controller,
-            { chain, ...(await getUserMarketStats(userAddress, chain, controller)) },
-          ]),
+          markets.map(async ({ controller }) => {
+            const [stats, earnings] = await Promise.all([
+              getUserMarketStats(userAddress, chain, controller),
+              getUserMarketEarnings(userAddress, chain, controller),
+            ])
+            return [controller, { chain, stats, earnings }]
+          }),
         )
       }),
     )

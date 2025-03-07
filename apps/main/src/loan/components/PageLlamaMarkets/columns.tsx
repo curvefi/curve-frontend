@@ -31,37 +31,55 @@ const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>
     meta: { hidden: true },
   })
 
-const [borrowChartId, lendChartId] = ['borrowChart', 'lendChart']
+export enum LlamaMarketColumnId {
+  Assets = 'assets',
+  UserHealth = 'userHealth',
+  UserBorrowed = 'userBorrowed',
+  UserEarnings = 'userEarnings',
+  UserDeposited = 'userDeposited',
+  BorrowRate = 'rates.borrow',
+  BorrowChart = 'borrowChart',
+  LendRate = 'rates.lend',
+  LendChart = 'lendChart',
+  UtilizationPercent = 'utilizationPercent',
+  LiquidityUsd = 'liquidityUsd',
+  Chain = 'chain',
+  CollateralSymbol = 'assets.collateral.symbol',
+  BorrowedSymbol = 'assets.borrowed.symbol',
+  IsFavorite = 'isFavorite',
+  Rewards = 'rewards',
+  Type = 'type',
+}
 
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
-  columnHelper.accessor('assets', {
+  columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: t`Collateral • Borrow`,
     cell: MarketTitleCell,
     size: ColumnWidth.lg,
   }),
-  columnHelper.accessor('userHealth', {
+  columnHelper.accessor(LlamaMarketColumnId.UserHealth, {
     header: t`Health`,
     cell: PercentageCell,
     meta: { type: 'numeric', hideZero: true },
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('userBorrowed', {
+  columnHelper.accessor(LlamaMarketColumnId.UserBorrowed, {
     header: t`Borrow Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('userEarnings', {
+  columnHelper.accessor(LlamaMarketColumnId.UserEarnings, {
     header: t`My Earnings`,
     cell: PriceCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('userDeposited', {
+  columnHelper.accessor(LlamaMarketColumnId.UserDeposited, {
     header: t`Supplied Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
@@ -69,13 +87,20 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
+  columnHelper.accessor(LlamaMarketColumnId.BorrowRate, {
+    header: t`7D Avg Borrow Rate`,
+    cell: (c) => <RateCell market={c.row.original} type="borrow" />,
+    meta: { type: 'numeric' },
+    size: ColumnWidth.sm,
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor('rates.borrow', {
-    id: borrowChartId,
+    id: LlamaMarketColumnId.BorrowChart,
     header: t`7D Borrow Rate Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
     size: ColumnWidth.md,
   }),
-  columnHelper.accessor('rates.lend', {
+  columnHelper.accessor(LlamaMarketColumnId.LendRate, {
     header: t`7D Avg Supply Yield`,
     cell: (c) => <RateCell market={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
@@ -83,34 +108,34 @@ export const LLAMA_MARKET_COLUMNS = [
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.lend', {
-    id: lendChartId,
+    id: LlamaMarketColumnId.LendChart,
     header: t`7D Supply Yield Chart`,
     cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
     size: ColumnWidth.md,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('utilizationPercent', {
+  columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: t`Utilization`,
     cell: PercentageCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
-  columnHelper.accessor('liquidityUsd', {
+  columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: () => t`Available Liquidity`,
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden('chain', multiFilterFn),
-  hidden('assets.collateral.symbol', multiFilterFn),
-  hidden('assets.borrowed.symbol', multiFilterFn),
-  hidden('isFavorite', boolFilterFn),
-  hidden('rewards', boolFilterFn),
-  hidden('type', multiFilterFn),
+  hidden(LlamaMarketColumnId.Chain, multiFilterFn),
+  hidden(LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
+  hidden(LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
+  hidden(LlamaMarketColumnId.IsFavorite, boolFilterFn),
+  hidden(LlamaMarketColumnId.Rewards, boolFilterFn),
+  hidden(LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies ColumnDef<LlamaMarket, any>[]
 
-export const DEFAULT_SORT = [{ id: 'liquidityUsd', desc: true }]
+export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.LiquidityUsd, desc: true }]
 
 export const useDefaultMarketColumnsVisibility: (address?: Address) => VisibilityGroup[] = (address) =>
   useMemo(
@@ -118,22 +143,32 @@ export const useDefaultMarketColumnsVisibility: (address?: Address) => Visibilit
       {
         label: t`Markets`,
         options: [
-          { label: t`Available Liquidity`, columns: ['liquidityUsd'], active: true, visible: true },
-          { label: t`Utilization`, columns: ['utilizationPercent'], active: true, visible: true },
+          { label: t`Available Liquidity`, columns: [LlamaMarketColumnId.LiquidityUsd], active: true, visible: true },
+          { label: t`Utilization`, columns: [LlamaMarketColumnId.UtilizationPercent], active: true, visible: true },
         ],
       },
       {
         label: t`Borrow`,
         options: [
-          { label: t`Chart`, columns: [borrowChartId], active: true, visible: true },
-          { label: t`Borrow Details`, columns: ['userHealth', 'userBorrowed'], active: true, visible: !!address },
+          { label: t`Chart`, columns: [LlamaMarketColumnId.BorrowChart], active: true, visible: true },
+          {
+            label: t`Borrow Details`,
+            columns: [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed],
+            active: true,
+            visible: !!address,
+          },
         ],
       },
       {
         label: t`Lend`,
         options: [
-          { label: t`Chart`, columns: [lendChartId], active: true, visible: true },
-          { label: t`Lend Details`, columns: ['userEarnings', 'userDeposited'], active: true, visible: !!address },
+          { label: t`Chart`, columns: [LlamaMarketColumnId.LendChart], active: true, visible: true },
+          {
+            label: t`Lend Details`,
+            columns: [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited],
+            active: true,
+            visible: !!address,
+          },
         ],
       },
     ],

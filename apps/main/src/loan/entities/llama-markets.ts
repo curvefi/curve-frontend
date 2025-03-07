@@ -109,11 +109,11 @@ const convertLendingVault = (
   isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
   leverage,
-  userCollateralEroded: user?.softLiquidation ?? false,
-  userEarnings: user ? user.collateral - user.totalDeposited : null, // todo: check if correct
-  userDeposited: user?.totalDeposited ?? null,
-  userBorrowed: user?.borrowed ?? null,
-  userHealth: user?.healthFull ?? null,
+  userCollateralEroded: user?.stats?.softLiquidation ?? false,
+  userEarnings: user?.earnings?.earnings ?? null,
+  userDeposited: user?.stats?.totalDeposited ?? null,
+  userBorrowed: user?.stats?.borrowed ?? null,
+  userHealth: user?.stats?.healthFull ?? null,
 })
 
 /** We show WETH as ETH in the UI and market URL */
@@ -165,8 +165,8 @@ const convertMintMarket = (
   rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,
   userCollateralEroded: user?.softLiquidation ?? false,
-  userEarnings: user ? user.collateral - user.totalDeposited : null, // todo: check if correct
-  userDeposited: user?.totalDeposited ?? null,
+  userEarnings: null,
+  userDeposited: null,
   userBorrowed: user?.debt ?? null,
   userHealth: user?.healthFull ?? null,
 })
