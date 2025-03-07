@@ -10,6 +10,8 @@ import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import Box from '@mui/material/Box'
+import * as React from 'react'
+import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 
 const { Spacing } = SizesAndSpaces
 
@@ -52,6 +54,12 @@ export const MultiSelectFilter = <T extends unknown>({
     },
     [id, setColumnFilter, close],
   )
+
+  const onSelectChange = useCallback(
+    // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
+    (e: SelectChangeEvent<string[]>) => setColumnFilter(id, (e.target.value as string[]).filter(Boolean)),
+    [setColumnFilter, id],
+  )
   return (
     <Select
       name={id}
@@ -61,7 +69,7 @@ export const MultiSelectFilter = <T extends unknown>({
       multiple
       displayEmpty
       value={value}
-      onChange={(e) => setColumnFilter(id, e.target.value)}
+      onChange={onSelectChange}
       fullWidth
       data-testid={`multi-select-filter-${id}`}
       size="small"
