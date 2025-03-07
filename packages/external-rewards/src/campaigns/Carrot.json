@@ -28,6 +28,18 @@
       "multiplier": "carrot",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "borrow",
+      "description": "CARROT tokens are tokenized Puffer points.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x4f87158350c296955966059c50263f711ce0817c",
+      "network": "ethereum",
+      "multiplier": "carrot",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
