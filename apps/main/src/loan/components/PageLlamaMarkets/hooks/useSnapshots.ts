@@ -11,6 +11,7 @@ type UseSnapshotsResult<T> = {
   isLoading: boolean
   snapshotKey: keyof T
   rate: number | null
+  averageRate: number | null
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
@@ -24,7 +25,7 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   const { data: poolSnapshots, isLoading: poolIsLoading } = useLendingSnapshots(params, isPool)
   const { data: mintSnapshots, isLoading: mintIsLoading } = useCrvUsdSnapshots(params, showMintGraph)
 
-  const currentValue = rates[type]
+  const currentValue = rates[type] ?? null
   const { snapshots, isLoading, snapshotKey } = isPool
     ? {
         snapshots: poolSnapshots ?? null,
@@ -37,10 +38,10 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
         snapshotKey: 'rate' as const,
       }
 
-  const rate = useMemo(
-    () => (snapshots?.length ? meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) : (currentValue ?? null)),
-    [snapshots, currentValue, snapshotKey],
+  const averageRate = useMemo(
+    () => snapshots && meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
+    [snapshots, snapshotKey],
   )
 
-  return { snapshots, isLoading, snapshotKey, rate } as UseSnapshotsResult<T>
+  return { snapshots, isLoading, snapshotKey, rate: currentValue, averageRate } as UseSnapshotsResult<T>
 }

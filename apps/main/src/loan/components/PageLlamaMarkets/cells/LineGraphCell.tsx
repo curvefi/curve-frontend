@@ -37,10 +37,10 @@ type RateCellProps = {
  * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
  */
 export const LineGraphCell = ({ market, type }: RateCellProps) => {
-  const { snapshots, snapshotKey, isLoading, rate } = useSnapshots(market, type)
+  const { snapshots, snapshotKey, isLoading, averageRate } = useSnapshots(market, type)
   const { design } = useTheme()
   return (
-    rate != null && (
+    averageRate != null && (
       <Box data-testid={`line-graph-${type}`}>
         {snapshots?.length ? (
           <LineChart data={snapshots} {...graphSize} compact>
