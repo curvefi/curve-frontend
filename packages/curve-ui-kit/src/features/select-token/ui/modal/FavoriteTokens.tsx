@@ -1,14 +1,12 @@
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TokenOption } from '../../types'
 
 const { Spacing } = SizesAndSpaces
-
-import type { TokenOption } from '../../types'
 
 export type FavoriteTokenCallbacks = {
   onToken: (token: TokenOption) => void
