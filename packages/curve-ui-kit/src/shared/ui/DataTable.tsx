@@ -15,7 +15,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useNavigate } from 'react-router'
 import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
 
-const { Sizing, Spacing, MinWidth } = SizesAndSpaces
+const { Sizing, Spacing, MinWidth, MinHeight } = SizesAndSpaces
 
 // css class to hide elements on desktop unless the row is hovered
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
@@ -208,7 +208,7 @@ export const DataTable = <T extends TableItem>({
     </TableHead>
     <TableBody>
       {table.getRowModel().rows.length === 0 && (
-        <TableRow data-testid="table-empty-row">
+        <TableRow data-testid="table-empty-row" sx={{ height: MinHeight.tableNoResults }}>
           <Typography
             variant="tableCellL"
             colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
