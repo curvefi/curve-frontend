@@ -210,7 +210,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={5}
+            limit={Infinity}
             showAll={sections.my || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
             onToken={onToken}
@@ -222,7 +222,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={10}
+            limit={300}
             showAll={sections.all || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, all: true }))}
             onToken={onToken}
