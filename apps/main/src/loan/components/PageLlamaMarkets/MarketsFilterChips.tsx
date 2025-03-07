@@ -9,6 +9,7 @@ import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useCallback } from 'react'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,11 +36,11 @@ function useToggleFilter(key: LlamaMarketKey, { columnFiltersById, setColumnFilt
  * @returns toggles - object with keys for each market type and functions to toggle the type
  */
 function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilterProps) {
-  const filter = columnFiltersById['type'] as LlamaMarketType[] | undefined
+  const filter = columnFiltersById[LlamaMarketColumnId.Type] as LlamaMarketType[] | undefined
   const toggleMarketType = useCallback(
     (type: LlamaMarketType) => {
       setColumnFilter(
-        'type',
+        LlamaMarketColumnId.Type,
         !filter || filter.includes(type)
           ? (filter ?? Object.values(LlamaMarketType)).filter((f) => f !== type)
           : [...(filter || []), type],
@@ -49,8 +50,8 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
   )
 
   const marketTypes = {
-    [LlamaMarketType.Mint]: !filter || filter.includes(LlamaMarketType.Mint),
-    [LlamaMarketType.Lend]: !filter || filter.includes(LlamaMarketType.Lend),
+    [LlamaMarketType.Mint]: filter?.includes(LlamaMarketType.Mint) ?? false,
+    [LlamaMarketType.Lend]: filter?.includes(LlamaMarketType.Lend) ?? false,
   }
   const toggles = {
     [LlamaMarketType.Mint]: useCallback(() => toggleMarketType(LlamaMarketType.Mint), [toggleMarketType]),
