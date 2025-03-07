@@ -1,0 +1,33 @@
+{
+  "campaignName": "Carrot",
+  "platform": "Puffer",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "carrot.png",
+  "dashboardLink": "https://app.puffer.fi/defi/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "CARROT tokens are tokenized Puffer points.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xeeda34a377dd0ca676b9511ee1324974fa8d980d",
+      "network": "ethereum",
+      "multiplier": "carrot",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "CARROT tokens are tokenized Puffer points.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x39f5b252de249790faed0c2f05abead56d2088e1",
+      "network": "ethereum",
+      "multiplier": "carrot",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
