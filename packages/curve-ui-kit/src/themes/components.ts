@@ -111,6 +111,10 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     styleOverrides: {
       thumb: {
         borderRadius: 0,
+        backgroundImage: `url(${design.Inputs.SliderThumbImage})`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
       },
     },
   },

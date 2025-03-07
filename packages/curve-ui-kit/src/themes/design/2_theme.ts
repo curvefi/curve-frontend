@@ -267,6 +267,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Grays[150],
       },
     },
+    SliderThumbImage: '/mui/slider-thumb-dark.svg',
   } as const
 
   const Switch = {
@@ -611,6 +612,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: color[975],
       },
     },
+    SliderThumbImage: '/mui/slider-thumb.svg',
   } as const
 
   const Switch = {
@@ -900,6 +902,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Violet[50],
       },
     },
+    SliderThumbImage: '/mui/slider-thumb.svg',
   } as const
 
   const Switch = {
