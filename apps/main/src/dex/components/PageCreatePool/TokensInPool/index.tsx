@@ -46,8 +46,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     updateSwapType,
   } = useStore((state) => state.createPool)
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
-  const basePools = useStore((state) => state.pools.basePools[chainId])
-  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
+  const basePools = useStore((state) => state.pools.basePools[chainId] ?? [])
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory } = useStore(
@@ -61,8 +60,6 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
-    if (basePoolsLoading) return []
-
     const tokensArray = Object.entries(tokensMapper).map((token) => ({
       ...token[1]!,
       userAddedToken: false,
@@ -82,7 +79,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
-  }, [basePoolsLoading, tokensMapper, haveSigner, userBalances, userAddedTokens, basePools])
+  }, [tokensMapper, haveSigner, userBalances, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {
@@ -766,7 +763,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           <Row>
             <ExplainerWrapper flex flexColumn>
               {stableswapFactory && <p>{t`Stableswap pools allow up to 8 tokens`}</p>}
-              {basePools?.length !== 0 && <p>{t`Pools with basepools allow a maximum of 2 tokens`}</p>}
+              {basePools.length !== 0 && <p>{t`Pools with basepools allow a maximum of 2 tokens`}</p>}
               {!stableswapFactory && <p>{t`Rebasing tokens are not supported in this version of Stableswap`}</p>}
             </ExplainerWrapper>
           </Row>

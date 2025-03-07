@@ -33,31 +33,41 @@ function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T
   const [value, setValue] = useState<T>(initialValue)
   const timerRef = useRef<number | null>(null)
 
-  const clearTimer = useCallback(() => {
-    if (timerRef.current !== null) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
-    }
-  }, [])
-
   // Update value when initialValue changes for controlled components
   useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
-  useEffect(() => {
-    clearTimer()
+  // Clear timer on unmount
+  useEffect(
+    () => () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current)
+      }
+    },
+    [],
+  )
 
-    // Set new timer and call callback when expired
-    timerRef.current = window.setTimeout(() => {
-      callback(value)
-      timerRef.current = null
-    }, debounceMs)
+  // Sets the internal value, but calls the callback after a delay unless retriggered again.
+  const setDebouncedValue = useCallback(
+    (newValue: T) => {
+      setValue(newValue)
 
-    return clearTimer
-  }, [value, debounceMs, callback, clearTimer])
+      // Clear any existing timer
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current)
+      }
 
-  return [value, setValue] as const
+      // Initiate a new timer
+      timerRef.current = window.setTimeout(() => {
+        callback(newValue)
+        timerRef.current = null
+      }, debounceMs)
+    },
+    [callback, debounceMs],
+  )
+
+  return [value, setDebouncedValue] as const
 }
 
 export default useDebounce
