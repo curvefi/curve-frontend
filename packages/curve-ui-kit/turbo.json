@@ -1,5 +1,8 @@
 {
   "extends": ["//"],
+  "globalEnv": [
+    "DEV_PORT"
+  ],
   "tasks": {
     "build:storybook": {
       "dependsOn": ["^build:storybook"],

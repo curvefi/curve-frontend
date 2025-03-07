@@ -69,7 +69,7 @@ const Accordion = ({
           <Icon name="CaretUp" size={16} className={`caret-${show}`} />
         </span>
       </Button>
-      <CollapsibleContentWrapper ref={contentRef} show={show} className={show ? 'show' : ''}>
+      <CollapsibleContentWrapper ref={contentRef} $show={show} className={show ? 'show' : ''}>
         <CollapsibleContent>{children}</CollapsibleContent>
       </CollapsibleContentWrapper>
     </div>
@@ -120,7 +120,7 @@ const StyledButton = styled.button<{ isHideTopBorder?: boolean }>`
   }
 `
 
-const CollapsibleContentWrapper = styled.div<{ show: boolean }>`
+const CollapsibleContentWrapper = styled.div<{ $show: boolean }>`
   max-height: 0;
 
   border: 1px solid var(--button_outlined--border-color);

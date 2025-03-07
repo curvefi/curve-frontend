@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/lend/constants'
-import { getNetworkFromUrl, getRestFullPathname, getRestPartialPathname } from '@/lend/utils/utilsRouter'
-import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
+import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
+import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -14,7 +13,8 @@ import { type Theme } from '@mui/material/styles'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId } from '@/lend/types/lend.types'
+import { ChainId, type NetworkEnum } from '@/lend/types/lend.types'
+import { useRouter } from 'next/navigation'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -22,22 +22,14 @@ const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-
   const { rNetwork } = getNetworkFromUrl()
-
   const connectState = useStore((state) => state.connectState)
-  const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
-
-  const location = useLocation()
-  const { params: routerParams } = routerProps ?? {}
-  const routerPathname = location?.pathname ?? ''
-  const routerNetwork = routerParams?.network
 
   return (
     <NewHeader<ChainId>
@@ -45,10 +37,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentApp="lend"
-      pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.lend.pages, routerPathname, routerNetwork),
-        [routerNetwork, routerPathname],
-      )}
+      pages={APP_LINK.lend.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
@@ -56,14 +45,12 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
         onChange: useCallback(
           (selectedChainId: ChainId) => {
             if (chainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              const [currPath] = window.location.hash.split('?')
-              const path = currPath.endsWith('markets') ? getRestFullPathname() : getRestPartialPathname()
-              navigate(`/${network}/${path}`)
+              const network = networks[selectedChainId as ChainId].id as NetworkEnum
+              push(getPath({ network }, `/${getRestFullPathname()}`))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
           },
-          [chainId, updateConnectState, navigate],
+          [chainId, updateConnectState, push],
         ),
       }}
       WalletProps={{

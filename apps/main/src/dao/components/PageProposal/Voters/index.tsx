@@ -1,12 +1,14 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { shortenTokenAddress, formatNumber } from '@ui/utils'
 import useStore from '@/dao/store/useStore'
 import networks from '@/dao/networks'
 import Box from '@ui/Box'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type Props = {
   totalVotes: number
@@ -17,7 +19,7 @@ type Props = {
 const Voters = ({ totalVotes, rProposalId, className }: Props) => {
   const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
   const currentProposal = useStore((state) => state.proposals.proposalMapper[rProposalId])
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   return (
     <Wrapper className={className}>
@@ -53,7 +55,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                   <StyledInternalLink
                     onClick={(e) => {
                       e.preventDefault()
-                      navigate(`/ethereum/user/${vote.voter}`)
+                      push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`))
                     }}
                   >
                     {vote.topHolder ? vote.topHolder : shortenTokenAddress(vote.voter)}

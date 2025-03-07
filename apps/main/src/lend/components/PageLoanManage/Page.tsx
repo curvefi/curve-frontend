@@ -1,12 +1,10 @@
-import type { NextPage } from 'next'
+'use client'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { REFRESH_INTERVAL } from '@/lend/constants'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import { helpers } from '@/lend/lib/apiLending'
-import { scrollToTop } from '@/lend/utils/helpers'
 import networks from '@/lend/networks'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useStore from '@/lend/store/useStore'
@@ -19,7 +17,6 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
 import LoanMange from '@/lend/components/PageLoanManage/index'
@@ -38,14 +35,12 @@ import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps } from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams } from '@/lend/types/lend.types'
 import { isLoading } from '@ui/utils'
+import { scrollToTop } from '@/lend/utils/helpers'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { pageLoaded, api, routerParams } = usePageOnMount(params, location, navigate)
+const Page = (params: MarketUrlParams) => {
+  const { pageLoaded, api, routerParams } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
@@ -67,7 +62,6 @@ const Page: NextPage = () => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
-  const { borrowed_token, collateral_token } = market ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
@@ -102,11 +96,6 @@ const Page: NextPage = () => {
 
   // onMount
   useEffect(() => {
-    scrollToTop()
-  }, [])
-
-  // onMount
-  useEffect(() => {
     setLoaded(false)
     if (pageLoaded && !isLoadingApi && api && market) {
       fetchInitial(api, market)
@@ -138,7 +127,7 @@ const Page: NextPage = () => {
       </AppPageFormTitleWrapper>
     )
 
-  const pageProps: PageContentProps = {
+  const pageProps = {
     params,
     rChainId,
     rOwmId,
@@ -153,8 +142,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
-
       {provider ? (
         <>
           {chartExpanded && networks[rChainId].pricesData && (

@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
-import { getNetworkFromUrl } from '@/lend/utils/utilsRouter'
+import { getNetworkFromUrl, getPath } from '@/lend/utils/utilsRouter'
 import { isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/lend/store/useStore'
@@ -10,6 +10,8 @@ import Header from '@/lend/layout/Header'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeightResizeObserver } from '@ui/hooks'
 import { isChinese, t } from '@ui-kit/lib/i18n'
+import type { UrlParams } from '@/lend/types/lend.types'
+import { useParams } from 'next/navigation'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
@@ -17,6 +19,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const elHeight = useHeightResizeObserver(globalAlertRef)
   const footerRef = useRef<HTMLDivElement>(null)
   const footerHeight = useHeightResizeObserver(footerRef)
+  const params = useParams() as UrlParams
 
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
@@ -48,7 +51,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
 
-  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
+  const sections = useMemo(() => getSections(params), [params])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
@@ -68,15 +71,15 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const getSections = (network: string) => [
+const getSections = ({ network }: UrlParams) => [
   {
     title: t`Documentation`,
     links: [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
-      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}?tab=lend`, label: t`Risk Disclaimers` },
-      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
+      { route: getPath({ network }, `${ROUTE.PAGE_DISCLAIMER}?tab=lend`), label: t`Risk Disclaimers` },
+      { route: getPath({ network }, ROUTE.PAGE_INTEGRATIONS), label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],

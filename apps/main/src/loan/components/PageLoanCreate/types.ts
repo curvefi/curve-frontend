@@ -1,8 +1,7 @@
 import type { FormEstGas, FormStatus as Fs } from '@/loan/components/PageLoanManage/types'
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
-import type { Params } from 'react-router'
 import type { Step } from '@ui/Stepper/types'
-import { ChainId, Curve, Llamma, HealthMode } from '@/loan/types/loan.types'
+import { ChainId, type CollateralUrlParams, Curve, HealthMode, Llamma } from '@/loan/types/loan.types'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 export type FormType = 'create' | 'leverage'
@@ -30,7 +29,7 @@ export type PageLoanCreateProps = {
   isLeverage: boolean
   llamma: Llamma | null
   llammaId: string
-  params: Params
+  params: CollateralUrlParams
   rChainId: ChainId
   rCollateralId: string
   rFormType: string | null

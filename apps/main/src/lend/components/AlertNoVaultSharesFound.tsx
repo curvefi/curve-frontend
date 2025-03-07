@@ -1,5 +1,4 @@
 import { t } from '@ui-kit/lib/i18n'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
@@ -9,10 +8,11 @@ import InternalLink from '@ui/Link/InternalLink'
 import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import Spinner from '@ui/Spinner'
 import TextCaption from '@ui/TextCaption'
-import { PageContentProps } from '@/lend/types/lend.types'
+import { PageContentProps, type UrlParams } from '@/lend/types/lend.types'
+import { useParams } from 'next/navigation'
 
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {
-  const params = useParams()
+  const params = useParams() as UrlParams
 
   const userMarketBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
 

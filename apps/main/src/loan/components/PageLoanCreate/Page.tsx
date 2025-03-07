@@ -1,14 +1,12 @@
-import type { NextPage } from 'next'
+'use client'
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { REFRESH_INTERVAL } from '@/loan/constants'
 import { breakpoints } from '@ui/utils/responsive'
 import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
-import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
@@ -22,7 +20,6 @@ import {
 } from '@ui/AppPage'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import Box from '@ui/Box'
-import DocumentHead from '@/loan/layout/DocumentHead'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
@@ -31,14 +28,13 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, Curve, Llamma } from '@/loan/types/loan.types'
 import { isLoading } from '@ui/utils'
+import { useRouter } from 'next/navigation'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: CollateralUrlParams) => {
+  const { push } = useRouter()
+  const { routerParams, curve } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
 
@@ -94,15 +90,11 @@ const Page: NextPage = () => {
   )
 
   useEffect(() => {
-    scrollToTop()
-  }, [])
-
-  useEffect(() => {
     if (isLoadingApi) {
       setLoaded(false)
     } else if (curve) {
       if (!llamma) {
-        navigate(getCollateralListPathname(params))
+        push(getCollateralListPathname(params))
       } else {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
@@ -116,7 +108,7 @@ const Page: NextPage = () => {
   // redirect if loan exists
   useEffect(() => {
     if (!loaded && llamma && loanExists) {
-      navigate(getLoanManagePathname(params, llamma.id, 'loan'))
+      push(getLoanManagePathname(params, llamma.id, 'loan'))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, loanExists])
@@ -124,7 +116,7 @@ const Page: NextPage = () => {
   //  redirect if form is leverage but no leverage option
   useEffect(() => {
     if (llamma && rFormType === 'leverage' && !hasLeverage(llamma)) {
-      navigate(getLoanCreatePathname(params, llamma.id))
+      push(getLoanCreatePathname(params, llamma.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, rFormType, llamma])
@@ -166,73 +158,68 @@ const Page: NextPage = () => {
     llammaId,
   }
 
-  return (
+  return provider ? (
     <>
-      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
-      {provider ? (
-        <>
-          {chartExpanded && (
-            <PriceAndTradesExpandedContainer>
-              <Box flex padding="0 0 0 var(--spacing-2)">
-                {isMdUp && <TitleComp />}
-                <ExpandButton
-                  variant={'select'}
-                  onClick={() => {
-                    setChartExpanded()
-                  }}
-                >
-                  {chartExpanded ? 'Minimize' : 'Expand'}
-                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-                </ExpandButton>
-              </Box>
-              <PriceAndTradesExpandedWrapper variant="secondary">
-                <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-              </PriceAndTradesExpandedWrapper>
-            </PriceAndTradesExpandedContainer>
-          )}
-          <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-            <AppPageFormsWrapper navHeight={navHeight}>
-              {!isMdUp && !chartExpanded && <TitleComp />}
-              {rChainId && rCollateralId && (
-                <LoanCreate
-                  curve={curve}
-                  isReady={isReady}
-                  isLeverage={isLeverage}
-                  loanExists={loanExists}
-                  llamma={llamma}
-                  llammaId={llammaId}
-                  params={params}
-                  rChainId={rChainId}
-                  rCollateralId={rCollateralId}
-                  rFormType={rFormType}
-                  fetchInitial={fetchInitial}
-                />
-              )}
-            </AppPageFormsWrapper>
-
-            <AppPageInfoWrapper>
-              {isMdUp && !chartExpanded && <TitleComp />}
-              <AppPageInfoContentWrapper variant="secondary">
-                <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
-                {isValidRouterParams && rChainId && (
-                  <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-                )}
-              </AppPageInfoContentWrapper>
-            </AppPageInfoWrapper>
-          </Wrapper>
-        </>
-      ) : (
-        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-          <ConnectWalletPrompt
-            description={t`Connect your wallet to view market`}
-            connectText={t`Connect`}
-            loadingText={t`Connecting`}
-            connectWallet={() => connectWallet()}
-            isLoading={isLoading(connectState)}
-          />
-        </Box>
+      {chartExpanded && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex padding="0 0 0 var(--spacing-2)">
+            {isMdUp && <TitleComp />}
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
       )}
+      <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
+        <AppPageFormsWrapper navHeight={navHeight}>
+          {!isMdUp && !chartExpanded && <TitleComp />}
+          {rChainId && rCollateralId && (
+            <LoanCreate
+              curve={curve}
+              isReady={isReady}
+              isLeverage={isLeverage}
+              loanExists={loanExists}
+              llamma={llamma}
+              llammaId={llammaId}
+              params={params}
+              rChainId={rChainId}
+              rCollateralId={rCollateralId}
+              rFormType={rFormType}
+              fetchInitial={fetchInitial}
+            />
+          )}
+        </AppPageFormsWrapper>
+
+        <AppPageInfoWrapper>
+          {isMdUp && !chartExpanded && <TitleComp />}
+          <AppPageInfoContentWrapper variant="secondary">
+            <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
+            {isValidRouterParams && rChainId && (
+              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+            )}
+          </AppPageInfoContentWrapper>
+        </AppPageInfoWrapper>
+      </Wrapper>
     </>
+  ) : (
+    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+      <ConnectWalletPrompt
+        description={t`Connect your wallet to view market`}
+        connectText={t`Connect`}
+        loadingText={t`Connecting`}
+        connectWallet={() => connectWallet()}
+        isLoading={isLoading(connectState)}
+      />
+    </Box>
   )
 }
 

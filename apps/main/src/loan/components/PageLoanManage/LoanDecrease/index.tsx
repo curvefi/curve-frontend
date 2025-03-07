@@ -2,7 +2,6 @@ import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoan
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
@@ -30,13 +29,14 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useRouter } from 'next/navigation'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
 // Loan repay
 const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.loanDecrease.activeKey)
   const detailInfo = useStore((state) => state.loanDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
@@ -125,7 +125,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
               if (resp.loanExists) {
                 reset(false, true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -133,7 +133,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       }
       notification?.dismiss()
     },
-    [activeKey, fetchStepDecrease, navigate, params, rChainId, reset],
+    [activeKey, fetchStepDecrease, push, params, rChainId, reset],
   )
 
   const getSteps = useCallback(

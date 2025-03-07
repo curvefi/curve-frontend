@@ -1,19 +1,16 @@
-import type { NextPage } from 'next'
+'use client'
 import { useEffect, useMemo } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
-import { scrollToTop } from '@/dex/utils'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import Transfer from '@/dex/components/PagePool/index'
+import { useRouter } from 'next/navigation'
+import type { PoolUrlParams } from '@/dex/types/main.types'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: PoolUrlParams) => {
+  const { push } = useRouter()
+  const { pageLoaded, routerParams, curve } = usePageOnMount()
   const { rChainId, rPoolId, rFormType } = routerParams
 
   const parsedRPoolId = rPoolId || ''
@@ -30,21 +27,17 @@ const Page: NextPage = () => {
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 
   useEffect(() => {
-    scrollToTop()
-  }, [])
-
-  useEffect(() => {
     if (!rChainId) return
 
     const { excludePoolsMapper } = network
     const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
     if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
-      navigate(reRoutePathname)
+      push(reRoutePathname)
     } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
       ;(async () => {
         const foundPoolData = await fetchNewPool(curve, rPoolId)
         if (!foundPoolData) {
-          navigate(reRoutePathname)
+          push(reRoutePathname)
         }
       })()
     }
@@ -52,19 +45,20 @@ const Page: NextPage = () => {
   }, [curve?.chainId, fetchNewPool, haveAllPools, isLoadingApi, pageLoaded, poolData, rChainId, rFormType, rPoolId])
 
   return (
-    <>
-      <DocumentHead title={poolDataCacheOrApi?.pool?.name ?? 'Pool'} />
-      {rChainId && rFormType && rPoolId && poolDataCacheOrApi?.pool?.id === rPoolId && hasDepositAndStake != null && (
-        <Transfer
-          curve={curve}
-          params={params}
-          poolData={poolData}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          routerParams={{ rChainId, rPoolId, rFormType }}
-          hasDepositAndStake={hasDepositAndStake}
-        />
-      )}
-    </>
+    rChainId &&
+    rFormType &&
+    rPoolId &&
+    poolDataCacheOrApi?.pool?.id === rPoolId &&
+    hasDepositAndStake != null && (
+      <Transfer
+        curve={curve}
+        params={params}
+        poolData={poolData}
+        poolDataCacheOrApi={poolDataCacheOrApi}
+        routerParams={{ rChainId, rPoolId, rFormType }}
+        hasDepositAndStake={hasDepositAndStake}
+      />
+    )
   )
 }
 

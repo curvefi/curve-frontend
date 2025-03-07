@@ -3,7 +3,7 @@ import type { State } from '@/dex/store/useStore'
 import { sleep } from '@/dex/utils'
 import { ChainId, PoolDataCacheMapper } from '@/dex/types/main.types'
 
-type SwapFormValuesCache = {
+export type SwapFormValuesCache = {
   fromAddress: string
   fromToken: string
   toAddress: string

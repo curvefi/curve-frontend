@@ -5,7 +5,6 @@ import type {
   SearchedParams,
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
-import type { Params } from 'react-router'
 import isEmpty from 'lodash/isEmpty'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
@@ -35,7 +34,7 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId, CurveApi, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { TokenSelector } from '@ui-kit/features/select-token'
 
@@ -49,7 +48,7 @@ const QuickSwap = ({
   redirect,
 }: {
   pageLoaded: boolean
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId
   searchedParams: SearchedParams
   tokensMapper: TokensMapper

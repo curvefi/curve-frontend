@@ -1,6 +1,5 @@
 import type { FormValues } from '@/dex/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@ui/Integration/types'
-import type { NavigateFunction, Params } from 'react-router'
 import { useFocusRing } from '@react-aria/focus'
 import { Trans } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
@@ -16,22 +15,21 @@ import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
-import { ChainId, NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  navigate,
   params,
   rChainId,
-  searchParams,
 }: {
   integrationsTags: IntegrationsTags
-  navigate: NavigateFunction
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId | ''
-  searchParams: URLSearchParams
 }) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const connectState = useStore((state) => state.connectState)
@@ -61,7 +59,7 @@ const IntegrationsComp = ({
   const updatePath = useCallback(
     ({ filterKey, filterNetworkId }: { filterKey?: Key; filterNetworkId?: Key }) => {
       const pSearchParams = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
-      let pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}`)
+      let pathname = getPath(params, ROUTE.PAGE_INTEGRATIONS)
 
       // get filter Key
       let pFilterKey = filterKey ?? pSearchParams.filterKey ?? ''
@@ -73,9 +71,9 @@ const IntegrationsComp = ({
       pFilterNetworkId = pFilterNetworkId && pFilterNetworkId == rChainId ? '' : pFilterNetworkId
       if (pFilterNetworkId) pathname += `${pFilterKey ? '&' : '?'}networkId=${pFilterNetworkId}`
 
-      navigate(pathname)
+      push(pathname)
     },
-    [integrationsTags, navigate, params, rChainId, searchParams, visibleNetworksList],
+    [integrationsTags, push, params, rChainId, searchParams, visibleNetworksList],
   )
 
   const filterKeyLabel = useMemo(() => {

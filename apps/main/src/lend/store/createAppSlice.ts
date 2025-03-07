@@ -5,7 +5,7 @@ import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
 import isEqual from 'lodash/isEqual'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { Api, RouterProps, Wallet } from '@/lend/types/lend.types'
+import { Api, Wallet } from '@/lend/types/lend.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -18,7 +18,6 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  routerProps: RouterProps | null
   scrollY: number
 }
 
@@ -40,7 +39,6 @@ const DEFAULT_STATE: SliceState = {
   isLoadingCurve: true,
   isMobile: false,
   isPageVisible: true,
-  routerProps: null,
   scrollY: 0,
 }
 

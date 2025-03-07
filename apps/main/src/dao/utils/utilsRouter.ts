@@ -1,15 +1,16 @@
-import type { Params } from 'react-router'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { ROUTE } from '@/dao/constants'
 import networks, { networksIdMapper } from '@/dao/networks'
-import { NetworkEnum, RouterParams } from '@/dao/types/dao.types'
+import { NetworkEnum, RouterParams, type UrlParams } from '@/dao/types/dao.types'
 
-export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dao/${network}${rerouteRoute}`
 
-export function parseParams(params: Params, chainIdNotRequired?: boolean) {
+export const getEthPath = (route: string) => getPath({ network: 'ethereum' }, route)
+
+export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { proposalId, userAddress, gaugeAddress, formType } = params
 
-  const paths = window.location.hash.substring(2).split('/')
+  const paths = window.location.pathname.substring(1).split('/')
 
   const network = getNetworkFromUrl()
 
@@ -31,8 +32,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
-    window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(rSubdirectory))
+    window.location.pathname.startsWith(parsedPathname) ||
+    (chainIdNotRequired && window.location.pathname.startsWith(rSubdirectory))
       ? ''
       : parsedPathname
 
@@ -43,14 +44,14 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     rProposalId: proposalId,
     rUserAddress: userAddress,
     rGaugeAddress: gaugeAddress,
-    rFormType: formType,
+    rFormType: formType?.[0],
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams
 }
 
 export function getNetworkFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
   const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum
 
@@ -78,7 +79,7 @@ export function getNetworkFromUrl() {
 }
 
 export function getRestFullPathname() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const { rNetworkIdx } = getNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
 }

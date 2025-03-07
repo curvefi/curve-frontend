@@ -1,6 +1,6 @@
 import { RootCssProperties } from '@ui-kit/themes/typography'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import baseCss from '@ui/styles/base.css'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
 
@@ -22,12 +22,10 @@ const injectHeader = `
   })()
 `
 
+// noinspection HtmlRequiredTitleElement // title is injected via metadata
 const Layout = ({ children }: { children: ReactNode }) => (
   <html style={RootCssProperties}>
     <head>
-      {/* Primary Meta Tags */}
-      <title>Curve.fi</title>
-      <meta name="title" content="Curve.fi" />
       <meta
         name="description"
         content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
@@ -60,7 +58,8 @@ const Layout = ({ children }: { children: ReactNode }) => (
       <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="theme-color" content="#ffffff" />
-      <script dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
+      <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
+      <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
       <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
       <style dangerouslySetInnerHTML={{ __html: baseCss }} />
     </head>

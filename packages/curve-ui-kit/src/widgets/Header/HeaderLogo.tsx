@@ -1,10 +1,9 @@
 import Box from '@mui/material/Box'
 import { LogoImg, RCLogoText } from '@ui/images'
+import type { SxProps, Theme } from '@mui/material/styles'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
-import { APP_NAMES } from './types'
-import type { SxProps, Theme } from '@mui/material/styles'
 import { AppName } from '@ui-kit/shared/routes'
 
 const Image = styled('img')({
@@ -20,6 +19,13 @@ export type HeaderLogoProps = {
   sx?: SxProps<Theme>
 }
 
+const APP_NAMES = {
+  dex: 'Curve',
+  lend: 'LLAMALEND',
+  crvusd: 'crvUSD',
+  dao: 'DAO',
+} as const
+
 export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
   <Link href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
     <Image src={LogoImageSrc} alt="Curve" width={30} />
@@ -34,7 +40,7 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
         >
           {APP_NAMES[appName]}
         </Typography>
-        {appName === 'main' ? (
+        {appName === 'dex' ? (
           isLite && (
             <Typography variant="bodyXsBold" color="textTertiary">
               Lite

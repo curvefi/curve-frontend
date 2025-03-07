@@ -1,29 +1,26 @@
-import type { NextPage } from 'next'
+'use client'
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { breakpoints, isLoading } from '@ui/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import Box, { BoxHeader } from '@ui/Box'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import IconButton from '@ui/IconButton'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { pageLoaded, routerParams } = usePageOnMount(params, location, navigate)
+const Page = (params: NetworkUrlParams) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
+  const { pageLoaded, routerParams } = usePageOnMount()
   const { rChainId } = routerParams
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
@@ -42,37 +39,26 @@ const Page: NextPage = () => {
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
-  const paramsFromAddress = searchParams.get('from')?.toLowerCase() || nativeToken?.address || ''
-  const paramsToAddress = searchParams.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
-  const paramsMaxSlippage = searchParams.get('slippage')
+  const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
+  const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
+  const paramsMaxSlippage = searchParams?.get('slippage')
 
   const redirect = useCallback(
-    (toAddress: string, fromAddress: string) => {
-      let pathname = ''
-      if (fromAddress && toAddress) {
-        pathname += `?from=${fromAddress}&to=${toAddress}`
-      } else if (fromAddress) {
-        pathname += `?from=${fromAddress}`
-      } else if (toAddress) {
-        pathname += `?to=${toAddress}`
-      }
-      if (pathname && pathname !== location.search) {
-        navigate(getPath(params, `${ROUTE.PAGE_SWAP}${pathname}`))
+    (to: string, from: string) => {
+      const search = from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''
+      if (search !== searchParams?.toString()) {
+        push(getPath(params, `${ROUTE.PAGE_SWAP}${search}`))
       }
     },
-    [location.search, navigate, params],
+    [searchParams, push, params],
   )
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
 
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
     setLoaded(false)
     if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
-        navigate(getPath(params, `${ROUTE.PAGE_POOLS}`))
+        push(getPath(params, `${ROUTE.PAGE_POOLS}`))
         return
       }
       if (paramsMaxSlippage) {
@@ -113,48 +99,46 @@ const Page: NextPage = () => {
     routerCached?.toAddress,
   ])
 
+  if (!provider) {
+    return (
+      <Box display="flex" fillWidth flexJustifyContent="center">
+        <ConnectWalletWrapper>
+          <ConnectWalletPrompt
+            description="Connect wallet to swap"
+            connectText="Connect Wallet"
+            loadingText="Connecting"
+            connectWallet={() => connectWallet()}
+            isLoading={isLoading(connectState)}
+          />
+        </ConnectWalletWrapper>
+      </Box>
+    )
+  }
   return (
-    <>
-      <DocumentHead title={t`Swap`} />
-      {!provider ? (
-        <Box display="flex" fillWidth flexJustifyContent="center">
-          <ConnectWalletWrapper>
-            <ConnectWalletPrompt
-              description="Connect wallet to swap"
-              connectText="Connect Wallet"
-              loadingText="Connecting"
-              connectWallet={() => connectWallet()}
-              isLoading={isLoading(connectState)}
-            />
-          </ConnectWalletWrapper>
-        </Box>
-      ) : (
-        <StyledQuickSwapWrapper variant="primary" shadowed>
-          <BoxHeader className="title-text">
-            <IconButton testId="hidden" hidden />
-            {t`Swap`}
-            <AdvancedSettings stateKey="global" testId="advance-settings" maxSlippage={maxSlippage} />
-          </BoxHeader>
+    <StyledQuickSwapWrapper variant="primary" shadowed>
+      <BoxHeader className="title-text">
+        <IconButton testId="hidden" hidden />
+        {t`Swap`}
+        <AdvancedSettings stateKey="global" testId="advance-settings" maxSlippage={maxSlippage} />
+      </BoxHeader>
 
-          <Box grid gridRowGap={3} padding>
-            {rChainId && (
-              <QuickSwap
-                pageLoaded={loaded}
-                params={params}
-                searchedParams={{
-                  fromAddress: paramsFromAddress,
-                  toAddress: paramsToAddress,
-                }}
-                rChainId={rChainId}
-                tokensMapper={tokensMapper}
-                tokensMapperStr={tokensMapperStr}
-                redirect={redirect}
-              />
-            )}
-          </Box>
-        </StyledQuickSwapWrapper>
-      )}
-    </>
+      <Box grid gridRowGap={3} padding>
+        {rChainId && (
+          <QuickSwap
+            pageLoaded={loaded}
+            params={params}
+            searchedParams={{
+              fromAddress: paramsFromAddress,
+              toAddress: paramsToAddress,
+            }}
+            rChainId={rChainId}
+            tokensMapper={tokensMapper}
+            tokensMapperStr={tokensMapperStr}
+            redirect={redirect}
+          />
+        )}
+      </Box>
+    </StyledQuickSwapWrapper>
   )
 }
 

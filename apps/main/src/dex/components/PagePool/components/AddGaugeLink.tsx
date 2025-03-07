@@ -1,7 +1,6 @@
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
 import { getPath } from '@/dex/utils/utilsRouter'
 import useStore from '@/dex/store/useStore'
 import {
@@ -12,7 +11,9 @@ import {
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
 import InteralLinkButton from '@ui/InternalLinkButton'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
+import { useParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 const AddGaugeLink = ({
   chainId,
@@ -24,8 +25,8 @@ const AddGaugeLink = ({
     (state) => state.deployGauge,
   )
 
-  const params = useParams()
-  const navigate = useNavigate()
+  const params = useParams() as PoolUrlParams
+  const { push } = useRouter()
 
   const handleClick = () => {
     if (chainId === 1) {
@@ -48,7 +49,7 @@ const AddGaugeLink = ({
       setCurrentPoolType(STABLESWAPOLD)
     }
 
-    navigate(getPath(params, `/deploy-gauge`))
+    push(getPath(params, `/deploy-gauge`))
   }
 
   return (

@@ -17,26 +17,22 @@ import { TelegramIcon } from '@ui-kit/shared/icons/TelegramIcon'
 import { TelegramCNIcon } from '@ui-kit/shared/icons/TelegramCNIcon'
 import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
 import { RiskDisclaimersIcon } from '@ui-kit/shared/icons/RiskDisclaimersIcon'
-import { SectionProps } from './Section'
 import { AppName } from '@ui-kit/shared/routes'
 
 function getDisclaimersTab(appName: AppName) {
-  if (appName === 'crvusd') {
-    if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
-      return '?tab=scrvusd'
-    }
-
-    return '?tab=crvusd'
-  }
-
   if (appName === 'lend') {
     return '?tab=lend'
   }
-
-  return ''
+  if (appName !== 'crvusd') {
+    return ''
+  }
+  if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
+    return '?tab=scrvusd'
+  }
+  return '?tab=crvusd'
 }
 
-export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>[] => [
+export const getSections = (appName: AppName) => [
   {
     title: t`Community`,
     links: [
@@ -93,7 +89,7 @@ export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>
       {
         label: t`Integrations`,
         // Would've loved to have used ROUTE.PAGE_INTEGRATIONS, but they differ per app.
-        href: '/integrations',
+        href: 'integrations/',
         icon: <IntegrationsIcon />,
       },
       {
@@ -108,7 +104,7 @@ export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>
       },
       {
         label: t`Risk Disclaimers`,
-        href: `/disclaimer${getDisclaimersTab(appName)}`,
+        href: `disclaimer/${getDisclaimersTab(appName)}`,
         icon: <RiskDisclaimersIcon />,
       },
     ],

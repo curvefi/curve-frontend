@@ -6,7 +6,7 @@ import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import { log } from '@/loan/utils/helpers'
 import isEqual from 'lodash/isEqual'
-import { Curve, LendApi, RouterProps, Wallet } from '@/loan/types/loan.types'
+import { Curve, LendApi, Wallet } from '@/loan/types/loan.types'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -21,7 +21,6 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  routerProps: RouterProps | null
   scrollY: number
 }
 
@@ -48,7 +47,6 @@ const DEFAULT_STATE: SliceState = {
   isLoadingLendApi: false,
   isMobile: false,
   isPageVisible: true,
-  routerProps: null,
   scrollY: 0,
 }
 

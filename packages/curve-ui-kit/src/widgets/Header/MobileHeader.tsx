@@ -1,7 +1,7 @@
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import { BaseHeaderProps } from './types'
-import { useCallback, useEffect, useState } from 'react'
+import { AppPage, BaseHeaderProps } from './types'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import Stack from '@mui/material/Stack'
@@ -11,11 +11,11 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import { useLocation } from 'react-router-dom'
-import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
+import { APP_LINK, AppName, findCurrentRoute, getAppUrl } from '@ui-kit/shared/routes'
 import { t } from '@ui-kit/lib/i18n'
 import GlobalBanner from '@ui/Banner'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
+import { usePathname } from 'next/navigation'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -45,7 +45,8 @@ export const MobileHeader = <TChainId extends number>({
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
-  const { pathname } = useLocation()
+  const pathname = usePathname()
+  const currentRoute = useMemo(() => pathname && findCurrentRoute(pathname, pages), [pathname, pages])
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
@@ -54,6 +55,23 @@ export const MobileHeader = <TChainId extends number>({
     startWalletConnection()
   }, [startWalletConnection, closeSidebar])
 
+  const otherAppSections = useMemo(
+    () =>
+      Object.entries(APP_LINK)
+        .filter(([appName]) => appName != currentApp)
+        .map(([appName, { label, pages }]) => ({
+          appName,
+          title: label,
+          pages: pages.map(
+            ({ route, label }): AppPage => ({
+              label: label(),
+              route: getAppUrl(route, networkName, appName as AppName),
+              isActive: false,
+            }),
+          ),
+        })),
+    [currentApp, networkName],
+  )
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
@@ -88,20 +106,18 @@ export const MobileHeader = <TChainId extends number>({
                 <HeaderStats appStats={appStats} />
               </Stack>
 
-              <SidebarSection title={APP_LINK[currentApp].label} pages={pages} />
+              <SidebarSection
+                title={APP_LINK[currentApp].label}
+                pages={pages.map(({ route, label }) => ({
+                  label: label(),
+                  route: getAppUrl(route, networkName, currentApp),
+                  isActive: route === currentRoute,
+                }))}
+              />
 
-              {Object.entries(APP_LINK)
-                .filter(([appName]) => appName != currentApp)
-                .map(([appName, { label, pages }]) => (
-                  <SidebarSection
-                    key={appName}
-                    title={label}
-                    pages={pages.map(({ route, label }) => ({
-                      label: label(),
-                      route: externalAppUrl(route, networkName, appName as AppName),
-                    }))}
-                  />
-                ))}
+              {otherAppSections.map(({ appName, ...props }) => (
+                <SidebarSection key={appName} {...props} />
+              ))}
 
               {sections.map(({ title, links }) => (
                 <SidebarSection key={title} title={title} pages={links} />

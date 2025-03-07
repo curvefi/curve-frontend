@@ -19,61 +19,57 @@ type Props = {
   appName: AppName
 }
 
-export const Footer = ({ appName, networkName }: Props) => {
-  const sections = getSections(appName)
-
-  return (
-    <Box
-      component="footer"
-      data-testid="footer"
-      display="flex"
-      justifyContent="center"
-      sx={(t) => ({
-        backgroundColor: t.design.Layer[3].Fill,
-        paddingInline: SizesAndSpaces.Spacing.lg,
-        paddingBlock: SizesAndSpaces.Spacing.xl,
-      })}
+export const Footer = ({ appName, networkName }: Props) => (
+  <Box
+    component="footer"
+    data-testid="footer"
+    display="flex"
+    justifyContent="center"
+    sx={(t) => ({
+      backgroundColor: t.design.Layer[3].Fill,
+      paddingInline: SizesAndSpaces.Spacing.lg,
+      paddingBlock: SizesAndSpaces.Spacing.xl,
+    })}
+  >
+    <Grid
+      container
+      spacing={SizesAndSpaces.Grid.Column_Spacing}
+      rowGap={SizesAndSpaces.Grid.Row_Spacing}
+      sx={{
+        position: 'relative',
+        maxWidth: SizesAndSpaces.MaxWidth.footer,
+      }}
+      data-testid="footer-content"
     >
       <Grid
-        container
-        spacing={SizesAndSpaces.Grid.Column_Spacing}
-        rowGap={SizesAndSpaces.Grid.Row_Spacing}
-        sx={{
-          position: 'relative',
-          maxWidth: SizesAndSpaces.MaxWidth.footer,
+        size={{
+          mobile: 12,
+          desktop: 3,
         }}
-        data-testid="footer-content"
       >
+        <Description />
+      </Grid>
+
+      {getSections(appName).map((section) => (
         <Grid
+          key={section.title}
           size={{
             mobile: 12,
+            tablet: 4,
             desktop: 3,
           }}
         >
-          <Description />
+          <Section {...section} networkName={networkName} appName={appName} />
         </Grid>
+      ))}
 
-        {sections.map((section) => (
-          <Grid
-            key={section.title}
-            size={{
-              mobile: 12,
-              tablet: 4,
-              desktop: 3,
-            }}
-          >
-            <Section {...section} networkName={networkName} />
-          </Grid>
-        ))}
-
-        <Llama
-          src={LlamaImageSrc}
-          sx={{
-            height: SizesAndSpaces.IconSize.xxl,
-            right: SizesAndSpaces.Spacing.lg,
-          }}
-        />
-      </Grid>
-    </Box>
-  )
-}
+      <Llama
+        src={LlamaImageSrc}
+        sx={{
+          height: SizesAndSpaces.IconSize.xxl,
+          right: SizesAndSpaces.Spacing.lg,
+        }}
+      />
+    </Grid>
+  </Box>
+)

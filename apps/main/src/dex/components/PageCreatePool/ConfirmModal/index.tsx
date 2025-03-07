@@ -3,7 +3,6 @@ import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
 import { getPath } from '@/dex/utils/utilsRouter'
 import useStore from '@/dex/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
@@ -22,7 +21,8 @@ import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSum
 import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
 import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
 import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
-import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
+import { useParams, useRouter } from 'next/navigation'
 
 type Props = {
   disabled?: boolean
@@ -52,8 +52,8 @@ const ConfirmModal = ({
     resetState,
   } = useStore((state) => state.createPool)
 
-  const navigate = useNavigate()
-  const params = useParams()
+  const { push } = useRouter()
+  const params = useParams() as UrlParams
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton(
@@ -162,7 +162,7 @@ const ConfirmModal = ({
                         <StyledLinkButtonWrapper>
                           <InternalLinkButton
                             onClick={() => {
-                              navigate(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
+                              push(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
                               resetState()
                             }}
                             title={t`Go to pool`}

@@ -49,7 +49,7 @@ const FieldLockedAmt = ({
       {!!crv && lockedAmtError ? (
         <Chip size="xs" isError>
           Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
-          <StyledExternalLink href={APP_LINK.main.root}>here</StyledExternalLink>.
+          <StyledExternalLink href={APP_LINK.dex.root}>here</StyledExternalLink>.
         </Chip>
       ) : formType === 'adjust_crv' ? (
         <Chip size="xs">{t`CRV Locked: ${formatNumber(lockedAmount)}`}</Chip>

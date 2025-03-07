@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
 import useStore from '@/dex/store/useStore'
 import { shortenTokenAddress } from '@/dex/utils'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
 import Box from '@ui/Box'
@@ -20,7 +20,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
   const networks = useStore((state) => state.networks.networks)
 
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (
@@ -93,9 +93,10 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
             <Step>
               <Disclaimer>{t`Step 1 and Step 2 must be completed using the same wallet`}</Disclaimer>
             </Step>
+            {/* TODO: `linkPoolAddress` is never set */}
             {deploymentStatus.mirror.status === 'SUCCESS' && linkPoolAddress !== '' && (
               <LinkContainer>
-                <InternalLinkButton onClick={() => navigate(linkPoolAddress)} title={t`Visit the pool`} />
+                <InternalLinkButton onClick={() => push(linkPoolAddress)} title={t`Visit the pool`} />
               </LinkContainer>
             )}
           </Content>

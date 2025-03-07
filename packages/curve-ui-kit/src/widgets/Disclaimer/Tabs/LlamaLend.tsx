@@ -1,17 +1,18 @@
 import { t } from '@ui-kit/lib/i18n'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import { Section, Header, Title, Paragraph } from '../Section'
+import RouterLink from 'next/link'
+import { Header, Paragraph, Section, Title } from '../Section'
 import { List } from '../List'
 
-export const LlamaLend = () => (
+export const LlamaLend = ({ network }: { network: string }) => (
   <>
     <Section>
       <Paragraph>{t`Curve Lending enables users to permissionlessly create and interact with isolated lending pairs composed of crvUSD, a decentralized stablecoin native to the Curve ecosystem, and various paired tokens. The notifications provided herein address risks associated with Curve Lending activities. The following list is not exhaustive.`}</Paragraph>
 
       <Paragraph>
         {t`Users wishing to acquaint themselves with a broader range of general risk disclosures are encouraged to read the`}{' '}
-        <Link color="textSecondary" href="https://curve.fi/dex#/ethereum/disclaimer" target="_blank">
+        <Link component={RouterLink} color="textSecondary" href={`/${network}/disclaimer`} target="_blank">
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </Link>
         {t`. Users are also advised to review the public`}{' '}

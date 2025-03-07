@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import useStore from '@/dao/store/useStore'
 import { GAUGE_VOTES_LABELS } from '../constants'
 import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import { UserGaugeVote, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 interface UserGaugeVotesTableProps {
   userAddress: string
@@ -17,7 +19,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   const { getUserGaugeVotes, userGaugeVotesMapper, userGaugeVotesSortBy, setUserGaugeVotesSortBy } = useStore(
     (state) => state.user,
   )
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr'
 
@@ -61,7 +63,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(`/ethereum/gauges/${gaugeVote.gauge}`)
+              push(getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`))
             }}
             className="right-padding"
           >
