@@ -107,9 +107,15 @@ export const defineMuiChip = (
       props: { clickable: true },
       style: {
         borderRadius: Chips.BorderRadius.Clickable,
+        borderColor: Chips.Default.Stroke,
         cursor: 'pointer',
-        '&:has(.MuiChip-icon)': { ...handleBreakpoints({ paddingInline: Spacing.sm }) },
-        '&:hover': {
+        '& .MuiChip-deleteIcon': { margin: 0 },
+        '&:has(.MuiChip-icon)': {
+          ...handleBreakpoints({ paddingInline: Spacing.sm, gap: Spacing.xs }),
+          '& .MuiChip-icon': { marginInline: 0 },
+          '& .MuiChip-label': { paddingInline: 0 },
+        },
+        '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,
           color: Chips.Hover.Label,

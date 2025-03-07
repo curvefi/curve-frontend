@@ -55,7 +55,7 @@ const SelectedOneCoinExpected = ({
               <StyledTokenIcon
                 size="sm"
                 blockchainId={blockchainId}
-                symbol={symbol}
+                tooltip={symbol}
                 address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
               />{' '}
               {symbol} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}

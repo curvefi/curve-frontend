@@ -23,7 +23,7 @@ const RouteToken = ({
     <Wrapper flex flexAlignItems="center" flexJustifyContent="space-between">
       <Label>
         {tokenAddress && tokenSymbol && (
-          <TokenIcon blockchainId={blockchainId} symbol={tokenSymbol} address={tokenAddress} />
+          <TokenIcon blockchainId={blockchainId} tooltip={tokenSymbol} address={tokenAddress} />
         )}
         <strong>{tokenSymbol}</strong>
       </Label>{' '}

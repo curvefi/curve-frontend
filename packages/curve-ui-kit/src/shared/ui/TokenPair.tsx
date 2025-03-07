@@ -24,14 +24,14 @@ export const TokenPair = ({ chain, assets: { borrowed, collateral } }: Props) =>
     <TokenIcon
       blockchainId={chain}
       address={borrowed.address}
-      symbol={borrowed.symbol}
+      tooltip={borrowed.symbol}
       sx={{ position: 'absolute', top: '30%', left: '30%' }}
     />
 
     <TokenIcon
       blockchainId={chain}
       address={collateral.address}
-      symbol={collateral.symbol}
+      tooltip={collateral.symbol}
       sx={{ position: 'absolute', bottom: '30%', right: '30%' }}
     />
 

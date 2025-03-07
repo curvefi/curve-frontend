@@ -4,7 +4,6 @@ import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
 import Kelpdao from './Kelpdao.json'
 import Mellow from './Mellow.json'
-import PufferFinance from './PufferFinance.json'
 import Renzo from './Renzo.json'
 import Symbiotic from './Symbiotic.json'
 import Usual from './Usual.json'
@@ -26,6 +25,7 @@ import Vnx from './Vnx.json'
 import Hourglass from './Hourglass.json'
 import Fx from './Fx.json'
 import Pumpbtc from './Pumpbtc.json'
+import Carrot from './Carrot.json'
 
 export {
   DLCLink,
@@ -34,7 +34,6 @@ export {
   Etherfi,
   Kelpdao,
   Mellow,
-  PufferFinance,
   Renzo,
   Symbiotic,
   Usual,
@@ -56,4 +55,5 @@ export {
   Hourglass,
   Fx,
   Pumpbtc,
+  Carrot,
 }

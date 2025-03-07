@@ -34,6 +34,7 @@ export type SortKey =
   | 'rewardsBase'
   | 'rewardsCrv'
   | 'rewardsOther'
+  | 'rewardsLite'
   | 'tvl'
   | 'volume'
   | 'points'
@@ -55,7 +56,6 @@ export type PoolListTableLabel = {
 
 export type SearchParams = {
   filterKey: FilterKey
-  hideSmallPools: boolean
   searchText: string
   sortBy: SortKey
   sortByOrder: Order

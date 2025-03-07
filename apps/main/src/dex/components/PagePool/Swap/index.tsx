@@ -30,17 +30,17 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import Stepper from '@ui/Stepper'
-import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import TxInfoBar from '@ui/TxInfoBar'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { TokenSelector } from '@ui-kit/features/select-token'
+import { toTokenOption } from '@/dex/utils'
 
 const Swap = ({
   chainIdPoolId,
   curve,
-  blockchainId,
   maxSlippage,
   poolAlert,
   poolData,
@@ -52,7 +52,6 @@ const Swap = ({
   userPoolBalancesLoading,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
   chainIdPoolId: string
-  blockchainId: string
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed
@@ -88,15 +87,24 @@ const Swap = ({
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
+
   const userFromBalance = userPoolBalances?.[formValues.fromAddress]
   const userToBalance = userPoolBalances?.[formValues.toAddress]
+
   const fromUsdRate = usdRatesMapper[formValues.fromAddress]
   const toUsdRate = usdRatesMapper[formValues.toAddress]
 
-  const { selectList, swapTokensMapper } = useMemo(
-    () => getSwapTokens(tokensMapper, poolDataCacheOrApi),
-    [poolDataCacheOrApi, tokensMapper],
-  )
+  const { selectList, swapTokensMapper } = useMemo(() => {
+    const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
+
+    return {
+      selectList: selectList.map(toTokenOption(network?.networkId)),
+      swapTokensMapper,
+    }
+  }, [poolDataCacheOrApi, tokensMapper, network?.networkId])
+
+  const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
+  const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
@@ -365,16 +373,16 @@ const Swap = ({
                   updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
                 }}
               />
-              <TokenComboBox
-                title={t`Select a Token`}
-                disabled={isDisabled || selectList.length === 0}
-                blockchainId={blockchainId}
-                listBoxHeight="400px"
-                selectedToken={swapTokensMapper[formValues.fromAddress]}
-                showSearch={false}
+
+              <TokenSelector
+                selectedToken={fromToken}
                 tokens={selectList}
-                onSelectionChange={(value) => {
-                  const val = value as string
+                disabled={isDisabled || selectList.length === 0}
+                showSearch={false}
+                showManageList={false}
+                compact
+                onToken={(token) => {
+                  const val = token.address
                   const cFormValues = cloneDeep(formValues)
                   if (val === formValues.toAddress) {
                     cFormValues.toAddress = formValues.fromAddress
@@ -448,16 +456,16 @@ const Swap = ({
                 updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
               }}
             />
-            <TokenComboBox
-              title={t`Select a Token`}
-              disabled={isDisabled || selectList.length === 0}
-              blockchainId={blockchainId}
-              listBoxHeight="400px"
-              selectedToken={swapTokensMapper[formValues.toAddress]}
-              showSearch={false}
+
+            <TokenSelector
+              selectedToken={toToken}
               tokens={selectList}
-              onSelectionChange={(value) => {
-                const val = value as string
+              disabled={isDisabled || selectList.length === 0}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={(token) => {
+                const val = token.address
                 const cFormValues = cloneDeep(formValues)
                 if (val === formValues.fromAddress) {
                   cFormValues.fromAddress = formValues.toAddress

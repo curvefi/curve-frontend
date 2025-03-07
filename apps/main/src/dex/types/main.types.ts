@@ -22,6 +22,7 @@ export type NetworkConfigFromApi = {
 
 export interface NetworkConfig extends BaseConfig {
   isLite: boolean
+  isCrvRewardsEnabled: boolean
   useApi: boolean
   excludePoolsMapper: { [key: string]: boolean }
   excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }

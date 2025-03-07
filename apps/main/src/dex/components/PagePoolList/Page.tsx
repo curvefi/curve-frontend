@@ -17,7 +17,6 @@ import Settings from '@/dex/layout/default/Settings'
 
 enum SEARCH {
   filter = 'filter',
-  hideSmallPools = 'hideSmallPools',
   sortBy = 'sortBy',
   order = 'order',
   search = 'search',
@@ -50,7 +49,7 @@ const Page: NextPage = () => {
     () => ({
       name: { name: t`Pool` },
       ...(isLite
-        ? { rewardsOtherLite: { name: t`Rewards`, mobile: t`Rewards` } }
+        ? { rewardsLite: { name: t`Rewards`, mobile: t`Rewards` } }
         : {
             rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
             rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
@@ -65,14 +64,13 @@ const Page: NextPage = () => {
 
   const updatePath = useCallback(
     (updatedSearchParams: Partial<SearchParams>) => {
-      const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = {
+      const { filterKey, searchText, sortBy, sortByOrder } = {
         ...parsedSearchParams,
         ...updatedSearchParams,
       }
       const searchPath = new URLSearchParams(
         [
           [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
-          [SEARCH.hideSmallPools, hideSmallPools ? '' : 'false'],
           [SEARCH.sortBy, sortBy && sortBy !== defaultSortBy ? sortBy : ''],
           [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
           [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
@@ -90,7 +88,6 @@ const Page: NextPage = () => {
       const paramFilterKey = (searchParams.get(SEARCH.filter) || 'all').toLowerCase()
       const paramSortBy = (searchParams.get(SEARCH.sortBy) || defaultSortBy).toLowerCase()
       const paramOrder = (searchParams.get(SEARCH.order) || 'desc').toLowerCase()
-      const paramHideSmallPools = searchParams.get(SEARCH.hideSmallPools) || 'true'
       const searchText = decodeURIComponent(searchParams.get(SEARCH.search) || '')
 
       // validate filter key
@@ -98,7 +95,6 @@ const Page: NextPage = () => {
       if ((paramFilterKey === 'user' && !!curve && !curve?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
-          hideSmallPools: paramHideSmallPools === 'true',
           sortBy: paramSortBy as SortKey,
           sortByOrder: paramOrder as Order,
           searchText: searchText,
@@ -106,7 +102,6 @@ const Page: NextPage = () => {
       } else {
         setParsedSearchParams({
           filterKey: paramFilterKey as FilterKey,
-          hideSmallPools: paramHideSmallPools === 'true',
           searchText,
           sortBy: (Object.keys(TABLE_LABEL).find((k) => k.toLowerCase() === paramSortBy) ?? defaultSortBy) as SortKey,
           sortByOrder: (['desc', 'asc'].find((k) => k.toLowerCase() === paramOrder) ?? 'desc') as Order,
