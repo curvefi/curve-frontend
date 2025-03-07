@@ -1,34 +1,24 @@
-import type { Params } from 'react-router'
 import { ROUTE } from '@/lend/constants'
 import networks, { networksIdMapper } from '@/lend/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
-import { NetworkEnum, RouterParams } from '@/lend/types/lend.types'
+import { NetworkEnum, RouterParams, type UrlParams } from '@/lend/types/lend.types'
 
-export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/lend/${network}${rerouteRoute}`
 
-export function getCollateralListPathname(params: Params) {
-  const endPath = `${ROUTE.PAGE_MARKETS}`
-  return getPath(params, endPath)
-}
+export const getCollateralListPathname = (params: UrlParams) => getPath(params, ROUTE.PAGE_MARKETS)
 
-export function getLoanCreatePathname(params: Params, owmId: string, formType: string) {
-  const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_CREATE}${formType === 'create' ? '' : `/${formType}`}`
-  return getPath(params, endPath)
-}
+export const getLoanCreatePathname = (params: UrlParams, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_CREATE}${formType === 'create' ? '' : `/${formType}`}`)
 
-export function getLoanManagePathname(params: Params, owmId: string, formType: string) {
-  const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_MANAGE}/${formType}`
-  return getPath(params, endPath)
-}
+export const getLoanManagePathname = (params: UrlParams, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
-export function getVaultPathname(params: Params, owmId: string, formType: string) {
-  const endPath = `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_VAULT}${formType === 'vault' ? '' : `/${formType}`}`
-  return getPath(params, endPath)
-}
+export const getVaultPathname = (params: UrlParams, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_VAULT}${formType === 'vault' ? '' : `/${formType}`}`)
 
-export function parseParams(params: Params, chainIdNotRequired?: boolean) {
+export function parseParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { market, formType } = params ?? {}
-  const paths = window.location.hash.substring(2).split('/')
+  const paths = window.location.pathname.substring(1).split('/')
 
   const network = getNetworkFromUrl()
 
@@ -49,8 +39,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   // formType
   let rFormType = ''
-  if (formType) {
-    const parsedFormType = formType.toLowerCase()
+  if (formType?.[0]) {
+    const parsedFormType = formType[0].toLowerCase()
     const keys = ['vault', 'loan', 'collateral', 'deposit', 'withdraw', 'leverage']
     if (keys.some((key) => parsedFormType === key)) {
       rFormType = parsedFormType
@@ -59,8 +49,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
-    window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(rSubdirectory))
+    window.location.pathname.startsWith(parsedPathname) ||
+    (chainIdNotRequired && window.location.pathname.startsWith(rSubdirectory))
       ? ''
       : parsedPathname
 
@@ -76,7 +66,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 }
 
 export function getNetworkFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
   const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum
 
@@ -104,25 +94,7 @@ export function getNetworkFromUrl() {
 }
 
 export function getRestFullPathname() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const { rNetworkIdx } = getNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
-}
-
-export function getRestPartialPathname() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  const lastIdx = restPathnames.length - 1
-  if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
-    restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]
-  }
-  const { rNetworkIdx } = getNetworkFromUrl()
-  let endIdx = restPathnames.length
-  let found = false
-  ;['markets'].forEach((p) => {
-    if (!found && restPathnames.indexOf(p) !== -1) {
-      found = true
-      endIdx = restPathnames.indexOf(p) + 1
-    }
-  })
-  return restPathnames.slice(rNetworkIdx + 1, endIdx).join('/')
 }

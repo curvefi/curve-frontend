@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
-import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
+import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
+import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/dex/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -11,9 +10,11 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, Networks } from '@/dex/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
+import { useRouter } from 'next/navigation'
+import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -21,7 +22,7 @@ const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const navigate = useNavigate()
+  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const chainId = useStore((state) => state.curve?.chainId)
@@ -40,9 +41,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const location = useLocation()
   const network = networks[rChainId]
-  const routerPathname = location?.pathname ?? ''
   const restPartialPathname = useRestPartialPathname()
 
   return (
@@ -50,26 +49,21 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       networkName={rNetwork}
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
-      currentApp="main"
+      currentApp="dex"
       isLite={network?.isLite}
       pages={useMemo(
-        () =>
-          _parseRouteAndIsActive(
-            [
-              ...(hasRouter && (!network || network.showRouterSwap)
-                ? [
-                    {
-                      route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks),
-                      label: QuickSwap,
-                    },
-                  ]
-                : []),
-              ...APP_LINK.main.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
-            ],
-            routerPathname,
-            rNetwork,
-          ),
-        [hasRouter, network, networks, rChainId, rNetwork, routerCached, routerPathname],
+        () => [
+          ...(hasRouter && (!network || network.showRouterSwap)
+            ? [
+                {
+                  route: _createSwapPath(network.swap, routerCached),
+                  label: QuickSwap,
+                },
+              ]
+            : []),
+          ...APP_LINK.dex.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+        ],
+        [hasRouter, network, routerCached],
       )}
       ChainProps={{
         options: visibleNetworksList,
@@ -79,11 +73,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`/${network}/${restPartialPathname}`)
+              push(getPath({ network }, `/${restPartialPathname}`))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, networks, navigate, restPartialPathname, updateConnectState],
+          [rChainId, networks, push, restPartialPathname, updateConnectState],
         ),
       }}
       WalletProps={{
@@ -121,24 +115,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   )
 }
 
-function _parseSwapRoute(
-  rChainId: ChainId,
-  route: string,
-  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined,
-  networks: Networks,
-) {
-  const routerDefault = rChainId ? networks[rChainId].swap : {}
-  const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''
-  const routerToAddress = routerCached?.toAddress ?? routerDefault?.toAddress ?? ''
-
-  if (routerFromAddress && routerToAddress) {
-    route += `?from=${routerFromAddress}&to=${routerToAddress}`
-  } else if (routerFromAddress) {
-    route += `?from=${routerFromAddress}`
-  } else if (routerToAddress) {
-    route += `?to=${routerToAddress}`
-  }
-  return route
+function _createSwapPath(routerDefault: Record<string, string>, routerCached: SwapFormValuesCache) {
+  const from = routerCached?.fromAddress ?? routerDefault?.fromAddress
+  const to = routerCached?.toAddress ?? routerDefault?.toAddress
+  return `${ROUTE.PAGE_SWAP}/${from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''}`
 }
 
 export default Header

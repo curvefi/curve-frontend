@@ -17,7 +17,7 @@ import DetailsConnectWallet from '@/lend/components/DetailsUser/components/Detai
 import DetailsUserLoanAlertSoftLiquidation from '@/lend/components/DetailsUser/components/DetailsUserLoanAlertSoftLiquidation'
 import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import DetailsUserLoanChartLiquidationRange from '@/lend/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
-import { UserInfoPnl } from '@/lend/components/DetailsUser/components/UserInfoPnl'
+// import { UserInfoPnl } from '@/lend/components/DetailsUser/components/UserInfoPnl'
 import { UserInfoLeverage } from '@/lend/components/DetailsUser/components/UserInfoLeverage'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
@@ -58,7 +58,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
       ...(pricesApiAvailable ? [
-        { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
+        // { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
         { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} /> },
       ] : []),
     ],

@@ -29,7 +29,7 @@ describe('Header', () => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       appPath = oneAppPath()
-      cy.visit(appPath, {
+      cy.visit(`/${appPath}/`, {
         onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
       waitIsLoaded(appPath)
@@ -78,11 +78,11 @@ describe('Header', () => {
       if (['crvusd', 'dao'].includes(appPath)) {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
-        cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('include', `/ethereum`)
+        cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/ethereum`)
         return
       }
       switchEthToArbitrum()
-      cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('include', `/arbitrum`)
+      cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/arbitrum`)
     })
   })
 
@@ -123,7 +123,7 @@ describe('Header', () => {
       cy.url().then((url) => {
         const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
-        cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
+        cy.get(`[data-testid='mobile-drawer']`, LOAD_TIMEOUT).should('not.exist')
         cy.url().should('not.equal', url)
       })
     })
@@ -149,13 +149,13 @@ describe('Header', () => {
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
-        cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/ethereum/pools`)
+        cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/ethereum/pools`)
         return
       }
 
       switchEthToArbitrum()
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/arbitrum/pools`)
+      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/arbitrum/pools`)
     })
   })
 

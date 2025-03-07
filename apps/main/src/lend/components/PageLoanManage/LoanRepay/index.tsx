@@ -3,7 +3,6 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoan
 import type { Step } from '@ui/Stepper/types'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
@@ -33,14 +32,21 @@ import Stepper from '@ui/Stepper'
 import TxInfoBar from '@ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { Api, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useRouter } from 'next/navigation'
 
-const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+const LoanRepay = ({
+  rChainId,
+  rOwmId,
+  isLoaded,
+  api,
+  market,
+  userActiveKey,
+  params,
+}: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const params = useParams()
-  const navigate = useNavigate()
-
+  const { push } = useRouter()
   const activeKey = useStore((state) => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
@@ -106,7 +112,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
               if (resp.loanExists) {
                 updateFormValues(DEFAULT_FORM_VALUES, '', true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -115,7 +121,7 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: P
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
     },
-    [activeKey, fetchStepRepay, navigate, params, rChainId, updateFormValues],
+    [activeKey, fetchStepRepay, push, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

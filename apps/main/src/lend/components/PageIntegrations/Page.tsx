@@ -1,37 +1,31 @@
-import type { NextPage } from 'next'
-import { t, Trans } from '@ui-kit/lib/i18n'
+'use client'
+import { Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@/lend/utils/helpers'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useStore from '@/lend/store/useStore'
 import { ExternalLink } from '@ui/Link'
-import DocumentHead from '@/lend/layout/DocumentHead'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import type { NetworkUrlParams } from '@/lend/types/lend.types'
+import { useSearchParams } from 'next/navigation'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { routerParams } = usePageOnMount(params, location, navigate, true)
+const Page = (params: NetworkUrlParams) => {
+  const searchParams = useSearchParams()
+  const { routerParams } = usePageOnMount(true)
   const { rChainId } = routerParams
 
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
-    scrollToTop()
     init(rChainId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <>
-      <DocumentHead title={t`Integrations`} />
       <Container>
         <ContainerContent>
           <Title>Curve Integrations</Title>
@@ -51,7 +45,6 @@ const Page: NextPage = () => {
           {integrationsTags !== null ? (
             <IntegrationsComp
               rChainId={rChainId}
-              navigate={navigate}
               params={params}
               searchParams={searchParams}
               integrationsTags={integrationsTags}

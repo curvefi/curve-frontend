@@ -1,4 +1,3 @@
-import type { Params } from 'react-router-dom'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
@@ -6,13 +5,14 @@ import { AppPageFormTitleLinks } from '@ui/AppPage'
 import InternalLink from '@ui/Link/InternalLink'
 import styled from 'styled-components'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type { UrlParams } from '@/lend/types/lend.types'
 
 const PageTitleBorrowSupplyLinks = ({
   params,
   activeKey,
   market,
 }: {
-  params: Params
+  params: UrlParams
   activeKey: 'borrow' | 'supply'
   market: OneWayMarketTemplate
 }) => {

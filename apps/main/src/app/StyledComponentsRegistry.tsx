@@ -2,6 +2,7 @@
 import { ReactNode, useState } from 'react'
 import { useServerInsertedHTML } from 'next/navigation'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
+import { shouldForwardProp } from '@ui/styled-containers'
 
 /**
  * Injections for styled-components to work with Next.js SSR
@@ -15,10 +16,15 @@ export function StyledComponentsRegistry({ children }: { children: ReactNode }) 
   useServerInsertedHTML(() => {
     const styles = styledComponentsStyleSheet.getStyleElement()
     styledComponentsStyleSheet.instance.clearTag()
-    return <>{styles}</>
+    return styles
   })
 
-  if (typeof window !== 'undefined') return <>{children}</>
-
-  return <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>{children}</StyleSheetManager>
+  return (
+    <StyleSheetManager
+      shouldForwardProp={shouldForwardProp}
+      {...(typeof window == 'undefined' && { sheet: styledComponentsStyleSheet.instance })}
+    >
+      {children}
+    </StyleSheetManager>
+  )
 }

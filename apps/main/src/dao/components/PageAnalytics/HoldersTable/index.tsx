@@ -8,6 +8,8 @@ import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/Pagi
 import Box from '@ui/Box'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { getEthPath } from '@/dao/utils'
 
 const TopHoldersTable = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
@@ -38,7 +40,7 @@ const TopHoldersTable = () => {
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
-            <StyledTableDataLink className="align-left" href={`/ethereum/user/${holder.user}`}>
+            <StyledTableDataLink className="align-left" href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${holder.user}`)}>
               <span>{index + 1}.</span>
               <span style={{ textDecoration: 'underline' }}>
                 {TOP_HOLDERS[holder.user.toLowerCase()]

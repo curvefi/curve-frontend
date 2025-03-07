@@ -1,14 +1,9 @@
 'use client'
 import '@/global-extensions'
-import type { NextPage } from 'next'
-import dynamic from 'next/dynamic'
-import { Navigate, Route, Routes } from 'react-router'
-import { ROUTE } from '@/lend/constants'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/lend/layout'
@@ -19,18 +14,8 @@ import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { shouldForwardProp } from '@ui/styled-containers'
-import { StyleSheetManager } from 'styled-components'
 
-const PageLlammasList = dynamic(() => import('@/lend/components/PageMarketList/Page'), { ssr: false })
-const PageLoanCreate = dynamic(() => import('@/lend/components/PageLoanCreate/Page'), { ssr: false })
-const PageLoanManage = dynamic(() => import('@/lend/components/PageLoanManage/Page'), { ssr: false })
-const PageVault = dynamic(() => import('@/lend/components/PageVault/Page'), { ssr: false })
-const PageDisclaimer = dynamic(() => import('@/lend/components/PageDisclaimer/Page'), { ssr: false })
-const Page404 = dynamic(() => import('@/lend/components/Page404/Page'), { ssr: false })
-const PageIntegrations = dynamic(() => import('@/lend/components/PageIntegrations/Page'), { ssr: false })
-
-export const App: NextPage = () => {
+export const App = ({ children }: { children: ReactNode }) => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -78,52 +63,16 @@ export const App: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const SubRoutes = (
-    <>
-      <Route path=":network" element={<PageLlammasList />} />
-      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
-      <Route path=":network/integrations" element={<PageIntegrations />} />
-      <Route path=":network/markets" element={<PageLlammasList />} />
-      <Route path=":network/markets/:market" element={<Navigate to="create" />} />
-      <Route path=":network/markets/:market/create" element={<PageLoanCreate />} />
-      <Route path=":network/markets/:market/create/:formType" element={<PageLoanCreate />} />
-      <Route path=":network/markets/:market/manage" element={<PageLoanManage />} />
-      <Route path=":network/markets/:market/manage/:formType" element={<PageLoanManage />} />
-      <Route path=":network/markets/:market/vault" element={<PageVault />} />
-      <Route path=":network/markets/:market/vault/:formType" element={<PageVault />} />
-    </>
-  )
-
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <GlobalStyle />
       <ThemeProvider theme={theme}>
-        {typeof window === 'undefined' || !appLoaded ? null : (
-          <HashRouter>
-            <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-              <QueryProvider persister={persister} queryClient={queryClient}>
-                <OverlayProvider>
-                  <Page>
-                    <Routes>
-                      {SubRoutes}
-                      <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
-                      <Route
-                        path="/disclaimer"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />}
-                      />
-                      <Route
-                        path="/integrations"
-                        element={<Navigate to={`/ethereum${ROUTE.PAGE_INTEGRATIONS}`} replace />}
-                      />
-                      <Route path="/" element={<Navigate to={`/ethereum/markets`} replace />} />
-                      <Route path="404" element={<Page404 />} />
-                      <Route path="*" element={<Page404 />} />
-                    </Routes>
-                  </Page>
-                  <GlobalStyle />
-                </OverlayProvider>
-              </QueryProvider>
-            </StyleSheetManager>
-          </HashRouter>
+        {appLoaded && (
+          <OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <Page>{children}</Page>
+            </QueryProvider>
+          </OverlayProvider>
         )}
       </ThemeProvider>
     </div>

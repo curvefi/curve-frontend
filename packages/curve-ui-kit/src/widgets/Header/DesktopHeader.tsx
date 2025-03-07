@@ -13,11 +13,12 @@ import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
 import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { BaseHeaderProps } from './types'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
-import { useState } from 'react'
-import { AppName } from '@ui-kit/shared/routes'
+import { useMemo, useState } from 'react'
+import { AppName, findCurrentRoute } from '@ui-kit/shared/routes'
 import { t } from '@ui-kit/lib/i18n'
 import GlobalBanner from '@ui/Banner'
 import { isBeta, isCypress } from '@ui-kit/utils'
+import { usePathname } from 'next/navigation'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
 
@@ -34,6 +35,8 @@ export const DesktopHeader = <TChainId extends number>({
   isLite = false,
 }: BaseHeaderProps<TChainId>) => {
   const [selectedApp, setSelectedApp] = useState<AppName>(currentApp)
+  const pathname = usePathname()
+  const currentRoute = useMemo(() => pathname && findCurrentRoute(pathname, pages), [pathname, pages])
 
   const theme = useUserProfileStore((state) => state.theme)
   const setTheme = useUserProfileStore((state) => state.setTheme)
@@ -83,7 +86,7 @@ export const DesktopHeader = <TChainId extends number>({
           data-testid="subnav"
         >
           <Container>
-            <PageTabs pages={pages} currentApp={currentApp} selectedApp={selectedApp} networkName={networkName} />
+            <PageTabs pages={pages} currentRoute={currentRoute} selectedApp={selectedApp} networkName={networkName} />
             <Box flexGrow={1} />
             <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
               <HeaderStats appStats={appStats} />

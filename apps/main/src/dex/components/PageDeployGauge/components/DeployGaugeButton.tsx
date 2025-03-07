@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { CONNECT_STAGE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { curveProps } from '@/dex/lib/utils'
-import { useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { getPath, useNetworkFromUrl, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { shortenTokenAddress } from '@/dex/utils'
 import {
   STABLESWAP,
@@ -29,8 +29,8 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const navigate = useNavigate()
-  const { rChainId, rNetwork } = useNetworkFromUrl()
+  const { push } = useRouter()
+  const { rChainId } = useNetworkFromUrl()
 
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
     (state) => state.deployGauge,
@@ -39,11 +39,12 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const restFullPathname = useRestFullPathname()
 
   const handleConnectEth = () => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
     updateGlobalStoreByKey('isLoadingApi', true)
-    navigate(`/${window.location.hash.substring(2).replace(rNetwork, networks[1].id)}`)
+    push(getPath({ network: 'ethereum' }, restFullPathname))
   }
 
   const handleClick = async () => {

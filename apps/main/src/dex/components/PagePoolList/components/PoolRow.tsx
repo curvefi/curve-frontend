@@ -10,12 +10,13 @@ import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/component
 import { useCallback, useMemo } from 'react'
 import useStore from '@/dex/store/useStore'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 
 interface PoolRowProps {
   poolId: string
@@ -52,7 +53,7 @@ export const PoolRow = ({
   setShowDetail,
   curve,
 }: PoolRowProps) => {
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)
@@ -84,9 +85,9 @@ export const PoolRow = ({
       if (nodeName === 'A') {
         return // prevent click-through link from tooltip
       }
-      navigate(`${poolId}${ROUTES[formType ?? 'deposit']}`)
+      push(getPath({ network: network.id }, `${ROUTE.PAGE_POOLS}/${poolId}${ROUTES[formType ?? 'deposit']}`))
     },
-    [navigate, poolId],
+    [push, network.id, poolId],
   )
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {

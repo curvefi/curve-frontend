@@ -1,8 +1,9 @@
 import styled from 'styled-components'
-import { useNavigate, useParams } from 'react-router-dom'
 import { getPath } from '@/dao/utils/utilsRouter'
 import { InternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
+import { useParams, useRouter } from 'next/navigation'
+import type { UrlParams } from '@/dao/types/dao.types'
 import { ReactNode } from 'react'
 
 type InternalLinkButtonProps = {
@@ -12,15 +13,14 @@ type InternalLinkButtonProps = {
 }
 
 const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const navigate = useNavigate()
-  const params = useParams()
-
+  const { push } = useRouter()
+  const params = useParams() as UrlParams
   return (
     <StyledInternalLink
       size={smallSize ? 'small' : undefined}
       onClick={(e) => {
         e.preventDefault()
-        navigate(getPath(params, to))
+        push(getPath(params, to))
       }}
     >
       {children}

@@ -1,31 +1,31 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
-import { getNetworkFromUrl, getRestFullPathname } from '@/loan/utils/utilsRouter'
-import { _parseRouteAndIsActive, formatNumber, isLoading } from '@ui/utils'
+import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
+import { formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
-import networks, { visibleNetworksList } from '@/loan/networks'
+import { visibleNetworksList } from '@/loan/networks'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import useStore from '@/loan/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ChainId, CollateralDatasMapper, LoanDetailsMapper, UsdRate } from '@/loan/types/loan.types'
+import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
+import { useParams, useRouter } from 'next/navigation'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
+  const params = useParams() as UrlParams
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const navigate = useNavigate()
+  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId, rNetwork } = getNetworkFromUrl()
-
+  const { rChainId, rNetwork } = parseNetworkFromUrl(params)
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId
   const connectState = useStore((state) => state.connectState)
@@ -33,18 +33,12 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
-  const routerProps = useStore((state) => state.routerProps)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
   const { data: dailyVolume } = useAppStatsDailyVolume({})
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
-  const location = useLocation()
-  const { params: routerParams } = routerProps ?? {}
-
-  const routerNetwork = routerParams?.network ?? 'ethereum'
-  const routerPathname = location?.pathname ?? ''
 
   return (
     <NewHeader<ChainId>
@@ -52,10 +46,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentApp="crvusd"
-      pages={useMemo(
-        () => _parseRouteAndIsActive(APP_LINK.crvusd.pages, routerPathname, routerNetwork),
-        [routerNetwork, routerPathname],
-      )}
+      pages={APP_LINK.crvusd.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
@@ -63,12 +54,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
         onChange: useCallback(
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              navigate(`/${network}/${getRestFullPathname()}`)
+              push(getPath(params, getRestFullPathname(params)))
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, navigate, updateConnectState],
+          [rChainId, push, updateConnectState, params],
         ),
       }}
       WalletProps={{

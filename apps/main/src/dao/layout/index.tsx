@@ -1,6 +1,6 @@
 import Header from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
-import { getNetworkFromUrl } from '@/dao/utils/utilsRouter'
+import { getEthPath, getNetworkFromUrl } from '@/dao/utils/utilsRouter'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -8,6 +8,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
@@ -77,7 +78,7 @@ const getSections = () => [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
-      { route: '/disclaimer', label: t`Risk Disclaimers` },
+      { route: getEthPath(DAO_ROUTES.PAGE_DISCLAIMER), label: t`Risk Disclaimers` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],

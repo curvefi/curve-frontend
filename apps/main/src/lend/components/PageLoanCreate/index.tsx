@@ -1,17 +1,16 @@
 import type { FormType } from '@/lend/components/PageLoanCreate/types'
-import { useMemo, useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
-import { PageContentProps } from '@/lend/types/lend.types'
+import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
+import { useRouter } from 'next/navigation'
 
-const LoanCreate = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, rFormType, market } = pageProps
-  const params = useParams()
-  const navigate = useNavigate()
+const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
+  const { rChainId, rOwmId, rFormType, market, params } = pageProps
+  const { push } = useRouter()
 
   const resetState = useStore((state) => state.loanCreate.resetState)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
@@ -40,7 +39,7 @@ const LoanCreate = (pageProps: PageContentProps) => {
         activeFormKey={!rFormType ? 'create' : (rFormType as string)}
         handleClick={(key: string) => {
           resetState({ rChainId, rOwmId, key })
-          navigate(getLoanCreatePathname(params, rOwmId, key))
+          push(getLoanCreatePathname(params, rOwmId, key))
         }}
       />
 

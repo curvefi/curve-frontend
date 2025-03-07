@@ -11,14 +11,13 @@ import UserGaugeVotesTable from './UserGaugeVotesTable'
 import SubNav from '@/dao/components/SubNav'
 import type { Locker } from '@curvefi/prices-api/dao'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import type { UserUrlParams } from '@/dao/types/dao.types'
 
 type UserPageProps = {
-  routerParams: {
-    rUserAddress: string
-  }
+  routerParams: UserUrlParams
 }
 
-const UserPage = ({ routerParams: { rUserAddress } }: UserPageProps) => {
+const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
   const {
     veCrvHolders: { allHolders, fetchStatus },
     getVeCrvHolders,

@@ -78,14 +78,6 @@ export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | 
   }
 }
 
-export function scrollToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth',
-  })
-}
-
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   if (result.status === 'fulfilled') {
     return result.value

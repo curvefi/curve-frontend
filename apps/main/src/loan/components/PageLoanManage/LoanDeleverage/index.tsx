@@ -2,7 +2,6 @@ import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/P
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import type { Step } from '@ui/Stepper/types'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import {
@@ -43,6 +42,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Curve, Llamma } from '@/loan/types/loan.types'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useRouter } from 'next/navigation'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -53,7 +53,7 @@ const LoanDeleverage = ({
   rChainId,
 }: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'>) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.loanDeleverage.activeKey)
   const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
@@ -122,7 +122,7 @@ const LoanDeleverage = ({
               if (resp.loanExists) {
                 updateFormValues({}, '', true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -130,7 +130,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, params, rChainId, updateFormValues],
+    [activeKey, collateralName, fetchStepRepay, push, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

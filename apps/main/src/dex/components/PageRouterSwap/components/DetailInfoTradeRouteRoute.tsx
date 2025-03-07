@@ -1,7 +1,6 @@
-import type { Params } from 'react-router'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
@@ -11,7 +10,7 @@ import { ExternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import useStore from '@/dex/store/useStore'
-import { ChainId, NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkEnum, type UrlParams } from '@/dex/types/main.types'
 
 const DetailInfoTradeRouteRoute = ({
   params,
@@ -19,7 +18,7 @@ const DetailInfoTradeRouteRoute = ({
   routesLength,
   tokensNameMapper,
 }: {
-  params: Params
+  params: UrlParams
   route: Route
   routesLength: number
   tokensNameMapper: { [address: string]: string }
@@ -64,7 +63,7 @@ const DetailInfoTradeRouteRoute = ({
     </>
   ) : (
     <>
-      <RouteName to={path.pathname} target="_blank">
+      <RouteName href={path.pathname} target="_blank">
         <strong>{route.name || route.poolId}</strong>
       </RouteName>
       {InputAndOutputTokenLabel}

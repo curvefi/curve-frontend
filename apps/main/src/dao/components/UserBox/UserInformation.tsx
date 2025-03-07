@@ -8,6 +8,8 @@ import Loader from 'ui/src/Loader/Loader'
 import InternalLink from '@ui/Link/InternalLink'
 import Box from '@ui/Box'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type Props = {
   noLink?: boolean
@@ -53,7 +55,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
           </Box>
         ) : (
-          <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
+          <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
             <Box flex flexAlignItems="end">
               {userEns ? (
                 <UserIdentifier>{userEns}</UserIdentifier>

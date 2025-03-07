@@ -1,4 +1,3 @@
-import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { ethers } from 'ethers'
@@ -6,13 +5,16 @@ import { useCallback, useEffect } from 'react'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE } from '@/dao/constants'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { getNetworkFromUrl, parseParams } from '@/dao/utils/utilsRouter'
+import { getNetworkFromUrl, getPath, parseParams } from '@/dao/utils/utilsRouter'
 import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { ChainId, PageProps, Wallet } from '@/dao/types/dao.types'
+import { ChainId, PageProps, type UrlParams, Wallet } from '@/dao/types/dao.types'
+import { useParams, useRouter } from 'next/navigation'
 
-function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
+function usePageOnMount(chainIdNotRequired?: boolean) {
+  const params = useParams() as UrlParams
+  const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
   const curve = useStore((state) => state.curve)
@@ -93,7 +95,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const foundNetwork = networks[walletChainId as ChainId]?.id
               if (foundNetwork) {
                 console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-                navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+                push(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -108,7 +110,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState, setWalletName],
+    [connect, push, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -143,7 +145,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
                 parsedParams,
                 error,
               )
-              navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+              push(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -154,13 +156,12 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, parsedParams, setChain, updateConnectState, wallet],
+    [push, parsedParams, setChain, updateConnectState, wallet],
   )
 
   // onMount
   useEffect(() => {
     if (connectState.status === '' && connectState.stage === '') {
-      updateGlobalStoreByKey('routerProps', { params, location, navigate })
       if (walletName) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
       } else {
@@ -168,12 +169,11 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate])
+  }, [push])
 
   useEffect(() => {
     if (connectState.status || connectState.stage) {
       if (isSuccess(connectState)) {
-        updateGlobalStoreByKey('routerProps', { params, location, navigate })
       } else if (isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)) {
         handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
@@ -202,7 +202,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-          navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+          push(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
         } else {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
@@ -223,7 +223,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+  }, [])
 
   return {
     pageLoaded: connectState.status === 'success',

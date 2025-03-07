@@ -2,7 +2,7 @@ import { ReactNode, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
-import { getNetworkFromUrl } from '@/loan/utils/utilsRouter'
+import { getPath, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
@@ -10,6 +10,8 @@ import useStore from '@/loan/store/useStore'
 import Header from '@/loan/layout/Header'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
+import type { NetworkUrlParams, UrlParams } from '@/loan/types/loan.types'
+import { useParams } from 'next/navigation'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
@@ -19,10 +21,9 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
   const updateConnectState = useStore((state) => state.updateConnectState)
-
   const [networkSwitch, setNetworkSwitch] = useState('')
-
-  const { rChainId, rNetwork } = getNetworkFromUrl()
+  const params = useParams() as UrlParams
+  const { rChainId, rNetwork } = parseNetworkFromUrl(params)
 
   const showSwitchNetworkMessage =
     isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
@@ -35,7 +36,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
-  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
+  const sections = useMemo(() => getSections(params), [params])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
@@ -54,15 +55,15 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const getSections = (network: string) => [
+const getSections = ({ network }: NetworkUrlParams) => [
   {
     title: t`Documentation`,
     links: [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
-      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}?tab=crvusd`, label: t`Risk Disclaimers` },
-      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
+      { route: getPath({ network }, `${ROUTE.PAGE_DISCLAIMER}?tab=crvusd`), label: t`Risk Disclaimers` },
+      { route: getPath({ network }, ROUTE.PAGE_INTEGRATIONS), label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],

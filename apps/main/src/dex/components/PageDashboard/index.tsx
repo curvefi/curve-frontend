@@ -1,10 +1,9 @@
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
-import type { Params } from 'react-router'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboardContext'
@@ -23,7 +22,7 @@ import TableRowMobile from '@/dex/components/PageDashboard/components/TableRowMo
 import TableRowNoResult from '@/dex/components/PageDashboard/components/TableRowNoResult'
 import TableSortDialog from '@/dex/components/PageDashboard/components/TableSortDialog'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { CurveApi, ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
 
 const Dashboard = ({
   curve,
@@ -32,10 +31,10 @@ const Dashboard = ({
 }: {
   curve: CurveApi | null
   rChainId: ChainId
-  params: Readonly<Params<string>>
+  params: NetworkUrlParams
 }) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.dashboard.activeKey)
   const formValues = useStore((state) => state.dashboard.formValues)
@@ -102,9 +101,9 @@ const Dashboard = ({
   const updatePath = useCallback(
     (poolId: string) => {
       const encodePoolId = encodeURIComponent(poolId)
-      navigate(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
     },
-    [navigate, params],
+    [push, params],
   )
 
   const colSpan = isXSmDown ? 1 : 5

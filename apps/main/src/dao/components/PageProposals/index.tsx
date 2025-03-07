@@ -1,7 +1,7 @@
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import styled from 'styled-components'
 import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { Key, useCallback, useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
 import ProposalsFilters from './components/ProposalsFilters'
@@ -13,6 +13,8 @@ import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Icon from '@ui/Icon'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { SortByFilterProposals } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 const Proposals = () => {
   const {
@@ -31,7 +33,7 @@ const Proposals = () => {
     proposals,
   } = useStore((state) => state.proposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
   const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
@@ -50,9 +52,9 @@ const Proposals = () => {
 
   const handleProposalClick = useCallback(
     (rProposalId: string) => {
-      navigate(`/ethereum/proposals/${rProposalId}`)
+      push(getEthPath(`${DAO_ROUTES.PAGE_PROPOSALS}/${rProposalId}`))
     },
-    [navigate],
+    [push],
   )
 
   useEffect(() => {

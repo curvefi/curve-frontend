@@ -8,6 +8,8 @@ import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
 import InternalLink from '@ui/Link/InternalLink'
 import AlertBox from '@ui/AlertBox'
+import { getEthPath } from '@/dao/utils'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
   const { userEns, userVeCrv } = useStore((state) => state.user)
@@ -24,7 +26,7 @@ const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
           loading={userWeightsLoading}
           title="User"
           data={
-            <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
+            <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
               <MetricsColumnData>{userEns ?? shortenTokenAddress(userAddress)}</MetricsColumnData>
             </StyledInternalLink>
           }
