@@ -1,21 +1,18 @@
-import { useRef } from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
-
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useClassObserver } from '@ui-kit/hooks/useClassObserver'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { addressShort } from '@ui-kit/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useRef } from 'react'
+import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
-
-import type { TokenOption as Option } from '../../types'
-import { addressShort } from '@ui-kit/utils'
 
 export type TokenOptionCallbacks = {
   onToken: () => void

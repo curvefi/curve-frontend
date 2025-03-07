@@ -1,9 +1,8 @@
 import { SxProps } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-
 import type { TokenOption } from '../types'
+import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
-import type { TokenListProps, TokenListCallbacks } from './modal/TokenList'
 import { TokenSelectButton } from './TokenSelectButton'
 
 type Props = Partial<TokenListProps> &

@@ -1,9 +1,9 @@
-import type { InputLabelProps, InputProps } from './types'
-import { useInputContext } from 'ui/src/InputComp/InputProvider'
-import { useDebouncedValue } from 'ui/src/hooks'
+import useDebounce from 'curve-ui-kit/src/hooks/useDebounce'
 import Box from 'ui/src/Box/Box'
-import Input from 'ui/src/InputComp/Input'
 import { InputLabel } from 'ui/src/InputComp'
+import Input from 'ui/src/InputComp/Input'
+import { useInputContext } from 'ui/src/InputComp/InputProvider'
+import type { InputLabelProps, InputProps } from './types'
 
 const InputDebounced = ({
   className,
@@ -23,14 +23,14 @@ const InputDebounced = ({
   onChange: (value: string) => void
 }) => {
   const { disabled: contextDisabled } = useInputContext()
-  const [debouncedValue, handleInputChange] = useDebouncedValue(value, delay, onChange)
+  const [debouncedValue, handleInputChange] = useDebounce(value, delay, onChange)
 
   return (
     <Box grid>
       {labelProps && <InputLabel {...labelProps} testId={testId} />}
       <Input
         value={debouncedValue}
-        onChange={handleInputChange}
+        onChange={(e) => handleInputChange(e.target.value)}
         disabled={contextDisabled || disabled}
         testId={testId}
         {...inputProps}

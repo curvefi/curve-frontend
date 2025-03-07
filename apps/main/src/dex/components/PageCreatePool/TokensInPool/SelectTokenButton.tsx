@@ -168,15 +168,17 @@ const SelectTokenButton = ({
           disabledTokens={disabledKeys ?? []}
           disableSorting={true}
           customOptions={
-            <Checkbox
-              key={'filter-basepools'}
-              isDisabled={basePools[chainId]?.length === 0}
-              className={filterBasepools ? 'active' : ''}
-              isSelected={filterBasepools}
-              onChange={() => setFilterBasepools(!filterBasepools)}
-            >
-              View Basepools
-            </Checkbox>
+            swapType === STABLESWAP && (
+              <Checkbox
+                key={'filter-basepools'}
+                isDisabled={basePools[chainId]?.length === 0}
+                className={filterBasepools ? 'active' : ''}
+                isSelected={filterBasepools}
+                onChange={() => setFilterBasepools(!filterBasepools)}
+              >
+                View Basepools
+              </Checkbox>
+            )
           }
           onClose={handleClose}
           onToken={({ address }) => {
