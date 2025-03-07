@@ -175,7 +175,6 @@ const defaultNetworks = Object.entries({
   },
   [Chain.Kava]: {
     poolFilters: ['all', 'usd', 'btc', 'kava', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
-    poolListFormValuesDefault: { hideSmallPools: false }, // remove if Kava have > 10 pools
     swap: {
       fromAddress: '0x765277eebeca2e31912c9946eae1021199b39c61',
       toAddress: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
@@ -361,6 +360,7 @@ const defaultNetworks = Object.entries({
       ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
+      isCrvRewardsEnabled: true,
     } as NetworkConfig
     return prev
   },
@@ -398,6 +398,7 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
               twocryptoFactory: true,
               tricryptoFactory: true,
               isLite: true,
+              isCrvRewardsEnabled: chainId == 146, // only enabled for sonic
               isTestnet: config.isTestnet,
             }
             return prev

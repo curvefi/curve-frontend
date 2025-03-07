@@ -12,20 +12,20 @@ export const defineMuiCardHeader = (
   styleOverrides: {
     root: {
       padding: `${Spacing.lg.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
-      alignItems: 'flex-end',
       borderBottom: `1px solid ${design.Layer[3].Outline}`,
       minHeight: `calc(${ButtonSize.lg} + 1px)`, // 1px to account for border
       variants: [
         {
           props: { size: 'small' },
           style: {
-            minHeight: Sizing.md.desktop,
+            minHeight: 'auto',
+            maxHeight: Sizing.md.desktop,
             padding: `${Spacing.md.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
           },
         },
       ],
     },
-    action: { alignContent: 'center', margin: 0 },
+    action: { alignContent: 'center', alignSelf: 'center', margin: 0 },
     title: {
       ...typography.headingSBold,
       variants: [
