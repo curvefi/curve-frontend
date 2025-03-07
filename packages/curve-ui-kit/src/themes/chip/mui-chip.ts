@@ -53,6 +53,11 @@ export const defineMuiChip = (
       color: TextColors.Primary,
       backgroundColor: 'transparent',
       ...handleBreakpoints({ paddingInline: Spacing.xs }),
+      '&:has(.MuiChip-icon)': {
+        ...handleBreakpoints({ gap: Spacing.xs }),
+        '& .MuiChip-icon': { marginInline: 0 },
+        '& .MuiChip-label': { paddingInline: 0 },
+      },
     },
   },
   variants: [
@@ -110,11 +115,6 @@ export const defineMuiChip = (
         borderColor: Chips.Default.Stroke,
         cursor: 'pointer',
         '& .MuiChip-deleteIcon': { margin: 0 },
-        '&:has(.MuiChip-icon)': {
-          ...handleBreakpoints({ paddingInline: Spacing.sm, gap: Spacing.xs }),
-          '& .MuiChip-icon': { marginInline: 0 },
-          '& .MuiChip-label': { paddingInline: 0 },
-        },
         '&:hover, &:focus-visible': {
           borderColor: 'transparent',
           backgroundColor: Chips.Hover.Fill,

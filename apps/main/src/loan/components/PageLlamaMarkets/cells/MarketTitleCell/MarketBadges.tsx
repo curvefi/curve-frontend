@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
-import { PoolRewards } from '@/loan/entities/campaigns'
+import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,15 +23,6 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
   [LlamaMarketType.Lend]: () => t`Lend markets allow you to earn interest on your assets.`,
   [LlamaMarketType.Mint]: () => t`Mint markets allow you to borrow assets against your collateral.`,
 }
-
-const getRewardsDescription = ({ action, description, multiplier }: PoolRewards) =>
-  `${multiplier}x: ${
-    {
-      lp: description ?? t`Earn points by providing liquidity.`,
-      supply: t`Earn points by supplying liquidity.`,
-      borrow: t`Earn points by borrowing.`,
-    }[action]
-  }`
 
 const classNames = (...items: (string | false | undefined | null)[]): string => items.filter(Boolean).join(' ')
 

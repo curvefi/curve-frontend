@@ -8,8 +8,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { RangeSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/RangeSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns'
 
 const { Spacing } = SizesAndSpaces
 
@@ -45,7 +46,7 @@ export const LendingMarketsFilters = ({
   <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="chain"
+        field={LlamaMarketColumnId.Chain}
         renderItem={(chain) => (
           <>
             <ChainIcon blockchainId={chain} size="md" />
@@ -61,7 +62,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="assets.collateral.symbol"
+        field={LlamaMarketColumnId.CollateralSymbol}
         renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="collateral" />}
         defaultText={t`All Collateral Tokens`}
         {...props}
@@ -70,7 +71,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="assets.borrowed.symbol"
+        field={LlamaMarketColumnId.BorrowedSymbol}
         renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="borrowed" />}
         defaultText={t`All Debt Tokens`}
         {...props}
@@ -78,18 +79,18 @@ export const LendingMarketsFilters = ({
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <MinimumSliderFilter
-        field="liquidityUsd"
-        title={t`Min Liquidity`}
+      <RangeSliderFilter
+        field={LlamaMarketColumnId.LiquidityUsd}
+        title={t`Liquidity`}
         format={(value) => formatNumber(value, { currency: 'USD' })}
         {...props}
       />
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <MinimumSliderFilter
-        field="utilizationPercent"
-        title={t`Min Utilization`}
+      <RangeSliderFilter
+        field={LlamaMarketColumnId.UtilizationPercent}
+        title={t`Utilization`}
         format={(value) => value.toFixed(2) + '%'}
         {...props}
       />

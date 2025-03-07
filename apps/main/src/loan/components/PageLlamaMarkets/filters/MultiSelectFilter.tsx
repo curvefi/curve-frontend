@@ -1,11 +1,15 @@
-import { ReactNode, useMemo } from 'react'
-import { get, identity, sortBy, sortedUniq } from 'lodash'
+import { type MouseEvent, ReactNode, useCallback, useMemo } from 'react'
+import { get, sortBy, sortedUniq } from 'lodash'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import Button from '@mui/material/Button'
+import { t } from '@ui-kit/lib/i18n'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import Box from '@mui/material/Box'
 
 const { Spacing } = SizesAndSpaces
 
@@ -15,7 +19,7 @@ const { Spacing } = SizesAndSpaces
  */
 const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
   const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, identity))
+  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
 }
 
 /**
@@ -36,12 +40,24 @@ export const MultiSelectFilter = <T extends unknown>({
   field: DeepKeys<T>
   renderItem?: (value: string) => ReactNode
 }) => {
+  const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
   const id = cleanColumnId(field)
   const value = (columnFilters[id] ?? []) as string[]
+  const onClear = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation()
+      setColumnFilter(id, [])
+      close()
+    },
+    [id, setColumnFilter, close],
+  )
   return (
     <Select
       name={id}
+      open={isOpen}
+      onOpen={open}
+      onClose={close}
       multiple
       displayEmpty
       value={value}
@@ -69,6 +85,9 @@ export const MultiSelectFilter = <T extends unknown>({
         )
       }
     >
+      <Box sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[3].Outline}` }}>
+        <Button color="ghost" size="extraSmall" onClick={onClear}>{t`Clear Selection`}</Button>
+      </Box>
       {options.map((optionId) => (
         <MenuItem key={optionId} value={optionId}>
           {renderItem?.(optionId) ?? optionId}
