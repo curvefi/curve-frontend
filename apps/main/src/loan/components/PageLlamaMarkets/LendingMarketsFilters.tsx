@@ -8,7 +8,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { RangeSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/RangeSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns'
 
@@ -79,18 +79,18 @@ export const LendingMarketsFilters = ({
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <MinimumSliderFilter
+      <RangeSliderFilter
         field={LlamaMarketColumnId.LiquidityUsd}
-        title={t`Min Liquidity`}
+        title={t`Liquidity`}
         format={(value) => formatNumber(value, { currency: 'USD' })}
         {...props}
       />
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <MinimumSliderFilter
+      <RangeSliderFilter
         field={LlamaMarketColumnId.UtilizationPercent}
-        title={t`Min Utilization`}
+        title={t`Utilization`}
         format={(value) => value.toFixed(2) + '%'}
         {...props}
       />
