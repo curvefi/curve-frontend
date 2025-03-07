@@ -1,6 +1,6 @@
+import upperFirst from 'lodash/upperFirst'
 import { AlertFormErrorKey, GaugeFormattedData } from '@/dao/types/dao.types'
 import { Chain } from '@ui-kit/utils'
-import upperFirst from 'lodash/upperFirst'
 
 export * from './utilsRouter'
 export * from './utilsDates'

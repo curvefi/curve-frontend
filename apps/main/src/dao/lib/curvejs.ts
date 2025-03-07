@@ -1,11 +1,6 @@
-import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
-import type { DateValue } from '@internationalized/date'
-import dayjs from '@ui-kit/lib/dayjs'
-import PromisePool from '@supercharge/promise-pool/dist'
-import networks from '@/dao/networks'
 import cloneDeep from 'lodash/cloneDeep'
-import { getErrorMessage } from '@/dao/utils'
-import { log } from '@ui-kit/lib'
+import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
+import networks from '@/dao/networks'
 import {
   CurveApi,
   ChainId,
@@ -15,6 +10,11 @@ import {
   UsdRatesMapper,
   ClaimButtonsKey,
 } from '@/dao/types/dao.types'
+import { getErrorMessage } from '@/dao/utils'
+import type { DateValue } from '@internationalized/date'
+import PromisePool from '@supercharge/promise-pool/dist'
+import { log } from '@ui-kit/lib'
+import dayjs from '@ui-kit/lib/dayjs'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {

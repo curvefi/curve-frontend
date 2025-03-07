@@ -1,10 +1,5 @@
-import { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
-import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenTokenAddress } from '@/dex/utils'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
-import { checkTokensInPoolUnset, containsOracle } from '@/dex/components/PageCreatePool/utils'
+import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -15,6 +10,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
+import OracleSummary from '@/dex/components/PageCreatePool/Summary/OracleSummary'
 import {
   CategoryColumn,
   CategoryDataColumn,
@@ -27,11 +23,15 @@ import {
   ButtonTokenIcon,
   TokenType,
 } from '@/dex/components/PageCreatePool/Summary/styles'
-import OracleSummary from '@/dex/components/PageCreatePool/Summary/OracleSummary'
+import { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
+import { checkTokensInPoolUnset, containsOracle } from '@/dex/components/PageCreatePool/utils'
+import useStore from '@/dex/store/useStore'
+import { ChainId } from '@/dex/types/main.types'
+import { shortenTokenAddress } from '@/dex/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
-import { ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   blockchainId: string

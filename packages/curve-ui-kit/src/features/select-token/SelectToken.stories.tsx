@@ -1,9 +1,9 @@
+import { useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useState } from 'react'
-import { TokenSelector } from './'
 import type { TokenOption } from './types'
+import { TokenSelector } from './'
 
 const { Spacing } = SizesAndSpaces
 

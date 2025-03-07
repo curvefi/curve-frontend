@@ -1,10 +1,10 @@
+import produce from 'immer'
+import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
-import { CONNECT_STAGE, ConnectState } from '@ui/utils'
-import isEqual from 'lodash/isEqual'
-import produce from 'immer'
-import { log } from '@ui-kit/lib'
 import { CurveApi, Wallet } from '@/dao/types/dao.types'
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
+import { log } from '@ui-kit/lib'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

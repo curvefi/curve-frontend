@@ -1,18 +1,7 @@
-import {
-  CreateToken,
-  ImplementationId,
-  NgAssetType,
-  SwapType,
-  TokenId,
-  TokenState,
-} from '@/dex/components/PageCreatePool/types'
-import type { ContractTransactionResponse } from 'ethers'
-import type { GetState, SetState } from 'zustand'
-import produce from 'immer'
 import { BigNumber } from 'bignumber.js'
-import { t } from '@ui-kit/lib/i18n'
-import { notify } from '@ui-kit/features/connect-wallet'
-import type { State } from '@/dex/store/useStore'
+import type { ContractTransactionResponse } from 'ethers'
+import produce from 'immer'
+import type { GetState, SetState } from 'zustand'
 import {
   CRYPTOSWAP,
   POOL_PRESETS,
@@ -26,8 +15,19 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
+import {
+  CreateToken,
+  ImplementationId,
+  NgAssetType,
+  SwapType,
+  TokenId,
+  TokenState,
+} from '@/dex/components/PageCreatePool/types'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
+import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { notify } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type SliceState = {
   navigationIndex: number

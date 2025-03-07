@@ -1,17 +1,17 @@
 import { useMemo, useState } from 'react'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
-import Stack from '@mui/material/Stack'
+import AlertTitle from '@mui/material/AlertTitle'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
+import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
-import AlertTitle from '@mui/material/AlertTitle'
-import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

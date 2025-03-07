@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dao/store/useStore'
-import { formatNumber, shortenTokenAddress } from '@ui/utils'
-import { calculateUserPowerStale } from './utils'
-import Box from '@ui/Box'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
-import InternalLink from '@ui/Link/InternalLink'
-import AlertBox from '@ui/AlertBox'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import useStore from '@/dao/store/useStore'
 import { getEthPath } from '@/dao/utils'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import InternalLink from '@ui/Link/InternalLink'
+import { formatNumber, shortenTokenAddress } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { calculateUserPowerStale } from './utils'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
   const { userEns, userVeCrv } = useStore((state) => state.user)

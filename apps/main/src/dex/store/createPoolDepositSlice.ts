@@ -1,8 +1,6 @@
+import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type { Amount } from '@/dex/components/PagePool/utils'
-import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type {
   FormLpTokenExpected,
   FormStatus,
@@ -10,19 +8,18 @@ import type {
   FormValues,
   LoadMaxAmount,
 } from '@/dex/components/PagePool/Deposit/types'
-import { t } from '@ui-kit/lib/i18n'
-import cloneDeep from 'lodash/cloneDeep'
 import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/dex/components/PagePool/Deposit/utils'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
+import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
+import type { Amount } from '@/dex/components/PagePool/utils'
 import { NETWORK_TOKEN } from '@/dex/constants'
-import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { isBonus, isHighSlippage } from '@/dex/utils'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import curvejsApi from '@/dex/lib/curvejs'
+import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
+import type { State } from '@/dex/store/useStore'
 import {
   Balances,
   ChainId,
@@ -33,7 +30,10 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
+import { isBonus, isHighSlippage } from '@/dex/utils'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

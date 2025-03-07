@@ -1,7 +1,7 @@
-import type { FormStatus, MarketListMapper, SearchTermResult } from '@/lend/components/PageMarketList/types'
-import sortBy from 'lodash/sortBy'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { FuseResult } from 'fuse.js'
+import sortBy from 'lodash/sortBy'
+import type { FormStatus, MarketListMapper, SearchTermResult } from '@/lend/components/PageMarketList/types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export enum Filter {
   all = 'all',

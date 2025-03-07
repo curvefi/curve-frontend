@@ -1,11 +1,11 @@
-import { TradesDataProps } from './types'
 import styled from 'styled-components'
 import networks from '@/loan/networks'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
 import Box from '@ui/Box'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { TradesDataProps } from './types'
 
 const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
   <>

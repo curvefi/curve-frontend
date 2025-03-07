@@ -1,9 +1,9 @@
 'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import Gauge from '@/dao/components/PageGauge/index'
+import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
+import { breakpoints } from '@ui/utils'
 
 const Page = (params: GaugeUrlParams) => {
   usePageOnMount()

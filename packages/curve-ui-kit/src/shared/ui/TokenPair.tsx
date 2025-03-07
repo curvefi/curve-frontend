@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TokenIcon } from './TokenIcon'
 import { ChainIcon } from '../icons/ChainIcon'
+import { TokenIcon } from './TokenIcon'
 
 const { IconSize } = SizesAndSpaces
 

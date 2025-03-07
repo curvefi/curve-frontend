@@ -1,4 +1,3 @@
-import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import {
   ChainId,
@@ -9,6 +8,7 @@ import {
   TitleMapper,
   type CollateralUrlParams,
 } from '@/loan/types/loan.types'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 export type FormStatus = {
   error: string

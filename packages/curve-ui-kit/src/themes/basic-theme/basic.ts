@@ -1,7 +1,7 @@
-import { createTheme as createMuiTheme } from '@mui/material/styles'
-import { Spacing } from '../design/0_primitives'
 import { Breakpoint } from '@mui/material'
+import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
+import { Spacing } from '../design/0_primitives'
 
 export const basicMuiTheme = createMuiTheme({
   breakpoints: {

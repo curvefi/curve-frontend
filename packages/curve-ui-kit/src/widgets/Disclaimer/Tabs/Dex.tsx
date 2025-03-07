@@ -1,8 +1,8 @@
-import { t } from '@ui-kit/lib/i18n'
-import Stack from '@mui/material/Stack'
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
+import Stack from '@mui/material/Stack'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Section, Header, Title, Paragraph } from '../Section'
 

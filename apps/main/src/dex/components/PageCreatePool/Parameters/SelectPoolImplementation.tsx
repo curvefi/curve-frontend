@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
 import { IMPLEMENTATION_IDS } from '@/dex/components/PageCreatePool/constants'
-import Checkbox from '@ui/Checkbox'
-import Tooltip from '@ui/Tooltip'
-import Icon from '@ui/Icon'
-import Box from '@ui/Box'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
+import Icon from '@ui/Icon'
+import Tooltip from '@ui/Tooltip'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId

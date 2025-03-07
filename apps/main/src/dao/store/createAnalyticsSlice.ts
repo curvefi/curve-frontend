@@ -1,13 +1,13 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-import produce from 'immer'
 import { Contract } from 'ethers'
-import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
-import { abiVeCrv } from '@/dao/store/abis'
-import { FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
 import type { ContractRunner } from 'ethers/lib.commonjs/providers'
-import { type Distribution, getDistributions } from '@curvefi/prices-api/revenue'
+import produce from 'immer'
+import type { GetState, SetState } from 'zustand'
+import { abiVeCrv } from '@/dao/store/abis'
+import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
+import type { State } from '@/dao/store/useStore'
+import { FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
 import { type Locker, type LocksDaily, getLocksDaily, getLockers } from '@curvefi/prices-api/dao'
+import { type Distribution, getDistributions } from '@curvefi/prices-api/revenue'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,6 +1,6 @@
-import type { AppRoutes } from '@ui-kit/widgets/Header/types'
 import { t } from '@ui-kit/lib/i18n'
 import { isBeta } from '@ui-kit/utils'
+import type { AppRoutes } from '@ui-kit/widgets/Header/types'
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',

@@ -1,9 +1,9 @@
-import { formatNumber } from '@ui/utils'
-import useStore from '@/loan/store/useStore'
-import Box from '@ui/Box'
 import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
-import ListInfoItem from '@ui/ListInfo'
+import useStore from '@/loan/store/useStore'
 import { Llamma } from '@/loan/types/loan.types'
+import Box from '@ui/Box'
+import ListInfoItem from '@ui/ListInfo'
+import { formatNumber } from '@ui/utils'
 
 const UserInfoLlammaBalances = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
   const userState = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState)

@@ -1,10 +1,10 @@
-import { t } from '@ui-kit/lib/i18n'
-import styled from 'styled-components'
 import { useMemo } from 'react'
-import { formatNumber } from '@ui/utils'
+import styled from 'styled-components'
 import useStore from '@/lend/store/useStore'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { ChainId } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   className?: string

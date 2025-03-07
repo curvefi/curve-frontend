@@ -1,5 +1,5 @@
-import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
+import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { CurveApi, ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
 
 export type FormStatus = {

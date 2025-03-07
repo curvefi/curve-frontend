@@ -1,5 +1,5 @@
-import type { LayoutHeight } from '@/dex/store/createGlobalSlice'
 import { RefObject, useEffect } from 'react'
+import type { LayoutHeight } from '@/dex/store/createGlobalSlice'
 import useStore from '@/dex/store/useStore'
 
 function useLayoutHeight(elementRef: RefObject<Element | null>, key: keyof LayoutHeight) {

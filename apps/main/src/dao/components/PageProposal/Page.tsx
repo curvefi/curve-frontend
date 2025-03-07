@@ -1,9 +1,9 @@
 'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import Proposal from '@/dao/components/PageProposal/index'
+import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
+import { breakpoints } from '@ui/utils'
 
 const Page = (props: ProposalUrlParams) => {
   usePageOnMount()

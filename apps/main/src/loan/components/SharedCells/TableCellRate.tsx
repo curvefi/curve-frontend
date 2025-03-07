@@ -1,11 +1,11 @@
-import type { ChipProps } from '@ui/Typography/types'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
+import { Chip } from '@ui/Typography'
+import type { ChipProps } from '@ui/Typography/types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 interface Props extends ChipProps {
   collateralId: string

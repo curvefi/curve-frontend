@@ -1,14 +1,14 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-import useStore from '@/dao/store/useStore'
-import BarChartComponent from '../../Charts/BarChartComponent'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
-import Box from '@ui/Box'
-import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
-import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
+import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
+import BarChartComponent from '../../Charts/BarChartComponent'
+import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
+import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean

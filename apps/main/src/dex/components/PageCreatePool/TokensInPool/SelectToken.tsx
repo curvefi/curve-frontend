@@ -1,13 +1,5 @@
-import {
-  CreateToken,
-  TokenState,
-  TokenId,
-  SelectTokenFormValues,
-  TokensInPoolState,
-} from '@/dex/components/PageCreatePool/types'
+import { Key } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -20,13 +12,21 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
-import SelectTokenButton from './SelectTokenButton'
+import {
+  CreateToken,
+  TokenState,
+  TokenId,
+  SelectTokenFormValues,
+  TokensInPoolState,
+} from '@/dex/components/PageCreatePool/types'
+import useStore from '@/dex/store/useStore'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
+import Button from '@ui/Button'
 import Checkbox from '@ui/Checkbox'
 import Icon from '@ui/Icon'
-import Button from '@ui/Button'
-import { Key } from 'react'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
+import SelectTokenButton from './SelectTokenButton'
 
 type Props = {
   curve: CurveApi

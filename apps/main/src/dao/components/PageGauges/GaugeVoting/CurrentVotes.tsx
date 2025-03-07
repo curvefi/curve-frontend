@@ -1,15 +1,15 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { Fragment, useEffect } from 'react'
-import useStore from '@/dao/store/useStore'
-import { USER_VOTES_TABLE_LABELS } from './constants'
-import Box from '@ui/Box'
-import PaginatedTable from '@/dao/components/PaginatedTable'
-import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
+import styled from 'styled-components'
 import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import GaugeVotingStats from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
+import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight, UserGaugeVoteWeightSortBy } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
+import { USER_VOTES_TABLE_LABELS } from './constants'
 
 type CurrentVotesProps = {
   userAddress: string | undefined

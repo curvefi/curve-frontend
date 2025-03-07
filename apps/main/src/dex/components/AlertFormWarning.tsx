@@ -1,8 +1,8 @@
+import { useMemo } from 'react'
+import { AlertType } from '@/dex/types/main.types'
+import AlertBox from '@ui/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'
-import { useMemo } from 'react'
-import AlertBox from '@ui/AlertBox'
-import { AlertType } from '@/dex/types/main.types'
 
 const ALERT_FORM_WARNING_KEYS = {
   'warning-exchange-rate-low': 'warning-exchange-rate-low',

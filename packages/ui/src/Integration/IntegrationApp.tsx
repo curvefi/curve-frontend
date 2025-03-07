@@ -1,10 +1,10 @@
-import type { IntegrationApp, IntegrationsTags } from 'ui/src/Integration/types'
-import styled, { css } from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
-import Box from 'ui/src/Box'
-import ExternalLink from 'ui/src/Link/ExternalLink'
-import IntegrationAppTag from 'ui/src/Integration/IntegrationAppTag'
 import { ReactNode } from 'react'
+import styled, { css } from 'styled-components'
+import Box from 'ui/src/Box'
+import IntegrationAppTag from 'ui/src/Integration/IntegrationAppTag'
+import type { IntegrationApp, IntegrationsTags } from 'ui/src/Integration/types'
+import ExternalLink from 'ui/src/Link/ExternalLink'
+import { breakpoints } from 'ui/src/utils/responsive'
 
 const IntegrationAppComp = ({
   appUrl,

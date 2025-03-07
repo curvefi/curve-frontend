@@ -1,10 +1,10 @@
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui/utils'
-import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
+import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 import Item from '@ui/Items/Item'
 import Items from '@ui/Items/Items'
-import { PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { weiToEther } from '@ui-kit/utils'
 
 interface PoolTotalStakedProps {
   poolDataCacheOrApi: PoolDataCacheOrApi

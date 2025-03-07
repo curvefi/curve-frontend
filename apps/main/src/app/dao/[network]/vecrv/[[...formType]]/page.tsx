@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { VeCrvUrlParams } from '@/dao/types/dao.types'
 import PageVeCrv from '@/dao/components/PageVeCrv/Page'
+import type { VeCrvUrlParams } from '@/dao/types/dao.types'
 
 type VeCrvPageProps = { params: Promise<VeCrvUrlParams> }
 

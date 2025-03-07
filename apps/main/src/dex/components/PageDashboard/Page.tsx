@@ -1,15 +1,15 @@
 'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Dashboard from '@/dex/components/PageDashboard/index'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Settings from '@/dex/layout/default/Settings'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import Box from '@ui/Box'
 import useStore from '@/dex/store/useStore'
-import { isLoading } from '@ui/utils'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { isLoading } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 
 const Page = (params: NetworkUrlParams) => {
   const { curve, routerParams } = usePageOnMount()

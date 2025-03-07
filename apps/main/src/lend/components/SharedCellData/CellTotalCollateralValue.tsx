@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import useStore from '@/lend/store/useStore'
-import TextCaption from '@ui/TextCaption'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import TextCaption from '@ui/TextCaption'
+import { formatNumber } from '@ui/utils'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data

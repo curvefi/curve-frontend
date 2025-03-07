@@ -1,13 +1,13 @@
-import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
-import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-import { t } from '@ui-kit/lib/i18n'
-import { SORT_ID } from '@/dex/components/PageDashboard/utils'
+import styled from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { Th, Thead, TheadSortButton } from '@ui/Table'
+import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
+import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import Box from '@ui/Box'
+import { Th, Thead, TheadSortButton } from '@ui/Table'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@ui/utils'
-import styled from 'styled-components'
+import { t } from '@ui-kit/lib/i18n'
 
 const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
   const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()

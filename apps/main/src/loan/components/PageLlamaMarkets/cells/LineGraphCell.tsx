@@ -1,11 +1,11 @@
-import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { Line, LineChart, YAxis } from 'recharts'
-import { useTheme } from '@mui/material/styles'
-import { DesignSystem } from '@ui-kit/themes/design'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
+import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import Box from '@mui/material/Box'
+import { DesignSystem } from '@ui-kit/themes/design'
 import { GraphType, useSnapshots } from '../hooks/useSnapshots'
 
 const graphSize = { width: 172, height: 48 }

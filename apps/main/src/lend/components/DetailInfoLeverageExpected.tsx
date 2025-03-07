@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui/utils'
 import DetailInfo from '@ui/DetailInfo'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLeverageExpected = ({
   total,

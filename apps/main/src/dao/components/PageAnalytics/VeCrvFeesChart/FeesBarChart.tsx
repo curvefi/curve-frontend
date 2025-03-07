@@ -1,7 +1,7 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { formatDate, formatNumber } from 'ui/src/utils'
-import FeesBarChartTooltip from './FeesBarChartTooltip'
 import type { Distribution } from '@curvefi/prices-api/revenue'
+import FeesBarChartTooltip from './FeesBarChartTooltip'
 
 type FeesBarChartProps = {
   data: Distribution[]

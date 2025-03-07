@@ -1,12 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-import type { WalletState } from '@web3-onboard/core'
 import { Contract } from 'ethers'
 import produce from 'immer'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
-import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
-import { contractVeCRV } from '@/dao/store/contracts'
+import type { GetState, SetState } from 'zustand'
 import { abiVeCrv } from '@/dao/store/abis'
+import { contractVeCRV } from '@/dao/store/contracts'
+import type { State } from '@/dao/store/useStore'
 import {
   CurveApi,
   FetchingState,
@@ -26,6 +23,9 @@ import {
   UserProposalVotesSortBy,
   UserVoteData,
 } from '@/dao/types/dao.types'
+import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
+import type { WalletState } from '@web3-onboard/core'
 
 const { WEEK } = TIME_FRAMES
 

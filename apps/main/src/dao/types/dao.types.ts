@@ -1,10 +1,10 @@
-import type { INetworkName } from '@curvefi/api/lib/interfaces'
-import type { WalletState } from '@web3-onboard/core'
-import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
 import curvejsApi from '@/dao/lib/curvejs'
+import type curveApi from '@curvefi/api'
+import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import type { Address } from '@ui-kit/utils'
+import type { WalletState } from '@web3-onboard/core'
 
 export type PageWidthClassName =
   | 'page-wide'

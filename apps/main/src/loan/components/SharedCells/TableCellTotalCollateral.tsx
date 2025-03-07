@@ -1,15 +1,15 @@
-import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-import { formatNumber, type NumberFormatOptions } from '@ui/utils'
-import { getTokenName } from '@/loan/utils/utilsLoan'
 import useStore from '@/loan/store/useStore'
-import { Chip } from '@ui/Typography'
+import { ChainId } from '@/loan/types/loan.types'
+import { getTokenName } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'
+import { Chip } from '@ui/Typography'
+import { formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@/loan/types/loan.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   rChainId: ChainId

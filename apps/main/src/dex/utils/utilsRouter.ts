@@ -1,6 +1,6 @@
+import { useMemo } from 'react'
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
-import { useMemo } from 'react'
 import { FormTypes, NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
 
 export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dex/${network}${rerouteRoute}`

@@ -1,12 +1,12 @@
-import type { FormType, PageVecrv } from '@/dex/components/PageCrvLocker/types'
-import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
-import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import FormLockCreate from '@/dex/components/PageCrvLocker/components/FormLockCreate'
 import FormLockCrv from '@/dex/components/PageCrvLocker/components/FormLockCrv'
 import FormLockDate from '@/dex/components/PageCrvLocker/components/FormLockDate'
+import type { FormType, PageVecrv } from '@/dex/components/PageCrvLocker/types'
+import useStore from '@/dex/store/useStore'
+import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
+import { t } from '@ui-kit/lib/i18n'
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo, toggleForm } = pageProps

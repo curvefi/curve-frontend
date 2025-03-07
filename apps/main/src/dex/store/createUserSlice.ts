@@ -1,11 +1,11 @@
+import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
+import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
+import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
+import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import { shortenAccount } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import cloneDeep from 'lodash/cloneDeep'
-import { fulfilledValue, isValidAddress } from '@/dex/utils'
-import curvejsApi from '@/dex/lib/curvejs'
-import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

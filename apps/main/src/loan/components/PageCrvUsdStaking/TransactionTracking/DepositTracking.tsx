@@ -1,8 +1,11 @@
 import Image from 'next/image'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/loan/store/useStore'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import Spinner from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 import {
   Wrapper,
   ApprovalStep,
@@ -16,9 +19,6 @@ import {
   DividerLine,
   ResetButton,
 } from './styles'
-import Icon from '@ui/Icon'
-import Box from '@ui/Box'
-import Spinner from '@ui/Spinner'
 
 type DepositTrackingProps = {
   className?: string

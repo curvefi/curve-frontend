@@ -1,16 +1,16 @@
-import type { TableRowProps } from '@/lend/components/PageMarketList/types'
+import { useParams, useRouter } from 'next/navigation'
 import { useMemo } from 'react'
-import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
-import { helpers } from '@/lend/lib/apiLending'
-import { parseSearchTermMapper } from '@/lend/hooks/useSearchTermMapper'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import TableRowMobile from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
+import type { TableRowProps } from '@/lend/components/PageMarketList/types'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useParams, useRouter } from 'next/navigation'
+import { parseSearchTermMapper } from '@/lend/hooks/useSearchTermMapper'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
+import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 
 const TableRowContainer = (
   props: Omit<TableRowProps, 'market' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>,

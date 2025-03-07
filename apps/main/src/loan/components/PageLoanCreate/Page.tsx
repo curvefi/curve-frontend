@@ -1,15 +1,17 @@
 'use client'
-import { t } from '@ui-kit/lib/i18n'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { breakpoints } from '@ui/utils/responsive'
-import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { getTokenName } from '@/loan/utils/utilsLoan'
+import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
+import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
+import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
-import useStore from '@/loan/store/useStore'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
+import useStore from '@/loan/store/useStore'
+import { type CollateralUrlParams, Curve, Llamma } from '@/loan/types/loan.types'
+import { getTokenName } from '@/loan/utils/utilsLoan'
+import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -18,19 +20,17 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import Box from '@ui/Box'
-import LoanCreate from '@/loan/components/PageLoanCreate/index'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
-import TextEllipsis from '@ui/TextEllipsis'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
+import TextEllipsis from '@ui/TextEllipsis'
+import { isLoading } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { type CollateralUrlParams, Curve, Llamma } from '@/loan/types/loan.types'
-import { isLoading } from '@ui/utils'
-import { useRouter } from 'next/navigation'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()

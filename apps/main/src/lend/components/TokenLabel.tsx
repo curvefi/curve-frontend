@@ -1,15 +1,15 @@
-import type { BoxProps } from '@ui/Box/types'
 import styled from 'styled-components'
-import { copyToClipboard } from '@/lend/utils/helpers'
 import networks from '@/lend/networks'
+import { ChainId } from '@/lend/types/lend.types'
+import { copyToClipboard } from '@/lend/utils/helpers'
+import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import Box from '@ui/Box'
-import ExternalLink from '@ui/Link/ExternalLink'
+import type { BoxProps } from '@ui/Box/types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
+import ExternalLink from '@ui/Link/ExternalLink'
 import TextEllipsis from '@ui/TextEllipsis'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { ChainId } from '@/lend/types/lend.types'
 
 const TokenLabel = ({
   rChainId,

@@ -1,16 +1,16 @@
 'use client'
-import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
-import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
+import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import Settings from '@/loan/layout/Settings'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 import { Spacing as PrimitiveSpacing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Settings from '@/loan/layout/Settings'
-import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 

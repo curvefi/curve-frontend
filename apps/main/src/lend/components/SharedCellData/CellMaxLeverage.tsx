@@ -1,11 +1,11 @@
-import type { ChipProps } from '@ui/Typography/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-import Chip from '@ui/Typography/Chip'
-import TextCaption from '@ui/TextCaption'
 import { ChainId } from '@/lend/types/lend.types'
+import TextCaption from '@ui/TextCaption'
+import Chip from '@ui/Typography/Chip'
+import type { ChipProps } from '@ui/Typography/types'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const CellMaxLeverage = ({
   className = '',

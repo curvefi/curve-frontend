@@ -1,11 +1,11 @@
-import type { Route } from '@/dex/components/PageRouterSwap/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { RCCircle } from '@ui/images'
-import Box from '@ui/Box'
 import DetailInfoTradeRouteRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
-import Loader from '@ui/Loader'
+import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { type NetworkUrlParams, TokensNameMapper } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import { RCCircle } from '@ui/images'
+import Loader from '@ui/Loader'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoTradeRoute = ({
   params,

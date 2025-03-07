@@ -1,13 +1,19 @@
 'use client'
-import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { useCallback, useEffect, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
+import DetailsMarket from '@/lend/components/DetailsMarket'
+import DetailsUser from '@/lend/components/DetailsUser'
+import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
-import { helpers } from '@/lend/lib/apiLending'
+import Vault from '@/lend/components/PageVault/index'
+import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
-import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
+import { helpers } from '@/lend/lib/apiLending'
+import useStore from '@/lend/store/useStore'
+import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -16,19 +22,13 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DetailsMarket from '@/lend/components/DetailsMarket'
-import DetailsUser from '@/lend/components/DetailsUser'
-import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import Tabs, { Tab } from '@ui/Tab'
-import Vault from '@/lend/components/PageVault/index'
 import Box from '@ui/Box'
-import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { useOneWayMarket } from '@/lend/entities/chain'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import Tabs, { Tab } from '@ui/Tab'
 import { isLoading } from '@ui/utils'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
   const { routerParams, api } = usePageOnMount()

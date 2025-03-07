@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
 import isUndefined from 'lodash/isUndefined'
-import { formatNumber } from '@ui/utils'
+import { useMemo } from 'react'
 import useStore from '@/loan/store/useStore'
+import { formatNumber } from '@ui/utils'
 
 const UserInfoLiquidationRange = ({
   llammaId,

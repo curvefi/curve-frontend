@@ -1,7 +1,7 @@
-import Button from '@mui/material/Button'
-import LinkMui from '@mui/material/Link'
 import RouterLink from 'next/link'
 import { ReactNode } from 'react'
+import Button from '@mui/material/Button'
+import LinkMui from '@mui/material/Link'
 import type { AppName } from '@ui-kit/shared/routes'
 
 export type LinkProps = {

@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
 import Switch from '@mui/material/Switch'
-import { SettingLabel, Setting } from '../Setting'
+import { t } from '@ui-kit/lib/i18n'
 import useUserProfileStore from '../../store'
+import { SettingLabel, Setting } from '../Setting'
 
 export const AdvancedMode = () => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)

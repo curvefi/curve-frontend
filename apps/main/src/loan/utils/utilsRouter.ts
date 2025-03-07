@@ -1,8 +1,8 @@
 import type { FormType as ManageFormType } from '@/loan/components/PageLoanManage/types'
 import { ROUTE } from '@/loan/constants'
 import networks, { networksIdMapper } from '@/loan/networks'
-import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
 import { type NetworkUrlParams, RouterParams, type UrlParams } from '@/loan/types/loan.types'
+import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
 
 export const getPath = ({ network = 'ethereum' }: UrlParams, rerouteRoute: string) =>
   `/crvusd/${network}${rerouteRoute}`

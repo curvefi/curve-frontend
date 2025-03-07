@@ -1,3 +1,5 @@
+import { ThemeKey } from '@ui-kit/themes/basic-theme'
+import * as onboard from '@web3-onboard/react'
 import {
   bitget,
   coinbaseWalletSdk,
@@ -13,8 +15,6 @@ import {
   trust,
   walletConnect,
 } from './utils/walletModules'
-import * as onboard from '@web3-onboard/react'
-import { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 export const initOnboard = (
   themeType: ThemeKey,

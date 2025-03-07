@@ -1,11 +1,11 @@
-import styled from 'styled-components'
 import { useCallback } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import VoteCountdown from '../../VoteCountdown'
+import styled from 'styled-components'
 import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
-import LazyItem from '@ui/LazyItem'
 import SmallLabel from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/types/dao.types'
+import LazyItem from '@ui/LazyItem'
+import { t } from '@ui-kit/lib/i18n'
+import VoteCountdown from '../../VoteCountdown'
 
 type Props = {
   proposalData: ProposalData

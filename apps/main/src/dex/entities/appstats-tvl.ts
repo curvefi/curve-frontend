@@ -1,8 +1,8 @@
-import type { ChainParams } from '@ui-kit/lib/model/query'
-import type { ChainId } from '@/dex/types/main.types'
-import { queryFactory } from '@ui-kit/lib/model/query'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
+import type { ChainId } from '@/dex/types/main.types'
+import type { ChainParams } from '@ui-kit/lib/model/query'
+import { queryFactory } from '@ui-kit/lib/model/query'
 import { curvejsValidationSuite } from './validation/curvejs-validation'
 
 async function _fetchAppStatsTvl(_: ChainParams<ChainId>) {

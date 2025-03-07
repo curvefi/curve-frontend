@@ -1,5 +1,5 @@
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import type { Components } from '@mui/material/styles'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

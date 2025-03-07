@@ -1,7 +1,4 @@
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import {
   StyledStats,
   SummaryTitle,
@@ -9,9 +6,12 @@ import {
   SummarySpinnerWrapper,
   tooltipProps,
 } from '@/dex/components/PageDashboard/components/Summary'
-import Chip from '@ui/Typography/Chip'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import Spinner from '@ui/Spinner'
 import Stats from '@ui/Stats'
+import Chip from '@ui/Typography/Chip'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type AllTotal = {
   totalUsd: number

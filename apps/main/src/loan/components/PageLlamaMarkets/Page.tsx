@@ -1,15 +1,15 @@
 'use client'
-import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { invalidateLendingVaults } from '@/loan/entities/lending-vaults'
+import { useLlamaMarkets } from '@/loan/entities/llama-markets'
+import { invalidateMintMarkets } from '@/loan/entities/mint-markets'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
+import Box from '@mui/material/Box'
+import Skeleton from '@mui/material/Skeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
-import useStore from '@/loan/store/useStore'
-import { useLlamaMarkets } from '@/loan/entities/llama-markets'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
-import { invalidateMintMarkets } from '@/loan/entities/mint-markets'
 
 /**
  * Reloads the lending vaults and mint markets.

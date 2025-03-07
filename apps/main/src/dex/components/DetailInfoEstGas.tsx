@@ -1,15 +1,15 @@
-import { t } from '@ui-kit/lib/i18n'
-import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { NETWORK_TOKEN } from '@/dex/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
 import useStore from '@/dex/store/useStore'
+import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { ChainId, EstimatedGas } from '@/dex/types/main.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
   active: number

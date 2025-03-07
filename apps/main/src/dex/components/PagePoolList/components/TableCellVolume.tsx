@@ -1,6 +1,6 @@
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { Chip } from '@ui/Typography'
 import { Volume } from '@/dex/types/main.types'
+import { Chip } from '@ui/Typography'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 type Props = {
   isHighLight: boolean

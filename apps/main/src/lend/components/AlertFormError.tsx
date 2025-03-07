@@ -1,7 +1,7 @@
-import type { AlertBoxProps } from '@ui/AlertBox/types'
-import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 import AlertBox from '@ui/AlertBox'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
+import { t } from '@ui-kit/lib/i18n'
 
 export enum FormError {
   // vault

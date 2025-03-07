@@ -1,9 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import countBy from 'lodash/countBy'
-import { log } from '@ui-kit/lib/logging'
+import type { GetState, SetState } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
+import type { State } from '@/dex/store/useStore'
 import { ChainId, NativeToken, Token, TokensMapper, TokensNameMapper, PoolData } from '@/dex/types/main.types'
+import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

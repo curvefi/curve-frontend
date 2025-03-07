@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { Chip } from '@ui/Typography'
-import Box from '@ui/Box'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import { Chip } from '@ui/Typography'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const TooltipBaseApy = ({
   baseApy,

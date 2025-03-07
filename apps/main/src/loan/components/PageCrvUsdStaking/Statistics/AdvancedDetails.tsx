@@ -1,10 +1,10 @@
+import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
+import { ETHEREUM_CHAIN_ID } from '@/loan/constants'
+import networks from '@/loan/networks'
 import { Card, CardHeader, Stack } from '@mui/material'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
-import networks from '@/loan/networks'
-import { ETHEREUM_CHAIN_ID } from '@/loan/constants'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

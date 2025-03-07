@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts'
 import { ReactNode } from 'react'
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts'
+import styled from 'styled-components'
 
 type Props<T> = {
   data: T[]

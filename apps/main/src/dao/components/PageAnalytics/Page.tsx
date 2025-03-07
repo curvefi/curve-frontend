@@ -1,8 +1,8 @@
 'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
 import Analytics from '@/dao/components/PageAnalytics/index'
+import usePageOnMount from '@/dao/hooks/usePageOnMount'
+import { breakpoints } from '@ui/utils'
 
 const Page = () => {
   usePageOnMount()

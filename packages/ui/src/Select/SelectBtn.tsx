@@ -1,11 +1,11 @@
-import type { ButtonProps } from 'ui/src/Button/types'
+import { ButtonHTMLAttributes, CSSProperties, RefObject } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
+import type { ButtonProps } from 'ui/src/Button/types'
 import { StyledBtn } from 'ui/src/Select/styles'
 import Spinner from 'ui/src/Spinner'
 import SpinnerWrapper from 'ui/src/Spinner/SpinnerWrapper'
-import { ButtonHTMLAttributes, CSSProperties, RefObject } from 'react'
 
 const SelectBtn = ({
   loading,

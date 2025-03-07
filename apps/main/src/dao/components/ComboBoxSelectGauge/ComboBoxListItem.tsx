@@ -1,11 +1,11 @@
-import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import styled from 'styled-components'
-import { focusVisible } from '@ui/utils'
-import { shortenTokenAddress } from '@ui/utils'
+import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
-import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { focusVisible } from '@ui/utils'
+import { shortenTokenAddress } from '@ui/utils'
 
 const ComboBoxListItem = ({
   testId,

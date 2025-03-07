@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import Gauge from '@/dao/components/PageGauge/Page'
+import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { t } from '@ui-kit/lib/i18n'
 
 type GaugePageProps = { params: Promise<GaugeUrlParams> }

@@ -1,8 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
 import { CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
-import Box from '@ui/Box'
 import {
   CategoryColumn,
   SummaryData,
@@ -10,6 +7,9 @@ import {
   SummaryCategoryTitle,
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
+import useStore from '@/dex/store/useStore'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 const PoolTypeSummary = () => {
   const {

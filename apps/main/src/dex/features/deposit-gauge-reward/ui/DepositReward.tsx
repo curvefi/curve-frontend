@@ -1,5 +1,6 @@
-import { vestResolver } from '@hookform/resolvers/vest'
 import { FormProvider, useForm } from 'react-hook-form'
+import AlertFormError from '@/dex/components/AlertFormError'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/dex/features/deposit-gauge-reward/model'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import {
@@ -9,13 +10,12 @@ import {
   GasEstimation,
   HelperFields,
 } from '@/dex/features/deposit-gauge-reward/ui'
-import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
-import { formDefaultOptions } from '@ui-kit/lib/model/form'
+import { ChainId } from '@/dex/types/main.types'
+import { vestResolver } from '@hookform/resolvers/vest'
+import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
-import AlertFormError from '@/dex/components/AlertFormError'
-import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
-import { ChainId } from '@/dex/types/main.types'
+import { formDefaultOptions } from '@ui-kit/lib/model/form'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({

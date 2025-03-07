@@ -1,6 +1,6 @@
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import type { Metadata } from 'next'
 import PegKeepers from '@/loan/components/PagePegKeepers/Page'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 
 type PegKeepersPageProps = { params: Promise<NetworkUrlParams> }
 

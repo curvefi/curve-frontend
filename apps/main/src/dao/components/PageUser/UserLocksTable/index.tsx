@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dao/store/useStore'
-import { LOCKS_LABELS } from '../constants'
-import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/TableRow'
+import useStore from '@/dao/store/useStore'
 import { UserLock, UserLocksSortBy, veCrvLockType } from '@/dao/types/dao.types'
+import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { LOCKS_LABELS } from '../constants'
 
 interface UserLocksTableProps {
   userAddress: string

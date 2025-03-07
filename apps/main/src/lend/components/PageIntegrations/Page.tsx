@@ -1,15 +1,15 @@
 'use client'
-import { Trans } from '@ui-kit/lib/i18n'
+import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
+import IntegrationsComp from '@/lend/components/PageIntegrations/index'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useStore from '@/lend/store/useStore'
-import { ExternalLink } from '@ui/Link'
-import IntegrationsComp from '@/lend/components/PageIntegrations/index'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
-import { useSearchParams } from 'next/navigation'
+import { ExternalLink } from '@ui/Link'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { breakpoints } from '@ui/utils/responsive'
+import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
   const searchParams = useSearchParams()

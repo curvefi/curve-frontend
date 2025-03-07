@@ -1,6 +1,6 @@
 import type { AddRewardQuery, DepositRewardApproveQuery, DepositRewardQuery } from '@/dex/entities/gauge/types'
-import { BD } from '@ui-kit/utils'
 import useStore from '@/dex/store/useStore'
+import { BD } from '@ui-kit/utils'
 
 export const queryEstimateGasDepositRewardApprove = async ({
   poolId,

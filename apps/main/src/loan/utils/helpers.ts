@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
 import networks from '@/loan/networks'
 import { Curve } from '@/loan/types/loan.types'
+import { t } from '@ui-kit/lib/i18n'
 
 interface CustomError extends Error {
   data?: { message: string }

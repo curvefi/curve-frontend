@@ -1,13 +1,13 @@
 'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
-import Box from '@ui/Box'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import { CurveApi } from '@/dex/types/main.types'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
+import { CurveApi } from '@/dex/types/main.types'
+import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 
 const Page = () => {
   const { curve } = usePageOnMount()

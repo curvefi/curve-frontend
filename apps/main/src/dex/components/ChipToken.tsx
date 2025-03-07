@@ -1,12 +1,12 @@
+import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
-import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
 import { copyToClipboard } from '@/dex/lib/utils'
-import { formatNumberUsdRate } from '@ui/utils'
+import useStore from '@/dex/store/useStore'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
+import { formatNumberUsdRate } from '@ui/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string

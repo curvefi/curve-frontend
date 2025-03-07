@@ -1,17 +1,17 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { breakpoints, formatNumber } from '@ui/utils'
+import AlertFormError from '@/loan/components/AlertFormError'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import AlertFormError from '@/loan/components/AlertFormError'
+import { ChainId, Curve } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import TxInfoBar from '@ui/TxInfoBar'
-import { ChainId, Curve } from '@/loan/types/loan.types'
+import { breakpoints, formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   rChainId: ChainId

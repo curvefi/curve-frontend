@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
+import RouterLink from 'next/link'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import RouterLink from 'next/link'
-import { Header, Paragraph, Section, Title } from '../Section'
+import { t } from '@ui-kit/lib/i18n'
 import { List } from '../List'
+import { Header, Paragraph, Section, Title } from '../Section'
 
 export const LlamaLend = ({ network }: { network: string }) => (
   <>

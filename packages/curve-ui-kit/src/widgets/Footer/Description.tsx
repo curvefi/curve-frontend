@@ -1,11 +1,11 @@
-import { t } from '@ui-kit/lib/i18n'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
-import Typography from '@mui/material/Typography'
 import SvgIcon from '@mui/material/SvgIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Sizing } from '@ui-kit/themes/design/0_primitives'
+import Typography from '@mui/material/Typography'
 import { RCLogoSM } from '@ui/images'
+import { t } from '@ui-kit/lib/i18n'
+import { Sizing } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize, Spacing, FontWeight } = SizesAndSpaces
 

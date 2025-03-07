@@ -1,13 +1,13 @@
-import type { TableProps } from '@/lend/components/PageMarketList/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
+import TableHead from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableHead'
+import TableRowContainer from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
+import type { TableProps } from '@/lend/components/PageMarketList/types'
 import useStore from '@/lend/store/useStore'
 import Box from '@ui/Box'
 import Table, { Tbody, Th } from '@ui/Table'
-import TableHead from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableHead'
-import TableRowContainer from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
 import TextCaption from '@ui/TextCaption'
+import { breakpoints } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const MarketListTable = ({
   className = '',

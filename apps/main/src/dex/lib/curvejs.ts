@@ -1,33 +1,13 @@
-import type { DateValue } from '@internationalized/date'
-import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
-import type { IProfit } from '@curvefi/api/lib/interfaces'
-import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
-import countBy from 'lodash/countBy'
-import dayjs from '@ui-kit/lib/dayjs'
 import chunk from 'lodash/chunk'
+import countBy from 'lodash/countBy'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
-import PromisePool from '@supercharge/promise-pool/dist'
-import {
-  filterCrvProfit,
-  filterRewardsApy,
-  hasNoWrapped,
-  parseBaseProfit,
-  separateCrvProfit,
-  separateCrvReward,
-} from '@/dex/utils/utilsCurvejs'
-import { BN } from '@ui/utils'
+import memoizee from 'memoizee'
+import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
+import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
+import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
-import {
-  _parseRoutesAndOutput,
-  excludeLowExchangeRateCheck,
-  getExchangeRates,
-  getSwapIsLowExchangeRate,
-} from '@/dex/utils/utilsSwap'
-import { log } from '@ui-kit/lib/logging'
 import useStore from '@/dex/store/useStore'
 import {
   ChainId,
@@ -45,7 +25,27 @@ import {
   UsdRatesMapper,
   UserBalancesMapper,
 } from '@/dex/types/main.types'
-import memoizee from 'memoizee'
+import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
+import {
+  filterCrvProfit,
+  filterRewardsApy,
+  hasNoWrapped,
+  parseBaseProfit,
+  separateCrvProfit,
+  separateCrvReward,
+} from '@/dex/utils/utilsCurvejs'
+import {
+  _parseRoutesAndOutput,
+  excludeLowExchangeRateCheck,
+  getExchangeRates,
+  getSwapIsLowExchangeRate,
+} from '@/dex/utils/utilsSwap'
+import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { DateValue } from '@internationalized/date'
+import PromisePool from '@supercharge/promise-pool/dist'
+import { BN } from '@ui/utils'
+import dayjs from '@ui-kit/lib/dayjs'
+import { log } from '@ui-kit/lib/logging'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {

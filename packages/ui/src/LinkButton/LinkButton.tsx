@@ -1,7 +1,7 @@
-import type { ButtonProps } from 'ui/src/Button/types'
+import RouterLink from 'next/link'
 import styled from 'styled-components'
 import { buttonBaseStyles } from 'ui/src/Button/styles'
-import RouterLink from 'next/link'
+import type { ButtonProps } from 'ui/src/Button/types'
 
 type RouterLinkProps = Parameters<typeof RouterLink>[0]
 

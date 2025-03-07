@@ -1,13 +1,13 @@
-import type { ButtonProps } from 'ui/src/Button/types'
-import type { Step, StepStatus } from 'ui/src/Stepper/types'
-import { useOverlayTriggerState } from 'react-stately'
 import { useRef } from 'react'
 import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import styled, { css } from 'styled-components'
-import { isInProgress, taskStepStatusStyles } from './helpers'
 import Button from 'ui/src/Button'
+import type { ButtonProps } from 'ui/src/Button/types'
 import Spinner from 'ui/src/Spinner/Spinner'
 import { StepModal } from 'ui/src/Stepper'
+import type { Step, StepStatus } from 'ui/src/Stepper/types'
+import { isInProgress, taskStepStatusStyles } from './helpers'
 
 const StepAction = ({ className, step }: { className?: string; step: Step }) => {
   const overlayTriggerState = useOverlayTriggerState({})

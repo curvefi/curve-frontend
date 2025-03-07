@@ -1,15 +1,15 @@
-import { t } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from 'ui/src/images'
-import Icon from '@ui/Icon'
 import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
 import Link from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import Icon from '@ui/Icon'
+import { t } from '@ui-kit/lib/i18n'
+import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useTheme } from '@mui/material/styles'
-import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
 const { Spacing } = SizesAndSpaces
 
 const UserInformation = () => {

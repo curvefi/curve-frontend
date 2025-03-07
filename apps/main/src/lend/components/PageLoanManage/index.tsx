@@ -1,23 +1,23 @@
+import { useRouter } from 'next/navigation'
+import { useCallback, useMemo, useRef, useEffect } from 'react'
+import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
+import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
+import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
+import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
+import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
 import type {
   CollateralFormType,
   FormType,
   LeverageFormType,
   LoanFormType,
 } from '@/lend/components/PageLoanManage/types'
-import { useCallback, useMemo, useRef, useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import useSlideTabState from '@/lend/hooks/useSlideTabState'
 import useStore from '@/lend/store/useStore'
+import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
-import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
-import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
-import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
-import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
-import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
-import useSlideTabState from '@/lend/hooks/useSlideTabState'
-import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { useRouter } from 'next/navigation'
+import { t } from '@ui-kit/lib/i18n'
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps

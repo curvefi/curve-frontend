@@ -1,11 +1,11 @@
-import { t } from '@ui-kit/lib/i18n'
-import { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
+import { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
+import { t } from '@ui-kit/lib/i18n'
 
 type DeployButtonProps = { className?: string }
 

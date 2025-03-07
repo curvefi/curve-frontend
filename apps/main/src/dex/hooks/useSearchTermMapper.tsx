@@ -1,6 +1,6 @@
 import type { SearchTermKey, SearchTermMapper } from '@/dex/components/PagePoolList/types'
-import { t } from '@ui-kit/lib/i18n'
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 export enum SEARCH_TERM {
   'pool.wrappedCoins' = 'pool.wrappedCoins',

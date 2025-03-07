@@ -1,15 +1,15 @@
 import { Fragment, useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
-import useStore from '@/lend/store/useStore'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
+import { useOneWayMarket } from '@/lend/entities/chain'
+import useStore from '@/lend/store/useStore'
+import { ChainId } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { useOneWayMarket } from '@/lend/entities/chain'
+import Chip from '@ui/Typography/Chip'
+import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@/lend/types/lend.types'
+import { t } from '@ui-kit/lib/i18n'
 
 const MarketParameters = ({
   rChainId,

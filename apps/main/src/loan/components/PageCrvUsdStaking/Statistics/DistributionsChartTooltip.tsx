@@ -1,11 +1,11 @@
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { TooltipProps } from 'recharts'
-import { t } from '@ui-kit/lib/i18n'
-import { Paper, Stack, Typography } from '@mui/material'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
+import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
+import { Paper, Stack, Typography } from '@mui/material'
+import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
+import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,13 +1,13 @@
-import type { PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
+import SelectFilter from '@/lend/components/PageMarketList/components/TableSettings/SelectFilter'
+import SelectFilterBorrowLend from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
+import SelectFilterType from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterType'
+import type { PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import SelectFilter from '@/lend/components/PageMarketList/components/TableSettings/SelectFilter'
-import SelectFilterType from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterType'
-import SelectFilterBorrowLend from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
 import SearchListInput from '@ui/SearchInput/SearchListInput'
+import { breakpoints } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const TableSettings = ({
   filterList,

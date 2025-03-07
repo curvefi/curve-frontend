@@ -1,10 +1,10 @@
-import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
+import { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
-import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import { DetailsButton } from '@/lend/components/DetailInfoLeverageAdvancedExpected'
+import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
+import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Icon from '@ui/Icon'
 import Loader from '@ui/Loader'
-import { Dispatch, SetStateAction } from 'react'
 
 const ExpectedLabel = ({
   loading,

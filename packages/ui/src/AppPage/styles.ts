@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { breakpoints } from 'ui/src/utils'
 import Box from 'ui/src/Box'
 import BoxHeader from 'ui/src/Box/BoxHeader'
 import { TabContentWrapper } from 'ui/src/Tab'
+import { breakpoints } from 'ui/src/utils'
 
 // PAGE STYLES
 export const AppPageContainer = styled.div`

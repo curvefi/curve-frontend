@@ -1,3 +1,8 @@
+import { useRouter } from 'next/navigation'
+import { useCallback, useMemo } from 'react'
+import { TrSearchedTextResult } from 'ui/src/Table'
+import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
+import TableRowMobile from '@/dex/components/PagePoolList/components/TableRowMobile'
 import type {
   ColumnKeys,
   PoolListTableLabel,
@@ -5,18 +10,13 @@ import type {
   SearchTermMapper,
 } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
-import TableRowMobile from '@/dex/components/PagePoolList/components/TableRowMobile'
-import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
-import { useCallback, useMemo } from 'react'
-import useStore from '@/dex/store/useStore'
-import { getUserActiveKey } from '@/dex/store/createUserSlice'
-import { useRouter } from 'next/navigation'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
-import { TrSearchedTextResult } from 'ui/src/Table'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { getUserActiveKey } from '@/dex/store/createUserSlice'
+import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface PoolRowProps {
   poolId: string

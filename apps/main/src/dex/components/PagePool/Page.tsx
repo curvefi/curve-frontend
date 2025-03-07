@@ -1,12 +1,12 @@
 'use client'
+import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
+import Transfer from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
-import { getPath } from '@/dex/utils/utilsRouter'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
-import Transfer from '@/dex/components/PagePool/index'
-import { useRouter } from 'next/navigation'
 import type { PoolUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 
 const Page = (params: PoolUrlParams) => {
   const { push } = useRouter()

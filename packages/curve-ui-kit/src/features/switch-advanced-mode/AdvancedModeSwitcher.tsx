@@ -1,7 +1,7 @@
 import { Dispatch } from 'react'
-import Switch from '@mui/material/Switch'
-import Box from '@mui/material/Box'
 import { FormControlLabel } from '@mui/material'
+import Box from '@mui/material/Box'
+import Switch from '@mui/material/Switch'
 import { t } from '@ui-kit/lib/i18n'
 
 type AdvancedModeSwitcherProps = {

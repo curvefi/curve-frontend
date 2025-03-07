@@ -1,14 +1,14 @@
 import { BrowserProvider } from 'ethers'
+import type { ReactNode } from 'react'
+import { TITLE } from '@/loan/constants'
+import curvejsApi from '@/loan/lib/apiCrvusd'
+import type lendingApi from '@curvefi/lending-api'
+import type stablecoinApi from '@curvefi/stablecoin-api'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
-import type { ReactNode } from 'react'
 import type { TooltipProps } from '@ui/Tooltip/types'
-import type { WalletState } from '@web3-onboard/core'
-import type stablecoinApi from '@curvefi/stablecoin-api'
-import type lendingApi from '@curvefi/lending-api'
 import type { BaseConfig } from '@ui/utils'
-import curvejsApi from '@/loan/lib/apiCrvusd'
-import { TITLE } from '@/loan/constants'
+import type { WalletState } from '@web3-onboard/core'
 
 export type NetworkUrlParams = { network: INetworkName }
 type CollateralExtraParams = { collateralId: string; formType?: string[] }

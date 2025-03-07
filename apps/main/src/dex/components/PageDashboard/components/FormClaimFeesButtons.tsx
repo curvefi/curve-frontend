@@ -1,5 +1,3 @@
-import type { ButtonProps } from '@ui/Button/types'
-import type { Step } from '@ui/Stepper/types'
 import {
   ButtonHTMLAttributes,
   Dispatch,
@@ -10,15 +8,17 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
+import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import useStore from '@/dex/store/useStore'
 import Button from '@ui/Button'
+import type { ButtonProps } from '@ui/Button/types'
 import Stepper from '@ui/Stepper'
+import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 const FormClaimFeesButtons = ({
   activeKey,

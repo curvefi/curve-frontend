@@ -1,5 +1,5 @@
-import type { InputProps } from './types'
 import styled from 'styled-components'
+import type { InputProps } from './types'
 
 export const StyledInput = styled.input<Pick<InputProps, 'variant' | 'minHeight'>>`
   width: 100%;

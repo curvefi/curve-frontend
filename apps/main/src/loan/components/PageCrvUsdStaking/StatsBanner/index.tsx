@@ -1,12 +1,12 @@
-import { t } from '@ui-kit/lib/i18n'
-import { useTheme } from '@mui/material/styles'
+import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
 import { Typography } from '@mui/material'
 import { Stack } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { t } from '@ui-kit/lib/i18n'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
-import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 

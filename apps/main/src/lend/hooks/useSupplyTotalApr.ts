@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import useStore from '@/lend/store/useStore'
 import { INVALID_ADDRESS } from '@/lend/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import useStore from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
+import { getTotalApr } from '@/lend/utils/utilsRewards'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const market = useOneWayMarket(rChainId, rOwmId).data

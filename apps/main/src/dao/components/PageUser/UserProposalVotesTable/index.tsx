@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import { useRouter } from 'next/navigation'
-import useStore from '@/dao/store/useStore'
-import { VOTES_LABELS } from '../constants'
-import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { useEffect } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
+import useStore from '@/dao/store/useStore'
 import { UserProposalVoteData, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { VOTES_LABELS } from '../constants'
 
 interface UserProposalVotesTableProps {
   userAddress: string

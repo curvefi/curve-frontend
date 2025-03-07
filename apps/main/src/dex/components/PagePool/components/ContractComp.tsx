@@ -1,13 +1,13 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-import { copyToClipboard } from '@/dex/lib/utils'
-import { shortenTokenAddress } from '@/dex/utils'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import Box from '@ui/Box'
-import ExternalLink from '@ui/Link/ExternalLink'
-import Icon from '@ui/Icon'
+import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { ReactNode } from 'react'
+import { shortenTokenAddress } from '@/dex/utils'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import ExternalLink from '@ui/Link/ExternalLink'
 
 const ContractComp = ({
   address,

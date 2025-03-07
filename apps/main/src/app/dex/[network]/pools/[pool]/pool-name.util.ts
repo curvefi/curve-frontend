@@ -1,8 +1,8 @@
 'use server'
 import memoizee from 'memoizee'
-import curveJS from '@curvefi/api'
-import { NetworkConfig, type PoolUrlParams } from '@/dex/types/main.types'
 import { getNetworks } from '@/dex/lib/networks'
+import { NetworkConfig, type PoolUrlParams } from '@/dex/types/main.types'
+import curveJS from '@curvefi/api'
 
 const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as const
 

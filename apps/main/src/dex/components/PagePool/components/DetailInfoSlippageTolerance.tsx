@@ -1,10 +1,10 @@
-import type { AdvancedSettingsProps } from '@/dex/components/AdvancedSettings'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import DetailInfo from '@ui/DetailInfo'
+import type { AdvancedSettingsProps } from '@/dex/components/AdvancedSettings'
 import AdvancedSettings from '@/dex/components/AdvancedSettings'
+import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => (
   <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>

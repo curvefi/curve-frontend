@@ -1,8 +1,8 @@
 'use client'
-import { type AppName } from './routes'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Skeleton from '@mui/material/Skeleton'
-import { useRouter } from 'next/navigation'
+import { type AppName } from './routes'
 
 const defaultPages = { dex: 'pools', lend: 'markets', crvusd: 'markets', dao: 'proposals' }
 const oldOrigins = ['lend', 'crvusd', 'dao'] as const

@@ -1,8 +1,8 @@
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import { Chip } from '@ui/Typography'
-import { Item } from '@ui/Items'
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import { Item } from '@ui/Items'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type AdminFee = string | number | undefined
 

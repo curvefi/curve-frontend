@@ -1,16 +1,16 @@
-import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import useStore from '@/dex/store/useStore'
+import { ChainId } from '@/dex/types/main.types'
 import Stepper from '@ui/Stepper'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 type TxInfo = {
   description: string

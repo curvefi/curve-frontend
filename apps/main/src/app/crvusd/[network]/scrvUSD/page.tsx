@@ -1,6 +1,6 @@
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import type { Metadata } from 'next'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 
 type CrvStakingPageProps = { params: Promise<NetworkUrlParams> }
 

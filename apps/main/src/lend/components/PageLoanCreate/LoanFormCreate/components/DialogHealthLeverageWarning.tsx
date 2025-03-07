@@ -1,10 +1,10 @@
-import { t } from '@ui-kit/lib/i18n'
+import { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
+import { HealthMode } from '@/lend/types/lend.types'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import { HealthMode } from '@/lend/types/lend.types'
-import { Dispatch, SetStateAction } from 'react'
+import { t } from '@ui-kit/lib/i18n'
 
 function DialogHealthLeverageWarning({
   confirmed,

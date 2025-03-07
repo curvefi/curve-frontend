@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { LoanParameter } from '@/loan/types/loan.types'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { LoanParameter } from '@/loan/types/loan.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props {
   parameters: LoanParameter | undefined

@@ -1,12 +1,12 @@
-import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import styled from 'styled-components'
-import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
-import networks from '@/loan/networks'
+import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
+import networks from '@/loan/networks'
+import { ChainId } from '@/loan/types/loan.types'
+import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { ChainId } from '@/loan/types/loan.types'
 
 interface Props extends StatsProps {
   chainId: ChainId

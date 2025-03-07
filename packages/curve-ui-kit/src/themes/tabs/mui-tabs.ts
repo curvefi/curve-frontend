@@ -1,8 +1,8 @@
 import type { Components } from '@mui/material/styles'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../design'
 import { TransitionFunction } from '../design/0_primitives'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 
 const { Spacing } = SizesAndSpaces
 

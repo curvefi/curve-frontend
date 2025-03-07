@@ -1,10 +1,10 @@
-import styled from 'styled-components'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { formatNumber, shortenTokenAddress } from '@ui/utils'
+import styled from 'styled-components'
 import { TOP_HOLDERS } from '@/dao/constants'
-import CustomTooltip from './TopHoldersBarChartTooltip'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
+import { formatNumber, shortenTokenAddress } from '@ui/utils'
+import CustomTooltip from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
   data: Locker[]

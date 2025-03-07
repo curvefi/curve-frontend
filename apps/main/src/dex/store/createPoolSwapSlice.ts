@@ -1,20 +1,18 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
-import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
-import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
-import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
+import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
 import {
   DEFAULT_EST_GAS,
   DEFAULT_EXCHANGE_OUTPUT,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/dex/components/PagePool/Swap/utils'
+import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
+import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
 import { NETWORK_TOKEN } from '@/dex/constants'
-import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import {
   Balances,
   ChainId,
@@ -26,6 +24,8 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

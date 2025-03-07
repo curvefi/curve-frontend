@@ -1,11 +1,6 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useRouter } from 'next/navigation'
-import { CONNECT_STAGE } from '@/dex/constants'
-import useStore from '@/dex/store/useStore'
-import { curveProps } from '@/dex/lib/utils'
-import { getPath, useNetworkFromUrl, useRestFullPathname } from '@/dex/utils/utilsRouter'
-import { shortenTokenAddress } from '@/dex/utils'
+import styled from 'styled-components'
+import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import {
   STABLESWAP,
   STABLESWAPOLD,
@@ -13,11 +8,16 @@ import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
+import { CONNECT_STAGE } from '@/dex/constants'
+import { curveProps } from '@/dex/lib/utils'
+import useStore from '@/dex/store/useStore'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { shortenTokenAddress } from '@/dex/utils'
+import { getPath, useNetworkFromUrl, useRestFullPathname } from '@/dex/utils/utilsRouter'
+import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import AlertBox from '@ui/AlertBox'
-import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props {
   disabled: boolean

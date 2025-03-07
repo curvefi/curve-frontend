@@ -1,8 +1,8 @@
+import RouterLink from 'next/link'
 import React, { type AnchorHTMLAttributes } from 'react'
+import styled from 'styled-components'
 import type { LinkProps } from './styles'
 import { linkStyles } from './styles'
-import styled from 'styled-components'
-import RouterLink from 'next/link'
 
 export interface InternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
 

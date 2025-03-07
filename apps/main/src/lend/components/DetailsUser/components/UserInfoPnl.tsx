@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-
-import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
+import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 export const UserInfoPnl = ({ userActiveKey }: { userActiveKey: string }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 

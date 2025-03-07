@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import { useRouter } from 'next/navigation'
-import useStore from '@/dao/store/useStore'
-import { GAUGE_VOTES_LABELS } from '../constants'
-import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
+import { useEffect } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
+import useStore from '@/dao/store/useStore'
 import { UserGaugeVote, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
+import { formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { GAUGE_VOTES_LABELS } from '../constants'
 
 interface UserGaugeVotesTableProps {
   userAddress: string

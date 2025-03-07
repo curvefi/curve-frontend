@@ -1,10 +1,10 @@
-import type { ButtonProps } from 'ui/src/Button/types'
-import type { ConnectState } from 'ui/src/utils'
-import styled from 'styled-components'
-import { isLoading, isSuccess, shortenAccount } from 'ui/src/utils'
-import Button from 'ui/src/Button/index'
 import type { Address } from 'curve-ui-kit/src/utils'
 import { ButtonHTMLAttributes } from 'react'
+import styled from 'styled-components'
+import Button from 'ui/src/Button/index'
+import type { ButtonProps } from 'ui/src/Button/types'
+import type { ConnectState } from 'ui/src/utils'
+import { isLoading, isSuccess, shortenAccount } from 'ui/src/utils'
 
 type Status = 'success' | 'loading' | ''
 

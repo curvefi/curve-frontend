@@ -1,7 +1,7 @@
-import styled from 'styled-components'
-import IconButton from '@ui/IconButton'
-import Icon from '@ui/Icon'
 import { MouseEvent } from 'react'
+import styled from 'styled-components'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
 
 type Props = {
   message: string

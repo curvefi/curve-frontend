@@ -1,9 +1,9 @@
 'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
 import DeployGauge from '@/dex/components/PageDeployGauge/index'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import { CurveApi } from '@/dex/types/main.types'
+import { breakpoints } from '@ui/utils/responsive'
 
 const Page = () => {
   const { curve } = usePageOnMount()

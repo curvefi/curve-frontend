@@ -1,9 +1,9 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatDate } from '@ui/utils/'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
-import Box from '@ui/Box'
 import type { Locker } from '@curvefi/prices-api/dao'
+import Box from '@ui/Box'
+import { formatNumber, formatDate } from '@ui/utils/'
+import { t } from '@ui-kit/lib/i18n'
 
 interface UserStatsProps {
   veCrvHolder: Locker

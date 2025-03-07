@@ -1,8 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
-import Box from '@ui/Box'
 import {
   CategoryColumn,
   CategoryDataRow,
@@ -12,7 +9,10 @@ import {
   SummaryDataPlaceholder,
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId

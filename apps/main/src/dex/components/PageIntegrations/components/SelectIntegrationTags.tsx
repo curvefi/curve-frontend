@@ -1,11 +1,11 @@
-import type { FormStatus } from '@/dex/components/PageIntegrations/types'
-import type { IntegrationTag } from '@ui/Integration/types'
-import { Item } from 'react-stately'
-import { t } from '@ui-kit/lib/i18n'
-import styled from 'styled-components'
-import Icon from '@ui/Icon'
-import Select from '@ui/Select'
 import { Key } from 'react'
+import { Item } from 'react-stately'
+import styled from 'styled-components'
+import type { FormStatus } from '@/dex/components/PageIntegrations/types'
+import Icon from '@ui/Icon'
+import type { IntegrationTag } from '@ui/Integration/types'
+import Select from '@ui/Select'
+import { t } from '@ui-kit/lib/i18n'
 
 const SelectIntegrationTags = ({
   integrationsTagsList,

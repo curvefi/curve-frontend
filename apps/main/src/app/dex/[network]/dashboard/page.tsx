@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
 import Dashboard from '@/dex/components/PageDashboard/Page'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 
 type DashboardPageProps = { params: Promise<NetworkUrlParams> }
 

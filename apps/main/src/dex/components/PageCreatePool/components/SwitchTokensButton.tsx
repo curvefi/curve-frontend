@@ -1,6 +1,4 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -11,9 +9,11 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
+import useStore from '@/dex/store/useStore'
+import { CurveApi } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import { CurveApi } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   curve: CurveApi

@@ -1,5 +1,5 @@
-import { useQueries, UseQueryResult } from '@tanstack/react-query'
 import { useCallback } from 'react'
+import { useQueries, UseQueryResult } from '@tanstack/react-query'
 import {
   CombinedQueriesResult,
   CombinedQueryMappingResult,

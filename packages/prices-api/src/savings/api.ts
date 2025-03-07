@@ -1,8 +1,8 @@
 import { getHost, type Options } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export async function getStatistics(options?: Options) {
   const host = getHost(options)

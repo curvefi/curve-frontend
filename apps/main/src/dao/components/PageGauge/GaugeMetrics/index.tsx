@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
-import useStore from '@/dao/store/useStore'
-import networks from '@/dao/networks'
-import { getChainIdFromGaugeData } from '@/dao/utils'
-import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
-import Box from '@ui/Box'
 import CopyIconButton from '@/dao/components/CopyIconButton'
 import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
+import networks from '@/dao/networks'
+import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { getChainIdFromGaugeData } from '@/dao/utils'
+import Box from '@ui/Box'
+import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
+import { t } from '@ui-kit/lib/i18n'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined

@@ -1,7 +1,7 @@
-import { detect, fromUrl, fromNavigator } from '@lingui/detect-locale'
 import BigNumber from 'bignumber.js'
-import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
+import isUndefined from 'lodash/isUndefined'
+import { detect, fromUrl, fromNavigator } from '@lingui/detect-locale'
 import { MAX_USD_VALUE } from './utilsConstants'
 
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })

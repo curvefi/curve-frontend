@@ -1,12 +1,12 @@
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import Tooltip from '@mui/material/Tooltip'
-import IconButton from '@mui/material/IconButton'
-import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
-import Snackbar from '@mui/material/Snackbar'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import IconButton from '@mui/material/IconButton'
+import Snackbar from '@mui/material/Snackbar'
+import Tooltip from '@mui/material/Tooltip'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 export function CopyIconButton({
   copyText,

@@ -1,10 +1,10 @@
+import { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'
 import { basicMuiTheme, type Responsive } from '../basic-theme'
-import { Fonts } from '../typography'
 import { DesignSystem } from '../design'
-import { SizesAndSpaces } from '../design/1_sizes_spaces'
 import { Sizing } from '../design/0_primitives'
-import { Breakpoint } from '@mui/material'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import { Fonts } from '../typography'
 
 const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndSpaces
 
