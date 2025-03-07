@@ -1,6 +1,6 @@
 import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
+import useIntersectionObserver from 'curve-ui-kit/src/hooks/useIntersectionObserver'
 
 type Props = {
   defaultHeight: string
