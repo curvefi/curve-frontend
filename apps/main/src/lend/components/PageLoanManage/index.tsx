@@ -8,7 +8,6 @@ import { useCallback, useMemo, useRef, useEffect } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
-import { useSlideTabState } from '@ui/hooks'
 import useStore from '@/lend/store/useStore'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
@@ -18,6 +17,7 @@ import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquid
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
 import { PageContentProps } from '@/lend/types/lend.types'
+import useSlideTabState from '@/lend/hooks/useSlideTabState'
 
 const ManageLoan = (pageProps: PageContentProps) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId } = pageProps

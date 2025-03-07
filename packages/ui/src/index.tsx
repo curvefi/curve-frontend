@@ -1,5 +1,4 @@
 export * from './utils'
-export * from './hooks'
 export * from './images'
 
 export * from './Accordion'
