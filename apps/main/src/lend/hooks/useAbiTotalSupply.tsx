@@ -1,6 +1,6 @@
 import type { Contract } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
-import { INVALID_ADDRESS } from '@/lend/constants'
+import { zeroAddress } from 'viem'
 import useContract from '@/lend/hooks/useContract'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
@@ -10,7 +10,7 @@ import { weiToEther } from '@ui-kit/utils'
 
 const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefined) => {
   const contract = useContract(rChainId, false, 'totalSupply', contractAddress)
-  const isValidAddress = contractAddress !== INVALID_ADDRESS
+  const isValidAddress = contractAddress !== zeroAddress
 
   const isPageVisible = useStore((state) => state.isPageVisible)
 

@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
+import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
-import { NETWORK_TOKEN } from '@/dao/constants'
 import curvejsApi from '@/dao/lib/curvejs'
 import type { State } from '@/dao/store/useStore'
 import { CurveApi, UsdRatesMapper } from '@/dao/types/dao.types'
@@ -30,7 +30,7 @@ export type UsdRatesSlice = {
 
 const DEFAULT_STATE: SliceState = {
   usdRatesMapper: {
-    [NETWORK_TOKEN]: 0,
+    [ethAddress]: 0,
     crv: 0,
   },
   loading: true,

@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
+import { zeroAddress } from 'viem'
 import ChipInactive from '@/lend/components/ChipInactive'
 import DetailInfoAddressLookup from '@/lend/components/DetailsMarket/components/DetailInfoAddressLookup'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import TokenLabel from '@/lend/components/TokenLabel'
-import { INVALID_ADDRESS } from '@/lend/constants'
 import { PageContentProps } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
@@ -40,7 +40,7 @@ const DetailsContracts = ({
       ],
       [
         { label: t`Vault`, address: addresses?.vault },
-        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === INVALID_ADDRESS ? t`No gauge` : '' }
+        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === zeroAddress ? t`No gauge` : '' }
       ],
     ]
   }

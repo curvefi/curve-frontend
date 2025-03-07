@@ -1,8 +1,6 @@
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
-export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const LARGE_APY = 5000
 
 export const MAIN_ROUTE = {

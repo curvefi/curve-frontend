@@ -1,4 +1,4 @@
-import { NETWORK_TOKEN } from '@/dex/constants'
+import { ethAddress } from 'viem'
 import { shortenTokenAddress, shortenTokenName } from '@/dex/utils'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
@@ -45,7 +45,7 @@ const FieldToken = ({
   handleMaxClick,
 }: Props) => {
   const value = typeof amount === 'undefined' ? '' : amount
-  const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === NETWORK_TOKEN
+  const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
   const showAvailableBalance = haveSigner && !isWithdraw
 
   return (

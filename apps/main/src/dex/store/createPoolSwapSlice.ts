@@ -1,5 +1,6 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
+import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
 import {
@@ -10,7 +11,6 @@ import {
 } from '@/dex/components/PagePool/Swap/utils'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
-import { NETWORK_TOKEN } from '@/dex/constants'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -229,7 +229,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
       // get max amount for native token
       if (
-        formValues.fromAddress.toLowerCase() === NETWORK_TOKEN &&
+        formValues.fromAddress.toLowerCase() === ethAddress &&
         typeof basePlusPriority?.[0] !== 'undefined' &&
         +fromAmount > 0
       ) {
