@@ -1,7 +1,7 @@
 import { InputDebounced } from '@ui/InputComp'
 import { useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { TIME_FRAMES } from '@/dex/constants'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
 import type { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/dex/features/deposit-gauge-reward/ui'
 import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/dex/entities/gauge'

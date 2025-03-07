@@ -2,7 +2,7 @@ import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/Pa
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
-import { REFRESH_INTERVAL } from '@/dex/constants'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import useStore from '@/dex/store/useStore'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'

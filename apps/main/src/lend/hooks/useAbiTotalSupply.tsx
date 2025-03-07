@@ -1,6 +1,7 @@
 import type { Contract } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
-import { INVALID_ADDRESS, REFRESH_INTERVAL } from '@/lend/constants'
+import { INVALID_ADDRESS } from '@/lend/constants'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { weiToEther } from '@ui-kit/utils'
 import useContract from '@/lend/hooks/useContract'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'

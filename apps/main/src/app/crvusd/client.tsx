@@ -3,7 +3,7 @@ import '@/global-extensions'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes } from 'react-router'
-import { REFRESH_INTERVAL, ROUTE } from '@/loan/constants'
+import { ROUTE } from '@/loan/constants'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
@@ -23,6 +23,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { StyleSheetManager } from 'styled-components'
 import { shouldForwardProp } from '@ui/styled-containers'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const PageMarketList = dynamic(() => import('@/loan/components/PageMarketList/Page'), { ssr: false })
 const PageLlamaMarkets = dynamic(

@@ -2,7 +2,7 @@
 import '@/global-extensions'
 import dynamic from 'next/dynamic'
 import { Navigate, Route, Routes, useParams } from 'react-router'
-import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
+import { ROUTE } from '@/dex/constants'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
@@ -22,6 +22,7 @@ import { CurveApi } from '@/dex/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shouldForwardProp } from '@ui/styled-containers'
 import { StyleSheetManager } from 'styled-components'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const PageDashboard = dynamic(() => import('@/dex/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/dex/components/PageCrvLocker/Page'), { ssr: false })

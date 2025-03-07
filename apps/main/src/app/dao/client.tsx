@@ -2,7 +2,7 @@
 import '@/global-extensions'
 import type { NextPage } from 'next'
 import { Navigate, Route, Routes } from 'react-router'
-import { REFRESH_INTERVAL, ROUTE } from '@/dao/constants'
+import { ROUTE } from '@/dao/constants'
 import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
@@ -20,6 +20,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shouldForwardProp } from '@ui/styled-containers'
 import { StyleSheetManager } from 'styled-components'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page404 = dynamic(() => import('@/dao/components/Page404/Page'), { ssr: false })
 const PageDao = dynamic(() => import('@/dao/components/PageProposals/Page'), { ssr: false })

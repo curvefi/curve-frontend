@@ -1,5 +1,5 @@
 import { zeroAddress } from 'viem'
-import { TIME_FRAMES } from '@/dex/constants'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 
 export const DepositRewardDefaultValues: DepositRewardFormValues = {

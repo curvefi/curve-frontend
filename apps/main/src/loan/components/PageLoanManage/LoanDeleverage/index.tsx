@@ -12,7 +12,7 @@ import {
   hasDeleverage,
 } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
-import { REFRESH_INTERVAL } from '@/loan/constants'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { curveProps } from '@/loan/utils/helpers'
 import { formatNumber } from '@ui/utils'
 import { getActiveStep } from '@ui/Stepper/helpers'
