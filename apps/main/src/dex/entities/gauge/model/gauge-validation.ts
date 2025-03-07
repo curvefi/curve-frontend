@@ -9,7 +9,7 @@ import {
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
-import { TIME_FRAMES } from '@/dex/constants'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
 import useStore from '@/dex/store/useStore'
 import { formatNumber } from '@ui/utils'
 

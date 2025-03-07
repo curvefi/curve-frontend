@@ -2,7 +2,7 @@
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useState } from 'react'
-import { REFRESH_INTERVAL } from '@/lend/constants'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'

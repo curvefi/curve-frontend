@@ -14,15 +14,6 @@ export const ROUTE = {
   PAGE_404: '/404',
 }
 
-export const REFRESH_INTERVAL = {
-  '3s': 3000,
-  '4s': 4000,
-  '10s': 10000,
-  '1m': 60000,
-  '5m': 300000,
-  '11m': 660000,
-}
-
 // TODO: translation
 export const NOFITY_MESSAGE = {
   pendingConfirm: 'Pending wallet confirmation.',

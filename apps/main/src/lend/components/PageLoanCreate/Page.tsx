@@ -1,7 +1,7 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@/lend/constants'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'

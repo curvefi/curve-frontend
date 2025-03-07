@@ -12,7 +12,8 @@ const HOST_NAME = '127.0.0.1'
 
 const checkPort = (port) => new Promise((resolve) => exec(`lsof -i tcp:${port}`, (error) => resolve(!error)))
 
-const startNode = (network) => new Promise(async (resolve, reject) => {
+const startNode = (network) =>
+  new Promise(async (resolve, reject) => {
     const env = { ...process.env, HARDHAT_CHAIN_ID: network.id.toString() }
     const port = BASIC_PORT + network.id
 

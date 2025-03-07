@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from 'react'
 
-function useSlideTabState(tabsRef: RefObject<HTMLDivElement | null>, rFormType: string | null) {
+export default function useSlideTabState(tabsRef: RefObject<HTMLDivElement | null>, rFormType: string | null) {
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
 
@@ -25,5 +25,3 @@ function useSlideTabState(tabsRef: RefObject<HTMLDivElement | null>, rFormType: 
 
   return { selectedTabIdx, tabPositions, setSelectedTabIdx }
 }
-
-export default useSlideTabState

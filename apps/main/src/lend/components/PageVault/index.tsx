@@ -2,7 +2,6 @@ import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/le
 import { t } from '@ui-kit/lib/i18n'
 import { useRef, useEffect } from 'react'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
-import { useSlideTabState } from '@ui/hooks'
 import useStore from '@/lend/store/useStore'
 import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
@@ -11,6 +10,7 @@ import VaultWithdrawRedeem from '@/lend/components/PageVault/VaultWithdrawRedeem
 import VaultStake from '@/lend/components/PageVault/VaultStake'
 import VaultUnstake from '@/lend/components/PageVault/VaultUnstake'
 import VaultClaim from '@/lend/components/PageVault/VaultClaim'
+import useSlideTabState from '@/lend/hooks/useSlideTabState'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { useRouter } from 'next/navigation'
 

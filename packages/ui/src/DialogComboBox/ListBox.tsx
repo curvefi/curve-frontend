@@ -4,7 +4,7 @@ import type { ListState } from '@react-stately/list'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useListBox, useOption } from '@react-aria/listbox'
-import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
+import useIntersectionObserver from 'curve-ui-kit/src/hooks/useIntersectionObserver'
 
 function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & {
