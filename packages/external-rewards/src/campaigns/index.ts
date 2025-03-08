@@ -26,6 +26,7 @@ import Hourglass from './Hourglass.json'
 import Fx from './Fx.json'
 import Pumpbtc from './Pumpbtc.json'
 import Carrot from './Carrot.json'
+import Bills from './Bills.json'
 
 export {
   DLCLink,
@@ -56,4 +57,5 @@ export {
   Fx,
   Pumpbtc,
   Carrot,
+  Bills,
 }
