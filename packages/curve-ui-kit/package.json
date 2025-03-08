@@ -36,7 +36,7 @@
     "@web3-onboard/phantom": "^2.1.1",
     "@web3-onboard/react": "^2.11.0",
     "@web3-onboard/torus": "^2.3.1",
-    "@web3-onboard/trezor": "^2.4.6",
+    "@web3-onboard/trezor": "^2.4.7",
     "@web3-onboard/trust": "^2.1.2",
     "@web3-onboard/walletconnect": "^2.6.2",
     "dayjs": "^1.11.13",
