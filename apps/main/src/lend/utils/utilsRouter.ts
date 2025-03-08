@@ -1,7 +1,7 @@
 import { ROUTE } from '@/lend/constants'
 import networks, { networksIdMapper } from '@/lend/networks'
-import { LEND_ROUTES } from '@ui-kit/shared/routes'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/lend/types/lend.types'
+import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
 export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/lend/${network}${rerouteRoute}`
 

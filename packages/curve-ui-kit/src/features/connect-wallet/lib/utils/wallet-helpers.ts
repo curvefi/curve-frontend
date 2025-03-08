@@ -1,6 +1,6 @@
-import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
 import { Address } from '@ui-kit/utils'
 import type { EIP1193Provider } from '@web3-onboard/common'
+import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
 
 export function getWalletChainId(wallet: Wallet | undefined | null) {
   const chainId = wallet?.chains[0].id

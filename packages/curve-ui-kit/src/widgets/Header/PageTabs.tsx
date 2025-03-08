@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
-import type { AppRoute } from './types'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-import { APP_LINK, AppName } from '@ui-kit/shared/routes'
-import Link from '@mui/material/Link'
 import RouterLink from 'next/link'
+import { useMemo } from 'react'
+import Link from '@mui/material/Link'
+import { APP_LINK, AppName } from '@ui-kit/shared/routes'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import type { AppRoute } from './types'
 
 export type PageTabsProps = {
   pages: AppRoute[]

@@ -1,10 +1,10 @@
-import type { Statistics } from '@curvefi/prices-api/savings/models'
 import { Contract } from 'ethers'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { weiToEther } from '@ui-kit/utils'
 import { getStatistics } from '@curvefi/prices-api/savings'
+import type { Statistics } from '@curvefi/prices-api/savings/models'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { EmptyValidationSuite } from '@ui-kit/lib'
+import { queryFactory } from '@ui-kit/lib/model/query'
+import { weiToEther } from '@ui-kit/utils'
 
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100

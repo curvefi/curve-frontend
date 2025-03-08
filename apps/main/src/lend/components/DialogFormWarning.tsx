@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type PriceImpact = { priceImpact: string; swapFrom: string; swapTo: string }
 

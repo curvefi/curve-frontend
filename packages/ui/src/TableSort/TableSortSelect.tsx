@@ -1,8 +1,8 @@
-import type { TableSortSelectProps } from 'ui/src/TableSort/types'
 import { useMemo } from 'react'
-import { getLabel } from 'ui/src/TableSort/utils'
-import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
 import Popover, { Popover2Dialog } from 'ui/src/Popover2'
+import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
+import type { TableSortSelectProps } from 'ui/src/TableSort/types'
+import { getLabel } from 'ui/src/TableSort/utils'
 
 const title = 'Sort by'
 

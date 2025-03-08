@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { CrvLockerUrlParams } from '@/dex/types/main.types'
 import CrvLocker from '@/dex/components/PageCrvLocker/Page'
+import type { CrvLockerUrlParams } from '@/dex/types/main.types'
 
 type CrvLockerPageProps = { params: Promise<CrvLockerUrlParams> }
 

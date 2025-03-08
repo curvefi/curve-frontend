@@ -2,9 +2,9 @@ import type { ImgHTMLAttributes } from 'react'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 

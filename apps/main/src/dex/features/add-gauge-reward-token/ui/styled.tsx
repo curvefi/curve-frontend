@@ -1,5 +1,5 @@
-import Button from '@ui/Button'
 import styled from 'styled-components'
+import Button from '@ui/Button'
 
 export const FlexItemToken = styled.div`
   flex: 0 0 auto;

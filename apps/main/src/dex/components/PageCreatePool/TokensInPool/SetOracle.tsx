@@ -1,10 +1,6 @@
-import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { debounce } from 'lodash'
-import useStore from '@/dex/store/useStore'
+import styled from 'styled-components'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
-import Box from '@ui/Box'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   TOKEN_A,
@@ -16,7 +12,11 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
+import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
+import useStore from '@/dex/store/useStore'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 type OracleInputProps = {
   token: TokenState

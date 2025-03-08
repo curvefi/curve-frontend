@@ -1,14 +1,14 @@
-import type { Amount } from '@/dex/components/PagePool/utils'
 import styled from 'styled-components'
-import { shortenTokenAddress } from '@/dex/utils'
-import { formatNumber } from '@ui/utils'
-import { Chip } from '@ui/Typography'
-import Box from '@ui/Box'
-import Spacer from '@ui/Spacer'
-import Loader from '@ui/Loader'
-import TextEllipsis from '@ui/TextEllipsis'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { shortenTokenAddress } from '@/dex/utils'
+import Box from '@ui/Box'
+import Loader from '@ui/Loader'
+import Spacer from '@ui/Spacer'
+import TextEllipsis from '@ui/TextEllipsis'
+import { Chip } from '@ui/Typography'
+import { formatNumber } from '@ui/utils'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const SelectedLpTokenExpected = ({
   amounts,

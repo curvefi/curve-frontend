@@ -1,11 +1,11 @@
+import uniq from 'lodash/uniq'
+import { getSupportedChainOptions } from '@/loan/entities/chains'
+import { getCoinPrices } from '@/loan/entities/usd-prices'
+import { Chain } from '@curvefi/prices-api'
+import { getMarkets, Market } from '@curvefi/prices-api/crvusd'
+import { queryClient } from '@ui-kit/lib/api/query-client'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import uniq from 'lodash/uniq'
-import { getCoinPrices } from '@/loan/entities/usd-prices'
-import { getMarkets, Market } from '@curvefi/prices-api/crvusd'
-import { Chain } from '@curvefi/prices-api'
-import { getSupportedChainOptions } from '@/loan/entities/chains'
 
 type MintMarketFromApi = Market
 

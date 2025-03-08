@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
 import Swap from '@/dex/components/PageRouterSwap/Page'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 
 type SwapPageProps = { params: Promise<NetworkUrlParams> }
 

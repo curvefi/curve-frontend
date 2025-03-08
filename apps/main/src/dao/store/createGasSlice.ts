@@ -1,12 +1,12 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
-import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
-import { httpFetcher } from '@/dao/utils'
-import { log } from '@ui-kit/lib'
+import type { GetState, SetState } from 'zustand'
 import networks from '@/dao/networks'
+import type { State } from '@/dao/store/useStore'
 import { CurveApi, GasInfo, Provider } from '@/dao/types/dao.types'
+import { httpFetcher } from '@/dao/utils'
+import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { log } from '@ui-kit/lib'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

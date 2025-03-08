@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
+import { ChainId, FutureRates } from '@/lend/types/lend.types'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { ChainId, FutureRates } from '@/lend/types/lend.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoRate = ({
   rChainId,

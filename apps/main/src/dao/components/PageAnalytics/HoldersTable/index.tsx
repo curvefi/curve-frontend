@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dao/store/useStore'
-import { shortenTokenAddress, formatNumber, formatDate } from '@ui/utils'
-import { TOP_HOLDERS } from '@/dao/constants'
 import PaginatedTable, { Column } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
-import Box from '@ui/Box'
+import { TOP_HOLDERS } from '@/dao/constants'
+import useStore from '@/dao/store/useStore'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
-import type { Locker } from '@curvefi/prices-api/dao'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { getEthPath } from '@/dao/utils'
+import type { Locker } from '@curvefi/prices-api/dao'
+import Box from '@ui/Box'
+import { shortenTokenAddress, formatNumber, formatDate } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 const TopHoldersTable = () => {
   const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)

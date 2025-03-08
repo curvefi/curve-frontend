@@ -1,4 +1,3 @@
-import type { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import {
   CRYPTOSWAP,
   STABLESWAP,
@@ -11,6 +10,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
+import type { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 
 export type CreateToken = {
   address: string

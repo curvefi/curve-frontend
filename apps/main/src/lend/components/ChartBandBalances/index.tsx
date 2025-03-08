@@ -1,5 +1,4 @@
-import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
-import { t } from '@ui-kit/lib/i18n'
+import { Dispatch, useMemo } from 'react'
 import {
   Bar,
   Brush,
@@ -14,17 +13,18 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Dispatch, useMemo } from 'react'
 import styled from 'styled-components'
-import { BN, formatNumber } from '@ui/utils'
+import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
+import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
 import useStore from '@/lend/store/useStore'
+import { PageContentProps, ParsedBandsBalances } from '@/lend/types/lend.types'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import TextCaption from '@ui/TextCaption'
-import { PageContentProps, ParsedBandsBalances } from '@/lend/types/lend.types'
+import { BN, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const ChartBandBalances = ({
   rChainId,

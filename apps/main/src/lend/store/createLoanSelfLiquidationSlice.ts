@@ -1,15 +1,15 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/lend/store/useStore'
-import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
-import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
 import { FormWarning } from '@/lend/components/AlertFormWarning'
+import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
+import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import apiLending from '@/lend/lib/apiLending'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type { State } from '@/lend/store/useStore'
 import { Api, FutureRates } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

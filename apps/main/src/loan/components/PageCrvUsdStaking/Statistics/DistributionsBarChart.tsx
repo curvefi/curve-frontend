@@ -1,9 +1,9 @@
-import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
-import { useTheme } from '@mui/material/styles'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { Stack, Box } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import DistributionsChartTooltip from './DistributionsChartTooltip'
 const { FontSize } = SizesAndSpaces
 

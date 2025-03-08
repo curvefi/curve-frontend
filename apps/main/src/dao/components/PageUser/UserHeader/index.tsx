@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-import networks from '@/dao/networks'
-import { copyToClipboard } from '@/dao/utils'
 import { TOP_HOLDERS } from '@/dao/constants'
+import networks from '@/dao/networks'
+import { UserMapper } from '@/dao/types/dao.types'
+import { copyToClipboard } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import { ExternalLink } from '@ui/Link'
-import { UserMapper } from '@/dao/types/dao.types'
 
 interface UserHeaderProps {
   userAddress: string

@@ -1,13 +1,13 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
-import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
-import { Chain, gweiToWai } from '@ui-kit/utils'
-import { httpFetcher } from '@/dex/lib/utils'
-import { log } from '@ui-kit/lib/logging'
+import type { GetState, SetState } from 'zustand'
 import api from '@/dex/lib/curvejs'
+import { httpFetcher } from '@/dex/lib/utils'
+import type { State } from '@/dex/store/useStore'
 import { CurveApi, GasInfo, NetworkConfig, Provider } from '@/dex/types/main.types'
+import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { log } from '@ui-kit/lib/logging'
+import { Chain, gweiToWai } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

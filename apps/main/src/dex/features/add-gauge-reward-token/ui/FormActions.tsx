@@ -1,8 +1,8 @@
-import { t } from '@ui-kit/lib/i18n'
+import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
 import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
 import { StyledButton } from '@/dex/features/add-gauge-reward-token/ui/styled'
-import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
 import { ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 export const FormActions = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const {

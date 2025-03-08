@@ -1,9 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type { ChainOption } from '@ui-kit/features/switch-chain'
 import sortBy from 'lodash/sortBy'
-import { ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
+import type { GetState, SetState } from 'zustand'
 import { defaultNetworks, getNetworks } from '@/dex/lib/networks'
+import type { State } from '@/dex/store/useStore'
+import { ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
+import type { ChainOption } from '@ui-kit/features/switch-chain'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

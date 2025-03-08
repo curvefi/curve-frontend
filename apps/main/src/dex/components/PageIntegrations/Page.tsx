@@ -1,14 +1,14 @@
 'use client'
-import { Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
+import IntegrationsComp from '@/dex/components/PageIntegrations/index'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
-import { ExternalLink } from '@ui/Link'
-import IntegrationsComp from '@/dex/components/PageIntegrations/index'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { ExternalLink } from '@ui/Link'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { breakpoints } from '@ui/utils/responsive'
+import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
   const { routerParams } = usePageOnMount(true)

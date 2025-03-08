@@ -1,5 +1,5 @@
-import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNav/types'
 import styled from 'styled-components'
+import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNav/types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 

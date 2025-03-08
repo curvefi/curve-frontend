@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import Integrations from '@/lend/components/PageIntegrations/Page'
+import type { NetworkUrlParams } from '@/lend/types/lend.types'
 
 type IntegrationsPageProps = { params: Promise<NetworkUrlParams> }
 

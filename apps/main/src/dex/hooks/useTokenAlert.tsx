@@ -1,8 +1,8 @@
-import { t, Trans } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import ExternalLink from '@ui/Link/ExternalLink'
 import { PoolAlert } from '@/dex/types/main.types'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { t, Trans } from '@ui-kit/lib/i18n'
 
 const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
   useMemo(() => {

@@ -1,7 +1,7 @@
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { ROUTE } from '@/dao/constants'
 import networks, { networksIdMapper } from '@/dao/networks'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/dao/types/dao.types'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dao/${network}${rerouteRoute}`
 

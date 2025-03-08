@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import PageProposal from '@/dao/components/PageProposal/Page'
+import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { t } from '@ui-kit/lib/i18n'
 
 type ProposalPageProps = { params: Promise<ProposalUrlParams> }

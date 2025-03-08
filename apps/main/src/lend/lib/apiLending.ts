@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+import sortBy from 'lodash/sortBy'
 import { INVALID_ADDRESS } from '@/lend/constants'
 import networks from '@/lend/networks'
 import { USE_API } from '@/lend/shared/config'
@@ -43,8 +45,6 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {

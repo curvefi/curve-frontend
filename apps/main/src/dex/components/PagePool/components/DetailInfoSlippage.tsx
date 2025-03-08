@@ -1,10 +1,10 @@
-import type { Slippage } from '@/dex/components/PagePool/types'
 import { ReactNode, useMemo } from 'react'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui/utils'
-import { Chip } from '@ui/Typography'
+import type { Slippage } from '@/dex/components/PagePool/types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Chip } from '@ui/Typography'
+import { formatNumber } from '@ui/utils'
+import { t, Trans } from '@ui-kit/lib/i18n'
 
 interface Props extends Slippage {}
 

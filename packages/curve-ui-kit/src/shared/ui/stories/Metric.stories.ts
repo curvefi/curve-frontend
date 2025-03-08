@@ -1,5 +1,5 @@
-import { Metric, SIZES, ALIGNMENTS, UNITS } from '../Metric'
 import type { Meta, StoryObj } from '@storybook/react'
+import { Metric, SIZES, ALIGNMENTS, UNITS } from '../Metric'
 
 const meta: Meta<typeof Metric> = {
   title: 'UI Kit/Widgets/Metric',

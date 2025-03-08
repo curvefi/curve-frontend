@@ -1,11 +1,11 @@
 import type { Components } from '@mui/material'
-import { DesignSystem } from './design'
-import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
-import { InfoCircledIcon } from '@ui-kit/shared/icons/InfoCircledIcon'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { InfoCircledIcon } from '@ui-kit/shared/icons/InfoCircledIcon'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { DesignSystem } from './design'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

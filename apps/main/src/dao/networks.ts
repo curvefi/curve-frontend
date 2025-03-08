@@ -1,9 +1,9 @@
-import { ChainOption } from '@ui-kit/features/switch-chain'
 import sortBy from 'lodash/sortBy'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
-import { Chain } from '@ui-kit/utils'
 import curvejsApi from '@/dao/lib/curvejs'
 import { ChainId, NetworkEnum, NetworkConfig } from '@/dao/types/dao.types'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
+import { ChainOption } from '@ui-kit/features/switch-chain'
+import { Chain } from '@ui-kit/utils'
 
 const DEFAULT_NETWORK_CONFIG = { api: curvejsApi, isActiveNetwork: true, showInSelectNetwork: true }
 

@@ -1,10 +1,10 @@
 import { MouseEvent, useEffect } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dao/store/useStore'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
 import ErrorMessage from '@/dao/components/ErrorMessage'
+import useStore from '@/dao/store/useStore'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 
 interface GaugeWeightHistoryChartProps {
   gaugeAddress: string

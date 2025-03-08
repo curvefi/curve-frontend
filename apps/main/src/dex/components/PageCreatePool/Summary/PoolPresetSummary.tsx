@@ -1,12 +1,12 @@
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
+import { POOL_PRESETS } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   SummaryDataTitle,
   SummaryData,
   SummaryDataPlaceholder,
 } from '@/dex/components/PageCreatePool/Summary/styles'
-import { POOL_PRESETS } from '@/dex/components/PageCreatePool/constants'
+import useStore from '@/dex/store/useStore'
+import { t } from '@ui-kit/lib/i18n'
 
 const PoolPresetSummary = () => {
   const { poolPresetIndex } = useStore((state) => state.createPool)

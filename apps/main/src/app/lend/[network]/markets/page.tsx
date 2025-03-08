@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import MarketList from '@/lend/components/PageMarketList/Page'
+import type { NetworkUrlParams } from '@/lend/types/lend.types'
 
 type MarketListPageProps = { params: Promise<NetworkUrlParams> }
 

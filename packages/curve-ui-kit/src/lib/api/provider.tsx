@@ -1,8 +1,8 @@
-import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { type Persister, PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ReactNode } from 'react'
 import { isCypress } from 'curve-ui-kit/src/utils'
+import { ReactNode } from 'react'
+import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { type Persister, PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 
 type QueryProviderWrapperProps = {
   children: ReactNode

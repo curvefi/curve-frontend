@@ -1,7 +1,7 @@
-import type { ImplementationId } from '@/dex/components/PageCreatePool/types'
 import BigNumber from 'bignumber.js'
-import { t } from '@ui-kit/lib/i18n'
+import type { ImplementationId } from '@/dex/components/PageCreatePool/types'
 import { NativeToken } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'

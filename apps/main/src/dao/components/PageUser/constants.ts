@@ -1,5 +1,5 @@
-import { Column } from '../PaginatedTable'
 import { UserLock, UserProposalVoteData, UserGaugeVote } from '@/dao/types/dao.types'
+import { Column } from '../PaginatedTable'
 
 export const LOCKS_LABELS: Column<UserLock>[] = [
   { key: 'date', label: 'Date' },

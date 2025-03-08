@@ -1,14 +1,14 @@
+import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
+import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
 import { getLendingVaultOptions, LendingVault } from '@/loan/entities/lending-vaults'
-import { useQueries } from '@tanstack/react-query'
 import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
+import { NetworkEnum } from '@/loan/types/loan.types'
+import { getPath } from '@/loan/utils/utilsRouter'
+import { Chain } from '@curvefi/prices-api'
+import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { Chain } from '@curvefi/prices-api'
-import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
-import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
-import { getPath } from '@/loan/utils/utilsRouter'
-import { NetworkEnum } from '@/loan/types/loan.types'
 
 export enum LlamaMarketType {
   Mint = 'Mint',

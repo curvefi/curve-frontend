@@ -1,10 +1,10 @@
-import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
 import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
 import DetailInfo from '@ui/DetailInfo'
+import Chip from '@ui/Typography/Chip'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoExchangeRate = ({
   exchangeRates,

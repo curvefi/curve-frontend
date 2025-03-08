@@ -1,7 +1,7 @@
-import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
-import { t } from '@ui-kit/lib/i18n'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
+import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = Pick<WalletPoolData, 'claimableCrv' | 'claimableOthers' | 'claimablesTotalUsd'> & {
   isMobile?: boolean

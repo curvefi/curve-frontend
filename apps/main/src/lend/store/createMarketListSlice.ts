@@ -1,5 +1,8 @@
+import chunk from 'lodash/chunk'
+import orderBy from 'lodash/orderBy'
+import sortByFn from 'lodash/sortBy'
+import uniqBy from 'lodash/uniqBy'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/lend/store/useStore'
 import type {
   FilterTypeKey,
   FormStatus,
@@ -8,22 +11,13 @@ import type {
   SearchTermResult,
   TableSettings,
 } from '@/lend/components/PageMarketList/types'
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import sortByFn from 'lodash/sortBy'
-import uniqBy from 'lodash/uniqBy'
 import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/lend/components/PageMarketList/utils'
-import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
 import { TITLE } from '@/lend/constants'
-import { getTotalApr } from '@/lend/utils/utilsRewards'
-import { helpers } from '@/lend/lib/apiLending'
-import { searchByText } from '@ui-kit/utils'
-import { sleep } from '@/lend/utils/helpers'
-import networks from '@/lend/networks'
 import { getTokenUsdRateQueryData } from '@/lend/entities/token'
-import { IDict } from '@curvefi/lending-api/lib/interfaces'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { logQuery, logSuccess } from '@ui-kit/lib'
+import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
+import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
+import type { State } from '@/lend/store/useStore'
 import {
   ChainId,
   Api,
@@ -34,6 +28,12 @@ import {
   Order,
   TitleKey,
 } from '@/lend/types/lend.types'
+import { sleep } from '@/lend/utils/helpers'
+import { getTotalApr } from '@/lend/utils/utilsRewards'
+import { IDict } from '@curvefi/lending-api/lib/interfaces'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { logQuery, logSuccess } from '@ui-kit/lib'
+import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

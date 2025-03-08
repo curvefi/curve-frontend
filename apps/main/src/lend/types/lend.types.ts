@@ -1,12 +1,12 @@
+import { ethers } from 'ethers'
+import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
 import type lendingApi from '@curvefi/lending-api'
 import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import type { ReactNode } from 'react'
-import type { WalletState } from '@web3-onboard/core'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import { ethers } from 'ethers'
+import type { WalletState } from '@web3-onboard/core'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId

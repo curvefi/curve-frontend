@@ -1,8 +1,8 @@
-import { RootCssProperties } from '@ui-kit/themes/typography'
-import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
 import { type ReactNode } from 'react'
-import baseCss from '@ui/styles/base.css'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
+import baseCss from '@ui/styles/base.css'
+import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
+import { RootCssProperties } from '@ui-kit/themes/typography'
 
 const injectIpfsPrefix = `
 (function () {

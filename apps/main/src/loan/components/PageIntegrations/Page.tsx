@@ -1,14 +1,14 @@
 'use client'
-import { Trans } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
+import IntegrationsComp from '@/loan/components/PageIntegrations/index'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
-import { ExternalLink } from '@ui/Link'
-import IntegrationsComp from '@/loan/components/PageIntegrations/index'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import { ExternalLink } from '@ui/Link'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { breakpoints } from '@ui/utils/responsive'
+import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
   const {

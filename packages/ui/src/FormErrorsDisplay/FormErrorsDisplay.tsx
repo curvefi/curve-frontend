@@ -1,7 +1,7 @@
-import { ErrorContainer } from '../styled-containers'
-import { ErrorMessage } from '@hookform/error-message'
 import { FunctionComponent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { ErrorMessage } from '@hookform/error-message'
+import { ErrorContainer } from '../styled-containers'
 import type { FormError } from './error-types'
 
 const getErrorMessage = (error: FormError): string => {

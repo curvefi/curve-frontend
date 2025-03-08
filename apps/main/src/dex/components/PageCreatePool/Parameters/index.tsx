@@ -1,8 +1,9 @@
+import { BigNumber } from 'bignumber.js'
 import { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { BigNumber } from 'bignumber.js'
-import useStore from '@/dex/store/useStore'
+import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
+import Switch from '@/dex/components/PageCreatePool/components/Switch'
+import TokenWarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
@@ -10,15 +11,14 @@ import {
   STABLESWAP,
   POOL_PRESETS,
 } from '@/dex/components/PageCreatePool/constants'
-import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
-import SelectPoolImplementation from '@/dex/components/PageCreatePool/Parameters/SelectPoolImplementation'
-import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
-import Switch from '@/dex/components/PageCreatePool/components/Switch'
-import TokenWarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
+import SelectPoolImplementation from '@/dex/components/PageCreatePool/Parameters/SelectPoolImplementation'
+import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
+import useStore from '@/dex/store/useStore'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   curve: CurveApi

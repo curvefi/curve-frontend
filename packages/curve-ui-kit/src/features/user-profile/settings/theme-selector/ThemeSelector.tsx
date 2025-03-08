@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { themes } from '@ui-kit/features/switch-theme/types'
-import { SettingLabel, Setting } from '../Setting'
+import { t } from '@ui-kit/lib/i18n'
 import useUserProfileStore from '../../store'
+import { SettingLabel, Setting } from '../Setting'
 
 export const ThemeSelector = () => {
   const theme = useUserProfileStore((state) => state.theme)

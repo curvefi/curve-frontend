@@ -1,11 +1,11 @@
-import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/dex/components/PageCreatePool/constants'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
-import Box from '@ui/Box'
 import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
+import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/dex/components/PageCreatePool/constants'
+import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   curve: CurveApi

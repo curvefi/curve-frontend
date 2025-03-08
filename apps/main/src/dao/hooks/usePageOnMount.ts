@@ -1,16 +1,16 @@
-import type { ConnectState } from '@ui/utils'
-import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { ethers } from 'ethers'
+import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_STAGE } from '@/dao/constants'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { getNetworkFromUrl, getPath, parseParams } from '@/dao/utils/utilsRouter'
 import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { ChainId, PageProps, type UrlParams, Wallet } from '@/dao/types/dao.types'
-import { useParams, useRouter } from 'next/navigation'
+import { getNetworkFromUrl, getPath, parseParams } from '@/dao/utils/utilsRouter'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
+import type { ConnectState } from '@ui/utils'
+import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams

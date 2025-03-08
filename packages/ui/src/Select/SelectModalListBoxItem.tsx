@@ -1,8 +1,8 @@
-import type { Node } from '@react-types/shared'
-import type { ListState } from 'react-stately'
-import { useOption } from 'react-aria'
-import styled from 'styled-components'
 import { useRef } from 'react'
+import { useOption } from 'react-aria'
+import type { ListState } from 'react-stately'
+import styled from 'styled-components'
+import type { Node } from '@react-types/shared'
 
 function SelectModalListBoxItem<T>({ item, state }: { item: Node<T>; state: ListState<T> }) {
   const ref = useRef<HTMLLIElement>(null)

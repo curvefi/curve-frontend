@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
-import { addressShort, type Address } from '@ui-kit/utils'
 import type { SxProps, Theme } from '@mui/material/styles'
+import { addressShort, type Address } from '@ui-kit/utils'
 
 export type ConnectedWalletLabelProps = {
   walletAddress: Address

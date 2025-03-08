@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'storybook/internal/preview-api' // Intentionally, can't use React's useState: https://github.com/storybookjs/storybook/issues/29189
-import type { Meta, StoryObj } from '@storybook/react'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
+import CheckIcon from '@mui/icons-material/Check'
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'
-import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight'
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify'
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight'
 import FormatBoldIcon from '@mui/icons-material/FormatBold'
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill'
 import FormatItalicIcon from '@mui/icons-material/FormatItalic'
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined'
-import FormatColorFillIcon from '@mui/icons-material/FormatColorFill'
-import CheckIcon from '@mui/icons-material/Check'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof ToggleButtonGroup> = {
   title: 'UI Kit/Primitives/ToggleButton',

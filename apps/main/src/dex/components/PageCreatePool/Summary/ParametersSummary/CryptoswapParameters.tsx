@@ -1,6 +1,3 @@
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
-import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import {
   CategoryDataRow,
   ExtraMarginRow,
@@ -8,7 +5,10 @@ import {
   SummaryData,
   SummaryDataPlaceholder,
 } from '@/dex/components/PageCreatePool/Summary/styles'
+import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId

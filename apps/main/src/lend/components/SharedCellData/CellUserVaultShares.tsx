@@ -1,5 +1,5 @@
-import useStore from '@/lend/store/useStore'
 import ChipVaultSharesUsdRate from '@/lend/components/InpChipVaultShareUsdRate'
+import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 
 const CellUserVaultShares = ({

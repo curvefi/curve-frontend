@@ -1,9 +1,9 @@
-import curve from '@curvefi/api'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig } from '@/dex/types/main.types'
-import { Chain } from '@ui-kit/utils/network'
+import curve from '@curvefi/api'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {

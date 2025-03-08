@@ -1,10 +1,10 @@
-import styled from 'styled-components'
-import { getPath } from '@/dao/utils/utilsRouter'
-import { InternalLink } from '@ui/Link'
-import Icon from '@ui/Icon'
 import { useParams, useRouter } from 'next/navigation'
-import type { UrlParams } from '@/dao/types/dao.types'
 import { ReactNode } from 'react'
+import styled from 'styled-components'
+import type { UrlParams } from '@/dao/types/dao.types'
+import { getPath } from '@/dao/utils/utilsRouter'
+import Icon from '@ui/Icon'
+import { InternalLink } from '@ui/Link'
 
 type InternalLinkButtonProps = {
   to: string

@@ -1,8 +1,8 @@
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 import type { FormEstGas, FormStatus as Fs } from '@/loan/components/PageLoanManage/types'
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
-import type { Step } from '@ui/Stepper/types'
 import { ChainId, type CollateralUrlParams, Curve, HealthMode, Llamma } from '@/loan/types/loan.types'
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { Step } from '@ui/Stepper/types'
 
 export type FormType = 'create' | 'leverage'
 

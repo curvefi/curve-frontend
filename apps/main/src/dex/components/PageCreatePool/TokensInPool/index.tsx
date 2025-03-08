@@ -1,10 +1,8 @@
-import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
+import { uniqBy } from 'lodash'
 import { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { uniqBy } from 'lodash'
-import useStore from '@/dex/store/useStore'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
+import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -17,15 +15,17 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
-import { DEFAULT_CREATE_POOL_STATE } from '@/dex/store/createCreatePoolSlice'
-import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
-import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
 import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
+import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
+import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
+import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { DEFAULT_CREATE_POOL_STATE } from '@/dex/store/createCreatePoolSlice'
+import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   curve: CurveApi

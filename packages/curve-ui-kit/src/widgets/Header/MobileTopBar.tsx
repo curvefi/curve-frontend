@@ -1,8 +1,8 @@
-import { ChainSwitcher, ChainSwitcherProps } from '@ui-kit/features/switch-chain'
 import Stack from '@mui/material/Stack'
-import { MenuToggleButton } from './MenuToggleButton'
-import { HeaderLogo } from './HeaderLogo'
+import { ChainSwitcher, ChainSwitcherProps } from '@ui-kit/features/switch-chain'
 import { AppName } from '@ui-kit/shared/routes'
+import { HeaderLogo } from './HeaderLogo'
+import { MenuToggleButton } from './MenuToggleButton'
 
 export type MobileTopBarProps<TChainId extends number> = {
   toggleSidebar: () => void

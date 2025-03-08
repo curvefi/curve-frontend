@@ -1,10 +1,10 @@
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import { t } from '@ui-kit/lib/i18n'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
-import { Chip } from '@ui/Typography'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
+import { Chip } from '@ui/Typography'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId'> {}
 

@@ -1,13 +1,11 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-import networks from '@/dao/networks'
-import { TOP_HOLDERS } from '@/dao/constants'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
-import { helpers } from '@/dao/lib/curvejs'
 import Fuse from 'fuse.js'
-import orderBy from 'lodash/orderBy'
 import produce from 'immer'
-import { t } from '@ui-kit/lib/i18n'
+import orderBy from 'lodash/orderBy'
+import type { GetState, SetState } from 'zustand'
+import { TOP_HOLDERS } from '@/dao/constants'
+import { helpers } from '@/dao/lib/curvejs'
+import networks from '@/dao/networks'
+import type { State } from '@/dao/store/useStore'
 import {
   FetchingState,
   PricesProposalResponse,
@@ -23,6 +21,8 @@ import {
   UserProposalVoteResData,
 } from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
 
 const { WEEK } = TIME_FRAMES
 

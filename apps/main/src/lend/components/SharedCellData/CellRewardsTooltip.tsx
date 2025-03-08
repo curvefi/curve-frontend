@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
+import { Fragment } from 'react'
 import styled from 'styled-components'
 import TextCaption from '@ui/TextCaption'
-import { Fragment } from 'react'
+import { t } from '@ui-kit/lib/i18n'
 
 const CellRewardsTooltip = ({
   className = '',

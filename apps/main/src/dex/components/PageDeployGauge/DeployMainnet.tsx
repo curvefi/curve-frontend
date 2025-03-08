@@ -1,8 +1,7 @@
-import type { PoolType } from '@/dex/components/PageDeployGauge/types'
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
+import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'
+import TextInput from '@/dex/components/PageDeployGauge/components/TextInput'
 import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
@@ -10,10 +9,11 @@ import {
   STABLESWAP,
   STABLESWAPOLD,
 } from '@/dex/components/PageDeployGauge/constants'
-import Box from '@ui/Box/Box'
-import TextInput from '@/dex/components/PageDeployGauge/components/TextInput'
-import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'
+import type { PoolType } from '@/dex/components/PageDeployGauge/types'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId

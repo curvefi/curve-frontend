@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
 import Integrations from '@/dex/components/PageIntegrations/Page'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 
 type IntegrationPageProps = { params: Promise<NetworkUrlParams> }
 

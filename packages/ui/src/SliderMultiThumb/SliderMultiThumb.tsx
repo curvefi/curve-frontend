@@ -1,6 +1,4 @@
-import type { NumberFormatOptions } from '@internationalized/number'
-import type { SliderState } from 'react-stately'
-import { useSliderState } from 'react-stately'
+import { RefObject, useRef } from 'react'
 import {
   AriaSliderProps,
   mergeProps,
@@ -10,11 +8,13 @@ import {
   useSliderThumb,
   VisuallyHidden,
 } from 'react-aria'
+import type { SliderState } from 'react-stately'
+import { useSliderState } from 'react-stately'
 import styled, { css } from 'styled-components'
-import Chip from 'ui/src/Typography/Chip'
 import Spinner from 'ui/src/Spinner/Spinner'
 import SpinnerWrapper from 'ui/src/Spinner/SpinnerWrapper'
-import { RefObject, useRef } from 'react'
+import Chip from 'ui/src/Typography/Chip'
+import type { NumberFormatOptions } from '@internationalized/number'
 
 interface Props extends AriaSliderProps {
   formatOptions: NumberFormatOptions

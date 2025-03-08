@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
+import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import { PoolData } from '@/dex/types/main.types'
+import Item from '@ui/Items/Item'
+import Chip from '@ui/Typography/Chip'
 import { formatNumber } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
-import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import Chip from '@ui/Typography/Chip'
-import Item from '@ui/Items/Item'
-import { PoolData } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 const PoolParametersA = ({ parameters }: { parameters: PoolData['parameters'] }) => {
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}

@@ -1,6 +1,6 @@
 import { enforce, group, test } from 'vest'
-import { chainValidationGroup } from './chain-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { chainValidationGroup } from './chain-validation'
 import { PoolParams } from './root-keys'
 
 export const poolValidationGroup = ({ chainId, poolId }: PoolParams) =>

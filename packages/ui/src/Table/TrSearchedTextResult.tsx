@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { breakpoints, handleClickCopy, shortenTokenAddress } from 'ui/src/utils'
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
+import ExternalLink from 'ui/src/Link/ExternalLink'
+import { breakpoints, handleClickCopy, shortenTokenAddress } from 'ui/src/utils'
 
 type Result = { [key: string]: { value: string } }
 

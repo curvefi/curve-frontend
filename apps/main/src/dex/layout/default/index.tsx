@@ -1,15 +1,15 @@
 import { ReactNode, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
-import { getPath, useNetworkFromUrl } from '@/dex/utils/utilsRouter'
-import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
-import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
-import useStore from '@/dex/store/useStore'
 import Header from '@/dex/layout/default/Header'
+import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
+import useStore from '@/dex/store/useStore'
+import { getPath, useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { isFailure, isLoading } from '@ui/utils'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()

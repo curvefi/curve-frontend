@@ -1,8 +1,8 @@
-import { ListItem } from '@mui/material'
-import type { AppPage } from '@ui-kit/widgets/Header/types'
-import Link from '@mui/material/Link'
-import Button from '@mui/material/Button'
 import RouterLink from 'next/link'
+import { ListItem } from '@mui/material'
+import Button from '@mui/material/Button'
+import Link from '@mui/material/Link'
+import type { AppPage } from '@ui-kit/widgets/Header/types'
 
 type SidebarItemProps = {
   page: AppPage

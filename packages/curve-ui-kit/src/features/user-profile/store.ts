@@ -1,8 +1,8 @@
+import { produce } from 'immer'
+import merge from 'lodash/merge'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
-import { produce } from 'immer'
-import merge from 'lodash/merge'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type State = {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import MarketList from '@/loan/components/PageMarketList/Page'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
 
 type MarketListPageProps = { params: Promise<CollateralUrlParams> }
 

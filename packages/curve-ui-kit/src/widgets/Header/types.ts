@@ -1,8 +1,8 @@
-import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
-import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
 import { RefObject } from 'react'
-import { AppName } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
+import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
+import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
+import { AppName } from '@ui-kit/shared/routes'
 
 export type AppPage = {
   route: string // this is the full pathname to the page, including leading slash, the app name and the network

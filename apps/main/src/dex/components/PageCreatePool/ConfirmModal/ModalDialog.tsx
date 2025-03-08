@@ -1,14 +1,14 @@
-import type { AriaDialogProps } from '@react-types/dialog'
-import type { AriaOverlayProps } from 'react-aria'
-import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventScroll } from 'react-aria'
-import type { OverlayTriggerState } from 'react-stately'
 import { ReactNode, useRef } from 'react'
+import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventScroll } from 'react-aria'
+import type { AriaOverlayProps } from 'react-aria'
+import type { OverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
 import useStore from '@/dex/store/useStore'
-import Icon from '@ui/Icon'
+import type { AriaDialogProps } from '@react-types/dialog'
 import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
+import { breakpoints } from '@ui/utils/responsive'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
   footerContent?: ReactNode

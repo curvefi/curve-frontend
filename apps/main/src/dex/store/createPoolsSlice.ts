@@ -1,34 +1,15 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type {
-  FetchingStatus,
-  LpLiquidityEventsApiResponse,
-  LpLiquidityEventsData,
-  LpPriceApiResponse,
-  LpPriceOhlcData,
-  LpPriceOhlcDataFormatted,
-  LpTradesApiResponse,
-  LpTradesData,
-  LpTradeToken,
-  PricesApiCoin,
-  PricesApiPool,
-  PricesApiPoolResponse,
-  TimeOptions,
-} from '@ui/Chart/types'
-import type { UTCTimestamp } from 'lightweight-charts'
-import { PromisePool } from '@supercharge/promise-pool'
-import countBy from 'lodash/countBy'
 import produce from 'immer'
-import cloneDeep from 'lodash/cloneDeep'
+import type { UTCTimestamp } from 'lightweight-charts'
 import chunk from 'lodash/chunk'
+import cloneDeep from 'lodash/cloneDeep'
+import countBy from 'lodash/countBy'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
+import type { GetState, SetState } from 'zustand'
 import { INVALID_ADDRESS } from '@/dex/constants'
-import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
-import { log } from '@ui-kit/lib/logging'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import {
   CurveApi,
   ChainId,
@@ -49,6 +30,25 @@ import {
   TvlMapper,
   VolumeMapper,
 } from '@/dex/types/main.types'
+import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
+import { PromisePool } from '@supercharge/promise-pool'
+import type {
+  FetchingStatus,
+  LpLiquidityEventsApiResponse,
+  LpLiquidityEventsData,
+  LpPriceApiResponse,
+  LpPriceOhlcData,
+  LpPriceOhlcDataFormatted,
+  LpTradesApiResponse,
+  LpTradesData,
+  LpTradeToken,
+  PricesApiCoin,
+  PricesApiPool,
+  PricesApiPoolResponse,
+  TimeOptions,
+} from '@ui/Chart/types'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

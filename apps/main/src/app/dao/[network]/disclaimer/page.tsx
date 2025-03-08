@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
-import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import type { Metadata } from 'next'
 import type { NetworkUrlParams } from '@/dao/types/dao.types'
+import { t } from '@ui-kit/lib/i18n'
+import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import type { DisclaimerTabId } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 
 export const metadata: Metadata = { title: t`Risk Disclaimer - Curve` }

@@ -1,8 +1,8 @@
-import type { ConnectState } from 'ui/src/utils'
-import type { SelectProps } from 'ui/src/Select/Select'
 import { Item } from 'react-stately'
 import Select from 'ui/src/Select'
+import type { SelectProps } from 'ui/src/Select/Select'
 import SelectNetworkItem from 'ui/src/SelectNetwork/SelectNetworkItem'
+import type { ConnectState } from 'ui/src/utils'
 
 export type SelectNetworkItem = {
   label: string

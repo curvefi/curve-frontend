@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import { Chip } from '@ui/Typography'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   isCrypto: boolean | undefined

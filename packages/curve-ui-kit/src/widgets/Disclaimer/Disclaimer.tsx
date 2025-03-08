@@ -1,14 +1,14 @@
 'use client'
-import { t } from '@ui-kit/lib/i18n'
 import Stack from '@mui/material/Stack'
+import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LastUpdated } from './LastUpdated'
 import { Footer } from './Footer'
+import { LastUpdated } from './LastUpdated'
 import { TabPanel } from './TabPanel'
+import { CrvUsd } from './Tabs/CrvUsd'
 import { Dex } from './Tabs/Dex'
 import { LlamaLend } from './Tabs/LlamaLend'
-import { CrvUsd } from './Tabs/CrvUsd'
 import { SCrvUsd } from './Tabs/SCrvUsd'
 
 const { MaxWidth, Spacing } = SizesAndSpaces

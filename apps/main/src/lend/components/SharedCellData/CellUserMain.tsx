@@ -1,13 +1,13 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import useStore from '@/lend/store/useStore'
-import useVaultShares from '@/lend/hooks/useVaultShares'
-import Chip from '@ui/Typography/Chip'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
-import ListInfoItem from '@ui/ListInfo'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import useVaultShares from '@/lend/hooks/useVaultShares'
+import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import ListInfoItem from '@ui/ListInfo'
+import Chip from '@ui/Typography/Chip'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const CellUserMain = ({
   rChainId,

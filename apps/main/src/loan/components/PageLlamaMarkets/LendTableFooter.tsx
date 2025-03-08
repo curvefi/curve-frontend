@@ -1,16 +1,16 @@
-import Card from '@mui/material/Card'
-import Link from '@mui/material/Link'
+import type { ReactNode } from 'react'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid2'
+import Link from '@mui/material/Link'
+import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
-import type { ReactNode } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import { SoftLiquidationIcon } from '@ui-kit/shared/icons/SoftLiquidationIcon'
 import { CardStackPlusIcon } from '@ui-kit/shared/icons/CardStackPlusIcon'
 import { SignIcon } from '@ui-kit/shared/icons/SignIcon'
+import { SoftLiquidationIcon } from '@ui-kit/shared/icons/SoftLiquidationIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import SvgIcon from '@mui/material/SvgIcon'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

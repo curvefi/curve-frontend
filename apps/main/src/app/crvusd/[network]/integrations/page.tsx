@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
 import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Integrations from '@/loan/components/PageIntegrations/Page'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import { t } from '@ui-kit/lib/i18n'
 
 export const metadata: Metadata = { title: t`Integrations - Curve` }
 

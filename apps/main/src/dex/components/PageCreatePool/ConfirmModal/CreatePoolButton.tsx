@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
+import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { curveProps } from '@/dex/lib/utils'
+import useStore from '@/dex/store/useStore'
+import { CurveApi } from '@/dex/types/main.types'
+import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import AlertBox from '@ui/AlertBox'
-import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { CurveApi } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props {
   disabled: boolean

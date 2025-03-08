@@ -1,9 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
+import orderBy from 'lodash/orderBy'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
+import type { GetState, SetState } from 'zustand'
 import type { VecrvInfo } from '@/dex/components/PageCrvLocker/types'
-import type { IProfit } from '@curvefi/api/lib/interfaces'
+import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import type {
   DashboardDataMapper,
   DashboardDatasMapper,
@@ -13,14 +13,14 @@ import type {
   SortId,
   WalletPoolData,
 } from '@/dex/components/PageDashboard/types'
-import { PromisePool } from '@supercharge/promise-pool'
-import orderBy from 'lodash/orderBy'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
-import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
-import { shortenAccount } from '@ui/utils'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
+import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
+import type { IProfit } from '@curvefi/api/lib/interfaces'
+import { PromisePool } from '@supercharge/promise-pool'
+import { shortenAccount } from '@ui/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

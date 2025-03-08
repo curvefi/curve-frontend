@@ -1,14 +1,14 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
+import styled from 'styled-components'
 import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
-import IconButton from '@ui/IconButton'
-import Icon from '@ui/Icon'
-import VoteGaugeField from '../VoteGaugeField'
-import TitleComp from '../../GaugeListItem/TitleComp'
-import GaugeDetails from '../../GaugeListItem/GaugeDetails'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import { t } from '@ui-kit/lib/i18n'
+import GaugeDetails from '../../GaugeListItem/GaugeDetails'
+import TitleComp from '../../GaugeListItem/TitleComp'
+import VoteGaugeField from '../VoteGaugeField'
 
 type VoteGaugeProps = {
   gaugeData: GaugeFormattedData

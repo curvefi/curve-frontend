@@ -1,14 +1,14 @@
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import styled from 'styled-components'
 import Header from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
 import { getEthPath, getNetworkFromUrl } from '@/dao/utils/utilsRouter'
+import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
-import { Footer } from '@ui-kit/widgets/Footer'
-import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { Footer } from '@ui-kit/widgets/Footer'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()

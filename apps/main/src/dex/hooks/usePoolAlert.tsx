@@ -1,15 +1,15 @@
+import { useParams } from 'next/navigation'
 import { useMemo } from 'react'
 import styled from 'styled-components'
+import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@ui/utils'
-import { getPath } from '@/dex/utils/utilsRouter'
+import { PoolAlert, type UrlParams } from '@/dex/types/main.types'
 import { shortenTokenAddress } from '@/dex/utils'
+import { getPath } from '@/dex/utils/utilsRouter'
+import Box from '@ui/Box'
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
-import Box from '@ui/Box'
-import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
-import { PoolAlert, type UrlParams } from '@/dex/types/main.types'
-import { useParams } from 'next/navigation'
+import { breakpoints } from '@ui/utils'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
   const params = useParams() as UrlParams

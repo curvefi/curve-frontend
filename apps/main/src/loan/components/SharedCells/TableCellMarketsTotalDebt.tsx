@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 import useStore from '@/loan/store/useStore'
 import TextCaption from '@ui/TextCaption'
-import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 const TableCellMarketsTotalDebt = () => {
   const chainId = useStore((state) => state.curve?.chainId)

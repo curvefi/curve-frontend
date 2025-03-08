@@ -1,5 +1,5 @@
-import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import { AlertFormErrorKey } from '@/dex/components/AlertFormError'
+import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 

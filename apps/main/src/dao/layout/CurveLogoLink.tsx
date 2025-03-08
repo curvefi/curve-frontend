@@ -1,8 +1,8 @@
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
 import { LogoImg, RCLogoText } from '@ui/images'
+import { breakpoints } from '@ui/utils/responsive'
 
 export const CurveLogoLink = ({ className, hideLabel }: { className?: string; hideLabel?: boolean }) => (
   <StyledInternalLink href="/">

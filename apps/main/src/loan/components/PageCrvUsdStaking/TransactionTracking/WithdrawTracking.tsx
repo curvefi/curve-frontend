@@ -1,6 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/loan/store/useStore'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
+import useStore from '@/loan/store/useStore'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import Spinner from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 import {
   Wrapper,
   MainTransactionStep,
@@ -11,9 +14,6 @@ import {
   StyledRCPinBottom,
   ResetButton,
 } from './styles'
-import Icon from '@ui/Icon'
-import Box from '@ui/Box'
-import Spinner from '@ui/Spinner'
 
 type WithdrawTrackingProps = {
   className?: string

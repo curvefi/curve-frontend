@@ -1,17 +1,17 @@
+import { useParams } from 'next/navigation'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
 import Header from '@/lend/layout/Header'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
+import type { UrlParams } from '@/lend/types/lend.types'
 import { getNetworkFromUrl, getPath } from '@/lend/utils/utilsRouter'
+import { isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { isFailure, isLoading } from '@ui/utils'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
-import type { UrlParams } from '@/lend/types/lend.types'
-import { useParams } from 'next/navigation'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()

@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
-import Checkbox from '@ui/Checkbox'
 import { PoolData } from '@/dex/types/main.types'
+import Checkbox from '@ui/Checkbox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
 
 const TableCheckboxHideSmallPools = ({ poolDatasCachedOrApi }: { poolDatasCachedOrApi: PoolData[] }) => {
   const isDisabled = poolDatasCachedOrApi.length < 10

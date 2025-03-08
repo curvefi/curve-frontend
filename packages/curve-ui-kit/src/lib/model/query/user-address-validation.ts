@@ -1,6 +1,6 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '@ui-kit/lib/validation'
 import { isAddress } from 'viem'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 
 type UserAddressParams = { userAddress: string }
 

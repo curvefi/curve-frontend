@@ -1,6 +1,6 @@
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 const CellBorrowRate = ({
   rChainId,

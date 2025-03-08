@@ -1,7 +1,7 @@
-import { SubNavItem } from './types'
 import styled from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
+import { SubNavItem } from './types'
 
 interface SubNavProps {
   activeKey: string

@@ -1,15 +1,14 @@
+import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
+import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
-import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
-import cloneDeep from 'lodash/cloneDeep'
-import curvejsApi from '@/dex/lib/curvejs'
-import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
-import { isBonus, isHighSlippage, shortenTokenAddress } from '@/dex/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
   CurveApi,
@@ -19,6 +18,7 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
+import { isBonus, isHighSlippage, shortenTokenAddress } from '@/dex/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

@@ -1,7 +1,7 @@
-import type { ChipProps } from '@ui/Typography/types'
-import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import Chip from '@ui/Typography/Chip'
+import type { ChipProps } from '@ui/Typography/types'
+import { formatNumber } from '@ui/utils'
 
 const CellUserBalances = ({
   userActiveKey,

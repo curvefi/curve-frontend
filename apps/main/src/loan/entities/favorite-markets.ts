@@ -1,7 +1,7 @@
-import { queryFactory } from '@ui-kit/lib/model'
+import { useCallback, useMemo } from 'react'
 import { getFromLocalStorage, useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { EmptyValidationSuite } from '@ui-kit/lib'
-import { useCallback, useMemo } from 'react'
+import { queryFactory } from '@ui-kit/lib/model'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,

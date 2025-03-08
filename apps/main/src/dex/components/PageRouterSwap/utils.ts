@@ -1,9 +1,9 @@
-import type { FormValues, Route } from '@/dex/components/PageRouterSwap/types'
-import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { FormStatus } from '@/dex/components/PageRouterSwap/types'
 import isUndefined from 'lodash/isUndefined'
-import { log, LogStatus } from '@ui-kit/lib'
+import type { FormValues, Route } from '@/dex/components/PageRouterSwap/types'
+import type { FormStatus } from '@/dex/components/PageRouterSwap/types'
 import { Pool, PoolData } from '@/dex/types/main.types'
+import type { IRouteStep } from '@curvefi/api/lib/interfaces'
+import { log, LogStatus } from '@ui-kit/lib'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isApproved: false,

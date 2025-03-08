@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui/utils'
 import DetailInfo from '@ui/DetailInfo'
+import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLeverageX = ({
   leverage,

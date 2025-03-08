@@ -1,13 +1,13 @@
-import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
-import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { TooltipProps } from '@ui/Tooltip/types'
-import type { WalletState } from '@web3-onboard/core'
-import type { BaseConfig } from '@ui/utils'
-import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
-import { IGaugePool } from '@curvefi/api/lib/pools/subClasses/gaugePool'
 import { ReactNode } from 'react'
+import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
+import type curveApi from '@curvefi/api'
+import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import { IGaugePool } from '@curvefi/api/lib/pools/subClasses/gaugePool'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import type { BaseConfig } from '@ui/utils'
+import type { WalletState } from '@web3-onboard/core'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>

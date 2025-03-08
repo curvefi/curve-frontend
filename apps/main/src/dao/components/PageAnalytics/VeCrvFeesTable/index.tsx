@@ -1,11 +1,11 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect } from 'react'
-import useStore from '@/dao/store/useStore'
-import { formatDate, formatNumber } from '@ui/utils'
-import Box from '@ui/Box'
-import Spinner from '../../Spinner'
+import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
+import useStore from '@/dao/store/useStore'
+import Box from '@ui/Box'
+import { formatDate, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import Spinner from '../../Spinner'
 import VeCrvFeesChart from '../VeCrvFeesChart'
 
 const VeCrcFees = () => {

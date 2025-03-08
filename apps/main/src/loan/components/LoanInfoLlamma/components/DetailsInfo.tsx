@@ -1,13 +1,13 @@
-import { TITLE } from '@/loan/constants'
-import useStore from '@/loan/store/useStore'
-import networks from '@/loan/networks'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
-import TokenLabel from '@/loan/components/TokenLabel'
+import { ReactNode } from 'react'
 import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
 import TableCellUtilization from '@/loan/components/SharedCells/TableCellUtilization'
+import TokenLabel from '@/loan/components/TokenLabel'
+import { TITLE } from '@/loan/constants'
+import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
 import { ChainId, TitleKey, TitleMapper } from '@/loan/types/loan.types'
-import { ReactNode } from 'react'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 
 const DetailsInfo = ({
   rChainId,

@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
 import TextCaption from '@ui/TextCaption'
+import { breakpoints } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   toggle?: () => void

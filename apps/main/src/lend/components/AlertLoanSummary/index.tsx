@@ -1,12 +1,12 @@
-import type { AlertSummaryProps } from '@/lend/components/AlertLoanSummary/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import Box from '@ui/Box'
+import SummaryChange from '@/lend/components/AlertLoanSummary/components/SummaryChange'
 import SummaryCreate from '@/lend/components/AlertLoanSummary/components/SummaryCreate'
 import SummaryFull from '@/lend/components/AlertLoanSummary/components/SummaryFull'
 import SummaryPartial from '@/lend/components/AlertLoanSummary/components/SummaryPartial'
 import SummarySelfLiquidate from '@/lend/components/AlertLoanSummary/components/SummarySelfLiquidate'
-import SummaryChange from '@/lend/components/AlertLoanSummary/components/SummaryChange'
+import type { AlertSummaryProps } from '@/lend/components/AlertLoanSummary/types'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 const AlertLoanSummary = ({ market, type, ...props }: AlertSummaryProps) => {
   const { symbol: collateralSymbol = '' } = market?.collateral_token ?? {}

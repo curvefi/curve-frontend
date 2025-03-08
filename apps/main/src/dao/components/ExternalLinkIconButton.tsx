@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import TooltipButton from '@ui/Tooltip'
-import { ExternalLink } from '@ui/Link'
-import Icon from '@ui/Icon'
 import { ReactNode } from 'react'
+import styled from 'styled-components'
+import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
+import TooltipButton from '@ui/Tooltip'
 
 type ExternalLinkIconButtonProps = {
   href: string

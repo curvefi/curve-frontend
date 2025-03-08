@@ -1,10 +1,10 @@
-import Popover from '@mui/material/Popover'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import Switch from '@mui/material/Switch'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useCallback, useMemo, useState } from 'react'
 import { FormControlLabel } from '@mui/material'
+import Popover from '@mui/material/Popover'
+import Stack from '@mui/material/Stack'
+import Switch from '@mui/material/Switch'
+import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 export type VisibilityOption = {
   id: string

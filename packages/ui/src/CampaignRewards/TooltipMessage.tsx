@@ -1,7 +1,7 @@
-import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 import styled from 'styled-components'
-import { ExternalLink } from 'ui/src/Link'
 import Box from 'ui/src/Box'
+import type { RewardsPool } from 'ui/src/CampaignRewards/types'
+import { ExternalLink } from 'ui/src/Link'
 
 const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
   const { campaignName, platform, description, action, dashboardLink, campaignStart, campaignEnd } = rewardsPool

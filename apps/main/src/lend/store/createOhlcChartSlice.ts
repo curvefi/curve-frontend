@@ -1,6 +1,5 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/lend/store/useStore'
 import { getAddress } from 'ethers'
+import produce from 'immer'
 import type {
   TimeOptions,
   FetchingStatus,
@@ -9,12 +8,13 @@ import type {
   LlamaBaselinePriceData,
   OraclePriceData,
 } from 'ui/src/Chart/types'
+import type { GetState, SetState } from 'zustand'
+import networks from '@/lend/networks'
+import type { State } from '@/lend/store/useStore'
+import { ChainId } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
-import produce from 'immer'
-import networks from '@/lend/networks'
-import { ChainId } from '@/lend/types/lend.types'
 
 type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 

@@ -1,8 +1,8 @@
-import { t } from '@ui-kit/lib/i18n'
 import { Dispatch, SetStateAction } from 'react'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
+import { t } from '@ui-kit/lib/i18n'
 
 function DialogHighPriceImpactWarning({
   priceImpact,

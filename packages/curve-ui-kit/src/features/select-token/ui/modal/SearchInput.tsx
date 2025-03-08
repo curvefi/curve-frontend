@@ -1,8 +1,8 @@
+import { useRef } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import TextField from '@mui/material/TextField'
 import useDebounce from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
-import { useRef } from 'react'
 
 type Props = {
   onSearch: (search: string) => void

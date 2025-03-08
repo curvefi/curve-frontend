@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
 import Icon from 'ui/src/Icon'
+import { breakpoints } from 'ui/src/utils/responsive'
 
 export const PriceAndTradesExpandedContainer = styled(Box)`
   margin: 1.5rem 0 0;

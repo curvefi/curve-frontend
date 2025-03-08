@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import type { MarketUrlParams } from '@/lend/types/lend.types'
-import LoanCreate from '@/lend/components/PageLoanCreate/Page'
 import { getLendMarketSymbols } from '@/app/lend/[network]/markets/[market]/market-name.utils'
+import LoanCreate from '@/lend/components/PageLoanCreate/Page'
+import type { MarketUrlParams } from '@/lend/types/lend.types'
 
 type LoanCreatePageProps = { params: Promise<MarketUrlParams> }
 

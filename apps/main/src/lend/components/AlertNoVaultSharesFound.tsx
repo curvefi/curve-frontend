@@ -1,15 +1,15 @@
-import { t } from '@ui-kit/lib/i18n'
+import { useParams } from 'next/navigation'
 import styled from 'styled-components'
-import { getVaultPathname } from '@/lend/utils/utilsRouter'
-import useStore from '@/lend/store/useStore'
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
+import useStore from '@/lend/store/useStore'
+import { PageContentProps, type UrlParams } from '@/lend/types/lend.types'
+import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import InternalLink from '@ui/Link/InternalLink'
-import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import Spinner from '@ui/Spinner'
+import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import TextCaption from '@ui/TextCaption'
-import { PageContentProps, type UrlParams } from '@/lend/types/lend.types'
-import { useParams } from 'next/navigation'
+import { t } from '@ui-kit/lib/i18n'
 
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {
   const params = useParams() as UrlParams

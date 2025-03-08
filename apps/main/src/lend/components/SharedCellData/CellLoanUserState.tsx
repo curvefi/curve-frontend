@@ -1,5 +1,5 @@
-import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
+import { formatNumber } from '@ui/utils'
 
 const CellLoanUserState = ({ userActiveKey }: { userActiveKey: string }) => {
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])

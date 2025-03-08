@@ -1,10 +1,10 @@
-import type { AriaListBoxOptions } from 'react-aria'
-import type { Node } from '@react-types/shared'
-import type { ListState } from '@react-stately/list'
+import useIntersectionObserver from 'curve-ui-kit/src/hooks/useIntersectionObserver'
 import { RefObject, useEffect, useRef, useState } from 'react'
+import type { AriaListBoxOptions } from 'react-aria'
 import styled from 'styled-components'
 import { useListBox, useOption } from '@react-aria/listbox'
-import useIntersectionObserver from 'curve-ui-kit/src/hooks/useIntersectionObserver'
+import type { ListState } from '@react-stately/list'
+import type { Node } from '@react-types/shared'
 
 function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & {

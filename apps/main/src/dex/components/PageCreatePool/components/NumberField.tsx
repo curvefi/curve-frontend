@@ -1,11 +1,11 @@
-import type { AriaNumberFieldProps } from 'react-aria'
 import { useRef } from 'react'
-import styled from 'styled-components'
-import { useNumberFieldState } from 'react-stately'
+import type { AriaNumberFieldProps } from 'react-aria'
 import { useLocale, useNumberField } from 'react-aria'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import Icon from '@ui/Icon'
+import { useNumberFieldState } from 'react-stately'
+import styled from 'styled-components'
 import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
 
 interface Props extends AriaNumberFieldProps {
   row?: boolean

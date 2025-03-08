@@ -1,10 +1,10 @@
+import { Breakpoint } from '@mui/material'
 import { type TypographyOptions } from '@mui/material/styles/createTypography'
 import { basicMuiTheme } from '../basic-theme'
-import { SizesAndSpaces } from '../design/1_sizes_spaces'
-import { Sizing, TransitionFunction } from '../design/0_primitives'
 import { DesignSystem } from '../design'
+import { Sizing, TransitionFunction } from '../design/0_primitives'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
 import { Fonts } from './fonts'
-import { Breakpoint } from '@mui/material'
 
 const disabledTypographyKeys = [
   'h1',

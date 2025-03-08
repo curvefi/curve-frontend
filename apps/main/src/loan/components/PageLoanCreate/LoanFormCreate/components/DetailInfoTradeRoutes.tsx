@@ -1,10 +1,10 @@
-import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import { RCCircle } from '@ui/images'
 import Box from '@ui/Box'
+import { RCCircle } from '@ui/images'
 import Loader from '@ui/Loader'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoTradeRoutes = ({
   input,

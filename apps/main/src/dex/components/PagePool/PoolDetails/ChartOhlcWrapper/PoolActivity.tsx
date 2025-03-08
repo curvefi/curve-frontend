@@ -1,14 +1,14 @@
-import type { LpTradeToken, PricesApiCoin } from '@ui/Chart/types'
 import { useEffect, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import Button from '@ui/Button/Button'
-import Icon from '@ui/Icon'
-import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import LiquidityData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
+import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Button from '@ui/Button/Button'
+import type { LpTradeToken, PricesApiCoin } from '@ui/Chart/types'
+import Icon from '@ui/Icon'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 
 const PoolActivity = ({
   chainId,

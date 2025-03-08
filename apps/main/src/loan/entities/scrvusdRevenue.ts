@@ -1,7 +1,7 @@
-import type { Revenue } from '@curvefi/prices-api/savings/models'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { EmptyValidationSuite } from '@ui-kit/lib'
 import { getRevenue } from '@curvefi/prices-api/savings'
+import type { Revenue } from '@curvefi/prices-api/savings/models'
+import { EmptyValidationSuite } from '@ui-kit/lib'
+import { queryFactory } from '@ui-kit/lib/model/query'
 import { weiToEther } from '@ui-kit/utils'
 
 type Epoch = { startDate: Date; endDate: Date; weeklyRevenue: number; data: Revenue[] }

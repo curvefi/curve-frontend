@@ -1,14 +1,14 @@
-import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLoanCreate/types'
-import useStore from '@/lend/store/useStore'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import DetailInfoEstGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
 import DetailInfoLiqRangeEdit from '@/lend/components/DetailInfoLiqRangeEdit'
 import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
 import DetailInfoN from '@/lend/components/DetailInfoN'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLoanCreate/types'
+import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfoNonLeverage = ({
   activeStep,

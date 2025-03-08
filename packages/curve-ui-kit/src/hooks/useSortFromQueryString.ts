@@ -1,7 +1,7 @@
+import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
 
 export function useSortFromQueryString(defaultSort: SortingState) {
   const search = useSearchParams()

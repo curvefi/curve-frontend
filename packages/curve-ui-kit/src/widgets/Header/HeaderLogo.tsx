@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box'
-import { LogoImg, RCLogoText } from '@ui/images'
+import Link from '@mui/material/Link'
 import type { SxProps, Theme } from '@mui/material/styles'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
+import { LogoImg, RCLogoText } from '@ui/images'
 import { AppName } from '@ui-kit/shared/routes'
 
 const Image = styled('img')({

@@ -1,9 +1,9 @@
-import type { LiqRange, LiqRangeSliderIdx } from '@/loan/store/types'
-import type { FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
-import { t } from '@ui-kit/lib/i18n'
 import { ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import type { FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
+import type { LiqRange, LiqRangeSliderIdx } from '@/loan/store/types'
 import SliderSingleThumb from '@ui/SliderSingleThumb'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLiqRangeEdit = ({
   liqRanges,

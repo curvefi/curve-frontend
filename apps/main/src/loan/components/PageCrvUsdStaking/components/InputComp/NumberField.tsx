@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { ChangeEvent } from 'react'
+import styled from 'styled-components'
 
 interface NumberFieldProps {
   className?: string

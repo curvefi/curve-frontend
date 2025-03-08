@@ -1,12 +1,12 @@
-import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
 import type { ContractTransactionResponse } from 'ethers'
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import produce from 'immer'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenTokenAddress } from '@/dex/utils'
+import type { GetState, SetState } from 'zustand'
+import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
+import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { shortenTokenAddress } from '@/dex/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type NetworkWithFactory = {
   chainId: ChainId

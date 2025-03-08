@@ -1,9 +1,9 @@
-import { Trans } from '@ui-kit/lib/i18n'
-import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import Checkbox from '@ui/Checkbox'
-import AlertBox from '@ui/AlertBox'
 import { Dispatch, SetStateAction } from 'react'
+import styled from 'styled-components'
+import AlertBox from '@ui/AlertBox'
+import Checkbox from '@ui/Checkbox'
+import { formatNumber } from '@ui/utils'
+import { Trans } from '@ui-kit/lib/i18n'
 
 type SharedProps = {
   confirmed: boolean

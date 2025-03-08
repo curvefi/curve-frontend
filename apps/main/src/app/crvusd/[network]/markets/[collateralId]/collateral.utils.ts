@@ -1,8 +1,8 @@
 'use server'
-import { getMarkets } from '@curvefi/prices-api/crvusd'
-import { Chain } from '@curvefi/prices-api'
-import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import memoizee from 'memoizee'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { Chain } from '@curvefi/prices-api'
+import { getMarkets } from '@curvefi/prices-api/crvusd'
 
 const getCrvUsdMarkets = memoizee(getMarkets, { promise: true, preFetch: true, maxAge: 1000 * 60 * 5 })
 

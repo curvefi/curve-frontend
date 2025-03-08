@@ -18,13 +18,28 @@ module.exports = {
           { target: 'packages', from: 'apps' },
           ...['dex', 'dao', 'lend', 'loan']
             .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`])
-            .map((from, index, paths) =>
-              ({
-                target: paths.filter((_, i) => i !== index).flat(),
-                from,
-              }),
-            ),
+            .map((from, index, paths) => ({
+              target: paths.filter((_, i) => i !== index).flat(),
+              from,
+            })),
         ],
+      },
+    ],
+
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        pathGroups: [
+          // This will make all @-prefixed external imports come after non-@ imports
+          { pattern: '@*/**', group: 'external', position: 'after' },
+        ],
+        pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+        'newlines-between': 'never',
       },
     ],
   },
@@ -35,6 +50,7 @@ module.exports = {
         alwaysTryTypes: true,
       },
     },
+    'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
   },
   parserOptions: {
     babelOptions: {

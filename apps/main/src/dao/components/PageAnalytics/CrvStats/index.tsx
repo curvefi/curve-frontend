@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import useStore from '@/dao/store/useStore'
-import { formatNumber } from '@ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import Box from '@ui/Box'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import useStore from '@/dao/store/useStore'
+import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'
+import { formatNumber } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 const CrvStats = () => {
   const { provider } = useWallet()

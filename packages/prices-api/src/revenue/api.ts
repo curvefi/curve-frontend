@@ -1,8 +1,8 @@
 import { getHost, type Options } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { paginate } from '../paginate'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 const API_URL_OLD = 'https://api-py.llama.airforce/curve/v1'
 
