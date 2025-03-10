@@ -4,8 +4,11 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@ui-kit/shared/ui/ModalSettingsButton'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ManageTokenList } from './ManageTokenList'
 import { TokenList, type Props as TokenListProps } from './TokenList'
+
+const { MaxHeight } = SizesAndSpaces
 
 export type TokenSelectorModalCallbacks = {
   /** Callback when modal is closed */
@@ -45,12 +48,14 @@ export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, .
         false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
       }
       sx={{
-        ...(compact && {
-          '& .MuiPaper-root': {
+        '& .MuiPaper-root': {
+          overflowY: 'hidden',
+          maxHeight: MaxHeight.tokenSelector,
+          ...(compact && {
             height: 'auto',
             minHeight: 'auto',
-          },
-        }),
+          }),
+        },
       }}
     >
       {isManageListOpen ? <ManageTokenList /> : <TokenList {...tokenListProps} />}
