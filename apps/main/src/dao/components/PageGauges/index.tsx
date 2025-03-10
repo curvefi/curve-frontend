@@ -11,7 +11,7 @@ import GaugeVoting from './GaugeVoting'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 
 const Gauges = () => {
-  const { isMdUp } = useStore((state) => state.layout)
+  const isMdUp = useStore((state) => state.layout.isMdUp)
   const { wallet } = useWallet()
   const userAddress = wallet?.accounts[0].address
 

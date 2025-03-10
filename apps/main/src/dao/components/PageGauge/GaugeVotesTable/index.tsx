@@ -17,7 +17,10 @@ interface GaugeVotesTableProps {
 }
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
-  const { getGaugeVotes, gaugeVotesMapper, gaugeVotesSortBy, setGaugeVotesSortBy } = useStore((state) => state.gauges)
+  const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
+  const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
+  const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
+  const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
   const { push } = useRouter()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '5.3125rem 1fr 1fr'

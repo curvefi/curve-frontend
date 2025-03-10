@@ -11,9 +11,11 @@ import { t } from '@ui-kit/lib/i18n'
 import Spinner from '../../Spinner'
 
 const TopLockers = () => {
-  const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(
-    (state) => state.analytics,
-  )
+  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const topHoldersSortBy = useStore((state) => state.analytics.topHoldersSortBy)
+  const setTopHoldersSortBy = useStore((state) => state.analytics.setTopHoldersSortBy)
+  const veCrvData = useStore((state) => state.analytics.veCrvData)
 
   const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'
   const lockersFetchError = veCrvHolders.fetchStatus === 'ERROR'
