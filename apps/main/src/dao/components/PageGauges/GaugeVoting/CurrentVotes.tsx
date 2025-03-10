@@ -7,10 +7,10 @@ import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight, UserGaugeVoteWeightSortBy } from '@/dao/types/dao.types'
+import { findRootGauge } from '@/dao/utils'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { USER_VOTES_TABLE_LABELS } from './constants'
-import { findRootGauge } from '@/dao/utils'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
