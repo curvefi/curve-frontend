@@ -217,7 +217,7 @@ export const TokenList = ({
           />
 
           <TokenSection
-            title={myTokens.length > 0 ? t`All tokens` : undefined}
+            title={myTokens.length > 0 ? t`Tokens by 24h volume` : undefined}
             tokens={allTokens}
             balances={balances}
             tokenPrices={tokenPrices}
