@@ -6,16 +6,16 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import type { SystemStyleObject, Theme } from '@mui/system'
+import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
 import { Cell, Column, flexRender, Header, Row, useReactTable } from '@tanstack/react-table'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { hasParentWithClass } from '@ui-kit/utils/dom'
+import { InvertOnHover } from './InvertOnHover'
 
-const { Sizing, Spacing, MinWidth } = SizesAndSpaces
+const { Sizing, Spacing, MinWidth, MinHeight } = SizesAndSpaces
 
 // css class to hide elements on desktop unless the row is hovered
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
@@ -30,10 +30,11 @@ const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
 
 const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => {
   const column = cell.column
+  const { hidden, variant, borderRight } = column.columnDef.meta ?? {}
   return (
-    !column.columnDef.meta?.hidden && (
+    !hidden && (
       <Typography
-        variant={column.columnDef.meta?.variant ?? 'tableCellMBold'}
+        variant={variant ?? 'tableCellMBold'}
         color="text.primary"
         component="td"
         sx={{
@@ -41,6 +42,8 @@ const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => 
           paddingInline: Spacing.sm,
           paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
           ...getExtraColumnPadding(column),
+          transition: `color ${TransitionFunction}, border-right ${TransitionFunction}`,
+          ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         data-testid={`data-table-cell-${column.id}`}
       >
@@ -52,18 +55,13 @@ const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => 
 
 const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemStyleObject<Theme> }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
   const { push } = useRouter()
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   const url = row.original.url
   const onClick = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => {
       // ignore clicks on elements that should be clickable inside the row
-      let element = e.target as HTMLElement
-      while (element.tagName != 'TR') {
-        if (element.classList.contains(ClickableInRowClass)) return
-        element = element.parentElement as HTMLElement
-      }
+      if (hasParentWithClass(e.target, ClickableInRowClass, { untilTag: 'TR' })) return
       // redirect to the url or navigate to the route
       if (url.startsWith('http')) {
         location.href = url
@@ -75,33 +73,27 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
   )
 
   return (
-    <InvertTheme inverted={isHover}>
+    <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverRef={ref}>
       <TableRow
         sx={(t) => ({
           marginBlock: 0,
-          borderBottom: `1px solid${t.design.Layer[1].Outline}`,
+          borderBottom: `1px solid ${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
-          transition: `background-color ${TransitionFunction}, border ${TransitionFunction}`,
-          '& .MuiChip-label, & .MuiLink-root': {
-            transition: `color ${TransitionFunction}`,
-          },
+          transition: `border ${TransitionFunction}`,
           [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
           '&:hover': {
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
           },
-          ...(isHover && { backgroundColor: t.design.Table.Row.Hover }),
           ...sx,
         })}
         ref={ref}
         data-testid={`data-table-row-${row.id}`}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
         onClick={onClick}
       >
         {/* render cells when visible vertically, so content is lazy loaded */}
         {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
       </TableRow>
-    </InvertTheme>
+    </InvertOnHover>
   )
 }
 
@@ -118,8 +110,9 @@ const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown
   const { column } = header
   const sort = column.getIsSorted()
   const canSort = column.getCanSort()
+  const { hidden, borderRight } = column.columnDef.meta ?? {}
   return (
-    !column.columnDef.meta?.hidden && (
+    !hidden && (
       <Typography
         component="th"
         sx={{
@@ -134,8 +127,9 @@ const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown
             '&:hover': {
               color: `text.highlight`,
             },
-            transition: `color ${TransitionFunction}`,
+            transition: `color ${TransitionFunction}, border-right ${TransitionFunction}`,
           }),
+          ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         colSpan={header.colSpan}
         width={header.getSize()}
@@ -204,7 +198,7 @@ export const DataTable = <T extends TableItem>({
     </TableHead>
     <TableBody>
       {table.getRowModel().rows.length === 0 && (
-        <TableRow data-testid="table-empty-row">
+        <TableRow data-testid="table-empty-row" sx={{ height: MinHeight.tableNoResults }}>
           <Typography
             variant="tableCellL"
             colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}

@@ -61,7 +61,7 @@ const variant = ({
     marginRight: `calc(${letterSpacing} * -1)`,
   }),
   textTransform: textCase,
-  transition: `color ${TransitionFunction}`,
+  transition: `color ${TransitionFunction}, border ${TransitionFunction}`, // border is used in the chip, for example
   ...(!(fontSize in FontSize) && { fontSize }),
   ...(!(lineHeight in LineHeight) && { lineHeight }),
   ...responsiveValues(fontSize, lineHeight, 'mobile'),

@@ -1,7 +1,17 @@
 import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
-import { getLendingVaultOptions, LendingVault } from '@/loan/entities/lending-vaults'
-import { getMintMarketOptions, MintMarket } from '@/loan/entities/mint-markets'
+import {
+  getLendingVaultOptions,
+  getUserLendingVaultsOptions,
+  LendingVault,
+  type UserLendingVault,
+} from '@/loan/entities/lending-vaults'
+import {
+  getMintMarketOptions,
+  getUserMintMarketsOptions,
+  MintMarket,
+  type UserMintMarket,
+} from '@/loan/entities/mint-markets'
 import { NetworkEnum } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
 import { Chain } from '@curvefi/prices-api'
@@ -9,6 +19,7 @@ import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
+import type { Address } from '@ui-kit/utils'
 
 export enum LlamaMarketType {
   Mint = 'Mint',
@@ -29,8 +40,8 @@ export type AssetDetails = {
 
 export type LlamaMarket = {
   chain: Chain
-  address: string
-  controllerAddress: string
+  address: Address
+  controllerAddress: Address
   assets: Assets
   utilizationPercent: number
   liquidityUsd: number
@@ -41,10 +52,14 @@ export type LlamaMarket = {
   type: LlamaMarketType
   url: string
   rewards: PoolRewards | null
-  isCollateralEroded: boolean
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
+  userCollateralEroded: boolean
+  userEarnings: number | null
+  userDeposited: number | null
+  userBorrowed: number | null
+  userHealth: number | null
 }
 
 const DEPRECATED_LLAMAS: Record<string, () => string> = {
@@ -70,7 +85,8 @@ const convertLendingVault = (
     leverage,
   }: LendingVault,
   favoriteMarkets: Set<string>,
-  campaigns: Record<string, PoolRewards>,
+  campaigns: Record<string, PoolRewards> | undefined = {},
+  user: UserLendingVault | undefined,
 ): LlamaMarket => ({
   chain,
   address: vault,
@@ -95,7 +111,11 @@ const convertLendingVault = (
   isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
   leverage,
-  isCollateralEroded: false, // todo
+  userCollateralEroded: user?.stats?.softLiquidation ?? false,
+  userEarnings: user?.earnings?.earnings ?? null,
+  userDeposited: user?.stats?.totalDeposited ?? null,
+  userBorrowed: user?.stats?.borrowed ?? null,
+  userHealth: user?.stats?.healthFull ?? null,
 })
 
 /** We show WETH as ETH in the UI and market URL */
@@ -116,7 +136,8 @@ const convertMintMarket = (
     chain,
   }: MintMarket,
   favoriteMarkets: Set<string>,
-  campaigns: Record<string, PoolRewards>,
+  campaigns: Record<string, PoolRewards> | undefined = {},
+  user: UserMintMarket | undefined,
 ): LlamaMarket => ({
   chain,
   address,
@@ -135,7 +156,7 @@ const convertMintMarket = (
       chain,
     },
   },
-  utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered
+  utilizationPercent: (100 * borrowed) / debtCeiling,
   // todo: do we want to see collateral or borrowable?
   liquidityUsd: collateralAmountUsd,
   rates: { borrow: rate, lend: null },
@@ -148,27 +169,42 @@ const convertMintMarket = (
   isFavorite: favoriteMarkets.has(address),
   rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,
-  isCollateralEroded: false, // todo
+  userCollateralEroded: user?.softLiquidation ?? false,
+  userEarnings: null,
+  userDeposited: null,
+  userBorrowed: user?.debt ?? null,
+  userHealth: user?.healthFull ?? null,
 })
 
-export const useLlamaMarkets = () =>
+export const useLlamaMarkets = (userAddress?: Address) =>
   useQueries({
     queries: [
       getLendingVaultOptions({}),
       getMintMarketOptions({}),
       getCampaignsOptions({}),
       getFavoriteMarketOptions({}),
+      getUserLendingVaultsOptions({ userAddress }),
+      getUserMintMarketsOptions({ userAddress }),
     ],
-    combine: ([lendingVaults, mintMarkets, campaigns, favoriteMarkets]): PartialQueryResult<LlamaMarket[]> => {
+    combine: (results): PartialQueryResult<LlamaMarket[]> => {
+      const [lendingVaults, mintMarkets, campaigns, favoriteMarkets, userLendingVaults, userMintMarkets] = results
       const favoriteMarketsSet = new Set(favoriteMarkets.data)
-      const campaignData = campaigns.data ?? {}
       return {
-        ...combineQueriesMeta([lendingVaults, mintMarkets, favoriteMarkets]),
+        ...combineQueriesMeta(results),
         data: [
           ...(lendingVaults.data ?? [])
             .filter((vault) => vault.totalAssetsUsd)
-            .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaignData)),
-          ...(mintMarkets.data ?? []).map((market) => convertMintMarket(market, favoriteMarketsSet, campaignData)),
+            .map((vault) =>
+              convertLendingVault(
+                vault,
+                favoriteMarketsSet,
+                campaigns.data,
+                userLendingVaults.data?.[vault.controller],
+              ),
+            ),
+          ...(mintMarkets.data ?? []).map((market) =>
+            convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMintMarkets.data?.[market.address]),
+          ),
         ],
       }
     },

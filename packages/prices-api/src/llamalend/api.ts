@@ -51,10 +51,22 @@ export async function getUserMarkets(userAddr: string, chain: Chain, options?: O
 export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetUserMarketStatsResponse>(
-    `${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/stats?page=1&per_page=100`,
+    `${host}/v1/lending/users/${chain}/${userAddr}/${marketController}/stats`,
   )
-
   return Parsers.parseUserMarketStats(resp)
+}
+
+export async function getUserMarketEarnings(
+  userAddr: string,
+  chain: Chain,
+  marketController: string,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetUserMarketEarningsResponse>(
+    `${host}/v1/lending/vaults/${chain}/${marketController}/earnings/${userAddr}`,
+  )
+  return Parsers.parseUserMarketEarnings(resp)
 }
 
 export async function getUserMarketSnapshots(

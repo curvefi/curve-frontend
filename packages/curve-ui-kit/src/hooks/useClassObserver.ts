@@ -22,7 +22,10 @@ import { RefObject, useEffect, useState } from 'react'
  * );
  * ```
  */
-export function useClassObserver(ref: RefObject<HTMLLIElement | null>, className: string): boolean {
+export function useClassObserver(
+  ref: RefObject<HTMLLIElement | HTMLTableRowElement | null>,
+  className: string,
+): boolean {
   const [hasClass, setHasClass] = useState(false)
 
   useEffect(() => {

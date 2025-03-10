@@ -1,4 +1,4 @@
-import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport } from '@/support/ui'
+import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
   createLendingVaultResponses,
   type LendingVaultResponses,
@@ -7,8 +7,8 @@ import {
   mockLendingVaults,
 } from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
-import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import { mockTokenPrices } from '@/support/helpers/tokens'
+import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport } from '@/support/ui'
 
 describe('LlamaLend Markets', () => {
   let isDarkMode: boolean

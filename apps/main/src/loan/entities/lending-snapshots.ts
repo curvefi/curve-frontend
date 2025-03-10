@@ -1,7 +1,6 @@
-import { getSupportedLendingChainOptions } from '@/loan/entities/chains'
+import { getSupportedLendingChains } from '@/loan/entities/chains'
 import { Chain } from '@curvefi/prices-api'
 import { getSnapshots, Snapshot } from '@curvefi/prices-api/llamalend'
-import { queryClient } from '@ui-kit/lib/api/query-client'
 import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 
@@ -11,7 +10,7 @@ export type LendingSnapshot = LendingSnapshotFromApi
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots', 'v1'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshot[]> => {
-    const chains = await queryClient.fetchQuery(getSupportedLendingChainOptions({}))
+    const chains = await getSupportedLendingChains()
     const chain = blockchainId as Chain
     if (!chains.includes(chain)) return [] // backend gives 404 for optimism
 

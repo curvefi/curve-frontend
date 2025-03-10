@@ -70,7 +70,7 @@ export const TableFilters = ({
   onReload: () => void
   onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
-  toggleVisibility: (columnId: string) => void
+  toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode
   children: ReactNode
 }) => {

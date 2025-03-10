@@ -1,9 +1,18 @@
-import { get, identity, sortBy, sortedUniq } from 'lodash'
-import { ReactNode, useMemo } from 'react'
+import { get, sortBy, sortedUniq } from 'lodash'
+import * as React from 'react'
+import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
+import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { t } from '@ui-kit/lib/i18n'
+import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -15,7 +24,7 @@ const { Spacing } = SizesAndSpaces
  */
 const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
   const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, identity))
+  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
 }
 
 /**
@@ -36,44 +45,92 @@ export const MultiSelectFilter = <T extends unknown>({
   field: DeepKeys<T>
   renderItem?: (value: string) => ReactNode
 }) => {
+  const selectRef = useRef<HTMLDivElement | null>(null)
+  const menuRef = useRef<HTMLLIElement | null>(null)
+  const [selectWidth] = useHeightResizeObserver(selectRef) ?? []
+  const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
   const id = cleanColumnId(field)
   const value = (columnFilters[id] ?? []) as string[]
+  const onClear = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation()
+      setColumnFilter(id, [])
+      close()
+    },
+    [id, setColumnFilter, close],
+  )
+
+  const onSelectChange = useCallback(
+    // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
+    (e: SelectChangeEvent<string[]>) => {
+      setColumnFilter(id, (e.target.value as string[]).filter(Boolean))
+    },
+    [setColumnFilter, id],
+  )
+  const sx = { minWidth: Math.round(selectWidth || 100) + 'px' }
   return (
-    <Select
-      name={id}
-      multiple
-      displayEmpty
-      value={value}
-      onChange={(e) => setColumnFilter(id, e.target.value)}
-      fullWidth
-      data-testid={`multi-select-filter-${id}`}
-      size="small"
-      renderValue={(selected) =>
-        selected.length && selected.length < options.length ? (
-          selected.map((optionId, index) => (
-            <MenuItem
-              key={optionId}
-              sx={{
-                display: 'inline-flex', // display inline to avoid wrapping
-                '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
-                gap: Spacing.xs, // default spacing is too large inline
-                ...(index > 0 && { ':before': { content: '", "' } }),
-              }}
-            >
-              {renderItem?.(optionId) ?? optionId}
-            </MenuItem>
-          ))
-        ) : (
-          <Typography variant="bodyMBold">{defaultText}</Typography>
-        )
-      }
-    >
-      {options.map((optionId) => (
-        <MenuItem key={optionId} value={optionId}>
-          {renderItem?.(optionId) ?? optionId}
-        </MenuItem>
-      ))}
-    </Select>
+    <>
+      <Select
+        ref={selectRef}
+        name={id}
+        open={false}
+        onOpen={open}
+        onClose={close}
+        multiple
+        displayEmpty
+        value={value}
+        onChange={onSelectChange}
+        fullWidth
+        data-testid={`multi-select-filter-${id}`}
+        size="small"
+        renderValue={(selected) =>
+          selected.length && selected.length < options.length ? (
+            selected.map((optionId, index) => (
+              <MenuItem
+                key={optionId}
+                sx={{
+                  display: 'inline-flex', // display inline to avoid wrapping
+                  '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                  gap: Spacing.xs, // default spacing is too large inline
+                  ...(index > 0 && { ':before': { content: '", "' } }),
+                }}
+              >
+                {renderItem?.(optionId) ?? optionId}
+              </MenuItem>
+            ))
+          ) : (
+            <Typography variant="bodyMBold">{defaultText}</Typography>
+          )
+        }
+      ></Select>
+      {isOpen !== undefined && (
+        <Menu
+          open={isOpen}
+          onClose={close}
+          anchorEl={selectRef.current}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+          MenuListProps={{ sx }}
+        >
+          <Box sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[3].Outline}` }} component="li">
+            <Button color="ghost" size="extraSmall" onClick={onClear}>{t`Clear Selection`}</Button>
+          </Box>
+          {options.map((optionId) => (
+            <InvertOnHover hoverRef={menuRef} key={optionId}>
+              <MenuItem
+                ref={menuRef}
+                value={optionId}
+                className={value.includes(optionId) ? 'Mui-selected' : ''}
+                onClick={() => {
+                  onSelectChange({ target: { value: [...value, optionId] } } as SelectChangeEvent<string[]>)
+                }}
+              >
+                {renderItem?.(optionId) ?? optionId}
+              </MenuItem>
+            </InvertOnHover>
+          ))}
+        </Menu>
+      )}
+    </>
   )
 }

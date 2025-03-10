@@ -15,9 +15,9 @@ const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], fi
   data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
 
 /**
- * A filter for tanstack tables that allows filtering by a minimum value using a slider.
+ * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const MinimumSliderFilter = <T extends unknown>({
+export const RangeSliderFilter = <T extends unknown>({
   columnFilters,
   setColumnFilter,
   data,
@@ -33,8 +33,9 @@ export const MinimumSliderFilter = <T extends unknown>({
   format: (value: number) => string
 }) => {
   const id = cleanColumnId(field)
-  const max = useMemo(() => getMaxValueFromData(data, field), [data, field])
-  const [value] = (columnFilters[id] ?? [0, max]) as [number, number] // tanstack expects a [min, max] tuple
+  const max = useMemo(() => Math.ceil(+getMaxValueFromData(data, field).toPrecision(3) * 10) / 10, [data, field])
+  const range = (columnFilters[id] ?? [0, max]) as [number, number] // tanstack expects a [min, max] tuple
+  const step = useMemo(() => Math.ceil(+max.toPrecision(2) / 100), [max])
   return (
     // this is not a real select, but we reuse the component so the design is correct
     <Select
@@ -46,7 +47,7 @@ export const MinimumSliderFilter = <T extends unknown>({
         <Typography variant="bodyMRegular">
           {`${title}: `}
           <Typography component="span" variant="bodyMBold">
-            {format(value)}
+            {range.map(format).join(' - ')}
           </Typography>
         </Typography>
       )}
@@ -58,11 +59,11 @@ export const MinimumSliderFilter = <T extends unknown>({
           data-testid={`slider-${id}`}
           aria-label={title}
           getAriaValueText={format}
-          value={value}
-          onChange={(_, min) => setColumnFilter(id, [min, max])}
+          value={range}
+          onChange={(_, newRange) => setColumnFilter(id, newRange)}
           min={0}
           max={max}
-          step={+max.toPrecision(2) / 100}
+          step={step}
         />
         <Typography>{format(max)}</Typography>
       </Stack>
