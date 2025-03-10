@@ -16,9 +16,9 @@ import { Footer } from '@ui-kit/widgets/Footer'
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const elHeight = useHeightResizeObserver(globalAlertRef)
+  const [, elHeight] = useHeightResizeObserver(globalAlertRef) ?? []
   const footerRef = useRef<HTMLDivElement>(null)
-  const footerHeight = useHeightResizeObserver(footerRef)
+  const [, footerHeight] = useHeightResizeObserver(footerRef) ?? []
   const params = useParams() as UrlParams
 
   const connectState = useStore((state) => state.connectState)
@@ -42,12 +42,12 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   useEffect(() => {
-    setLayoutHeight('globalAlert', elHeight)
+    setLayoutHeight('globalAlert', elHeight ?? null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elHeight])
 
   useEffect(() => {
-    setLayoutHeight('footer', footerHeight)
+    setLayoutHeight('footer', footerHeight ?? null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
 

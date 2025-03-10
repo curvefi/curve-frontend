@@ -13,7 +13,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const globalAlertHeight = useHeightResizeObserver(globalAlertRef)
+  const [, globalAlertHeight] = useHeightResizeObserver(globalAlertRef) ?? []
 
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -21,7 +21,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
 
   useEffect(() => {
-    updateLayoutHeight('globalAlert', globalAlertHeight)
+    updateLayoutHeight('globalAlert', globalAlertHeight ?? null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalAlertHeight])
 
