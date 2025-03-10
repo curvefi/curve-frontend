@@ -102,7 +102,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
 
   return (
     <Wrapper>
-      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label={t`Back to proposals`} />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_PROPOSALS)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">
