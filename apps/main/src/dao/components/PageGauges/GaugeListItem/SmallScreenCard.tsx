@@ -121,7 +121,7 @@ const SmallScreenCard = ({
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
-            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton to={`/gauges/${gaugeData.effective_address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

@@ -36,7 +36,12 @@ const GaugeListItem = ({
   addUserVote = false,
 }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
-  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeData.address.toLowerCase()])
+  const gaugeCurveApiData = useStore(
+    (state) =>
+      state.gauges.gaugeCurveApiData.data[
+        gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()
+      ],
+  )
   const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
@@ -119,7 +124,7 @@ const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton to={`/gauges/${gaugeData.effective_address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

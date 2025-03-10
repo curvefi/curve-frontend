@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
@@ -10,6 +10,7 @@ import { GaugeFormattedData, UserGaugeVoteWeight, UserGaugeVoteWeightSortBy } fr
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { USER_VOTES_TABLE_LABELS } from './constants'
+import { findRootGauge } from '@/dao/utils'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
@@ -25,7 +26,6 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
   const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
 
-  const userGauges = userData?.data.gauges ?? []
   const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
   const gaugeMapperLoading = gaugesLoading === 'LOADING'
   const userWeightReady = userData?.fetchingState === 'SUCCESS'
@@ -35,12 +35,22 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
   const smallScreenBreakpoint = 42.3125
 
+  const userGauges = useMemo(
+    () =>
+      userData?.data.gauges.map((gauge) => ({
+        ...gauge,
+        rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper),
+      })) ?? [],
+    [userData, gaugeMapper],
+  )
+
   const formattedSelectedGauge: UserGaugeVoteWeight = {
     title: selectedGauge?.title ?? '',
     userPower: 0,
     userVeCrv: 0,
     expired: false,
-    gaugeAddress: selectedGauge?.address.toLowerCase() ?? '',
+    gaugeAddress: selectedGauge?.effective_address?.toLowerCase() ?? selectedGauge?.address.toLowerCase() ?? '',
+    rootGaugeAddress: selectedGauge?.address ?? '',
     isKilled: selectedGauge?.is_killed ?? false,
     lpTokenAddress: selectedGauge?.lp_token ?? '',
     network: selectedGauge?.pool?.chain ?? selectedGauge?.market?.chain ?? '',

@@ -29,9 +29,9 @@ const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) =>
         <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />
         <Content>
-          <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />
+          <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />
         </Content>
-        <GaugeVotesTable gaugeAddress={gaugeAddress} tableMinWidth={tableMinWidth} />
+        <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />
       </GaugePageContainer>
     </Wrapper>
   )
