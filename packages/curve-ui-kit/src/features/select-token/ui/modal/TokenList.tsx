@@ -155,27 +155,18 @@ export const TokenList = ({
     const allTokens = tokensFiltered.filter((token) => +(balances[token.address] ?? 0) === 0)
 
     if (!disableSorting) {
-      const sortFn = (a: Option, b: Option) => {
+      // Sort tokens with balance by balance (USD then raw)
+      myTokens.sort((a, b) => {
         const aBalance = +(balances[a.address] ?? 0)
         const bBalance = +(balances[b.address] ?? 0)
-
-        // Compare USD balances first (including existence check)
         const aBalanceUsd = (tokenPrices[a.address] ?? 0) * aBalance
         const bBalanceUsd = (tokenPrices[b.address] ?? 0) * bBalance
-        if (aBalanceUsd !== bBalanceUsd) return bBalanceUsd - aBalanceUsd
 
-        // If USD balances are equal, compare raw balances
-        if (aBalance !== bBalance) return bBalance - aBalance
+        return bBalanceUsd - aBalanceUsd || bBalance - aBalance
+      })
 
-        // Sort by volume in descending order
-        if (a.volume !== b.volume) return (b.volume ?? 0) - (a.volume ?? 0)
-
-        // Finally sort by label
-        return a.symbol.localeCompare(b.symbol)
-      }
-
-      myTokens.sort(sortFn)
-      allTokens.sort(sortFn)
+      // Sort all non-balance tokens by volume then symbol
+      allTokens.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
     }
 
     return { myTokens, allTokens }
