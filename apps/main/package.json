@@ -27,7 +27,7 @@
   "dependencies": {
     "@curvefi/api": "^2.66.7",
     "@curvefi/lending-api": "^2.5.5",
-    "@curvefi/stablecoin-api": "^1.5.14",
+    "@curvefi/stablecoin-api": "^1.5.15",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^4.0.0",
     "@supercharge/promise-pool": "^3.2.0",
