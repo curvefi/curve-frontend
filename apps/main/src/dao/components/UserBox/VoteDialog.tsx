@@ -19,11 +19,14 @@ type Props = {
 }
 
 const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId }: Props) => {
-  const { castVote, voteTxMapper, executeProposal, executeTxMapper } = useStore((state) => state.proposals)
+  const castVote = useStore((state) => state.proposals.castVote)
+  const voteTxMapper = useStore((state) => state.proposals.voteTxMapper)
+  const executeProposal = useStore((state) => state.proposals.executeProposal)
+  const executeTxMapper = useStore((state) => state.proposals.executeTxMapper)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
-  const { userProposalVotesMapper } = useStore((state) => state.user)
+  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
 
   const voteTx = voteTxMapper[proposalId ?? ''] ?? null
   const executeTx = executeTxMapper[proposalId ?? ''] ?? null

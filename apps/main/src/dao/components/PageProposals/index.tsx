@@ -17,21 +17,19 @@ import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import Proposal from './Proposal'
 
 const Proposals = () => {
-  const {
-    getProposals,
-    proposalsLoadingState,
-    filteringProposalsLoading,
-    activeSortBy,
-    activeSortDirection,
-    setActiveSortBy,
-    setActiveSortDirection,
-    setActiveFilter,
-    setSearchValue,
-    searchValue,
-    activeFilter,
-    setProposals,
-    proposals,
-  } = useStore((state) => state.proposals)
+  const getProposals = useStore((state) => state.proposals.getProposals)
+  const proposalsLoadingState = useStore((state) => state.proposals.proposalsLoadingState)
+  const filteringProposalsLoading = useStore((state) => state.proposals.filteringProposalsLoading)
+  const activeSortBy = useStore((state) => state.proposals.activeSortBy)
+  const activeSortDirection = useStore((state) => state.proposals.activeSortDirection)
+  const setActiveSortBy = useStore((state) => state.proposals.setActiveSortBy)
+  const setActiveSortDirection = useStore((state) => state.proposals.setActiveSortDirection)
+  const setActiveFilter = useStore((state) => state.proposals.setActiveFilter)
+  const setSearchValue = useStore((state) => state.proposals.setSearchValue)
+  const searchValue = useStore((state) => state.proposals.searchValue)
+  const activeFilter = useStore((state) => state.proposals.activeFilter)
+  const setProposals = useStore((state) => state.proposals.setProposals)
+  const proposals = useStore((state) => state.proposals.proposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const { push } = useRouter()
 

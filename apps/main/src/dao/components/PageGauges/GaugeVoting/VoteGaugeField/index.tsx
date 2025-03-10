@@ -24,8 +24,9 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * availablePower
 
-  const { userAddress } = useStore((state) => state.user)
-  const { castVote, txCastVoteState } = useStore((state) => state.gauges)
+  const userAddress = useStore((state) => state.user.userAddress)
+  const castVote = useStore((state) => state.gauges.castVote)
+  const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
 
   const address = userAddress?.toLowerCase()
 

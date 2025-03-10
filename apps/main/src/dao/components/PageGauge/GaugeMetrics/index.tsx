@@ -17,9 +17,8 @@ interface GaugeMetricsProps {
 }
 
 const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
-  const gaugeCurveApiData = useStore(
-    (state) => state.gauges.gaugeCurveApiData.data[gaugeData?.address.toLowerCase() || ''],
-  )
+  const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
+  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeAddress])
   const chainId = getChainIdFromGaugeData(gaugeData)
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]
@@ -35,23 +34,23 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`Gauge`}
             data={
               <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.address || '')}</StyledMetricsColumnData>
+                <StyledMetricsColumnData>{shortenTokenAddress(gaugeAddress)}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
+                    href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeAddress)}
                     tooltip={t`View on explorer`}
                   />
-                  <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
+                  <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
                 </BigScreenButtonsWrapper>
               </Box>
             }
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
+              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeAddress)}
               tooltip={t`View on explorer`}
             />
-            <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
+            <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
           </SmallScreenButtonsWrapper>
         </Box>
         <MetricsComp

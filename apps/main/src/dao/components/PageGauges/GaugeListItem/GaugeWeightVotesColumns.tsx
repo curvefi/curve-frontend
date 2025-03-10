@@ -13,7 +13,7 @@ type GaugeWeightVotesColumnsProps = {
 
 const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
   const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
-  const { userGaugeVoteWeightsSortBy } = useStore((state) => state.user)
+  const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
 
   const hasFutureVeCrv = userFutureVeCrv > userVeCrv
 

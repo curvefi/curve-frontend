@@ -35,9 +35,15 @@ const GaugeListItem = ({
   userGaugeVote = false,
   addUserVote = false,
 }: Props) => {
-  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
-  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeData.address.toLowerCase()])
-  const { veCrv } = useStore((state) => state.user.userVeCrv)
+  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
+  const gaugeCurveApiData = useStore(
+    (state) =>
+      state.gauges.gaugeCurveApiData.data[
+        gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()
+      ],
+  )
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const gaugeHistoryLoading =
@@ -82,7 +88,11 @@ const GaugeListItem = ({
           <ChartWrapper>
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
-                <VoteGaugeField powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeWeightVoteData} />
+                <VoteGaugeField
+                  powerUsed={powerUsed}
+                  userVeCrv={+userVeCrv}
+                  userGaugeVoteData={userGaugeWeightVoteData}
+                />
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
@@ -119,7 +129,7 @@ const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton to={`/gauges/${gaugeData.effective_address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

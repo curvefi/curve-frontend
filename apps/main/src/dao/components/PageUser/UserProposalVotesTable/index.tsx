@@ -16,8 +16,10 @@ interface UserProposalVotesTableProps {
 }
 
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
-  const { getUserProposalVotes, userProposalVotesMapper, userProposalVotesSortBy, setUserProposalVotesSortBy } =
-    useStore((state) => state.user)
+  const getUserProposalVotes = useStore((state) => state.user.getUserProposalVotes)
+  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
+  const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
+  const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
   const { push } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 6rem 6rem'

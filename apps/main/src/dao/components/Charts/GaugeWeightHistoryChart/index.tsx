@@ -12,7 +12,8 @@ interface GaugeWeightHistoryChartProps {
 }
 
 const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistoryChartProps) => {
-  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
+  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
 
   const error = gaugeWeightHistoryMapper[gaugeAddress]?.loadingState === 'ERROR'
   const loading = gaugeWeightHistoryMapper[gaugeAddress]?.loadingState === 'LOADING'

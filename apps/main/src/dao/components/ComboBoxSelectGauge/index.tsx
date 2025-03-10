@@ -36,7 +36,9 @@ const ComboBoxGauges = ({
     .filter(
       (gauge) =>
         !userGaugeVoteWeights?.data.gauges.some(
-          (userGauge) => userGauge.gaugeAddress.toLowerCase() === gauge.address.toLowerCase(),
+          (userGauge) =>
+            userGauge.gaugeAddress.toLowerCase() ===
+            (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),
         ),
     )
     .sort((a, b) => b.gauge_weight - a.gauge_weight)
