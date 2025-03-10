@@ -9,11 +9,12 @@ import Select from '@mui/material/Select'
 import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
 
 const { Spacing } = SizesAndSpaces
 
@@ -44,8 +45,9 @@ export const MultiSelectFilter = <T extends unknown>({
   field: DeepKeys<T>
   renderItem?: (value: string) => ReactNode
 }) => {
-  const ref = useRef(null)
-  const [selectWidth] = useHeightResizeObserver(ref) ?? []
+  const selectRef = useRef<HTMLDivElement | null>(null)
+  const menuRef = useRef<HTMLLIElement | null>(null)
+  const [selectWidth] = useHeightResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
   const id = cleanColumnId(field)
@@ -61,15 +63,16 @@ export const MultiSelectFilter = <T extends unknown>({
 
   const onSelectChange = useCallback(
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
-    (e: SelectChangeEvent<string[]>) => setColumnFilter(id, (e.target.value as string[]).filter(Boolean)),
+    (e: SelectChangeEvent<string[]>) => {
+      setColumnFilter(id, (e.target.value as string[]).filter(Boolean))
+    },
     [setColumnFilter, id],
   )
   const sx = { minWidth: Math.round(selectWidth || 100) + 'px' }
-  console.log({ selectWidth, sx })
   return (
     <>
       <Select
-        ref={ref}
+        ref={selectRef}
         name={id}
         open={false}
         onOpen={open}
@@ -104,7 +107,8 @@ export const MultiSelectFilter = <T extends unknown>({
       {isOpen !== undefined && (
         <Menu
           open={isOpen}
-          anchorEl={ref.current}
+          onClose={close}
+          anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           MenuListProps={{ sx }}
         >
@@ -112,9 +116,18 @@ export const MultiSelectFilter = <T extends unknown>({
             <Button color="ghost" size="extraSmall" onClick={onClear}>{t`Clear Selection`}</Button>
           </Box>
           {options.map((optionId) => (
-            <MenuItem key={optionId} value={optionId}>
-              {renderItem?.(optionId) ?? optionId}
-            </MenuItem>
+            <InvertOnHover hoverRef={menuRef} key={optionId}>
+              <MenuItem
+                ref={menuRef}
+                value={optionId}
+                className={value.includes(optionId) ? 'Mui-selected' : ''}
+                onClick={() => {
+                  onSelectChange({ target: { value: [...value, optionId] } } as SelectChangeEvent<string[]>)
+                }}
+              >
+                {renderItem?.(optionId) ?? optionId}
+              </MenuItem>
+            </InvertOnHover>
           ))}
         </Menu>
       )}

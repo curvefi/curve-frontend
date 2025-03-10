@@ -3,9 +3,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useClassObserver } from '@ui-kit/hooks/useClassObserver'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -32,31 +30,17 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
   const showAddress = !hasBalance
 
   const menuItem = useRef<HTMLLIElement>(null)
-  const isFocusVisible = useClassObserver(menuItem, 'Mui-focusVisible')
-  const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
 
   return (
-    <InvertTheme inverted={isHover || isFocusVisible}>
+    <InvertOnHover hoverRef={menuItem}>
       <MenuItem
         ref={menuItem}
         // disabled={disabled} breaks `cursor: 'not-allowed'`
         onClick={disabled ? undefined : onToken}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
         tabIndex={0}
         sx={{
           minHeight: IconSize.xxl,
           '&': { transition: `background-color ${TransitionFunction}` },
-          /**
-           * Rely on the theme inverter for focus visible design.
-           * I'm tired and for now this is the best I could achieve.
-           * Needs to be generalized somehow, and also the background color
-           * isn't exactly the same as if it's hovered. This is for another PR
-           */
-          '&.Mui-focusVisible': {
-            backgroundColor: (t) => t.design['Layer'][1].Fill,
-            '.MuiTypography-root': { '--mui-palette-text-primary': 'inherit' },
-          },
           ...(disabled && {
             opacity: 0.5,
             cursor: 'not-allowed',
@@ -95,6 +79,6 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
           )}
         </Stack>
       </MenuItem>
-    </InvertTheme>
+    </InvertOnHover>
   )
 }
