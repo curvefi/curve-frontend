@@ -1,24 +1,24 @@
-import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
-import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
 import { RefObject } from 'react'
-import { AppName } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
+import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
+import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
+import { AppName } from '@ui-kit/shared/routes'
 
 export type AppPage = {
-  route: string
+  route: string // this is the full pathname to the page, including leading slash, the app name and the network
   label: string
   isActive?: boolean
   target?: '_self' | '_blank' // note this is only used for external routes
 }
 
 export type AppRoute = {
-  route: string
+  route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank' // note this is only used for external routes
 }
 
 export type AppRoutes = {
-  root: string
+  root: string // root to the application, e.g. /dex
   label: string
   pages: AppRoute[]
 }
@@ -36,7 +36,7 @@ export type BaseHeaderProps<TChainId = number> = {
   WalletProps: ConnectWalletIndicatorProps
   BannerProps: GlobalBannerProps
   height: string
-  pages: AppPage[]
+  pages: AppRoute[]
   sections: NavigationSection[]
   appStats?: { label: string; value: string }[]
   networkName: string
@@ -45,10 +45,3 @@ export type BaseHeaderProps<TChainId = number> = {
 export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
   isMdUp: boolean
 }
-
-export const APP_NAMES = {
-  main: 'Curve',
-  lend: 'LLAMALEND',
-  crvusd: 'crvUSD',
-  dao: 'DAO',
-} as const

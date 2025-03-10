@@ -1,10 +1,10 @@
-import styled from 'styled-components'
 import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
+import styled from 'styled-components'
+import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 import Spinner from '../../Spinner'
-import ErrorMessage from '@/dao/components/ErrorMessage'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
 const DailyLocks = () => {

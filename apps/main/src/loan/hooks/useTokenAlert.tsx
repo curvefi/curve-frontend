@@ -1,8 +1,8 @@
-import { t, Trans } from '@ui-kit/lib/i18n'
 import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
-import ExternalLink from '@ui/Link/ExternalLink'
 import { AlertType } from '@/loan/types/loan.types'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { t, Trans } from '@ui-kit/lib/i18n'
 
 type TokenAlert = {
   alertType: AlertType

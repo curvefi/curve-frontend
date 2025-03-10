@@ -1,7 +1,8 @@
+import { ChainId, CurveApi, EstimatedGas, FormType } from '@/dao/types/dao.types'
 import { DateValue } from '@react-types/calendar'
-import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
 
-export type FormType = 'create' | 'adjust_crv' | 'adjust_date'
+export type { FormType } from '@/dao/types/dao.types'
+
 export type StepKey = 'APPROVE' | 'CREATE_LOCK' | 'INCREASE_CRV' | 'INCREASE_TIME' | 'APPROVAL' | 'WITHDRAW' | ''
 
 export type VecrvInfo = {

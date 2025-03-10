@@ -1,22 +1,24 @@
+import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
+import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
 import {
   getLendingVaultOptions,
   getUserLendingVaultsOptions,
   LendingVault,
   type UserLendingVault,
 } from '@/loan/entities/lending-vaults'
-import { useQueries } from '@tanstack/react-query'
 import {
   getMintMarketOptions,
   getUserMintMarketsOptions,
   MintMarket,
   type UserMintMarket,
 } from '@/loan/entities/mint-markets'
+import { NetworkEnum } from '@/loan/types/loan.types'
+import { getPath } from '@/loan/utils/utilsRouter'
+import { Chain } from '@curvefi/prices-api'
+import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { Chain } from '@curvefi/prices-api'
-import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
-import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 import type { Address } from '@ui-kit/utils'
 
 export enum LlamaMarketType {
@@ -105,7 +107,7 @@ const convertLendingVault = (
   liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
-  url: `${APP_LINK.lend.root}#/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
+  url: `${APP_LINK.lend.root}/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
   isFavorite: favoriteMarkets.has(vault),
   rewards: campaigns[vault.toLowerCase()] ?? null,
   leverage,
@@ -160,7 +162,10 @@ const convertMintMarket = (
   rates: { borrow: rate, lend: null },
   type: LlamaMarketType.Mint,
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-  url: `/${chain}${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
+  url: getPath(
+    { network: chain as NetworkEnum },
+    `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
+  ),
   isFavorite: favoriteMarkets.has(address),
   rewards: campaigns[address.toLowerCase()] ?? null,
   leverage: 0,

@@ -1,12 +1,12 @@
-import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
 import styled from 'styled-components'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-import Box from '@ui/Box'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { Chip } from '@ui/Typography'
-import Tooltip from '@ui/Tooltip'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
+import Tooltip from '@ui/Tooltip'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const TradesData = ({
   lpTradesData,

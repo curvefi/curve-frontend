@@ -1,15 +1,19 @@
-import type { NextPage } from 'next'
-import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
+'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { REFRESH_INTERVAL } from '@/lend/constants'
+import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
+import DetailsMarket from '@/lend/components/DetailsMarket'
+import DetailsUser from '@/lend/components/DetailsUser'
+import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
-import { helpers } from '@/lend/lib/apiLending'
-import { scrollToTop } from '@/lend/utils/helpers'
+import Vault from '@/lend/components/PageVault/index'
+import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
-import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
+import { helpers } from '@/lend/lib/apiLending'
+import useStore from '@/lend/store/useStore'
+import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -18,26 +22,16 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
-import DetailsMarket from '@/lend/components/DetailsMarket'
-import DetailsUser from '@/lend/components/DetailsUser'
-import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import Tabs, { Tab } from '@ui/Tab'
-import Vault from '@/lend/components/PageVault/index'
 import Box from '@ui/Box'
-import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { useOneWayMarket } from '@/lend/entities/chain'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Api, PageContentProps } from '@/lend/types/lend.types'
+import Tabs, { Tab } from '@ui/Tab'
 import { isLoading } from '@ui/utils'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams, api } = usePageOnMount(params, location, navigate)
+const Page = (params: MarketUrlParams) => {
+  const { routerParams, api } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rMarket, rSubdirectory, rFormType } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
@@ -58,8 +52,6 @@ const Page: NextPage = () => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
-  const { borrowed_token } = market ?? {}
-
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
 
@@ -93,10 +85,6 @@ const Page: NextPage = () => {
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances],
   )
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
 
   useEffect(() => {
     setLoaded(false)
@@ -134,12 +122,11 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
       {provider ? (
         <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
           <AppPageFormsWrapper navHeight="var(--nav-height)">
             {(!isMdUp || !isAdvancedMode) && <TitleComp />}
-            {rChainId && rOwmId && <Vault {...pageProps} />}
+            {rChainId && rOwmId && <Vault {...pageProps} params={params} />}
           </AppPageFormsWrapper>
 
           {isAdvancedMode && rChainId && rOwmId && (

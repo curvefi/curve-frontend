@@ -1,8 +1,8 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/loan/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 import pick from 'lodash/pick'
+import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
+import type { State } from '@/loan/store/useStore'
 import {
   ChainId,
   Curve,

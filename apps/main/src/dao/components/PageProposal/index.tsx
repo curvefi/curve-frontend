@@ -1,36 +1,35 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo } from 'react'
-import useStore from '@/dao/store/useStore'
-import { copyToClipboard } from '@/dao/utils'
-import { breakpoints } from '@ui/utils'
-import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
-import useProposalMapper from '@/dao/hooks/useProposalMapper'
-import IconButton from '@ui/IconButton'
-import Tooltip from '@ui/Tooltip'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import Script from './components/Script'
-import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
-import Voters from './Voters'
-import UserBox from '../UserBox'
-import VoteDialog from '../UserBox/VoteDialog'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
+import useProposalMapper from '@/dao/hooks/useProposalMapper'
+import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
+import useStore from '@/dao/store/useStore'
+import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
+import { copyToClipboard, getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Tooltip from '@ui/Tooltip'
+import { breakpoints } from '@ui/utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import BackButton from '../BackButton'
+import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
+import UserBox from '../UserBox'
+import VoteDialog from '../UserBox/VoteDialog'
+import Script from './components/Script'
 import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
-import { ProposalType } from '@/dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import Voters from './Voters'
 
 type ProposalProps = {
-  routerParams: {
-    rProposalId: string
-  }
+  routerParams: ProposalUrlParams
 }
 
-const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
+const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
   const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(
@@ -100,7 +99,7 @@ const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
 
   return (
     <Wrapper>
-      <BackButton path="/ethereum/proposals" label={t`Back to proposals`} />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">

@@ -1,9 +1,9 @@
 import { LlamaMarket } from '@/loan/entities/llama-markets'
+import Stack from '@mui/material/Stack'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import Tooltip from '@mui/material/Tooltip'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 export const PriceCell = ({ getValue, row }: CellContext<LlamaMarket, number>) => {

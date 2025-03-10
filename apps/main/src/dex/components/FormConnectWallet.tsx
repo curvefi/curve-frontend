@@ -1,9 +1,9 @@
-import { t } from '@ui-kit/lib/i18n'
 import { ReactNode } from 'react'
-import { isLoading } from '@ui/utils'
+import useStore from '@/dex/store/useStore'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import useStore from '@/dex/store/useStore'
+import { isLoading } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
   const curve = useStore((state) => state.curve)

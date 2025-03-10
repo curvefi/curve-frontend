@@ -1,3 +1,12 @@
+import { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import Button from 'ui/src/Button/Button'
+import CandleChart from 'ui/src/Chart/CandleChart'
+import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
+import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
+import Checkbox from 'ui/src/Checkbox'
+import Icon from 'ui/src/Icon'
+import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import type {
   ChartColors,
   ChartHeight,
@@ -10,15 +19,6 @@ import type {
   TimeOptions,
   VolumeData,
 } from './types'
-import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import Button from 'ui/src/Button/Button'
-import CandleChart from 'ui/src/Chart/CandleChart'
-import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
-import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
-import Checkbox from 'ui/src/Checkbox'
-import Icon from 'ui/src/Icon'
-import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 
 type Props = {
   chartType: ChartType

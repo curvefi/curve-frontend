@@ -1,9 +1,9 @@
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useRef } from 'react'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
+import { useButton } from '@react-aria/button'
+import { useOverlayTriggerState } from '@react-stately/overlays'
 import SandwichMenuPopover from './SandwichMenuPopover'
 
 interface SandwichMenuProps {

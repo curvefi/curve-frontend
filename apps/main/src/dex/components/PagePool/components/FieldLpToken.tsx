@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { t } from '@ui-kit/lib/i18n'
 
 const FieldLpToken = ({
   amount,

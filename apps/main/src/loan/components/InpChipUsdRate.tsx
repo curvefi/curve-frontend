@@ -1,6 +1,6 @@
-import type { InpChipUsdRateProps } from '@ui/InpChipUsdRate/InpChipUsdRate'
 import useStore from '@/loan/store/useStore'
 import InpChipUsdRateComp from '@ui/InpChipUsdRate'
+import type { InpChipUsdRateProps } from '@ui/InpChipUsdRate/InpChipUsdRate'
 
 const InpChipUsdRate = ({
   address = '',

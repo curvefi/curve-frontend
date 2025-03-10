@@ -1,15 +1,15 @@
-import { t } from '@ui-kit/lib/i18n'
+import { useCallback } from 'react'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns'
+import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
+import Stack from '@mui/material/Stack'
+import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
-import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
-import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { useCallback } from 'react'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

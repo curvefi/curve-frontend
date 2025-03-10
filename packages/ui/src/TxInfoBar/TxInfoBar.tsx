@@ -1,10 +1,10 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-import { RCExternal } from 'ui/src/images'
-import { ExternalLink } from 'ui/src/Link'
-import IconButton from 'ui/src/IconButton'
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'
-import { ReactNode } from 'react'
+import IconButton from 'ui/src/IconButton'
+import { RCExternal } from 'ui/src/images'
+import { ExternalLink } from 'ui/src/Link'
 
 type Props = {
   description: ReactNode

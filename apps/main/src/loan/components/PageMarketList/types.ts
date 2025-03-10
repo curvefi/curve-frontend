@@ -1,7 +1,14 @@
-import type { Params } from 'react-router'
-import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
-import { ChainId, Curve, CollateralDataCacheOrApi, LoanDetails, TitleKey, TitleMapper } from '@/loan/types/loan.types'
+import {
+  ChainId,
+  Curve,
+  CollateralDataCacheOrApi,
+  LoanDetails,
+  TitleKey,
+  TitleMapper,
+  type CollateralUrlParams,
+} from '@/loan/types/loan.types'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 
 export type FormStatus = {
   error: string
@@ -22,7 +29,7 @@ export type SearchParams = {
 
 export type PageCollateralList = {
   rChainId: ChainId
-  params: Params
+  params: CollateralUrlParams
   curve: Curve | null
   pageLoaded: boolean
   searchParams: SearchParams

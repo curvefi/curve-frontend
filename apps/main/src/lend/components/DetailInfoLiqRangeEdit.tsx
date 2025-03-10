@@ -1,8 +1,8 @@
-import type { LiqRange, LiqRangeSliderIdx } from '@/lend/store/types'
-import { t } from '@ui-kit/lib/i18n'
 import { ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import type { LiqRange, LiqRangeSliderIdx } from '@/lend/store/types'
 import SliderSingleThumb from '@ui/SliderSingleThumb'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLiqRangeEdit = ({
   liqRanges,

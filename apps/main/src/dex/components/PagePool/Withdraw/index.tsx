@@ -1,14 +1,14 @@
-import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
-import type { TransferProps } from '@/dex/components/PagePool/types'
-import { t } from '@ui-kit/lib/i18n'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { isValidAddress } from '@/dex/utils'
-import useStore from '@/dex/store/useStore'
-import { SlideTabs, SlideTab } from '@ui/TabSlide'
 import { StyledTabSlide } from '@/dex/components/PagePool/styles'
+import type { TransferProps } from '@/dex/components/PagePool/types'
 import FormClaim from '@/dex/components/PagePool/Withdraw/components/FormClaim'
-import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import FormUnstake from '@/dex/components/PagePool/Withdraw/components/FormUnstake'
+import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
+import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
+import useStore from '@/dex/store/useStore'
+import { isValidAddress } from '@/dex/utils'
+import { SlideTabs, SlideTab } from '@ui/TabSlide'
+import { t } from '@ui-kit/lib/i18n'
 
 const Withdraw = (transferProps: TransferProps) => {
   const tabsRef = useRef<HTMLDivElement>(null)

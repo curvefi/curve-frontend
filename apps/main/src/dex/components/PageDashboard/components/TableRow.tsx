@@ -1,15 +1,15 @@
-import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { useRef } from 'react'
 import styled from 'styled-components'
-import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-import { Tr, Td } from '@ui/Table'
-import PoolLabel from '@/dex/components/PoolLabel'
 import TableCellBalances from '@/dex/components/PageDashboard/components/TableCellBalances'
 import TableCellClaimables from '@/dex/components/PageDashboard/components/TableCellClaimables'
 import TableCellProfit from '@/dex/components/PageDashboard/components/TableCellProfit'
 import TableCellRewards from '@/dex/components/PageDashboard/components/TableCellRewards'
+import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
+import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import PoolLabel from '@/dex/components/PoolLabel'
+import { Tr, Td } from '@ui/Table'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 
 const TableRow = ({
   isLite,

@@ -1,8 +1,8 @@
-import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
-import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import { getSupportedLendingChains } from '@/loan/entities/chains'
 import { Chain } from '@curvefi/prices-api'
 import { getSnapshots, Snapshot } from '@curvefi/prices-api/llamalend'
+import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 
 type LendingSnapshotFromApi = Snapshot
 export type LendingSnapshot = LendingSnapshotFromApi

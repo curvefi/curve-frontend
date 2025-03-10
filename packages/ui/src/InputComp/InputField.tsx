@@ -1,9 +1,9 @@
-import type { InputLabelProps, InputProps } from 'ui/src/InputComp/types'
+import { ChangeEventHandler } from 'react'
 import styled from 'styled-components'
 import Box from 'ui/src/Box/Box'
-import Input from 'ui/src/InputComp/Input'
 import { InputLabel, InputMessage } from 'ui/src/InputComp'
-import { ChangeEventHandler } from 'react'
+import Input from 'ui/src/InputComp/Input'
+import type { InputLabelProps, InputProps } from 'ui/src/InputComp/types'
 
 const InputField = ({
   className,

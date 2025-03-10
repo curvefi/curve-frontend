@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import useStore from '@/loan/store/useStore'
-import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
 import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
-import TextCaption from '@ui/TextCaption'
+import useStore from '@/loan/store/useStore'
 import { Llamma } from '@/loan/types/loan.types'
+import Box from '@ui/Box'
+import TextCaption from '@ui/TextCaption'
+import Chip from '@ui/Typography/Chip'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const SMALL_AMOUNT = 0.0001
 

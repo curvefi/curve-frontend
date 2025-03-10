@@ -1,15 +1,15 @@
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { breakpoints, formatNumber, type NumberFormatOptions } from '@ui/utils'
+import PegKeeperForm from '@/loan/components/PagePegKeepers/components/PegKeeperForm'
+import PegKeeperLabel from '@/loan/components/PagePegKeepers/components/PegKeeperLabel'
 import useStore from '@/loan/store/useStore'
+import { ChainId } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
 import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
-import PegKeeperLabel from '@/loan/components/PagePegKeepers/components/PegKeeperLabel'
-import PegKeeperForm from '@/loan/components/PagePegKeepers/components/PegKeeperForm'
 import TextCaption from '@ui/TextCaption'
-import { ChainId } from '@/loan/types/loan.types'
-import { getAppRoot } from '@ui-kit/shared/routes'
+import { breakpoints, formatNumber, type NumberFormatOptions } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { APP_LINK } from '@ui-kit/shared/routes'
 
 type Props = {
   rChainId: ChainId
@@ -42,7 +42,7 @@ const PegKeeperContent = ({ rChainId, pegKeeperAddress, pool }: Props) => {
           <PegKeeperForm rChainId={rChainId} poolName={poolName} pegKeeperAddress={pegKeeperAddress} />
           <StyledLinks>
             <TextCaption isBold isCaps>{t`View:`}</TextCaption>
-            <StyledExternalLink href={`${getAppRoot('main')}#/ethereum/pools/${pool.id}/deposit`}>
+            <StyledExternalLink href={`${APP_LINK.dex.root}/ethereum/pools/${pool.id}/deposit`}>
               Pool
             </StyledExternalLink>
             <StyledExternalLink href={`https://etherscan.io/address/${pegKeeperAddress}`}>Contract</StyledExternalLink>

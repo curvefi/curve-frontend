@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
-import Box from 'ui/src/Box'
 import Image from 'next/image'
+import styled from 'styled-components'
+import Box from 'ui/src/Box'
 import { NOT_FOUND_IMAGE_URL } from 'ui/src/utils'
+import { breakpoints } from 'ui/src/utils/responsive'
 
 export function Error404() {
   return (

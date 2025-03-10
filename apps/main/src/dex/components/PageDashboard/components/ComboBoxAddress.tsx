@@ -1,3 +1,4 @@
+import { CSSProperties, ReactNode, RefObject, useRef } from 'react'
 import type {
   AriaButtonProps,
   AriaListBoxOptions,
@@ -5,8 +6,6 @@ import type {
   AriaOptionProps,
   AriaOverlayProps,
 } from 'react-aria'
-import type { ComboBoxStateOptions, ListState } from 'react-stately'
-import type { Node } from '@react-types/shared'
 import {
   DismissButton,
   FocusScope,
@@ -21,15 +20,16 @@ import {
   useOverlay,
   useSeparator,
 } from 'react-aria'
+import type { ComboBoxStateOptions, ListState } from 'react-stately'
 import { useComboBoxState } from 'react-stately'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
+import type { Node } from '@react-types/shared'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import InputProvider from '@ui/InputComp'
 import ShadowedBox from '@ui/ShadowedBox'
-import { CSSProperties, ReactNode, RefObject, useRef } from 'react'
+import { breakpoints } from '@ui/utils/responsive'
 
 const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null)

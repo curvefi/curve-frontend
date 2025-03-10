@@ -1,3 +1,13 @@
+import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
+import { type Address, isAddressEqual } from 'viem'
+import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import Deposit from '@/dex/components/PagePool/Deposit'
+import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
+import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
+import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
+import Swap from '@/dex/components/PagePool/Swap'
 import type {
   DetailInfoTypes,
   EstimatedGas,
@@ -7,30 +17,23 @@ import type {
   Slippage,
   TransferFormType,
 } from '@/dex/components/PagePool/types'
-import { t } from '@ui-kit/lib/i18n'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { REFRESH_INTERVAL, ROUTE } from '@/dex/constants'
-import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
+import MySharesStats from '@/dex/components/PagePool/UserDetails'
+import Withdraw from '@/dex/components/PagePool/Withdraw'
+import { ROUTE } from '@/dex/constants'
+import { useGaugeManager } from '@/dex/entities/gauge'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
-import { breakpoints } from '@ui/utils/responsive'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useNavigate } from 'react-router-dom'
-import Deposit from '@/dex/components/PagePool/Deposit'
-import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
-import Swap from '@/dex/components/PagePool/Swap'
-import MySharesStats from '@/dex/components/PagePool/UserDetails'
-import Withdraw from '@/dex/components/PagePool/Withdraw'
+import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import AlertBox from '@ui/AlertBox'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import {
   AppPageFormContainer,
-  AppPageFormTitleWrapper,
   AppPageFormsWrapper,
+  AppPageFormTitleWrapper,
   AppPageInfoContentWrapper,
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
@@ -39,16 +42,14 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
+import { BlockSkeleton } from '@ui/skeleton'
 import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
-import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
-import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
-import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
-import { useGaugeManager } from '@/dex/entities/gauge'
-import { BlockSkeleton } from '@ui/skeleton'
-import { ManageGauge } from '@/dex/widgets/manage-gauge'
-import { isAddressEqual, type Address } from 'viem'
+import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
 
@@ -66,7 +67,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
   const { tokensMapper } = useTokensMapper(rChainId)
@@ -184,10 +185,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
-      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
-      navigate(pathname)
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`))
     },
-    [navigate, params],
+    [push, params],
   )
 
   useEffect(() => {

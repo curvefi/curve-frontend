@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
+import { PageContentProps } from '@/lend/types/lend.types'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { PageContentProps } from '@/lend/types/lend.types'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageContentProps) => {
   const { borrowed_token, collateral_token } = market ?? {}

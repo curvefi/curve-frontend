@@ -1,16 +1,16 @@
-import { t } from '@ui-kit/lib/i18n'
-import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 import { NETWORK_TOKEN } from '@/dao/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
+import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
   active: number

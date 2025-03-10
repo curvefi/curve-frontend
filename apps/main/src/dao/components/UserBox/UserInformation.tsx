@@ -1,13 +1,15 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-import useStore from '@/dao/store/useStore'
-import { shortenTokenAddress, formatNumber } from '@ui/utils'
-import { TooltipIcon } from '@ui/Tooltip'
+import styled from 'styled-components'
 import Loader from 'ui/src/Loader/Loader'
-import InternalLink from '@ui/Link/InternalLink'
-import Box from '@ui/Box'
+import useStore from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import InternalLink from '@ui/Link/InternalLink'
+import { TooltipIcon } from '@ui/Tooltip'
+import { shortenTokenAddress, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type Props = {
   noLink?: boolean
@@ -53,7 +55,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
           </Box>
         ) : (
-          <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
+          <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
             <Box flex flexAlignItems="end">
               {userEns ? (
                 <UserIdentifier>{userEns}</UserIdentifier>

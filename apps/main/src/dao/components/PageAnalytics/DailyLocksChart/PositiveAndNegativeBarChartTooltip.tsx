@@ -1,10 +1,10 @@
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { TooltipProps } from 'recharts'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
-import Box from '@ui/Box'
 import type { LocksDaily } from '@curvefi/prices-api/dao'
+import Box from '@ui/Box'
+import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
+import { t } from '@ui-kit/lib/i18n'
 
 const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {

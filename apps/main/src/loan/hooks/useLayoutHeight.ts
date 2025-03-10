@@ -1,5 +1,5 @@
-import type { LayoutHeight } from '@/loan/store/types'
 import { RefObject, useEffect } from 'react'
+import type { LayoutHeight } from '@/loan/store/types'
 import useStore from '@/loan/store/useStore'
 
 function useLayoutHeight(elementRef: RefObject<Element | null>, key: keyof LayoutHeight) {

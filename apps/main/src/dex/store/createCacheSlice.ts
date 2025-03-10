@@ -1,9 +1,9 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-import { sleep } from '@/dex/utils'
 import { ChainId, PoolDataCacheMapper } from '@/dex/types/main.types'
+import { sleep } from '@/dex/utils'
 
-type SwapFormValuesCache = {
+export type SwapFormValuesCache = {
   fromAddress: string
   fromToken: string
   toAddress: string

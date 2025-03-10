@@ -1,8 +1,14 @@
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { curveProps } from '@/dex/lib/utils'
-import useStore from '@/dex/store/useStore'
+import InfoBox from '@/dex/components/PageCreatePool/components/InfoBox'
+import Navigation from '@/dex/components/PageCreatePool/components/Navigation'
+import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
+import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
+import Parameters from '@/dex/components/PageCreatePool/Parameters'
+import PoolInfo from '@/dex/components/PageCreatePool/PoolInfo'
+import PoolType from '@/dex/components/PageCreatePool/PoolType'
+import Summary from '@/dex/components/PageCreatePool/Summary'
+import TokensInPool from '@/dex/components/PageCreatePool/TokensInPool'
 import {
   checkSwapType,
   checkTokensInPool,
@@ -11,20 +17,14 @@ import {
   oraclesReady,
   checkPoolInfo,
 } from '@/dex/components/PageCreatePool/utils'
-import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
-import Spinner from '@ui/Spinner'
-import Icon from '@ui/Icon'
+import { curveProps } from '@/dex/lib/utils'
+import useStore from '@/dex/store/useStore'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
-import Navigation from '@/dex/components/PageCreatePool/components/Navigation'
-import PoolType from '@/dex/components/PageCreatePool/PoolType'
-import TokensInPool from '@/dex/components/PageCreatePool/TokensInPool'
-import PoolInfo from '@/dex/components/PageCreatePool/PoolInfo'
-import Summary from '@/dex/components/PageCreatePool/Summary'
-import Parameters from '@/dex/components/PageCreatePool/Parameters'
-import InfoBox from '@/dex/components/PageCreatePool/components/InfoBox'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import Icon from '@ui/Icon'
+import Spinner from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   curve: CurveApi

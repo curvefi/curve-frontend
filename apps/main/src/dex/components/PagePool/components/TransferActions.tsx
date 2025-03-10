@@ -1,13 +1,13 @@
-import type { TransferProps } from '@/dex/components/PagePool/types'
-import { t } from '@ui-kit/lib/i18n'
-import { getChainPoolIdActiveKey } from '@/dex/utils'
-import useStore from '@/dex/store/useStore'
-import useTokenAlert from '@/dex/hooks/useTokenAlert'
-import AlertBox from '@ui/AlertBox'
-import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
-import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import { useSignerAddress } from '@/dex/entities/signer'
 import { ReactNode } from 'react'
+import FormConnectWallet from '@/dex/components/FormConnectWallet'
+import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
+import type { TransferProps } from '@/dex/components/PagePool/types'
+import { useSignerAddress } from '@/dex/entities/signer'
+import useTokenAlert from '@/dex/hooks/useTokenAlert'
+import useStore from '@/dex/store/useStore'
+import { getChainPoolIdActiveKey } from '@/dex/utils'
+import AlertBox from '@ui/AlertBox'
+import { t } from '@ui-kit/lib/i18n'
 
 const TransferActions = ({
   children,

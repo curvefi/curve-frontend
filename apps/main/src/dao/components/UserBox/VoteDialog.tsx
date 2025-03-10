@@ -1,13 +1,13 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
+import PendingTx from '@/dao/components/UserBox/PendingTx'
 import useStore from '@/dao/store/useStore'
-import { formatNumber } from '@ui/utils'
+import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import Box from '@ui/Box'
-import AlertBox from '@ui/AlertBox'
-import PendingTx from '@/dao/components/UserBox/PendingTx'
-import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   userAddress: string

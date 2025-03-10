@@ -1,6 +1,6 @@
+import upperFirst from 'lodash/upperFirst'
 import { AlertFormErrorKey, GaugeFormattedData } from '@/dao/types/dao.types'
 import { Chain } from '@ui-kit/utils'
-import upperFirst from 'lodash/upperFirst'
 
 export * from './utilsRouter'
 export * from './utilsDates'
@@ -45,14 +45,6 @@ export function delayAction<T>(cb: T) {
   if (typeof cb === 'function') {
     setTimeout(() => cb(), 50)
   }
-}
-
-export function scrollToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth',
-  })
 }
 
 export function sleep(ms?: number) {

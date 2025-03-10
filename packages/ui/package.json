@@ -28,7 +28,6 @@
     "eslint": "*",
     "react": "*",
     "react-dom": "*",
-    "react-router-dom": "*",
     "styled-components": "*"
   }
 }

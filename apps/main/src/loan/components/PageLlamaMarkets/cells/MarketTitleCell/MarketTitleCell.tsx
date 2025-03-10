@@ -1,17 +1,17 @@
-import { LlamaMarket } from '@/loan/entities/llama-markets'
-import Stack from '@mui/material/Stack'
-import { CellContext } from '@tanstack/react-table'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Typography from '@mui/material/Typography'
+import RouterLink from 'next/link'
 import { MarketBadges } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
 import { MarketWarnings } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketWarnings'
-import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
+import MuiLink from '@mui/material/Link'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
-import { Link as RouterLink } from 'react-router-dom'
-import MuiLink from '@mui/material/Link'
 import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable'
+import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,7 +29,8 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
         <MuiLink
           color="inherit"
           underline="none"
-          {...(market.url.startsWith('http') ? { href: market.url } : { component: RouterLink, to: market.url })}
+          href={market.url}
+          {...(!market.url.startsWith('http') && { component: RouterLink })}
           className={ClickableInRowClass}
         >
           {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}

@@ -1,6 +1,6 @@
-import type { AppRoutes } from '@ui-kit/widgets/Header/types'
 import { t } from '@ui-kit/lib/i18n'
 import { isBeta } from '@ui-kit/utils'
+import type { AppRoutes } from '@ui-kit/widgets/Header/types'
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
@@ -30,23 +30,17 @@ export const DAO_ROUTES = {
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
   DISCUSSION: 'https://gov.curve.fi/',
+  PAGE_DISCLAIMER: '/disclaimer',
 }
 
-export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
+export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const getAppRoot = (app: AppName) =>
-  `${
-    typeof window === 'undefined'
-      ? ['development', 'test'].includes(process.env.NODE_ENV!)
-        ? `http://localhost:${process.env.DEV_PORT || 300}`
-        : `https://curve.fi`
-      : window.location.origin
-  }/${app === 'main' ? 'dex' : app}`
+const getAppRoot = (app: AppName) => `/${app}`
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
-  main: {
-    root: getAppRoot('main'),
+  dex: {
+    root: getAppRoot('dex'),
     label: 'DEX',
     pages: [
       { route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
@@ -83,5 +77,11 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
   },
 }
 
-export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
-  app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`
+export const getAppUrl = (route: string, networkName: string, app: AppName) =>
+  `${APP_LINK[app].root}/${networkName}${route}`
+
+export const findCurrentRoute = (pathname: string, pages: { route: string }[]) => {
+  const [_, _app, _network, ...route] = pathname.split('/')
+  const routePath = `/${route.join('/')}`
+  return pages.find((p) => routePath.startsWith(p.route))?.route
+}

@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { t } from '@ui-kit/lib/i18n'
 
 export const LastUpdated = () => (
   <Stack justifyContent="space-evenly" alignItems="end">

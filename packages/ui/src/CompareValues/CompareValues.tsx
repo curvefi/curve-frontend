@@ -1,5 +1,5 @@
-import styled, { keyframes } from 'styled-components'
 import { ReactNode, useEffect, useState } from 'react'
+import styled, { keyframes } from 'styled-components'
 
 type Props = {
   children: ReactNode

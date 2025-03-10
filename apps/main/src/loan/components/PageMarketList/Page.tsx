@@ -1,25 +1,23 @@
-import type { NextPage } from 'next'
-import type { SearchParams } from '@/loan/components/PageMarketList/types'
-import { t } from '@ui-kit/lib/i18n'
+'use client'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
+import TableStats from '@/loan/components/PageMarketList/components/TableStats'
+import CollateralList from '@/loan/components/PageMarketList/index'
+import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
 import { ROUTE, TITLE } from '@/loan/constants'
-import { breakpoints } from '@ui/utils/responsive'
-import { getPath } from '@/loan/utils/utilsRouter'
-import { scrollToTop } from '@/loan/utils/helpers'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
-import useStore from '@/loan/store/useStore'
-import DocumentHead from '@/loan/layout/DocumentHead'
-import CollateralList from '@/loan/components/PageMarketList/index'
 import Settings from '@/loan/layout/Settings'
-import TableStats from '@/loan/components/PageMarketList/components/TableStats'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import useStore from '@/loan/store/useStore'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { getPath } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 
 enum SEARCH {
   sortBy = 'sortBy',
@@ -27,12 +25,10 @@ enum SEARCH {
   search = 'search',
 }
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: CollateralUrlParams) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
+  const { pageLoaded, routerParams, curve } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
@@ -47,7 +43,6 @@ const Page: NextPage = () => {
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)
 
   useEffect(() => {
-    scrollToTop()
     setStateByKey('initialLoaded', false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -66,8 +61,7 @@ const Page: NextPage = () => {
       ].filter(([, v]) => v),
     ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
-    navigate(pathname)
+    push(getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`))
   }
 
   useEffect(() => {
@@ -76,9 +70,9 @@ const Page: NextPage = () => {
     if (!pageLoaded || isLoadingApi) return
 
     const parsedSearchParams = {
-      sortBy: searchParams.get(SEARCH.sortBy) || TITLE.totalBorrowed,
-      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
-      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
+      sortBy: searchParams?.get(SEARCH.sortBy) || TITLE.totalBorrowed,
+      sortByOrder: searchParams?.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams?.get(SEARCH.search) || ''),
     } as SearchParams
 
     setStateByKey('searchParams', parsedSearchParams)
@@ -89,7 +83,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Markets`} />
       {provider ? (
         <Container>
           <Content>

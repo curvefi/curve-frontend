@@ -1,22 +1,22 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import styled from 'styled-components'
+import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
-import { t } from '@ui-kit/lib/i18n'
+import useStore from '@/dex/store/useStore'
+import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { delayAction, shortenTokenAddress } from '@/dex/utils'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
-import { useEffect, useMemo, useRef, useState } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import styled from 'styled-components'
-import { delayAction, shortenTokenAddress } from '@/dex/utils'
-import useStore from '@/dex/store/useStore'
-import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { Chip } from '@ui/Typography'
 import Checkbox from '@ui/Checkbox'
-import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { type Address, filterTokens } from '@ui-kit/utils'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Chip } from '@ui/Typography'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
+import { t } from '@ui-kit/lib/i18n'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { type Address, filterTokens } from '@ui-kit/utils'
 
 type Props = {
   curve: CurveApi
@@ -168,15 +168,17 @@ const SelectTokenButton = ({
           disabledTokens={disabledKeys ?? []}
           disableSorting={true}
           customOptions={
-            <Checkbox
-              key={'filter-basepools'}
-              isDisabled={basePools[chainId]?.length === 0}
-              className={filterBasepools ? 'active' : ''}
-              isSelected={filterBasepools}
-              onChange={() => setFilterBasepools(!filterBasepools)}
-            >
-              View Basepools
-            </Checkbox>
+            swapType === STABLESWAP && (
+              <Checkbox
+                key={'filter-basepools'}
+                isDisabled={basePools[chainId]?.length === 0}
+                className={filterBasepools ? 'active' : ''}
+                isSelected={filterBasepools}
+                onChange={() => setFilterBasepools(!filterBasepools)}
+              >
+                View Basepools
+              </Checkbox>
+            )
           }
           onClose={handleClose}
           onToken={({ address }) => {

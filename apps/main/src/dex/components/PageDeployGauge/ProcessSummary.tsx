@@ -1,15 +1,15 @@
+import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
-import { shortenTokenAddress } from '@/dex/utils'
-import { useNavigate } from 'react-router-dom'
-import ExternalLink from '@ui/Link/ExternalLink'
-import Icon from '@ui/Icon'
-import Box from '@ui/Box'
-import InternalLinkButton from '@ui/InternalLinkButton'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
-import Spinner from '@ui/Spinner'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import { shortenTokenAddress } from '@/dex/utils'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import InternalLinkButton from '@ui/InternalLinkButton'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Spinner from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId
@@ -20,7 +20,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
   const networks = useStore((state) => state.networks.networks)
 
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (
@@ -93,9 +93,10 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
             <Step>
               <Disclaimer>{t`Step 1 and Step 2 must be completed using the same wallet`}</Disclaimer>
             </Step>
+            {/* TODO: `linkPoolAddress` is never set */}
             {deploymentStatus.mirror.status === 'SUCCESS' && linkPoolAddress !== '' && (
               <LinkContainer>
-                <InternalLinkButton onClick={() => navigate(linkPoolAddress)} title={t`Visit the pool`} />
+                <InternalLinkButton onClick={() => push(linkPoolAddress)} title={t`Visit the pool`} />
               </LinkContainer>
             )}
           </Content>

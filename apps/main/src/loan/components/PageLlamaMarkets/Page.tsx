@@ -1,19 +1,17 @@
-import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
+'use client'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
-import DocumentHead from '@/loan/layout/DocumentHead'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useHeaderHeight } from '@ui-kit/widgets/Header'
-import useStore from '@/loan/store/useStore'
-import { useLlamaMarkets } from '@/loan/entities/llama-markets'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Address } from '@ui-kit/utils'
 import { invalidateLendingVaults, invalidateUserLendingVaults } from '@/loan/entities/lending-vaults'
+import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateMintMarkets, invalidateUserMintMarkets } from '@/loan/entities/mint-markets'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import useStore from '@/loan/store/useStore'
+import Box from '@mui/material/Box'
+import Skeleton from '@mui/material/Skeleton'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Address } from '@ui-kit/utils'
+import { useHeaderHeight } from '@ui-kit/widgets/Header'
 
 /**
  * Reloads the lending vaults and mint markets.
@@ -36,10 +34,9 @@ export const PageLlamaMarkets = () => {
   const { data, isLoading, isError } = useLlamaMarkets(signerAddress) // todo: show errors and loading state
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
-  usePageOnMount(useParams(), useLocation(), useNavigate()) // required for connecting wallet
+  usePageOnMount() // required for connecting wallet
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
-      <DocumentHead title={t`Llamalend Markets`} />
       {isLoading ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (

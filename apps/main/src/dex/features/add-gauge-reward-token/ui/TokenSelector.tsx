@@ -1,16 +1,16 @@
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
+import { NETWORK_TOKEN } from '@/dex/constants'
+import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
-import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
-import { NETWORK_TOKEN } from '@/dex/constants'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
-import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
 import { toTokenOption } from '@/dex/utils'
+import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
+import { t } from '@ui-kit/lib/i18n'
 
 export const TokenSelector = ({
   chainId,

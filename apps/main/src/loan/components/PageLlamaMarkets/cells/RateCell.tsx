@@ -1,14 +1,14 @@
-import { LlamaMarket } from '@/loan/entities/llama-markets'
-import { useSnapshots } from '../hooks/useSnapshots'
-import { GraphType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import Chip from '@mui/material/Chip'
-import Tooltip from '@mui/material/Tooltip'
 import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
+import { GraphType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+import { t } from '@ui-kit/lib/i18n'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { t } from '@ui-kit/lib/i18n'
+import { useSnapshots } from '../hooks/useSnapshots'
 
 const { IconSize, Spacing } = SizesAndSpaces
 

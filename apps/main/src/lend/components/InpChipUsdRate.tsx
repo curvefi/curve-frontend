@@ -1,7 +1,7 @@
-import type { InpChipUsdRateProps } from '@ui/InpChipUsdRate/InpChipUsdRate'
-import InpChipUsdRateComp from '@ui/InpChipUsdRate'
-import { useTokenUsdRate } from '@/lend/entities/token'
 import { useChainId } from '@/lend/entities/chain'
+import { useTokenUsdRate } from '@/lend/entities/token'
+import InpChipUsdRateComp from '@ui/InpChipUsdRate'
+import type { InpChipUsdRateProps } from '@ui/InpChipUsdRate/InpChipUsdRate'
 
 const InpChipUsdRate = ({
   address: tokenAddress,

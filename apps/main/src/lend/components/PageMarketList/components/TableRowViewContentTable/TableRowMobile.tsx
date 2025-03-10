@@ -1,11 +1,11 @@
-import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import useStore from '@/lend/store/useStore'
-import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
 import TableRowMobileContent from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobileContent'
 import TableRowMobileHead from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobileHead'
-import { Tr } from '@ui/Table'
+import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
+import useStore from '@/lend/store/useStore'
 import { TitleKey } from '@/lend/types/lend.types'
+import { Tr } from '@ui/Table'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 
 export type Content = {
   tableKey: TitleKey

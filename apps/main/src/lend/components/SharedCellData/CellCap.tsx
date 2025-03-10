@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-import TextCaption from '@ui/TextCaption'
 import { ChainId } from '@/lend/types/lend.types'
+import TextCaption from '@ui/TextCaption'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 const CellCap = ({
   rChainId,

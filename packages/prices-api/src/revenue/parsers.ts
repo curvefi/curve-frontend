@@ -1,7 +1,7 @@
 import type { Chain } from '..'
 import { toDate } from '../timestamp'
-import type * as Responses from './responses'
 import type * as Models from './models'
+import type * as Responses from './responses'
 
 export const parseChainRevenue = (x: Responses.GetByChainResponse['revenue'][number]): Models.ChainRevenue => ({
   chain: x.chain,

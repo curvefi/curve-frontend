@@ -1,35 +1,23 @@
-import type { NextPage } from 'next'
-import { t } from '@ui-kit/lib/i18n'
-import { useEffect } from 'react'
+'use client'
 import Image from 'next/image'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
-import { scrollToTop } from '@/loan/utils/helpers'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
-import DocumentHead from '@/loan/layout/DocumentHead'
+import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import Settings from '@/loan/layout/Settings'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 import { Spacing as PrimitiveSpacing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Settings from '@/loan/layout/Settings'
-import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  usePageOnMount(params, location, navigate) // handles connecting wallet
-
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
+const Page = (_: NetworkUrlParams) => {
+  usePageOnMount() // handles connecting wallet
   return (
     <>
-      <DocumentHead title={t`Savings crvUSD`} />
       <Stack
         direction="column"
         margin={'0 auto'}

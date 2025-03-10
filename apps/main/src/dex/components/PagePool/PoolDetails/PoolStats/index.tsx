@@ -1,19 +1,20 @@
-import type { PageTransferProps } from '@/dex/components/PagePool/types'
-import { t } from '@ui-kit/lib/i18n'
+import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
+import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
+import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
+import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
+import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
+import { PoolAlert, TokensMapper, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
-import ExternalLink from '@ui/Link/ExternalLink'
-import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
-import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
 import { InternalLink } from '@ui/Link'
-import { TokensMapper, PoolAlert } from '@/dex/types/main.types'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { breakpoints } from '@ui/utils/responsive'
+import { t } from '@ui-kit/lib/i18n'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null
@@ -22,18 +23,15 @@ type PoolStatsProps = {
 
 const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-
   const { rChainId, rPoolId } = routerParams
   const { chainId } = curve ?? {}
-
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
-  const params = useStore((state) => state.routerProps?.params)
 
   const poolId = poolData?.pool?.id
 
-  const risksPathname = params && getPath(params, `/disclaimer`)
+  const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
 
   // fetch stats
   useEffect(() => {
@@ -64,13 +62,11 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
                   </ExternalLink>
                 </AlertBox>
               )}
-              {params && (
-                <AlertBox alertType="info" flexAlignItems="center">
-                  <InternalLink $noStyles href={risksPathname} target="_blank">
-                    {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
-                  </InternalLink>
-                </AlertBox>
-              )}
+              <AlertBox alertType="info" flexAlignItems="center">
+                <InternalLink $noStyles href={risksPathname} target="_blank">
+                  {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
+                </InternalLink>
+              </AlertBox>
             </Box>
           </Box>
         </MainStatsWrapper>

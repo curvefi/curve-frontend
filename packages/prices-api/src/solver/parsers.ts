@@ -1,5 +1,5 @@
-import type * as Responses from './responses'
 import type * as Models from './models'
+import type * as Responses from './responses'
 
 export const parseSolverCompetition = (x: Responses.GetSolverCompetitionResponse): Models.SolverCompetition => ({
   auctionStartBlock: x.auctionStartBlock,

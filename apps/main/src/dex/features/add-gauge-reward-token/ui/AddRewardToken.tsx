@@ -1,8 +1,9 @@
-import { vestResolver } from '@hookform/resolvers/vest'
-import { t } from '@ui-kit/lib/i18n'
 import { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zeroAddress } from 'viem'
+import AlertFormError from '@/dex/components/AlertFormError'
+import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
+import { useSignerAddress } from '@/dex/entities/signer'
 import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/dex/features/add-gauge-reward-token/types'
 import {
@@ -11,14 +12,13 @@ import {
   FormActions,
   TokenSelector,
 } from '@/dex/features/add-gauge-reward-token/ui'
-import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
-import { useSignerAddress } from '@/dex/entities/signer'
-import { formDefaultOptions } from '@ui-kit/lib/model/form'
-import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
-import AlertFormError from '@/dex/components/AlertFormError'
 import useStore from '@/dex/store/useStore'
+import { vestResolver } from '@hookform/resolvers/vest'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
+import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
 import TxInfoBar from '@ui/TxInfoBar'
+import { t } from '@ui-kit/lib/i18n'
+import { formDefaultOptions } from '@ui-kit/lib/model/form'
 
 export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { data: signerAddress } = useSignerAddress()

@@ -1,14 +1,14 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
-import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
-import Box from '@ui/Box'
-import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
-import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
 import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
 import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
+import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
+import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
+import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
+import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   blockchainId: string

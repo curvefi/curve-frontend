@@ -1,11 +1,13 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-import { shortenTokenAddress, convertToLocaleTimestamp } from '@ui/utils'
-import Box from '@ui/Box'
+import styled from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
-import { InternalLink } from '@ui/Link'
 import { ProposalData } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import { InternalLink } from '@ui/Link'
+import { convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type ProposalInformationProps = {
   proposal: ProposalData
@@ -26,7 +28,7 @@ const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationPro
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink href={`/ethereum/user/${proposal?.creator}`}>
+        <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
           {shortenTokenAddress(proposal?.creator)}
         </StyledInternalLink>
       </Box>

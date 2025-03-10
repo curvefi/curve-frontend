@@ -1,7 +1,7 @@
-import { DesignSystem } from '@ui-kit/themes/design'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { DesignSystem } from '@ui-kit/themes/design'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { ButtonSize, Spacing } = SizesAndSpaces
 

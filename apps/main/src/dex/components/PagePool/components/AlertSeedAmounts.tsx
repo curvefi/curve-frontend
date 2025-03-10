@@ -1,10 +1,10 @@
-import type { Seed } from '@/dex/components/PagePool/types'
 import { useCallback, useEffect, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import AlertBox from '@ui/AlertBox'
+import type { Seed } from '@/dex/components/PagePool/types'
 import { PoolData } from '@/dex/types/main.types'
+import AlertBox from '@ui/AlertBox'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   seed: Seed

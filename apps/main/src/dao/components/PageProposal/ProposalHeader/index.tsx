@@ -1,9 +1,9 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import SmallLabel from '@/dao/components/SmallLabel'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import SmallLabel from '@/dao/components/SmallLabel'
 import VoteCountdown from '@/dao/components/VoteCountdown'
 import { ProposalData } from '@/dao/types/dao.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type ProposalHeaderProps = {
   proposal: ProposalData

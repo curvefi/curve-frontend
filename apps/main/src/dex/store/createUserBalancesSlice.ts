@@ -1,7 +1,7 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE

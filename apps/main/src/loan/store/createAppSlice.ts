@@ -1,12 +1,12 @@
+import { ethers, Contract, ContractRunner } from 'ethers'
+import produce from 'immer'
+import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
-import { CONNECT_STAGE, ConnectState } from '@ui/utils'
-import produce from 'immer'
-import { ethers, Contract, ContractRunner } from 'ethers'
-import { Interface } from '@ethersproject/abi'
+import { Curve, LendApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
-import isEqual from 'lodash/isEqual'
-import { Curve, LendApi, RouterProps, Wallet } from '@/loan/types/loan.types'
+import { Interface } from '@ethersproject/abi'
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -21,7 +21,6 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  routerProps: RouterProps | null
   scrollY: number
 }
 
@@ -48,7 +47,6 @@ const DEFAULT_STATE: SliceState = {
   isLoadingLendApi: false,
   isMobile: false,
   isPageVisible: true,
-  routerProps: null,
   scrollY: 0,
 }
 

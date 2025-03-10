@@ -1,12 +1,12 @@
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
-import Grid from '@mui/material/Grid2'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { weiToEther } from '@ui-kit/utils'
-import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
+import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
+import Grid from '@mui/material/Grid2'
+import { t } from '@ui-kit/lib/i18n'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import { Metric } from '@ui-kit/shared/ui/Metric'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

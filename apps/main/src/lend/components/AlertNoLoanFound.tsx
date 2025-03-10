@@ -1,15 +1,16 @@
-import type { AlertType } from '@ui/AlertBox/types'
-import { t } from '@ui-kit/lib/i18n'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams, useRouter } from 'next/navigation'
 import styled from 'styled-components'
-import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import useStore from '@/lend/store/useStore'
+import type { UrlParams } from '@/lend/types/lend.types'
+import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
+import type { AlertType } from '@ui/AlertBox/types'
 import Button from '@ui/Button'
+import { t } from '@ui-kit/lib/i18n'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
-  const params = useParams()
-  const navigate = useNavigate()
+  const params = useParams() as UrlParams
+  const { push } = useRouter()
 
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
 
@@ -24,7 +25,7 @@ const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: 
           size="large"
           onClick={() => {
             setStateByKeyMarkets('marketDetailsView', 'market')
-            navigate(getLoanCreatePathname(params, owmId, 'create'))
+            push(getLoanCreatePathname(params, owmId, 'create'))
           }}
         >
           Create loan

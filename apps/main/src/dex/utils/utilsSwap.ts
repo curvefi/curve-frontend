@@ -1,9 +1,9 @@
-import type { Route } from '@/dex/components/PageRouterSwap/types'
-import type { IRoute } from '@curvefi/api/lib/interfaces'
-import { t } from '@ui-kit/lib/i18n'
 import BigNumber from 'bignumber.js'
+import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
+import type { IRoute } from '@curvefi/api/lib/interfaces'
+import { t } from '@ui-kit/lib/i18n'
 
 const LOW_EXCHANGE_RATE = 0.98
 

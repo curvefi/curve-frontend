@@ -1,12 +1,14 @@
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
-import useStore from '@/dao/store/useStore'
-import { VOTES_LABELS } from '../constants'
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils/'
 import PaginatedTable from '@/dao/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
+import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
+import useStore from '@/dao/store/useStore'
 import { UserProposalVoteData, UserProposalVotesSortBy } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { VOTES_LABELS } from '../constants'
 
 interface UserProposalVotesTableProps {
   userAddress: string
@@ -16,7 +18,7 @@ interface UserProposalVotesTableProps {
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
   const { getUserProposalVotes, userProposalVotesMapper, userProposalVotesSortBy, setUserProposalVotesSortBy } =
     useStore((state) => state.user)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 6rem 6rem'
 
@@ -54,7 +56,11 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(`/ethereum/proposals/${proposalVote.vote_id}-${proposalVote.vote_type.toUpperCase()}`)
+              push(
+                getEthPath(
+                  `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.vote_id}-${proposalVote.vote_type.toUpperCase()}`,
+                ),
+              )
             }}
             className={userProposalVotesSortBy.key === 'vote_id' ? 'sortby-active  align-left' : ' align-left'}
           >

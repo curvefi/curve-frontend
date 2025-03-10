@@ -1,10 +1,10 @@
-import type { TooltipProps } from '@ui/Tooltip/types'
-import type { BoxProps } from '@ui/Box/types'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-import { Chip } from '@ui/Typography'
+import type { BoxProps } from '@ui/Box/types'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
-import { ReactNode } from 'react'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import { Chip } from '@ui/Typography'
 
 type Props = BoxProps & {
   children: ReactNode

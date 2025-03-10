@@ -1,9 +1,9 @@
-import type { ButtonProps } from 'ui/src/Button/types'
+import { ButtonHTMLAttributes } from 'react'
 import styled from 'styled-components'
-import { useInputContext } from './InputProvider'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
-import { ButtonHTMLAttributes } from 'react'
+import type { ButtonProps } from 'ui/src/Button/types'
+import { useInputContext } from './InputProvider'
 
 const InputMaxBtn = ({
   className,

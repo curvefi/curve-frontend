@@ -1,12 +1,12 @@
-import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import uniq from 'lodash/uniq'
+import { getSupportedChains } from '@/loan/entities/chains'
 import { getCoinPrices } from '@/loan/entities/usd-prices'
+import { Chain } from '@curvefi/prices-api'
 import type { UserMarketStats } from '@curvefi/prices-api/crvusd'
 import { getMarkets, getUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
-import { Chain } from '@curvefi/prices-api'
-import { getSupportedChains } from '@/loan/entities/chains'
+import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userValidationSuite } from '@ui-kit/lib/model/query/user-validation'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
 
 type MintMarketFromApi = Market

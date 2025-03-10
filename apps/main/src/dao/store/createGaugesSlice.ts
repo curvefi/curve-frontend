@@ -1,9 +1,7 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
 import Fuse from 'fuse.js'
 import produce from 'immer'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenTokenAddress } from '@ui/utils'
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/dao/store/useStore'
 import {
   CurveGaugeResponse,
   FetchingState,
@@ -20,7 +18,9 @@ import {
   SortDirection,
   TransactionState,
 } from '@/dao/types/dao.types'
+import { shortenTokenAddress } from '@ui/utils'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,12 +1,12 @@
-import type { Step } from '@ui/Stepper/types'
-import useStore from '@/lend/store/useStore'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { PageContentProps, HealthMode } from '@/lend/types/lend.types'
 import { Dispatch, SetStateAction } from 'react'
+import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
+import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import useStore from '@/lend/store/useStore'
+import { PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import type { Step } from '@ui/Stepper/types'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfo = ({
   rChainId,

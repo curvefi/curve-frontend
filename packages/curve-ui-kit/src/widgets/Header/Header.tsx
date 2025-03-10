@@ -1,9 +1,9 @@
-import { HeaderProps } from './types'
+import type { Theme } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { DESKTOP_HEADER_HEIGHT, DesktopHeader } from './DesktopHeader'
 import { calcMobileHeaderHeight, MobileHeader } from './MobileHeader'
-import type { Theme } from '@mui/material'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
+import { HeaderProps } from './types'
 
 const isDesktopQuery = (theme: Theme) => theme.breakpoints.up('desktop')
 

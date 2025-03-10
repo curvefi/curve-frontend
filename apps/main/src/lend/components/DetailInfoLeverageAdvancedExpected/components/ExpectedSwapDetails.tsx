@@ -1,11 +1,11 @@
-import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import RouteLine from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
+import RouteToken from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
+import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import networks from '@/lend/networks'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
-import RouteLine from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
-import RouteToken from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const stateDefault = { height: '34px', data: [] as Hop[] }

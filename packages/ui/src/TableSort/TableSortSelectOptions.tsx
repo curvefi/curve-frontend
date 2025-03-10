@@ -1,8 +1,8 @@
-import type { LabelsMapper } from 'ui/src/TableSort/types'
 import styled from 'styled-components'
-import { Chip } from 'ui/src/Typography'
-import { Radio, RadioGroup } from 'ui/src/Radio'
 import Icon from 'ui/src/Icon'
+import { Radio, RadioGroup } from 'ui/src/Radio'
+import type { LabelsMapper } from 'ui/src/TableSort/types'
+import { Chip } from 'ui/src/Typography'
 
 const sortOrder = {
   asc: { label: 'Ascending', icon: <Icon name="ArrowUp" size={24} /> },

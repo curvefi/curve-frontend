@@ -1,9 +1,7 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/lend/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
-import { log } from '@ui-kit/lib/logging'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type { State } from '@/lend/store/useStore'
 import {
   Api,
   UsersLoansHealthsMapper,
@@ -16,6 +14,8 @@ import {
   UserMarketBalances,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

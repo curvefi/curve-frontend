@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
 import { Thead, Th } from '@ui/Table'
+import { t } from '@ui-kit/lib/i18n'
 
 const TableHeadMobile = () => (
   <Thead>

@@ -1,12 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-import type { WalletState } from '@web3-onboard/core'
 import { Contract } from 'ethers'
 import produce from 'immer'
-import { SEVEN_DAYS } from '@/dao/constants'
-import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
-import { contractVeCRV } from '@/dao/store/contracts'
+import type { GetState, SetState } from 'zustand'
 import { abiVeCrv } from '@/dao/store/abis'
+import { contractVeCRV } from '@/dao/store/contracts'
+import type { State } from '@/dao/store/useStore'
 import {
   CurveApi,
   FetchingState,
@@ -26,6 +23,11 @@ import {
   UserProposalVotesSortBy,
   UserVoteData,
 } from '@/dao/types/dao.types'
+import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
+import type { WalletState } from '@web3-onboard/core'
+
+const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -229,7 +231,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
               vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
               vote_open: data.proposal.start_date,
-              vote_close: data.proposal.start_date + SEVEN_DAYS,
+              vote_close: data.proposal.start_date + WEEK,
               vote_total_supply: +data.proposal.total_supply / 1e18,
             }
           })

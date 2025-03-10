@@ -1,24 +1,23 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useState } from 'react'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
-import UserStats from './UserStats'
-import UserHeader from './UserHeader'
-import UserProposalVotesTable from './UserProposalVotesTable'
-import UserLocksTable from './UserLocksTable'
-import UserGaugeVotesTable from './UserGaugeVotesTable'
+import styled from 'styled-components'
 import SubNav from '@/dao/components/SubNav'
+import useStore from '@/dao/store/useStore'
+import type { UserUrlParams } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
+import Box from '@ui/Box'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
+import UserGaugeVotesTable from './UserGaugeVotesTable'
+import UserHeader from './UserHeader'
+import UserLocksTable from './UserLocksTable'
+import UserProposalVotesTable from './UserProposalVotesTable'
+import UserStats from './UserStats'
 
 type UserPageProps = {
-  routerParams: {
-    rUserAddress: string
-  }
+  routerParams: UserUrlParams
 }
 
-const UserPage = ({ routerParams: { rUserAddress } }: UserPageProps) => {
+const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
   const {
     veCrvHolders: { allHolders, fetchStatus },
     getVeCrvHolders,

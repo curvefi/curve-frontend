@@ -1,8 +1,8 @@
-import { queryFactory } from '@ui-kit/lib/model'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { getChains } from '@curvefi/prices-api/llamalend'
 import { getSupportedChains as getSupportedChainsFromApi } from '@curvefi/prices-api/chains'
+import { getChains } from '@curvefi/prices-api/llamalend'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
+import { queryFactory } from '@ui-kit/lib/model'
 
 const { getQueryOptions: getSupportedChainOptions } = queryFactory({
   queryKey: () => ['prices-api', 'supported-chains'] as const,

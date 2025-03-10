@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
-import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import {
   StyledTotalBalanceWrapper,
   SummaryInnerContent,
   SummarySpinnerWrapper,
 } from '@/dex/components/PageDashboard/components/Summary'
-import { Chip } from '@ui/Typography'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import Spinner from '@ui/Spinner'
+import { Chip } from '@ui/Typography'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const SummaryTotal = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()

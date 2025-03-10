@@ -1,27 +1,23 @@
-import type { NextPage } from 'next'
-import type { FormType } from '@/dex/components/PageCrvLocker/types'
-import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+'use client'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { ROUTE } from '@/dex/constants'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { scrollToTop } from '@/dex/utils'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
-import useStore from '@/dex/store/useStore'
-import Box, { BoxHeader } from '@ui/Box'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
 import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
-import IconButton from '@ui/IconButton'
+import type { FormType } from '@/dex/components/PageCrvLocker/types'
+import { ROUTE } from '@/dex/constants'
+import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Settings from '@/dex/layout/default/Settings'
+import useStore from '@/dex/store/useStore'
+import { type CrvLockerUrlParams, CurveApi } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import Box, { BoxHeader } from '@ui/Box'
+import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { CurveApi } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: CrvLockerUrlParams) => {
+  const { push } = useRouter()
+  const { routerParams, curve } = usePageOnMount()
   const { rChainId, rFormType } = routerParams
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
@@ -32,10 +28,9 @@ const Page: NextPage = () => {
 
   const toggleForm = useCallback(
     (formType: FormType) => {
-      const pathname = getPath(params, `${ROUTE.PAGE_LOCKER}/${formType}`)
-      navigate(pathname)
+      push(getPath(params, `${ROUTE.PAGE_LOCKER}/${formType}`))
     },
-    [navigate, params],
+    [push, params],
   )
 
   const fetchData = useCallback(
@@ -54,12 +49,11 @@ const Page: NextPage = () => {
   )
 
   // onMount
-  useEffect(() => {
-    scrollToTop()
-
-    return () => resetState()
+  useEffect(
+    () => () => resetState(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    [],
+  )
 
   // get initial data
   useEffect(() => {
@@ -69,7 +63,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`CRV Locker`} />
       <Container variant="primary" shadowed>
         <BoxHeader className="title-text">
           <IconButton hidden />

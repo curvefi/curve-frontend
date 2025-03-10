@@ -1,14 +1,14 @@
-import type { LpLiquidityEventsData, PricesApiCoin } from '@ui/Chart/types'
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-import Box from '@ui/Box'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { Chip } from '@ui/Typography'
-import Tooltip from '@ui/Tooltip'
 import type React from 'react'
+import styled from 'styled-components'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import type { LpLiquidityEventsData, PricesApiCoin } from '@ui/Chart/types'
+import Tooltip from '@ui/Tooltip'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const LiquidityData = ({
   lpEventsData,

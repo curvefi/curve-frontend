@@ -1,5 +1,6 @@
-import { useMemo, useState, type ReactNode } from 'react'
 import uniqBy from 'lodash/uniqBy'
+import { useMemo, useState, type ReactNode } from 'react'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
@@ -7,19 +8,16 @@ import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-
 import { t } from '@ui-kit/lib/i18n'
-import { searchByText } from '@ui-kit/utils/searchText'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { searchByText } from '@ui-kit/utils/searchText'
+import type { TokenOption as Option } from '../../types'
+import { ErrorAlert } from './ErrorAlert'
+import { FavoriteTokens } from './FavoriteTokens'
+import { SearchInput } from './SearchInput'
+import { TokenOption } from './TokenOption'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
-
-import type { TokenOption as Option } from '../../types'
-import { FavoriteTokens } from './FavoriteTokens'
-import { TokenOption } from './TokenOption'
-import { SearchInput } from './SearchInput'
-import { ErrorAlert } from './ErrorAlert'
 
 export type Section = 'my' | 'all'
 
@@ -79,8 +77,8 @@ const TokenSection = ({
             size="medium"
             endIcon={<ExpandMoreIcon />}
             onClick={onShowAll}
-            // Override variant button height to match menu list item height
-            sx={{ '&': { height: `${ButtonSize.md} !important` } }}
+            // Override variant button height to match menu list item height, so !important is required over '&'.
+            sx={{ height: `${ButtonSize.md} !important` }}
           >
             {t`Show more`}
           </Button>
@@ -212,7 +210,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={5}
+            limit={Infinity}
             showAll={sections.my || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
             onToken={onToken}
@@ -224,7 +222,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={10}
+            limit={300}
             showAll={sections.all || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, all: true }))}
             onToken={onToken}

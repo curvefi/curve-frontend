@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import networks from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
 import { BN, formatNumber } from '@ui/utils'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
-import useStore from '@/loan/store/useStore'
 
 const useEstimateGasConversion = (gas: number) => {
   const curve = useStore((state) => state.curve)

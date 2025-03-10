@@ -1,11 +1,11 @@
-import type { BoxProps } from '@ui/Box/types'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui/utils'
+import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import { FieldsTitle } from '@/lend/components/SharedFormStyles/FieldsWrapper'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import Box from '@ui/Box'
+import type { BoxProps } from '@ui/Box/types'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const InpTokenRemove = ({
   id,

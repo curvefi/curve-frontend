@@ -1,5 +1,5 @@
-import type { LayoutHeight } from '@/dao/store/createAppSlice'
 import { RefObject, useEffect } from 'react'
+import type { LayoutHeight } from '@/dao/store/createAppSlice'
 import useStore from '@/dao/store/useStore'
 
 function useLayoutHeight(elementRef: RefObject<Element | null>, key: keyof LayoutHeight) {

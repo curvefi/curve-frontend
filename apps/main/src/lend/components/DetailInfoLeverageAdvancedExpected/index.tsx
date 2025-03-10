@@ -1,12 +1,12 @@
-import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import { useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import Button from '@ui/Button'
 import ExpectedLabel from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedLabel'
 import ExpectedSummary from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSummary'
 import ExpectedSwapDetails from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSwapDetails'
+import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
+import Button from '@ui/Button'
 import TextCaption from '@ui/TextCaption'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLeverageAdvancedExpected = ({
   rChainId,

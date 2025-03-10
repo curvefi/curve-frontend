@@ -1,10 +1,10 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useState } from 'react'
-import type { BoxProps } from 'ui/src/Box/types'
-import type { InputMinHeight, InputVariant } from './types'
 import styled from 'styled-components'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
 import Box from 'ui/src/Box/Box'
+import type { BoxProps } from 'ui/src/Box/types'
+import { focusVisible } from 'ui/src/utils/sharedStyles'
+import type { InputMinHeight, InputVariant } from './types'
 
 export interface InputProviderProps extends Omit<BoxProps, 'padding'> {
   children: ReactNode

@@ -1,3 +1,8 @@
+import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
+import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
+import { debounce } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
 import type {
   LpPriceOhlcDataFormatted,
   ChartHeight,
@@ -6,11 +11,6 @@ import type {
   LiquidationRanges,
   ChartColors,
 } from './types'
-import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
-import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
-import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { debounce } from 'lodash'
 
 /**
  * Converts an HSLA color string to RGB format

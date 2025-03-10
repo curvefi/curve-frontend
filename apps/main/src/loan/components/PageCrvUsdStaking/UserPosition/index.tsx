@@ -1,16 +1,16 @@
+import BigNumber from 'bignumber.js'
+import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
+import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
+import useStore from '@/loan/store/useStore'
 import { Card, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { useTheme } from '@mui/material/styles'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
-import useStore from '@/loan/store/useStore'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import BigNumber from 'bignumber.js'
-import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
-import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 

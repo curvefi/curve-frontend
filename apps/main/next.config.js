@@ -34,10 +34,23 @@ const nextConfiguration = {
     // !! WARN !!
     // ignoreBuildErrors: true,
   },
+  // todo: make permanent=true once it all works fine in production. Otherwise it's hard to revert changes!
   redirects: async () => [{
-    source: '/',
-    destination: '/dex',
-    permanent: true
+    source: '/dex/:network',
+    destination: '/dex/:network/pools',
+    permanent: false
+  }, {
+    source: '/crvusd/:network',
+    destination: '/crvusd/:network/markets',
+    permanent: false
+  }, {
+    source: '/lend/:network',
+    destination: '/lend/:network/markets',
+    permanent: false
+  }, {
+    source: '/dao/:network',
+    destination: '/dao/:network/proposals',
+    permanent: false
   }],
 }
 

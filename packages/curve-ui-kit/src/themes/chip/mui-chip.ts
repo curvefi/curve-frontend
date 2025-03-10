@@ -1,11 +1,11 @@
 import type { Components } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip/Chip'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { Grays } from '@ui-kit/themes/design/0_primitives'
-import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { TypographyVariantKey } from '@ui-kit/themes/typography'
 
 // note: the design system is using inverted themes for this color, there is no semantic colors for the clickable chips.
 const invertPrimary = (color: DesignSystem['Color']) => color.Neutral[50]

@@ -1,7 +1,7 @@
 import styled, { keyframes } from 'styled-components'
 import useStore from '@/loan/store/useStore'
-import Icon from '@ui/Icon'
 import Button from '@ui/Button'
+import Icon from '@ui/Icon'
 
 type Props = {
   showScrollButton?: boolean
@@ -22,7 +22,7 @@ const Settings = ({ showScrollButton }: Props) => {
     <Wrapper>
       <StyledScrollUpButton
         className={showScrollButton && scrollY > 30 ? 'pop-in' : ''}
-        show={showScrollButton ? scrollY > 30 : false}
+        $show={showScrollButton ? scrollY > 30 : false}
         variant="icon-filled"
         onClick={handleScrollTopClick}
       >
@@ -33,7 +33,7 @@ const Settings = ({ showScrollButton }: Props) => {
 }
 
 type ScrollUpButtonProps = {
-  show: boolean
+  $show: boolean
 }
 
 const popIn = keyframes`

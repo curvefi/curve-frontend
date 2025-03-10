@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { Trans } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
 import DetailInfo from '@ui/DetailInfo'
+import { Trans } from '@ui-kit/lib/i18n'
 
 type Props = {
   tokens: string[]

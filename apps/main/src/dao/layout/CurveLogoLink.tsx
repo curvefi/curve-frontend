@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom'
 import Image from 'next/image'
+import Link from 'next/link'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
 import { LogoImg, RCLogoText } from '@ui/images'
+import { breakpoints } from '@ui/utils/responsive'
 
 export const CurveLogoLink = ({ className, hideLabel }: { className?: string; hideLabel?: boolean }) => (
-  <StyledInternalLink to="/">
+  <StyledInternalLink href="/">
     <CurveLogoImg src={LogoImg} alt="Curve" /> {!hideLabel && <StyledCurveLogoText className={className} />}
   </StyledInternalLink>
 )

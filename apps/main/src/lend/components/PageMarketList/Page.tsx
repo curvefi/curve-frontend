@@ -1,23 +1,22 @@
-import type { NextPage } from 'next'
-import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
-import { t } from '@ui-kit/lib/i18n'
+'use client'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
+import MarketList from '@/lend/components/PageMarketList/index'
+import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { ROUTE } from '@/lend/constants'
-import { getPath } from '@/lend/utils/utilsRouter'
-import { scrollToTop } from '@/lend/utils/helpers'
 import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
-import useStore from '@/lend/store/useStore'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
-import { AppPageContainer } from '@ui/AppPage'
-import DocumentHead from '@/lend/layout/DocumentHead'
-import MarketList from '@/lend/components/PageMarketList/index'
 import Settings from '@/lend/layout/Settings'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import useStore from '@/lend/store/useStore'
+import type { NetworkUrlParams } from '@/lend/types/lend.types'
+import { getPath } from '@/lend/utils/utilsRouter'
+import { AppPageContainer } from '@ui/AppPage'
 import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
   filter = 'filter',
@@ -28,12 +27,10 @@ enum SEARCH {
   type = 'type',
 }
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
+const Page = (params: NetworkUrlParams) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
+  const { pageLoaded, routerParams, api } = usePageOnMount()
   const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()
   const { rChainId } = routerParams
@@ -67,7 +64,6 @@ const Page: NextPage = () => {
   }
 
   useEffect(() => {
-    scrollToTop()
     setStateByKey('initialLoaded', false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -89,8 +85,7 @@ const Page: NextPage = () => {
       ].filter(([, v]) => v),
     ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
-    navigate(pathname)
+    push(getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`))
   }
 
   useEffect(() => {
@@ -98,15 +93,15 @@ const Page: NextPage = () => {
 
     if (!pageLoaded || isLoadingApi) return
 
-    const hideSmallMarkets = searchParams.get(SEARCH.hideSmallMarkets) || 'true'
+    const hideSmallMarkets = searchParams?.get(SEARCH.hideSmallMarkets) || 'true'
 
     const parsedSearchParams = {
-      filterKey: searchParams.get(SEARCH.filter) || 'all',
-      filterTypeKey: searchParams.get(SEARCH.type) || 'borrow',
+      filterKey: searchParams?.get(SEARCH.filter) || 'all',
+      filterTypeKey: searchParams?.get(SEARCH.type) || 'borrow',
       hideSmallMarkets: hideSmallMarkets === 'true',
-      sortBy: searchParams.get(SEARCH.sortBy) || '',
-      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
-      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
+      sortBy: searchParams?.get(SEARCH.sortBy) || '',
+      sortByOrder: searchParams?.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams?.get(SEARCH.search) || ''),
     } as SearchParams
 
     setStateByKey('searchParams', parsedSearchParams)
@@ -117,7 +112,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Markets`} />
       {provider ? (
         <StyledAppPageContainer $maxWidth={parsedSearchParams?.filterTypeKey === 'supply' ? '990px' : ''}>
           {rChainId && parsedSearchParams && (

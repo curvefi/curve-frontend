@@ -1,11 +1,11 @@
-import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
-import { t } from '@ui-kit/lib/i18n'
-import { useMemo, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
+import { useMemo, useState } from 'react'
+import ChartBandBalances from '@/lend/components/ChartBandBalances'
+import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
 import useStore from '@/lend/store/useStore'
-import ChartBandBalances from '@/lend/components/ChartBandBalances'
 import { PageContentProps, ParsedBandsBalances } from '@/lend/types/lend.types'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailsLoanChartBalances = ({
   rChainId,

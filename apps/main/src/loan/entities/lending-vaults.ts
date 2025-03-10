@@ -1,5 +1,5 @@
-import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { getSupportedLendingChains } from '@/loan/entities/chains'
+import { Chain } from '@curvefi/prices-api'
 import {
   getMarkets,
   getUserMarketEarnings,
@@ -9,10 +9,10 @@ import {
   type UserMarketEarnings,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
-import { getSupportedLendingChains } from '@/loan/entities/chains'
-import { Chain } from '@curvefi/prices-api'
-import type { Address } from '@ui-kit/utils'
+import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userValidationSuite } from '@ui-kit/lib/model/query/user-validation'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
+import type { Address } from '@ui-kit/utils'
 
 export type LendingVault = Market & { chain: Chain }
 

@@ -1,5 +1,5 @@
+import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
@@ -10,11 +10,10 @@ type BackButtonProps = {
 }
 
 const BackButton = ({ path, label }: BackButtonProps) => {
-  const navigate = useNavigate()
-
+  const { push } = useRouter()
   return (
     <BackButtonWrapper variant="secondary">
-      <StyledButton variant="text" onClick={() => navigate(path)}>
+      <StyledButton variant="text" onClick={() => push(path)}>
         <Icon name="ArrowLeft" size={16} />
         {label}
       </StyledButton>

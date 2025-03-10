@@ -1,5 +1,27 @@
-import { useEffect, useState, RefObject } from 'react'
+import { RefObject, useEffect, useState } from 'react'
 
+/**
+ * A hook that observes whether an element has a specific class.
+ * Uses MutationObserver to track class changes in real-time.
+ *
+ * @param ref - React ref object pointing to the element to observe
+ * @param className - The class name to check for
+ * @returns Boolean indicating whether the element has the specified class
+ *
+ * @example
+ * ```tsx
+ * // Basic usage
+ * const listItemRef = useRef<HTMLLIElement>(null);
+ * const isActive = useClassObserver(listItemRef, 'active');
+ *
+ * // In a component
+ * return (
+ *   <li ref={listItemRef} className={someCondition ? 'active' : ''}>
+ *     {isActive ? 'This item is active' : 'This item is not active'}
+ *   </li>
+ * );
+ * ```
+ */
 export function useClassObserver(ref: RefObject<HTMLLIElement | null>, className: string): boolean {
   const [hasClass, setHasClass] = useState(false)
 

@@ -1,12 +1,12 @@
-import type { FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import type { FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
+import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
-import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 // Deleverage partial payment will only result in state change, user will not receive any tokens to wallet.
 // 1. userState.collateral = old userState.collateral - formValues.collateral

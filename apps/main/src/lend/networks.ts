@@ -1,8 +1,8 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import sortBy from 'lodash/sortBy'
+import { ChainId, NetworkEnum, NetworkConfig } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
-import { ChainId, NetworkEnum, NetworkConfig } from '@/lend/types/lend.types'
 
 const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},

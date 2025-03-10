@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import useStore from '@/loan/store/useStore'
 import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import useStore from '@/loan/store/useStore'
 import { HealthMode } from '@/loan/types/loan.types'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])

@@ -1,8 +1,8 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-import type { LayoutHeight } from '@/dao/store/types'
 import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
+import type { LayoutHeight } from '@/dao/store/types'
+import type { State } from '@/dao/store/useStore'
 import { PageWidthClassName } from '@/dao/types/dao.types'
 
 export type StateKey = keyof typeof DEFAULT_STATE

@@ -1,9 +1,9 @@
+import { RefObject, useRef } from 'react'
 import type { AriaListBoxOptions } from 'react-aria'
-import type { SelectState } from 'react-stately'
 import { useListBox } from 'react-aria'
+import type { SelectState } from 'react-stately'
 import styled from 'styled-components'
 import SelectModalListBoxItem from 'ui/src/Select/SelectModalListBoxItem'
-import { RefObject, useRef } from 'react'
 
 function SelectModalListBox<T>(
   props: AriaListBoxOptions<T> & {

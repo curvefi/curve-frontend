@@ -1,4 +1,4 @@
-import { Chain } from 'curve-ui-kit/src/utils'
+import { Chain } from 'curve-ui-kit/src/utils/network'
 import { ethers } from 'ethers'
 import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 

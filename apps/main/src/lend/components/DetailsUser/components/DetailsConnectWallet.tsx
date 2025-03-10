@@ -1,8 +1,8 @@
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/lend/store/useStore'
 import { CONNECT_STAGE } from '@/lend/constants'
+import useStore from '@/lend/store/useStore'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailsConnectWallet = () => {
   const connectState = useStore((state) => state.connectState)

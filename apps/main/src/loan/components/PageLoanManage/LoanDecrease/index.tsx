@@ -1,42 +1,42 @@
-import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanDecrease/types'
-import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import type { Step } from '@ui/Stepper/types'
-import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
-import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
-import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
-import { curveProps } from '@/loan/utils/helpers'
-import { formatNumber } from '@ui/utils'
-import { getActiveStep } from '@ui/Stepper/helpers'
-import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
-import networks from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
-import Stepper from '@ui/Stepper'
-import TxInfoBar from '@ui/TxInfoBar'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
+import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanDecrease/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
+import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import networks from '@/loan/networks'
+import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
+import useStore from '@/loan/store/useStore'
 import { Curve, Llamma } from '@/loan/types/loan.types'
+import { curveProps } from '@/loan/utils/helpers'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import Stepper from '@ui/Stepper'
+import { getActiveStep } from '@ui/Stepper/helpers'
+import type { Step } from '@ui/Stepper/types'
+import TxInfoBar from '@ui/TxInfoBar'
+import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
 // Loan repay
 const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.loanDecrease.activeKey)
   const detailInfo = useStore((state) => state.loanDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
@@ -125,7 +125,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
               if (resp.loanExists) {
                 reset(false, true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -133,7 +133,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       }
       notification?.dismiss()
     },
-    [activeKey, fetchStepDecrease, navigate, params, rChainId, reset],
+    [activeKey, fetchStepDecrease, push, params, rChainId, reset],
   )
 
   const getSteps = useCallback(

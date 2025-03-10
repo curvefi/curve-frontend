@@ -1,3 +1,5 @@
+import dayjs from 'curve-ui-kit/src/lib/dayjs'
+import { ReactNode, useEffect, useRef } from 'react'
 import type { AriaButtonProps, DateValue } from 'react-aria'
 import {
   useButton,
@@ -10,22 +12,20 @@ import {
   useLocale,
 } from 'react-aria'
 import { useCalendarState, useDateFieldState, useDatePickerState } from 'react-stately'
-import { createCalendar, getWeeksInMonth } from '@internationalized/date'
-import { ReactNode, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import Box from 'ui/src/Box'
-import Chip from 'ui/src/Typography/Chip'
+import ModalDialog from 'ui/src/Dialog'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import InputProvider from 'ui/src/InputComp'
-import ModalDialog from 'ui/src/Dialog'
-import { DateFieldState } from '@react-stately/datepicker'
-import { AriaDateFieldOptions } from '@react-aria/datepicker'
-import { AriaCalendarProps } from '@react-types/calendar'
+import Chip from 'ui/src/Typography/Chip'
+import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { AriaCalendarCellProps, AriaCalendarGridProps } from '@react-aria/calendar'
+import { AriaDateFieldOptions } from '@react-aria/datepicker'
 import { CalendarState, RangeCalendarState } from '@react-stately/calendar'
+import { DateFieldState } from '@react-stately/datepicker'
+import { AriaCalendarProps } from '@react-types/calendar'
 import { AriaDatePickerProps, DatePickerProps } from '@react-types/datepicker'
-import dayjs from 'curve-ui-kit/src/lib/dayjs'
 import { InputProviderProps } from '../InputComp/InputProvider'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details

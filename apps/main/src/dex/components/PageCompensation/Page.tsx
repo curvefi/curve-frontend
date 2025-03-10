@@ -1,29 +1,23 @@
-import type { NextPage } from 'next'
-import type { EtherContract } from '@/dex/components/PageCompensation/types'
+'use client'
 import { Contract, Interface } from 'ethers'
-import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { scrollToTop } from '@/dex/utils'
+import FormCompensation from '@/dex/components/PageCompensation/index'
+import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import Settings from '@/dex/layout/default/Settings'
+import useStore from '@/dex/store/useStore'
+import { Provider } from '@/dex/types/main.types'
 import Box, { BoxHeader } from '@ui/Box'
 import Button from '@ui/Button'
-import DocumentHead from '@/dex/layout/default/DocumentHead'
-import ExternalLink from '@ui/Link/ExternalLink'
-import FormCompensation from '@/dex/components/PageCompensation/index'
 import IconButton from '@ui/IconButton'
-import Settings from '@/dex/layout/default/Settings'
+import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { Provider } from '@/dex/types/main.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import useStore from '@/dex/store/useStore'
+import { t } from '@ui-kit/lib/i18n'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = () => {
+  const { pageLoaded, routerParams, curve } = usePageOnMount()
   const { rChainId } = routerParams
   const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)
@@ -41,11 +35,6 @@ const Page: NextPage = () => {
     setContracts(contracts)
   }, [])
 
-  // onMount
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
   // get initial data
   useEffect(() => {
     if (!pageLoaded) return
@@ -56,7 +45,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Compensation`} />
       <Container variant="primary" shadowed>
         <BoxHeader className="title-text">
           <IconButton hidden />

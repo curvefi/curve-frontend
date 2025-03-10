@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import styled from 'styled-components'
 import { SyntheticEvent, useState } from 'react'
+import styled from 'styled-components'
 
 export type Props = {
   label: string

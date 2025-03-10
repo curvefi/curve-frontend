@@ -1,14 +1,14 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
-import networks from '@/dao/networks'
-import { getChainIdFromGaugeData } from '@/dao/utils'
-import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import Box from '@ui/Box'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
 import CopyIconButton from '@/dao/components/CopyIconButton'
-import { ExternalLink } from '@ui/Link'
+import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
+import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { getChainIdFromGaugeData } from '@/dao/utils'
+import Box from '@ui/Box'
+import { ExternalLink } from '@ui/Link'
+import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)

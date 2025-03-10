@@ -1,6 +1,6 @@
 import { copyToClipboard } from '@/dao/utils'
-import TooltipButton from '@ui/Tooltip'
 import Icon from '@ui/Icon'
+import TooltipButton from '@ui/Tooltip'
 
 type CopyIconButtonProps = {
   copyContent: string

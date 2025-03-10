@@ -1,18 +1,18 @@
-import type { AnchorHTMLAttributes } from 'react'
+import RouterLink from 'next/link'
+import React, { type AnchorHTMLAttributes } from 'react'
+import styled from 'styled-components'
 import type { LinkProps } from './styles'
 import { linkStyles } from './styles'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
 
 export interface InternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
 
-const InternalLink = ({ children, href, ...props }: InternalLinkProps) => (
-  <StyledLink {...props} to={href ?? ''}>
+const InternalLink = ({ children, href = '', ...props }: InternalLinkProps) => (
+  <StyledLink {...props} href={href}>
     {children}
   </StyledLink>
 )
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(RouterLink)`
   ${linkStyles}
 `
 

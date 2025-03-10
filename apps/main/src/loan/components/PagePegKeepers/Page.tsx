@@ -1,38 +1,27 @@
-import type { NextPage } from 'next'
-import { t } from '@ui-kit/lib/i18n'
-import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+'use client'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
-import { scrollToTop } from '@/loan/utils/helpers'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
-import Box from '@ui/Box'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import DocumentHead from '@/loan/layout/DocumentHead'
-import ExternalLink from '@ui/Link/ExternalLink'
-import Settings from '@/loan/layout/Settings'
 import PagePegKeepers from '@/loan/components/PagePegKeepers'
+import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import Settings from '@/loan/layout/Settings'
 import useStore from '@/loan/store/useStore'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Box from '@ui/Box'
+import ExternalLink from '@ui/Link/ExternalLink'
 import { isLoading } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
+const Page = (_: NetworkUrlParams) => {
+  const { routerParams } = usePageOnMount()
   const { rChainId } = routerParams
 
   const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
 
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
   return (
     <>
-      <DocumentHead title={t`PegKeepers`} />
       <Container>
         <ContainerContent>
           {rChainId && provider ? (

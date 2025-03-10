@@ -1,5 +1,5 @@
-import type { LinkSize, LinkVariant } from 'ui/src/Link/types'
 import { css } from 'styled-components'
+import type { LinkSize, LinkVariant } from 'ui/src/Link/types'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 
 export type LinkProps = {

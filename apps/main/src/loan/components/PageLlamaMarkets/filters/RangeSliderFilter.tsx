@@ -1,10 +1,10 @@
+import { get } from 'lodash'
 import { useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { get } from 'lodash'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 /**

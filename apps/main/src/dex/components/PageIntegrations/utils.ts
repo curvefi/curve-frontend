@@ -1,10 +1,11 @@
+import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
 import type { FilterKey } from '@/dex/components/PageIntegrations/types'
+import { ChainId } from '@/dex/types/main.types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 import type { ChainOption } from '@ui-kit/features/switch-chain'
-import { ChainId } from '@/dex/types/main.types'
 
 export function parseSearchParams(
-  searchParams: URLSearchParams | undefined,
+  searchParams: ReadonlyURLSearchParams | null,
   rChainId: ChainId | '',
   visibleNetworksList: Iterable<ChainOption<ChainId>>,
   integrationsTags: IntegrationsTags | null,

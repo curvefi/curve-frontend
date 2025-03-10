@@ -1,15 +1,15 @@
 import { ReactNode, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
-import { useNetworkFromUrl } from '@/dex/utils/utilsRouter'
-import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
-import { isFailure, isLoading } from '@ui/utils'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
-import useStore from '@/dex/store/useStore'
 import Header from '@/dex/layout/default/Header'
+import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
+import useStore from '@/dex/store/useStore'
+import { getPath, useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import { isFailure, isLoading } from '@ui/utils'
+import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
@@ -54,7 +54,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="main" networkName={rNetwork} />
+      <Footer appName="dex" networkName={rNetwork} />
     </Container>
   )
 }
@@ -66,8 +66,8 @@ const getSections = (network: string) => [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
-      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}`, label: t`Risk Disclaimers` },
-      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
+      { route: getPath({ network }, ROUTE.PAGE_DISCLAIMER), label: t`Risk Disclaimers` },
+      { route: getPath({ network }, ROUTE.PAGE_INTEGRATIONS), label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(isChinese() ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],

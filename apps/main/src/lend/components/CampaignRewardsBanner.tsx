@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
-import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
+import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
+import { t } from '@ui-kit/lib/i18n'
 
 interface CampaignRewardsBannerProps {
   borrowAddress: string

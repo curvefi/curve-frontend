@@ -1,13 +1,13 @@
-import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
-import { t } from '@ui-kit/lib/i18n'
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
+import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
-import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import { Curve, Llamma } from '@/loan/types/loan.types'
+import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { t } from '@ui-kit/lib/i18n'
 
 const LoanCreate = ({
   fetchInitial,
@@ -17,7 +17,7 @@ const LoanCreate = ({
   fetchInitial: (curve: Curve, isLeverage: boolean, llamma: Llamma) => void
 }) => {
   const { curve, llamma, loanExists, params, rCollateralId, rFormType } = props
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const collateralAlert = useCollateralAlert(llamma?.address)
 
   const FORM_TYPES: { key: string; label: string }[] = [
@@ -34,15 +34,15 @@ const LoanCreate = ({
   const handleTabClick = useCallback(
     (formType: FormType) => {
       if (loanExists) {
-        navigate(getLoanManagePathname(params, rCollateralId, 'loan'))
+        push(getLoanManagePathname(params, rCollateralId, 'loan'))
       } else {
         if (curve && llamma) {
           fetchInitial(curve, formType === 'leverage', llamma)
         }
-        navigate(getLoanCreatePathname(params, rCollateralId, formType))
+        push(getLoanCreatePathname(params, rCollateralId, formType))
       }
     },
-    [curve, fetchInitial, llamma, loanExists, navigate, params, rCollateralId],
+    [curve, fetchInitial, llamma, loanExists, push, params, rCollateralId],
   )
 
   return (

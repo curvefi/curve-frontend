@@ -1,6 +1,6 @@
-import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 import styled from 'styled-components'
 import CampaignRewardsComp from 'ui/src/CampaignRewards/CampaignRewardsComp'
+import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 
 interface Props {
   rewardItems: RewardsPool[]

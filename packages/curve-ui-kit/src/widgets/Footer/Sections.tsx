@@ -1,42 +1,38 @@
-import { t } from '@ui-kit/lib/i18n'
-import YouTubeIcon from '@mui/icons-material/YouTube'
-import GitHubIcon from '@mui/icons-material/GitHub'
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
-import { XIcon } from '@ui-kit/shared/icons/XIcon'
-import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
-import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
-import { DuneIcon } from '@ui-kit/shared/icons/DuneIcon'
+import YouTubeIcon from '@mui/icons-material/YouTube'
+import { t } from '@ui-kit/lib/i18n'
 import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
-import { NewsIcon } from '@ui-kit/shared/icons/NewsIcon'
-import { IntegrationsIcon } from '@ui-kit/shared/icons/IntegrationsIcon'
+import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
 import { DocsIcon } from '@ui-kit/shared/icons/DocsIcon'
-import { TelegramIcon } from '@ui-kit/shared/icons/TelegramIcon'
-import { TelegramCNIcon } from '@ui-kit/shared/icons/TelegramCNIcon'
-import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
+import { DuneIcon } from '@ui-kit/shared/icons/DuneIcon'
+import { IntegrationsIcon } from '@ui-kit/shared/icons/IntegrationsIcon'
+import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
+import { NewsIcon } from '@ui-kit/shared/icons/NewsIcon'
 import { RiskDisclaimersIcon } from '@ui-kit/shared/icons/RiskDisclaimersIcon'
-import { SectionProps } from './Section'
+import { TelegramCNIcon } from '@ui-kit/shared/icons/TelegramCNIcon'
+import { TelegramIcon } from '@ui-kit/shared/icons/TelegramIcon'
+import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
+import { XIcon } from '@ui-kit/shared/icons/XIcon'
 import { AppName } from '@ui-kit/shared/routes'
 
 function getDisclaimersTab(appName: AppName) {
-  if (appName === 'crvusd') {
-    if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
-      return '?tab=scrvusd'
-    }
-
-    return '?tab=crvusd'
-  }
-
   if (appName === 'lend') {
     return '?tab=lend'
   }
-
-  return ''
+  if (appName !== 'crvusd') {
+    return ''
+  }
+  if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
+    return '?tab=scrvusd'
+  }
+  return '?tab=crvusd'
 }
 
-export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>[] => [
+export const getSections = (appName: AppName) => [
   {
     title: t`Community`,
     links: [
@@ -93,7 +89,7 @@ export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>
       {
         label: t`Integrations`,
         // Would've loved to have used ROUTE.PAGE_INTEGRATIONS, but they differ per app.
-        href: '/integrations',
+        href: 'integrations/',
         icon: <IntegrationsIcon />,
       },
       {
@@ -108,7 +104,7 @@ export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>
       },
       {
         label: t`Risk Disclaimers`,
-        href: `/disclaimer${getDisclaimersTab(appName)}`,
+        href: `disclaimer/${getDisclaimersTab(appName)}`,
         icon: <RiskDisclaimersIcon />,
       },
     ],

@@ -1,12 +1,12 @@
-import { getBackgroundUrl } from '@ui/utils'
+import NextImage from 'next/image'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { LogoImg } from '@ui/images'
 import { styled } from '@mui/material/styles'
-import NextImage from 'next/image'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LogoImg } from '@ui/images'
+import { getBackgroundUrl } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 type ConnectWalletPromptProps = {
   description: string

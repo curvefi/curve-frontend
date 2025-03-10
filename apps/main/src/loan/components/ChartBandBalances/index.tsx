@@ -1,6 +1,4 @@
-import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
-import { t } from '@ui-kit/lib/i18n'
+import { Dispatch, useMemo } from 'react'
 import {
   Bar,
   Brush,
@@ -15,16 +13,18 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Dispatch, useMemo } from 'react'
 import styled from 'styled-components'
-import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { getTokenName } from '@/loan/utils/utilsLoan'
-import useStore from '@/loan/store/useStore'
 import ChartBandBalancesSettings from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
+import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
+import useStore from '@/loan/store/useStore'
+import { BandsBalancesData } from '@/loan/types/loan.types'
+import { getTokenName } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { BandsBalancesData } from '@/loan/types/loan.types'
+import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   brushIndex: BrushStartEndIndex

@@ -1,5 +1,5 @@
-import { DesignSystem } from './design'
 import type { Components } from '@mui/material/styles'
+import { DesignSystem } from './design'
 
 export const defineMuiSwitch = ({
   Switch: { Default, Checked },

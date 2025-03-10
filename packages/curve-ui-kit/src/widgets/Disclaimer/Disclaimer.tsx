@@ -1,14 +1,14 @@
-import { t } from '@ui-kit/lib/i18n'
+'use client'
 import Stack from '@mui/material/Stack'
+import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useTabFromQueryString } from '@ui-kit/hooks/useTabFromQueryString'
-import { LastUpdated } from './LastUpdated'
 import { Footer } from './Footer'
+import { LastUpdated } from './LastUpdated'
 import { TabPanel } from './TabPanel'
+import { CrvUsd } from './Tabs/CrvUsd'
 import { Dex } from './Tabs/Dex'
 import { LlamaLend } from './Tabs/LlamaLend'
-import { CrvUsd } from './Tabs/CrvUsd'
 import { SCrvUsd } from './Tabs/SCrvUsd'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
@@ -20,16 +20,19 @@ const TABS = [
   { value: 'scrvusd', label: t`Savings crvUSD` },
 ] as const
 
-type Props = {
-  className?: string
-}
+export type DisclaimerTabId = (typeof TABS)[number]['value']
 
-export const Disclaimer = ({ className }: Props) => {
-  const { tab, setTab } = useTabFromQueryString(TABS, 'dex')
-
-  return (
+export const Disclaimer = ({ tab, network }: { tab: DisclaimerTabId; network: string }) => (
+  <Stack
+    alignItems="center"
+    gap={Spacing.xl}
+    sx={{
+      marginInline: 'auto',
+      marginBlockStart: Spacing.xl,
+      marginBlockEnd: Spacing.xxl,
+    }}
+  >
     <Stack
-      className={className}
       sx={{
         maxWidth: MaxWidth.disclaimer,
         paddingInline: Spacing.md,
@@ -44,17 +47,17 @@ export const Disclaimer = ({ className }: Props) => {
         justifyContent="space-between"
         spacing={Spacing.md}
       >
-        <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={[...TABS]} />
+        <TabsSwitcher variant="contained" value={tab} options={[...TABS]} />
         <LastUpdated />
       </Stack>
 
       <TabPanel>
         {tab === 'dex' && <Dex />}
-        {tab === 'lend' && <LlamaLend />}
+        {tab === 'lend' && <LlamaLend network={network} />}
         {tab === 'crvusd' && <CrvUsd />}
         {tab === 'scrvusd' && <SCrvUsd />}
         <Footer />
       </TabPanel>
     </Stack>
-  )
-}
+  </Stack>
+)

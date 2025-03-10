@@ -1,39 +1,38 @@
-import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@ui/Integration/types'
-import type { NavigateFunction, Params } from 'react-router'
-import { Trans } from '@ui-kit/lib/i18n'
-import { useCallback, useEffect, useMemo } from 'react'
+import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
+import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
 import { ROUTE } from '@/lend/constants'
-import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
-import { getPath } from '@/lend/utils/utilsRouter'
-import { useFocusRing } from '@react-aria/focus'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
+import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/lend/types/lend.types'
+import { getPath } from '@/lend/utils/utilsRouter'
+import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
+import type { IntegrationsTags } from '@ui/Integration/types'
 import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
-import { ChainId, NetworkEnum } from '@/lend/types/lend.types'
+import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
+import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  navigate,
   params,
   rChainId,
   searchParams,
 }: {
   integrationsTags: IntegrationsTags
-  navigate: NavigateFunction
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId | ''
-  searchParams: URLSearchParams
+  searchParams: ReadonlyURLSearchParams | null
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
-
+  const { push } = useRouter()
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)
@@ -56,7 +55,7 @@ const IntegrationsComp = ({
 
   // get filterKey from url
   const parsedSearchParams = useMemo(() => {
-    const searchParamsFilterKey = searchParams.get('filter')
+    const searchParamsFilterKey = searchParams?.get('filter')
     const parsed: { filterKey: FilterKey } = { filterKey: 'all' }
 
     if (searchParamsFilterKey) {
@@ -72,10 +71,8 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) => {
-    const pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`)
-    navigate(pathname)
-  }
+  const updateRouteFilterKey = (filterKey: FilterKey) =>
+    push(getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`))
 
   const parsedResults = results === null ? integrationsList : results
 

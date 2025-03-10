@@ -4,10 +4,10 @@ import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
 import { Popover2, Popover2Button } from 'ui/src/Popover2'
-import { PopoverProps } from './Popover2'
 import { OverlayTriggerProps } from '@react-types/overlays'
-import { DialogProps } from './Popover2Dialog'
+import { PopoverProps } from './Popover2'
 import { Popover2ButtonProps } from './Popover2Button'
+import { DialogProps } from './Popover2Dialog'
 
 type Props = Partial<PopoverProps> &
   OverlayTriggerProps &

@@ -1,18 +1,22 @@
-import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ConnectState } from '@ui/utils'
-import { isFailure, isLoading, isSuccess } from '@ui/utils'
-import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import { ethers } from 'ethers'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/lend/constants'
-import { getNetworkFromUrl, parseParams } from '@/lend/utils/utilsRouter'
+import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
 import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { ChainId, PageProps, Wallet } from '@/lend/types/lend.types'
+import { ChainId, type NetworkEnum, PageProps, type UrlParams, Wallet } from '@/lend/types/lend.types'
+import { getNetworkFromUrl, getPath, parseParams } from '@/lend/utils/utilsRouter'
+import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
+import type { ConnectState } from '@ui/utils'
+import { isFailure, isLoading, isSuccess } from '@ui/utils'
+import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
+function usePageOnMount(chainIdNotRequired?: boolean) {
+  const params = useParams() as UrlParams
+  const pathname = usePathname()
+  const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
   const api = useStore((state) => state.api)
@@ -96,7 +100,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
               if (foundNetwork && isActiveNetwork) {
                 console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-                navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+                push(getPath({ network: foundNetwork as NetworkEnum }, `/${parsedParams.restFullPathname}`))
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
                 updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -111,7 +115,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState, setWalletName],
+    [connect, push, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -146,7 +150,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
                 parsedParams,
                 error,
               )
-              navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+              push(getPath({ network: foundNetwork as NetworkEnum }, `/${parsedParams.restFullPathname}`))
               updateConnectState('success', '')
             } else {
               updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
@@ -157,7 +161,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, parsedParams, setChain, updateConnectState, wallet],
+    [push, parsedParams, setChain, updateConnectState, wallet],
   )
 
   // onMount
@@ -169,9 +173,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
       if (!isActiveNetwork) {
         console.warn(`Network ${routerNetwork} is not active, redirecting to default network`)
-        navigate(`/ethereum${ROUTE.PAGE_MARKETS}`)
+        push(getPath({ network: 'ethereum' }, ROUTE.PAGE_MARKETS))
       } else {
-        updateGlobalStoreByKey('routerProps', { params, location, navigate })
         if (walletName) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {
@@ -180,12 +183,11 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate])
+  }, [push])
 
   useEffect(() => {
     if (connectState.status || connectState.stage) {
       if (isSuccess(connectState)) {
-        updateGlobalStoreByKey('routerProps', { params, location, navigate })
       } else if (isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)) {
         handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
@@ -213,7 +215,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-          navigate(`/${foundNetwork}/${parsedParams.restFullPathname}`)
+          push(getPath({ network: foundNetwork as NetworkEnum }, `/${parsedParams.restFullPathname}`))
         } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
@@ -230,7 +232,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         api &&
         api.chainId === walletChainId &&
         parsedParams.rChainId !== walletChainId &&
-        location.pathname !== ROUTE.PAGE_INTEGRATIONS
+        pathname !== ROUTE.PAGE_INTEGRATIONS
       ) {
         // switch network if url network is not same as wallet
         updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
@@ -240,7 +242,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+  }, [pathname])
 
   return {
     pageLoaded: connectState.status === 'success',

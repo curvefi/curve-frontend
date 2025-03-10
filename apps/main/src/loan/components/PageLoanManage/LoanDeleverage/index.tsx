@@ -1,48 +1,48 @@
-import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
-import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import type { Step } from '@ui/Stepper/types'
-import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import { useRouter } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import AlertFormError from '@/loan/components/AlertFormError'
+import AlertFormWarning from '@/loan/components/AlertFormWarning'
+import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
+import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import DetailInfoTradeRoutes from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
+import DialogHighPriceImpactWarning from '@/loan/components/PageLoanManage/LoanDeleverage/components/DialogHighPriceImpactWarning'
+import LoanDeleverageAlertFull from '@/loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull'
+import LoanDeleverageAlertPartial from '@/loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
+import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_HEALTH_MODE,
   hasDeleverage,
 } from '@/loan/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
-import { REFRESH_INTERVAL } from '@/loan/constants'
-import { curveProps } from '@/loan/utils/helpers'
-import { formatNumber } from '@ui/utils'
-import { getActiveStep } from '@ui/Stepper/helpers'
-import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import networks from '@/loan/networks'
-import usePageVisibleInterval from '@/loan/hooks/usePageVisibleInterval'
 import useStore from '@/loan/store/useStore'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
+import { Curve, Llamma } from '@/loan/types/loan.types'
+import { curveProps } from '@/loan/utils/helpers'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@/loan/components/AlertFormError'
-import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DialogHighPriceImpactWarning from '@/loan/components/PageLoanManage/LoanDeleverage/components/DialogHighPriceImpactWarning'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
-import DetailInfoTradeRoutes from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanDeleverageAlertFull from '@/loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull'
-import LoanDeleverageAlertPartial from '@/loan/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
+import { getActiveStep } from '@ui/Stepper/helpers'
+import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -53,7 +53,7 @@ const LoanDeleverage = ({
   rChainId,
 }: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'>) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.loanDeleverage.activeKey)
   const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO
@@ -122,7 +122,7 @@ const LoanDeleverage = ({
               if (resp.loanExists) {
                 updateFormValues({}, '', true)
               } else {
-                navigate(getCollateralListPathname(params))
+                push(getCollateralListPathname(params))
               }
             }}
           />,
@@ -130,7 +130,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, params, rChainId, updateFormValues],
+    [activeKey, collateralName, fetchStepRepay, push, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

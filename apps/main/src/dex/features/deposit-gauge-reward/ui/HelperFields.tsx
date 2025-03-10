@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import { FlexContainer } from '@ui/styled-containers'
 import useStore from '@/dex/store/useStore'
+import { FlexContainer } from '@ui/styled-containers'
 
 export const HelperFields = () => {
   const { watch } = useFormContext<DepositRewardFormValues>()

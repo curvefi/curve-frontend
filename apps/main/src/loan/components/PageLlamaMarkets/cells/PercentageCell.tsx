@@ -1,7 +1,7 @@
 import { LlamaMarket } from '@/loan/entities/llama-markets'
+import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
-import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

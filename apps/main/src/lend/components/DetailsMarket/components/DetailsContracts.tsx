@@ -1,13 +1,13 @@
-import { t } from '@ui-kit/lib/i18n'
-import { INVALID_ADDRESS } from '@/lend/constants'
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
-import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
+import { ReactNode } from 'react'
 import ChipInactive from '@/lend/components/ChipInactive'
 import DetailInfoAddressLookup from '@/lend/components/DetailsMarket/components/DetailInfoAddressLookup'
+import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import TokenLabel from '@/lend/components/TokenLabel'
+import { INVALID_ADDRESS } from '@/lend/constants'
 import { PageContentProps } from '@/lend/types/lend.types'
-import { ReactNode } from 'react'
+import Box from '@ui/Box'
+import Chip from '@ui/Typography/Chip'
+import { t } from '@ui-kit/lib/i18n'
 
 type ContractItems = { label: ReactNode; address: string | undefined; invalidText?: string }[]
 

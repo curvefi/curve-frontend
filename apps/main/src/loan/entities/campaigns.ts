@@ -1,7 +1,7 @@
-import campaigns from '@external-rewards'
 import { CampaignRewardsItem, RewardsAction, RewardsTags } from '@ui/CampaignRewards/types'
-import { queryFactory } from '@ui-kit/lib/model'
 import { EmptyValidationSuite } from '@ui-kit/lib'
+import { queryFactory } from '@ui-kit/lib/model'
+import campaigns from '@external-rewards'
 
 export type PoolRewards = {
   action: RewardsAction

@@ -1,18 +1,19 @@
-import { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react'
+import { useParams } from 'next/navigation'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
+import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
+import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
+import { CRYPTOSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
+import useStore from '@/dex/store/useStore'
+import type { UrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import { useParams } from 'react-router-dom'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { breakpoints } from '@ui/utils/responsive'
-import useStore from '@/dex/store/useStore'
-import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
-import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
 import { ExternalLink } from '@ui/Link'
+import { breakpoints } from '@ui/utils/responsive'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>
@@ -26,9 +27,9 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
   const updatePoolPresetIndex = useStore((state) => state.createPool.updatePoolPresetIndex)
   const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
 
-  const params = useParams()
-
   const overlayTriggerState = useOverlayTriggerState({})
+
+  const params = useParams() as UrlParams
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
 

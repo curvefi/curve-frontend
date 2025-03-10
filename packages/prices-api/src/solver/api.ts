@@ -1,7 +1,7 @@
 import { getHost, type Options, type Address } from '..'
 import { fetchJson as fetch } from '../fetch'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export async function getCompetition(tx: Address, options?: Options) {
   const host = getHost(options)

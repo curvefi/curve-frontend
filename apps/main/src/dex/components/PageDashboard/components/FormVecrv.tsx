@@ -1,29 +1,29 @@
-import type { Step } from '@ui/Stepper/types'
-import type { FormStatus } from '@/dex/components/PageDashboard/types'
+import { useParams } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@ui/utils/responsive'
-import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { getStepStatus } from '@ui/Stepper/helpers'
-import { formatNumber } from '@ui/utils'
-import dayjs from '@ui-kit/lib/dayjs'
-import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import useStore from '@/dex/store/useStore'
-import { Chip } from '@ui/Typography'
-import { InternalLink } from '@ui/Link'
-import { Items } from '@ui/Items'
 import { SummaryInnerContent } from '@/dex/components/PageDashboard/components/Summary'
+import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { Title } from '@/dex/components/PageDashboard/styles'
+import type { FormStatus } from '@/dex/components/PageDashboard/types'
+import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
+import { ROUTE } from '@/dex/constants'
+import useStore from '@/dex/store/useStore'
+import { CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
+import { Items } from '@ui/Items'
+import { InternalLink } from '@ui/Link'
 import Stepper from '@ui/Stepper'
+import { getStepStatus } from '@ui/Stepper/helpers'
+import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { CurveApi } from '@/dex/types/main.types'
+import { Chip } from '@ui/Typography'
+import { formatNumber } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
+import dayjs from '@ui-kit/lib/dayjs'
+import { t, Trans } from '@ui-kit/lib/i18n'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -33,7 +33,7 @@ const FormVecrv = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
-  const params = useParams()
+  const params = useParams() as NetworkUrlParams
   const isSubscribed = useRef(false)
 
   const activeKeyVecrv = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
@@ -122,16 +122,18 @@ const FormVecrv = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, lockedAmount, parsedFormStatus])
 
-  const adjustVecrvUrl = `${ROUTE.PAGE_LOCKER}${
-    +signerVecrvInfo?.lockedAmountAndUnlockTime.lockedAmount > 0
-      ? ROUTE.PAGE_LOCKER_ADJUST_CRV
-      : ROUTE.PAGE_LOCKER_CREATE
-  }`
+  const adjustVecrvUrl = getPath(
+    params,
+    `${ROUTE.PAGE_LOCKER}${
+      +signerVecrvInfo?.lockedAmountAndUnlockTime.lockedAmount > 0
+        ? ROUTE.PAGE_LOCKER_ADJUST_CRV
+        : ROUTE.PAGE_LOCKER_CREATE
+    }`,
+  )
 
   return (
     <>
-      <StyledTitle>veCRV</StyledTitle>{' '}
-      {params && <AdjustVecrvLink href={getPath(params, adjustVecrvUrl)}>{t`Adjust veCrv`}</AdjustVecrvLink>}
+      <StyledTitle>veCRV</StyledTitle> <AdjustVecrvLink href={adjustVecrvUrl}>{t`Adjust veCrv`}</AdjustVecrvLink>
       {isLockExpired ? (
         <Wrapper>
           <div>

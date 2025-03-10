@@ -1,37 +1,35 @@
-import type { FormValues } from '@/dex/components/PageIntegrations/types'
-import type { IntegrationsTags } from '@ui/Integration/types'
-import type { NavigateFunction, Params } from 'react-router'
-import { useFocusRing } from '@react-aria/focus'
-import { Trans } from '@ui-kit/lib/i18n'
 import Image from 'next/image'
-import styled from 'styled-components'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Key, useCallback, useEffect, useMemo } from 'react'
-import { ROUTE } from '@/dex/constants'
-import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
-import { getPath } from '@/dex/utils/utilsRouter'
+import styled from 'styled-components'
+import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
+import type { FormValues } from '@/dex/components/PageIntegrations/types'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
+import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
+import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
+import type { IntegrationsTags } from '@ui/Integration/types'
 import SearchInput from '@ui/SearchInput'
 import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
-import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
-import { ChainId, NetworkEnum } from '@/dex/types/main.types'
+import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
+import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  navigate,
   params,
   rChainId,
-  searchParams,
 }: {
   integrationsTags: IntegrationsTags
-  navigate: NavigateFunction
-  params: Params
+  params: NetworkUrlParams
   rChainId: ChainId | ''
-  searchParams: URLSearchParams
 }) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const connectState = useStore((state) => state.connectState)
@@ -61,7 +59,7 @@ const IntegrationsComp = ({
   const updatePath = useCallback(
     ({ filterKey, filterNetworkId }: { filterKey?: Key; filterNetworkId?: Key }) => {
       const pSearchParams = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
-      let pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}`)
+      let pathname = getPath(params, ROUTE.PAGE_INTEGRATIONS)
 
       // get filter Key
       let pFilterKey = filterKey ?? pSearchParams.filterKey ?? ''
@@ -73,9 +71,9 @@ const IntegrationsComp = ({
       pFilterNetworkId = pFilterNetworkId && pFilterNetworkId == rChainId ? '' : pFilterNetworkId
       if (pFilterNetworkId) pathname += `${pFilterKey ? '&' : '?'}networkId=${pFilterNetworkId}`
 
-      navigate(pathname)
+      push(pathname)
     },
-    [integrationsTags, navigate, params, rChainId, searchParams, visibleNetworksList],
+    [integrationsTags, push, params, rChainId, searchParams, visibleNetworksList],
   )
 
   const filterKeyLabel = useMemo(() => {

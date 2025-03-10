@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import { CONNECT_STAGE } from '@/lend/constants'
-import { isLoading } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
+import { isLoading } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const LoanFormConnect = ({
   haveSigner,

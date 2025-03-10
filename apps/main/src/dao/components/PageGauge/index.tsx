@@ -1,19 +1,20 @@
 import styled from 'styled-components'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
 import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
+import useStore from '@/dao/store/useStore'
+import type { GaugeUrlParams } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import BackButton from '../BackButton'
 import GaugeHeader from './GaugeHeader'
 import GaugeMetrics from './GaugeMetrics'
 import GaugeVotesTable from './GaugeVotesTable'
-import BackButton from '../BackButton'
 
 type GaugeProps = {
-  routerParams: {
-    rGaugeAddress: string
-  }
+  routerParams: GaugeUrlParams
 }
 
-const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
+const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
   const { gaugeMapper, gaugesLoading } = useStore((state) => state.gauges)
 
@@ -23,7 +24,7 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
 
   return (
     <Wrapper>
-      <BackButton path="/ethereum/gauges" label="Back to gauges" />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label="Back to gauges" />
       <GaugePageContainer variant="secondary">
         <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />

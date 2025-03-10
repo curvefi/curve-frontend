@@ -1,14 +1,13 @@
-import type { Params } from 'react-router'
+import { useMemo } from 'react'
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
-import { useMemo } from 'react'
-import { NetworkEnum, RouterParams } from '@/dex/types/main.types'
+import { FormTypes, NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
 
-export const getPath = ({ network }: Params, rerouteRoute: string) => `${network ? `/${network}` : ''}${rerouteRoute}`
+export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dex/${network}${rerouteRoute}`
 
-export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
-  const { pool, transfer, lockedCrvFormType } = params
-  const paths = window.location.hash.substring(2).split('/')
+export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean) {
+  const { pool, formType } = params
+  const paths = window.location.pathname.substring(1).split('/')
 
   const network = useNetworkFromUrl()
 
@@ -33,36 +32,15 @@ export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
 
   let rFormType: RouterParams['rFormType'] = ''
 
-  // formType
-  if (transfer) {
-    const parsedTransfer = transfer.toLowerCase()
-    if (parsedTransfer === 'deposit') {
-      rFormType = 'deposit'
-    } else if (parsedTransfer === 'withdraw') {
-      rFormType = 'withdraw'
-    } else if (parsedTransfer === 'swap') {
-      rFormType = 'swap'
-    } else if (parsedTransfer === 'manage-gauge') {
-      rFormType = 'manage-gauge'
-    }
-  }
-
-  // locked crv formType
-  if (lockedCrvFormType) {
-    const formType = lockedCrvFormType.toLowerCase()
-    if (formType === 'adjust_crv') {
-      rFormType = 'adjust_crv'
-    } else if (formType === 'adjust_date') {
-      rFormType = 'adjust_date'
-    } else if (formType === 'create') {
-      rFormType = 'create'
-    }
+  if (formType?.[0]) {
+    const type = formType[0].toLowerCase()
+    rFormType = FormTypes.find((t) => t == type) ?? ''
   }
 
   const parsedPathname = `${network.rNetwork}/${rSubdirectory}`
   const redirectPathname =
-    window.location.hash.substring(1).startsWith(parsedPathname) ||
-    (chainIdNotRequired && window.location.hash.substring(1).startsWith(`${rSubdirectory}`))
+    window.location.pathname.startsWith(parsedPathname) ||
+    (chainIdNotRequired && window.location.pathname.startsWith(`${rSubdirectory}`))
       ? ''
       : parsedPathname
 
@@ -80,9 +58,9 @@ export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
 export function useNetworkFromUrl() {
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
-  const hash = window.location.hash
+  const pathname = window.location.pathname
   return useMemo(() => {
-    const restPathnames = hash?.substring(2)?.split('/') ?? []
+    const restPathnames = pathname.substring(1).split('/') ?? []
     const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
     const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum
 
@@ -107,17 +85,17 @@ export function useNetworkFromUrl() {
         rChainId: 1 as const,
       }
     }
-  }, [networks, networksIdMapper, hash])
+  }, [networks, networksIdMapper, pathname])
 }
 
 export function useRestFullPathname() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const { rNetworkIdx } = useNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
 }
 
 export function useRestPartialPathname() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
+  const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const lastIdx = restPathnames.length - 1
   if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
     restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]

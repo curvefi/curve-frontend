@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { formatNumber } from '@ui/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
+import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const HopSteps = ({

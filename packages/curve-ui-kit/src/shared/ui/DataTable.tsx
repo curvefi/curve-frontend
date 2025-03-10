@@ -1,19 +1,19 @@
+import { useRouter } from 'next/navigation' // Can't use SxProps for some reason inside an sx *function*
 import { type MouseEvent, ReactNode, useCallback, useRef } from 'react'
-import Typography from '@mui/material/Typography'
-import TableHead from '@mui/material/TableHead'
-import TableCell from '@mui/material/TableCell'
-import TableBody from '@mui/material/TableBody'
 import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useIntersectionObserver } from 'ui'
+import Typography from '@mui/material/Typography'
+import type { SystemStyleObject, Theme } from '@mui/system'
 import { Cell, Column, flexRender, Header, Row, useReactTable } from '@tanstack/react-table'
-import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { useNavigate } from 'react-router'
-import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
+import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Sizing, Spacing, MinWidth, MinHeight } = SizesAndSpaces
 
@@ -55,7 +55,7 @@ const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => 
 const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemStyleObject<Theme> }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   const url = row.original.url
   const onClick = useCallback(
@@ -70,10 +70,10 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
       if (url.startsWith('http')) {
         location.href = url
       } else {
-        navigate(url)
+        push(url)
       }
     },
-    [url, navigate],
+    [url, push],
   )
 
   return (

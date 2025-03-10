@@ -18,8 +18,8 @@ import type {
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/dex/entities/gauge/types'
-import { assertValidity } from '@ui-kit/lib/validation'
 import { GaugeParams } from '@ui-kit/lib/model/query'
+import { assertValidity } from '@ui-kit/lib/validation'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,

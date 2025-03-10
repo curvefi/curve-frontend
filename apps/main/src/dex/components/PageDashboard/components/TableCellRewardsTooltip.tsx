@@ -1,10 +1,10 @@
 import round from 'lodash/round'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import Box from '@ui/Box'
-import { RewardCrv } from '@/dex/types/main.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 type Props = {
   crv?: RewardCrv[]

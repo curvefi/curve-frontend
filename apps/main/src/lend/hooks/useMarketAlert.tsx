@@ -1,7 +1,7 @@
-import type { TooltipProps } from '@ui/Tooltip/types'
 import { ReactNode, useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import { AlertType, ChainId } from '@/lend/types/lend.types'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import { t } from '@ui-kit/lib/i18n'
 
 export type MarketAlert = TooltipProps & {
   alertType: AlertType

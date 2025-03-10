@@ -1,5 +1,5 @@
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { ReactNode } from 'react'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 type Props = {
   children: ReactNode
