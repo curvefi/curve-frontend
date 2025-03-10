@@ -51,7 +51,7 @@ export const SurfacesAndText = {
         secondary: Grays[300],
         tertiary: Grays[400],
         Disabled: Grays[500],
-        highlight: Blues[500],
+        highlight: Blues[400],
         Feedback: {
           Success: Greens[600],
           Warning: Reds[300],

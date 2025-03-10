@@ -14,6 +14,7 @@ import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { hasParentWithClass } from '@ui-kit/utils/dom'
 
 const { Sizing, Spacing, MinWidth, MinHeight } = SizesAndSpaces
 
@@ -42,6 +43,7 @@ const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => 
           paddingInline: Spacing.sm,
           paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
           ...getExtraColumnPadding(column),
+          transition: `color ${TransitionFunction}, border-right ${TransitionFunction}`,
           ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         data-testid={`data-table-cell-${column.id}`}
@@ -61,11 +63,7 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
   const onClick = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => {
       // ignore clicks on elements that should be clickable inside the row
-      let element = e.target as HTMLElement
-      while (element.tagName != 'TR') {
-        if (element.classList.contains(ClickableInRowClass)) return
-        element = element.parentElement as HTMLElement
-      }
+      if (hasParentWithClass(e.target, ClickableInRowClass, { untilTag: 'TR' })) return
       // redirect to the url or navigate to the route
       if (url.startsWith('http')) {
         location.href = url
@@ -84,9 +82,6 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
           borderBottom: `1px solid ${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
           transition: `background-color ${TransitionFunction}, border ${TransitionFunction}`,
-          '& .MuiChip-label, & .MuiLink-root': {
-            transition: `color ${TransitionFunction}`,
-          },
           [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
           '&:hover': {
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
@@ -137,7 +132,7 @@ const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown
             '&:hover': {
               color: `text.highlight`,
             },
-            transition: `color ${TransitionFunction}`,
+            transition: `color ${TransitionFunction}, border-right ${TransitionFunction}`,
           }),
           ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
