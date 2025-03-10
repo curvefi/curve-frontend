@@ -20,6 +20,12 @@ export const defineMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem
         backgroundColor: design.Layer.TypeAction.Hover,
         '.MuiTypography-root': { '--mui-palette-text-primary': 'inherit' },
       },
+      '&.Mui-selected': {
+        backgroundColor: design.Layer.TypeAction.Selected,
+        '&:hover': {
+          backgroundColor: design.Layer.TypeAction.Selected, // usually inverted via <InvertOnHover>
+        },
+      },
     },
     dense: {
       height: ButtonSize.sm,

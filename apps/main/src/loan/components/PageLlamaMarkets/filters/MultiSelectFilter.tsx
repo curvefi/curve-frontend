@@ -6,7 +6,6 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
@@ -51,7 +50,7 @@ export const MultiSelectFilter = <T extends unknown>({
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
   const id = cleanColumnId(field)
-  const value = (columnFilters[id] ?? []) as string[]
+  const selectedOptions = columnFilters[id] as string[] | undefined
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
@@ -61,14 +60,22 @@ export const MultiSelectFilter = <T extends unknown>({
     [id, setColumnFilter, close],
   )
 
-  const onSelectChange = useCallback(
+  const onItemClicked = useCallback(
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
-    (e: SelectChangeEvent<string[]>) => {
-      setColumnFilter(id, (e.target.value as string[]).filter(Boolean))
+    (e: MouseEvent<HTMLLIElement>) => {
+      const optionId = e.currentTarget.getAttribute('data-optionId')!
+      setColumnFilter(
+        id,
+        selectedOptions?.includes(optionId)
+          ? selectedOptions.filter((v) => v !== optionId)
+          : [...(selectedOptions ?? []), optionId],
+      )
     },
-    [setColumnFilter, id],
+    [setColumnFilter, id, selectedOptions],
   )
-  const sx = { minWidth: Math.round(selectWidth || 100) + 'px' }
+
+  // the select component does a lot of stuff with its children, so we cannot add a wrapper for the theme inverter.
+  // therefore, I was forced to reimplement the menu separate from the select component.
   return (
     <>
       <Select
@@ -77,16 +84,14 @@ export const MultiSelectFilter = <T extends unknown>({
         open={false}
         onOpen={open}
         onClose={close}
-        multiple
         displayEmpty
-        value={value}
-        onChange={onSelectChange}
         fullWidth
+        value=""
         data-testid={`multi-select-filter-${id}`}
         size="small"
-        renderValue={(selected) =>
-          selected.length && selected.length < options.length ? (
-            selected.map((optionId, index) => (
+        renderValue={() =>
+          selectedOptions?.length && selectedOptions.length < options.length ? (
+            selectedOptions.map((optionId, index) => (
               <MenuItem
                 key={optionId}
                 sx={{
@@ -110,7 +115,7 @@ export const MultiSelectFilter = <T extends unknown>({
           onClose={close}
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          MenuListProps={{ sx }}
+          MenuListProps={{ sx: { minWidth: Math.round(selectWidth || 100) + 'px' } }}
         >
           <Box sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[3].Outline}` }} component="li">
             <Button color="ghost" size="extraSmall" onClick={onClear}>{t`Clear Selection`}</Button>
@@ -120,10 +125,9 @@ export const MultiSelectFilter = <T extends unknown>({
               <MenuItem
                 ref={menuRef}
                 value={optionId}
-                className={value.includes(optionId) ? 'Mui-selected' : ''}
-                onClick={() => {
-                  onSelectChange({ target: { value: [...value, optionId] } } as SelectChangeEvent<string[]>)
-                }}
+                className={selectedOptions?.includes(optionId) ? 'Mui-selected' : ''}
+                data-optionId={optionId}
+                onClick={onItemClicked}
               >
                 {renderItem?.(optionId) ?? optionId}
               </MenuItem>

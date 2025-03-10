@@ -32,7 +32,6 @@ export const InvertOnHover = ({ children: child, hoverRef, hoverColor = defaultH
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
   const isFocusVisible = useClassObserver(hoverRef, 'Mui-focusVisible')
 
-  // console.log('InvertOnHover', { isHover, transition, sx, chilProps: child.props })
   return (
     <InvertTheme inverted={isHover || isFocusVisible}>
       {cloneElement(child, {
@@ -41,6 +40,7 @@ export const InvertOnHover = ({ children: child, hoverRef, hoverColor = defaultH
         onMouseLeave,
         transition: [`background-color ${TransitionFunction}`, child.props.transition].filter(Boolean).join(', '),
         sx: {
+          color: (theme) => theme.palette.text.secondary, // by default components have color: 'inherit' which breaks the inverted theme
           ...child.props.sx,
           ...(isHover && { backgroundColor: hoverColor }),
         },

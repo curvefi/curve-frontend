@@ -19,7 +19,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphTyp
     <Stack gap={Spacing.xs}>
       <Tooltip title={t`Average rate`} placement="top">
         <Typography variant="tableCellMBold" color="textPrimary">
-          {averageRate == null ? rate || '-' : `${averageRate.toPrecision(4)}%`}
+          {averageRate == null ? '-' : `${averageRate.toPrecision(4)}%`}
         </Typography>
       </Tooltip>
 

@@ -31,7 +31,7 @@ export const SurfacesAndText = {
         },
         Highlight: Blues[500],
         TypeAction: {
-          Selected: Grays[100],
+          Selected: Blues[100],
           Hover: Grays[150],
         },
         Feedback: {
@@ -74,7 +74,7 @@ export const SurfacesAndText = {
         },
         Highlight: Blues[500],
         TypeAction: {
-          Selected: Grays[750],
+          Selected: Blues[900],
           Hover: Grays[800],
         },
         Feedback: {

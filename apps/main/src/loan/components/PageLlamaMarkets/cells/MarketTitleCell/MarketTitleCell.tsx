@@ -33,7 +33,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
           {...(!market.url.startsWith('http') && { component: RouterLink })}
           className={ClickableInRowClass}
         >
-          {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}
+          {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
         </MuiLink>
         <CopyIconButton
           className={ClickableInRowClass}
