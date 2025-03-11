@@ -281,5 +281,6 @@ export const SizesAndSpaces = {
   },
   MaxHeight: {
     popover: '17rem', // 272px
+    tokenSelector: '47rem', // 752px
   },
 } as const
