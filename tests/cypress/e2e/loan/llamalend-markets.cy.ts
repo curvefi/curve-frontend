@@ -70,12 +70,12 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
-    cy.get(`@snapshots.all`).then((calls1) => {
+    cy.get(`@snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
       cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
       cy.wait('@snapshots')
       cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
       cy.wait(range(calls1.length).map(() => '@snapshots'))
-      cy.get(`@snapshots.all`).then((calls2) => {
+      cy.get(`@snapshots.all`, LOAD_TIMEOUT).then((calls2) => {
         expect(calls2.length).to.be.greaterThan(calls1.length)
       })
     })

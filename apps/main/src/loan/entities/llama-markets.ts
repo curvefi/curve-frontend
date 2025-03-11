@@ -153,6 +153,11 @@ const convertMintMarket = (
   userHasPosition: userMintMarkets.has(address),
 })
 
+/**
+ * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
+ * It also fetches the user's favorite markets and user's positions list (withouth the details).
+ * @param userAddress - The user's address
+ */
 export const useLlamaMarkets = (userAddress?: Address) =>
   useQueries({
     queries: [

@@ -10,6 +10,14 @@ const statsColumns = [
   LlamaMarketColumnId.UserDeposited,
 ]
 
+/**
+ * Hook that fetches the user's stats for a given market.
+ * Depending on the column and market type, it fetches the stats from different endpoints.
+ * It returns the stats data and an error if any.
+ * @param market - The market to fetch stats for
+ * @param column - The column to fetch stats for
+ * @returns The stats data and an error if any
+ */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
   const { type, userHasPosition, address, controllerAddress, chain } = market
   const { signerAddress } = useWallet()
