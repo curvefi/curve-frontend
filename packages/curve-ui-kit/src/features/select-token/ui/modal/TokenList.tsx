@@ -3,6 +3,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
@@ -59,10 +60,17 @@ const TokenSection = ({
   return (
     <>
       {title && (
-        <>
+        <Box
+          sx={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            backgroundColor: (theme) => theme.palette.background.paper,
+          }}
+        >
           <CardHeader title={title} size="small" />
           <Divider />
-        </>
+        </Box>
       )}
 
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
