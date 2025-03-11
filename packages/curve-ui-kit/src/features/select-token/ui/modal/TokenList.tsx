@@ -207,8 +207,9 @@ export const TokenList = ({
       const balance = +(balances[token.address] ?? 0)
       const price = tokenPrices[token.address] ?? 0
 
-      // Rare, but also show tokens with a balance but no $ price.
-      return balance > 0 && (price === 0 || balance * price > threshold)
+      // We used to include tokens with a balance > 0, but no $ price (0),
+      // but it turns out that way quite a few scam tokens show up in the preview.
+      return balance * price > threshold
     }
   }, [myTokens, balances, tokenPrices])
 
