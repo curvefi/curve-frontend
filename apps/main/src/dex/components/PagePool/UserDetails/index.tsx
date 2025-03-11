@@ -10,6 +10,7 @@ import Table from '@ui/Table'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 const MySharesStats = ({
   className,

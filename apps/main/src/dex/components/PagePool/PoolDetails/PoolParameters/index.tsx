@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -14,7 +13,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 type PoolParametersProps = {
   pricesApi: boolean
@@ -59,10 +58,6 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
       }
     }
   }, [future_A, future_A_time, initial_A, initial_A_time])
-
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   const returnPoolType = (poolType: string, coins: number) => {
     const isCrypto = poolData.pool.isCrypto
@@ -135,7 +130,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                         <ExternalLinkToken>{token}</ExternalLinkToken>
                       </ExternalLinkTokenWrapper>
                     </StyledExternalLink>
-                    <StyledIconButton size="medium" onClick={() => handleCopyClick(poolData.tokenAddresses[idx])}>
+                    <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </>

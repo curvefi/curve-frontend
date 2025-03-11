@@ -3,11 +3,10 @@ import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
-import { copyToClipboard } from '@/loan/utils/helpers'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -15,26 +14,20 @@ interface Props extends StatsProps {
   address: string
 }
 
-const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => {
-  const handleBtnClickCopy = (tokenAddress: string) => {
-    copyToClipboard(tokenAddress)
-  }
-
-  return (
-    <StyledStats {...props}>
-      <strong>{title}</strong>
-      <span>
-        <StyledExternalLink $noCap isMono href={networks[chainId]?.scanAddressPath(address)}>
-          {shortenAddress(address)}
-          <Icon name="Launch" size={16} />
-        </StyledExternalLink>
-        <CopyIconButton size="medium" onClick={() => handleBtnClickCopy(address)}>
-          <Icon name="Copy" size={16} />
-        </CopyIconButton>
-      </span>
-    </StyledStats>
-  )
-}
+const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => (
+  <StyledStats {...props}>
+    <strong>{title}</strong>
+    <span>
+      <StyledExternalLink $noCap isMono href={networks[chainId]?.scanAddressPath(address)}>
+        {shortenAddress(address)}
+        <Icon name="Launch" size={16} />
+      </StyledExternalLink>
+      <CopyIconButton size="medium" onClick={() => copyToClipboard(address)}>
+        <Icon name="Copy" size={16} />
+      </CopyIconButton>
+    </span>
+  </StyledStats>
+)
 
 const CopyIconButton = styled(IconButton)`
   align-items: center;

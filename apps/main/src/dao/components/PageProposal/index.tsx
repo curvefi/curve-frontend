@@ -6,7 +6,7 @@ import useProposalMapper from '@/dao/hooks/useProposalMapper'
 import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
 import useStore from '@/dao/store/useStore'
 import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
-import { copyToClipboard, getEthPath } from '@/dao/utils'
+import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
@@ -16,6 +16,7 @@ import { breakpoints } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { copyToClipboard } from '@ui-kit/utils'
 import BackButton from '../BackButton'
 import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
 import UserBox from '../UserBox'
@@ -61,10 +62,6 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
         : undefined,
     [proposal?.status, proposal?.startDate],
   )
-
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   useEffect(() => {
     if (snapshotVeCrv === undefined && provider && userAddress && proposal?.snapshotBlock) {
@@ -123,7 +120,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                      <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
+                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.ipfsMetadata)}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />
                       </StyledCopyButton>

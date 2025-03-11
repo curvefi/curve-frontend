@@ -3,11 +3,10 @@ import { useButton } from 'react-aria'
 import type { AriaButtonProps } from 'react-aria'
 import styled from 'styled-components'
 import { getAddress } from 'viem'
-import { copyToClipboard } from '@/dex/lib/utils'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
-import { shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -54,11 +53,6 @@ const ChipPool = ({
   poolAddress,
   ...props
 }: ChipPoolProps) => {
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-    console.log(`Copied ${address}`)
-  }
-
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`
@@ -72,7 +66,7 @@ const ChipPool = ({
         {isHighlightPoolName || isHighlightPoolAddress ? <strong>{poolName}</strong> : poolName}{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
-        <Button {...props} onPress={() => handleCopyClick(poolAddress)}>
+        <Button {...props} onPress={() => copyToClipboard(poolAddress)}>
           <ChipPoolAddress>
             {isHighlightPoolAddress ? <mark>{parsedPoolAddress}</mark> : parsedPoolAddress}
           </ChipPoolAddress>

@@ -7,6 +7,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { copyToClipboard } from '@ui-kit/utils'
 
 export function CopyIconButton({
   copyText,
@@ -28,7 +29,7 @@ export function CopyIconButton({
           className={className}
           size="extraSmall"
           onClick={async () => {
-            await navigator.clipboard.writeText(copyText)
+            copyToClipboard(copyText)
             showAlert()
           }}
         >

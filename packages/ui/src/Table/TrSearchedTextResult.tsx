@@ -1,10 +1,10 @@
-import { shortenAddress } from 'curve-ui-kit/src/utils'
+import { copyToClipboard, shortenAddress } from 'curve-ui-kit/src/utils'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import { breakpoints, handleClickCopy } from 'ui/src/utils'
+import { breakpoints } from 'ui/src/utils'
 
 type Result = { [key: string]: { value: string } }
 
@@ -45,7 +45,7 @@ const TrSearchedTextResult = ({
                       {isMobile ? shortenAddress(value) : value}
                       <Icon name="Launch" size={16} />
                     </StyledExternalLink>
-                    <CopyIconButton size="medium" onClick={() => handleClickCopy(value)}>
+                    <CopyIconButton size="medium" onClick={() => copyToClipboard(value)}>
                       <Icon name="Copy" size={16} />
                     </CopyIconButton>
                   </span>

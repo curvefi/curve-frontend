@@ -4,7 +4,6 @@ import AlertFormError from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import curvejsApi from '@/dex/lib/curvejs'
-import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { getErrorMessage } from '@/dex/utils'
@@ -16,7 +15,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const Compensation = ({
   rChainId,

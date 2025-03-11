@@ -3,11 +3,11 @@ import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
 import networks from '@/dao/networks'
 import { UserMapper } from '@/dao/types/dao.types'
-import { copyToClipboard } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import { ExternalLink } from '@ui/Link'
+import { copyToClipboard } from '@ui-kit/utils'
 
 interface UserHeaderProps {
   userAddress: string
@@ -16,10 +16,6 @@ interface UserHeaderProps {
 
 const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
   const user = userMapper[userAddress]
-
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   return (
     <Wrapper variant="secondary">
@@ -30,7 +26,7 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
             <Box flex flexAlignItems="center">
               <UserAddress>{getAddress(userAddress)}</UserAddress>{' '}
               <Box margin="0 0 0 var(--spacing-1)" flex>
-                <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
+                <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
                   <Icon name="Copy" size={16} />
                 </StyledCopyButton>
                 <StyledExternalLink size="small" href={networks[1].scanAddressPath(userAddress)}>
@@ -42,7 +38,7 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
         </Box>
         {!userMapper[userAddress]?.ens && !TOP_HOLDERS[userAddress]?.title && (
           <Box flex margin="0 0 0 var(--spacing-1)">
-            <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
+            <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
               <Icon name="Copy" size={16} />
             </StyledCopyButton>
             <StyledExternalLink size="small" href={networks[1].scanAddressPath(userAddress)}>

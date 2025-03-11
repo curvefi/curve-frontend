@@ -4,11 +4,10 @@ import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
 import { StyledStats } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
-import { copyToClipboard } from '@/lend/utils/helpers'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -17,11 +16,6 @@ interface Props extends StatsProps {
 }
 
 const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => {
-  const handleBtnClickCopy = (address: string) => {
-    console.log(`copied ${address}`)
-    copyToClipboard(address)
-  }
-
   const isValidAddress = address ? address !== 'NaN' : true
 
   return (
@@ -42,7 +36,7 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
           <CopyIconButton
             isValid={isValidAddress}
             size="medium"
-            onClick={() => (isValidAddress ? handleBtnClickCopy(address) : {})}
+            onClick={() => (isValidAddress ? copyToClipboard(address) : {})}
           >
             <Icon name="Copy" size={16} />
           </CopyIconButton>

@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { copyToClipboard } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -16,7 +17,7 @@ export const ErrorAlert = ({ error }: Props) => (
     variant="filled"
     severity="error"
     action={
-      <Button color="ghost" size="extraSmall" onClick={() => navigator.clipboard.writeText(error)}>
+      <Button color="ghost" size="extraSmall" onClick={() => copyToClipboard(error)}>
         Copy
       </Button>
     }
