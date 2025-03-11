@@ -20,13 +20,11 @@ export type TokenSelectorModalProps = {
   isOpen: boolean
   /** Shows token list management options (currently disabled in UI but wired for future use) */
   showManageList: boolean
-  /** In compact mode the modal doesn't grow into its maximum height */
-  compact: boolean
 }
 
 export type Props = TokenListProps & TokenSelectorModalCallbacks & TokenSelectorModalProps
 
-export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, ...tokenListProps }: Props) => {
+export const TokenSelectorModal = ({ isOpen, showManageList, onClose, ...tokenListProps }: Props) => {
   const [isManageListOpen, openManageList, closeManageList] = useSwitch()
 
   return (
@@ -51,10 +49,8 @@ export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, .
         '& .MuiPaper-root': {
           overflowY: 'hidden',
           maxHeight: MaxHeight.tokenSelector,
-          ...(compact && {
-            height: 'auto',
-            minHeight: 'auto',
-          }),
+          height: 'auto',
+          minHeight: 'auto',
         },
       }}
     >
