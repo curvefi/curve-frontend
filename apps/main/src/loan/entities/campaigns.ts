@@ -27,6 +27,5 @@ const REWARDS: Record<string, PoolRewards> = Object.fromEntries(
 export const { getQueryOptions: getCampaignsOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v1'] as const,
   queryFn: async () => REWARDS,
-  staleTime: '5m',
   validationSuite: EmptyValidationSuite,
 })

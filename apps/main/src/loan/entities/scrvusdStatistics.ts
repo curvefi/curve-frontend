@@ -59,6 +59,5 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
 export const { useQuery: useScrvUsdStatistics } = queryFactory({
   queryKey: () => ['scrvUsdStatistics'] as const,
   queryFn: _fetchSavingsStatistics,
-  staleTime: '5m',
   validationSuite: EmptyValidationSuite,
 })

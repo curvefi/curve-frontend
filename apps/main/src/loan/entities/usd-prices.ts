@@ -11,7 +11,6 @@ export const { getQueryOptions: getCoinPriceOptions } = queryFactory({
     const { data } = (await response.json()) as { data: { address: string; usd_price: number; last_updated: string } }
     return data.usd_price
   },
-  staleTime: '5m',
   validationSuite: contractValidationSuite,
 })
 

@@ -15,12 +15,12 @@ type UseSnapshotsResult<T> = {
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
-  { address, chain, controllerAddress, type: marketType, rates }: LlamaMarket,
+  { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: GraphType,
 ): UseSnapshotsResult<T> {
   const isPool = marketType == LlamaMarketType.Lend
   const showMintGraph = !isPool && type === 'borrow'
-  const contractAddress = isPool ? controllerAddress : address
+  const contractAddress = controllerAddress
   const params = { blockchainId: chain, contractAddress }
   const { data: poolSnapshots, isLoading: poolIsLoading } = useLendingSnapshots(params, isPool)
   const { data: mintSnapshots, isLoading: mintIsLoading } = useCrvUsdSnapshots(params, showMintGraph)

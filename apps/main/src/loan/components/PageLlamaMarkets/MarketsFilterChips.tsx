@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
 import Stack from '@mui/material/Stack'
@@ -10,6 +9,7 @@ import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 
 const { Spacing } = SizesAndSpaces
 
@@ -59,9 +59,9 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
 }
 
 export const MarketsFilterChips = (props: ColumnFilterProps) => {
-  const [myMarkets, toggleMyMarkets] = useToggleFilter('userDeposited', props)
-  const [favorites, toggleFavorites] = useToggleFilter('isFavorite', props)
-  const [rewards, toggleRewards] = useToggleFilter('rewards', props)
+  const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPosition, props)
+  const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
+  const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { signerAddress } = useWallet()
 

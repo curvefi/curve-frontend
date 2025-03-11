@@ -1,9 +1,9 @@
 'use client'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
-import { invalidateLendingVaults, invalidateUserLendingVaults } from '@/loan/entities/lending-vaults'
+import { invalidateAllUserLendingVaults, invalidateLendingVaults } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
-import { invalidateMintMarkets, invalidateUserMintMarkets } from '@/loan/entities/mint-markets'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/loan/entities/mint-markets'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import Box from '@mui/material/Box'
@@ -20,8 +20,8 @@ import { useHeaderHeight } from '@ui-kit/widgets/Header'
 const onReload = (userAddress?: Address) => {
   invalidateLendingVaults({})
   invalidateMintMarkets({})
-  invalidateUserLendingVaults({ userAddress })
-  invalidateUserMintMarkets({ userAddress })
+  invalidateAllUserLendingVaults(userAddress)
+  invalidateAllUserMintMarkets(userAddress)
 }
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
@@ -37,7 +37,7 @@ export const PageLlamaMarkets = () => {
   usePageOnMount() // required for connecting wallet
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
-      {isLoading ? (
+      {!data?.length && isLoading ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
         <LendingMarketsTable

@@ -7,6 +7,7 @@ import {
   RateCell,
 } from '@/loan/components/PageLlamaMarkets/cells'
 import { PriceCell } from '@/loan/components/PageLlamaMarkets/cells/PriceCell'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
@@ -31,26 +32,6 @@ const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>
     meta: { hidden: true },
   })
 
-export enum LlamaMarketColumnId {
-  Assets = 'assets',
-  UserHealth = 'userHealth',
-  UserBorrowed = 'userBorrowed',
-  UserEarnings = 'userEarnings',
-  UserDeposited = 'userDeposited',
-  BorrowRate = 'rates.borrow',
-  BorrowChart = 'borrowChart',
-  LendRate = 'rates.lend',
-  LendChart = 'lendChart',
-  UtilizationPercent = 'utilizationPercent',
-  LiquidityUsd = 'liquidityUsd',
-  Chain = 'chain',
-  CollateralSymbol = 'assets.collateral.symbol',
-  BorrowedSymbol = 'assets.borrowed.symbol',
-  IsFavorite = 'isFavorite',
-  Rewards = 'rewards',
-  Type = 'type',
-}
-
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
@@ -58,28 +39,32 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: MarketTitleCell,
     size: ColumnWidth.lg,
   }),
-  columnHelper.accessor(LlamaMarketColumnId.UserHealth, {
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserHealth,
     header: t`Health`,
     cell: PercentageCell,
     meta: { type: 'numeric', hideZero: true },
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(LlamaMarketColumnId.UserBorrowed, {
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserBorrowed,
     header: t`Borrow Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(LlamaMarketColumnId.UserEarnings, {
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserEarnings,
     header: t`My Earnings`,
     cell: PriceCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(LlamaMarketColumnId.UserDeposited, {
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserDeposited,
     header: t`Supplied Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
@@ -131,6 +116,7 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.IsFavorite, boolFilterFn),
+  hidden(LlamaMarketColumnId.UserHasPosition, boolFilterFn),
   hidden(LlamaMarketColumnId.Rewards, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies ColumnDef<LlamaMarket, any>[]

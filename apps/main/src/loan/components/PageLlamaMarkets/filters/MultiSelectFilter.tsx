@@ -63,7 +63,7 @@ export const MultiSelectFilter = <T extends unknown>({
   const onItemClicked = useCallback(
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
     (e: MouseEvent<HTMLLIElement>) => {
-      const optionId = e.currentTarget.getAttribute('data-optionId')!
+      const optionId = e.currentTarget.getAttribute('data-option-id')!
       setColumnFilter(
         id,
         selectedOptions?.includes(optionId)
@@ -126,7 +126,7 @@ export const MultiSelectFilter = <T extends unknown>({
                 ref={menuRef}
                 value={optionId}
                 className={selectedOptions?.includes(optionId) ? 'Mui-selected' : ''}
-                data-optionId={optionId}
+                data-option-id={optionId}
                 onClick={onItemClicked}
               >
                 {renderItem?.(optionId) ?? optionId}

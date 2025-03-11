@@ -1,4 +1,7 @@
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
+import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
@@ -6,9 +9,22 @@ import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
-export const PriceCell = ({ getValue, row }: CellContext<LlamaMarket, number>) => {
-  const value = getValue()
+export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
+  const { data: stats, error: statsError } = useUserMarketStats(row.original, column.id as LlamaMarketColumnId)
+  const value =
+    {
+      [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
+      [LlamaMarketColumnId.UserEarnings]: stats?.earnings,
+      [LlamaMarketColumnId.UserDeposited]: stats?.deposited,
+    }[column.id] ?? getValue()
   if (!value) {
+    if (statsError) {
+      return (
+        <Tooltip title={statsError.toString()}>
+          <Box>?</Box>
+        </Tooltip>
+      )
+    }
     return '-'
   }
   const { assets, type } = row.original

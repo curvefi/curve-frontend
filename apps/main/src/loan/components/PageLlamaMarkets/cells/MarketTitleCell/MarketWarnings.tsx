@@ -1,3 +1,4 @@
+import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
@@ -12,24 +13,23 @@ const { Spacing } = SizesAndSpaces
 /**
  * Displays warnings for a pool, such as deprecated pools or pools with collateral corrosion.
  */
-export const MarketWarnings = ({
-  market: { userCollateralEroded, userDeposited, deprecatedMessage },
-}: {
-  market: LlamaMarket
-}) => (
-  <Stack direction="row" gap={Spacing.md} sx={{ height: 20 }}>
-    {deprecatedMessage && (
-      <Tooltip title={deprecatedMessage}>
-        <Typography variant="bodySRegular" color="warning" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {t`Deprecated`}
-          <ExclamationTriangleIcon />
-        </Typography>
-      </Tooltip>
-    )}
-    {Boolean(userDeposited) && userCollateralEroded && (
-      <Tooltip title={t`Your position is in eroded`}>
-        <Chip label={t`Collateral erosion`} color="alert" size="small" />
-      </Tooltip>
-    )}
-  </Stack>
-)
+export const MarketWarnings = ({ market }: { market: LlamaMarket }) => {
+  const { isCollateralEroded } = useUserMarketStats(market)?.data ?? {}
+  return (
+    <Stack direction="row" gap={Spacing.md} sx={{ height: 20 }}>
+      {market.deprecatedMessage && (
+        <Tooltip title={market.deprecatedMessage}>
+          <Typography variant="bodySRegular" color="warning" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {t`Deprecated`}
+            <ExclamationTriangleIcon />
+          </Typography>
+        </Tooltip>
+      )}
+      {isCollateralEroded && (
+        <Tooltip title={t`Your position is in eroded`}>
+          <Chip label={t`Collateral erosion`} color="alert" size="small" />
+        </Tooltip>
+      )}
+    </Stack>
+  )
+}
