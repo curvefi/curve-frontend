@@ -5,7 +5,7 @@ import useStore from '@/dao/store/useStore'
 import { getEthPath, getNetworkFromUrl } from '@/dao/utils/utilsRouter'
 import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
-import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
+import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -13,7 +13,7 @@ import { Footer } from '@ui-kit/widgets/Footer'
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const [, globalAlertHeight] = useHeightResizeObserver(globalAlertRef) ?? []
+  const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
 
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layoutHeight)

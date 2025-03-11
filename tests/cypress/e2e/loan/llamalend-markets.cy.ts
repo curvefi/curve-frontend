@@ -8,7 +8,7 @@ import {
 } from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@/support/helpers/tokens'
-import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport } from '@/support/ui'
+import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
 
 describe('LlamaLend Markets', () => {
   let isDarkMode: boolean
@@ -55,7 +55,8 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
-  it('should sort', () => {
+  // todo: contains(%) seems to be too early still, sometimes the handler doesn't react to the click
+  it('should sort', RETRY_IN_CI, () => {
     cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
     cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
@@ -82,8 +83,8 @@ describe('LlamaLend Markets', () => {
 
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', 'Min Liquidity: $0'],
-      ['utilizationPercent', 'Min Utilization: 0.00%'],
+      ['liquidityUsd', 'Liquidity: $0 -'],
+      ['utilizationPercent', 'Utilization: 0.00% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
@@ -138,9 +139,7 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       const [type, otherType] = shuffle('mint', 'lend')
       cy.get(`[data-testid="chip-${type}"]`).click()
-      cy.get(`[data-testid^="pool-type-"]`).each(($el) =>
-        expect($el.attr('data-testid')).equals(`pool-type-${otherType}`),
-      )
+      cy.get(`[data-testid^="pool-type-"]`).each(($el) => expect($el.attr('data-testid')).equals(`pool-type-${type}`))
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
       cy.get(`[data-testid="chip-${otherType}"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
@@ -175,7 +174,7 @@ describe('LlamaLend Markets', () => {
 
 function selectChain(chain: string) {
   cy.get('[data-testid="multi-select-filter-chain"]').click()
-  cy.get(`#menu-chain [data-value="${chain}"]`).click()
+  cy.get(`[data-testid="menu-chain"] [value="${chain}"]`).click()
   cy.get(`body`).click(0, 0) // close popover
 }
 
@@ -184,9 +183,9 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
 
   // deselect previously selected tokens
-  cy.forEach(`#menu-${columnId} [aria-selected="true"]`, (el) => el.click())
+  cy.forEach(`[data-testid="${columnId}"] [aria-selected="true"]`, (el) => el.click())
 
-  cy.get(`#menu-${columnId} [data-value="${symbol}"]`).click()
+  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
 }

@@ -168,18 +168,21 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
       const userVaults = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
+
       return {
         ...combineQueriesMeta(results),
-        ...((lendingVaults || mintMarkets) && {
-          data: [
-            ...(lendingVaults.data ?? [])
-              .filter((vault) => vault.totalAssetsUsd)
-              .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
-            ...(mintMarkets.data ?? []).map((market) =>
-              convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
-            ),
-          ],
-        }),
+        data:
+          // only render table when both lending and mint markets are ready, however show one of them if the other is in error
+          (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
+            ? [
+                ...(lendingVaults.data ?? [])
+                  .filter((vault) => vault.totalAssetsUsd)
+                  .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
+                ...(mintMarkets.data ?? []).map((market) =>
+                  convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
+                ),
+              ]
+            : undefined,
       }
     },
   })

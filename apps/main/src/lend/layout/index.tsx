@@ -9,16 +9,16 @@ import type { UrlParams } from '@/lend/types/lend.types'
 import { getNetworkFromUrl, getPath } from '@/lend/utils/utilsRouter'
 import { isFailure, isLoading } from '@ui/utils'
 import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
-import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
+import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const [, elHeight] = useHeightResizeObserver(globalAlertRef) ?? []
+  const [, elHeight] = useResizeObserver(globalAlertRef) ?? []
   const footerRef = useRef<HTMLDivElement>(null)
-  const [, footerHeight] = useHeightResizeObserver(footerRef) ?? []
+  const [, footerHeight] = useResizeObserver(footerRef) ?? []
   const params = useParams() as UrlParams
 
   const connectState = useStore((state) => state.connectState)

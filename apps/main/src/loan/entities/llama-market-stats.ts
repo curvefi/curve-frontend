@@ -21,9 +21,9 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const enableLendEarnings = enableEarnings && type === LlamaMarketType.Lend
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
-  // todo: api will be updated to use controller address for earnings too
   const params = {
     userAddress: signerAddress,
+    // todo: api will be updated to use controller address for earnings too
     contractAddress: enableEarnings ? address : controllerAddress,
     blockchainId: chain,
   }
@@ -34,19 +34,6 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
 
   const stats = lendData ?? mintData
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
-
-  error &&
-    console.log({
-      type,
-      column,
-      enableLendingStats,
-      enableLendEarnings,
-      enableMintStats,
-      stats,
-      error,
-      earnData,
-    })
-
   return {
     ...(stats && {
       data: {

@@ -1,7 +1,7 @@
 import { type RefObject, useEffect, useState } from 'react'
 
 /** Options for the height resize observer */
-type HeightResizeOptions = {
+type ResizeObserverOptions = {
   threshold?: number
 }
 
@@ -16,11 +16,11 @@ type HeightResizeOptions = {
  * @example
  * // Basic usage
  * const elementRef = useRef<HTMLDivElement>(null);
- * const [width, height] = useHeightResizeObserver(elementRef) ?? [];
+ * const [width, height] = useResizeObserver(elementRef) ?? [];
  *
  * // With custom threshold
  * const bannerRef = useRef<HTMLDivElement>(null);
- * const [,bannerHeight] = useHeightResizeObserver(bannerRef, { threshold: 5 }) ?? [];
+ * const [,bannerHeight] = useResizeObserver(bannerRef, { threshold: 5 }) ?? [];
  *
  * // Using the height in layout calculations
  * useEffect(() => {
@@ -30,9 +30,9 @@ type HeightResizeOptions = {
  *   }
  * }, [height]);
  */
-export default function useHeightResizeObserver(
+export default function useResizeObserver(
   elementRef: RefObject<Element | null>,
-  { threshold = 10 }: HeightResizeOptions = {},
+  { threshold = 10 }: ResizeObserverOptions = {},
 ) {
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 

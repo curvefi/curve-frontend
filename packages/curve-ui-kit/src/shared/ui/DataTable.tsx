@@ -74,13 +74,12 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
     },
     [url, push],
   )
-  const isVisible = entry?.isIntersecting || row.index < AssumeRowsVisible
   return (
     <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverRef={ref}>
       <TableRow
-        sx={(t) => ({
+        sx={{
           marginBlock: 0,
-          borderBottom: `1px solid ${t.design.Layer[1].Outline}`,
+          borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
           transition: `border ${TransitionFunction}`,
           [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
@@ -88,13 +87,14 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
             [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
           },
           ...sx,
-        })}
+        }}
         ref={ref}
         data-testid={`data-table-row-${row.id}`}
         onClick={onClick}
       >
         {/* render cells when visible vertically, so content is lazy loaded */}
-        {isVisible && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
+        {(entry?.isIntersecting || row.index < AssumeRowsVisible) &&
+          row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
       </TableRow>
     </InvertOnHover>
   )

@@ -1,7 +1,7 @@
+import { ErrorCell } from '@/loan/components/PageLlamaMarkets/cells/ErrorCell'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
@@ -18,14 +18,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
       [LlamaMarketColumnId.UserDeposited]: stats?.deposited,
     }[column.id] ?? getValue()
   if (!value) {
-    if (statsError) {
-      return (
-        <Tooltip title={statsError.toString()}>
-          <Box>?</Box>
-        </Tooltip>
-      )
-    }
-    return '-'
+    return statsError ? <ErrorCell error={statsError} /> : '-'
   }
   const { assets, type } = row.original
   const { usdPrice, chain, address, symbol } = { Lend: assets.collateral, Mint: assets.borrowed }[type]

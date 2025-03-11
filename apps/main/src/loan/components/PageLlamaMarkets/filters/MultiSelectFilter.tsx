@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import useHeightResizeObserver from '@ui-kit/hooks/useHeightResizeObserver'
+import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
@@ -46,7 +46,7 @@ export const MultiSelectFilter = <T extends unknown>({
 }) => {
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
-  const [selectWidth] = useHeightResizeObserver(selectRef) ?? []
+  const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
   const id = cleanColumnId(field)
@@ -62,13 +62,13 @@ export const MultiSelectFilter = <T extends unknown>({
 
   const onItemClicked = useCallback(
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
-    (e: MouseEvent<HTMLLIElement>) => {
-      const optionId = e.currentTarget.getAttribute('data-option-id')!
+    ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
+      const value = currentTarget.getAttribute('value')!
       setColumnFilter(
         id,
-        selectedOptions?.includes(optionId)
-          ? selectedOptions.filter((v) => v !== optionId)
-          : [...(selectedOptions ?? []), optionId],
+        selectedOptions?.includes(value)
+          ? selectedOptions.filter((v) => v !== value)
+          : [...(selectedOptions ?? []), value],
       )
     },
     [setColumnFilter, id, selectedOptions],
@@ -111,6 +111,7 @@ export const MultiSelectFilter = <T extends unknown>({
       ></Select>
       {isOpen !== undefined && (
         <Menu
+          data-testid={`menu-${id}`}
           open={isOpen}
           onClose={close}
           anchorEl={selectRef.current}
@@ -126,7 +127,6 @@ export const MultiSelectFilter = <T extends unknown>({
                 ref={menuRef}
                 value={optionId}
                 className={selectedOptions?.includes(optionId) ? 'Mui-selected' : ''}
-                data-option-id={optionId}
                 onClick={onItemClicked}
               >
                 {renderItem?.(optionId) ?? optionId}
