@@ -58,38 +58,46 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
             '.MuiTypography-root': { '--mui-palette-text-primary': 'inherit' },
           },
           ...(disabled && {
-            opacity: 0.5,
             cursor: 'not-allowed',
           }),
         }}
       >
-        <TokenIcon blockchainId={chain} address={address} size="xl" />
+        <TokenIcon
+          blockchainId={chain}
+          address={address}
+          size="xl"
+          sx={{
+            ...(disabled && {
+              filter: 'saturate(0)',
+            }),
+          }}
+        />
 
         <Stack flexGrow={1}>
-          <Typography variant="bodyMBold" color="textPrimary">
+          <Typography variant="bodyMBold" color={disabled ? 'textDisabled' : 'textPrimary'}>
             {symbol}
           </Typography>
 
-          <Typography variant="bodyXsRegular" color="textSecondary">
+          <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textSecondary'}>
             {label}
           </Typography>
         </Stack>
 
         <Stack direction="column" alignItems="end">
           {hasBalance && (
-            <Typography variant="bodyMBold" color="textPrimary">
+            <Typography variant="bodyMBold" color={disabled ? 'textDisabled' : 'textPrimary'}>
               {formatNumber(balance)}
             </Typography>
           )}
 
           {hasBalanceUsd && (
-            <Typography variant="bodyXsRegular" color="textSecondary">
+            <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textSecondary'}>
               {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD)}
             </Typography>
           )}
 
           {showAddress && (
-            <Typography variant="bodyXsRegular" color="textTertiary">
+            <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textTertiary'}>
               {addressShort(address)}
             </Typography>
           )}
