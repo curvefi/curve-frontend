@@ -12,6 +12,7 @@ type UseSnapshotsResult<T> = {
   snapshotKey: keyof T
   rate: number | null
   averageRate: number | null
+  error: unknown
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
@@ -22,20 +23,22 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   const showMintGraph = !isPool && type === 'borrow'
   const contractAddress = controllerAddress
   const params = { blockchainId: chain, contractAddress }
-  const { data: poolSnapshots, isLoading: poolIsLoading } = useLendingSnapshots(params, isPool)
-  const { data: mintSnapshots, isLoading: mintIsLoading } = useCrvUsdSnapshots(params, showMintGraph)
+  const { data: poolSnapshots, isLoading: poolIsLoading, error: poolError } = useLendingSnapshots(params, isPool)
+  const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
   const currentValue = rates[type] ?? null
-  const { snapshots, isLoading, snapshotKey } = isPool
+  const { snapshots, isLoading, snapshotKey, error } = isPool
     ? {
         snapshots: poolSnapshots ?? null,
         isLoading: poolIsLoading,
         snapshotKey: `${type}Apy` as const,
+        error: poolError,
       }
     : {
         snapshots: (showMintGraph && mintSnapshots) || null,
         isLoading: mintIsLoading,
         snapshotKey: 'rate' as const,
+        error: mintError,
       }
 
   const averageRate = useMemo(
@@ -43,5 +46,5 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
     [snapshots, snapshotKey],
   )
 
-  return { snapshots, isLoading, snapshotKey, rate: currentValue, averageRate } as UseSnapshotsResult<T>
+  return { snapshots, isLoading, snapshotKey, rate: currentValue, averageRate, error } as UseSnapshotsResult<T>
 }

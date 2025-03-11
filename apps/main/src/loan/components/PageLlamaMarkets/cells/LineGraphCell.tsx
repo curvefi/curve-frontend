@@ -37,30 +37,35 @@ type RateCellProps = {
  * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
  */
 export const LineGraphCell = ({ market, type }: RateCellProps) => {
-  const { snapshots, snapshotKey, isLoading, averageRate } = useSnapshots(market, type)
+  const sns = useSnapshots(market, type)
+  if (market.chain === 'sonic') console.log(sns)
+  const { snapshots, snapshotKey, isLoading, averageRate, rate, error } = sns
   const { design } = useTheme()
+  if (rate == null) return null // supply yeld disabled for mint markets
   return (
-    averageRate != null && (
-      <Box data-testid={`line-graph-${type}`}>
-        {snapshots?.length ? (
-          <LineChart data={snapshots} {...graphSize} compact>
-            <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
-            <Line
-              type="monotone"
-              dataKey={snapshotKey}
-              stroke={getColor(design, snapshots, snapshotKey)}
-              strokeWidth={1}
-              dot={false}
-            />
-          </LineChart>
-        ) : isLoading ? (
-          <Skeleton {...graphSize} />
-        ) : (
-          <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
-            {t`No historical data`}
-          </Typography>
-        )}
-      </Box>
-    )
+    <Box data-testid={`line-graph-${type}`}>
+      {snapshots?.length ? (
+        <LineChart data={snapshots} {...graphSize} compact>
+          <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
+          <Line
+            type="monotone"
+            dataKey={snapshotKey}
+            stroke={getColor(design, snapshots, snapshotKey)}
+            strokeWidth={1}
+            dot={false}
+          />
+        </LineChart>
+      ) : isLoading && !error ? (
+        <Skeleton {...graphSize} />
+      ) : (
+        <Typography
+          sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }}
+          variant="bodyXsBold"
+          title={error?.toString()}
+        >
+          {error ? t`Failed to load` : t`No historical data`}
+        </Typography>
+      )}
+    </Box>
   )
 }
