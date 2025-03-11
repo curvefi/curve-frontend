@@ -27,6 +27,8 @@ export type TokenSectionProps = Required<
 > &
   Required<Pick<TokenListCallbacks, 'onToken'>> & {
     title?: string
+    /** The label to show on the button that expands the section to show all */
+    showAllLabel?: string
     showAll: boolean
     /**
      * Controls which tokens are visible before "Show more".
@@ -39,6 +41,7 @@ export type TokenSectionProps = Required<
 const TokenSection = ({
   title,
   showAll,
+  showAllLabel,
   preview,
   tokens,
   balances,
@@ -96,7 +99,7 @@ const TokenSection = ({
             // Override variant button height to match menu list item height, so !important is required over '&'.
             sx={{ height: `${ButtonSize.md} !important` }}
           >
-            {t`Show more`}
+            {showAllLabel || t`Show more`}
           </Button>
         )}
       </MenuList>
@@ -244,6 +247,7 @@ export const TokenList = ({
             disabledTokens={disabledTokens}
             preview={myTokensPreview}
             showAll={sections.my || !!search}
+            showAllLabel={t`Show dust`}
             onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
             onToken={onToken}
           />
