@@ -27,15 +27,18 @@ export type TokenSectionProps = Required<
   Required<Pick<TokenListCallbacks, 'onToken'>> & {
     title?: string
     showAll: boolean
-    /** Amount of options to show before a 'Show more' buttons appears if count exceeds limit */
-    limit: number
+    /**
+     * Controls which tokens are visible before "Show more".
+     * Can be a number (quantity limit) or a function that filters tokens.
+     */
+    preview: number | ((token: Option) => boolean)
     onShowAll: () => void
   }
 
 const TokenSection = ({
   title,
   showAll,
-  limit,
+  preview,
   tokens,
   balances,
   tokenPrices,
@@ -45,8 +48,13 @@ const TokenSection = ({
 }: TokenSectionProps) => {
   if (!tokens.length) return null
 
-  const hasMore = tokens.length > limit
-  const displayTokens = showAll ? tokens : tokens.slice(0, limit)
+  const displayTokens = showAll
+    ? tokens
+    : typeof preview === 'number'
+      ? tokens.slice(0, preview)
+      : tokens.filter(preview)
+
+  const hasMore = displayTokens.length < tokens.length
 
   return (
     <>
@@ -172,6 +180,30 @@ export const TokenList = ({
     return { myTokens, allTokens }
   }, [tokensFiltered, disableSorting, balances, tokenPrices])
 
+  /**
+   * Creates a filter function that determines which tokens to show in the preview section
+   * of 'My Tokens' based on their USD value relative to the total portfolio.
+   *
+   * @returns A filter function that returns true for tokens with USD value > 1% of total balance
+   */
+  const myTokensPreview = useMemo(() => {
+    const totalUsdBalance = myTokens.reduce((sum, token) => {
+      const balance = +(balances[token.address] ?? 0)
+      const price = tokenPrices[token.address] ?? 0
+      return sum + balance * price
+    }, 0)
+
+    const threshold = totalUsdBalance * 0.01
+
+    return (token: Option) => {
+      const balance = +(balances[token.address] ?? 0)
+      const price = tokenPrices[token.address] ?? 0
+
+      // Rare, but also show tokens with a balance but no $ price.
+      return balance > 0 && (price === 0 || balance * price > threshold)
+    }
+  }, [myTokens, balances, tokenPrices])
+
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
       {showSearch && (
@@ -201,7 +233,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={Infinity}
+            preview={myTokensPreview}
             showAll={sections.my || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
             onToken={onToken}
@@ -213,7 +245,7 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={300}
+            preview={300}
             showAll={sections.all || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, all: true }))}
             onToken={onToken}
