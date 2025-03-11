@@ -211,7 +211,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
           </TokenType>
         )}
       </Box>
-      <AddressLink href={scanAddressPath(token.address)}>
+      <AddressLink $noCap href={scanAddressPath(token.address)}>
         {shortenAddress(token.address)}
         <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
       </AddressLink>

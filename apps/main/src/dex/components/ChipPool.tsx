@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import { useButton } from 'react-aria'
 import type { AriaButtonProps } from 'react-aria'
 import styled from 'styled-components'
+import { getAddress } from 'viem'
 import { copyToClipboard } from '@/dex/lib/utils'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
@@ -62,7 +63,7 @@ const ChipPool = ({
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`
     }
-    return poolAddress
+    return getAddress(poolAddress)
   }, [poolAddress])
 
   return (

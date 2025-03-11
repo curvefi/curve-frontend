@@ -66,6 +66,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
             {formatNumber(gaugeVote.weight, { notation: 'compact' })}
           </TableData>
           <TableDataLink
+            $noCap
             onClick={(e) => {
               e.preventDefault()
               push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`))

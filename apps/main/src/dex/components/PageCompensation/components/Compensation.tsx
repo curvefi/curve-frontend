@@ -99,7 +99,7 @@ const Compensation = ({
         <Box grid margin="0 1rem 0 0" gridRowGap={1}>
           <div>
             <strong>{token}</strong>{' '}
-            <StyledExternalLink href={networks[rChainId].scanAddressPath(contractAddress)}>
+            <StyledExternalLink $noCap href={networks[rChainId].scanAddressPath(contractAddress)}>
               {shortenAddress(contractAddress)}
               <Icon name="Launch" size={16} />
             </StyledExternalLink>

@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
+import { getAddress } from 'viem'
 import { copyToClipboard } from '@/lend/utils/helpers'
 import Icon from '@ui/Icon'
 import { breakpoints } from '@ui/utils/responsive'
@@ -68,7 +69,7 @@ const ChipCollateral = ({
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`
     }
-    return poolAddress
+    return getAddress(poolAddress)
   }, [poolAddress])
 
   return (

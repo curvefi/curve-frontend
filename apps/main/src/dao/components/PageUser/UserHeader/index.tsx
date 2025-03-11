@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
 import networks from '@/dao/networks'
 import { UserMapper } from '@/dao/types/dao.types'
@@ -24,10 +25,10 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
     <Wrapper variant="secondary">
       <Box flex flexAlignItems="center">
         <Box flex flexColumn flexJustifyContent="center">
-          <h3>{TOP_HOLDERS[userAddress]?.title || user?.ens || userAddress}</h3>
+          <h3>{TOP_HOLDERS[userAddress]?.title || user?.ens || getAddress(userAddress)}</h3>
           {((TOP_HOLDERS[userAddress]?.title && userAddress) || (user?.ens && userAddress)) && (
             <Box flex flexAlignItems="center">
-              <UserAddress>{userAddress}</UserAddress>{' '}
+              <UserAddress>{getAddress(userAddress)}</UserAddress>{' '}
               <Box margin="0 0 0 var(--spacing-1)" flex>
                 <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
                   <Icon name="Copy" size={16} />

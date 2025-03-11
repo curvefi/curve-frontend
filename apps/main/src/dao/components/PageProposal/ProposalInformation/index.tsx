@@ -29,7 +29,7 @@ const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationPro
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
+        <StyledInternalLink $noCap href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
           {shortenAddress(proposal?.creator)}
         </StyledInternalLink>
       </Box>

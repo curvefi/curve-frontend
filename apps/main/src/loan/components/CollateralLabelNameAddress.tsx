@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
+import { getAddress } from 'viem'
 import { copyToClipboard } from '@/loan/utils/helpers'
 import Icon from '@ui/Icon'
 import { breakpoints } from '@ui/utils/responsive'
@@ -69,7 +70,7 @@ const CollateralLabelNameAddress = ({
     if (displayAddress) {
       return `${shortenAddress(displayAddress)}`
     }
-    return displayAddress
+    return getAddress(displayAddress)
   }, [displayAddress])
 
   return (

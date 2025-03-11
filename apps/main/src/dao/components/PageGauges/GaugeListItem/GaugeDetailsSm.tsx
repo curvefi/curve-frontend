@@ -87,7 +87,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
-          <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
+          <StyledExternalLink $noCap href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
             {shortenAddress(gaugeData.address)}
           </StyledExternalLink>
         </StatsRow>
@@ -126,7 +126,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
           <StatTitle>{t`Contract Address`}</StatTitle>
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
-              <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.pool.address)}>
+              <StyledExternalLink $noCap href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.pool.address)}>
                 {shortenAddress(gaugeData.pool.address)}
               </StyledExternalLink>
             </Box>

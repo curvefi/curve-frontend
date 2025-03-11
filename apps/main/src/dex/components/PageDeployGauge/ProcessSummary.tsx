@@ -48,6 +48,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                     <SuccessMessage>{t`Sidechain gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction
+                    $noCap
                     variant={'contained'}
                     href={networks[sidechain].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
                   >
@@ -80,6 +81,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                     <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction
+                    $noCap
                     variant={'contained'}
                     href={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
                   >

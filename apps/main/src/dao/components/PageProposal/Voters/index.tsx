@@ -54,6 +54,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                     <AgainstIcon name="Misuse" size={16} />
                   )}
                   <StyledInternalLink
+                    $noCap
                     onClick={(e) => {
                       e.preventDefault()
                       push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`))

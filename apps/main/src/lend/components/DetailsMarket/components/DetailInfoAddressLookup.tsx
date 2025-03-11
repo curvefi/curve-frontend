@@ -30,6 +30,7 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
       {address && (
         <span>
           <StyledExternalLink
+            $noCap
             isValid={isValidAddress}
             isMono={isValidAddress}
             isNumber={isValidAddress}

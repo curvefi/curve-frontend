@@ -24,7 +24,7 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
     <StyledStats {...props}>
       <strong>{title}</strong>
       <span>
-        <StyledExternalLink isMono href={networks[chainId]?.scanAddressPath(address)}>
+        <StyledExternalLink $noCap isMono href={networks[chainId]?.scanAddressPath(address)}>
           {shortenAddress(address)}
           <Icon name="Launch" size={16} />
         </StyledExternalLink>

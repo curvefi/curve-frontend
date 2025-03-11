@@ -27,7 +27,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
             <StatsRow>
               {gaugeData.pool?.address && (
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  <StyledExternalLink href={networks[chainId].scanAddressPath(gaugeData.pool.address)}>
+                  <StyledExternalLink $noCap href={networks[chainId].scanAddressPath(gaugeData.pool.address)}>
                     {shortenAddress(gaugeData.pool.address)}
                   </StyledExternalLink>
                   <ExternalLinkIconButton
@@ -65,7 +65,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
         </StatsTitleRow>
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-            <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
+            <StyledExternalLink $noCap href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton

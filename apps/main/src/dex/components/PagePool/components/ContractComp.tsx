@@ -36,7 +36,7 @@ const ContractComp = ({
           <LabelWrapper flex flexDirection="row">
             <Box flex flexDirection="column">
               {label}
-              <StyledExternalLink href={network.scanAddressPath(address)}>
+              <StyledExternalLink $noCap href={network.scanAddressPath(address)}>
                 {shortenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
@@ -49,7 +49,7 @@ const ContractComp = ({
           <>
             <Label>{label}</Label>
             <span>
-              <StyledExternalLink href={network.scanAddressPath(address)}>
+              <StyledExternalLink $noCap href={network.scanAddressPath(address)}>
                 {shortenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>

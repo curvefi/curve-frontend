@@ -33,7 +33,7 @@ const CurrencyReservesContent = ({
       />
 
       <Box grid gridGap={1}>
-        <TokenLabelLink $noStyles href={network.scanTokenPath(tokenAddress)}>
+        <TokenLabelLink $noCap $noStyles href={network.scanTokenPath(tokenAddress)}>
           <ExternalLinkToken>{token}</ExternalLinkToken>{' '}
           {haveSameTokenName ? (
             <Chip opacity={0.7} size="xs">

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { getAddress } from 'viem'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -73,14 +74,14 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
         ) : (
           <SummaryData>
             {token.oracleAddress.length === 42 ? (
-              <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
+              <AddressLink $noCap href={network.scanAddressPath(token.oracleAddress)}>
                 {shortenAddress(token.oracleAddress)}
                 <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
               </AddressLink>
             ) : token.oracleAddress.length > 13 ? (
               shortenAddress(token.oracleAddress)
             ) : (
-              token.oracleAddress
+              getAddress(token.oracleAddress)
             )}
           </SummaryData>
         )}
