@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
 import Stack from '@mui/material/Stack'
@@ -9,7 +10,6 @@ import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 
 const { Spacing } = SizesAndSpaces
 

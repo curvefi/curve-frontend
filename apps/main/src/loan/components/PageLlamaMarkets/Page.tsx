@@ -31,13 +31,13 @@ const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
  */
 export const PageLlamaMarkets = () => {
   const { signerAddress } = useWallet()
-  const { data, isLoading, isError } = useLlamaMarkets(signerAddress) // todo: show errors and loading state
+  const { data, isError } = useLlamaMarkets(signerAddress)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
   usePageOnMount() // required for connecting wallet
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
-      {!data?.length && isLoading ? (
+      {!data && !isError ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
         <LendingMarketsTable

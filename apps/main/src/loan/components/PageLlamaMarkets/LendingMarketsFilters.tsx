@@ -1,5 +1,6 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { RangeSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/RangeSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
@@ -10,7 +11,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 
 const { Spacing } = SizesAndSpaces
 

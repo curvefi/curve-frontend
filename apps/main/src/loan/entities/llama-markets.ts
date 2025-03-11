@@ -170,14 +170,16 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
       return {
         ...combineQueriesMeta(results),
-        data: [
-          ...(lendingVaults.data ?? [])
-            .filter((vault) => vault.totalAssetsUsd)
-            .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
-          ...(mintMarkets.data ?? []).map((market) =>
-            convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
-          ),
-        ],
+        ...((lendingVaults || mintMarkets) && {
+          data: [
+            ...(lendingVaults.data ?? [])
+              .filter((vault) => vault.totalAssetsUsd)
+              .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
+            ...(mintMarkets.data ?? []).map((market) =>
+              convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
+            ),
+          ],
+        }),
       }
     },
   })

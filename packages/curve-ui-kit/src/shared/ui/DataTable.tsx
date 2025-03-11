@@ -17,6 +17,9 @@ import { InvertOnHover } from './InvertOnHover'
 
 const { Sizing, Spacing, MinWidth, MinHeight } = SizesAndSpaces
 
+// until we know whether the rows are visible, we assume this number to avoid layout shift
+const AssumeRowsVisible = 10
+
 // css class to hide elements on desktop unless the row is hovered
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 
@@ -71,7 +74,7 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
     },
     [url, push],
   )
-
+  const isVisible = entry?.isIntersecting || row.index < AssumeRowsVisible
   return (
     <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverRef={ref}>
       <TableRow
@@ -91,7 +94,7 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
         onClick={onClick}
       >
         {/* render cells when visible vertically, so content is lazy loaded */}
-        {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
+        {isVisible && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
       </TableRow>
     </InvertOnHover>
   )

@@ -38,7 +38,6 @@ type RateCellProps = {
  */
 export const LineGraphCell = ({ market, type }: RateCellProps) => {
   const sns = useSnapshots(market, type)
-  if (market.chain === 'sonic') console.log(sns)
   const { snapshots, snapshotKey, isLoading, averageRate, rate, error } = sns
   const { design } = useTheme()
   if (rate == null) return null // supply yeld disabled for mint markets
