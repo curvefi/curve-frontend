@@ -11,9 +11,8 @@ export type PoolRewards = {
 }
 
 console.log(campaigns)
-const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce((result, { pools }: CampaignRewardsItem) => {
-  if (!pools) debugger
-  return {
+const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
+  (result, { pools }: CampaignRewardsItem) => ({
     ...result,
     ...pools.reduce(
       (
@@ -33,8 +32,9 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce((result, { pools
       }),
       {},
     ),
-  }
-}, {})
+  }),
+  {},
+)
 
 export const { getQueryOptions: getCampaignsOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,

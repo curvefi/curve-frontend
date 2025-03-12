@@ -155,9 +155,7 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
     cy.wait(500) // wait for the animations to finish
     firstRow().should('not.have.css', 'background-color', hoverBackground)
-    firstRow().scrollIntoView()
-    cy.wait(500) // wait for the animations to finish
-    firstRow().trigger('mouseenter', { waitForAnimations: true })
+    firstRow().trigger('mouseenter', { waitForAnimations: true, force: true })
     cy.wait(500) // wait for the animations to finish
     firstRow().should('have.css', 'background-color', hoverBackground)
     cy.get(`[data-testid^="copy-market-address"]`).first().should('have.css', 'opacity', '1')
