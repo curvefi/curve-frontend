@@ -6,8 +6,8 @@ import countBy from 'lodash/countBy'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
+import { zeroAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
-import { INVALID_ADDRESS } from '@/dex/constants'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -1002,7 +1002,7 @@ export function parsedTokensNameMapper(poolDatas: PoolData[]) {
       tokensNameMapper[address] = tokens[idx]
     })
 
-    if (lpToken !== INVALID_ADDRESS) {
+    if (lpToken !== zeroAddress) {
       tokensNameMapper[lpToken] = `${id} LP`
     }
   }

@@ -1,9 +1,10 @@
-import { NETWORK_TOKEN } from '@/dex/constants'
-import { shortenTokenAddress, shortenTokenName } from '@/dex/utils'
+import { ethAddress } from 'viem'
+import { shortenTokenName } from '@/dex/utils'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   idx: number
@@ -45,7 +46,7 @@ const FieldToken = ({
   handleMaxClick,
 }: Props) => {
   const value = typeof amount === 'undefined' ? '' : amount
-  const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === NETWORK_TOKEN
+  const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
   const showAvailableBalance = haveSigner && !isWithdraw
 
   return (
@@ -63,7 +64,7 @@ const FieldToken = ({
         type="number"
         value={value}
         labelProps={{
-          label: `${shortenTokenName(token)} ${haveSameTokenName ? shortenTokenAddress(tokenAddress) : ''} ${
+          label: `${shortenTokenName(token)} ${haveSameTokenName ? shortenAddress(tokenAddress) : ''} ${
             showAvailableBalance ? `${t`Avail.`} ` : ''
           }`,
           descriptionLoading: showAvailableBalance && balanceLoading,

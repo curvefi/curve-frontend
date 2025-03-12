@@ -67,7 +67,6 @@ const StyledInputProvider = styled(InputProvider)`
 export const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   font-weight: var(--bold);
-  text-transform: none;
 
   &:hover {
     cursor: pointer;

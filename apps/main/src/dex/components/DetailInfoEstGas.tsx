@@ -2,7 +2,7 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { NETWORK_TOKEN } from '@/dex/constants'
+import { ethAddress } from 'viem'
 import useStore from '@/dex/store/useStore'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 import DetailInfo from '@ui/DetailInfo'
@@ -33,7 +33,7 @@ const DetailInfoEstGas = ({
   const curve = useStore((state) => state.curve)
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
+  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
   const gasInfo = useStore((state) => state.gas.gasInfo)
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 

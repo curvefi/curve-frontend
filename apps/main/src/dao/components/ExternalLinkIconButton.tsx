@@ -30,7 +30,6 @@ const StyledExternalLink = styled(ExternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  text-transform: none;
   text-decoration: none;
   &:hover {
     cursor: pointer;

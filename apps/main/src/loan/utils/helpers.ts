@@ -40,13 +40,6 @@ export function isNumber<T>(val: T) {
 
 export const isDevelopment = process.env.NODE_ENV === 'development'
 
-export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
-  if (!tokenAddress) return
-  const start = tokenAddress.slice(0, 4)
-  const end = tokenAddress.slice(-4)
-  return startOnly ? start : `${start}...${end}`
-}
-
 export function removeExtraSpaces(str: string) {
   return str.replace(/ +(?= )/g, '').trim()
 }
@@ -91,27 +84,6 @@ export const shortenAccount = (account: string, visibleLength = 4): string =>
   account.slice(account.length - visibleLength)
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
-export function copyToClipboard(text: string) {
-  if (window.clipboardData && window.clipboardData.setData) {
-    // IE specific code path to prevent textarea being shown while dialog is visible.
-    return window.clipboardData.setData('Text', text)
-  } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-    const textarea = document.createElement('textarea')
-    textarea.textContent = text
-    textarea.style.position = 'fixed' // Prevent scrolling to bottom of page in MS Edge.
-    document.body.appendChild(textarea)
-    textarea.select()
-    try {
-      return document.execCommand('copy') // Security exception may be thrown by some browsers.
-    } catch (ex) {
-      console.warn('Copy to clipboard failed.', ex)
-      return false
-    } finally {
-      document.body.removeChild(textarea)
-    }
-  }
-}
 
 export function sleep(ms?: number) {
   const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)

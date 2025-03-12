@@ -2,7 +2,7 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { NETWORK_TOKEN } from '@/dao/constants'
+import { ethAddress } from 'viem'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
@@ -34,7 +34,7 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
+  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
   const gasInfo = useStore((state) => state.gas.gasInfo)
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 

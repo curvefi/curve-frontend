@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type {
@@ -16,7 +17,6 @@ import {
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import { NETWORK_TOKEN } from '@/dex/constants'
 import curvejsApi from '@/dex/lib/curvejs'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import type { State } from '@/dex/store/useStore'
@@ -118,7 +118,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const cFormValues = cloneDeep(get()[sliceKey].formValues)
       const userBalance = get().userBalances.userBalancesMapper[tokenAddress] ?? ''
 
-      if (tokenAddress.toLowerCase() === NETWORK_TOKEN) {
+      if (tokenAddress.toLowerCase() === ethAddress) {
         // set loading
         cFormValues.amounts[idx].value = ''
         get()[sliceKey].setStateByKeys({

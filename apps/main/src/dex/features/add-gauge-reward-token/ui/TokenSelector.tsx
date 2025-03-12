@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
-import { NETWORK_TOKEN } from '@/dex/constants'
+import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
@@ -40,7 +40,7 @@ export const TokenSelector = ({
           token !== undefined &&
           token.decimals === 18 &&
           !aliasesCrv &&
-          ![...gaugeRewardTokens, zeroAddress, NETWORK_TOKEN, aliasesCrv].some((rewardToken) =>
+          ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
             isAddressEqual(rewardToken as Address, token.address as Address),
           ),
       )

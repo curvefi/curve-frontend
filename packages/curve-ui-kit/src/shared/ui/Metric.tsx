@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
+import { abbreviateNumber, copyToClipboard, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -213,7 +213,7 @@ export const Metric = ({
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
   const copyValue = () => {
-    navigator.clipboard.writeText(value.toString())
+    copyToClipboard(value.toString())
     setOpenCopyAlert(true)
   }
 

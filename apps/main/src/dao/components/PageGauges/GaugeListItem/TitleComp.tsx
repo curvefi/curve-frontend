@@ -5,9 +5,9 @@ import SmallLabel from '@/dao/components/SmallLabel'
 import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
-import { shortenTokenAddress } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface TitleCompProps {
   gaugeData: GaugeFormattedData
@@ -36,7 +36,7 @@ const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
       )}
       {gaugeAddress && (
         <Box flex flexGap="var(--spacing-1)">
-          <GaugeAddress>{shortenTokenAddress(gaugeAddress)}</GaugeAddress>
+          <GaugeAddress>{shortenAddress(gaugeAddress)}</GaugeAddress>
           <ButtonsWrapper>
             <ExternalLinkIconButton
               href={networks[1].scanAddressPath(gaugeAddress ?? '')}
