@@ -28,7 +28,7 @@ export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (
     />
 
     <Typography variant="headingMLight" flexGrow={1}>
-      {shortenAddress(walletAddress, 4, false)}
+      {shortenAddress(walletAddress, { includePrefix: false })}
     </Typography>
 
     <Box display="flex">
