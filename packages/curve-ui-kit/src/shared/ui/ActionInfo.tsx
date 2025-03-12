@@ -24,8 +24,11 @@ type ActionInfoProps = {
   label: string
   /** Primary value to display and copy */
   value: string
+  /** Custom color for the value text */
+  valueColor?: React.ComponentProps<typeof Typography>['color']
   /** Previous value (if needed for comparison) */
   prevValue?: string
+  prevValueColor?: React.ComponentProps<typeof Typography>['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Whether or not the value can be copied */
@@ -54,7 +57,17 @@ const valueSize = {
   large: 'headingSBold',
 } as const satisfies Record<ComponentSize, TypographyVariantKey>
 
-const ActionInfo = ({ label, prevValue, value, link, size = 'medium', copy = false, copiedTitle }: ActionInfoProps) => {
+const ActionInfo = ({
+  label,
+  prevValue,
+  prevValueColor,
+  value,
+  valueColor,
+  link,
+  size = 'medium',
+  copy = false,
+  copiedTitle,
+}: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
@@ -70,7 +83,7 @@ const ActionInfo = ({ label, prevValue, value, link, size = 'medium', copy = fal
 
       {prevValue && (
         <Stack direction="row" alignItems="center">
-          <Typography variant={prevValueSize[size]} color="textSecondary">
+          <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textSecondary'}>
             {prevValue}
           </Typography>
 
@@ -85,7 +98,7 @@ const ActionInfo = ({ label, prevValue, value, link, size = 'medium', copy = fal
       )}
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-        <Typography variant={valueSize[size]} color="textPrimary">
+        <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
           {value}
         </Typography>
 

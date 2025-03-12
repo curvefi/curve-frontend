@@ -14,9 +14,17 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'Primary value to display and copy',
     },
+    valueColor: {
+      control: 'color',
+      description: 'Custom color for the value text',
+    },
     prevValue: {
       control: 'text',
       description: 'Previous value (if needed for comparison)',
+    },
+    prevValueColor: {
+      control: 'color',
+      description: 'Custom color for the previous value text',
     },
     link: {
       control: 'text',
@@ -39,6 +47,7 @@ const meta: Meta<typeof ActionInfo> = {
   args: {
     label: 'Contract',
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
+    valueColor: 'textPrimary',
     link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
     copy: true,
     copiedTitle: 'Contract address copied!',
@@ -80,6 +89,22 @@ export const WithPreviousValue: Story = {
     docs: {
       description: {
         story: 'Shows comparison between previous and current values',
+      },
+    },
+  },
+}
+
+export const CustomColors: Story = {
+  args: {
+    valueColor: 'success.main',
+    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
+    prevValueColor: 'error.main',
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows custom colors for both current and previous values',
       },
     },
   },
