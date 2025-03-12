@@ -58,6 +58,10 @@ const meta: Meta<typeof ActionInfo> = {
       options: ['small', 'medium', 'large'],
       description: 'The size of the component',
     },
+    loading: {
+      control: 'boolean',
+      description: 'Whether the component is in a loading state. Can be boolean or string.',
+    },
   },
   args: {
     label: 'Contract',
@@ -68,6 +72,7 @@ const meta: Meta<typeof ActionInfo> = {
     copy: true,
     copiedTitle: 'Contract address copied!',
     size: 'small',
+    loading: false,
   },
 }
 
@@ -170,6 +175,20 @@ export const WithEmptyValueAndSwitch: Story = {
     docs: {
       description: {
         story: 'Shows an ActionInfo with an empty value and a MUI Switch component as valueRight',
+      },
+    },
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    loading: shortenAddress('0x1234567890123456789012345678901234567890'),
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the component in a loading state with a skeleton placeholder',
       },
     },
   },

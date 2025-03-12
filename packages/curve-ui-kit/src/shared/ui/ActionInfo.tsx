@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import { Stack, Tooltip } from '@mui/material'
+import { Skeleton, Stack, Tooltip } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
@@ -17,6 +17,7 @@ import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
+const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
 
 type ComponentSize = 'small' | 'medium' | 'large'
 
@@ -45,6 +46,8 @@ type ActionInfoProps = {
   copiedTitle?: string
   /** Size of the component */
   size?: ComponentSize
+  /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
+  loading?: boolean | string
 }
 
 const labelSize = {
@@ -78,6 +81,7 @@ const ActionInfo = ({
   size = 'medium',
   copy = false,
   copiedTitle,
+  loading = false,
 }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
@@ -111,22 +115,30 @@ const ActionInfo = ({
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
         {valueLeft}
 
-        <Tooltip
-          title={valueTooltip}
-          placement="top"
-          slotProps={{
-            popper: {
-              sx: {
-                userSelect: 'none',
-                pointerEvents: 'none',
+        {loading ? (
+          <Skeleton>
+            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+              {typeof loading === 'string' ? loading : MOCK_SKELETON}
+            </Typography>
+          </Skeleton>
+        ) : (
+          <Tooltip
+            title={valueTooltip}
+            placement="top"
+            slotProps={{
+              popper: {
+                sx: {
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                },
               },
-            },
-          }}
-        >
-          <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-            {value}
-          </Typography>
-        </Tooltip>
+            }}
+          >
+            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+              {value}
+            </Typography>
+          </Tooltip>
+        )}
 
         {valueRight}
 
