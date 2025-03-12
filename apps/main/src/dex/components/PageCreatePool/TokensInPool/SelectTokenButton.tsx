@@ -163,7 +163,6 @@ const SelectTokenButton = ({
           showSearch={true}
           showManageList={true}
           isOpen={true}
-          compact={false}
           error={error}
           disabledTokens={disabledKeys ?? []}
           disableSorting={true}

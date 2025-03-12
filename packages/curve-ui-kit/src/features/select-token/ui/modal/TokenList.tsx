@@ -3,6 +3,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
@@ -26,16 +27,22 @@ export type TokenSectionProps = Required<
 > &
   Required<Pick<TokenListCallbacks, 'onToken'>> & {
     title?: string
+    /** The label to show on the button that expands the section to show all */
+    showAllLabel?: string
     showAll: boolean
-    /** Amount of options to show before a 'Show more' buttons appears if count exceeds limit */
-    limit: number
+    /**
+     * Controls which tokens are visible before "Show more".
+     * Can be a number (quantity limit) or a function that filters tokens.
+     */
+    preview: number | ((token: Option) => boolean)
     onShowAll: () => void
   }
 
 const TokenSection = ({
   title,
   showAll,
-  limit,
+  showAllLabel,
+  preview,
   tokens,
   balances,
   tokenPrices,
@@ -45,16 +52,28 @@ const TokenSection = ({
 }: TokenSectionProps) => {
   if (!tokens.length) return null
 
-  const hasMore = tokens.length > limit
-  const displayTokens = showAll ? tokens : tokens.slice(0, limit)
+  const displayTokens = showAll
+    ? tokens
+    : typeof preview === 'number'
+      ? tokens.slice(0, preview)
+      : tokens.filter(preview)
+
+  const hasMore = displayTokens.length < tokens.length
 
   return (
     <>
       {title && (
-        <>
+        <Box
+          sx={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            backgroundColor: (theme) => theme.palette.background.paper,
+          }}
+        >
           <CardHeader title={title} size="small" />
           <Divider />
-        </>
+        </Box>
       )}
 
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
@@ -80,7 +99,7 @@ const TokenSection = ({
             // Override variant button height to match menu list item height, so !important is required over '&'.
             sx={{ height: `${ButtonSize.md} !important` }}
           >
-            {t`Show more`}
+            {showAllLabel || t`Show more`}
           </Button>
         )}
       </MenuList>
@@ -155,31 +174,47 @@ export const TokenList = ({
     const allTokens = tokensFiltered.filter((token) => +(balances[token.address] ?? 0) === 0)
 
     if (!disableSorting) {
-      const sortFn = (a: Option, b: Option) => {
+      // Sort tokens with balance by balance (USD then raw)
+      myTokens.sort((a, b) => {
         const aBalance = +(balances[a.address] ?? 0)
         const bBalance = +(balances[b.address] ?? 0)
-
-        // Compare USD balances first (including existence check)
         const aBalanceUsd = (tokenPrices[a.address] ?? 0) * aBalance
         const bBalanceUsd = (tokenPrices[b.address] ?? 0) * bBalance
-        if (aBalanceUsd !== bBalanceUsd) return bBalanceUsd - aBalanceUsd
 
-        // If USD balances are equal, compare raw balances
-        if (aBalance !== bBalance) return bBalance - aBalance
+        return bBalanceUsd - aBalanceUsd || bBalance - aBalance
+      })
 
-        // Sort by volume in descending order
-        if (a.volume !== b.volume) return (b.volume ?? 0) - (a.volume ?? 0)
-
-        // Finally sort by label
-        return a.symbol.localeCompare(b.symbol)
-      }
-
-      myTokens.sort(sortFn)
-      allTokens.sort(sortFn)
+      // Sort all non-balance tokens by volume then symbol
+      allTokens.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
     }
 
     return { myTokens, allTokens }
   }, [tokensFiltered, disableSorting, balances, tokenPrices])
+
+  /**
+   * Creates a filter function that determines which tokens to show in the preview section
+   * of 'My Tokens' based on their USD value relative to the total portfolio.
+   *
+   * @returns A filter function that returns true for tokens with USD value > 1% of total balance
+   */
+  const myTokensPreview = useMemo(() => {
+    const totalUsdBalance = myTokens.reduce((sum, token) => {
+      const balance = +(balances[token.address] ?? 0)
+      const price = tokenPrices[token.address] ?? 0
+      return sum + balance * price
+    }, 0)
+
+    const threshold = totalUsdBalance * 0.01
+
+    return (token: Option) => {
+      const balance = +(balances[token.address] ?? 0)
+      const price = tokenPrices[token.address] ?? 0
+
+      // We used to include tokens with a balance > 0, but no $ price (0),
+      // but it turns out that way quite a few scam tokens show up in the preview.
+      return balance * price > threshold
+    }
+  }, [myTokens, balances, tokenPrices])
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
@@ -210,19 +245,20 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={Infinity}
+            preview={myTokensPreview}
             showAll={sections.my || !!search}
+            showAllLabel={t`Show dust`}
             onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
             onToken={onToken}
           />
 
           <TokenSection
-            title={myTokens.length > 0 ? t`All tokens` : undefined}
+            title={myTokens.length > 0 ? t`Tokens by 24h volume` : undefined}
             tokens={allTokens}
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            limit={300}
+            preview={300}
             showAll={sections.all || !!search}
             onShowAll={() => setSections((prev) => ({ ...prev, all: true }))}
             onToken={onToken}
