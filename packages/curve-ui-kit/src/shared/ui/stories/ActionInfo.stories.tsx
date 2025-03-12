@@ -1,3 +1,5 @@
+import AcUnitIcon from '@mui/icons-material/AcUnit'
+import WhatshotIcon from '@mui/icons-material/Whatshot'
 import type { Meta, StoryObj } from '@storybook/react'
 import { shortenAddress } from '@ui-kit/utils'
 import ActionInfo from '../ActionInfo'
@@ -17,6 +19,14 @@ const meta: Meta<typeof ActionInfo> = {
     valueColor: {
       control: 'color',
       description: 'Custom color for the value text',
+    },
+    valueLeft: {
+      control: 'text',
+      description: 'Optional content to display to the left of the value',
+    },
+    valueRight: {
+      control: 'text',
+      description: 'Optional content to display to the right of the value',
     },
     prevValue: {
       control: 'text',
@@ -105,6 +115,22 @@ export const CustomColors: Story = {
     docs: {
       description: {
         story: 'Shows custom colors for both current and previous values',
+      },
+    },
+  },
+}
+
+export const WithValueDecorators: Story = {
+  args: {
+    valueLeft: <WhatshotIcon color="error" />,
+    valueRight: <AcUnitIcon color="primary" />,
+    value: '1,234.56',
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows value with left and right decorators using MUI icons',
       },
     },
   },

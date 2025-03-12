@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
@@ -26,6 +27,10 @@ type ActionInfoProps = {
   value: string
   /** Custom color for the value text */
   valueColor?: React.ComponentProps<typeof Typography>['color']
+  /** Optional content to display to the left of the value */
+  valueLeft?: ReactNode
+  /** Optional content to display to the right of the value */
+  valueRight?: ReactNode
   /** Previous value (if needed for comparison) */
   prevValue?: string
   prevValueColor?: React.ComponentProps<typeof Typography>['color']
@@ -63,6 +68,8 @@ const ActionInfo = ({
   prevValueColor,
   value,
   valueColor,
+  valueLeft,
+  valueRight,
   link,
   size = 'medium',
   copy = false,
@@ -98,9 +105,13 @@ const ActionInfo = ({
       )}
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        {valueLeft}
+
         <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
           {value}
         </Typography>
+
+        {valueRight}
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">
