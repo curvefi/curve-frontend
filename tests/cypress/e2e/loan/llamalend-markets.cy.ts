@@ -148,7 +148,7 @@ describe('LlamaLend Markets', () => {
   })
 
   it(`should hover and copy the market address`, () => {
-    const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(59, 56, 52)'
+    const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
     cy.get(`[data-testid^="data-table-row"]`).first().should('not.have.css', 'background-color', hoverBackground)
     cy.get(`[data-testid^="data-table-row"]`).first().trigger('mouseenter')
