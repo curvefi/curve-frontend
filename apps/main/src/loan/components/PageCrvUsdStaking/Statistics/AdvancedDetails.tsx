@@ -20,7 +20,7 @@ const AdvancedDetails = () => (
       <ActionInfo
         label={t`Vault Contract Address`}
         value={shortenAddress(SCRVUSD_VAULT_ADDRESS)}
-        linkAddress={networks[ETHEREUM_CHAIN_ID].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
+        link={networks[ETHEREUM_CHAIN_ID].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
         copiedText={t`Vault Contract Address Copied!`}
       />
     </Stack>

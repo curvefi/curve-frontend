@@ -22,7 +22,7 @@ type ActionInfoProps = {
   /** Primary value to display and copy */
   value: string
   /** URL to navigate to when clicking the external link button */
-  linkAddress: string
+  link?: string
   /** Message displayed in the snackbar when the address is copied */
   copiedText: string
   /** Size of the component */
@@ -41,7 +41,7 @@ const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingS
   large: 'headingSBold',
 }
 
-const ActionInfo = ({ label, value, linkAddress, size = 'medium', copiedText }: ActionInfoProps) => {
+const ActionInfo = ({ label, value, link, size = 'medium', copiedText }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
@@ -64,9 +64,11 @@ const ActionInfo = ({ label, value, linkAddress, size = 'medium', copiedText }: 
           <ContentCopy />
         </IconButton>
 
-        <IconButton component={Link} href={linkAddress} target="_blank" rel="noopener" size="small" color="primary">
-          <CallMade />
-        </IconButton>
+        {link && (
+          <IconButton component={Link} href={link} target="_blank" rel="noopener" size="small" color="primary">
+            <CallMade />
+          </IconButton>
+        )}
       </Stack>
 
       <Snackbar open={isOpen} onClose={close} autoHideDuration={Duration.Snackbar}>

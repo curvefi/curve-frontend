@@ -14,7 +14,7 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'Primary value to display and copy',
     },
-    linkAddress: {
+    link: {
       control: 'text',
       description: 'The URL to navigate to when clicking the external link button',
     },
@@ -27,7 +27,7 @@ const meta: Meta<typeof ActionInfo> = {
   args: {
     label: 'Contract',
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
-    linkAddress: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
     size: 'small',
   },
 }
