@@ -8,7 +8,8 @@ import Spinner from '../../Spinner'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
 const DailyLocks = () => {
-  const { getVeCrvLocks, veCrvLocks } = useStore((state) => state.analytics)
+  const getVeCrvLocks = useStore((state) => state.analytics.getVeCrvLocks)
+  const veCrvLocks = useStore((state) => state.analytics.veCrvLocks)
 
   const locksFetchSuccess = veCrvLocks.fetchStatus === 'SUCCESS'
   const locksFetchError = veCrvLocks.fetchStatus === 'ERROR'

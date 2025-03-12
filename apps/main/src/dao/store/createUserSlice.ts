@@ -392,6 +392,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               userFutureVeCrv: Number(gauge.userFutureVeCrv),
               expired: gauge.expired,
               ...gauge.gaugeData,
+              rootGaugeAddress: '',
               relativeWeight: Number(gauge.gaugeData.relativeWeight),
               totalVeCrv: Number(gauge.gaugeData.totalVeCrv),
               nextVoteTime: {

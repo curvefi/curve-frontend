@@ -18,13 +18,13 @@ type UserPageProps = {
 }
 
 const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
-  const {
-    veCrvHolders: { allHolders, fetchStatus },
-    getVeCrvHolders,
-  } = useStore((state) => state.analytics)
+  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const { getUserEns, userMapper } = useStore((state) => state.user)
   const { provider } = useWallet()
   const [activeNavKey, setNavKey] = useState('proposals')
+
+  const { allHolders, fetchStatus } = veCrvHolders
 
   const navItems = [
     { key: 'proposals', label: t`User Proposal Votes` },

@@ -13,7 +13,7 @@ type Props = {
 }
 
 const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter, className }: Props) => {
-  const { filteringProposalsLoading } = useStore((state) => state.proposals)
+  const filteringProposalsLoading = useStore((state) => state.proposals.filteringProposalsLoading)
 
   return (
     <Container className={className}>
