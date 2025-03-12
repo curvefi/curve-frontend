@@ -85,7 +85,7 @@ const ActionInfo = ({ label, prevValue, value, link, size = 'medium', copy = fal
       )}
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-        <Typography variant={valueSize[size]} color="textPrimary" sx={{ marginRight: Spacing.sm }}>
+        <Typography variant={valueSize[size]} color="textPrimary">
           {value}
         </Typography>
 
