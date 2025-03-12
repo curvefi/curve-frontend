@@ -35,6 +35,7 @@ type ActionInfoProps = {
   valueTooltip?: string
   /** Previous value (if needed for comparison) */
   prevValue?: string
+  /** Custom color for the previous value text */
   prevValueColor?: React.ComponentProps<typeof Typography>['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
