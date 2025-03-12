@@ -4,9 +4,9 @@ import type { GetState, SetState } from 'zustand'
 import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 type NetworkWithFactory = {
   chainId: ChainId
@@ -182,11 +182,11 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       const chainId = curve.chainId
       const fetchGasInfo = get().gas.fetchGasInfo
       const tokenAddress = sidechainGauge ? lpTokenAddress : poolAddress
-      const shortenAddress = shortenTokenAddress(tokenAddress)
+      const shortAddress = shortenAddress(tokenAddress)
 
       let dismissNotificationHandler
 
-      const notifyPendingMessage = t`Please confirm to deploy gauge for ${shortenAddress}.`
+      const notifyPendingMessage = t`Please confirm to deploy gauge for ${shortAddress}.`
       const { dismiss: dismissConfirm } = notify(notifyPendingMessage, 'pending')
 
       dismissNotificationHandler = dismissConfirm
@@ -212,7 +212,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -249,7 +249,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -286,7 +286,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -323,7 +323,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -359,7 +359,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -405,7 +405,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -443,7 +443,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -481,7 +481,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -519,7 +519,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -557,7 +557,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -608,7 +608,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -647,7 +647,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -686,7 +686,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -725,7 +725,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying
@@ -761,7 +761,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               }),
             )
             dismissConfirm()
-            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
+            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortAddress}...`
             const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
 
             dismissNotificationHandler = dismissDeploying

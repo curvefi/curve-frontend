@@ -330,7 +330,6 @@ const PresetMessage = styled.div`
 `
 
 const StyledExternalLink = styled(ExternalLink)`
-  text-transform: none;
   color: var(--page--text-color);
   font-weight: var(--bold);
   margin: 0 var(--spacing-1);

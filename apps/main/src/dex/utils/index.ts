@@ -1,8 +1,8 @@
 import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
-export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 import type { ChainId, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
+export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
 export function isMobile() {
@@ -43,13 +43,6 @@ export function shortenTokenName(token: string) {
 
 export const isValidAddress = (address: string) =>
   address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
-
-export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
-  if (!tokenAddress) return
-  const start = tokenAddress.slice(0, 4)
-  const end = tokenAddress.slice(-4)
-  return startOnly ? start : `${start}...${end}`
-}
 
 export function removeExtraSpaces(str: string) {
   return str.replace(/ +(?= )/g, '').trim()

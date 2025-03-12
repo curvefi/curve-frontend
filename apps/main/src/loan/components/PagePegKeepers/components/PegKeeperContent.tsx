@@ -93,7 +93,6 @@ const StyledExternalLink = styled(ExternalLink)`
   font-size: var(--font-size-2);
   font-weight: bold;
   margin-left: var(--spacing-narrow);
-  text-transform: initial;
 `
 
 export default PegKeeperContent

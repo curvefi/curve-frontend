@@ -1,9 +1,6 @@
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
-export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
-export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',

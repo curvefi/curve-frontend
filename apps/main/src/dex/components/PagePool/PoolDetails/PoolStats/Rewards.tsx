@@ -5,7 +5,6 @@ import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVo
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import { LARGE_APY } from '@/dex/constants'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
-import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
@@ -19,6 +18,7 @@ import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { copyToClipboard } from '@ui-kit/utils'
 
 type RewardsProps = {
   chainId: ChainId
@@ -37,10 +37,6 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
     { label: t`Daily`, value: base?.day ?? '' },
     { label: t`Weekly`, value: base?.week ?? '' },
   ]
-
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   if ((isLite ? true : !haveBase) && !poolData?.failedFetching24hOldVprice && !haveCrv && !haveOther) return null
 
@@ -118,7 +114,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                       </TokenWrapper>
                     </StyledExternalLink>
 
-                    <StyledIconButton size="small" onClick={() => handleCopyClick(tokenAddress)}>
+                    <StyledIconButton size="small" onClick={() => copyToClipboard(tokenAddress)}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </Box>

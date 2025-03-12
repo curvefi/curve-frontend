@@ -18,8 +18,9 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
-import { isBonus, isHighSlippage, shortenTokenAddress } from '@/dex/utils'
+import { isBonus, isHighSlippage } from '@/dex/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -638,7 +639,7 @@ export function getActiveKey(
   if (formType === 'WITHDRAW') {
     if (selected === 'token') {
       const selectedStr = `${selected}-${selectedToken}-${
-        selectedTokenAddress ? shortenTokenAddress(selectedTokenAddress) : ''
+        selectedTokenAddress ? shortenAddress(selectedTokenAddress) : ''
       }`
       activeKey += `${selectedStr}-${isWrapped}-${maxSlippage}-${lpToken}`
     } else if (selected === 'lpToken') {

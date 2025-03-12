@@ -1,8 +1,8 @@
+import { shortenAddress } from 'curve-ui-kit/src/utils'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import Spinner from 'ui/src/Spinner'
-import { shortenTokenAddress } from 'ui/src/utils'
 
 type Props = {
   transactionHash: string
@@ -17,7 +17,7 @@ const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => (
       <StyledPendingSpinner isDisabled size={24} />
       <Transaction variant={'contained'} href={txLink}>
         <p>Transaction:</p>
-        {shortenTokenAddress(transactionHash)}
+        {shortenAddress(transactionHash)}
         <StyledIcon name={'Launch'} size={16} />
       </Transaction>
     </PendingWrapper>
@@ -53,7 +53,6 @@ const Transaction = styled(ExternalLink)`
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
   color: var(--page--text-color);
-  text-transform: none;
   text-decoration: none;
   background-color: var(--page--background-color);
   padding: var(--spacing-2);

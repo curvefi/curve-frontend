@@ -98,7 +98,6 @@ const Title = styled.h1`
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
 `
 
 const ConnectWalletWrapper = styled.div`

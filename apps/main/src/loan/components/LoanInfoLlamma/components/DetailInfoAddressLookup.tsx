@@ -3,10 +3,10 @@ import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
-import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface Props extends StatsProps {
   chainId: ChainId
@@ -14,26 +14,20 @@ interface Props extends StatsProps {
   address: string
 }
 
-const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => {
-  const handleBtnClickCopy = (tokenAddress: string) => {
-    copyToClipboard(tokenAddress)
-  }
-
-  return (
-    <StyledStats {...props}>
-      <strong>{title}</strong>
-      <span>
-        <StyledExternalLink isMono href={networks[chainId]?.scanAddressPath(address)}>
-          {shortenTokenAddress(address)}
-          <Icon name="Launch" size={16} />
-        </StyledExternalLink>
-        <CopyIconButton size="medium" onClick={() => handleBtnClickCopy(address)}>
-          <Icon name="Copy" size={16} />
-        </CopyIconButton>
-      </span>
-    </StyledStats>
-  )
-}
+const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => (
+  <StyledStats {...props}>
+    <strong>{title}</strong>
+    <span>
+      <StyledExternalLink href={networks[chainId]?.scanAddressPath(address)}>
+        {shortenAddress(address)}
+        <Icon name="Launch" size={16} />
+      </StyledExternalLink>
+      <CopyIconButton size="medium" onClick={() => copyToClipboard(address)}>
+        <Icon name="Copy" size={16} />
+      </CopyIconButton>
+    </span>
+  </StyledStats>
+)
 
 const CopyIconButton = styled(IconButton)`
   align-items: center;
@@ -54,7 +48,6 @@ const CopyIconButton = styled(IconButton)`
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   font-size: var(--font-size-2);
-  text-transform: inherit;
 
   svg {
     padding-top: 0.3125rem;

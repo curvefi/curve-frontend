@@ -7,9 +7,10 @@ import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import InternalLink from '@ui/Link/InternalLink'
 import { TooltipIcon } from '@ui/Tooltip'
-import { shortenTokenAddress, formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   noLink?: boolean
@@ -52,9 +53,9 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {userEns ? (
               <UserIdentifier>{userEns}</UserIdentifier>
             ) : (
-              <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
+              <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
             )}
-            {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
+            {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
           </Box>
         ) : (
           <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
@@ -62,10 +63,10 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
               {userEns ? (
                 <UserIdentifier>{userEns}</UserIdentifier>
               ) : (
-                <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
+                <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
               )}
             </Box>
-            {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
+            {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
           </StyledInternalLink>
         )}
       </Box>
@@ -116,7 +117,6 @@ const StyledInternalLink = styled(InternalLink)`
   color: inherit;
   font-weight: 500;
   text-decoration: none;
-  text-transform: none;
 `
 
 const UserIdentifier = styled.h4`

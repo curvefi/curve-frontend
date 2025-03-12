@@ -18,9 +18,9 @@ import {
   SortDirection,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { shortenTokenAddress } from '@ui/utils'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -504,7 +504,7 @@ const formatGaugeTitle = (poolName: string | undefined, marketName: string | nul
       .replace(/\(FRAXBP\)/i, '')
       .trim()
   }
-  return marketName ?? shortenTokenAddress(address) ?? ''
+  return marketName ?? shortenAddress(address) ?? ''
 }
 
 export default createGaugesSlice

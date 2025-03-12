@@ -4,10 +4,9 @@ import AlertFormError from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import curvejsApi from '@/dex/lib/curvejs'
-import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
-import { getErrorMessage, shortenTokenAddress } from '@/dex/utils'
+import { getErrorMessage } from '@/dex/utils'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
@@ -16,6 +15,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const Compensation = ({
   rChainId,
@@ -99,7 +99,7 @@ const Compensation = ({
           <div>
             <strong>{token}</strong>{' '}
             <StyledExternalLink href={networks[rChainId].scanAddressPath(contractAddress)}>
-              {shortenTokenAddress(contractAddress)}
+              {shortenAddress(contractAddress)}
               <Icon name="Launch" size={16} />
             </StyledExternalLink>
             <StyledIconButton size="medium" onClick={() => copyToClipboard(contractAddress)}>

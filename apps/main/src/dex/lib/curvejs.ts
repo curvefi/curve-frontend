@@ -25,7 +25,7 @@ import {
   UsdRatesMapper,
   UserBalancesMapper,
 } from '@/dex/types/main.types'
-import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
+import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -46,6 +46,7 @@ import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import { log } from '@ui-kit/lib/logging'
+import { shortenAddress } from '@ui-kit/utils'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -193,10 +194,10 @@ const pool = {
   },
   getPoolData: (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
     const isWrappedOnly = network.poolIsWrappedOnly[p.id]
-    const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenTokenAddress(p.wrappedCoinAddresses[idx])!)
+    const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx])!)
     const tokens = isWrappedOnly
       ? tokensWrapped
-      : p.underlyingCoins.map((token, idx) => token || shortenTokenAddress(p.underlyingCoinAddresses[idx])!)
+      : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx])!)
     const tokensLowercase = tokens.map((c) => c.toLowerCase())
     const tokensAll = isWrappedOnly ? tokensWrapped : [...tokens, ...tokensWrapped]
     const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
