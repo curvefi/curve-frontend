@@ -11,12 +11,14 @@ import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import VoteGaugeField from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -129,7 +131,9 @@ const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton to={`/gauges/${gaugeData.effective_address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton
+              to={getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`)}
+            >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

@@ -5,11 +5,13 @@ import ErrorMessage from '@/dao/components/ErrorMessage'
 import InternalLinkButton from '@/dao/components/InternalLinkButton'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
 import GaugeDetailsSm from './GaugeDetailsSm'
 import TitleComp from './TitleComp'
@@ -127,7 +129,9 @@ const SmallScreenCard = ({
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
-            <InternalLinkButton to={`/gauges/${gaugeData.effective_address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton
+              to={getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`)}
+            >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

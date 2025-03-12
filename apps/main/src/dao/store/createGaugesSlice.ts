@@ -456,8 +456,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 })
 
 const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
-  console.log(gauges)
-
   const fuse = new Fuse<GaugeFormattedData>(gauges, {
     ignoreLocation: true,
     threshold: 0.01,
