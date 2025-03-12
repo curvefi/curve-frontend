@@ -24,7 +24,7 @@ describe('LlamaLend Markets', () => {
     mockLendingChains()
     mockTokenPrices()
     mockLendingVaults(vaultData)
-    mockLendingSnapshots().as('snapshots')
+    mockLendingSnapshots().as('lend-snapshots')
     mockMintMarkets()
     mockMintSnapshots()
 
@@ -37,6 +37,8 @@ describe('LlamaLend Markets', () => {
     })
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
+
+  const firstRow = () => cy.get(`[data-testid^="data-table-row"]`).first()
 
   it('should have sticky headers', () => {
     if (breakpoint === 'mobile') {
@@ -71,14 +73,14 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
-    cy.get(`@snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
+    cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
       cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
-      cy.wait('@snapshots')
+      cy.wait('@lend-snapshots')
       cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
-      cy.wait(range(calls1.length).map(() => '@snapshots'))
-      cy.get(`@snapshots.all`, LOAD_TIMEOUT).then((calls2) => {
-        expect(calls2.length).to.be.greaterThan(calls1.length)
-      })
+      cy.wait(range(calls1.length).map(() => '@lend-snapshots'))
+      cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls2) =>
+        expect(calls2.length).to.be.greaterThan(calls1.length),
+      )
     })
   })
 
@@ -150,20 +152,24 @@ describe('LlamaLend Markets', () => {
   it(`should hover and copy the market address`, () => {
     const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
-    cy.get(`[data-testid^="data-table-row"]`).first().should('not.have.css', 'background-color', hoverBackground)
-    cy.get(`[data-testid^="data-table-row"]`).first().trigger('mouseenter')
-    cy.get(`[data-testid^="data-table-row"]`).first().should('have.css', 'background-color', hoverBackground)
-    cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', '1')
+    firstRow().should('not.have.css', 'background-color', hoverBackground)
+    firstRow().scrollIntoView()
+    firstRow().trigger('mouseenter', { waitForAnimations: true })
+    firstRow().should('have.css', 'background-color', hoverBackground)
+    cy.get(`[data-testid^="copy-market-address"]`).first().should('have.css', 'opacity', '1')
     cy.get(`[data-testid^="copy-market-address"]`).first().click()
     cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
   })
 
   it(`should navigate to market details`, () => {
-    const [type, expectedUrl] = oneOf(['mint', '/crvusd/ethereum/markets/'], ['lend', '/lend/ethereum/markets/'])
+    const [type, urlRegex] = oneOf(
+      ['mint', /\/crvusd\/\w+\/markets\/.+\/create/],
+      ['lend', /\/lend\/\w+\/markets\/.+\/create/],
+    )
     cy.get(`[data-testid="chip-${type}"]`).click()
-    cy.get(`[data-testid^="data-table-row"]`).first().contains(capitalize(type))
+    firstRow().contains(capitalize(type))
     cy.get(`[data-testid^="market-link-"]`).first().click()
-    cy.url().should('include', expectedUrl, LOAD_TIMEOUT)
+    cy.url().should('match', urlRegex, LOAD_TIMEOUT)
   })
 
   it(`should allow filtering by rewards`, () => {
