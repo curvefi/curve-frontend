@@ -18,6 +18,14 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'The URL to navigate to when clicking the external link button',
     },
+    copy: {
+      control: 'boolean',
+      description: 'Whether or not the value can be copied',
+    },
+    copiedTitle: {
+      control: 'text',
+      description: 'Message title displayed in the snackbar when the value is copied',
+    },
     size: {
       control: 'select',
       options: ['small', 'medium', 'large'],
@@ -28,6 +36,8 @@ const meta: Meta<typeof ActionInfo> = {
     label: 'Contract',
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    copy: true,
+    copiedTitle: 'Contract address copied!',
     size: 'small',
   },
 }

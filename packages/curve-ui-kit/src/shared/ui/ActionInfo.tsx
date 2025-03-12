@@ -8,6 +8,7 @@ import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Typography from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { copyToClipboard } from '@ui-kit/utils'
@@ -23,8 +24,10 @@ type ActionInfoProps = {
   value: string
   /** URL to navigate to when clicking the external link button */
   link?: string
-  /** Message displayed in the snackbar when the address is copied */
-  copiedText: string
+  /** Whether or not the value can be copied */
+  copy?: boolean
+  /** Message displayed in the snackbar title when the value is copied */
+  copiedTitle?: string
   /** Size of the component */
   size?: ComponentSize
 }
@@ -41,7 +44,7 @@ const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingS
   large: 'headingSBold',
 }
 
-const ActionInfo = ({ label, value, link, size = 'medium', copiedText }: ActionInfoProps) => {
+const ActionInfo = ({ label, value, link, size = 'medium', copy = false, copiedTitle }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
@@ -60,9 +63,11 @@ const ActionInfo = ({ label, value, link, size = 'medium', copiedText }: ActionI
           {value}
         </Typography>
 
-        <IconButton size="small" onClick={copyValue} color="primary">
-          <ContentCopy />
-        </IconButton>
+        {copy && (
+          <IconButton size="small" onClick={copyValue} color="primary">
+            <ContentCopy />
+          </IconButton>
+        )}
 
         {link && (
           <IconButton component={Link} href={link} target="_blank" rel="noopener" size="small" color="primary">
@@ -73,7 +78,7 @@ const ActionInfo = ({ label, value, link, size = 'medium', copiedText }: ActionI
 
       <Snackbar open={isOpen} onClose={close} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
-          <AlertTitle>{copiedText}</AlertTitle>
+          <AlertTitle>{copiedTitle ?? t`Value has been copied to clipboard`}</AlertTitle>
           {value}
         </Alert>
       </Snackbar>
