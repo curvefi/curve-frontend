@@ -5,11 +5,12 @@ import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
 import useStore from '@/loan/store/useStore'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import { Accordion, AccordionDetails, AccordionSummary, Skeleton, Stack, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material'
 import { formatNumber } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
@@ -34,17 +35,11 @@ export const TransactionDetails = () => {
     <Accordion onChange={(_, isExpanded) => setIsOpen(isExpanded)} sx={{ border: 'none' }}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Stack direction="row" flexGrow={1} justifyContent="space-between" alignItems="center">
-          {exchangeRateLoading ? (
-            <Skeleton>
-              <Typography variant="highlightM" color="textPrimary">
-                1 crvUSD = 0.96 scrvUSD
-              </Typography>
-            </Skeleton>
-          ) : (
+          <WithSkeleton loading={exchangeRateLoading}>
             <Typography variant="highlightM" color="textPrimary">
               {t`1 crvUSD = ${formatNumber(scrvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} scrvUSD`}
             </Typography>
-          )}
+          </WithSkeleton>
 
           {!isOpen && (
             <Stack direction="row" alignItems="center">
@@ -55,18 +50,12 @@ export const TransactionDetails = () => {
                   color: (t) => t.palette.text.secondary,
                 }}
               />
-              {isLoading(fetchStatus) ? (
-                <Skeleton>
-                  {' '}
-                  <Typography variant="bodyMRegular" color="textSecondary">
-                    0.0000
-                  </Typography>
-                </Skeleton>
-              ) : (
+
+              <WithSkeleton loading={isLoading(fetchStatus)}>
                 <Typography variant="bodyMRegular" color="textSecondary">
-                  {isReady(preview.fetchStatus) ? valueGas : '-'}
+                  {isReady(preview.fetchStatus) ? valueGas : isLoading(fetchStatus) ? '0.0000' : '-'}
                 </Typography>
-              )}
+              </WithSkeleton>
             </Stack>
           )}
         </Stack>

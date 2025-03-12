@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import { Skeleton, Stack, Tooltip } from '@mui/material'
+import { Stack, Tooltip } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
@@ -15,6 +15,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
+import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
 const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
@@ -115,13 +116,7 @@ const ActionInfo = ({
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
         {valueLeft}
 
-        {loading ? (
-          <Skeleton>
-            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-              {typeof loading === 'string' ? loading : MOCK_SKELETON}
-            </Typography>
-          </Skeleton>
-        ) : (
+        <WithSkeleton loading={!!loading}>
           <Tooltip
             title={valueTooltip}
             placement="top"
@@ -135,10 +130,10 @@ const ActionInfo = ({
             }}
           >
             <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-              {value}
+              {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
             </Typography>
           </Tooltip>
-        )}
+        </WithSkeleton>
 
         {valueRight}
 
