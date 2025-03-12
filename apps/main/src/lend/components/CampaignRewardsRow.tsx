@@ -24,7 +24,7 @@ const Container = styled.div<{ mobile: boolean }>`
   flex-wrap: wrap;
   max-width: 12rem;
   gap: var(--spacing-1);
-  margin-left: var(--spacing-1);
+  margin-left: var(--spacing-2);
 `
 
 export default CampaignRewardsRow
