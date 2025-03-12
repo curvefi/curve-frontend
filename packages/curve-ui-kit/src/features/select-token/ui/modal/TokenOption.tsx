@@ -98,7 +98,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
 
           {showAddress && (
             <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textTertiary'}>
-              {shortenAddress(address, { includePrefix: false })}
+              {shortenAddress(address)}
             </Typography>
           )}
         </Stack>

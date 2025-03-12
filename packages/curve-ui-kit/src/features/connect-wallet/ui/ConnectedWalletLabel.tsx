@@ -11,6 +11,6 @@ export type ConnectedWalletLabelProps = {
 
 export const ConnectedWalletLabel = ({ walletAddress, onDisconnectWallet, ...props }: ConnectedWalletLabelProps) => (
   <Button size="small" color="ghost" onClick={onDisconnectWallet} title={walletAddress} {...props}>
-    {shortenAddress(walletAddress, { includePrefix: false })}
+    {shortenAddress(walletAddress)}
   </Button>
 )
