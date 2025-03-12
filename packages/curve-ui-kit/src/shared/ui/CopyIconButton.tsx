@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
+import type { IconButtonProps } from '@mui/material/IconButton/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 import Tooltip from '@mui/material/Tooltip'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -12,32 +13,33 @@ export function CopyIconButton({
   copyText,
   label,
   confirmationText,
-  className,
+  ...iconProps
 }: {
   copyText: string
   label: string
   confirmationText: string
-  className?: string
-}) {
-  const [isCopied, showAlert, hideAlert] = useSwitch(false)
+} & IconButtonProps) {
+  const [alertText, setAlertText] = useState<string>()
   return (
     // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
     <InvertTheme inverted={false}>
       <Tooltip title={label} placement="top">
         <IconButton
-          className={className}
           size="extraSmall"
-          onClick={async () => {
-            await navigator.clipboard.writeText(copyText)
-            showAlert()
-          }}
+          {...iconProps}
+          onClick={() =>
+            navigator.clipboard
+              .writeText(copyText)
+              .then(() => setAlertText(confirmationText))
+              .catch((e) => setAlertText(e.message))
+          }
         >
           <CopyIcon color="primary" />
         </IconButton>
       </Tooltip>
 
-      <Snackbar open={isCopied} onClose={hideAlert} autoHideDuration={Duration.Snackbar}>
-        <Alert variant="filled" severity="success">
+      <Snackbar open={!!alertText} onClose={() => setAlertText(undefined)} autoHideDuration={Duration.Snackbar}>
+        <Alert variant="filled" severity="success" data-testid="copy-confirmation">
           <AlertTitle>{confirmationText}</AlertTitle>
           {copyText}
         </Alert>

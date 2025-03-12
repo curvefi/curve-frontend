@@ -35,9 +35,10 @@ export const PageLlamaMarkets = () => {
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
   usePageOnMount() // required for connecting wallet
+  const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
-      {!data && (!isError || isLoading) ? (
+      {showSkeleton ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
         <LendingMarketsTable

@@ -64,6 +64,25 @@ export const defineMuiChip = (
     },
   },
   variants: [
+    // 'clickable' is the "Chip" in the design system. This needs to be before the colors, so they may be overridden.
+    {
+      props: { clickable: true },
+      style: {
+        borderRadius: Chips.BorderRadius.Clickable,
+        borderColor: Chips.Default.Stroke,
+        cursor: 'pointer',
+        '& .MuiChip-deleteIcon': { margin: 0 },
+        '&:hover, &:focus-visible': {
+          borderColor: 'transparent',
+          backgroundColor: Chips.Hover.Fill,
+          color: Chips.Hover.Label,
+          '& .MuiChip-deleteIcon': {
+            fill: Chips.Hover.Label,
+          },
+        },
+      },
+    },
+
     // 'badge' colors not in design system but defined directly in components
     {
       props: { color: 'alert' },
@@ -106,25 +125,6 @@ export const defineMuiChip = (
         borderColor: Chips.Default.Stroke,
         '& .MuiChip-deleteIcon': {
           fill: Chips.Default.Label,
-        },
-      },
-    },
-
-    // 'clickable' is the "Chip" in the design system
-    {
-      props: { clickable: true },
-      style: {
-        borderRadius: Chips.BorderRadius.Clickable,
-        borderColor: Chips.Default.Stroke,
-        cursor: 'pointer',
-        '& .MuiChip-deleteIcon': { margin: 0 },
-        '&:hover, &:focus-visible': {
-          borderColor: 'transparent',
-          backgroundColor: Chips.Hover.Fill,
-          color: Chips.Hover.Label,
-          '& .MuiChip-deleteIcon': {
-            fill: Chips.Hover.Label,
-          },
         },
       },
     },

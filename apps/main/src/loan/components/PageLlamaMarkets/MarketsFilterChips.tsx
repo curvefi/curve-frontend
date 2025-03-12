@@ -41,7 +41,7 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
     (type: LlamaMarketType) => {
       setColumnFilter(
         LlamaMarketColumnId.Type,
-        filter?.includes(type) ? Object.values(LlamaMarketType).filter((f) => f !== type) : [...(filter || []), type],
+        filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter || []), type],
       )
     },
     [filter, setColumnFilter],

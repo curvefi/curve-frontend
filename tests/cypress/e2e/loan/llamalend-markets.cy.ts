@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
   createLendingVaultResponses,
@@ -144,6 +145,25 @@ describe('LlamaLend Markets', () => {
       cy.get(`[data-testid="chip-${otherType}"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
     })
+  })
+
+  it(`should hover and copy the market address`, () => {
+    const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(59, 56, 52)'
+    cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
+    cy.get(`[data-testid^="data-table-row"]`).first().should('not.have.css', 'background-color', hoverBackground)
+    cy.get(`[data-testid^="data-table-row"]`).first().trigger('mouseenter')
+    cy.get(`[data-testid^="data-table-row"]`).first().should('have.css', 'background-color', hoverBackground)
+    cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', '1')
+    cy.get(`[data-testid^="copy-market-address"]`).first().click()
+    cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
+  })
+
+  it(`should navigate to market details`, () => {
+    const [type, expectedUrl] = oneOf(['mint', '/crvusd/ethereum/markets/'], ['lend', '/lend/ethereum/markets/'])
+    cy.get(`[data-testid="chip-${type}"]`).click()
+    cy.get(`[data-testid^="data-table-row"]`).first().contains(capitalize(type))
+    cy.get(`[data-testid^="market-link-"]`).first().click()
+    cy.url().should('include', expectedUrl, LOAD_TIMEOUT)
   })
 
   it(`should allow filtering by rewards`, () => {

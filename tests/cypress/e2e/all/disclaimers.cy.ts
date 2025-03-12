@@ -7,7 +7,7 @@ describe('Disclaimers', () => {
     footerViewports.forEach((viewport) => {
       it(`should contain footer disclaimer links for ${viewport[0]}x${viewport[1]}`, () => {
         cy.viewport(...viewport)
-        cy.visit(`/${oneAppPath() ?? 'dex'}/`)
+        cy.visit(`/${oneAppPath() || 'dex'}/`)
 
         // Navigate to risk disclaimer from footer.
         cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')

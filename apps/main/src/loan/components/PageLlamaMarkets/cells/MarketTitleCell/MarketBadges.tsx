@@ -11,6 +11,7 @@ import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { classNames } from '@ui-kit/utils/dom'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,8 +24,6 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
   [LlamaMarketType.Lend]: () => t`Lend markets allow you to earn interest on your assets.`,
   [LlamaMarketType.Mint]: () => t`Mint markets allow you to borrow assets against your collateral.`,
 }
-
-const classNames = (...items: (string | false | undefined | null)[]): string => items.filter(Boolean).join(' ')
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market: { address, rewards, type, leverage } }: { market: LlamaMarket }) => {

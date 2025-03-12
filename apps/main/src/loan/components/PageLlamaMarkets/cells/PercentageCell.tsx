@@ -13,7 +13,7 @@ export const PercentageCell = ({ getValue, column, row }: CellContext<LlamaMarke
   const { data: stats, error: statsError } = useUserMarketStats(row.original, column.id as LlamaMarketColumnId)
   const value = column.id === LlamaMarketColumnId.UserHealth ? stats?.health : getValue()
   if (value == null || (value === 0 && column.columnDef.meta?.hideZero)) {
-    return statsError ? <ErrorCell error={statsError} /> : '-'
+    return statsError && <ErrorCell error={statsError} />
   }
   return (
     <Stack gap={Spacing.xs}>

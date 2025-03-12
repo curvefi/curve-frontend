@@ -12,7 +12,7 @@ import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { hasParentWithClass } from '@ui-kit/utils/dom'
+import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from './InvertOnHover'
 
 const { Sizing, Spacing, MinWidth, MinHeight } = SizesAndSpaces
@@ -45,7 +45,6 @@ const DataCell = <T extends TableItem>({ cell }: { cell: Cell<T, unknown> }) => 
           paddingInline: Spacing.sm,
           paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
           ...getExtraColumnPadding(column),
-          transition: `color ${TransitionFunction}, border-right ${TransitionFunction}`,
           ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         data-testid={`data-table-cell-${column.id}`}
@@ -81,11 +80,13 @@ const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemSty
           marginBlock: 0,
           borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
           cursor: 'pointer',
-          transition: `border ${TransitionFunction}`,
-          [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 0 }, transition: `opacity ${TransitionFunction}` },
-          '&:hover': {
-            [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: '100%' } },
+          transition: `border-bottom ${TransitionFunction}`,
+          [`& .${DesktopOnlyHoverClass}`]: {
+            opacity: { mobile: 1, desktop: 0 },
+            transition: `opacity ${TransitionFunction}`,
           },
+          '&:hover': { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
+          [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
           ...sx,
         }}
         ref={ref}
@@ -130,7 +131,6 @@ const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown
             '&:hover': {
               color: `text.highlight`,
             },
-            transition: `color ${TransitionFunction}, border-right ${TransitionFunction}`,
           }),
           ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
@@ -169,7 +169,14 @@ export const DataTable = <T extends TableItem>({
   rowSx?: SystemStyleObject<Theme>
   minRowHeight?: number
 }) => (
-  <Table sx={{ minWidth: MinWidth.table, backgroundColor: (t) => t.design.Layer[1].Fill }} data-testid="data-table">
+  <Table
+    sx={{
+      minWidth: MinWidth.table,
+      backgroundColor: (t) => t.design.Layer[1].Fill,
+      borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+    }}
+    data-testid="data-table"
+  >
     <TableHead
       sx={(t) => ({
         zIndex: t.zIndex.appBar - 1,

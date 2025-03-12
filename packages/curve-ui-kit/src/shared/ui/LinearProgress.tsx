@@ -16,7 +16,7 @@ export const LinearProgress = ({ percent, size }: { percent: number; size: keyof
         height: SIZE_MAPPING[size],
         ...(value < 0 && { '& .MuiLinearProgress-bar': { backgroundColor: 'error.main' } }),
       }}
-      value={Math.min(100, Math.abs(value))}
+      value={value < 0 ? 100 : Math.min(100, value)}
       variant="determinate"
     />
   )
