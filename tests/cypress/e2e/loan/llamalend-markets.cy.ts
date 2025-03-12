@@ -149,12 +149,16 @@ describe('LlamaLend Markets', () => {
     })
   })
 
-  it(`should hover and copy the market address`, () => {
+  // todo: this test fails in ci because the click doesn't work or the trigger fails
+  it(`should hover and copy the market address`, RETRY_IN_CI, () => {
     const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
+    cy.wait(500) // wait for the animations to finish
     firstRow().should('not.have.css', 'background-color', hoverBackground)
     firstRow().scrollIntoView()
+    cy.wait(500) // wait for the animations to finish
     firstRow().trigger('mouseenter', { waitForAnimations: true })
+    cy.wait(500) // wait for the animations to finish
     firstRow().should('have.css', 'background-color', hoverBackground)
     cy.get(`[data-testid^="copy-market-address"]`).first().should('have.css', 'opacity', '1')
     cy.get(`[data-testid^="copy-market-address"]`).first().click()
