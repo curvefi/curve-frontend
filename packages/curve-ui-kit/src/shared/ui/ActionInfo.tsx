@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import { Stack } from '@mui/material'
+import { Stack, Tooltip } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
@@ -31,6 +31,7 @@ type ActionInfoProps = {
   valueLeft?: ReactNode
   /** Optional content to display to the right of the value */
   valueRight?: ReactNode
+  valueTooltip?: string
   /** Previous value (if needed for comparison) */
   prevValue?: string
   prevValueColor?: React.ComponentProps<typeof Typography>['color']
@@ -70,6 +71,7 @@ const ActionInfo = ({
   valueColor,
   valueLeft,
   valueRight,
+  valueTooltip = '',
   link,
   size = 'medium',
   copy = false,
@@ -107,9 +109,22 @@ const ActionInfo = ({
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
         {valueLeft}
 
-        <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-          {value}
-        </Typography>
+        <Tooltip
+          title={valueTooltip}
+          placement="top"
+          slotProps={{
+            popper: {
+              sx: {
+                userSelect: 'none',
+                pointerEvents: 'none',
+              },
+            },
+          }}
+        >
+          <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+            {value}
+          </Typography>
+        </Tooltip>
 
         {valueRight}
 

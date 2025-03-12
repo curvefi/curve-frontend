@@ -28,6 +28,10 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'Optional content to display to the right of the value',
     },
+    valueTooltip: {
+      control: 'text',
+      description: 'Tooltip text to display when hovering over the value',
+    },
     prevValue: {
       control: 'text',
       description: 'Previous value (if needed for comparison)',
@@ -58,6 +62,7 @@ const meta: Meta<typeof ActionInfo> = {
     label: 'Contract',
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     valueColor: 'textPrimary',
+    valueTooltip: 'Contract address',
     link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
     copy: true,
     copiedTitle: 'Contract address copied!',
@@ -131,6 +136,21 @@ export const WithValueDecorators: Story = {
     docs: {
       description: {
         story: 'Shows value with left and right decorators using MUI icons',
+      },
+    },
+  },
+}
+
+export const WithTooltip: Story = {
+  args: {
+    value: '0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    valueTooltip: 'Full contract address: 0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows value with a tooltip that appears on hover',
       },
     },
   },
