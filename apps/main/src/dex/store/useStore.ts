@@ -1,31 +1,28 @@
-// @ts-nocheck
+import debounce from 'lodash/debounce'
+import merge from 'lodash/merge'
 import { create, type GetState, type SetState } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { type PersistOptions } from 'zustand/middleware/persist'
-import merge from 'lodash/merge'
-import debounce from 'lodash/debounce'
-
-import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
-import createNetworksSlice, { NetworksSlice } from '@/dex/store/createNetworksSlice'
-import createGasSlice, { GasSlice } from '@/dex/store/createGasSlice'
-import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
-import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
-import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
-import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
-import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/dex/store/createCampaignRewardsSlice'
+import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
+import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
+import createGasSlice, { GasSlice } from '@/dex/store/createGasSlice'
+import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
+import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
+import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
+import createNetworksSlice, { NetworksSlice } from '@/dex/store/createNetworksSlice'
+import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
+import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
+import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
+import createPoolSwapSlice, { PoolSwapSlice } from '@/dex/store/createPoolSwapSlice'
+import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
+import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import createTokensSlice, { TokensSlice } from '@/dex/store/createTokensSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from '@/dex/store/createUsdRatesSlice'
-import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
-import createPoolSwapSlice, { PoolSwapSlice } from '@/dex/store/createPoolSwapSlice'
-import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
-import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
-import createSelectTokenSlice, { SelectTokenSlice } from '@/dex/store/createSelectTokenSlice'
-import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
-import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
-import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
-import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/dex/store/createCampaignRewardsSlice'
+import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
+import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
 
 export type State = GlobalSlice &
   NetworksSlice &
@@ -45,7 +42,6 @@ export type State = GlobalSlice &
   LockedCrvSlice &
   CreatePoolSlice &
   IntegrationsSlice &
-  SelectTokenSlice &
   DeployGaugeSlice &
   CampaignRewardsSlice
 
@@ -68,7 +64,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createLockedCrvSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createIntegrationsSlice(set, get),
-  ...createSelectTokenSlice(set, get),
   ...createDeployGaugeSlice(set, get),
   ...createCampaignRewardsSlice(set, get),
 })
@@ -82,7 +77,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   partialize: ({ storeCache }: State) => ({ storeCache }),
   merge,
   storage: {
-    getItem: (name) => JSON.parse(localStorage.getItem(name)),
+    getItem: (name) => JSON.parse(localStorage.getItem(name)!),
     // debounce storage to avoid performance issues serializing too often. The item can be large.
     setItem: debounce((name, value) => {
       const json = JSON.stringify(value)

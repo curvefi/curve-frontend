@@ -1,8 +1,6 @@
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/lend/store/useStore'
-import { getErrorMessage } from '@/lend/utils/helpers'
 import apiLending from '@/lend/lib/apiLending'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type { State } from '@/lend/store/useStore'
 import {
   ChainId,
   Api,
@@ -19,6 +17,8 @@ import {
   MarketsRewardsMapper,
   MarketDetailsView,
 } from '@/lend/types/lend.types'
+import { getErrorMessage } from '@/lend/utils/helpers'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -135,7 +135,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
       const sliceState = get()[sliceKey]
-      let resp = { pricePerShare: '', error: '' }
+      const resp = { pricePerShare: '', error: '' }
 
       const { pricePerShare: foundPricePerShare } = sliceState.vaultPricePerShare[chainId]?.[owm.id] ?? {}
       if (foundPricePerShare && +foundPricePerShare > 0 && !shouldRefetch) {

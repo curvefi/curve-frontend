@@ -1,12 +1,13 @@
 import { ReactNode } from 'react'
-import Dialog from '@mui/material/Dialog'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import CardHeader from '@mui/material/CardHeader'
-import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
+import { SxProps, Theme } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 export type ModalDialogProps = {
@@ -16,10 +17,11 @@ export type ModalDialogProps = {
   onClose: () => void
   titleAction?: ReactNode
   footer?: ReactNode
+  sx?: SxProps<Theme>
 }
 
-export const ModalDialog = ({ children, open, onClose, title, titleAction, footer }: ModalDialogProps) => (
-  <Dialog open={open} onClose={onClose}>
+export const ModalDialog = ({ children, open, onClose, title, titleAction, footer, sx }: ModalDialogProps) => (
+  <Dialog open={open} onClose={onClose} sx={sx} disableRestoreFocus>
     <Card
       sx={{
         ...SizesAndSpaces.ModalHeight.sm,
@@ -36,7 +38,7 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
     >
       <CardHeader
         action={
-          <IconButton onClick={onClose}>
+          <IconButton onClick={onClose} size="extraSmall">
             <CloseIcon />
           </IconButton>
         }

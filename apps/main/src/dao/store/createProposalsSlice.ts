@@ -1,14 +1,11 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-
-import networks from '@/dao/networks'
-import { SEVEN_DAYS, TOP_HOLDERS } from '@/dao/constants'
-import { helpers } from '@/dao/lib/curvejs'
-
 import Fuse from 'fuse.js'
-import orderBy from 'lodash/orderBy'
 import produce from 'immer'
-import { t } from '@ui-kit/lib/i18n'
+import orderBy from 'lodash/orderBy'
+import type { GetState, SetState } from 'zustand'
+import { TOP_HOLDERS } from '@/dao/constants'
+import { helpers } from '@/dao/lib/curvejs'
+import networks from '@/dao/networks'
+import type { State } from '@/dao/store/useStore'
 import {
   FetchingState,
   PricesProposalResponse,
@@ -23,7 +20,11 @@ import {
   TransactionState,
   UserProposalVoteResData,
 } from '@/dao/types/dao.types'
-import { useWallet, notify } from '@ui-kit/features/connect-wallet'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
+
+const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -127,7 +128,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           page++
         }
 
-        let proposalsObject: { [voteId: string]: ProposalData } = {}
+        const proposalsObject: { [voteId: string]: ProposalData } = {}
 
         for (const proposal of results) {
           const minAcceptQuorumPercent = (+proposal.min_accept_quorum / 1e18) * 100
@@ -297,9 +298,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const proposals = Object.values(proposalsData)
 
       const filteredProposals = filterProposals(proposals, activeFilter)
-      const sortedProposals = sortProposals(filteredProposals, activeSortBy, activeSortDirection)
-
-      return sortedProposals
+      return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
     },
     setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals, activeSortBy, activeSortDirection } = get()[sliceKey]
@@ -548,7 +547,7 @@ const getProposalStatus = (
   const passedQuorum = votesFor >= quorumVeCrv
   const passedMinimum = (votesFor / totalVotes) * 100 > minSupport
 
-  if (startDate + SEVEN_DAYS > Math.floor(Date.now() / 1000)) return 'Active'
+  if (startDate + WEEK > Math.floor(Date.now() / 1000)) return 'Active'
   if (passedQuorum && passedMinimum) return 'Passed'
   return 'Denied'
 }
@@ -595,21 +594,21 @@ const sortProposals = (
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
-    const activeProposals = proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS > currentTimestamp)
+    const activeProposals = proposals.filter((proposal) => proposal.startDate + WEEK > currentTimestamp)
     const passedProposals = orderBy(
-      proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS < currentTimestamp),
+      proposals.filter((proposal) => proposal.startDate + WEEK < currentTimestamp),
       ['startDate'],
       ['desc'],
     )
 
     if (activeSortDirection === 'asc') {
       return [
-        ...orderBy(activeProposals, [(proposal) => proposal.startDate + SEVEN_DAYS - currentTimestamp], ['desc']),
+        ...orderBy(activeProposals, [(proposal) => proposal.startDate + WEEK - currentTimestamp], ['desc']),
         ...passedProposals,
       ]
     } else {
       return [
-        ...orderBy(activeProposals, [(proposal) => proposal.startDate + SEVEN_DAYS - currentTimestamp], ['asc']),
+        ...orderBy(activeProposals, [(proposal) => proposal.startDate + WEEK - currentTimestamp], ['asc']),
         ...passedProposals,
       ]
     }

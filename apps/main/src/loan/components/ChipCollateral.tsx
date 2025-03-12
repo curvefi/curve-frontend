@@ -1,22 +1,20 @@
-import type { AriaButtonProps } from 'react-aria'
-
-import { useButton } from 'react-aria'
 import { useMemo, useRef } from 'react'
+import type { AriaButtonProps } from 'react-aria'
+import { useButton } from 'react-aria'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils/responsive'
-import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
+import { getAddress } from 'viem'
 import Icon from '@ui/Icon'
+import { breakpoints } from '@ui/utils/responsive'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
 }
 
 const Button = ({ className, ...props }: ButtonProps) => {
-  let ref = useRef(null)
-  let { buttonProps, isPressed } = useButton(props, ref)
-  let { children } = props
-
+  const ref = useRef(null)
+  const { buttonProps, isPressed } = useButton(props, ref)
+  const { children } = props
   return (
     <ChipPoolCopyButton className={`${className} ${isPressed ? 'isPressed' : ''}`} {...buttonProps} ref={ref}>
       {children}
@@ -54,11 +52,6 @@ const ChipCollateral = ({
   poolAddress,
   ...props
 }: ChipPoolProps) => {
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-    console.log(`Copied ${address}`)
-  }
-
   const parsedPoolName = useMemo(() => {
     if (poolName && poolName.length > 24) {
       return `${poolName.slice(0, 18)}...`
@@ -68,9 +61,9 @@ const ChipCollateral = ({
 
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
-      return `${shortenTokenAddress(poolAddress)}`
+      return `${shortenAddress(poolAddress)}`
     }
-    return poolAddress
+    return getAddress(poolAddress)
   }, [poolAddress])
 
   return (
@@ -79,7 +72,7 @@ const ChipCollateral = ({
         {isHighlightPoolName || isHighlightPoolAddress ? <mark>{parsedPoolName}</mark> : parsedPoolName}{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
-        <Button {...props} onPress={() => handleCopyClick(poolAddress)}>
+        <Button {...props} onPress={() => copyToClipboard(poolAddress)}>
           <ChipPoolAddress>
             {isHighlightPoolAddress ? <mark>{parsedPoolAddress}</mark> : parsedPoolAddress}
           </ChipPoolAddress>

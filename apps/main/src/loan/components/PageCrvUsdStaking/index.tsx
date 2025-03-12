@@ -1,20 +1,18 @@
-import { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
-
-import useStore from '@/loan/store/useStore'
-
-import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
+import { useEffect } from 'react'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
+import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
+import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
 import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
-import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
+import useStore from '@/loan/store/useStore'
+import { Stack, useMediaQuery } from '@mui/material'
+import Fade from '@mui/material/Fade'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { Stack, useMediaQuery } from '@mui/material'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Fade from '@mui/material/Fade'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -37,16 +35,21 @@ const CrvUsdStaking = () => {
   } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
   const isUserScrvUsdBalanceZero =
-    signerAddress && userScrvUsdBalance ? BigNumber(userScrvUsdBalance.scrvUSD).isZero() : true
+    !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
-  const connectedUserNoScrvUsdBalance =
-    !!signerAddress && !!walletName && !!isUserScrvUsdBalanceFetched && !!isUserScrvUsdBalanceZero
+  const connectedUserNoScrvUsdBalance = [
+    signerAddress,
+    walletName,
+    isUserScrvUsdBalanceFetched,
+    isUserScrvUsdBalanceZero,
+  ].every(Boolean)
 
   // walletName indicates the wallet is cached and will begin connecting
   const showStatsBanner =
-    !walletName || connectedUserNoScrvUsdBalance || !signerAddress
-      ? true
-      : !connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero
+    !walletName ||
+    connectedUserNoScrvUsdBalance ||
+    !signerAddress ||
+    (!connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)

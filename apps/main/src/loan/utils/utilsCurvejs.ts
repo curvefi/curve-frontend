@@ -1,8 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
-import PromisePool from '@supercharge/promise-pool'
-
-import { BN } from '@ui/utils'
 import networks from '@/loan/networks'
 import {
   BandBalance,
@@ -14,6 +11,8 @@ import {
   UserLoanDetails,
   Wallet,
 } from '@/loan/types/loan.types'
+import PromisePool from '@supercharge/promise-pool'
+import { BN } from '@ui/utils'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
   const { networkId } = networks[chainId]
@@ -54,7 +53,7 @@ export function getLiquidationStatus(
   userIsCloseToLiquidation: boolean,
   userStateStablecoin: string,
 ) {
-  let userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
+  const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
     tooltip: '',
@@ -124,7 +123,7 @@ export async function getChartBandBalancesData(
     }
   })
 
-  let parsedBandBalances = []
+  const parsedBandBalances = []
   for (const idx in results) {
     const r = results[idx]
     parsedBandBalances.unshift(r)
@@ -162,7 +161,7 @@ export function getWalletProvider(wallet: Wallet) {
 
 export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   const smallAmount = 0.00000001
-  let resp = cloneDeep(userLoss)
+  const resp = cloneDeep(userLoss)
   resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
   resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
 

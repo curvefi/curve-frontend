@@ -1,22 +1,20 @@
-import React, { useMemo } from 'react'
-import styled from 'styled-components'
 import { zip } from 'lodash'
-
-import useStore from '@/dex/store/useStore'
-import usePoolAlert from '@/dex/hooks/usePoolAlert'
-import useTokenAlert from '@/dex/hooks/useTokenAlert'
-
-import { Chip } from '@ui/Typography'
-import AlertBox from '@ui/AlertBox'
-import AlertTooltipIcon from '@ui/Tooltip/TooltipAlert'
-import Box from '@ui/Box'
+import { ReactNode, useMemo } from 'react'
+import styled from 'styled-components'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'
-import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
+import usePoolAlert from '@/dex/hooks/usePoolAlert'
+import useTokenAlert from '@/dex/hooks/useTokenAlert'
+import useStore from '@/dex/store/useStore'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
+import { Chip } from '@ui/Typography'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
 type PoolListProps = {
-  quickViewValue?: string | React.ReactNode | null
+  quickViewValue?: ReactNode
   searchText?: string
   searchTextByTokensAndAddresses?: { [address: string]: boolean }
   searchTextByOther?: { [address: string]: boolean }
@@ -64,7 +62,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
 
     let foundSearchedToken = false
 
-    const highlightedTokens = tokens.map(({ symbol, address }, idx) => {
+    const highlightedTokens = tokens.map(({ symbol, address }) => {
       const isHighLight =
         searchedTerms.findIndex((searched) => {
           const parsedToken = symbol.toLowerCase()

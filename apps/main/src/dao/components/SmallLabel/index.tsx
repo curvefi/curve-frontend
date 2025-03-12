@@ -1,7 +1,8 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 type SmallLabelProps = {
-  description: React.ReactNode | string
+  description: ReactNode
   isKilled?: boolean
   isNetwork?: boolean
   className?: string

@@ -1,14 +1,12 @@
-import { t } from '@ui-kit/lib/i18n'
-import Image from 'next/image'
 import BigNumber from 'bignumber.js'
-
-import useStore from '@/loan/store/useStore'
+import Image from 'next/image'
+import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
-
-import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-
+import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 import {
   ErrorText,
   InputLabel,
@@ -18,7 +16,6 @@ import {
   StyledIcon,
   StyledInputComp,
 } from './styles'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const DepositModule = () => {
   const { signerAddress } = useWallet()
@@ -49,7 +46,6 @@ const DepositModule = () => {
           </Box>
           <StyledInputComp
             walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
             value={inputAmount}
             isLoadingBalances={userScrvUsdBalanceLoading}
@@ -74,7 +70,6 @@ const DepositModule = () => {
           </Box>
           <StyledInputComp
             walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
-            walletBalanceUSD={userScrvUsdBalance?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
             value={preview.value}
             readOnly

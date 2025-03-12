@@ -1,3 +1,8 @@
+import { useRouter } from 'next/navigation'
+import { useCallback, useMemo } from 'react'
+import { TrSearchedTextResult } from 'ui/src/Table'
+import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
+import TableRowMobile from '@/dex/components/PagePoolList/components/TableRowMobile'
 import type {
   ColumnKeys,
   PoolListTableLabel,
@@ -5,22 +10,18 @@ import type {
   SearchTermMapper,
 } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
-import TableRowMobile from '@/dex/components/PagePoolList/components/TableRowMobile'
-import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback, useMemo } from 'react'
-import useStore from '@/dex/store/useStore'
-import { getUserActiveKey } from '@/dex/store/createUserSlice'
-import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
-import { TrSearchedTextResult } from 'ui/src/Table'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { getUserActiveKey } from '@/dex/store/createUserSlice'
+import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface PoolRowProps {
   poolId: string
   index: number
-  isLite: boolean
+  isCrvRewardsEnabled: boolean
   rChainId: ChainId
   columnKeys: ColumnKeys[]
   searchParams: SearchParams
@@ -41,7 +42,7 @@ const ROUTES = {
 export const PoolRow = ({
   poolId,
   index,
-  isLite,
+  isCrvRewardsEnabled,
   rChainId,
   columnKeys,
   searchParams,
@@ -52,7 +53,7 @@ export const PoolRow = ({
   setShowDetail,
   curve,
 }: PoolRowProps) => {
-  const navigate = useNavigate()
+  const { push } = useRouter()
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)
@@ -84,14 +85,14 @@ export const PoolRow = ({
       if (nodeName === 'A') {
         return // prevent click-through link from tooltip
       }
-      navigate(`${poolId}${ROUTES[formType ?? 'deposit']}`)
+      push(getPath({ network: network.id }, `${ROUTE.PAGE_POOLS}/${poolId}${ROUTES[formType ?? 'deposit']}`))
     },
-    [navigate, poolId],
+    [push, network.id, poolId],
   )
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
-    isLite,
+    isCrvRewardsEnabled,
     formValues,
     searchParams,
     isInPool,

@@ -4,7 +4,6 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 
 type StoryProps = {
   title?: string

@@ -1,24 +1,21 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo, useRef } from 'react'
-import { useOverlayTriggerState } from '@react-stately/overlays'
-import { useButton } from '@react-aria/button'
-
+import styled from 'styled-components'
+import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
+import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
+import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
+import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
-
-import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
-import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
-import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
-import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
-
+import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { useButton } from '@react-aria/button'
+import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box, { BoxHeader } from '@ui/Box'
+import ModalDialog from '@ui/Dialog/ModalDialog'
+import Icon from '@ui/Icon/Icon'
+import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Switch from '@ui/Switch/Switch'
-import IconButton from '@ui/IconButton'
-import Icon from '@ui/Icon/Icon'
-import ModalDialog from '@ui/Dialog/ModalDialog'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   curve: CurveApi
@@ -46,7 +43,7 @@ const DeployGauge = ({ curve }: Props) => {
 
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
-  const { buttonProps: openButtonProps } = useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
+  useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
 
   const validateDeployButton = useMemo(() => {
     // validate sidechain gauge deployment

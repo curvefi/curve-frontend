@@ -1,20 +1,18 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
-import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
-import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
-import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import cloneDeep from 'lodash/cloneDeep'
+import { ethAddress } from 'viem'
+import type { GetState, SetState } from 'zustand'
+import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
 import {
   DEFAULT_EST_GAS,
   DEFAULT_EXCHANGE_OUTPUT,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/dex/components/PagePool/Swap/utils'
-import { NETWORK_TOKEN } from '@/dex/constants'
-import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
+import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import {
   Balances,
   ChainId,
@@ -26,6 +24,8 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -137,10 +137,10 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (resp.error) {
         get()[sliceKey].setStateByKey('formStatus', { ...cFormStatus, error: resp.error })
       } else {
-        let cFormValues = cloneDeep(formValues)
+        const cFormValues = cloneDeep(formValues)
         cFormValues.toAmount = resp.toAmount
         cFormValues.fromAmount = resp.fromAmount
-        let activeKey = getActiveKey(cFormValues, maxSlippage)
+        const activeKey = getActiveKey(cFormValues, maxSlippage)
 
         sliceState.setStateByKeys({
           activeKey,
@@ -229,7 +229,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
       // get max amount for native token
       if (
-        formValues.fromAddress.toLowerCase() === NETWORK_TOKEN &&
+        formValues.fromAddress.toLowerCase() === ethAddress &&
         typeof basePlusPriority?.[0] !== 'undefined' &&
         +fromAmount > 0
       ) {
@@ -260,7 +260,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       const storedFormValues = get()[sliceKey].formValues
 
       // update form values
-      let cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       cFormValues.toError = ''
       cFormValues.fromError = ''
 

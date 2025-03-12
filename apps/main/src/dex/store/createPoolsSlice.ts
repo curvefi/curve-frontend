@@ -1,36 +1,15 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type {
-  FetchingStatus,
-  LpLiquidityEventsApiResponse,
-  LpLiquidityEventsData,
-  LpPriceApiResponse,
-  LpPriceOhlcData,
-  LpPriceOhlcDataFormatted,
-  LpTradesApiResponse,
-  LpTradesData,
-  LpTradeToken,
-  PricesApiCoin,
-  PricesApiPool,
-  PricesApiPoolResponse,
-  TimeOptions,
-} from '@ui/Chart/types'
-import type { UTCTimestamp } from 'lightweight-charts'
-
-import { PromisePool } from '@supercharge/promise-pool'
-import countBy from 'lodash/countBy'
 import produce from 'immer'
-import cloneDeep from 'lodash/cloneDeep'
+import type { UTCTimestamp } from 'lightweight-charts'
 import chunk from 'lodash/chunk'
+import cloneDeep from 'lodash/cloneDeep'
+import countBy from 'lodash/countBy'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
-
-import { INVALID_ADDRESS } from '@/dex/constants'
-import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
-import { log } from '@ui-kit/lib/logging'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import { zeroAddress } from 'viem'
+import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import {
   CurveApi,
   ChainId,
@@ -51,6 +30,25 @@ import {
   TvlMapper,
   VolumeMapper,
 } from '@/dex/types/main.types'
+import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
+import { PromisePool } from '@supercharge/promise-pool'
+import type {
+  FetchingStatus,
+  LpLiquidityEventsApiResponse,
+  LpLiquidityEventsData,
+  LpPriceApiResponse,
+  LpPriceOhlcData,
+  LpPriceOhlcDataFormatted,
+  LpTradesApiResponse,
+  LpTradesData,
+  LpTradeToken,
+  PricesApiCoin,
+  PricesApiPool,
+  PricesApiPoolResponse,
+  TimeOptions,
+} from '@ui/Chart/types'
+import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -222,7 +220,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         })
 
       // update volumeMapper
-      let volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
+      const volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
       sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
 
       //  update cache
@@ -360,7 +358,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       const { balances } = balancesResp
       const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
-      let crTokens: CurrencyReservesToken[] = []
+      const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
 
@@ -520,7 +518,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const response = await fetch(`https://prices.curve.fi/v1/chains/${networkName}`)
           const data: PricesApiPoolResponse = await response.json()
 
-          let pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
+          const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
           data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
 
           set(
@@ -1004,7 +1002,7 @@ export function parsedTokensNameMapper(poolDatas: PoolData[]) {
       tokensNameMapper[address] = tokens[idx]
     })
 
-    if (lpToken !== INVALID_ADDRESS) {
+    if (lpToken !== zeroAddress) {
       tokensNameMapper[lpToken] = `${id} LP`
     }
   }

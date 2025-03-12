@@ -1,23 +1,23 @@
 import styled from 'styled-components'
-
-import useStore from '@/dao/store/useStore'
-
-import Box from '@ui/Box'
 import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
+import useStore from '@/dao/store/useStore'
+import type { GaugeUrlParams } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import BackButton from '../BackButton'
 import GaugeHeader from './GaugeHeader'
 import GaugeMetrics from './GaugeMetrics'
 import GaugeVotesTable from './GaugeVotesTable'
-import BackButton from '../BackButton'
 
 type GaugeProps = {
-  routerParams: {
-    rGaugeAddress: string
-  }
+  routerParams: GaugeUrlParams
 }
 
-const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
+const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
-  const { gaugeMapper, gaugesLoading } = useStore((state) => state.gauges)
+  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
 
   const tableMinWidth = 21.875
   const gaugeData = gaugeMapper[gaugeAddress]
@@ -25,14 +25,14 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
 
   return (
     <Wrapper>
-      <BackButton path="/ethereum/gauges" label="Back to gauges" />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label="Back to gauges" />
       <GaugePageContainer variant="secondary">
         <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />
         <Content>
-          <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />
+          <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />
         </Content>
-        <GaugeVotesTable gaugeAddress={gaugeAddress} tableMinWidth={tableMinWidth} />
+        <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />
       </GaugePageContainer>
     </Wrapper>
   )

@@ -1,18 +1,15 @@
-import type { DateValue } from '@internationalized/date'
-import type { FormType, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
-
-import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils/responsive'
+import type { FormType, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
+import { CurveApi } from '@/dex/types/main.types'
 import { formatDisplayDate, toCalendarDate } from '@/dex/utils/utilsDates'
-import dayjs from '@ui-kit/lib/dayjs'
-
-import { Chip } from '@ui/Typography'
+import type { DateValue } from '@internationalized/date'
 import Button from '@ui/Button'
 import DatePicker from '@ui/DatePicker'
-import { CurveApi } from '@/dex/types/main.types'
+import { Chip } from '@ui/Typography'
+import { breakpoints } from '@ui/utils/responsive'
+import dayjs from '@ui-kit/lib/dayjs'
+import { t } from '@ui-kit/lib/i18n'
 
 const QUICK_ACTIONS: { unit: dayjs.ManipulateType; value: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
@@ -95,8 +92,8 @@ const FieldDatePicker = ({
         minValue={toCalendarDate(minUtcDate)}
         maxValue={maxUtcDate ? toCalendarDate(maxUtcDate) : null}
         value={utcDate}
-        onChange={(val: DateValue) => {
-          if (curve) handleInpEstUnlockedDays(curve, val)
+        onChange={(val) => {
+          if (curve && val) handleInpEstUnlockedDays(curve, val)
         }}
         quickActionValue={quickActionValue}
         quickActions={

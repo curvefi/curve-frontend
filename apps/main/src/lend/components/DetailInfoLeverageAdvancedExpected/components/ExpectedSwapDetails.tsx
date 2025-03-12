@@ -1,11 +1,11 @@
-import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-import React, { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import RouteLine from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
+import RouteToken from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
+import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import networks from '@/lend/networks'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
-import RouteLine from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
-import RouteToken from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 
 const stateDefault = { height: '34px', data: [] as Hop[] }
@@ -26,7 +26,7 @@ const ExpectedSwapDetails = ({
   DetailInfoLeverageExpectedProps,
   'rChainId' | 'swapFromAmounts' | 'swapToAmounts' | 'routeImage' | 'avgPrice'
 > & {
-  label: React.ReactNode
+  label: ReactNode
   loading: boolean
   swapFromSymbol: string
   swapFromAddress: string
@@ -40,7 +40,7 @@ const ExpectedSwapDetails = ({
 
   useEffect(() => {
     setData((prev) => ({ ...stateDefault, height: prev.height }))
-    let state = { height: '', data: [] as Hop[] }
+    const state = { height: '', data: [] as Hop[] }
 
     if (routesRef.current) {
       const { height } = routesRef.current.getBoundingClientRect()

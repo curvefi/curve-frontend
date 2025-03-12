@@ -1,7 +1,7 @@
 import { getHost, type Options, type Chain } from '..'
 import { fetchJson as fetch, addQueryString } from '../fetch'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export type Endpoint = 'crvusd' | 'lending'
 

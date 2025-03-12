@@ -1,8 +1,8 @@
 import sortBy from 'lodash/sortBy'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import curvejsApi from '@/loan/lib/apiCrvusd'
-import { ChainOption } from '@ui-kit/features/switch-chain'
 import { ChainId, NetworkEnum, NetworkConfig } from '@/loan/types/loan.types'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
+import { ChainOption } from '@ui-kit/features/switch-chain'
 
 const DEFAULT_NETWORK_CONFIG = {
   api: curvejsApi,

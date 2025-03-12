@@ -1,13 +1,13 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import TooltipButton from '@ui/Tooltip'
-import { ExternalLink } from '@ui/Link'
 import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
+import TooltipButton from '@ui/Tooltip'
 
 type ExternalLinkIconButtonProps = {
   href: string
   tooltip: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (
@@ -30,7 +30,6 @@ const StyledExternalLink = styled(ExternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  text-transform: none;
   text-decoration: none;
   &:hover {
     cursor: pointer;

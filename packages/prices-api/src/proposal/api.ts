@@ -1,8 +1,8 @@
 import { getHost, type Options } from '..'
 import { fetchJson as fetch, FetchError } from '../fetch'
-import type * as Responses from './responses'
 import type * as Models from './models'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export async function getProposals(
   page: number,

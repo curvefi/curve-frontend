@@ -1,17 +1,15 @@
-import React from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import { INVALID_ADDRESS } from '@/lend/constants'
-
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
-import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
+import { ReactNode } from 'react'
+import { zeroAddress } from 'viem'
 import ChipInactive from '@/lend/components/ChipInactive'
 import DetailInfoAddressLookup from '@/lend/components/DetailsMarket/components/DetailInfoAddressLookup'
+import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import TokenLabel from '@/lend/components/TokenLabel'
 import { PageContentProps } from '@/lend/types/lend.types'
+import Box from '@ui/Box'
+import Chip from '@ui/Typography/Chip'
+import { t } from '@ui-kit/lib/i18n'
 
-type ContractItems = { label: string | React.ReactNode; address: string | undefined; invalidText?: string }[]
+type ContractItems = { label: ReactNode; address: string | undefined; invalidText?: string }[]
 
 const DetailsContracts = ({
   rChainId,
@@ -23,7 +21,7 @@ const DetailsContracts = ({
   const { addresses, borrowed_token, collateral_token } = market ?? {}
 
   // prettier-ignore
-  let contracts: { borrow: ContractItems[], supply: ContractItems[] } = {
+  const contracts: { borrow: ContractItems[]; supply: ContractItems[] } = {
     borrow: [
       [
         { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
@@ -42,7 +40,7 @@ const DetailsContracts = ({
       ],
       [
         { label: t`Vault`, address: addresses?.vault },
-        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === INVALID_ADDRESS ? t`No gauge` : '' }
+        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === zeroAddress ? t`No gauge` : '' }
       ],
     ]
   }

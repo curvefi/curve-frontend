@@ -1,20 +1,20 @@
-import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
-import { REFRESH_INTERVAL } from '@/dex/constants'
-import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
-import useStore from '@/dex/store/useStore'
-import { getUserActiveKey } from '@/dex/store/createUserSlice'
-import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import Table, { Tbody } from '@ui/Table'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
 import TableHead from '@/dex/components/PagePoolList/components/TableHead'
 import TableHeadMobile from '@/dex/components/PagePoolList/components/TableHeadMobile'
-import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@/dex/components/PagePoolList/components/TableRowNoResult'
-import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
+import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
+import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
+import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
+import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
+import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
+import { getUserActiveKey } from '@/dex/store/createUserSlice'
+import useStore from '@/dex/store/useStore'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Table, { Tbody } from '@ui/Table'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const PoolList = ({
   rChainId,
@@ -46,6 +46,8 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
+  const isCrvRewardsEnabled = useStore((state) => state.networks.networks[rChainId]?.isCrvRewardsEnabled)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -85,7 +87,7 @@ const PoolList = ({
   }, [isLite, tvlMapper, volumeMapper])
 
   const columnKeys = useMemo(() => {
-    let keys: ColumnKeys[] = []
+    const keys: ColumnKeys[] = []
     if (showInPoolColumn) keys.push(COLUMN_KEYS.inPool)
     keys.push(COLUMN_KEYS.poolName)
 
@@ -103,6 +105,7 @@ const PoolList = ({
         rChainId,
         isLite,
         searchParams,
+        hideSmallPools,
         typeof poolDataMapper !== 'undefined' ? poolDatas : undefined,
         poolDatasCached,
         rewardsApyMapper ?? {},
@@ -115,19 +118,20 @@ const PoolList = ({
       )
     },
     [
+      setFormValues,
+      rChainId,
       isLite,
-      campaignRewardsMapper,
+      hideSmallPools,
       poolDataMapper,
       poolDatas,
       poolDatasCached,
-      rChainId,
       rewardsApyMapper,
-      setFormValues,
+      volumeMapper,
+      volumeMapperCached,
       tvlMapper,
       tvlMapperCached,
       userPoolList,
-      volumeMapper,
-      volumeMapperCached,
+      campaignRewardsMapper,
     ],
   )
 
@@ -147,7 +151,7 @@ const PoolList = ({
 
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams])
+  }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams, hideSmallPools])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -206,7 +210,7 @@ const PoolList = ({
                   key={poolId}
                   index={index}
                   columnKeys={columnKeys}
-                  isLite={isLite}
+                  isCrvRewardsEnabled={isCrvRewardsEnabled}
                   poolId={poolId}
                   rChainId={rChainId}
                   searchParams={searchParams}
@@ -233,13 +237,5 @@ const PoolList = ({
     </>
   )
 }
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-`
 
 export default PoolList

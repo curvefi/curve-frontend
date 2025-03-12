@@ -1,7 +1,7 @@
 import { getHost, type Options } from '..'
 import { fetchJson as fetch } from '../fetch'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export async function getOracles(options?: Options) {
   const host = getHost(options)

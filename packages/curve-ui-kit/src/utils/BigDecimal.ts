@@ -85,11 +85,7 @@ class BigDecimal {
       return !isNaN(value) && isFinite(value)
     }
 
-    if (typeof value === 'bigint') {
-      return true
-    }
-
-    return false
+    return typeof value === 'bigint'
   }
 
   /**
@@ -218,14 +214,6 @@ class BigDecimal {
     if (newScale <= this._scale) return this
     const scaleDiff = newScale - this._scale
     const newFractionalPart = this._fractionalPart * this.scaleFactor(scaleDiff)
-    return new BigDecimal(this._integerPart * this.scaleFactor(newScale) + newFractionalPart, newScale)
-  }
-
-  private scaleDown(newScale: number): BigDecimal {
-    if (newScale >= this._scale) return this
-    const scaleDiff = this._scale - newScale
-    const divisor = this.scaleFactor(scaleDiff)
-    const newFractionalPart = this._fractionalPart / divisor
     return new BigDecimal(this._integerPart * this.scaleFactor(newScale) + newFractionalPart, newScale)
   }
 

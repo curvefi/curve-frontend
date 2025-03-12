@@ -1,11 +1,11 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/lend/store/useStore'
-import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import produce from 'immer'
-import { log } from '@ui-kit/lib/logging'
 import isEqual from 'lodash/isEqual'
+import type { GetState, SetState } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { Api, RouterProps, Wallet } from '@/lend/types/lend.types'
+import type { State } from '@/lend/store/useStore'
+import { Api, Wallet } from '@/lend/types/lend.types'
+import { CONNECT_STAGE, ConnectState } from '@ui/utils'
+import { log } from '@ui-kit/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -18,7 +18,6 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  routerProps: RouterProps | null
   scrollY: number
 }
 
@@ -40,7 +39,6 @@ const DEFAULT_STATE: SliceState = {
   isLoadingCurve: true,
   isMobile: false,
   isPageVisible: true,
-  routerProps: null,
   scrollY: 0,
 }
 

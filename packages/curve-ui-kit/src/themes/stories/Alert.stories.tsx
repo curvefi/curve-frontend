@@ -1,7 +1,7 @@
-import AlertTitle from '@mui/material/AlertTitle'
-import type { Meta, StoryObj } from '@storybook/react'
 import Alert, { AlertProps } from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
+import type { Meta, StoryObj } from '@storybook/react'
 
 const AlertStory = (props: AlertProps) => (
   <Stack spacing={5}>

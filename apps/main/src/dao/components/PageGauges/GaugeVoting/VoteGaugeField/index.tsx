@@ -1,16 +1,14 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
-
-import useStore from '@/dao/store/useStore'
-import { convertToLocaleTimestamp, formatNumber } from '@ui/utils'
-
-import Button from '@ui/Button'
-import NumberField from './NumberField'
+import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
-import Box from '@ui/Box'
-import { TooltipIcon } from '@ui/Tooltip'
+import useStore from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import { TooltipIcon } from '@ui/Tooltip'
+import { convertToLocaleTimestamp, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import NumberField from './NumberField'
 
 type VoteGaugeFieldProps = {
   powerUsed: number
@@ -24,10 +22,11 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
-  const availableVeCrv = userVeCrv * availablePower
+  const availableVeCrv = userVeCrv * (availablePower / 100)
 
-  const { userAddress } = useStore((state) => state.user)
-  const { castVote, txCastVoteState } = useStore((state) => state.gauges)
+  const userAddress = useStore((state) => state.user.userAddress)
+  const castVote = useStore((state) => state.gauges.castVote)
+  const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
 
   const address = userAddress?.toLowerCase()
 

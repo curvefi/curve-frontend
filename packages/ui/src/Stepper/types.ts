@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { ButtonHTMLAttributes, ReactNode } from 'react'
 
 export type StepStatus = 'current' | 'pending' | 'in-progress' | 'succeeded' | 'failed'
 
@@ -6,14 +6,14 @@ export type StepTask = {
   key: string
   status: StepStatus
   type: 'task'
-  content: React.ReactNode
+  content: ReactNode
 }
 
 export type StepAction = {
   key: string
   status: StepStatus
   type: 'action'
-  content: React.ReactNode
+  content: ReactNode
   onClick: () => void
 }
 
@@ -21,17 +21,17 @@ export type StepActionModal = {
   key: string
   status: StepStatus
   type: 'action'
-  content: React.ReactNode
+  content: ReactNode
   modal: {
     title: string
-    content: React.ReactNode
+    content: ReactNode
     initFn?: () => void
     isDismissable: boolean
     cancelBtnProps?: {
       label?: string | undefined
       onClick: () => void
     }
-    primaryBtnProps: React.ButtonHTMLAttributes<HTMLButtonElement>
+    primaryBtnProps: ButtonHTMLAttributes<HTMLButtonElement>
     primaryBtnLabel: string
     testId?: string
   }

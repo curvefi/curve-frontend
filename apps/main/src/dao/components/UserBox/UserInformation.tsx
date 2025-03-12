@@ -1,15 +1,16 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useMemo } from 'react'
-
-import useStore from '@/dao/store/useStore'
-import { shortenTokenAddress, formatNumber } from '@ui/utils'
-
-import { TooltipIcon } from '@ui/Tooltip'
+import styled from 'styled-components'
 import Loader from 'ui/src/Loader/Loader'
-import InternalLink from '@ui/Link/InternalLink'
-import Box from '@ui/Box'
+import useStore from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import InternalLink from '@ui/Link/InternalLink'
+import { TooltipIcon } from '@ui/Tooltip'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   noLink?: boolean
@@ -19,7 +20,9 @@ type Props = {
 }
 
 const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
-  const { userAddress, userEns, userVeCrv } = useStore((state) => state.user)
+  const userAddress = useStore((state) => state.user.userAddress)
+  const userEns = useStore((state) => state.user.userEns)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {
@@ -50,20 +53,20 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {userEns ? (
               <UserIdentifier>{userEns}</UserIdentifier>
             ) : (
-              <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
+              <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
             )}
-            {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
+            {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
           </Box>
         ) : (
-          <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
+          <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
             <Box flex flexAlignItems="end">
               {userEns ? (
                 <UserIdentifier>{userEns}</UserIdentifier>
               ) : (
-                <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
+                <UserIdentifier>{shortenAddress(userAddress ?? '')}</UserIdentifier>
               )}
             </Box>
-            {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
+            {userEns && <SmallAddress>{shortenAddress(userAddress ?? '')}</SmallAddress>}
           </StyledInternalLink>
         )}
       </Box>
@@ -114,7 +117,6 @@ const StyledInternalLink = styled(InternalLink)`
   color: inherit;
   font-weight: 500;
   text-decoration: none;
-  text-transform: none;
 `
 
 const UserIdentifier = styled.h4`

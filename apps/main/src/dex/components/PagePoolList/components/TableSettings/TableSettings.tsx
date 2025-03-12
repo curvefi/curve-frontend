@@ -1,17 +1,17 @@
-import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/dex/components/PagePoolList/types'
-import React, { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-import { breakpoints } from '@ui/utils'
+import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
+import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
+import TableCheckboxHideSmallPools from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
+import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/dex/components/PagePoolList/types'
 import useStore from '@/dex/store/useStore'
+import { ChainId, PoolData } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import SearchListInput from '@ui/SearchInput/SearchListInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
-import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
-import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
-import TableCheckboxHideSmallPools from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
-import { ChainId, PoolData } from '@/dex/types/main.types'
+import { breakpoints } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   isReady: boolean
@@ -101,11 +101,7 @@ const TableSettings = ({
             />
             <Box flex gridGap={2}>
               <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
-              <TableCheckboxHideSmallPools
-                searchParams={searchParams}
-                poolDatasCachedOrApi={poolDatasCachedOrApi}
-                updatePath={updatePath}
-              />
+              <TableCheckboxHideSmallPools poolDatasCachedOrApi={poolDatasCachedOrApi} />
             </Box>
           </>
         ) : (
@@ -116,11 +112,7 @@ const TableSettings = ({
               updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
             />
             <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
-            <TableCheckboxHideSmallPools
-              searchParams={searchParams}
-              poolDatasCachedOrApi={poolDatasCachedOrApi}
-              updatePath={updatePath}
-            />
+            <TableCheckboxHideSmallPools poolDatasCachedOrApi={poolDatasCachedOrApi} />
           </>
         )}
       </FiltersWrapper>

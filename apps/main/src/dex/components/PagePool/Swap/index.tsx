@@ -1,46 +1,47 @@
-import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
-import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
-import type { Step } from '@ui/Stepper/types'
-import { t } from '@ui-kit/lib/i18n'
+import cloneDeep from 'lodash/cloneDeep'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
-import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/dex/constants'
-import { formatNumber } from '@ui/utils'
-import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import cloneDeep from 'lodash/cloneDeep'
-import usePageVisibleInterval from '@/dex/hooks/usePageVisibleInterval'
-import useStore from '@/dex/store/useStore'
-import { FieldsWrapper } from '@/dex/components/PagePool/styles'
-import AlertBox from '@ui/AlertBox'
+import { ethAddress } from 'viem'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
 import AlertSlippage from '@/dex/components/AlertSlippage'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
 import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
+import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
+import TransferActions from '@/dex/components/PagePool/components/TransferActions'
+import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { FieldsWrapper } from '@/dex/components/PagePool/styles'
+import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
+import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
+import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
+import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import useStore from '@/dex/store/useStore'
+import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { toTokenOption } from '@/dex/utils'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import Checkbox from '@ui/Checkbox'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import Stepper from '@ui/Stepper'
-import TokenComboBox from '@/dex/components/ComboBoxSelectToken'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
+import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import WarningModal from '@/dex/components/PagePool/components/WarningModal'
-import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { TokenSelector } from '@ui-kit/features/select-token'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Swap = ({
   chainIdPoolId,
   curve,
-  blockchainId,
   maxSlippage,
   poolAlert,
   poolData,
@@ -52,7 +53,6 @@ const Swap = ({
   userPoolBalancesLoading,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
   chainIdPoolId: string
-  blockchainId: string
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed
@@ -84,19 +84,28 @@ const Swap = ({
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
+
   const userFromBalance = userPoolBalances?.[formValues.fromAddress]
   const userToBalance = userPoolBalances?.[formValues.toAddress]
+
   const fromUsdRate = usdRatesMapper[formValues.fromAddress]
   const toUsdRate = usdRatesMapper[formValues.toAddress]
 
-  const { selectList, swapTokensMapper } = useMemo(
-    () => getSwapTokens(tokensMapper, poolDataCacheOrApi),
-    [poolDataCacheOrApi, tokensMapper],
-  )
+  const { selectList, swapTokensMapper } = useMemo(() => {
+    const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
+
+    return {
+      selectList: selectList.map(toTokenOption(network?.networkId)),
+      swapTokensMapper,
+    }
+  }, [poolDataCacheOrApi, tokensMapper, network?.networkId])
+
+  const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
+  const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
@@ -360,21 +369,20 @@ const Swap = ({
               <InputMaxBtn
                 disabled={isDisabled || isMaxLoading}
                 loading={isMaxLoading}
-                isNetworkToken={formValues.fromAddress.toLowerCase() === NETWORK_TOKEN}
+                isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
                 onClick={() => {
                   updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
                 }}
               />
-              <TokenComboBox
-                title={t`Select a Token`}
-                disabled={isDisabled || selectList.length === 0}
-                blockchainId={blockchainId}
-                listBoxHeight="400px"
-                selectedToken={swapTokensMapper[formValues.fromAddress]}
-                showSearch={false}
+
+              <TokenSelector
+                selectedToken={fromToken}
                 tokens={selectList}
-                onSelectionChange={(value) => {
-                  const val = value as string
+                disabled={isDisabled || selectList.length === 0}
+                showSearch={false}
+                showManageList={false}
+                onToken={(token) => {
+                  const val = token.address
                   const cFormValues = cloneDeep(formValues)
                   if (val === formValues.toAddress) {
                     cFormValues.toAddress = formValues.fromAddress
@@ -448,16 +456,15 @@ const Swap = ({
                 updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
               }}
             />
-            <TokenComboBox
-              title={t`Select a Token`}
-              disabled={isDisabled || selectList.length === 0}
-              blockchainId={blockchainId}
-              listBoxHeight="400px"
-              selectedToken={swapTokensMapper[formValues.toAddress]}
-              showSearch={false}
+
+            <TokenSelector
+              selectedToken={toToken}
               tokens={selectList}
-              onSelectionChange={(value) => {
-                const val = value as string
+              disabled={isDisabled || selectList.length === 0}
+              showSearch={false}
+              showManageList={false}
+              onToken={(token) => {
+                const val = token.address
                 const cFormValues = cloneDeep(formValues)
                 if (val === formValues.fromAddress) {
                   cFormValues.fromAddress = formValues.toAddress

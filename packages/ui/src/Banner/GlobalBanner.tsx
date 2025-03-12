@@ -1,6 +1,5 @@
-import React, { Ref } from 'react'
+import { forwardRef, Ref } from 'react'
 import styled from 'styled-components'
-
 import Button from 'ui/src/Button/Button'
 
 export type GlobalBannerProps = {
@@ -12,12 +11,12 @@ export type GlobalBannerProps = {
   ref: Ref<HTMLDivElement>
 }
 
-const GlobalBanner = React.forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
+const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   (
     { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
     ref,
   ) => (
-    <Wrapper ref={ref} show={showSwitchNetworkMessage || showConnectApiErrorMessage || !!maintenanceMessage}>
+    <Wrapper ref={ref} $show={showSwitchNetworkMessage || showConnectApiErrorMessage || !!maintenanceMessage}>
       {!!maintenanceMessage ? <Message padding="1rem 0">{maintenanceMessage}</Message> : null}
       {showSwitchNetworkMessage && (
         <Message>
@@ -43,10 +42,10 @@ GlobalBanner.displayName = 'GlobalBanner'
 export default GlobalBanner
 
 const Wrapper = styled.div<{
-  show: boolean
+  $show: boolean
 }>`
   margin: 0;
-  max-height: ${({ show }) => (show ? '500px' : '0')};
+  max-height: ${({ $show }) => ($show ? '500px' : '0')};
   overflow: hidden;
 
   background-color: var(--danger-400);

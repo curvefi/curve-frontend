@@ -1,23 +1,21 @@
 import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import useStore from '@/dao/store/useStore'
-
-import { LOCKS_LABELS } from '../constants'
-
-import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
-
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/TableRow'
+import useStore from '@/dao/store/useStore'
 import { UserLock, UserLocksSortBy, veCrvLockType } from '@/dao/types/dao.types'
+import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { LOCKS_LABELS } from '../constants'
 
 interface UserLocksTableProps {
   userAddress: string
-  tableMinWidth: number
 }
 
-const UserLocksTable = ({ userAddress, tableMinWidth }: UserLocksTableProps) => {
-  const { getUserLocks, userLocksMapper, userLocksSortBy, setUserLocksSortBy } = useStore((state) => state.user)
+const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
+  const getUserLocks = useStore((state) => state.user.getUserLocks)
+  const userLocksMapper = useStore((state) => state.user.userLocksMapper)
+  const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
+  const setUserLocksSortBy = useStore((state) => state.user.setUserLocksSortBy)
 
   const gridTemplateColumns = '5.375rem 1fr 10rem 8rem'
   const minWidth = 36

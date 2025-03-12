@@ -1,8 +1,8 @@
-import type { Meta } from '@storybook/react'
-import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import { StandardCSSProperties } from '@mui/system/styleFunctionSx/StandardCssProperties'
+import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import { StandardCSSProperties } from '@mui/system/styleFunctionSx/StandardCssProperties'
+import type { Meta } from '@storybook/react'
 
 const PaletteStory = () => {
   const {

@@ -1,17 +1,17 @@
-import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
-import { shortenTokenAddress } from '@/dex/utils'
+import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import Chip from '@ui/Typography/Chip'
 import Box from '@ui/Box'
-import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import ExternalLink from '@ui/Link/ExternalLink'
 import TextEllipsis from '@ui/TextEllipsis'
 import TooltipButton from '@ui/Tooltip'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import Chip from '@ui/Typography/Chip'
+import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { shortenAddress } from '@ui-kit/utils'
 
 const CurrencyReservesContent = ({
   cr,
@@ -28,7 +28,7 @@ const CurrencyReservesContent = ({
       <TokenIcon
         size="sm"
         blockchainId={network?.networkId ?? ''}
-        symbol={token}
+        tooltip={token}
         address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
       />
 
@@ -37,7 +37,7 @@ const CurrencyReservesContent = ({
           <ExternalLinkToken>{token}</ExternalLinkToken>{' '}
           {haveSameTokenName ? (
             <Chip opacity={0.7} size="xs">
-              {shortenTokenAddress(tokenAddress)}
+              {shortenAddress(tokenAddress)}
             </Chip>
           ) : null}
         </TokenLabelLink>
@@ -83,7 +83,6 @@ const TokenLabelLink = styled(ExternalLink)`
   display: inline-flex;
   grid-gap: var(--spacing-1);
   text-decoration: none;
-  text-transform: initial;
 `
 
 export const TokenBalancePercent = styled(Chip)`
@@ -105,7 +104,6 @@ export const ExternalLinkToken = styled(TextEllipsis)`
 
 export const TokenLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
 `
 
 export default CurrencyReservesContent

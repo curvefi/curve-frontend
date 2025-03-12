@@ -1,14 +1,11 @@
-import React from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
-import { formatNumber } from '@ui/utils/'
-import { calculateStaleVeCrvPercentage } from './utils'
 import useStore from '@/dao/store/useStore'
-
-import Tooltip from '@ui/Tooltip'
-import Box from '@ui/Box'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Tooltip from '@ui/Tooltip'
+import { formatNumber } from '@ui/utils/'
+import { t } from '@ui-kit/lib/i18n'
+import { calculateStaleVeCrvPercentage } from './utils'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight
@@ -16,7 +13,7 @@ type GaugeWeightVotesColumnsProps = {
 
 const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
   const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
-  const { userGaugeVoteWeightsSortBy } = useStore((state) => state.user)
+  const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
 
   const hasFutureVeCrv = userFutureVeCrv > userVeCrv
 

@@ -1,18 +1,16 @@
-import { t } from '@ui-kit/lib/i18n'
-import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
-import { NETWORK_TOKEN } from '@/dao/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { gweiToEther, weiToGwei } from '@ui-kit/utils'
+import { ethAddress } from 'viem'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-
+import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
   active: number
@@ -36,12 +34,12 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
+  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
   const gasInfo = useStore((state) => state.gas.gasInfo)
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
-    let resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
+    const resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
     if (estimatedGas && basePlusPriority) {
       const { symbol, gasPricesUnit } = networks[chainId]
       let gasCostInWei = 0

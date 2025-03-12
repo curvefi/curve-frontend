@@ -1,8 +1,8 @@
 import { getHost, type Options, type Chain, type Address } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export type Endpoint = 'crvusd' | 'lending'
 

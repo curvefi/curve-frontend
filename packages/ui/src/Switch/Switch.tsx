@@ -1,7 +1,7 @@
-import styled, { keyframes } from 'styled-components'
-import { ToggleProps, useToggleState } from 'react-stately'
 import { useRef } from 'react'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
+import { ToggleProps, useToggleState } from 'react-stately'
+import styled, { keyframes } from 'styled-components'
 
 interface Props extends ToggleProps {
   className?: string
@@ -9,10 +9,10 @@ interface Props extends ToggleProps {
 }
 
 function Switch(props: Props) {
-  let ref = useRef<HTMLInputElement>(null)
-  let state = useToggleState(props)
-  let { inputProps } = useSwitch(props, state, ref)
-  let { isFocusVisible, focusProps } = useFocusRing()
+  const ref = useRef<HTMLInputElement>(null)
+  const state = useToggleState(props)
+  const { inputProps } = useSwitch(props, state, ref)
+  const { isFocusVisible, focusProps } = useFocusRing()
 
   return (
     <SwitchLabel className={props.className} isDisabled={props.isDisabled}>

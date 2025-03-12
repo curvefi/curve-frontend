@@ -1,16 +1,16 @@
+import CallMade from '@mui/icons-material/CallMade'
+import ContentCopy from '@mui/icons-material/ContentCopy'
 import { Stack } from '@mui/material'
-import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import CallMade from '@mui/icons-material/CallMade'
-import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { shortenTokenAddress } from 'ui/src/utils/'
+import Snackbar from '@mui/material/Snackbar'
+import Typography from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -45,7 +45,7 @@ const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
-    navigator.clipboard.writeText(address)
+    copyToClipboard(address)
     open()
   }
 
@@ -56,7 +56,7 @@ const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }
       </Typography>
       <Stack direction="row" alignItems="center">
         <Typography variant={addressSize[size]} color="textPrimary" sx={{ marginRight: Spacing.sm }}>
-          {shortenTokenAddress(address)}
+          {shortenAddress(address)}
         </Typography>
         <IconButton size="small" onClick={copyValue} color="primary">
           <ContentCopy />

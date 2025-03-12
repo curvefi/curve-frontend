@@ -1,22 +1,20 @@
+import { Fragment, useCallback, useRef } from 'react'
+import styled from 'styled-components'
 import type { Content } from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
-
-import React, { useCallback, useRef } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import styled from 'styled-components'
-
 import { FilterType } from '@/lend/components/PageMarketList/utils'
+import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
+import CellLoanUserHealth from '@/lend/components/SharedCellData/CellLoanUserHealth'
+import CellLoanUserState from '@/lend/components/SharedCellData/CellLoanUserState'
+import CellRewards from '@/lend/components/SharedCellData/CellRewards'
+import CellTotalCollateralValue from '@/lend/components/SharedCellData/CellTotalCollateralValue'
+import CellUserVaultShares from '@/lend/components/SharedCellData/CellUserVaultShares'
+import CellUtilization from '@/lend/components/SharedCellData/CellUtilization'
 import { TITLE } from '@/lend/constants'
 import { _showContent } from '@/lend/utils/helpers'
 import Button from '@ui/Button'
-import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
-import CellLoanUserState from '@/lend/components/SharedCellData/CellLoanUserState'
-import CellLoanUserHealth from '@/lend/components/SharedCellData/CellLoanUserHealth'
-import CellRewards from '@/lend/components/SharedCellData/CellRewards'
-import CellTotalCollateralValue from '@/lend/components/SharedCellData/CellTotalCollateralValue'
-import CellUtilization from '@/lend/components/SharedCellData/CellUtilization'
-import CellUserVaultShares from '@/lend/components/SharedCellData/CellUserVaultShares'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = TableRowProps & {
   cellProps: TableCellProps
@@ -48,7 +46,7 @@ const TableRowMobileContent = ({
   const content: { borrow: Content[][], supply: Content[][] } = {
     [FilterType.borrow]: [
       [
-        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: loanExists, showLine: true },
+        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
         { tableKey: TITLE.myHealth, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
       ],
       [
@@ -81,7 +79,7 @@ const TableRowMobileContent = ({
                 const showLine = details.some(({ showLine }) => showLine)
 
                 return (
-                  <React.Fragment key={key}>
+                  <Fragment key={key}>
                     {isVisible && (
                       <>
                         <ListInfoItems>
@@ -89,16 +87,16 @@ const TableRowMobileContent = ({
                             const visible = _showContent(show)
 
                             return (
-                              <React.Fragment key={`${key}info${idx}`}>
+                              <Fragment key={`${key}info${idx}`}>
                                 {visible && <ListInfoItem {...titleMapper[tableKey]}>{content}</ListInfoItem>}
-                              </React.Fragment>
+                              </Fragment>
                             )
                           })}
                         </ListInfoItems>
                         {showLine && <hr />}
                       </>
                     )}
-                  </React.Fragment>
+                  </Fragment>
                 )
               })}
             </Content>

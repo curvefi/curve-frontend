@@ -1,12 +1,9 @@
-import React from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils'
 import networks from '@/lend/networks'
-
-import Box from '@ui/Box'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { ChainId } from '@/lend/types/lend.types'
+import Box from '@ui/Box'
+import { breakpoints } from '@ui/utils'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const MarketListItemHeader = ({
   rChainId,
@@ -21,7 +18,7 @@ const MarketListItemHeader = ({
 }) => (
   <TableTokenWrapper $isFirst={idx === 0}>
     <Wrapper flex flexAlignItems="center">
-      {<StyledTokenIcon blockchainId={networks[rChainId].networkId} symbol={symbol} address={address} />}
+      {<StyledTokenIcon blockchainId={networks[rChainId].networkId} tooltip={symbol} address={address} />}
       <strong>{symbol}</strong>
     </Wrapper>
   </TableTokenWrapper>

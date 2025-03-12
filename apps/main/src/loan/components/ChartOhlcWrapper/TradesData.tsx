@@ -1,14 +1,11 @@
-import { TradesDataProps } from './types'
-
 import styled from 'styled-components'
-
 import networks from '@/loan/networks'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-
 import Box from '@ui/Box'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { TradesDataProps } from './types'
 
 const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
   <>
@@ -19,7 +16,7 @@ const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
             <StyledTokenIcon
               size="sm"
               blockchainId={networks[chainId].networkId}
-              symbol={transaction.tokenSold.symbol}
+              tooltip={transaction.tokenSold.symbol}
               address={transaction.tokenSold.address}
             />
             <Box flex flexColumn>
@@ -49,7 +46,7 @@ const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
               className="bought"
               size="sm"
               blockchainId={networks[chainId].networkId}
-              symbol={transaction.tokenBought.symbol}
+              tooltip={transaction.tokenBought.symbol}
               address={transaction.tokenBought.address}
             />
           </TradeTo>

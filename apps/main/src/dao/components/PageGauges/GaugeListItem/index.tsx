@@ -1,25 +1,24 @@
+import { MouseEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { useState, useEffect } from 'react'
-
-import useStore from '@/dao/store/useStore'
-
-import Box from '@ui/Box'
-import IconButton from '@ui/IconButton'
-import Icon from '@ui/Icon'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import InternalLinkButton from '@/dao/components/InternalLinkButton'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
-import Button from '@ui/Button'
-
 import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
-import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import InternalLinkButton from '@/dao/components/InternalLinkButton'
+import GaugeDetails from '@/dao/components/PageGauges/GaugeListItem/GaugeDetails'
 import GaugeListColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeListColumns'
 import GaugeWeightVotesColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
+import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import VoteGaugeField from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
-import GaugeDetails from '@/dao/components/PageGauges/GaugeListItem/GaugeDetails'
+import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -38,9 +37,15 @@ const GaugeListItem = ({
   userGaugeVote = false,
   addUserVote = false,
 }: Props) => {
-  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
-  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeData.address.toLowerCase()])
-  const { veCrv } = useStore((state) => state.user.userVeCrv)
+  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
+  const gaugeCurveApiData = useStore(
+    (state) =>
+      state.gauges.gaugeCurveApiData.data[
+        gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()
+      ],
+  )
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const gaugeHistoryLoading =
@@ -78,21 +83,25 @@ const GaugeListItem = ({
       </DataComp>
       {open && (
         <OpenContainer
-          onClick={(e?: React.MouseEvent) => {
+          onClick={(e?: MouseEvent) => {
             e?.stopPropagation()
           }}
         >
           <ChartWrapper>
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
-                <VoteGaugeField powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeWeightVoteData} />
+                <VoteGaugeField
+                  powerUsed={powerUsed}
+                  userVeCrv={+userVeCrv}
+                  userGaugeVoteData={userGaugeWeightVoteData}
+                />
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
               <ErrorWrapper onClick={(e) => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
-                  onClick={(e?: React.MouseEvent) => {
+                  onClick={(e?: MouseEvent) => {
                     e?.stopPropagation()
                     getHistoricGaugeWeights(gaugeData.address)
                   }}
@@ -122,7 +131,9 @@ const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}>
+              {t`VISIT GAUGE`}
+            </InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

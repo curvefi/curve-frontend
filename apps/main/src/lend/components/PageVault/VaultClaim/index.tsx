@@ -1,28 +1,25 @@
-import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
-import type { Step } from '@ui/Stepper/types'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
-import { formatNumber } from '@ui/utils'
+import AlertFormError from '@/lend/components/AlertFormError'
+import LoanFormConnect from '@/lend/components/LoanFormConnect'
+import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-
+import { Api, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import AlertBox from '@ui/AlertBox'
-import AlertFormError from '@/lend/components/AlertFormError'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import Spinner from '@ui/Spinner'
 import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import Stats from '@ui/Stats'
 import Stepper from '@ui/Stepper'
+import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { Api, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
+import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -34,7 +31,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const resetState = useStore((state) => state.vaultClaim.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
   const { crv = '0', rewards = [] } = claimable?.claimable ?? {}
@@ -120,7 +117,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         },
       }
 
-      let stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
+      const stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
 
       return stepsKey.map((k) => stepsObj[k])
     },

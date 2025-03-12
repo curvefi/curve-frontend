@@ -1,20 +1,16 @@
-import type { Params } from 'react-router'
-import type { Route } from '@/dex/components/PageRouterSwap/types'
-
-import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'
+import Link from 'next/link'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
+import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { shortenTokenAddress } from '@/dex/utils'
-
-import { ExternalLink } from '@ui/Link'
-import Icon from '@ui/Icon'
-import TextEllipsis from '@ui/TextEllipsis'
 import useStore from '@/dex/store/useStore'
-import { ChainId, NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkEnum, type UrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
+import TextEllipsis from '@ui/TextEllipsis'
+import { shortenAddress } from '@ui-kit/utils'
 
 const DetailInfoTradeRouteRoute = ({
   params,
@@ -22,13 +18,13 @@ const DetailInfoTradeRouteRoute = ({
   routesLength,
   tokensNameMapper,
 }: {
-  params: Params
+  params: UrlParams
   route: Route
   routesLength: number
   tokensNameMapper: { [address: string]: string }
 }) => {
-  const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenTokenAddress(route.inputCoinAddress) ?? ''
-  const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenTokenAddress(route.outputCoinAddress) ?? ''
+  const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
+  const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const networkId = params?.network ? networksIdMapper[params.network.toLowerCase() as NetworkEnum] : null
@@ -67,7 +63,7 @@ const DetailInfoTradeRouteRoute = ({
     </>
   ) : (
     <>
-      <RouteName to={path.pathname} target="_blank">
+      <RouteName href={path.pathname} target="_blank">
         <strong>{route.name || route.poolId}</strong>
       </RouteName>
       {InputAndOutputTokenLabel}

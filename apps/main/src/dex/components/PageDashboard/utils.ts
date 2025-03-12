@@ -1,5 +1,4 @@
 import type { FormStatus, FormValues } from '@/dex/components/PageDashboard/types'
-
 import { todayInMilliseconds } from '@/dex/utils/utilsDates'
 
 export function getIsLockExpired(lockedAmount: string, unlockTime: number) {

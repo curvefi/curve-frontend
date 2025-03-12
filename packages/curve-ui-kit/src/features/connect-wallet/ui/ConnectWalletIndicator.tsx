@@ -1,7 +1,6 @@
-import React from 'react'
-import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletButton'
-import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
 import type { SetOptional } from 'type-fest'
+import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
+import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletButton'
 
 export type ConnectWalletIndicatorProps = ConnectWalletButtonProps &
   SetOptional<ConnectedWalletLabelProps, 'walletAddress'>

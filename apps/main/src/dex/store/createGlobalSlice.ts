@@ -1,18 +1,11 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import { CONNECT_STAGE, ConnectState, getPageWidthClassName } from '@ui/utils'
-import isEqual from 'lodash/isEqual'
 import produce from 'immer'
-import { log } from '@ui-kit/lib/logging'
+import isEqual from 'lodash/isEqual'
+import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
-import {
-  CurveApi,
-  ChainId,
-  NetworkConfigFromApi,
-  PageWidthClassName,
-  RouterProps,
-  Wallet,
-} from '@/dex/types/main.types'
+import type { State } from '@/dex/store/useStore'
+import { CurveApi, ChainId, NetworkConfigFromApi, PageWidthClassName, Wallet } from '@/dex/types/main.types'
+import { CONNECT_STAGE, ConnectState, getPageWidthClassName } from '@ui/utils'
+import { log } from '@ui-kit/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -45,7 +38,6 @@ type GlobalState = {
   loaded: boolean
   pageWidthPx: number | null
   pageWidth: PageWidthClassName | null
-  routerProps: RouterProps | null
   showScrollButton: boolean
 }
 
@@ -93,7 +85,6 @@ const DEFAULT_STATE = {
     secondaryNav: 0,
     footer: 0,
   },
-  routerProps: null,
   showScrollButton: false,
 } satisfies GlobalState
 
@@ -101,7 +92,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
-    let resp: NetworkConfigFromApi = {
+    const resp: NetworkConfigFromApi = {
       hasDepositAndStake: undefined,
       hasRouter: undefined,
     }
@@ -201,9 +192,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.updateGlobalStoreByKey('isLoadingApi', false)
       return
     }
-
-    // default hideSmallPools to false if poolIds length < 10
-    state.poolList.setStateByKey('formValues', { ...state.poolList.formValues, hideSmallPools: poolIds.length > 10 })
 
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =

@@ -1,29 +1,27 @@
+import { ReactNode, useCallback } from 'react'
 import type { AriaTooltipProps } from 'react-aria'
+import { mergeProps, useTooltip } from 'react-aria'
 import type { TooltipTriggerState } from 'react-stately'
-import type { IsClosePlacement, TooltipProps } from 'ui/src/Tooltip/types'
-
-import React, { useCallback } from 'react'
-import { useTooltip, mergeProps } from 'react-aria'
 import styled from 'styled-components'
+import type { IsClosePlacement, TooltipProps } from 'ui/src/Tooltip/types'
 
 const Tooltip = ({
   buttonNode,
   state,
   increaseZIndex = false,
   ...props
-}: React.PropsWithChildren<
-  AriaTooltipProps &
-    TooltipProps & {
-      buttonNode: HTMLButtonElement | null
-      state: TooltipTriggerState
-      increaseZIndex?: boolean
-    }
->) => {
-  const { tooltipProps, ...rest } = useTooltip(props, state)
+}: AriaTooltipProps &
+  TooltipProps & {
+    children: ReactNode
+    buttonNode: HTMLButtonElement | null
+    state: TooltipTriggerState
+    increaseZIndex?: boolean
+  }) => {
+  const { tooltipProps } = useTooltip(props, state)
   const charCount = typeof props.children === 'string' ? props.children.length : null
 
   const getClosePlacement = useCallback((buttonNode: HTMLButtonElement | null) => {
-    let placement: IsClosePlacement = { top: false, bottom: false, left: false, right: false }
+    const placement: IsClosePlacement = { top: false, bottom: false, left: false, right: false }
 
     if (buttonNode) {
       const { top, left, bottom, right } = buttonNode.getBoundingClientRect()

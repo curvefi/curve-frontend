@@ -1,9 +1,9 @@
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import { getMarkets, Market } from '@curvefi/prices-api/llamalend'
 import { getSupportedLendingChainOptions } from '@/loan/entities/chains'
 import { Chain } from '@curvefi/prices-api'
+import { getMarkets, Market } from '@curvefi/prices-api/llamalend'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { queryFactory } from '@ui-kit/lib/model/query'
+import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 
 export type LendingVault = Market & { chain: Chain }
 

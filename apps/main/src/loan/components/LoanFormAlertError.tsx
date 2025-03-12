@@ -1,9 +1,7 @@
-import type { AlertBoxProps } from '@ui/AlertBox/types'
-
-import { t } from '@ui-kit/lib/i18n'
-import React, { useMemo } from 'react'
-
+import { useMemo } from 'react'
 import AlertBox from '@ui/AlertBox'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
+import { t } from '@ui-kit/lib/i18n'
 
 const ALERT_FORM_ERROR_KEYS = {
   'error-est-gas-approval': 'error-est-gas-approval',
@@ -28,7 +26,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
 }
 
 // generate message that only display if it cannot get error message from api.
-const LoanFormAlertError = ({ errorKey, ...props }: React.PropsWithChildren<Props>) => {
+const LoanFormAlertError = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
     const messages: { [key: AlertFormErrorKey | string]: string } = {

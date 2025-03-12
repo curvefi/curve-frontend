@@ -1,15 +1,12 @@
-import { LiqudityDataProps } from './types'
-
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
 import networks from '@/loan/networks'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
-
 import Box from '@ui/Box'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { Chip } from '@ui/Typography'
 import Tooltip from '@ui/Tooltip'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { LiqudityDataProps } from './types'
 
 const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataProps) => (
   <>
@@ -35,7 +32,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
                   <StyledTokenIcon
                     size="sm"
                     blockchainId={networks[chainId].networkId}
-                    symbol={coins.collateral.symbol}
+                    tooltip={coins.collateral.symbol}
                     address={coins.collateral.address}
                   />
                 </LiquidityEventRow>
@@ -56,7 +53,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        symbol={coins.collateral.symbol}
+                        tooltip={coins.collateral.symbol}
                         address={coins.collateral.address}
                       />
                     </LiquidityEventRow>
@@ -72,7 +69,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        symbol={coins.crvusd.symbol}
+                        tooltip={coins.crvusd.symbol}
                         address={coins.crvusd.address}
                       />
                     </LiquidityEventRow>

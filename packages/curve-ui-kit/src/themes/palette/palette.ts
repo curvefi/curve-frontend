@@ -1,5 +1,5 @@
-import { DesignSystem } from '../design'
 import { PaletteOptions } from '@mui/material'
+import { DesignSystem } from '../design'
 
 export const createPalette = (
   mode: 'light' | 'dark',

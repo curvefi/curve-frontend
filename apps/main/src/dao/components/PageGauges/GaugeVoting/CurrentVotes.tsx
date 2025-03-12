@@ -1,18 +1,16 @@
-import React from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { useEffect } from 'react'
-
-import useStore from '@/dao/store/useStore'
-
-import { USER_VOTES_TABLE_LABELS } from './constants'
-import Box from '@ui/Box'
-import PaginatedTable from '@/dao/components/PaginatedTable'
-import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
 import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import GaugeVotingStats from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
+import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
+import PaginatedTable from '@/dao/components/PaginatedTable'
+import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight, UserGaugeVoteWeightSortBy } from '@/dao/types/dao.types'
+import { findRootGauge } from '@/dao/utils'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
+import { USER_VOTES_TABLE_LABELS } from './constants'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
@@ -28,7 +26,6 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
   const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
 
-  const userGauges = userData?.data.gauges ?? []
   const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
   const gaugeMapperLoading = gaugesLoading === 'LOADING'
   const userWeightReady = userData?.fetchingState === 'SUCCESS'
@@ -38,12 +35,22 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
   const smallScreenBreakpoint = 42.3125
 
+  const userGauges = useMemo(
+    () =>
+      userData?.data.gauges.map((gauge) => ({
+        ...gauge,
+        rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper),
+      })) ?? [],
+    [userData, gaugeMapper],
+  )
+
   const formattedSelectedGauge: UserGaugeVoteWeight = {
     title: selectedGauge?.title ?? '',
     userPower: 0,
     userVeCrv: 0,
     expired: false,
-    gaugeAddress: selectedGauge?.address.toLowerCase() ?? '',
+    gaugeAddress: selectedGauge?.effective_address?.toLowerCase() ?? selectedGauge?.address.toLowerCase() ?? '',
+    rootGaugeAddress: selectedGauge?.address ?? '',
     isKilled: selectedGauge?.is_killed ?? false,
     lpTokenAddress: selectedGauge?.lp_token ?? '',
     network: selectedGauge?.pool?.chain ?? selectedGauge?.market?.chain ?? '',
@@ -92,7 +99,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
           setSortBy={(key) => setUserGaugeVoteWeightsSortBy(userAddress ?? '', key as UserGaugeVoteWeightSortBy)}
           getData={() => getUserGaugeVoteWeights(userAddress ?? '')}
           renderRow={(gauge, index) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <GaugeListItemWrapper>
                 <GaugeListItem
                   gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
@@ -110,7 +117,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
                   userGaugeVote={true}
                 />
               </SmallScreenCardWrapper>
-            </React.Fragment>
+            </Fragment>
           )}
           gridTemplateColumns={gridTemplateColumns}
           smallScreenBreakpoint={smallScreenBreakpoint}

@@ -1,18 +1,15 @@
-import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
-
 import Fuse from 'fuse.js'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import { t } from '@ui-kit/lib/i18n'
-
-import { delayAction } from '@/dao/utils'
-import useStore from '@/dao/store/useStore'
-
 import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
-import ModalDialog from '@ui/Dialog'
+import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
+import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { delayAction } from '@/dao/utils'
+import ModalDialog from '@ui/Dialog'
+import { t } from '@ui-kit/lib/i18n'
 
 const ComboBoxGauges = ({
   disabled,
@@ -39,7 +36,9 @@ const ComboBoxGauges = ({
     .filter(
       (gauge) =>
         !userGaugeVoteWeights?.data.gauges.some(
-          (userGauge) => userGauge.gaugeAddress.toLowerCase() === gauge.address.toLowerCase(),
+          (userGauge) =>
+            userGauge.gaugeAddress.toLowerCase() ===
+            (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),
         ),
     )
     .sort((a, b) => b.gauge_weight - a.gauge_weight)

@@ -1,9 +1,11 @@
-import React from 'react'
-
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import styled from 'styled-components'
 import useStore from '@/lend/store/useStore'
+import { HeathColorKey } from '@/lend/types/lend.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-import { HealthColorText } from '@/lend/components/DetailsUser/styles'
+const HealthColorText = styled.span<{ colorKey?: HeathColorKey }>`
+  color: ${({ colorKey }) => `var(--health_mode_${colorKey}--color)`};
+`
 
 const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'status' | 'percent' }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])

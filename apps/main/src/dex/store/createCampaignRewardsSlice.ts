@@ -1,11 +1,10 @@
-import type { State } from '@/dex/store/useStore'
-import type { GetState, SetState } from 'zustand'
-import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
-
-import campaigns from '@external-rewards'
+import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { CURVE_ASSETS_URL } from '@ui/utils'
+import campaigns from '@external-rewards'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -37,7 +36,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
-      let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const campaignRewardsMapper: CampaignRewardsMapper = {}
       const {
         networks: { networks },
       } = get()

@@ -1,7 +1,7 @@
-import { getBlockchainIconUrl } from 'ui'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { styled } from '@mui/material/styles'
 import Image from 'next/image'
+import { getBlockchainIconUrl } from 'ui'
+import { styled } from '@mui/material/styles'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 

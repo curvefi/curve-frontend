@@ -1,21 +1,19 @@
+import { MouseEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { useState, useEffect } from 'react'
-
-import useStore from '@/dao/store/useStore'
-
-import IconButton from '@ui/IconButton'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import Icon from '@ui/Icon'
-import Box from '@ui/Box'
+import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import InternalLinkButton from '@/dao/components/InternalLinkButton'
-
-import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
-import TitleComp from './TitleComp'
+import useStore from '@/dao/store/useStore'
+import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
 import GaugeDetailsSm from './GaugeDetailsSm'
-import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import TitleComp from './TitleComp'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -32,8 +30,10 @@ const SmallScreenCard = ({
   userGaugeVote = false,
   addUserVote = false,
 }: Props) => {
-  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights, gaugeListSortBy } = useStore((state) => state.gauges)
-  const { veCrv } = useStore((state) => state.user.userVeCrv)
+  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
+  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const gaugeHistoryLoading =
@@ -91,21 +91,25 @@ const SmallScreenCard = ({
       </Box>
       {open && (
         <OpenContainer
-          onClick={(e?: React.MouseEvent) => {
+          onClick={(e?: MouseEvent) => {
             e?.stopPropagation()
           }}
         >
           <ChartWrapper>
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
-                <VoteGaugeField powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeWeightVoteData} />
+                <VoteGaugeField
+                  powerUsed={powerUsed}
+                  userVeCrv={+userVeCrv}
+                  userGaugeVoteData={userGaugeWeightVoteData}
+                />
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
               <ErrorWrapper onClick={(e) => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
-                  onClick={(e?: React.MouseEvent) => {
+                  onClick={(e?: MouseEvent) => {
                     e?.stopPropagation()
                     getHistoricGaugeWeights(gaugeData.address)
                   }}
@@ -124,7 +128,9 @@ const SmallScreenCard = ({
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
-            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton
+              to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}
+            >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}
@@ -145,11 +151,6 @@ const GaugeBox = styled.div<{ addUserVote: boolean }>`
 
 const StyledTitleComp = styled(TitleComp)`
   margin-right: auto;
-`
-
-const DataComp = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
 `
 
 const GaugeDataTitle = styled.p`

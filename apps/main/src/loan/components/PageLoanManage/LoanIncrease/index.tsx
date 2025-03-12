@@ -1,40 +1,37 @@
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import AlertFormError from '@/loan/components/AlertFormError'
+import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
+import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
+import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanIncrease/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import type { Step } from '@ui/Stepper/types'
-
-import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-
-import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/loan/components/PageLoanManage/utils'
-import { curveProps } from '@/loan/utils/helpers'
-import { formatNumber } from '@ui/utils'
-import { getActiveStep } from '@ui/Stepper/helpers'
-import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import networks from '@/loan/networks'
+import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import useStore from '@/loan/store/useStore'
-
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
+import { Curve, Llamma } from '@/loan/types/loan.types'
+import { curveProps } from '@/loan/utils/helpers'
+import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import Stepper from '@ui/Stepper'
+import { getActiveStep } from '@ui/Stepper/helpers'
+import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import AlertFormError from '@/loan/components/AlertFormError'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -68,7 +65,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
 
@@ -113,7 +110,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       const haveCollateral = +collateral > 0
       const haveDebt = +debt > 0
 
-      let notifyMessage =
+      const notifyMessage =
         haveCollateral && haveDebt
           ? t`Please confirm borrowing of ${formValues.debt} ${getTokenName(llamma).stablecoin} and adding ${
               formValues.collateral

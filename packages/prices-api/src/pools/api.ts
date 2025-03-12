@@ -1,8 +1,8 @@
 import { getHost, type Options, type Chain } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export async function getPools(chain: Chain, page: number = 1, perPage: number = 9999, options?: Options) {
   const host = getHost(options)

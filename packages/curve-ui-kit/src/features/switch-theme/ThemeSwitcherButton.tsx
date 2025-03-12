@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import IconButton from '@mui/material/IconButton'
-import { themes, ThemeSwitcherProps } from './types'
 import Tooltip from '@mui/material/Tooltip'
+import { themes, ThemeSwitcherProps } from './types'
 
 export const ThemeSwitcherButton = ({ theme, onChange, label }: ThemeSwitcherProps) => {
   const i = themes.findIndex((t) => t.type === theme)

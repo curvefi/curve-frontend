@@ -1,13 +1,9 @@
-import type { MarketListItemResult, PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'
-
-import React from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils'
-import useStore from '@/lend/store/useStore'
-
-import MarketListTable from '@/lend/components/PageMarketList/components/TableRowViewContentTable'
 import MarketListItemHeader from '@/lend/components/PageMarketList/components/MarketListItemHeader'
+import MarketListTable from '@/lend/components/PageMarketList/components/TableRowViewContentTable'
+import type { MarketListItemResult, PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'
+import useStore from '@/lend/store/useStore'
+import { breakpoints } from '@ui/utils'
 
 const MarketListItemContent = ({
   idx,

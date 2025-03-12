@@ -1,6 +1,6 @@
+import { queryClient } from '@ui-kit/lib/api/query-client'
 import { ContractParams, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
-import { queryClient } from '@ui-kit/lib/api/query-client'
 
 export const { getQueryOptions: getCoinPriceOptions } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'usd-price'] as const,

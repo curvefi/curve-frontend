@@ -1,14 +1,12 @@
+import { ethers } from 'ethers'
+import type { ReactNode } from 'react'
+import { TITLE } from '@/lend/constants'
+import type lendingApi from '@curvefi/lending-api'
 import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import type { Location, NavigateFunction, Params } from 'react-router'
-import type { ReactNode } from 'react'
-import React from 'react'
-import type { WalletState } from '@web3-onboard/core'
-import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import { TITLE } from '@/lend/constants'
-import { ethers } from 'ethers'
+import type { WalletState } from '@web3-onboard/core'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
@@ -17,6 +15,10 @@ export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
 export type EstimatedGas = number | number[] | null
+
+export type NetworkUrlParams = { network: NetworkEnum }
+export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
+export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
 export interface NetworkConfig extends BaseConfig {
   smallMarketAmount: number
@@ -97,7 +99,7 @@ export type PageWidthClassName =
   | 'page-small-x'
   | 'page-small-xx'
 export type PageContentProps = {
-  params: Params
+  params: UrlParams
   rChainId: ChainId
   rOwmId: string
   rFormType: string | null
@@ -112,7 +114,7 @@ export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidati
 export type HealthMode = {
   percent: string
   colorKey: HeathColorKey
-  icon: ReactNode | null
+  icon: ReactNode
   message: string | null
   warningTitle: string
   warning: string
@@ -244,11 +246,13 @@ export type UserLoanDetails = {
     bandsBalances: ParsedBandsBalances[]
     bandsPct: string
     isCloseToLiquidation: boolean
-    loss: UserLoss
+    loss?: UserLoss
     prices: string[]
     range: number | null
     state: { collateral: string; borrowed: string; debt: string; N: string }
     status: { label: string; colorKey: HeathColorKey; tooltip: string }
+    leverage: string
+    pnl: Record<string, string>
   } | null
   error: string
 }
@@ -271,15 +275,7 @@ export type FutureRates = {
   lendApy: string
 }
 export type Order = 'asc' | 'desc'
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
-}
 export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<
-  TITLE,
-  { title: string | React.ReactNode; tooltip?: string | React.ReactNode; tooltipProps?: TooltipProps }
->
+export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>

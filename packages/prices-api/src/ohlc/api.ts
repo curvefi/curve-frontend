@@ -1,8 +1,8 @@
 import { getHost, type Options, type Chain } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
-import type * as Responses from './responses'
 import * as Parsers from './parsers'
+import type * as Responses from './responses'
 
 export async function getOHLC(chain: Chain, poolAddr: string, tokenMain: string, tokenRef: string, options?: Options) {
   const host = getHost(options)

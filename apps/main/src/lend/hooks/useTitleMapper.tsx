@@ -1,9 +1,7 @@
-import React from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import Box from '@ui/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import { TitleMapper } from '@/lend/types/lend.types'
+import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
 
 const useTitleMapper = (): TitleMapper => ({
   isInMarket: { title: '' },
@@ -61,6 +59,8 @@ const useTitleMapper = (): TitleMapper => ({
     tooltipProps: { minWidth: '300px' },
   },
   llammaBalances: { title: t`LLAMMA Balances` },
+  profitAndLoss: { title: t`PNL` },
+  positionCurrentLeverage: { title: t`Position leverage` },
 })
 
 export default useTitleMapper

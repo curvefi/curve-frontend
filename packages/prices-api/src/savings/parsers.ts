@@ -1,6 +1,6 @@
 import { toDate } from '../timestamp'
-import type * as Responses from './responses'
 import type * as Models from './models'
+import type * as Responses from './responses'
 
 export const parseEvent = (x: Responses.GetEventsResponse['events'][number]): Models.Event => ({
   type: x.action_type,

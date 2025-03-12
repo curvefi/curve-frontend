@@ -1,17 +1,17 @@
-import { t } from '@ui-kit/lib/i18n'
 import { enforce, group, test } from 'vest'
+import useStore from '@/dex/store/useStore'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
-import { BD } from '@ui-kit/utils'
 import {
   addressValidationFn,
   amountValidationFn,
   createValidationSuite,
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
+import { BD } from '@ui-kit/utils'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
-import { TIME_FRAMES } from '@/dex/constants'
-import useStore from '@/dex/store/useStore'
-import { formatNumber } from '@ui/utils'
 
 export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardValidationGroup', () => {

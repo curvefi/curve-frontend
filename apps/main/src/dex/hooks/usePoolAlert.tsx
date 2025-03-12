@@ -1,20 +1,18 @@
-import React, { useMemo } from 'react'
+import { useParams } from 'next/navigation'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
+import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@ui/utils'
+import { PoolAlert, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { shortenTokenAddress } from '@/dex/utils'
-import useStore from '@/dex/store/useStore'
-
+import Box from '@ui/Box'
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
-import Box from '@ui/Box'
-import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
-import { PoolAlert } from '@/dex/types/main.types'
+import { breakpoints } from '@ui/utils'
+import { shortenAddress } from '@ui-kit/utils'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
-  const params = useStore((state) => state.routerProps?.params)
+  const params = useParams() as UrlParams
 
   return useMemo(() => {
     // Ethereum
@@ -55,7 +53,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     })
     const yPrismaAlert = (): PoolAlert => {
       const redirectPathname = params && getPath(params, `${ROUTE.PAGE_POOLS}/factory-v2-372${ROUTE.PAGE_POOL_DEPOSIT}`)
-      const redirectText = `PRISMA/yPRISMA pool (${shortenTokenAddress('0x69833361991ed76f9e8dbbcdf9ea1520febfb4a7')})`
+      const redirectText = `PRISMA/yPRISMA pool (${shortenAddress('0x69833361991ed76f9e8dbbcdf9ea1520febfb4a7')})`
       return {
         isDisableDeposit: true,
         isInformationOnly: true,

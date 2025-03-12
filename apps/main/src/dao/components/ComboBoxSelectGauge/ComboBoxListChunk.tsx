@@ -1,12 +1,9 @@
-import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
-
-import React, { useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import styled from 'styled-components'
-
-import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
-
 import SelectGaugeListItem from '@/dao/components/ComboBoxSelectGauge/ComboBoxListItem'
+import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 
 const SelectGaugeListChunk = ({
   testId,
@@ -16,7 +13,7 @@ const SelectGaugeListChunk = ({
   dialogClose,
   handleOnSelectChange,
 }: Pick<ComboBoxSelectGaugeProps, 'testId'> & {
-  inputRef?: React.RefObject<HTMLInputElement | null>
+  inputRef?: RefObject<HTMLInputElement | null>
   selectedGauge: GaugeFormattedData | null
   gauges: GaugeFormattedData[]
   dialogClose: () => void

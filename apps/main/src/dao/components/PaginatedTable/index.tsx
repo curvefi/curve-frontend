@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import styled from 'styled-components'
-
-import TableHeader from './TableHeader'
-import Pagination from './Pagination'
-import Spinner from '@/dao/components/Spinner'
 import ErrorMessage from '@/dao/components/ErrorMessage'
+import Spinner from '@/dao/components/Spinner'
 import Box from '@ui/Box'
 import NoTableData from './NoTableData'
+import Pagination from './Pagination'
+import TableHeader from './TableHeader'
 
 export interface Column<T> {
   key: keyof T
@@ -23,7 +22,7 @@ interface PaginatedTableProps<T> {
   errorMessage: string
   setSortBy: (key: keyof T) => void
   getData: () => void
-  renderRow: (item: T, index: number) => React.ReactNode
+  renderRow: (item: T, index: number) => ReactNode
   minWidth: number
   noDataMessage: string
   smallScreenBreakpoint?: number // rem

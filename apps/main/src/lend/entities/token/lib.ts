@@ -1,6 +1,6 @@
 import { tokenUsdRate } from '@/lend/entities/token/model'
-import { useQueryMapping } from '@ui-kit/lib/queries'
 import { ChainParams } from '@ui-kit/lib/model/query'
+import { useQueryMapping } from '@ui-kit/lib/queries'
 
 export const {
   getQueryData: getTokenUsdRateQueryData,

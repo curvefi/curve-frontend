@@ -1,5 +1,7 @@
+import chunk from 'lodash/chunk'
+import orderBy from 'lodash/orderBy'
+import uniqBy from 'lodash/uniqBy'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import type {
   FilterKey,
   FormStatus,
@@ -9,16 +11,10 @@ import type {
   SearchTermsResult,
   SortKey,
 } from '@/dex/components/PagePoolList/types'
-import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
-import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
-
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import uniqBy from 'lodash/uniqBy'
-
-import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import { parseSearchTermResults } from '@/dex/components/PagePoolList/utils'
-import { groupSearchTerms, searchByText } from '@ui-kit/utils'
+import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
+import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
+import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
   Pool,
@@ -29,6 +25,8 @@ import {
   UserPoolListMapper,
   VolumeMapper,
 } from '@/dex/types/main.types'
+import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
+import { groupSearchTerms, searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -66,10 +64,10 @@ export type PoolListSlice = {
     filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
     filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper, chainId: ChainId): P[]
-    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper): P[]
-    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
+    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper, isCrvRewardsEnabled: boolean): P[]
+    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
-    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): void
+    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -159,9 +157,21 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         networks: { networks },
       } = get()
       const { hideSmallPoolsTvl } = networks[chainId]
-      return poolDatas.filter(({ pool }) => +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl)
+
+      return poolDatas.length < 10
+        ? poolDatas
+        : poolDatas.filter(({ pool }) => +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl)
     },
-    sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, campaignRewardsMapper) => {
+    sortFn: (
+      sortKey,
+      order,
+      poolDatas,
+      rewardsApyMapper,
+      tvlMapper,
+      volumeMapper,
+      campaignRewardsMapper,
+      isCrvRewardsEnabled,
+    ) => {
       if (poolDatas.length === 0) {
         return poolDatas
       } else if (sortKey === 'name') {
@@ -178,11 +188,11 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
             const { base, crv = [], other = [] } = rewardsApyMapper[pool.id] ?? {}
             if (sortKey === 'rewardsBase') {
               return Number(base?.day ?? 0)
-            } else if (sortKey === 'rewardsCrv') {
+            } else if (sortKey === 'rewardsCrv' || (sortKey === 'rewardsLite' && isCrvRewardsEnabled)) {
               // Replacing areCrvRewardsStuckInBridge or rewardsNeedNudging CRV with 0
               const showZero = gauge.status?.areCrvRewardsStuckInBridge || gauge.status?.rewardsNeedNudging
               return showZero ? 0 : Number(crv?.[0] ?? 0)
-            } else if (sortKey === 'rewardsOther') {
+            } else if (sortKey === 'rewardsOther' || sortKey === 'rewardsLite') {
               return other.length > 0 ? other.reduce((total, { apy }) => total + apy, 0) : 0
             }
           },
@@ -213,6 +223,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     setSortAndFilterData: async (
       rChainId,
       searchParams,
+      hideSmallPools,
       poolDatas,
       rewardsApyMapper,
       volumeMapper,
@@ -222,9 +233,12 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     ) => {
       const {
         pools,
+        networks: { networks },
         [sliceKey]: { activeKey, formStatus, result: storedResults, ...sliceState },
       } = get()
-      const { hideSmallPools, searchText, filterKey, sortBy, sortByOrder } = searchParams
+      const { isCrvRewardsEnabled } = networks?.[rChainId] ?? {}
+
+      const { searchText, filterKey, sortBy, sortByOrder } = searchParams
 
       let tablePoolDatas: PoolData[] = [...poolDatas]
 
@@ -264,6 +278,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           tvlMapper,
           volumeMapper,
           campaignRewardsMapper,
+          isCrvRewardsEnabled,
         )
       }
 
@@ -283,7 +298,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
     // use local storage data till actual data returns
     setSortAndFilterCachedData: (rChainId, searchParams, poolDatasCached, volumeMapperCached, tvlMapperCached) => {
-      let { activeKey, formStatus, ...sliceState } = get()[sliceKey]
+      const { activeKey, formStatus, ...sliceState } = get()[sliceKey]
 
       const { sortBy, sortByOrder } = searchParams
 
@@ -316,6 +331,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       rChainId,
       isLite,
       searchParams,
+      hideSmallPools,
       poolDatas,
       poolDatasCached = [],
       rewardsApyMapper = {},
@@ -336,19 +352,14 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         isLoading: typeof storedResults[activeKey] === 'undefined',
       })
 
-      const { hideSmallPools, searchText, filterKey, sortBy, sortByOrder } = searchParams
+      const { searchText, filterKey, sortBy, sortByOrder } = searchParams
 
       const isDefaultSearchParams =
-        hideSmallPools &&
-        searchText === '' &&
-        filterKey === 'all' &&
-        sortBy === (isLite ? 'tvl' : 'volume') &&
-        sortByOrder === 'desc'
+        searchText === '' && filterKey === 'all' && sortBy === (isLite ? 'tvl' : 'volume') && sortByOrder === 'desc'
 
       // update form values
       formValues = {
         ...formValues,
-        hideSmallPools,
         searchTextByTokensAndAddresses: {},
         searchTextByOther: {},
       }
@@ -377,6 +388,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         sliceState.setSortAndFilterData(
           rChainId,
           searchParams,
+          hideSmallPools,
           poolDatas,
           rewardsApyMapper,
           volumeMapper,
@@ -423,14 +435,14 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 })
 
 export function getPoolListActiveKey(chainId: ChainId, searchParams: SearchParams) {
-  const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = searchParams
+  const { filterKey, searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
     parsedSearchText = chunk(searchText, 5)
       .map((group) => group[0])
       .join('')
   }
-  return `${chainId}-${filterKey}-${hideSmallPools}-${sortBy}-${sortByOrder}-${parsedSearchText}`
+  return `${chainId}-${filterKey}-${sortBy}-${sortByOrder}-${parsedSearchText}`
 }
 
 export default createPoolListSlice

@@ -1,5 +1,5 @@
-import Box from '@mui/material/Box'
 import Image from 'next/image'
+import Box from '@mui/material/Box'
 import { ChainOption } from './ChainSwitcher'
 
 type ChainIconProps<TChainId> = {

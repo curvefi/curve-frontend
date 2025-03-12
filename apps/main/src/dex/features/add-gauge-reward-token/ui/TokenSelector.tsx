@@ -1,14 +1,16 @@
-import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
-import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
-import { FlexItemToken, StyledTokenComboBox, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
+import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
-import { NETWORK_TOKEN } from '@/dex/constants'
+import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
+import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
+import { toTokenOption } from '@/dex/utils'
+import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
+import { t } from '@ui-kit/lib/i18n'
 
 export const TokenSelector = ({
   chainId,
@@ -24,6 +26,7 @@ export const TokenSelector = ({
   const network = useStore((state) => state.networks.networks[chainId])
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
+
   const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
     chainId,
     poolId,
@@ -31,16 +34,20 @@ export const TokenSelector = ({
 
   const filteredTokens = useMemo(() => {
     const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {})
-    return Object.values(tokensMapper).filter(
-      (token): token is Token =>
-        token !== undefined &&
-        token.decimals === 18 &&
-        !aliasesCrv &&
-        ![...gaugeRewardTokens, zeroAddress, NETWORK_TOKEN, aliasesCrv].some((rewardToken) =>
-          isAddressEqual(rewardToken as Address, token.address as Address),
-        ),
-    )
-  }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv])
+    return Object.values(tokensMapper)
+      .filter(
+        (token): token is Token =>
+          token !== undefined &&
+          token.decimals === 18 &&
+          !aliasesCrv &&
+          ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
+            isAddressEqual(rewardToken as Address, token.address as Address),
+          ),
+      )
+      .map(toTokenOption(network?.networkId))
+  }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
+
+  const selectedToken = filteredTokens.find((x) => x.address === rewardTokenId)
 
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
@@ -58,17 +65,17 @@ export const TokenSelector = ({
   return (
     <FlexItemToken>
       <SubTitle>{t`Token`}</SubTitle>
-      <StyledTokenComboBox
-        title={t`Select a Token`}
-        blockchainId={network?.networkId}
-        listBoxHeight="400px"
-        selectedToken={rewardTokenId ? tokensMapper[rewardTokenId] : undefined}
-        showSearch={true}
+      <TokenSelectorUIKit
+        selectedToken={selectedToken}
         tokens={filteredTokens}
-        onSelectionChange={(value) => {
-          setValue('rewardTokenId', value as Address, { shouldValidate: true })
+        disabled={disabled || filteredTokens.length === 0}
+        onToken={(token) => {
+          setValue('rewardTokenId', token.address, { shouldValidate: true })
         }}
-        disabled={disabled}
+        sx={{
+          width: '100%',
+          height: '100%',
+        }}
       />
     </FlexItemToken>
   )

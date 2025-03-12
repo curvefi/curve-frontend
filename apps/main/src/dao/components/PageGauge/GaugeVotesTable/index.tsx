@@ -1,17 +1,16 @@
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
-
-import useStore from '@/dao/store/useStore'
-
-import { GAUGE_VOTES_TABLE_LABELS } from './constants'
-import { TOP_HOLDERS } from '@/dao/constants'
-
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@ui/utils/'
-
 import PaginatedTable from '@/dao/components/PaginatedTable'
-import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
+import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
+import { TOP_HOLDERS } from '@/dao/constants'
+import useStore from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
+import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 
 interface GaugeVotesTableProps {
   gaugeAddress: string
@@ -19,8 +18,11 @@ interface GaugeVotesTableProps {
 }
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
-  const { getGaugeVotes, gaugeVotesMapper, gaugeVotesSortBy, setGaugeVotesSortBy } = useStore((state) => state.gauges)
-  const navigate = useNavigate()
+  const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
+  const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
+  const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
+  const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
+  const { push } = useRouter()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '5.3125rem 1fr 1fr'
 
@@ -69,13 +71,13 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
-              navigate(`/ethereum/user/${gaugeVote.user}`)
+              push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`))
             }}
             className="right-padding"
           >
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
-              : shortenTokenAddress(gaugeVote.user)}
+              : shortenAddress(gaugeVote.user)}
           </TableDataLink>
         </TableRowWrapper>
       )}

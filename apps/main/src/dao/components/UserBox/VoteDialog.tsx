@@ -1,32 +1,32 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
+import PendingTx from '@/dao/components/UserBox/PendingTx'
 import useStore from '@/dao/store/useStore'
-import { formatNumber } from '@ui/utils'
-
+import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import Box from '@ui/Box'
-import AlertBox from '@ui/AlertBox'
-import PendingTx from '@/dao/components/UserBox/PendingTx'
-import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   userAddress: string
   activeProposal?: ActiveProposal
-  testId?: string
   proposalId?: string
   votingPower: SnapshotVotingPower
   snapshotVotingPower: boolean
   className?: string
 }
 
-const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
-  const { castVote, voteTxMapper, executeProposal, executeTxMapper } = useStore((state) => state.proposals)
+const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId }: Props) => {
+  const castVote = useStore((state) => state.proposals.castVote)
+  const voteTxMapper = useStore((state) => state.proposals.voteTxMapper)
+  const executeProposal = useStore((state) => state.proposals.executeProposal)
+  const executeTxMapper = useStore((state) => state.proposals.executeTxMapper)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
-  const { userProposalVotesMapper } = useStore((state) => state.user)
+  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
 
   const voteTx = voteTxMapper[proposalId ?? ''] ?? null
   const executeTx = executeTxMapper[proposalId ?? ''] ?? null

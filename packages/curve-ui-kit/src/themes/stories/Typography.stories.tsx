@@ -1,7 +1,7 @@
+import { ReactNode } from 'react'
 import { Divider, List, ListItem, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { TYPOGRAPHY_VARIANTS, TypographyVariantDefinition, TypographyVariantKey } from '../typography'
-import { ReactNode } from 'react'
 
 const meta: Meta<typeof Typography> = {
   title: 'UI Kit/Primitives/Typography',

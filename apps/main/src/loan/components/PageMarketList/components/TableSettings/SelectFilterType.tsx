@@ -1,14 +1,11 @@
-import type { SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
-
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
-
+import type { SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 import { TITLE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
-
+import { TitleMapper } from '@/loan/types/loan.types'
 import TableSortSelect from '@ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@ui/TableSort/TableSortSelectMobile'
-import { TitleMapper } from '@/loan/types/loan.types'
 
 const SelectFilterType = ({
   someLoanExists,
@@ -44,7 +41,7 @@ const SelectFilterType = ({
 
           return prev
         },
-        {} as { [label: string]: { name: string | React.ReactNode } },
+        {} as { [label: string]: { name: ReactNode } },
       ),
     [someLoanExists, tableLabels, titleMapper],
   )

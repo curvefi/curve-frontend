@@ -2,9 +2,9 @@ import type { ImgHTMLAttributes } from 'react'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
@@ -12,16 +12,23 @@ const { IconSize } = SizesAndSpaces
 
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
-  blockchainId: string
-  symbol: string
+  blockchainId?: string
+  tooltip?: string
   address?: string | null
-  size?: 'sm' | 'mui-sm' | 'mui-md'
+  size?: 'sm' | 'mui-sm' | 'mui-md' | 'xl'
   sx?: SystemStyleObject<Theme>
 }
 
-export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', address, sx }: TokenIconProps) => (
+export const TokenIcon = ({
+  className = '',
+  blockchainId = '',
+  tooltip = '',
+  size = 'sm',
+  address,
+  sx,
+}: TokenIconProps) => (
   <Tooltip
-    title={symbol}
+    title={tooltip}
     placement="top"
     slotProps={{
       popper: {
@@ -34,9 +41,9 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
   >
     <Box
       component="img"
-      data-testid={`token-icon-${symbol}`}
+      data-testid={`token-icon-${tooltip}`}
       className={`${className}`}
-      alt={symbol}
+      alt={tooltip}
       onError={({ currentTarget }) => {
         currentTarget.src = DEFAULT_IMAGE
       }}
@@ -57,6 +64,7 @@ export const TokenIcon = ({ className = '', blockchainId, symbol, size = 'sm', a
         }),
         ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
         ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
+        ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
         ...sx,
       })}
     />

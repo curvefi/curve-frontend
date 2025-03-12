@@ -1,15 +1,11 @@
-import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
-
-import React from 'react'
 import styled from 'styled-components'
-
-import { focusVisible } from '@ui/utils'
-import { shortenTokenAddress } from '@ui/utils'
-
+import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
+import { GaugeFormattedData } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
-import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { focusVisible } from '@ui/utils'
+import { shortenAddress } from '@ui-kit/utils'
 
 const ComboBoxListItem = ({
   testId,
@@ -25,12 +21,12 @@ const ComboBoxListItem = ({
     <ItemButton
       variant="outlined"
       className={selectedGauge?.address === item.address ? 'active' : ''}
-      onClick={() => handleOnSelectChange(item.address)}
+      onClick={() => handleOnSelectChange(item.effective_address ?? item.address)}
     >
       <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
         <LabelText data-testid={`li-${testId}`}>{item.title}</LabelText>
         <Chip isMono opacity={0.5}>
-          {shortenTokenAddress(item.address)}
+          {shortenAddress(item.effective_address ?? item.address)}
         </Chip>
       </LabelTextWrapper>
     </ItemButton>
@@ -40,7 +36,7 @@ const ComboBoxListItem = ({
 const ItemButton = styled(Button)`
   ${focusVisible};
 
-  &.focus-visible,
+  &:focus-visible,
   &.active {
     color: var(--box--primary--color);
     background-color: var(--table_detail_row--active--background-color);
@@ -54,11 +50,6 @@ const ItemButton = styled(Button)`
   grid-template-columns: auto 1fr auto;
   height: 50px;
   width: 100%;
-`
-
-const IconWrapper = styled.div`
-  min-width: 1.875rem; // 30px;
-  text-align: left;
 `
 
 const LabelText = styled.div`

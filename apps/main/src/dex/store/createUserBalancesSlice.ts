@@ -1,7 +1,7 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -49,7 +49,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
 
       // remove bad tokens
       const { excludeTokensBalancesMapper } = networks[chainId]
-      let filteredBadTokens = tokensAddresses.filter((address) => !excludeTokensBalancesMapper[address])
+      const filteredBadTokens = tokensAddresses.filter((address) => !excludeTokensBalancesMapper[address])
 
       sliceState.setStateByKey('loading', true)
       const userBalancesMapper = await curvejsApi.wallet.fetchUserBalances(curve, filteredBadTokens)
@@ -67,7 +67,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
     updateUserBalancesFromPool: ({ gauge, lpToken, ...rest }) => {
       get().userBalances.setStateByKey('loading', true)
 
-      let results: UserBalancesMapper = {}
+      const results: UserBalancesMapper = {}
       for (const tokenAddress in rest) {
         results[tokenAddress] = rest[tokenAddress]
       }
@@ -95,7 +95,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
 })
 
 function mapUserBalances(updatedUserBalancesMapper: UserBalancesMapper, storedUserBalancesMapper: UserBalancesMapper) {
-  let cUserBalancesMapper = cloneDeep(storedUserBalancesMapper)
+  const cUserBalancesMapper = cloneDeep(storedUserBalancesMapper)
   for (const tokenAddress in updatedUserBalancesMapper) {
     cUserBalancesMapper[tokenAddress] = updatedUserBalancesMapper[tokenAddress]
   }

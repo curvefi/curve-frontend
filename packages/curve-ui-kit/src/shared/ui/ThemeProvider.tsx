@@ -1,9 +1,9 @@
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import memoizee from 'memoizee'
+import { ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
 import MuiThemeProvider from '@mui/system/ThemeProvider'
-import { ReactNode } from 'react'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { chadTheme, darkTheme, lightTheme } from '../../themes'
-import memoizee from 'memoizee'
 
 const themes = {
   light: lightTheme,

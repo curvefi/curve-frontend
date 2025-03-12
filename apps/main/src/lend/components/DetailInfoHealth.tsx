@@ -1,20 +1,18 @@
-import { t } from '@ui-kit/lib/i18n'
-import React, { useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
-import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
-import { formatNumber } from '@ui/utils'
-
-import Box from '@ui/Box'
-import DetailInfo from '@ui/DetailInfo'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import Icon from '@ui/Icon'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import { useOneWayMarket } from '@/lend/entities/chain'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { PageContentProps, HeathColorKey, HealthMode } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import Box from '@ui/Box'
+import DetailInfo from '@ui/DetailInfo'
+import Icon from '@ui/Icon'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 
@@ -43,7 +41,7 @@ const DetailInfoHealth = ({
   isManage: boolean
   isValidFormValues?: boolean
   loading: boolean
-  setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
+  setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)

@@ -1,13 +1,14 @@
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
-import Stack from '@mui/material/Stack'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Typography from '@mui/material/Typography'
-import ToggleButton from '@mui/material/ToggleButton'
-import IconButton from '@mui/material/IconButton'
+import { MouseEvent } from 'react'
 import Icon from 'ui/src/Icon'
+import IconButton from '@mui/material/IconButton'
+import MenuItem from '@mui/material/MenuItem'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Stack from '@mui/material/Stack'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Typography from '@mui/material/Typography'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
@@ -45,7 +46,7 @@ const ChartHeader = <T extends string>({
   setActiveTimeOption,
   hideExpandChart = false,
 }: ChartHeaderProps<T>) => {
-  const handleChartOption = (event: React.MouseEvent<HTMLElement>, key: T) => {
+  const handleChartOption = (_: MouseEvent<HTMLElement>, key: T) => {
     // ensure that one option is always selected by checking null
     if (key !== null) setActiveChartOption(key)
   }

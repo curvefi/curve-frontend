@@ -1,5 +1,5 @@
-import type { DesignSystem, DesignOptions } from './design'
 import type { ThemeKey } from './basic-theme'
+import type { DesignSystem, DesignOptions } from './design'
 
 declare module '@mui/material/styles' {
   interface Theme {

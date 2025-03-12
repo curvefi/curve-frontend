@@ -1,5 +1,5 @@
+import { useMemo } from 'react'
 import type { CarbonIconProps } from '@carbon/icons-react'
-
 import {
   ArrowUp,
   ArrowUpRight,
@@ -49,7 +49,6 @@ import {
   StoragePool,
   OverflowMenuVertical,
 } from '@carbon/icons-react'
-import { useMemo } from 'react'
 
 const icon = {
   ArrowUp,

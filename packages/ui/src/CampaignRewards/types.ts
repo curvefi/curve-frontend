@@ -52,4 +52,4 @@ export interface CampaignRewardsBannerCompProps {
 }
 
 export type RewardsTags = 'points' | 'merkle' | 'tokens'
-export type RewardsAction = 'supply' | 'borrow' | 'lp'
+export type RewardsAction = 'supply' | 'borrow' | 'lp' | 'loan'

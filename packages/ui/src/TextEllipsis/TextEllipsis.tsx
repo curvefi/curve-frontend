@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import { breakpoints } from 'ui/src/utils/responsive'
 
 const TextEllipsis = styled.span<{

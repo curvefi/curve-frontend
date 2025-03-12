@@ -1,7 +1,7 @@
 import type { Chain } from '..'
 import { toDate } from '../timestamp'
-import type * as Responses from './responses'
 import type * as Models from './models'
+import type * as Responses from './responses'
 
 export const parseGauge = (x: Responses.GetGaugeResponse): Models.Gauge => ({
   address: x.address,

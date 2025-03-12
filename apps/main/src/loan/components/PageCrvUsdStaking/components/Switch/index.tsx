@@ -1,8 +1,7 @@
-import type { AriaSwitchProps } from 'react-aria'
-
 import { useRef } from 'react'
-import { useToggleState } from 'react-stately'
+import type { AriaSwitchProps } from 'react-aria'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
+import { useToggleState } from 'react-stately'
 import styled from 'styled-components'
 
 interface Props extends AriaSwitchProps {
@@ -10,10 +9,10 @@ interface Props extends AriaSwitchProps {
 }
 
 function Switch({ isActive, ...props }: Props) {
-  let state = useToggleState({ ...props })
-  let ref = useRef(null)
-  let { inputProps } = useSwitch({ ...props, 'aria-label': 'Toggle switch' }, state, ref)
-  let { isFocusVisible, focusProps } = useFocusRing()
+  const state = useToggleState({ ...props })
+  const ref = useRef(null)
+  const { inputProps } = useSwitch({ ...props, 'aria-label': 'Toggle switch' }, state, ref)
+  const { isFocusVisible, focusProps } = useFocusRing()
 
   return (
     <StyledSwitch>

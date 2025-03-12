@@ -1,11 +1,9 @@
-import React, { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
-import DetailInfo from '@ui/DetailInfo'
-import { useTokenUsdRate, useTokenUsdRates } from '@/lend/entities/token'
+import { useMemo } from 'react'
 import { useChainId } from '@/lend/entities/chain'
+import { useTokenUsdRate, useTokenUsdRates } from '@/lend/entities/token'
+import DetailInfo from '@ui/DetailInfo'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Amount = { amount: string; address: string }
 

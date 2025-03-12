@@ -1,14 +1,31 @@
-import type { DateValue } from '@internationalized/date'
-import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
-import type { IProfit } from '@curvefi/api/lib/interfaces'
-import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
-import countBy from 'lodash/countBy'
-import dayjs from '@ui-kit/lib/dayjs'
 import chunk from 'lodash/chunk'
+import countBy from 'lodash/countBy'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
-import PromisePool from '@supercharge/promise-pool/dist'
+import memoizee from 'memoizee'
+import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
+import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
+import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
+import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
+import { httpFetcher } from '@/dex/lib/utils'
+import useStore from '@/dex/store/useStore'
+import {
+  ChainId,
+  ClaimableReward,
+  CurveApi,
+  EstimatedGas,
+  NetworkConfig,
+  Pool,
+  PoolData,
+  PoolParameters,
+  Provider,
+  RewardCrv,
+  RewardOther,
+  RewardsApy,
+  UsdRatesMapper,
+  UserBalancesMapper,
+} from '@/dex/types/main.types'
+import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -17,39 +34,23 @@ import {
   separateCrvProfit,
   separateCrvReward,
 } from '@/dex/utils/utilsCurvejs'
-import { BN } from '@ui/utils'
-import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/dex/utils'
-import { httpFetcher } from '@/dex/lib/utils'
 import {
+  _parseRoutesAndOutput,
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
-  _parseRoutesAndOutput,
 } from '@/dex/utils/utilsSwap'
+import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { DateValue } from '@internationalized/date'
+import PromisePool from '@supercharge/promise-pool/dist'
+import { BN } from '@ui/utils'
+import dayjs from '@ui-kit/lib/dayjs'
 import { log } from '@ui-kit/lib/logging'
-import useStore from '@/dex/store/useStore'
-import {
-  CurveApi,
-  ChainId,
-  NetworkConfig,
-  Pool,
-  Provider,
-  ClaimableReward,
-  RewardCrv,
-  RewardOther,
-  RewardsApy,
-  PoolParameters,
-  UserBalancesMapper,
-  PoolData,
-  UsdRatesMapper,
-  EstimatedGas,
-} from '@/dex/types/main.types'
-import memoizee from 'memoizee'
+import { shortenAddress } from '@ui-kit/utils'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
-    let resp: { customFeeData: Record<string, number | null> | null; error: string } = {
+    const resp: { customFeeData: Record<string, number | null> | null; error: string } = {
       customFeeData: null,
       error: '',
     }
@@ -63,7 +64,7 @@ const helpers = {
     }
   },
   fetchL2GasPrice: async (curve: CurveApi) => {
-    let resp = { l2GasPrice: 0, error: '' }
+    const resp = { l2GasPrice: 0, error: '' }
     try {
       resp.l2GasPrice = await curve.getGasPriceFromL2()
       return resp
@@ -74,7 +75,7 @@ const helpers = {
     }
   },
   fetchL1AndL2GasPrice: async (curve: CurveApi, network: NetworkConfig) => {
-    let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
+    const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
       if (network.gasL2) {
         const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
@@ -90,7 +91,7 @@ const helpers = {
   },
   fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
     log('fetchUsdRates', tokenAddresses.length)
-    let results: UsdRatesMapper = {}
+    const results: UsdRatesMapper = {}
 
     await PromisePool.for(tokenAddresses)
       .withConcurrency(5)
@@ -148,19 +149,19 @@ const network = {
   }),
   getTVL: (curve: CurveApi) => {
     log('getChainTVL', curve.chainId)
-    let api = curve as CurveApi
+    const api = curve as CurveApi
     return api.getTVL()
   },
   getVolume: (curve: CurveApi) => {
     log('getChainVolume', curve.chainId)
-    let api = curve as CurveApi
+    const api = curve as CurveApi
     return api.getVolume()
   },
   getFailedFetching24hOldVprice: async () => {
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
     // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
     // something like a dash with a tooltip "not available currently"
-    let failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
+    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
     try {
       const resp = await httpFetcher('https://api.curve.fi/api/getFactoryAPYs-kava')
       if (resp.success && Object.keys(resp.data.poolDetails).length) {
@@ -178,7 +179,7 @@ const network = {
 
 const pool = {
   getTvl: async (p: Pool, network: NetworkConfig) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
+    const resp = { poolId: p.id, value: '0', errorMessage: '' }
 
     try {
       resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
@@ -193,10 +194,10 @@ const pool = {
   },
   getPoolData: (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
     const isWrappedOnly = network.poolIsWrappedOnly[p.id]
-    const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenTokenAddress(p.wrappedCoinAddresses[idx])!)
+    const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx])!)
     const tokens = isWrappedOnly
       ? tokensWrapped
-      : p.underlyingCoins.map((token, idx) => token || shortenTokenAddress(p.underlyingCoinAddresses[idx])!)
+      : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx])!)
     const tokensLowercase = tokens.map((c) => c.toLowerCase())
     const tokensAll = isWrappedOnly ? tokensWrapped : [...tokens, ...tokensWrapped]
     const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
@@ -247,7 +248,7 @@ const pool = {
     return poolData
   },
   getVolume: async (p: Pool, network: NetworkConfig) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
+    const resp = { poolId: p.id, value: '0', errorMessage: '' }
 
     if (network.isLite) return resp
 
@@ -263,7 +264,7 @@ const pool = {
     }
   },
   poolBalances: async (p: Pool, isWrapped: boolean) => {
-    let resp = { balances: [] as string[], error: '' }
+    const resp = { balances: [] as string[], error: '' }
     try {
       resp.balances = isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances()
       return resp
@@ -274,7 +275,7 @@ const pool = {
     }
   },
   poolParameters: async (p: Pool) => {
-    let resp = { parameters: {} as PoolParameters, error: '' }
+    const resp = { parameters: {} as PoolParameters, error: '' }
     try {
       resp.parameters = await p.stats.parameters()
       return resp
@@ -285,7 +286,7 @@ const pool = {
     }
   },
   poolAllRewardsApy: async (network: NetworkConfig, p: Pool) => {
-    let resp: RewardsApy = {
+    const resp: RewardsApy = {
       poolId: p.id,
       base: { day: '0', week: '0' },
       other: [],
@@ -293,7 +294,7 @@ const pool = {
       error: {},
     }
 
-    const { isLite, chainId } = network
+    const { isLite, chainId, isCrvRewardsEnabled } = network
 
     // get base vAPY
     if (!isLite) {
@@ -353,19 +354,16 @@ const pool = {
     }
 
     // crv rewards
-    if (!isLite) {
+    if (crvResult.status === 'rejected' && isCrvRewardsEnabled) {
+      resp.error['crv'] = true
+    }
+    if (crvResult.status === 'fulfilled' && !!crvResult.value) {
+      const [baseApy] = crvResult.value
       const crv = fulfilledValue(crvResult)
-      if (crvResult.status === 'rejected') {
-        resp.error['crv'] = true
-      }
-      if (crvResult.status === 'fulfilled' && !!crvResult.value) {
-        const [baseApy] = crvResult.value
-        if (crv && baseApy && !Number.isNaN(baseApy)) {
-          resp.crv = crv
-        }
+      if (crv && baseApy && !Number.isNaN(baseApy)) {
+        resp.crv = crv
       }
     }
-
     return resp
   },
   poolTokens: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoins : p.underlyingCoins),
@@ -503,7 +501,7 @@ const router = {
   ) => {
     log('swapApprove', fromAddress, fromAmount)
     const api = curve as CurveApi
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await api.router.approve(fromAddress, fromAmount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -545,7 +543,7 @@ const router = {
 const poolDeposit = {
   depositBalancedAmounts: async (activeKey: string, p: Pool, isWrapped: boolean) => {
     log('depositBalancedAmounts', p.name, isWrapped)
-    let resp = { activeKey, amounts: [] as string[], error: '' }
+    const resp = { activeKey, amounts: [] as string[], error: '' }
     try {
       resp.amounts = isWrapped ? await p.depositWrappedBalancedAmounts() : await p.depositBalancedAmounts()
       return resp
@@ -557,7 +555,7 @@ const poolDeposit = {
   },
   depositBonus: async (activeKey: string, p: Pool, isWrapped: boolean, amounts: string[]) => {
     log('depositBonus', p.name, isWrapped, amounts)
-    let resp = { activeKey, bonus: '', error: '' }
+    const resp = { activeKey, bonus: '', error: '' }
     try {
       resp.bonus = isWrapped ? await p.depositWrappedBonus(amounts) : await p.depositBonus(amounts)
       return resp
@@ -569,7 +567,7 @@ const poolDeposit = {
   },
   depositExpected: async (activeKey: string, p: Pool, isWrapped: boolean, amounts: string[]) => {
     log('depositExpected', p.name, isWrapped, amounts)
-    let resp = { activeKey, expected: '', error: '' }
+    const resp = { activeKey, expected: '', error: '' }
     try {
       resp.expected = isWrapped ? await p.depositWrappedExpected(amounts) : await p.depositExpected(amounts)
       return resp
@@ -587,7 +585,7 @@ const poolDeposit = {
     amounts: string[],
   ) => {
     log('depositEstGasApproval', p.name, isWrapped, amounts)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = isWrapped ? await p.depositWrappedIsApproved(amounts) : await p.depositIsApproved(amounts)
 
@@ -609,7 +607,7 @@ const poolDeposit = {
   },
   depositApprove: async (activeKey: string, provider: Provider, p: Pool, isWrapped: boolean, amounts: string[]) => {
     log('depositApprove', p.name, isWrapped, amounts)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = isWrapped ? await p.depositWrappedApprove(amounts) : await p.depositApprove(amounts)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -629,7 +627,7 @@ const poolDeposit = {
     maxSlippage: string,
   ) => {
     log('deposit', p.name, isWrapped, amounts, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isWrapped
         ? await p.depositWrapped(amounts, Number(maxSlippage))
@@ -646,7 +644,7 @@ const poolDeposit = {
   // Deposit and Stake
   depositAndStakeBonus: async (activeKey: string, p: Pool, isWrapped: boolean, amounts: string[]) => {
     log('depositAndStakeBonus', p.name, isWrapped, amounts)
-    let resp = { activeKey, bonus: '0', error: '' }
+    const resp = { activeKey, bonus: '0', error: '' }
     try {
       resp.bonus = isWrapped ? await p.depositAndStakeWrappedBonus(amounts) : await p.depositAndStakeBonus(amounts)
       return resp
@@ -658,7 +656,7 @@ const poolDeposit = {
   },
   depositAndStakeExpected: async (activeKey: string, p: Pool, isWrapped: boolean, amounts: string[]) => {
     log('depositAndStakeExpected', p.name, isWrapped, amounts)
-    let resp = { activeKey, expected: '', error: '' }
+    const resp = { activeKey, expected: '', error: '' }
     try {
       resp.expected = isWrapped
         ? await p.depositAndStakeWrappedExpected(amounts)
@@ -678,7 +676,7 @@ const poolDeposit = {
     amounts: string[],
   ) => {
     log('depositAndStakeEstGasApproval', p.name, isWrapped, amounts)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = isWrapped
         ? await p.depositAndStakeWrappedIsApproved(amounts)
@@ -709,7 +707,7 @@ const poolDeposit = {
     amounts: string[],
   ) => {
     log('depositAndStakeApprove', p.name, isWrapped, amounts)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = isWrapped ? await p.depositAndStakeWrappedApprove(amounts) : await p.depositAndStakeApprove(amounts)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -729,7 +727,7 @@ const poolDeposit = {
     maxSlippage: string,
   ) => {
     log('depositAndStake', p.name, isWrapped, amounts, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isWrapped
         ? await p.depositAndStakeWrapped(amounts, Number(maxSlippage))
@@ -746,7 +744,7 @@ const poolDeposit = {
   // Staking
   stakeEstGasApproval: async (activeKey: string, chainId: ChainId, p: Pool, lpTokenAmount: string) => {
     log('stakeEstGasApproval', p.name, lpTokenAmount)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
     try {
       resp.isApproved = await p.stakeIsApproved(lpTokenAmount)
       resp.estimatedGas = resp.isApproved
@@ -761,7 +759,7 @@ const poolDeposit = {
   },
   stakeApprove: async (activeKey: string, provider: Provider, p: Pool, lpTokenAmount: string) => {
     log('stakeApprove', p.name, lpTokenAmount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await p.stakeApprove(lpTokenAmount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -774,7 +772,7 @@ const poolDeposit = {
   },
   stake: async (activeKey: string, provider: Provider, p: Pool, lpTokenAmount: string) => {
     log('stake', p.name, lpTokenAmount)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await p.stake(lpTokenAmount)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -796,7 +794,7 @@ const poolSwap = {
     ignoreExchangeRateCheck: boolean,
   ) => {
     log('exchangeOutput', activeKey, p.name, formValues, maxSlippage)
-    let resp = {
+    const resp = {
       activeKey,
       exchangeRates: [] as ExchangeRate[],
       isExchangeRateLow: false,
@@ -886,7 +884,7 @@ const poolSwap = {
     maxSlippage: string,
   ) => {
     log('poolSwapEstGasApproval', p.name, isWrapped, fromAddress, toAddress, fromAmount, maxSlippage)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = isWrapped
         ? await p.swapWrappedIsApproved(fromAddress, fromAmount)
@@ -918,7 +916,7 @@ const poolSwap = {
     fromAmount: string,
   ) => {
     log('swapApprove', p.name, isWrapped, fromAddress, fromAmount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = isWrapped
         ? await p.swapWrappedApprove(fromAddress, fromAmount)
@@ -942,7 +940,7 @@ const poolSwap = {
     maxSlippage: string,
   ) => {
     log('swap', p.name, isWrapped, fromAddress, toAddress, fromAmount, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isWrapped
         ? await p.swapWrapped(fromAddress, toAddress, fromAmount, +maxSlippage)
@@ -961,7 +959,7 @@ const poolWithdraw = {
   // withdraw (UI: Balanced amounts)
   withdrawExpected: async (activeKey: string, p: Pool, isWrapped: boolean, lpTokenAmount: string) => {
     log('withdrawExpected', p.name, isWrapped, lpTokenAmount)
-    let resp = { activeKey, expected: [] as string[], error: '' }
+    const resp = { activeKey, expected: [] as string[], error: '' }
     try {
       resp.expected = isWrapped
         ? await p.withdrawWrappedExpected(lpTokenAmount)
@@ -981,7 +979,7 @@ const poolWithdraw = {
     lpTokenAmount: string,
   ) => {
     log('withdrawEstGasApproval', p.name, lpTokenAmount)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawIsApproved(lpTokenAmount)
 
@@ -1002,7 +1000,7 @@ const poolWithdraw = {
   },
   withdrawApprove: async (activeKey: string, provider: Provider, p: Pool, lpTokenAmount: string) => {
     log('withdrawApprove', p.name, lpTokenAmount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await p.withdrawApprove(lpTokenAmount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1022,7 +1020,7 @@ const poolWithdraw = {
     maxSlippage: string,
   ) => {
     log('withdraw', p.name, isWrapped, lpTokenAmount, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isWrapped
         ? await p.withdrawWrapped(lpTokenAmount, Number(maxSlippage))
@@ -1039,7 +1037,7 @@ const poolWithdraw = {
   // withdraw imbalance (UI: Custom)
   withdrawImbalanceBonusAndExpected: async (activeKey: string, p: Pool, isWrapped: boolean, amounts: string[]) => {
     log('withdrawImbalanceBonusAndExpected', p.name, isWrapped, amounts)
-    let resp = { activeKey, expected: '', bonus: '', error: '' }
+    const resp = { activeKey, expected: '', bonus: '', error: '' }
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
         isWrapped ? await p.withdrawImbalanceWrappedExpected(amounts) : await p.withdrawImbalanceExpected(amounts),
@@ -1062,7 +1060,7 @@ const poolWithdraw = {
     amounts: string[],
   ) => {
     log('withdrawImbalanceEstGasApproval', p.name, isWrapped, amounts)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawImbalanceIsApproved(amounts)
 
@@ -1083,7 +1081,7 @@ const poolWithdraw = {
   },
   withdrawImbalanceApprove: async (activeKey: string, provider: Provider, p: Pool, amounts: string[]) => {
     log('withdrawImbalanceApprove', p.name, amounts)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await p.withdrawImbalanceApprove(amounts)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1103,7 +1101,7 @@ const poolWithdraw = {
     maxSlippage: string,
   ) => {
     log('withdrawImbalance', p.name, isWrapped, amounts, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isWrapped
         ? await p.withdrawImbalanceWrapped(amounts, +maxSlippage)
@@ -1126,7 +1124,7 @@ const poolWithdraw = {
     tokenAddress: string,
   ) => {
     log('withdrawOneCoinBonusAndExpected', p.name, isWrapped, lpTokenAmount, tokenAddress)
-    let resp = { activeKey, expected: '', bonus: '', error: '' }
+    const resp = { activeKey, expected: '', bonus: '', error: '' }
     try {
       const [expectedResult, bonusResult] = await Promise.allSettled([
         isWrapped
@@ -1154,7 +1152,7 @@ const poolWithdraw = {
     tokenAddress: string,
   ) => {
     log('withdrawOneCoinEstGasApproval', p.name, isWrapped, lpTokenAmount, tokenAddress)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
     try {
       resp.isApproved = await p.withdrawOneCoinIsApproved(lpTokenAmount)
       if (resp.isApproved) {
@@ -1174,7 +1172,7 @@ const poolWithdraw = {
   },
   withdrawOneCoinApprove: async (activeKey: string, provider: Provider, p: Pool, lpTokenAmount: string) => {
     log('withdrawOneCoinApprove', p.name, lpTokenAmount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await p.withdrawOneCoinApprove(lpTokenAmount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1195,7 +1193,7 @@ const poolWithdraw = {
     maxSlippage: string,
   ) => {
     log('withdrawOneCoin', p.name, isWrapped, lpTokenAmount, tokenAddress, maxSlippage)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isWrapped
         ? await p.withdrawOneCoinWrapped(lpTokenAmount, tokenAddress, +maxSlippage)
@@ -1212,7 +1210,7 @@ const poolWithdraw = {
   // unstake
   unstakeEstGas: async (activeKey: string, chainId: ChainId, p: Pool, lpTokenAmount: string) => {
     log('unstakeEstGas', p.name, lpTokenAmount)
-    let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: true, error: '' }
+    const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: true, error: '' }
     try {
       resp.estimatedGas = await p.estimateGas.unstake(lpTokenAmount)
       warnIncorrectEstGas(chainId, resp.estimatedGas)
@@ -1225,7 +1223,7 @@ const poolWithdraw = {
   },
   unstake: async (activeKey: string, provider: Provider, p: Pool, lpTokenAmount: string) => {
     log('unstake', p.name, lpTokenAmount)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await p.unstake(lpTokenAmount)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1259,7 +1257,7 @@ const poolWithdraw = {
     }) as ClaimableReward[]
   },
   claimableTokens: async (activeKey: string, p: Pool, chainId: ChainId) => {
-    let resp = { activeKey, claimableRewards: [] as ClaimableReward[], claimableCrv: '', error: '' }
+    const resp = { activeKey, claimableRewards: [] as ClaimableReward[], claimableCrv: '', error: '' }
 
     if (!isValidAddress(p.gauge.address)) return resp
 
@@ -1285,7 +1283,7 @@ const poolWithdraw = {
   },
   claimCrv: async (activeKey: string, provider: Provider, p: Pool) => {
     log('claimCrv', p.name)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await p.claimCrv()
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1298,7 +1296,7 @@ const poolWithdraw = {
   },
   claimRewards: async (activeKey: string, provider: Provider, p: Pool) => {
     log('claimRewards', p.name)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await p.claimRewards()
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1323,7 +1321,7 @@ const getUserPoolList = memoizee((curve: CurveApi, walletAddress: string) => cur
 const wallet = {
   getUserPoolList: async (curve: CurveApi, walletAddress: string) => {
     log('getUserPoolList', curve.chainId, walletAddress)
-    let resp = { poolList: [] as string[], error: '' }
+    const resp = { poolList: [] as string[], error: '' }
     try {
       resp.poolList = await getUserPoolList(curve, walletAddress)
       return resp
@@ -1444,7 +1442,7 @@ const wallet = {
     return userCrvApy
   },
   userPoolRewardProfit: async (p: Pool, signerAddress: string, chainId: ChainId) => {
-    let profit = {
+    const profit = {
       baseProfit: {
         day: '0',
         week: '0',
@@ -1538,7 +1536,7 @@ const wallet = {
 const lockCrv = {
   vecrvInfo: async (activeKey: string, curve: CurveApi, walletAddress: string) => {
     log('vecrvInfo', curve.chainId, walletAddress)
-    let resp = {
+    const resp = {
       activeKey,
       resp: {
         crv: '',
@@ -1587,7 +1585,7 @@ const lockCrv = {
     days: number,
   ) => {
     log('createLock', lockedAmount, utcDate.toString(), days)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.createLock(lockedAmount, days)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1606,7 +1604,7 @@ const lockCrv = {
     days: number | null,
   ) => {
     log('lockCrvEstGasApproval', formType, lockedAmount, days)
-    let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
       resp.isApproved =
@@ -1635,7 +1633,7 @@ const lockCrv = {
   },
   lockCrvApprove: async (activeKey: string, provider: Provider, curve: CurveApi, lockedAmount: string) => {
     log('userLockCrvApprove', lockedAmount)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
+    const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await curve.boosting.approve(lockedAmount)
       await helpers.waitForTransactions(resp.hashes, provider)
@@ -1648,7 +1646,7 @@ const lockCrv = {
   },
   increaseAmount: async (activeKey: string, curve: CurveApi, provider: Provider, lockedAmount: string) => {
     log('increaseAmount', lockedAmount)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.increaseAmount(lockedAmount)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1661,7 +1659,7 @@ const lockCrv = {
   },
   increaseUnlockTime: async (activeKey: string, provider: Provider, curve: CurveApi, days: number) => {
     log('increaseUnlockTime', days)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.increaseUnlockTime(days)
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1674,7 +1672,7 @@ const lockCrv = {
   },
   withdrawLockedCrv: async (curve: CurveApi, provider: Provider, walletAddress: string) => {
     log('withdrawLockedCrv', curve.chainId)
-    let resp = { walletAddress, hash: '', error: '' }
+    const resp = { walletAddress, hash: '', error: '' }
     try {
       resp.hash = await curve.boosting.withdrawLockedCrv()
       await helpers.waitForTransaction(resp.hash, provider)
@@ -1687,7 +1685,7 @@ const lockCrv = {
   },
   claimFees: async (activeKey: string, curve: CurveApi, provider: Provider, key: claimButtonsKey) => {
     log('claimFees', curve.chainId, key)
-    let resp = { activeKey, hash: '', error: '' }
+    const resp = { activeKey, hash: '', error: '' }
 
     try {
       const isClaim3Crv = key === claimButtonsKey['3CRV']

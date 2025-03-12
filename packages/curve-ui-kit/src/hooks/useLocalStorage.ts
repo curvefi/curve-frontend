@@ -41,5 +41,5 @@ export function useLocalStorage<Type, Default = Type>(key: string, initialValue?
     // Update state when other components update the local storage
     storedValue != stateValue && setStateValue(storedValue)
   }, [storedValue, stateValue])
-  return [stateValue || initialValue!, setValue]
+  return [stateValue ?? initialValue!, setValue]
 }

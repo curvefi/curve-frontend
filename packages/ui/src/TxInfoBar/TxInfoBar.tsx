@@ -1,14 +1,13 @@
-import * as React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import { RCExternal } from 'ui/src/images'
-import { ExternalLink } from 'ui/src/Link'
-import IconButton from 'ui/src/IconButton'
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'
+import IconButton from 'ui/src/IconButton'
+import { RCExternal } from 'ui/src/images'
+import { ExternalLink } from 'ui/src/Link'
 
 type Props = {
-  description: string | React.ReactNode
+  description: ReactNode
   txHash: string | string[]
   onClose?: () => void
 }
@@ -60,6 +59,7 @@ const StyledInfoBar = styled(Box)`
 
 const InfoTitle = styled.span`
   font-weight: var(--font-weight--bold);
+  word-break: break-word;
 `
 
 export default TxInfoBar

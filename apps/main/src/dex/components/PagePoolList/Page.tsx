@@ -1,37 +1,30 @@
-import type { NextPage } from 'next'
-import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
-
-import { t } from '@ui-kit/lib/i18n'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+'use client'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
+import PoolList from '@/dex/components/PagePoolList/index'
+import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
-import { breakpoints } from '@ui/utils/responsive'
-import { getPath } from '@/dex/utils/utilsRouter'
-import { scrollToTop } from '@/dex/utils'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
-import useStore from '@/dex/store/useStore'
-
-import DocumentHead from '@/dex/layout/default/DocumentHead'
-import PoolList from '@/dex/components/PagePoolList/index'
 import Settings from '@/dex/layout/default/Settings'
+import useStore from '@/dex/store/useStore'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { breakpoints } from '@ui/utils/responsive'
+import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
   filter = 'filter',
-  hideSmallPools = 'hideSmallPools',
   sortBy = 'sortBy',
   order = 'order',
   search = 'search',
 }
 
-const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+const Page = (params: NetworkUrlParams) => {
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
+  const { routerParams, curve } = usePageOnMount()
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
 
@@ -45,15 +38,11 @@ const Page: NextPage = () => {
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'
 
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
   const TABLE_LABEL: PoolListTableLabel = useMemo(
     () => ({
       name: { name: t`Pool` },
       ...(isLite
-        ? { rewardsOtherLite: { name: t`Rewards`, mobile: t`Rewards` } }
+        ? { rewardsLite: { name: t`Rewards`, mobile: t`Rewards` } }
         : {
             rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
             rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
@@ -68,14 +57,13 @@ const Page: NextPage = () => {
 
   const updatePath = useCallback(
     (updatedSearchParams: Partial<SearchParams>) => {
-      const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = {
+      const { filterKey, searchText, sortBy, sortByOrder } = {
         ...parsedSearchParams,
         ...updatedSearchParams,
       }
       const searchPath = new URLSearchParams(
         [
           [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
-          [SEARCH.hideSmallPools, hideSmallPools ? '' : 'false'],
           [SEARCH.sortBy, sortBy && sortBy !== defaultSortBy ? sortBy : ''],
           [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
           [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
@@ -83,25 +71,23 @@ const Page: NextPage = () => {
       ).toString()
 
       const pathname = getPath(params, `${ROUTE.PAGE_POOLS}?${searchPath}`)
-      navigate(pathname)
+      push(pathname)
     },
-    [defaultSortBy, navigate, params, parsedSearchParams],
+    [defaultSortBy, push, params, parsedSearchParams],
   )
 
   useEffect(() => {
     if (rChainId) {
-      const paramFilterKey = (searchParams.get(SEARCH.filter) || 'all').toLowerCase()
-      const paramSortBy = (searchParams.get(SEARCH.sortBy) || defaultSortBy).toLowerCase()
-      const paramOrder = (searchParams.get(SEARCH.order) || 'desc').toLowerCase()
-      const paramHideSmallPools = searchParams.get(SEARCH.hideSmallPools) || 'true'
-      const searchText = decodeURIComponent(searchParams.get(SEARCH.search) || '')
+      const paramFilterKey = (searchParams?.get(SEARCH.filter) || 'all').toLowerCase()
+      const paramSortBy = (searchParams?.get(SEARCH.sortBy) || defaultSortBy).toLowerCase()
+      const paramOrder = (searchParams?.get(SEARCH.order) || 'desc').toLowerCase()
+      const searchText = decodeURIComponent(searchParams?.get(SEARCH.search) || '')
 
       // validate filter key
       const foundFilterKey = network.poolFilters.find((f) => f === paramFilterKey)
       if ((paramFilterKey === 'user' && !!curve && !curve?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
-          hideSmallPools: paramHideSmallPools === 'true',
           sortBy: paramSortBy as SortKey,
           sortByOrder: paramOrder as Order,
           searchText: searchText,
@@ -109,7 +95,6 @@ const Page: NextPage = () => {
       } else {
         setParsedSearchParams({
           filterKey: paramFilterKey as FilterKey,
-          hideSmallPools: paramHideSmallPools === 'true',
           searchText,
           sortBy: (Object.keys(TABLE_LABEL).find((k) => k.toLowerCase() === paramSortBy) ?? defaultSortBy) as SortKey,
           sortByOrder: (['desc', 'asc'].find((k) => k.toLowerCase() === paramOrder) ?? 'desc') as Order,
@@ -121,7 +106,6 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Pools`} />
       <Container $isLite={isLite}>
         {rChainId && parsedSearchParams && (
           <PoolList

@@ -1,19 +1,21 @@
-import styled from 'styled-components'
 import { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dao/store/useStore'
-import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
-import Box from '@ui/Box'
-import Spinner from '../../Spinner'
-import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
+import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
+import useStore from '@/dao/store/useStore'
 import type { Locker } from '@curvefi/prices-api/dao'
+import Box from '@ui/Box'
+import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import { t } from '@ui-kit/lib/i18n'
+import Spinner from '../../Spinner'
 
 const TopLockers = () => {
-  const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(
-    (state) => state.analytics,
-  )
+  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const topHoldersSortBy = useStore((state) => state.analytics.topHoldersSortBy)
+  const setTopHoldersSortBy = useStore((state) => state.analytics.setTopHoldersSortBy)
+  const veCrvData = useStore((state) => state.analytics.veCrvData)
 
   const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'
   const lockersFetchError = veCrvHolders.fetchStatus === 'ERROR'

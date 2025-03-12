@@ -1,3 +1,12 @@
+import { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import Button from 'ui/src/Button/Button'
+import CandleChart from 'ui/src/Chart/CandleChart'
+import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
+import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
+import Checkbox from 'ui/src/Checkbox'
+import Icon from 'ui/src/Icon'
+import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import type {
   ChartColors,
   ChartHeight,
@@ -10,17 +19,6 @@ import type {
   TimeOptions,
   VolumeData,
 } from './types'
-
-import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-
-import Button from 'ui/src/Button/Button'
-import CandleChart from 'ui/src/Chart/CandleChart'
-import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
-import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
-import Checkbox from 'ui/src/Checkbox'
-import Icon from 'ui/src/Icon'
-import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 
 type Props = {
   chartType: ChartType
@@ -315,7 +313,6 @@ const MagnetButton = styled(Button)`
   margin-left: var(--spacing-2);
   margin-right: var(--spacing-2);
   box-shadow: none;
-  display: flex;
   display: none;
   align-items: center;
   &.active:not(:disabled) {
@@ -329,7 +326,6 @@ const MagnetButton = styled(Button)`
 const RefreshButton = styled(Button)`
   margin-left: var(--spacing-2);
   box-shadow: none;
-  display: flex;
   display: none;
   align-items: center;
   &.active:not(:disabled) {
@@ -382,11 +378,6 @@ const StyledCheckbox = styled(Checkbox)`
   svg {
     margin-right: 0;
   }
-`
-
-const TipIcon = styled(Icon)`
-  position: relative;
-  left: -2px;
 `
 
 const TipText = styled.p`

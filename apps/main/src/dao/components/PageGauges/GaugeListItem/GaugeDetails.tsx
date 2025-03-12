@@ -1,16 +1,15 @@
-import React from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
-import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
-import networks from '@/dao/networks'
-import { getChainIdFromGaugeData } from '@/dao/utils'
-import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import Box from '@ui/Box'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
 import CopyIconButton from '@/dao/components/CopyIconButton'
-import { ExternalLink } from '@ui/Link'
+import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
+import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { getChainIdFromGaugeData } from '@/dao/utils'
+import Box from '@ui/Box'
+import { ExternalLink } from '@ui/Link'
+import { formatNumber, convertToLocaleTimestamp } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
@@ -29,7 +28,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
               {gaugeData.pool?.address && (
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
                   <StyledExternalLink href={networks[chainId].scanAddressPath(gaugeData.pool.address)}>
-                    {shortenTokenAddress(gaugeData.pool.address)}
+                    {shortenAddress(gaugeData.pool.address)}
                   </StyledExternalLink>
                   <ExternalLinkIconButton
                     href={networks[chainId].scanAddressPath(gaugeData.pool.address)}
@@ -47,7 +46,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
                   : 'N/A'}
               </h5>
               <h5>
-                {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
+                {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
                       showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',
@@ -67,7 +66,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
             <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
-              {shortenTokenAddress(gaugeData.address)}
+              {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton
               href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}
@@ -115,7 +114,6 @@ const StyledExternalLink = styled(ExternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  text-transform: none;
   text-decoration: none;
 
   &:hover {

@@ -1,21 +1,21 @@
-import type { EtherContract } from '@/dex/components/PageCompensation/types'
-import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { copyToClipboard } from '@/dex/lib/utils'
-import { getErrorMessage, shortenTokenAddress } from '@/dex/utils'
+import AlertFormError from '@/dex/components/AlertFormError'
+import type { EtherContract } from '@/dex/components/PageCompensation/types'
+import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import AlertFormError from '@/dex/components/AlertFormError'
+import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
+import { getErrorMessage } from '@/dex/utils'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
+import ExternalLink from '@ui/Link/ExternalLink'
 import TxInfoBar from '@ui/TxInfoBar'
-import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
-import { notify } from '@ui-kit/features/connect-wallet'
 import { formatNumber } from '@ui/utils'
+import { notify } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const Compensation = ({
   rChainId,
@@ -45,7 +45,7 @@ const Compensation = ({
 
   const [error, setError] = useState('')
   const [step, setStep] = useState('')
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const handleCloseErrorClick = useCallback(() => {
     setStep('')
@@ -53,7 +53,7 @@ const Compensation = ({
   }, [])
 
   const handleClaimClick = useCallback(
-    async (activeKey: string, contract: EtherContract['contract'], balance: number) => {
+    async (_: string, contract: EtherContract['contract'], balance: number) => {
       if (!curve) return
       const notifyMessage = t`Please confirm claim ${balance} compensation.`
       const { dismiss } = notify(notifyMessage, 'pending')
@@ -99,7 +99,7 @@ const Compensation = ({
           <div>
             <strong>{token}</strong>{' '}
             <StyledExternalLink href={networks[rChainId].scanAddressPath(contractAddress)}>
-              {shortenTokenAddress(contractAddress)}
+              {shortenAddress(contractAddress)}
               <Icon name="Launch" size={16} />
             </StyledExternalLink>
             <StyledIconButton size="medium" onClick={() => copyToClipboard(contractAddress)}>

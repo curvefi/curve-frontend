@@ -1,46 +1,46 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useEffect, useMemo } from 'react'
-
-import useStore from '@/dao/store/useStore'
-import { copyToClipboard } from '@/dao/utils'
-import { breakpoints } from '@ui/utils'
-
-import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
-import useProposalMapper from '@/dao/hooks/useProposalMapper'
-
-import IconButton from '@ui/IconButton'
-import Tooltip from '@ui/Tooltip'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import Script from './components/Script'
-import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
-import Voters from './Voters'
-import UserBox from '../UserBox'
-import VoteDialog from '../UserBox/VoteDialog'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
+import useProposalMapper from '@/dao/hooks/useProposalMapper'
+import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
+import useStore from '@/dao/store/useStore'
+import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Tooltip from '@ui/Tooltip'
+import { breakpoints } from '@ui/utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { copyToClipboard } from '@ui-kit/utils'
 import BackButton from '../BackButton'
+import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
+import UserBox from '../UserBox'
+import VoteDialog from '../UserBox/VoteDialog'
+import Script from './components/Script'
 import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
-import { ProposalType } from '@/dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import Voters from './Voters'
 
 type ProposalProps = {
-  routerParams: {
-    rProposalId: string
-  }
+  routerParams: ProposalUrlParams
 }
 
-const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
+const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
-  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(
-    (state) => state.proposals,
-  )
+  const proposalsLoadingState = useStore((state) => state.proposals.proposalsLoadingState)
+  const getProposal = useStore((state) => state.proposals.getProposal)
+  const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
+  const getUserProposalVote = useStore((state) => state.proposals.getUserProposalVote)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[`${voteId}-${voteType}`]) ?? null
-  const { setSnapshotVeCrv, userAddress, userProposalVotesMapper } = useStore((state) => state.user)
+  const setSnapshotVeCrv = useStore((state) => state.user.setSnapshotVeCrv)
+  const userAddress = useStore((state) => state.user.userAddress)
+  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { proposalMapper } = useProposalMapper()
   const { proposalsMapper } = useProposalsMapper()
@@ -65,10 +65,6 @@ const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
         : undefined,
     [proposal?.status, proposal?.startDate],
   )
-
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   useEffect(() => {
     if (snapshotVeCrv === undefined && provider && userAddress && proposal?.snapshotBlock) {
@@ -103,7 +99,7 @@ const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
 
   return (
     <Wrapper>
-      <BackButton path="/ethereum/proposals" label={t`Back to proposals`} />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_PROPOSALS)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">
@@ -127,7 +123,7 @@ const Proposal = ({ routerParams: { rProposalId } }: ProposalProps) => {
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                      <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
+                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.ipfsMetadata)}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />
                       </StyledCopyButton>

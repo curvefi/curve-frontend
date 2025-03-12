@@ -1,15 +1,11 @@
-import type { LinkSize, LinkVariant } from 'ui/src/Link/types'
-
 import { css } from 'styled-components'
-
+import type { LinkSize, LinkVariant } from 'ui/src/Link/types'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 
 export type LinkProps = {
   className?: string
   active?: boolean
   isDarkBg?: boolean
-  isMono?: boolean
-  $noCap?: boolean
   $noStyles?: boolean
   size?: LinkSize
   variant?: LinkVariant
@@ -21,11 +17,6 @@ export const linkStyles = css<LinkProps>`
   color: var(--link--color);
   font: var(--link--font-weight) var(--link--font);
   text-decoration: underline;
-  ${({ $noCap }) => {
-    if (!$noCap) {
-      return `text-transform: uppercase;`
-    }
-  }}
 
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
@@ -77,12 +68,6 @@ export const linkStyles = css<LinkProps>`
           text-decoration-color: var(--link_light--hover--color);
         }
       `
-    }
-  }}
-
-  ${({ isMono }) => {
-    if (isMono) {
-      return `font-family: var(--font-mono);`
     }
   }}
 

@@ -1,9 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-
-import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
-
-import LineChartCustomTooltip from './LineChartCustomTooltip'
 import { GaugeWeightHistoryData } from '@/dao/types/dao.types'
+import { formatDateFromTimestamp } from '@ui/utils/utilsFormat'
+import LineChartCustomTooltip from './LineChartCustomTooltip'
 
 type Props = {
   data: GaugeWeightHistoryData[]
@@ -52,7 +50,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           verticalAlign="top"
           iconSize={0}
           height={32}
-          formatter={(value) => 'Relative Gauge Weight'}
+          formatter={() => 'Relative Gauge Weight'}
           wrapperStyle={{
             fontWeight: 'bold',
             fontSize: 'var(--font-size-1)',

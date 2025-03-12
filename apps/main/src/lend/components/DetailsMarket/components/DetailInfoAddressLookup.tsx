@@ -1,29 +1,21 @@
-import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
-
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import { copyToClipboard, shortenTokenAddress } from '@/lend/utils/helpers'
-import networks from '@/lend/networks'
-
+import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
 import { StyledStats } from '@/lend/components/DetailsMarket/styles'
-import ExternalLink from '@ui/Link/ExternalLink'
+import networks from '@/lend/networks'
+import { ChainId } from '@/lend/types/lend.types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import { ChainId } from '@/lend/types/lend.types'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface Props extends StatsProps {
   chainId: ChainId
-  title: string | React.ReactNode
+  title: ReactNode
   address: string | undefined
 }
 
 const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => {
-  const handleBtnClickCopy = (address: string) => {
-    console.log(`copied ${address}`)
-    copyToClipboard(address)
-  }
-
   const isValidAddress = address ? address !== 'NaN' : true
 
   return (
@@ -33,17 +25,16 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
         <span>
           <StyledExternalLink
             isValid={isValidAddress}
-            isMono={isValidAddress}
             isNumber={isValidAddress}
             href={isValidAddress ? networks[chainId]?.scanAddressPath(address) : ''}
           >
-            <strong>{address === 'NaN' ? 'no gauge' : shortenTokenAddress(address)}</strong>
+            <strong>{address === 'NaN' ? 'no gauge' : shortenAddress(address)}</strong>
             <Icon name="Launch" size={16} />
           </StyledExternalLink>
           <CopyIconButton
             isValid={isValidAddress}
             size="medium"
-            onClick={() => (isValidAddress ? handleBtnClickCopy(address) : {})}
+            onClick={() => (isValidAddress ? copyToClipboard(address) : {})}
           >
             <Icon name="Copy" size={16} />
           </CopyIconButton>
@@ -79,7 +70,6 @@ const CopyIconButton = styled(IconButton)<{ isValid: boolean }>`
 const StyledExternalLink = styled(ExternalLink)<{ isValid: boolean }>`
   color: inherit;
   font-size: var(--font-size-2);
-  text-transform: inherit;
 
   svg {
     padding-top: 0.3125rem;

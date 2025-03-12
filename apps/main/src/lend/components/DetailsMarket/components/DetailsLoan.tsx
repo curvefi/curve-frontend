@@ -1,24 +1,22 @@
-import React from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import { TITLE } from '@/lend/constants'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
-
+import { ReactNode } from 'react'
+import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
+import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
+import DetailsLoanChartBalances from '@/lend/components/DetailsMarket/components/DetailsLoanChartBalances'
+import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { ContentWrapper, DarkContent, SubTitle, Wrapper } from '@/lend/components/DetailsMarket/styles'
-import Box from '@ui/Box'
 import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
 import CellCap from '@/lend/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/lend/components/SharedCellData/CellLoanTotalDebt'
 import CellRewards from '@/lend/components/SharedCellData/CellRewards'
 import CellToken from '@/lend/components/SharedCellData/CellToken'
 import CellTotalCollateralValue from '@/lend/components/SharedCellData/CellTotalCollateralValue'
-import DetailsLoanChartBalances from '@/lend/components/DetailsMarket/components/DetailsLoanChartBalances'
-import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
-import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import { TITLE } from '@/lend/constants'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 import { MarketListType, PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import Box from '@ui/Box'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper, userActiveKey } = pageProps
@@ -31,7 +29,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
     size: 'md' as const,
   }
 
-  const contents: { titleKey: TitleKey; content: React.ReactNode }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode }[][] = [
     [
       { titleKey: TITLE.tokenCollateral, content: <CellToken {...cellProps} type="collateral" module="borrow" /> },
       { titleKey: TITLE.tokenBorrow, content: <CellToken {...cellProps} type="borrowed" module="borrow" /> },

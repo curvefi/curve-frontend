@@ -1,14 +1,13 @@
-import type { IDict, IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
-import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
-import type { Location, NavigateFunction, Params } from 'react-router'
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { TooltipProps } from '@ui/Tooltip/types'
-import type { WalletState } from '@web3-onboard/core'
-import type { BaseConfig } from '@ui/utils'
-import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
-import React from 'react'
+import { ReactNode } from 'react'
+import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
+import type curveApi from '@curvefi/api'
+import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { IGaugePool } from '@curvefi/api/lib/pools/subClasses/gaugePool'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import type { BaseConfig } from '@ui/utils'
+import type { WalletState } from '@web3-onboard/core'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>
@@ -20,8 +19,14 @@ export type NetworkConfigFromApi = {
   hasRouter: boolean | undefined
 }
 
+export type NetworkUrlParams = { network: INetworkName }
+export type PoolUrlParams = NetworkUrlParams & { pool: string; formType: [] | [RFormType] }
+export type CrvLockerUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
+export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
+
 export interface NetworkConfig extends BaseConfig {
   isLite: boolean
+  isCrvRewardsEnabled: boolean
   useApi: boolean
   excludePoolsMapper: { [key: string]: boolean }
   excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }
@@ -71,7 +76,17 @@ export type CurrencyReserves = {
   totalUsd: string
 }
 export type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
-export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
+export const FormTypes = [
+  'deposit',
+  'withdraw',
+  'swap',
+  'adjust_crv',
+  'adjust_date',
+  'create',
+  'manage-gauge',
+  '',
+] as const
+export type RFormType = (typeof FormTypes)[number]
 export type RouterParams = {
   rChainId: ChainId
   rNetwork: NetworkEnum
@@ -260,11 +275,7 @@ export type PageWidthClassName =
   | 'page-small'
   | 'page-small-x'
   | 'page-small-xx'
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
-}
+
 export type Tvl = {
   poolId: string
   value: string
@@ -291,7 +302,7 @@ export interface PoolAlert extends TooltipProps {
   isCloseOnTooltipOnly?: boolean
   isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
-  message: string | React.ReactNode
+  message: ReactNode
 }
 
 export type EstimatedGas = number | number[] | null

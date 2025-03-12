@@ -1,18 +1,15 @@
-import { t } from '@ui-kit/lib/i18n'
-
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import styled from 'styled-components'
-
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { INVALID_ADDRESS } from '@/lend/constants'
+import { zeroAddress } from 'viem'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import useAbiTotalSupply from '@/lend/hooks/useAbiTotalSupply'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
-
+import { ChainId } from '@/lend/types/lend.types'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import TooltipIcon from '@ui/Tooltip/TooltipIcon'
-import { useOneWayMarket } from '@/lend/entities/chain'
-import { ChainId } from '@/lend/types/lend.types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type Data = {
   label: string
@@ -35,12 +32,12 @@ const DetailInfoCrvIncentives = ({
   const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
   const gaugeAddress = useOneWayMarket(rChainId, rOwmId).data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
-  const isGaugeAddressInvalid = gaugeAddress === INVALID_ADDRESS
+  const isGaugeAddressInvalid = gaugeAddress === zeroAddress
 
   const { crvBase = '', incentivesObj = [] } = tooltipValues ?? {}
 
   const data = useMemo(() => {
-    let data: Data[] = []
+    const data: Data[] = []
 
     if (!isGaugeAddressInvalid) {
       if (+crvBase > 0) {
@@ -112,7 +109,7 @@ function _getDataApr(
   gaugeTotalSupply: number | null,
   lpTokenAmount: string,
 ) {
-  let resp = { aprCurr: formatNumber(currApr, FORMAT_OPTIONS.PERCENT), aprNew: '', ratio: 0 }
+  const resp = { aprCurr: formatNumber(currApr, FORMAT_OPTIONS.PERCENT), aprNew: '', ratio: 0 }
 
   if (+currApr > 0 && gaugeTotalSupply && +(gaugeTotalSupply || '0') > 0 && +lpTokenAmount > 0) {
     const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupply

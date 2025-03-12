@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
-import isLeapYear from 'dayjs/plugin/isLeapYear'
-import utc from 'dayjs/plugin/utc'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isLeapYear from 'dayjs/plugin/isLeapYear'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
+import utc from 'dayjs/plugin/utc'
 
 dayjs.extend(isLeapYear)
 dayjs.extend(utc)

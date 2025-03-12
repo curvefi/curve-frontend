@@ -1,8 +1,7 @@
+import cloneDeep from 'lodash/cloneDeep'
+import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
-import type { Amount } from '@/dex/components/PagePool/utils'
-import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
+import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type {
   FormLpTokenExpected,
   FormStatus,
@@ -10,21 +9,17 @@ import type {
   FormValues,
   LoadMaxAmount,
 } from '@/dex/components/PagePool/Deposit/types'
-
-import { t } from '@ui-kit/lib/i18n'
-import cloneDeep from 'lodash/cloneDeep'
-
 import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/dex/components/PagePool/Deposit/utils'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
-import { NETWORK_TOKEN } from '@/dex/constants'
-import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { isBonus, isHighSlippage } from '@/dex/utils'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
+import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
+import type { Amount } from '@/dex/components/PagePool/utils'
 import curvejsApi from '@/dex/lib/curvejs'
+import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
+import type { State } from '@/dex/store/useStore'
 import {
   Balances,
   ChainId,
@@ -35,7 +30,10 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
+import { isBonus, isHighSlippage } from '@/dex/utils'
+import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -99,7 +97,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       return get().user.walletBalances[userPoolActiveKey] ?? (await get().user.fetchUserPoolInfo(curve, poolId, true))
     },
     fetchExpected: async (activeKey, chainId, formType, pool, formValues) => {
-      let { amounts, isWrapped } = formValues
+      const { amounts, isWrapped } = formValues
       const depositExpectedFn =
         formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositExpected : curvejsApi.poolDeposit.depositAndStakeExpected
 
@@ -117,10 +115,10 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       })
     },
     fetchMaxAmount: async (activeKey, chainId, pool, { tokenAddress, idx }) => {
-      let cFormValues = cloneDeep(get()[sliceKey].formValues)
+      const cFormValues = cloneDeep(get()[sliceKey].formValues)
       const userBalance = get().userBalances.userBalancesMapper[tokenAddress] ?? ''
 
-      if (tokenAddress.toLowerCase() === NETWORK_TOKEN) {
+      if (tokenAddress.toLowerCase() === ethAddress) {
         // set loading
         cFormValues.amounts[idx].value = ''
         get()[sliceKey].setStateByKeys({
@@ -181,7 +179,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       }
     },
     fetchSlippage: async (activeKey, chainId, formType, pool, formValues, maxSlippage) => {
-      let { amounts: cFormAmounts, isWrapped } = formValues
+      const { amounts: cFormAmounts, isWrapped } = formValues
       const amounts = parseAmountsForAPI(cFormAmounts)
       const resp =
         formType === 'DEPOSIT'
@@ -216,7 +214,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const storedFormStatus = get()[sliceKey].formStatus
 
       // update form values, form status, activeKey
-      let cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       let activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
       get()[sliceKey].setStateByKeys({
         activeKey,
@@ -428,7 +426,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -471,7 +469,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         maxSlippage,
       )
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -541,7 +539,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''

@@ -1,28 +1,24 @@
-import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/PagePoolList/types'
+import { Fragment, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
-
-import React from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
-
-import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import useIntersectionObserver from '@ui/hooks/useIntersectionObserver'
-
-import { Td, Tr, CellInPool } from '@ui/Table'
-import Box from '@ui/Box'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
-import PoolLabel from '@/dex/components/PoolLabel'
 import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
-import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
-import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import { RewardsApy, PoolData, PoolDataCache, Tvl, Volume } from '@/dex/types/main.types'
+import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
+import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
+import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/PagePoolList/types'
+import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
+import PoolLabel from '@/dex/components/PoolLabel'
+import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import { CellInPool, Td, Tr } from '@ui/Table'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
+import { t } from '@ui-kit/lib/i18n'
 
 export type TableRowProps = {
   index: number
-  isLite: boolean
+  isCrvRewardsEnabled: boolean
   poolId: string
   formValues: FormValues
   isInPool: boolean
@@ -44,6 +40,7 @@ export type TableRowProps = {
 const TableRow = ({
   index,
   poolId,
+  isCrvRewardsEnabled,
   formValues,
   isInPool,
   blockchainId,
@@ -66,7 +63,7 @@ const TableRow = ({
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
       {columnKeys.map((columnKey, idx) => (
-        <React.Fragment key={`tRow${columnKey}${idx}`}>
+        <Fragment key={`tRow${columnKey}${idx}`}>
           {columnKey === COLUMN_KEYS.inPool && (
             <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
           )}
@@ -88,9 +85,16 @@ const TableRow = ({
           {columnKey === COLUMN_KEYS.rewardsLite && (
             <Td className="right">
               <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
-                {rewardsApy && (
-                  <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
-                )}
+                {rewardsApy &&
+                  (isCrvRewardsEnabled ? (
+                    <TableCellRewardsCrv
+                      isHighlight={sortBy === 'rewardsCrv'}
+                      poolData={poolData}
+                      rewardsApy={rewardsApy}
+                    />
+                  ) : (
+                    <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
+                  ))}
                 {poolData && campaignRewardsMapper[poolData.pool.address] && (
                   <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
                 )}
@@ -151,7 +155,7 @@ const TableRow = ({
               <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
             </Td>
           )}
-        </React.Fragment>
+        </Fragment>
       ))}
     </LazyItem>
   )

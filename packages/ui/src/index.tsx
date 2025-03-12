@@ -1,5 +1,4 @@
 export * from './utils'
-export * from './hooks'
 export * from './images'
 
 export * from './Accordion'
@@ -30,7 +29,6 @@ export * from './Loader'
 export * from './Overlay'
 export * from './Popover'
 export * from './Popover2'
-export * from './QueryProvider'
 export * from './ProgressBar'
 export * from './Radio'
 export * from './SearchInput'

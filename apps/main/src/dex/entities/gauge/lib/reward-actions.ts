@@ -1,5 +1,3 @@
-import { t } from '@ui-kit/lib/i18n'
-import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import * as models from '@/dex/entities/gauge/model'
 import { gaugeKeys as keys } from '@/dex/entities/gauge/model'
 import type {
@@ -10,10 +8,12 @@ import type {
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/dex/entities/gauge/types'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import { GaugeParams } from '@ui-kit/lib/model/query'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { t } from '@ui-kit/lib/i18n'
+import { GaugeParams } from '@ui-kit/lib/model/query'
 
 type QueryMutation = Mutation<unknown, DefaultError, any> // todo: type got converted from any to unknown in v5.60
 

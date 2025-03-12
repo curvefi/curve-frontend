@@ -1,11 +1,8 @@
-import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
-
-import React, { useMemo } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import { format } from '@/lend/components/AlertLoanSummary/utils'
-
+import { useMemo } from 'react'
 import Item from '@/lend/components/AlertLoanSummary/components/Item'
+import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
+import { format } from '@/lend/components/AlertLoanSummary/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const SummaryFull = ({
   title,
@@ -20,7 +17,7 @@ const SummaryFull = ({
 
   const [balance, returnToWallet] = useMemo(() => {
     let balance = 0
-    let returnToWallet: { value: number | string; symbol: string }[] = []
+    const returnToWallet: { value: number | string; symbol: string }[] = []
 
     if (+receive > 0) {
       const repayTotal = +receive + +stateBorrowed

@@ -1,25 +1,24 @@
-import { t } from '@ui-kit/lib/i18n'
-import React from 'react'
 import styled from 'styled-components'
-import { copyToClipboard } from '@/dex/lib/utils'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
-import { shortenTokenName } from '@/dex/utils'
-import useStore from '@/dex/store/useStore'
-import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
-import { LARGE_APY } from '@/dex/constants'
-import { Chip } from '@ui/Typography'
-import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import { ExternalLink } from '@ui/Link'
-import Box from '@ui/Box'
-import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
-import Icon from '@ui/Icon'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import Tooltip from '@ui/Tooltip'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
-import Spacer from '@ui/Spacer'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
+import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
+import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { LARGE_APY } from '@/dex/constants'
+import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
+import useStore from '@/dex/store/useStore'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
+import { shortenTokenName } from '@/dex/utils'
+import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
+import Spacer from '@ui/Spacer'
+import Tooltip from '@ui/Tooltip'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Chip } from '@ui/Typography'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { copyToClipboard } from '@ui-kit/utils'
 
 type RewardsProps = {
   chainId: ChainId
@@ -38,10 +37,6 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
     { label: t`Daily`, value: base?.day ?? '' },
     { label: t`Weekly`, value: base?.week ?? '' },
   ]
-
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   if ((isLite ? true : !haveBase) && !poolData?.failedFetching24hOldVprice && !haveCrv && !haveOther) return null
 
@@ -119,7 +114,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                       </TokenWrapper>
                     </StyledExternalLink>
 
-                    <StyledIconButton size="small" onClick={() => handleCopyClick(tokenAddress)}>
+                    <StyledIconButton size="small" onClick={() => copyToClipboard(tokenAddress)}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </Box>

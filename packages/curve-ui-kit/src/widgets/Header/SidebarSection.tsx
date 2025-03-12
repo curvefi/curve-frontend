@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import { List, ListSubheader } from '@mui/material'
-import { SidebarItem } from './SidebarItem'
-import type { AppPage } from '@ui-kit/widgets/Header/types'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
+import type { AppPage } from '@ui-kit/widgets/Header/types'
+import { SidebarItem } from './SidebarItem'
 
 interface SidebarSectionProps {
   title: string

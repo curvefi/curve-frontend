@@ -1,29 +1,29 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import { TITLE } from '@/lend/constants'
-import { _showContent } from '@/lend/utils/helpers'
-import { breakpoints } from '@ui/utils'
-import useStore from '@/lend/store/useStore'
-import networks from '@/lend/networks'
-
-import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
-import Box from '@ui/Box'
-import CellHealthStatus from '@/lend/components/SharedCellData/CellHealthStatus'
-import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
-import CellLlammaBalances from '@/lend/components/SharedCellData/CellLlammaBalances'
-import CellLiquidationRange from '@/lend/components/SharedCellData/CellLiquidationRange'
-import CellLoanState from '@/lend/components/SharedCellData/CellLoanState'
-import CellLoss from '@/lend/components/SharedCellData/CellLoss'
+import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
+import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import DetailsConnectWallet from '@/lend/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserLoanAlertSoftLiquidation from '@/lend/components/DetailsUser/components/DetailsUserLoanAlertSoftLiquidation'
 import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import DetailsUserLoanChartLiquidationRange from '@/lend/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
-import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+// import { UserInfoPnl } from '@/lend/components/DetailsUser/components/UserInfoPnl'
+import { UserInfoLeverage } from '@/lend/components/DetailsUser/components/UserInfoLeverage'
+import CellHealthStatus from '@/lend/components/SharedCellData/CellHealthStatus'
+import CellLiquidationRange from '@/lend/components/SharedCellData/CellLiquidationRange'
+import CellLlammaBalances from '@/lend/components/SharedCellData/CellLlammaBalances'
+import CellLoanState from '@/lend/components/SharedCellData/CellLoanState'
+import CellLoss from '@/lend/components/SharedCellData/CellLoss'
+import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
+import { TITLE } from '@/lend/constants'
+import networks from '@/lend/networks'
+import useStore from '@/lend/store/useStore'
 import { PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import { _showContent } from '@/lend/utils/helpers'
+import Box from '@ui/Box'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import { breakpoints } from '@ui/utils'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
@@ -38,6 +38,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
   const { signerAddress } = api ?? {}
 
+  const pricesApiAvailable = networks[rChainId]?.pricesData
   const showConnectWallet = typeof signerAddress !== 'undefined' && !signerAddress
   const foundLoan = typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists
   const isSoftLiquidation = userLoanDetails?.status?.colorKey === 'soft_liquidation'
@@ -52,10 +53,14 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey, content: React.ReactNode, show?: boolean }[][] = [
+  const contents: { titleKey: TitleKey, content: ReactNode, show?: boolean }[][] = [
     [
       { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
+      ...(pricesApiAvailable ? [
+        // { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
+        { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} /> },
+      ] : []),
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <CellLiquidationRange {...cellProps} type='range' /> },
@@ -64,8 +69,10 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     ],
     [
       { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
-      { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
-      { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
+      ...(pricesApiAvailable ? [
+        { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
+        { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
+      ] : []),
     ],
     [
       { titleKey: TITLE.llammaBalances, content: <CellLlammaBalances {...cellProps} /> }

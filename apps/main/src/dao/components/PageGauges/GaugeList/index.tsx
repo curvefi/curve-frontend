@@ -1,31 +1,26 @@
+import { useEffect, useCallback, Key, Fragment } from 'react'
 import styled from 'styled-components'
-import React, { useEffect, useCallback } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
+import ErrorMessage from '@/dao/components/ErrorMessage'
+import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
+import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
+import PaginatedTable from '@/dao/components/PaginatedTable'
 import useStore from '@/dao/store/useStore'
+import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
+import SearchInput from '@ui/SearchInput'
+import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { t } from '@ui-kit/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
-import SearchInput from '@ui/SearchInput'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-
-import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
-import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import PaginatedTable from '@/dao/components/PaginatedTable'
-import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
-import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
-
 const GaugesList = () => {
-  const {
-    getGauges,
-    setGauges,
-    gaugesLoading,
-    gaugeListSortBy,
-    setGaugeListSortBy,
-    setSearchValue,
-    searchValue,
-    filteredGauges,
-  } = useStore((state) => state.gauges)
+  const getGauges = useStore((state) => state.gauges.getGauges)
+  const setGauges = useStore((state) => state.gauges.setGauges)
+  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
+  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
+  const setGaugeListSortBy = useStore((state) => state.gauges.setGaugeListSortBy)
+  const setSearchValue = useStore((state) => state.gauges.setSearchValue)
+  const searchValue = useStore((state) => state.gauges.searchValue)
+  const filteredGauges = useStore((state) => state.gauges.filteredGauges)
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
   const smallScreenBreakpoint = 42.3125
@@ -37,7 +32,7 @@ const GaugesList = () => {
   }, [gaugesLoading, searchValue, setGauges, gaugeListSortBy])
 
   const handleSortChange = useCallback(
-    (key: React.Key) => {
+    (key: Key) => {
       setGaugeListSortBy(key as SortByFilterGaugesKeys)
       setGauges(searchValue)
     },
@@ -93,14 +88,14 @@ const GaugesList = () => {
             setSortBy={handleSortChange}
             getData={() => getGauges(true)}
             renderRow={(gauge, index) => (
-              <React.Fragment key={index}>
+              <Fragment key={index}>
                 <GaugeListItemWrapper>
                   <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
                 </GaugeListItemWrapper>
                 <SmallScreenCardWrapper>
                   <SmallScreenCard gaugeData={gauge} />
                 </SmallScreenCardWrapper>
-              </React.Fragment>
+              </Fragment>
             )}
             gridTemplateColumns={gridTemplateColumns}
             smallScreenBreakpoint={smallScreenBreakpoint}

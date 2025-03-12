@@ -10,5 +10,9 @@
   {
     "id": "lp",
     "displayName": "LP"
+  },
+  {
+    "id": "loan",
+    "displayName": "Loan"
   }
 ]

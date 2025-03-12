@@ -1,12 +1,8 @@
-import type { ChipProps } from '@ui/Typography/types'
-
-import React from 'react'
-
-import { formatNumber } from '@ui/utils'
 import useStore from '@/lend/store/useStore'
-
-import Chip from '@ui/Typography/Chip'
 import { ChainId } from '@/lend/types/lend.types'
+import Chip from '@ui/Typography/Chip'
+import type { ChipProps } from '@ui/Typography/types'
+import { formatNumber } from '@ui/utils'
 
 const CellVaultPricePerShare = ({
   rChainId,

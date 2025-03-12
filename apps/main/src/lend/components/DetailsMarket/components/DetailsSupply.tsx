@@ -1,20 +1,18 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import { TITLE } from '@/lend/constants'
-import { breakpoints } from '@ui/utils'
-
+import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
+import DetailsSupplyRewards from '@/lend/components/DetailsMarket/components/DetailsSupplyRewards'
+import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { ContentWrapper, DarkContent } from '@/lend/components/DetailsMarket/styles'
-import Box from '@ui/Box'
 import CellCap from '@/lend/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/lend/components/SharedCellData/CellLoanTotalDebt'
-import CellToken from '@/lend/components/SharedCellData/CellToken'
 import CellSupplyTotalLiquidity from '@/lend/components/SharedCellData/CellSupplyTotalLiquidity'
-import DetailsSupplyRewards from '@/lend/components/DetailsMarket/components/DetailsSupplyRewards'
-import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
+import CellToken from '@/lend/components/SharedCellData/CellToken'
+import { TITLE } from '@/lend/constants'
 import { MarketListType, PageContentProps, TitleKey } from '@/lend/types/lend.types'
+import Box from '@ui/Box'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import { breakpoints } from '@ui/utils'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper } = pageProps
@@ -26,7 +24,7 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
     size: 'md' as const,
   }
 
-  const contents: { titleKey: TitleKey; content: React.ReactNode }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode }[][] = [
     [
       { titleKey: TITLE.tokenSupply, content: <CellToken {...cellProps} type="borrowed" module="supply" /> },
       { titleKey: TITLE.tokenCollateral, content: <CellToken {...cellProps} type="collateral" module="supply" /> },

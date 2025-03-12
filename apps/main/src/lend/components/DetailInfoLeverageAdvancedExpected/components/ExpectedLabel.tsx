@@ -1,11 +1,8 @@
-import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-
-import React from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
-
-import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
-
 import { DetailsButton } from '@/lend/components/DetailInfoLeverageAdvancedExpected'
+import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
+import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Icon from '@ui/Icon'
 import Loader from '@ui/Loader'
 
@@ -20,7 +17,7 @@ const ExpectedLabel = ({
   label: string
   showDetails: boolean
   swapToSymbol: string
-  toggleShowDetails: React.Dispatch<React.SetStateAction<boolean>>
+  toggleShowDetails: Dispatch<SetStateAction<boolean>>
 }) => (
   <Label>
     <strong>{label}:</strong>

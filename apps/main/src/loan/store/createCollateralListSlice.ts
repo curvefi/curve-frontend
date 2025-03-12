@@ -1,17 +1,15 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/loan/store/useStore'
-import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
-
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
-
+import type { GetState, SetState } from 'zustand'
+import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
-import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import { TITLE } from '@/loan/constants'
-import { searchByText } from '@ui-kit/utils'
-import { sleep } from '@/loan/utils/helpers'
+import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
+import type { State } from '@/loan/store/useStore'
 import { ChainId, Curve, CollateralData, TitleKey } from '@/loan/types/loan.types'
+import { sleep } from '@/loan/utils/helpers'
+import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -121,9 +119,9 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
     },
     setFormValues: async (rChainId, curve) => {
       const { collaterals, storeCache } = get()
-      let { formStatus, initialLoaded, result, searchParams, ...sliceState } = get()[sliceKey]
+      const { formStatus, initialLoaded, result, searchParams, ...sliceState } = get()[sliceKey]
 
-      let activeKey = getActiveKey(rChainId, searchParams)
+      const activeKey = getActiveKey(rChainId, searchParams)
       sliceState.setStateByKeys({
         activeKey,
         formStatus: { ...formStatus, noResult: false, isLoading: true },

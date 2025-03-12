@@ -1,14 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dao/store/useStore'
-import type { WalletState } from '@web3-onboard/core'
-
 import { Contract } from 'ethers'
 import produce from 'immer'
-
-import { SEVEN_DAYS } from '@/dao/constants'
-import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
-import { contractVeCRV } from '@/dao/store/contracts'
+import type { GetState, SetState } from 'zustand'
 import { abiVeCrv } from '@/dao/store/abis'
+import { contractVeCRV } from '@/dao/store/contracts'
+import type { State } from '@/dao/store/useStore'
 import {
   CurveApi,
   FetchingState,
@@ -28,6 +23,11 @@ import {
   UserProposalVotesSortBy,
   UserVoteData,
 } from '@/dao/types/dao.types'
+import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
+import type { WalletState } from '@web3-onboard/core'
+
+const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -212,7 +212,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       try {
         const pagination = 1000
         let page = 1
-        let results: { [proposalId: string]: UserProposalVoteData } = {}
+        const results: { [proposalId: string]: UserProposalVoteData } = {}
 
         while (true) {
           const ownershipVotesRes = await fetch(
@@ -231,7 +231,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
               vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
               vote_open: data.proposal.start_date,
-              vote_close: data.proposal.start_date + SEVEN_DAYS,
+              vote_close: data.proposal.start_date + WEEK,
               vote_total_supply: +data.proposal.total_supply / 1e18,
             }
           })
@@ -392,6 +392,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               userFutureVeCrv: Number(gauge.userFutureVeCrv),
               expired: gauge.expired,
               ...gauge.gaugeData,
+              rootGaugeAddress: '',
               relativeWeight: Number(gauge.gaugeData.relativeWeight),
               totalVeCrv: Number(gauge.gaugeData.totalVeCrv),
               nextVoteTime: {
@@ -512,8 +513,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...locks].reverse()
-            state[sliceKey].userLocksMapper[address].locks = reversedEntries
+            state[sliceKey].userLocksMapper[address].locks = [...locks].reverse()
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
@@ -590,8 +590,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...votes].reverse()
-            state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].userGaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
@@ -623,8 +622,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            const reversedEntries = [...data.gauges].reverse()
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = reversedEntries
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = [...data.gauges].reverse()
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
@@ -679,7 +677,5 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
   },
 })
-
-const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number) => usedVeCrv < futureVeCrv
 
 export default createUserSlice

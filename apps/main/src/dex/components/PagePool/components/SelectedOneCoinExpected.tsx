@@ -1,19 +1,15 @@
-import type { Amount } from '@/dex/components/PagePool/utils'
-
-import * as React from 'react'
 import styled from 'styled-components'
-
-import { shortenTokenAddress } from '@/dex/utils'
-import { formatNumber } from '@ui/utils'
-
-import { Chip } from '@ui/Typography'
-import { Radio, RadioGroup } from '@ui/Radio'
+import type { Amount } from '@/dex/components/PagePool/utils'
+import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import Loader from '@ui/Loader'
+import { Radio, RadioGroup } from '@ui/Radio'
 import Spacer from '@ui/Spacer'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import TextEllipsis from '@ui/TextEllipsis'
+import { Chip } from '@ui/Typography'
+import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { shortenAddress } from '@ui-kit/utils'
 
 const SelectedOneCoinExpected = ({
   amounts,
@@ -59,10 +55,10 @@ const SelectedOneCoinExpected = ({
               <StyledTokenIcon
                 size="sm"
                 blockchainId={blockchainId}
-                symbol={symbol}
+                tooltip={symbol}
                 address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
               />{' '}
-              {symbol} {haveSameTokenName && <StyledChip>{shortenTokenAddress(tokenAddress)}</StyledChip>}
+              {symbol} {haveSameTokenName && <StyledChip>{shortenAddress(tokenAddress)}</StyledChip>}
               <Spacer />
               {loading ? (
                 <Loader skeleton={[90, 20]} />

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

@@ -1,6 +1,6 @@
 import { toDate } from '../timestamp'
-import type * as Responses from './responses'
 import type * as Models from './models'
+import type * as Responses from './responses'
 
 export const parseSoftLiqRatio = (x: Responses.GetSoftLiqRatiosResponse['data'][number]): Models.SoftLiqRatio => ({
   timestamp: toDate(x.timestamp),

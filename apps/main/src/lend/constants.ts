@@ -1,9 +1,6 @@
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
-export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
-export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',
@@ -12,15 +9,6 @@ export const ROUTE = {
   PAGE_MANAGE: '/manage',
   PAGE_VAULT: '/vault',
   PAGE_404: '/404',
-}
-
-export const REFRESH_INTERVAL = {
-  '3s': 3000,
-  '4s': 4000,
-  '10s': 10000,
-  '1m': 60000,
-  '5m': 300000,
-  '11m': 660000,
 }
 
 // TODO: translation
@@ -58,4 +46,6 @@ export enum TITLE {
   lossAmount = 'lossAmount',
   lossPercent = 'lossPercent',
   llammaBalances = 'llammaBalances',
+  profitAndLoss = 'profitAndLoss',
+  positionCurrentLeverage = 'positionCurrentLeverage',
 }

@@ -1,8 +1,8 @@
-import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
-import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending-snapshots'
-import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
-import { useMemo } from 'react'
 import { meanBy } from 'lodash'
+import { useMemo } from 'react'
+import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
+import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending-snapshots'
+import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 
 export type GraphType = 'borrow' | 'lend'
 

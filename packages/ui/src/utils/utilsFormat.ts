@@ -1,7 +1,7 @@
-import { detect, fromUrl, fromNavigator } from '@lingui/detect-locale'
 import BigNumber from 'bignumber.js'
-import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
+import isUndefined from 'lodash/isUndefined'
+import { detect, fromUrl, fromNavigator } from '@lingui/detect-locale'
 import { MAX_USD_VALUE } from './utilsConstants'
 
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })
@@ -47,7 +47,7 @@ export function getDecimal(val: number | string, defaultDecimal: number) {
 }
 
 export function getFractionDigitsOptions(val: number | string | undefined | null, defaultDecimal: number) {
-  let formatOptions: NumberFormatOptions = {}
+  const formatOptions: NumberFormatOptions = {}
   if (val && Number(val) >= 0) {
     const decimal = getDecimal(val, defaultDecimal)
     formatOptions.minimumFractionDigits = decimal
@@ -70,7 +70,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
     } else if (isNaN(Number(val))) {
       return '?'
     } else {
-      let parsedOptions: NumberFormatOptions = { ...numberFormatOptions, useGrouping: true }
+      const parsedOptions: NumberFormatOptions = { ...numberFormatOptions, useGrouping: true }
       if (parsedOptions.currency === 'USD') {
         parsedOptions.style = 'currency'
       }

@@ -1,6 +1,6 @@
 import type { Components } from '@mui/material/styles'
-import { TypographyVariantKey } from './create-typography'
 import type { DesignSystem } from '@ui-kit/themes/design'
+import { TypographyVariantKey } from './create-typography'
 
 const variantMapping = {
   headingXxl: 'h1',

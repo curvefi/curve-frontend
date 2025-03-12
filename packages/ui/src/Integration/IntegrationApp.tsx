@@ -1,13 +1,10 @@
-import type { IntegrationApp, IntegrationsTags } from 'ui/src/Integration/types'
-
-import React from 'react'
+import { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-
-import { breakpoints } from 'ui/src/utils/responsive'
-
 import Box from 'ui/src/Box'
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import IntegrationAppTag from 'ui/src/Integration/IntegrationAppTag'
+import type { IntegrationApp, IntegrationsTags } from 'ui/src/Integration/types'
+import ExternalLink from 'ui/src/Link/ExternalLink'
+import { breakpoints } from 'ui/src/utils/responsive'
 
 const IntegrationAppComp = ({
   appUrl,
@@ -21,7 +18,7 @@ const IntegrationAppComp = ({
   integrationsTags,
 }: IntegrationApp & {
   filterKey: string
-  integrationsAppNetworks: React.ReactNode | null
+  integrationsAppNetworks: ReactNode
   integrationsTags: IntegrationsTags
   imageUrl: string | null
 }) => {
@@ -134,7 +131,6 @@ const AppExternalLink = styled(ExternalLink)`
   color: inherit;
   padding: 0.2rem 0.5rem;
   font-size: var(--font-size-2);
-  text-transform: initial;
   text-decoration: none;
 
   transition:

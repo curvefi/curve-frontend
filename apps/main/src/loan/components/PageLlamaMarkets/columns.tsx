@@ -1,8 +1,3 @@
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import { LlamaMarket } from '@/loan/entities/llama-markets'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { t } from '@ui-kit/lib/i18n'
 import {
   CompactUsdCell,
   LineGraphCell,
@@ -10,7 +5,12 @@ import {
   RateCell,
   UtilizationCell,
 } from '@/loan/components/PageLlamaMarkets/cells'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
+import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { t } from '@ui-kit/lib/i18n'
 import { VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { ColumnWidth } = SizesAndSpaces
 

@@ -1,20 +1,17 @@
-import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
-
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
-import useStore from '@/dex/store/useStore'
-
+import PoolActivity from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import useStore from '@/dex/store/useStore'
+import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
 import Button from '@ui/Button'
 import ChartWrapper from '@ui/Chart'
-import Icon from '@ui/Icon'
-import PoolActivity from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
+import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
-import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
   const theme = useUserProfileStore((state) => state.theme)
@@ -232,7 +229,6 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
         />
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
@@ -268,7 +264,6 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
         />
       )}
       {poolInfo === 'chart' && (

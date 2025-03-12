@@ -1,34 +1,28 @@
-import { useRef, useMemo, useCallback } from 'react'
-import { useOverlayTriggerState } from '@react-stately/overlays'
-import { useButton } from '@react-aria/button'
+import { useParams, useRouter } from 'next/navigation'
+import { useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
-import { getPath } from '@/dex/utils/utilsRouter'
-
-import useStore from '@/dex/store/useStore'
-
-import { breakpoints } from '@ui/utils/responsive'
-import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
-
-import Icon from '@ui/Icon'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import InternalLinkButton from '@ui/InternalLinkButton'
-import ExternalLink from '@ui/Link/ExternalLink'
-import { ROUTE } from '@/dex/constants'
-import Spinner from 'ui/src/Spinner/Spinner'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
-
-import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
-import CreatePoolButton from '@/dex/components/PageCreatePool/ConfirmModal/CreatePoolButton'
+import Spinner from 'ui/src/Spinner/Spinner'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
-import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
+import CreatePoolButton from '@/dex/components/PageCreatePool/ConfirmModal/CreatePoolButton'
+import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
 import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
 import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
+import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
+import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
+import { ROUTE } from '@/dex/constants'
+import useStore from '@/dex/store/useStore'
+import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import { useButton } from '@react-aria/button'
+import { useOverlayTriggerState } from '@react-stately/overlays'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import Icon from '@ui/Icon'
+import InternalLinkButton from '@ui/InternalLinkButton'
+import { breakpoints } from '@ui/utils/responsive'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   disabled?: boolean
@@ -58,8 +52,8 @@ const ConfirmModal = ({
     resetState,
   } = useStore((state) => state.createPool)
 
-  const navigate = useNavigate()
-  const params = useParams()
+  const { push } = useRouter()
+  const params = useParams() as UrlParams
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton(
@@ -168,7 +162,7 @@ const ConfirmModal = ({
                         <StyledLinkButtonWrapper>
                           <InternalLinkButton
                             onClick={() => {
-                              navigate(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
+                              push(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
                               resetState()
                             }}
                             title={t`Go to pool`}
@@ -375,34 +369,6 @@ const StyledButtonSpinner = styled(Spinner)`
   > div {
     border-color: var(--button--color) transparent transparent transparent;
   }
-`
-
-const StyledPendingSpinner = styled(Spinner)`
-  margin: var(--spacing-4) auto;
-  > div {
-    border-color: var(--page--text-color) transparent transparent transparent;
-  }
-`
-
-const Transaction = styled(ExternalLink)`
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  text-transform: none;
-  text-decoration: none;
-  background-color: var(--page--background-color);
-  padding: var(--spacing-2);
-  p {
-    font-weight: var(--bold);
-    margin-right: var(--spacing-1);
-  }
-`
-
-const StyledIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-1);
-  color: var(--page--text-color);
 `
 
 const ButtonWrapper = styled.div`

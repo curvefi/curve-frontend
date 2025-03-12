@@ -1,12 +1,9 @@
-import React from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import styled from 'styled-components'
-
-import { formatNumber } from '@ui/utils'
-import useStore from '@/loan/store/useStore'
-
 import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
+import useStore from '@/loan/store/useStore'
 import ListInfoItem from '@ui/ListInfo'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const UserInfoDebt = ({
   llammaId,

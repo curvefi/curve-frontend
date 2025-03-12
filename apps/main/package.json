@@ -25,9 +25,9 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@curvefi/api": "^2.66.6",
-    "@curvefi/lending-api": "^2.4.5",
-    "@curvefi/stablecoin-api": "^1.5.9",
+    "@curvefi/api": "^2.66.8",
+    "@curvefi/lending-api": "^2.5.5",
+    "@curvefi/stablecoin-api": "^1.5.17",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^4.0.0",
     "@supercharge/promise-pool": "^3.2.0",
@@ -48,7 +48,6 @@
     "react-dom": "*",
     "react-hook-form": "^7.54.2",
     "react-is": "19.0.0",
-    "react-router-dom": "^7.1.5",
     "react-stately": "3.35.0",
     "recharts": "2.15.1",
     "sharp": "^0.33.5",

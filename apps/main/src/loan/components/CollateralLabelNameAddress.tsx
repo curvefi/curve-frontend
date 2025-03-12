@@ -1,22 +1,20 @@
-import type { AriaButtonProps } from 'react-aria'
-
-import { useButton } from 'react-aria'
 import { useMemo, useRef } from 'react'
+import type { AriaButtonProps } from 'react-aria'
+import { useButton } from 'react-aria'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils/responsive'
-import { copyToClipboard, shortenTokenAddress } from '@/loan/utils/helpers'
-
+import { getAddress } from 'viem'
 import Icon from '@ui/Icon'
+import { breakpoints } from '@ui/utils/responsive'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
 }
 
 const Button = ({ className, ...props }: ButtonProps) => {
-  let ref = useRef(null)
-  let { buttonProps, isPressed } = useButton(props, ref)
-  let { children } = props
+  const ref = useRef(null)
+  const { buttonProps, isPressed } = useButton(props, ref)
+  const { children } = props
 
   return (
     <ChipPoolCopyButton className={`${className} ${isPressed ? 'isPressed' : ''}`} {...buttonProps} ref={ref}>
@@ -55,11 +53,6 @@ const CollateralLabelNameAddress = ({
   displayAddress,
   ...props
 }: ChipPoolProps) => {
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-    console.log(`Copied ${address}`)
-  }
-
   const parsedName = useMemo(() => {
     if (displayName && displayName.length > 24) {
       return `${displayName.slice(0, 18)}...`
@@ -69,16 +62,16 @@ const CollateralLabelNameAddress = ({
 
   const parsedAddress = useMemo(() => {
     if (displayAddress) {
-      return `${shortenTokenAddress(displayAddress)}`
+      return `${shortenAddress(displayAddress)}`
     }
-    return displayAddress
+    return getAddress(displayAddress)
   }, [displayAddress])
 
   return (
     <ChipWrapper className={className}>
       <ChipName>{isHighlightName || isHighlightAddress ? <mark>{parsedName}</mark> : parsedName} </ChipName>
       <ChipAdditionalInfo>
-        <Button {...props} onPress={() => handleCopyClick(displayAddress)}>
+        <Button {...props} onPress={() => copyToClipboard(displayAddress)}>
           <ChipAddress>{isHighlightAddress ? <mark>{parsedAddress}</mark> : parsedAddress}</ChipAddress>
           <ChipCopyButtonIcon name="Copy" size={16} />
         </Button>

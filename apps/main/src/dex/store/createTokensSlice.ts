@@ -1,9 +1,9 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
 import countBy from 'lodash/countBy'
-import { log } from '@ui-kit/lib/logging'
+import type { GetState, SetState } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
+import type { State } from '@/dex/store/useStore'
 import { ChainId, NativeToken, Token, TokensMapper, TokensNameMapper, PoolData } from '@/dex/types/main.types'
+import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -59,13 +59,13 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks.nativeToken[chainId])
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
-      let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
-      let partialTokensMapper: TokensMapper = {}
+      const cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
+      const partialTokensMapper: TokensMapper = {}
 
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
         const tvl = +(tvlMapper[pool.id]?.value ?? '0')
         const volume = +(volumeMapper[pool.id]?.value ?? '0')
-        let counted = countBy(tokensAll)
+        const counted = countBy(tokensAll)
 
         for (const idx in tokenAddressesAll) {
           const address = tokenAddressesAll[idx]

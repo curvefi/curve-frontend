@@ -1,15 +1,15 @@
-import { SidebarSection } from './SidebarSection'
-import IconButton from '@mui/material/IconButton'
 import TelegramIcon from '@mui/icons-material/Telegram'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import YouTubeIcon from '@mui/icons-material/YouTube'
-import Tooltip from '@mui/material/Tooltip'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
+import SvgIcon from '@mui/material/SvgIcon'
+import Tooltip from '@mui/material/Tooltip'
+import { isChinese } from '@ui-kit/lib/i18n'
 import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
 import { DodoIcon } from '@ui-kit/shared/icons/DodoIcon'
-import Box from '@mui/material/Box'
-import SvgIcon from '@mui/material/SvgIcon'
-import { isChinese } from '@ui-kit/lib/i18n'
+import { SidebarSection } from './SidebarSection'
 
 type SocialButtonProps = {
   label: string

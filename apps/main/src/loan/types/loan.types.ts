@@ -1,15 +1,19 @@
 import { BrowserProvider } from 'ethers'
+import type { ReactNode } from 'react'
+import { TITLE } from '@/loan/constants'
+import curvejsApi from '@/loan/lib/apiCrvusd'
+import type lendingApi from '@curvefi/lending-api'
+import type stablecoinApi from '@curvefi/stablecoin-api'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
-import type { NavigateFunction, Location, Params } from 'react-router'
-import type { ReactNode } from 'react'
 import type { TooltipProps } from '@ui/Tooltip/types'
-import type { WalletState } from '@web3-onboard/core'
-import type stablecoinApi from '@curvefi/stablecoin-api'
-import type lendingApi from '@curvefi/lending-api'
 import type { BaseConfig } from '@ui/utils'
-import curvejsApi from '@/loan/lib/apiCrvusd'
-import { TITLE } from '@/loan/constants'
+import type { WalletState } from '@web3-onboard/core'
+
+export type NetworkUrlParams = { network: INetworkName }
+type CollateralExtraParams = { collateralId: string; formType?: string[] }
+export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
+export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = 1
@@ -74,7 +78,7 @@ export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidati
 export type HealthMode = {
   percent: string
   colorKey: HeathColorKey
-  icon: ReactNode | null
+  icon: ReactNode
   message: string | null
   warningTitle: string
   warning: string
@@ -145,11 +149,6 @@ export type UserWalletBalances = {
   collateral: string
   error: string
 }
-export type RouterProps = {
-  params: Params
-  location: Location
-  navigate: NavigateFunction
-}
 export type Theme = 'default' | 'dark' | 'chad'
 export type UsdRate = { [tokenAddress: string]: string | number }
 export type Wallet = WalletState
@@ -159,13 +158,10 @@ export interface CollateralAlert extends TooltipProps {
   isCloseOnTooltipOnly?: boolean
   isDeprecated?: boolean
   address: string
-  message: string | ReactNode
+  message: ReactNode
 }
 
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<
-  TITLE,
-  { title: string | ReactNode; tooltip?: string | ReactNode; tooltipProps?: TooltipProps }
->
+export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

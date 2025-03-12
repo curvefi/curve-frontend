@@ -1,9 +1,9 @@
 import { createTheme as createMuiTheme, type Shadows, type Theme } from '@mui/material/styles'
 import { basicMuiTheme, type ThemeKey } from './basic-theme'
-import { createPalette } from './palette'
-import { createTypography } from './typography'
 import { createComponents } from './components'
 import { DesignOptions, DesignSystem } from './design'
+import { createPalette } from './palette'
+import { createTypography } from './typography'
 
 const paletteMode = (theme: ThemeKey, options: DesignOptions) =>
   options.inverted ? (theme == 'dark' ? 'light' : 'dark') : theme == 'chad' ? 'light' : theme

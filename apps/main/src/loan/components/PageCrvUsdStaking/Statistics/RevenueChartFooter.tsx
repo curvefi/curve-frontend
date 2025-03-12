@@ -1,12 +1,13 @@
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
-import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
-import Stack from '@mui/material/Stack'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import ToggleButton from '@mui/material/ToggleButton'
-import Typography from '@mui/material/Typography'
+import { MouseEvent } from 'react'
 import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
+import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
+import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Typography from '@mui/material/Typography'
+import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -14,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 type Props = {
   timeOptions: TimeOption[]
   activeTimeOption: TimeOption
-  setActiveTimeOption: (event: React.MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
+  setActiveTimeOption: (event: MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
 }
 
 const LegendSet = ({ label, dash, legendColor }: { label: string; dash: string; legendColor: string }) => (

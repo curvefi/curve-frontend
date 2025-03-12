@@ -9,7 +9,6 @@
  * providing a clean interface for components to interact with gauge data.
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
-
 import * as api from '@/dex/entities/gauge/api'
 import type {
   AddRewardMutation,
@@ -19,8 +18,8 @@ import type {
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/dex/entities/gauge/types'
-import { assertValidity } from '@ui-kit/lib/validation'
 import { GaugeParams } from '@ui-kit/lib/model/query'
+import { assertValidity } from '@ui-kit/lib/validation'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,

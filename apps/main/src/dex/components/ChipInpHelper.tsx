@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import Chip from '@ui/Typography/Chip'
 
 const ChipInpHelper = styled(Chip)<{ noPadding?: boolean }>`

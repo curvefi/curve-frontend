@@ -1,11 +1,8 @@
-import React from 'react'
 import styled from 'styled-components'
-
-import { formatNumber } from '@ui/utils'
-
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
+import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const HopSteps = ({
@@ -21,7 +18,7 @@ const HopSteps = ({
 }) => (
   <>
     <Wrapper>
-      <StyledTokenIcon blockchainId={blockchainId} symbol={fromTokenAddress} address={fromTokenAddress} />
+      <StyledTokenIcon blockchainId={blockchainId} tooltip={fromTokenAddress} address={fromTokenAddress} />
       <StepsWrapper>
         {steps.map((l, idx) => (
           <StepsListItem key={`${l.name}${l.part}${idx}`} isBold>

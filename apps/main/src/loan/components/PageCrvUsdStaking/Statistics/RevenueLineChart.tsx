@@ -1,11 +1,11 @@
-import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useTheme } from '@mui/material/styles'
-import { Stack, Box } from '@mui/material'
-import { formatDate } from '@ui/utils/utilsFormat'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
+import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
+import { Stack, Box } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import { formatDate } from '@ui/utils/utilsFormat'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
 

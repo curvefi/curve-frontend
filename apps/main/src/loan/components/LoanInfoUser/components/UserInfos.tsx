@@ -1,20 +1,18 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { TITLE } from '@/loan/constants'
-import { breakpoints } from '@ui/utils/responsive'
-import useStore from '@/loan/store/useStore'
-
-import { HealthColorText } from '@/loan/components/LoanInfoUser/styles'
 import AlertSoftLiquidation from '@/loan/components/LoanInfoUser/components/AlertSoftLiquidation'
 import UserInfoDebt from '@/loan/components/LoanInfoUser/components/UserInfoDebt'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import UserInfoLiquidationRange from '@/loan/components/LoanInfoUser/components/UserInfoLiquidationRange'
-import UserInfoLoss from '@/loan/components/LoanInfoUser/components/UserInfoLoss'
 import UserInfoLlammaBalances from '@/loan/components/LoanInfoUser/components/UserInfoLlammaBalances'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import UserInfoLoss from '@/loan/components/LoanInfoUser/components/UserInfoLoss'
+import { HealthColorText } from '@/loan/components/LoanInfoUser/styles'
+import { TITLE } from '@/loan/constants'
+import useStore from '@/loan/store/useStore'
 import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/loan/types/loan.types'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const UserInfos = ({
   llammaId,
@@ -42,7 +40,7 @@ const UserInfos = ({
   const props = { llammaId, llamma }
 
   // prettier-ignore
-  const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean }[][] = [
+  const contents: { titleKey: TitleKey; content: ReactNode; show?: boolean }[][] = [
     [
       { titleKey: TITLE.healthStatus, content: <HealthColorText colorKey={userStatus?.colorKey}>{userStatus?.label ?? '-'}</HealthColorText> },
       { titleKey: TITLE.healthPercent, content: <HealthColorText colorKey={userStatus?.colorKey}>{healthMode?.percent ? formatNumber(healthMode?.percent, FORMAT_OPTIONS.PERCENT) : '-'}</HealthColorText> },

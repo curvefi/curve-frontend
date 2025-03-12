@@ -1,29 +1,28 @@
-import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
-import type { Params } from 'react-router'
-import type { Address } from 'viem'
-import { isAddress } from 'viem'
-import { t } from '@ui-kit/lib/i18n'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { ROUTE } from '@/dex/constants'
-import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboardContext'
-import { breakpoints } from '@ui/utils'
-import { getPath } from '@/dex/utils/utilsRouter'
-import curvejsApi from '@/dex/lib/curvejs'
-import useStore from '@/dex/store/useStore'
+import { isAddress } from 'viem'
+import type { Address } from 'viem'
 import ClassicPoolsOnlyDescription from '@/dex/components/PageDashboard/components/ClassicPoolsOnlyDescription'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Summary from '@/dex/components/PageDashboard/components/Summary'
-import Table from '@ui/Table'
 import TableHead from '@/dex/components/PageDashboard/components/TableHead'
 import TableHeadMobile from '@/dex/components/PageDashboard/components/TableHeadMobile'
 import TableRow from '@/dex/components/PageDashboard/components/TableRow'
 import TableRowMobile from '@/dex/components/PageDashboard/components/TableRowMobile'
 import TableRowNoResult from '@/dex/components/PageDashboard/components/TableRowNoResult'
 import TableSortDialog from '@/dex/components/PageDashboard/components/TableSortDialog'
+import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboardContext'
+import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
+import { ROUTE } from '@/dex/constants'
+import curvejsApi from '@/dex/lib/curvejs'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import useStore from '@/dex/store/useStore'
+import { CurveApi, ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import Table from '@ui/Table'
+import { breakpoints } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 const Dashboard = ({
   curve,
@@ -32,10 +31,10 @@ const Dashboard = ({
 }: {
   curve: CurveApi | null
   rChainId: ChainId
-  params: Readonly<Params<string>>
+  params: NetworkUrlParams
 }) => {
   const isSubscribed = useRef(false)
-  const navigate = useNavigate()
+  const { push } = useRouter()
 
   const activeKey = useStore((state) => state.dashboard.activeKey)
   const formValues = useStore((state) => state.dashboard.formValues)
@@ -102,9 +101,9 @@ const Dashboard = ({
   const updatePath = useCallback(
     (poolId: string) => {
       const encodePoolId = encodeURIComponent(poolId)
-      navigate(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${encodePoolId}${ROUTE.PAGE_POOL_DEPOSIT}`))
     },
-    [navigate, params],
+    [push, params],
   )
 
   const colSpan = isXSmDown ? 1 : 5

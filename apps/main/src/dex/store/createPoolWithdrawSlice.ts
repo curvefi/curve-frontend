@@ -1,17 +1,14 @@
+import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/dex/store/useStore'
+import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
+import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
-import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
-
-import cloneDeep from 'lodash/cloneDeep'
-
-import curvejsApi from '@/dex/lib/curvejs'
-import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
-import { isBonus, isHighSlippage, shortenTokenAddress } from '@/dex/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
+import curvejsApi from '@/dex/lib/curvejs'
+import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
   CurveApi,
@@ -21,7 +18,9 @@ import {
   Pool,
   PoolData,
 } from '@/dex/types/main.types'
+import { isBonus, isHighSlippage } from '@/dex/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -87,7 +86,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawToken: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      let cFormValues = cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { pool } = poolData
       const { signerAddress } = curve
 
@@ -147,7 +146,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawLpToken: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      let cFormValues = cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { signerAddress } = curve
       const { pool } = poolData
 
@@ -196,7 +195,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawCustom: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      let cFormValues = cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { pool } = poolData
       const { signerAddress } = curve
 
@@ -309,7 +308,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const storedFormStatus = get()[sliceKey].formStatus
 
       // update form values
-      let cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       let activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
       get()[sliceKey].setStateByKeys({
         activeKey,
@@ -491,7 +490,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
       }
       if (resp && resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -526,7 +525,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const { pool } = poolData
       const resp = await curvejsApi.poolWithdraw.unstake(activeKey, provider, pool, formValues.stakedLpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -564,7 +563,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         ? await curvejsApi.poolWithdraw.claimCrv(activeKey, provider, pool)
         : await curvejsApi.poolWithdraw.claimRewards(activeKey, provider, pool)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.isClaimCrv = false
@@ -640,7 +639,7 @@ export function getActiveKey(
   if (formType === 'WITHDRAW') {
     if (selected === 'token') {
       const selectedStr = `${selected}-${selectedToken}-${
-        selectedTokenAddress ? shortenTokenAddress(selectedTokenAddress) : ''
+        selectedTokenAddress ? shortenAddress(selectedTokenAddress) : ''
       }`
       activeKey += `${selectedStr}-${isWrapped}-${maxSlippage}-${lpToken}`
     } else if (selected === 'lpToken') {

@@ -1,11 +1,10 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils/responsive'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
+import { breakpoints } from '@ui/utils/responsive'
 
-const ChartTooltip = ({ children }: { children: React.ReactNode }) => (
+const ChartTooltip = ({ children }: { children: ReactNode }) => (
   <Wrapper grid gridRowGap={2}>
     {children}
   </Wrapper>

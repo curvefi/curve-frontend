@@ -1,18 +1,20 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
+import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
+import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import useStore from '@/dao/store/useStore'
-import { formatNumber, shortenTokenAddress } from '@ui/utils'
+import { getEthPath } from '@/dao/utils'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import InternalLink from '@ui/Link/InternalLink'
+import { formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 import { calculateUserPowerStale } from './utils'
 
-import Box from '@ui/Box'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
-import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
-import InternalLink from '@ui/Link/InternalLink'
-import AlertBox from '@ui/AlertBox'
-
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
-  const { userEns, userVeCrv } = useStore((state) => state.user)
+  const userEns = useStore((state) => state.user.userEns)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
   const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
 
   const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
@@ -26,8 +28,8 @@ const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
           loading={userWeightsLoading}
           title="User"
           data={
-            <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
-              <MetricsColumnData>{userEns ?? shortenTokenAddress(userAddress)}</MetricsColumnData>
+            <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
+              <MetricsColumnData>{userEns ?? shortenAddress(userAddress)}</MetricsColumnData>
             </StyledInternalLink>
           }
         />
@@ -72,7 +74,6 @@ const UserDataWrapper = styled(Box)`
 const StyledInternalLink = styled(InternalLink)`
   text-decoration: none;
   color: inherit;
-  text-transform: none;
 `
 
 export default GaugeVotingStats

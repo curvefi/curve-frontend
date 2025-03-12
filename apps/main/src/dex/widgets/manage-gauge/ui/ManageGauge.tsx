@@ -1,13 +1,13 @@
-import { t } from '@ui-kit/lib/i18n'
-import TabSlider, { Tab } from '@ui/TabSlider/TabSlider'
 import { useCallback, useMemo, useState } from 'react'
 import { isAddressEqual, type Address } from 'viem'
-import type { TabValue } from '@/dex/widgets/manage-gauge/types'
-import AddRewardToken from '@/dex/features/add-gauge-reward-token'
-import DepositReward from '@/dex/features/deposit-gauge-reward'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useSignerAddress } from '@/dex/entities/signer'
+import AddRewardToken from '@/dex/features/add-gauge-reward-token'
+import DepositReward from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
+import type { TabValue } from '@/dex/widgets/manage-gauge/types'
+import TabSlider, { Tab } from '@ui/TabSlider/TabSlider'
+import { t } from '@ui-kit/lib/i18n'
 
 const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const sliderTabs: Tab<TabValue>[] = [
@@ -24,11 +24,8 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
   const [activeTab, setActiveTab] = useState<TabValue>('add_reward')
   const { data: signerAddress } = useSignerAddress()
 
-  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({ chainId, poolId })
-  const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
-    chainId,
-    poolId,
-  })
+  const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
 
   const isGaugeManager = useMemo(
     () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress),

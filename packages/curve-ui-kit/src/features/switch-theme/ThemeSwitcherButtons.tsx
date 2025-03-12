@@ -1,5 +1,5 @@
-import { themes, type ThemeSwitcherProps } from './types'
 import IconButton from '@mui/material/IconButton'
+import { themes, type ThemeSwitcherProps } from './types'
 
 export const ThemeSwitcherButtons = ({ theme, onChange }: ThemeSwitcherProps) =>
   themes.map(({ type, Component }) => (

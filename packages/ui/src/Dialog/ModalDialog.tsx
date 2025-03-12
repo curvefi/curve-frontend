@@ -1,16 +1,13 @@
-import * as React from 'react'
-import type { AriaDialogProps } from '@react-types/dialog'
+import { ReactNode, useRef } from 'react'
 import type { AriaOverlayProps } from 'react-aria'
+import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventScroll } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
-
-import { Overlay, FocusScope, useButton, useDialog, usePreventScroll, useModalOverlay } from 'react-aria'
-import { useRef } from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from 'ui/src/utils/responsive'
 import Box from 'ui/src/Box/Box'
 import Icon from 'ui/src/Icon/Icon'
 import IconButton from 'ui/src/IconButton'
+import { breakpoints } from 'ui/src/utils/responsive'
+import type { AriaDialogProps } from '@react-types/dialog'
 
 const ModalDialog = ({
   children,
@@ -22,18 +19,17 @@ const ModalDialog = ({
   title,
   testId,
   ...props
-}: React.PropsWithChildren<
-  AriaOverlayProps &
-    AriaDialogProps & {
-      className?: string
-      footerContent?: React.ReactNode
-      maxWidth?: string
-      noContentPadding?: boolean
-      state: OverlayTriggerState
-      testId?: string
-      title: string
-    }
->) => {
+}: AriaOverlayProps &
+  AriaDialogProps & {
+    children: ReactNode
+    className?: string
+    footerContent?: ReactNode
+    maxWidth?: string
+    noContentPadding?: boolean
+    state: OverlayTriggerState
+    testId?: string
+    title: string
+  }) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 

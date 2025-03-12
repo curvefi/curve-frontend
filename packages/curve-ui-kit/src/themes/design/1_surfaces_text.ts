@@ -53,7 +53,7 @@ export const SurfacesAndText = {
         Disabled: Grays[500],
         highlight: Blues[500],
         Feedback: {
-          Success: Greens[600],
+          Success: Greens[400],
           Warning: Reds[300],
           Error: Reds[500],
           Inverted: Grays[950],
@@ -184,7 +184,7 @@ export const SurfacesAndText = {
         Disabled: Grays[400],
         highlight: Blues[500],
         Feedback: {
-          Success: Greens[500],
+          Success: Greens[600],
           Warning: Reds[400],
           Error: Reds[500],
           Inverted: Grays[50],

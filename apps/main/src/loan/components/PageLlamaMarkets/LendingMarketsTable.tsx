@@ -1,15 +1,15 @@
+import { DEFAULT_SORT, DEFAULT_VISIBILITY, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
+import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
+import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
+import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
+import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
-import { LlamaMarket } from '@/loan/entities/llama-markets'
-import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
-import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
-import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
-import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
-import { DEFAULT_SORT, DEFAULT_VISIBILITY, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 

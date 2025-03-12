@@ -1,8 +1,8 @@
+import { Chain } from '@curvefi/prices-api'
+import { getSnapshots } from '@curvefi/prices-api/crvusd'
+import type { Snapshot } from '@curvefi/prices-api/crvusd/models'
 import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
-import { getSnapshots } from '@curvefi/prices-api/crvusd'
-import { Chain } from '@curvefi/prices-api'
-import type { Snapshot } from '@curvefi/prices-api/crvusd/models'
 
 export type CrvUsdSnapshot = Snapshot
 

@@ -1,11 +1,4 @@
-import type { Step } from '@ui/Stepper/types'
-
-import React from 'react'
-import { t } from '@ui-kit/lib/i18n'
-
-import { _parseValues } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
-import useStore from '@/lend/store/useStore'
-
+import { Dispatch, SetStateAction } from 'react'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLeverageAdvancedExpected from '@/lend/components/DetailInfoLeverageAdvancedExpected'
@@ -15,8 +8,12 @@ import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
 import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import DetailInfoSlippageTolerance from '@/lend/components/DetailInfoSlippageTolerance'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { _parseValues } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
+import useStore from '@/lend/store/useStore'
 import { PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import type { Step } from '@ui/Stepper/types'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLeverage = ({
   rChainId,
@@ -34,7 +31,7 @@ const DetailInfoLeverage = ({
   healthMode: HealthMode
   isLoaded: boolean
   steps: Step[]
-  setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
+  setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
   const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
   const detailInfo = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])

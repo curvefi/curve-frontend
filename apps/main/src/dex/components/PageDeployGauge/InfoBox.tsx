@@ -1,9 +1,8 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
+import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import AlertBox from '@ui/AlertBox'
+import { t } from '@ui-kit/lib/i18n'
 
 const InfoBox = () => (
   <StyledAlertBox alertType="info">
@@ -39,7 +38,6 @@ const InfoText = styled.p`
 
 const StyledExternalLink = styled(ExternalLink)`
   color: var(--white);
-  text-transform: none;
   &:hover {
     text-decoration: none;
   }

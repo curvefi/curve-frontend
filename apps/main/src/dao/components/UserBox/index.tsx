@@ -1,22 +1,21 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
-
+import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 import UserInformation from './UserInformation'
-import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 
 type Props = {
-  children?: React.ReactNode
+  children?: ReactNode
   className?: string
   votingPower?: SnapshotVotingPower
   activeProposal?: ActiveProposal
   snapshotVotingPower: boolean
-  row?: boolean
 }
 
-const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal, row }: Props) => {
+const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
   const { wallet, connect } = useWallet()
   return (
     <Wrapper className={className}>

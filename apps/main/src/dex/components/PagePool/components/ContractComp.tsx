@@ -1,13 +1,12 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
-import { copyToClipboard } from '@/dex/lib/utils'
-import { shortenTokenAddress } from '@/dex/utils'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import Box from '@ui/Box'
-import ExternalLink from '@ui/Link/ExternalLink'
-import Icon from '@ui/Icon'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import ExternalLink from '@ui/Link/ExternalLink'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const ContractComp = ({
   address,
@@ -20,14 +19,11 @@ const ContractComp = ({
   address: string
   rChainId: ChainId
   isLargeNumber?: boolean
-  label: string | React.ReactNode
+  label: ReactNode
   showBottomBorder: boolean
-  action?: React.ReactNode
+  action?: ReactNode
 }) => {
   const network = useStore((state) => state.networks.networks[rChainId])
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
 
   return (
     <Wrapper haveAction={!!action}>
@@ -37,11 +33,11 @@ const ContractComp = ({
             <Box flex flexDirection="column">
               {label}
               <StyledExternalLink href={network.scanAddressPath(address)}>
-                {shortenTokenAddress(address)}
+                {shortenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
             </Box>
-            <StyledIconButton size="medium" onClick={() => handleCopyClick(address)}>
+            <StyledIconButton size="medium" onClick={() => copyToClipboard(address)}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>
           </LabelWrapper>
@@ -50,10 +46,10 @@ const ContractComp = ({
             <Label>{label}</Label>
             <span>
               <StyledExternalLink href={network.scanAddressPath(address)}>
-                {shortenTokenAddress(address)}
+                {shortenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
-              <StyledIconButton size="medium" onClick={() => handleCopyClick(address)}>
+              <StyledIconButton size="medium" onClick={() => copyToClipboard(address)}>
                 <Icon name="Copy" size={16} />
               </StyledIconButton>
             </span>

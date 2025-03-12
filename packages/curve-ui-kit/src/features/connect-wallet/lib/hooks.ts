@@ -1,16 +1,16 @@
-import { Dispatch, SetStateAction, useEffect } from 'react'
-import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
-import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import { BrowserProvider } from 'ethers'
+import { Dispatch, SetStateAction, useEffect } from 'react'
+import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
+import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { Address } from '@ui-kit/utils'
+import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import type {
   ConnectOptions,
   DisconnectOptions,
   NotificationType,
   WalletState as Wallet,
 } from '@web3-onboard/core/dist/types'
-import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
-import { Address } from '@ui-kit/utils'
+import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
 import { getRpcProvider } from './utils/wallet-helpers'
 
 type UseConnectWallet = {

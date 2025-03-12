@@ -1,29 +1,26 @@
-import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-
-import React, { useEffect, useState } from 'react'
-import { t } from '@ui-kit/lib/i18n'
 import isUndefined from 'lodash/isUndefined'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-
-import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
-import { breakpoints } from '@ui/utils/responsive'
-import { getHealthMode } from '@/loan/components/DetailInfoHealth'
-import useStore from '@/loan/store/useStore'
-
-import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
-import Box from '@ui/Box'
 import PoolInfoData from '@/loan/components/ChartOhlcWrapper'
+import { getHealthMode } from '@/loan/components/DetailInfoHealth'
+import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
 import ChartUserBands from '@/loan/components/LoanInfoUser/components/ChartUserBands'
 import ChartUserLiquidationRange from '@/loan/components/LoanInfoUser/components/ChartUserLiquidationRange'
 import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
+import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
+import Box from '@ui/Box'
+import { breakpoints } from '@ui/utils/responsive'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
+interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
 }
 
-const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId, titleMapper }: Props) => {
+const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const { chartExpanded } = useStore((state) => state.ohlcCharts)

@@ -1,13 +1,14 @@
 'use client'
-import React, { useState } from 'react'
 import { useServerInsertedHTML } from 'next/navigation'
+import { ReactNode, useState } from 'react'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
+import { shouldForwardProp } from '@ui/styled-containers'
 
 /**
  * Injections for styled-components to work with Next.js SSR
  * Based on https://nextjs.org/docs/app/building-your-application/styling/css-in-js#styled-components
  */
-export function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
+export function StyledComponentsRegistry({ children }: { children: ReactNode }) {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet())
@@ -15,10 +16,15 @@ export function StyledComponentsRegistry({ children }: { children: React.ReactNo
   useServerInsertedHTML(() => {
     const styles = styledComponentsStyleSheet.getStyleElement()
     styledComponentsStyleSheet.instance.clearTag()
-    return <>{styles}</>
+    return styles
   })
 
-  if (typeof window !== 'undefined') return <>{children}</>
-
-  return <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>{children}</StyleSheetManager>
+  return (
+    <StyleSheetManager
+      shouldForwardProp={shouldForwardProp}
+      {...(typeof window == 'undefined' && { sheet: styledComponentsStyleSheet.instance })}
+    >
+      {children}
+    </StyleSheetManager>
+  )
 }

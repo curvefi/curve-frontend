@@ -1,5 +1,5 @@
-import ActionInfo from '../ActionInfo'
 import type { Meta, StoryObj } from '@storybook/react'
+import ActionInfo from '../ActionInfo'
 
 const meta: Meta<typeof ActionInfo> = {
   title: 'UI Kit/Widgets/ActionInfo',

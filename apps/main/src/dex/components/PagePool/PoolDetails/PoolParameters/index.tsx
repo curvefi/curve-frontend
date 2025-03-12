@@ -1,20 +1,19 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
-import { breakpoints } from '@ui/utils/responsive'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
-import { shortenTokenAddress } from '@/dex/utils'
-import { copyToClipboard } from '@/dex/lib/utils'
-import dayjs from '@ui-kit/lib/dayjs'
-import Box from '@ui/Box'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import { Chip } from '@ui/Typography'
-import { ExternalLink } from '@ui/Link'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import Icon from '@ui/Icon'
-import TextEllipsis from '@ui/TextEllipsis'
+import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import { ExternalLink } from '@ui/Link'
+import TextEllipsis from '@ui/TextEllipsis'
+import { Chip } from '@ui/Typography'
+import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
+import dayjs from '@ui-kit/lib/dayjs'
+import { t } from '@ui-kit/lib/i18n'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 type PoolParametersProps = {
   pricesApi: boolean
@@ -60,10 +59,6 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
     }
   }, [future_A, future_A_time, initial_A, initial_A_time])
 
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-  }
-
   const returnPoolType = (poolType: string, coins: number) => {
     const isCrypto = poolData.pool.isCrypto
     const isNg = poolData.pool.isNg
@@ -101,7 +96,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
             <PoolParameter>
               <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
               <DataAddressLink href={network.scanTokenPath(pricesData.base_pool)}>
-                {shortenTokenAddress(pricesData.base_pool)}
+                {shortenAddress(pricesData.base_pool)}
               </DataAddressLink>
             </PoolParameter>
           )}
@@ -112,7 +107,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
           <PoolParameter>
             <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
             <PoolParameterLink href={network.scanTokenPath(pricesData.registry)}>
-              {shortenTokenAddress(pricesData.registry)}
+              {shortenAddress(pricesData.registry)}
             </PoolParameterLink>
           </PoolParameter>
         </SectionWrapper>
@@ -129,13 +124,13 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                         <StyledTokenIcon
                           size="sm"
                           blockchainId={network?.networkId ?? ''}
-                          symbol={token}
+                          tooltip={token}
                           address={poolData.tokenAddresses[idx]}
                         />
                         <ExternalLinkToken>{token}</ExternalLinkToken>
                       </ExternalLinkTokenWrapper>
                     </StyledExternalLink>
-                    <StyledIconButton size="medium" onClick={() => handleCopyClick(poolData.tokenAddresses[idx])}>
+                    <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </>
@@ -150,7 +145,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
                       <IndentDataAddressLink href={network.scanTokenPath(pricesData.oracles[idx].oracle_address)}>
-                        {shortenTokenAddress(pricesData.oracles[idx].oracle_address)}
+                        {shortenAddress(pricesData.oracles[idx].oracle_address)}
                       </IndentDataAddressLink>
                     </Box>
                     <Box flex>

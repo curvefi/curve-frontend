@@ -1,13 +1,13 @@
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
-import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import { TooltipProps } from 'recharts'
-import { t } from '@ui-kit/lib/i18n'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
+import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
+import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { Paper, Stack, Typography } from '@mui/material'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils/utilsFormat'
-import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
+import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

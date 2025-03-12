@@ -1,17 +1,14 @@
-import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
-import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-
-import { t } from '@ui-kit/lib/i18n'
-import React, { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import styled from 'styled-components'
-
-import { breakpoints } from '@ui/utils/responsive'
-
-import { Th, Thead, TheadSortButton } from '@ui/Table'
-import Box from '@ui/Box'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TableHeadRewards from '@/dex/components/PagePoolList/components/TableHeadRewards'
+import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
+import Box from '@ui/Box'
+import { Th, Thead, TheadSortButton } from '@ui/Table'
+import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
+import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { breakpoints } from '@ui/utils/responsive'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   isLite: boolean
@@ -54,7 +51,7 @@ const TableHead = ({
     <>
       <colgroup>
         {columnKeys.map((columnKey, idx) => (
-          <React.Fragment key={`col${columnKey}${idx}`}>
+          <Fragment key={`col${columnKey}${idx}`}>
             {columnKey === COLUMN_KEYS.inPool && <ColInPool className="row-in-pool" />}
             {columnKey === COLUMN_KEYS.poolName && <Col className="left pool" />}
             {columnKey === COLUMN_KEYS.rewardsLite && <Col className="right" />}
@@ -68,13 +65,13 @@ const TableHead = ({
             {columnKey === COLUMN_KEYS.volume && <col className="right" />}
             {columnKey === COLUMN_KEYS.tvl && isLite && <Col className="right tvl" />}
             {columnKey === COLUMN_KEYS.tvl && !isLite && <col className="right" />}
-          </React.Fragment>
+          </Fragment>
         ))}
       </colgroup>
       <StyledThead>
         <tr>
           {columnKeys.map((columnKey, idx) => (
-            <React.Fragment key={`thead${columnKey}${idx}`}>
+            <Fragment key={`thead${columnKey}${idx}`}>
               {columnKey === COLUMN_KEYS.inPool && (
                 <th key={columnKey} className="in-pool">
                   {' '}
@@ -97,12 +94,12 @@ const TableHead = ({
                 <Th className="right">
                   <TheadSortButton
                     className="right"
-                    sortIdKey="rewardsOther"
+                    sortIdKey="rewardsLite"
                     nowrap
                     {...props}
                     loading={!isReadyRewardsApy}
                   >
-                    {tableLabels.rewardsOtherLite.name} tAPR
+                    {tableLabels.rewardsLite.name} tAPR
                     <IconTooltip placement="top">{REWARDS_OTHER_TOOLTIP}</IconTooltip>
                   </TheadSortButton>
                 </Th>
@@ -160,7 +157,7 @@ const TableHead = ({
                   </StyledTheadSortButton>
                 </Th>
               )}
-            </React.Fragment>
+            </Fragment>
           ))}
         </tr>
       </StyledThead>

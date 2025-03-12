@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-
 import Box from 'ui/src/Box/Box'
 
 const TabContentWrapper = styled(Box)<{ variant?: 'secondary' }>`

@@ -1,12 +1,10 @@
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
-import { breakpoints, formatNumber } from '@ui/utils'
-
-import Box from '@ui/Box'
 import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
-import Tooltip, { TooltipIcon } from '@ui/Tooltip'
 import { ProposalData } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Tooltip, { TooltipIcon } from '@ui/Tooltip'
+import { breakpoints, formatNumber } from '@ui/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData
@@ -14,8 +12,7 @@ type ProposalVoteStatusBoxProps = {
 }
 
 const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
-  const { votesFor, votesAgainst, quorumVeCrv, minAcceptQuorumPercent, minSupport, currentQuorumPercentage } =
-    proposalData
+  const { votesFor, votesAgainst, minAcceptQuorumPercent, minSupport, currentQuorumPercentage } = proposalData
 
   const totalVotes = votesFor + votesAgainst
   const support = totalVotes > 0 ? (votesFor / totalVotes) * 100 : 0

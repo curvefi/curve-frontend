@@ -1,6 +1,6 @@
-import { formatNumber } from '@ui/utils'
-import { CellContext } from '@tanstack/react-table'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { CellContext } from '@tanstack/react-table'
+import { formatNumber } from '@ui/utils'
 
 export const CompactUsdCell = ({ getValue }: CellContext<LlamaMarket, number>) => {
   const value = getValue()

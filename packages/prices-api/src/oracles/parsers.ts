@@ -1,6 +1,6 @@
 import { toDate } from '../timestamp'
-import type * as Responses from './responses'
 import type * as Models from './models'
+import type * as Responses from './responses'
 
 export const parseOracles = (x: Responses.GetOraclesResponse): Models.Oracles => ({
   lastRecordedBlock: x.last_recorded_block,

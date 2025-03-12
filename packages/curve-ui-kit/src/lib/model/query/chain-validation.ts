@@ -1,5 +1,4 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '@ui-kit/lib/validation'
 import { ChainParams } from './root-keys'
 
 export const chainValidationGroup = ({ chainId }: ChainParams) =>
@@ -8,5 +7,3 @@ export const chainValidationGroup = ({ chainId }: ChainParams) =>
       enforce(chainId).message('Chain ID is required').isNotEmpty().message('Invalid chain ID').isValidChainId()
     })
   })
-
-export const chainValidationSuite = createValidationSuite(chainValidationGroup)

@@ -1,35 +1,34 @@
+import merge from 'lodash/merge'
 import type { GetState, SetState } from 'zustand'
 import { create } from 'zustand'
-
 import { devtools, persist } from 'zustand/middleware'
-import merge from 'lodash/merge'
-
-import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
+import type { PersistOptions } from 'zustand/middleware/persist'
 import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
-import createLayoutSlice, { AppLayoutSlice } from '@/loan/store/createLayoutSlice'
-import createGasSlice, { GasSlice } from '@/loan/store/createGasSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from '@/loan/store/createUsdRatesSlice'
-import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
-import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
+import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/loan/store/createCampaignRewardsSlice'
+import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
 import createCollateralListSlice, { CollateralListSlice } from '@/loan/store/createCollateralListSlice'
-import createLoanCreate, { LoanCreateSlice } from '@/loan/store/createLoanCreateSlice'
+import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
+import createGasSlice, { GasSlice } from '@/loan/store/createGasSlice'
+import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
+import createLayoutSlice, { AppLayoutSlice } from '@/loan/store/createLayoutSlice'
 import createLoanCollateralDecrease, {
   LoanCollateralDecreaseSlice,
 } from '@/loan/store/createLoanCollateralDecreaseSlice'
 import createLoanCollateralIncrease, {
   LoanCollateralIncreaseSlice,
 } from '@/loan/store/createLoanCollateralIncreaseSlice'
+import createLoanCreate, { LoanCreateSlice } from '@/loan/store/createLoanCreateSlice'
 import createLoanDecrease, { LoanDecreaseSlice } from '@/loan/store/createLoanDecreaseSlice'
-import createLoanIncrease, { LoanIncreaseSlice } from '@/loan/store/createLoanIncreaseSlice'
-import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
-import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoanLiquidate'
-import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
-import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
 import createLoanDeleverageSlice, { LoanDeleverageSlice } from '@/loan/store/createLoanDeleverageSlice'
+import createLoanIncrease, { LoanIncreaseSlice } from '@/loan/store/createLoanIncreaseSlice'
+import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoanLiquidate'
+import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
+import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
 import createPegKeepersSlice, { PegKeepersSlice } from '@/loan/store/createPegKeepersSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
-import type { PersistOptions } from 'zustand/middleware/persist'
+import createUsdRatesSlice, { UsdRatesSlice } from '@/loan/store/createUsdRatesSlice'
 
 export type State = CacheSlice &
   AppSlice &
@@ -51,7 +50,8 @@ export type State = CacheSlice &
   IntegrationsSlice &
   OhlcChartSlice &
   PegKeepersSlice &
-  ScrvUsdSlice
+  ScrvUsdSlice &
+  CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
@@ -75,6 +75,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createOhlcChartSlice(set, get),
   ...createPegKeepersSlice(set, get),
   ...createScrvUsdSlice(set, get),
+  ...createCampaignRewardsSlice(set, get),
 })
 
 // cache all items in CacheSlice store

@@ -1,16 +1,14 @@
-import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
 import { useState } from 'react'
-
+import styled from 'styled-components'
 import useStore from '@/dao/store/useStore'
-
-import Box from '@ui/Box'
-import IconButton from '@ui/IconButton'
-import Icon from '@ui/Icon'
-import VoteGaugeField from '../VoteGaugeField'
-import TitleComp from '../../GaugeListItem/TitleComp'
-import GaugeDetails from '../../GaugeListItem/GaugeDetails'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton'
+import { t } from '@ui-kit/lib/i18n'
+import GaugeDetails from '../../GaugeListItem/GaugeDetails'
+import TitleComp from '../../GaugeListItem/TitleComp'
+import VoteGaugeField from '../VoteGaugeField'
 
 type VoteGaugeProps = {
   gaugeData: GaugeFormattedData
@@ -20,8 +18,8 @@ type VoteGaugeProps = {
 
 const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const [showDetails, setShowDetails] = useState(false)
-  const { setSelectedGauge } = useStore((state) => state.gauges)
-  const { veCrv } = useStore((state) => state.user.userVeCrv)
+  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
 
   return (
     <Wrapper showDetails={showDetails}>
@@ -33,7 +31,12 @@ const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) 
       </TitleWrapper>
       <MainWrapper>
         <TitleComp gaugeData={gaugeData} />
-        <VoteGaugeField newVote powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeVoteData} />
+        <VoteGaugeField
+          newVote
+          powerUsed={powerUsed}
+          userVeCrv={+userVeCrv.veCrv}
+          userGaugeVoteData={userGaugeVoteData}
+        />
       </MainWrapper>
       <Box>
         <StyledIconButton

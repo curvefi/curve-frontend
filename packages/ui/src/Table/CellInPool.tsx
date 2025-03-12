@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import { breakpoints } from 'ui/src/utils'
 import type { JSX } from 'react'
-import Chip from 'ui/src/Typography/Chip'
+import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
+import Chip from 'ui/src/Typography/Chip'
+import { breakpoints } from 'ui/src/utils'
 
 type Props = {
   as?: keyof JSX.IntrinsicElements

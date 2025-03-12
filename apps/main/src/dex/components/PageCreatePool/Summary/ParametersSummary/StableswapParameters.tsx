@@ -1,5 +1,3 @@
-import { t } from '@ui-kit/lib/i18n'
-import useStore from '@/dex/store/useStore'
 import { IMPLEMENTATION_IDS } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
@@ -8,7 +6,9 @@ import {
   SummaryDataPlaceholder,
   ExtraMarginRow,
 } from '@/dex/components/PageCreatePool/Summary/styles'
+import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId

@@ -1,23 +1,21 @@
-import { SubNavItem } from '@/dao/components/SubNav/types'
-
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { t } from '@ui-kit/lib/i18n'
-
+import { SubNavItem } from '@/dao/components/SubNav/types'
 import useStore from '@/dao/store/useStore'
-
-import CrvStats from './CrvStats'
-import VeCrvFees from './VeCrvFeesTable'
-import DailyLocks from './DailyLocksChart'
-import TopHolders from './TopHoldersChart'
-import HoldersTable from './HoldersTable'
-import SubNav from '../SubNav'
 import Box from '@ui/Box'
+import { t } from '@ui-kit/lib/i18n'
+import SubNav from '../SubNav'
+import CrvStats from './CrvStats'
+import DailyLocks from './DailyLocksChart'
+import HoldersTable from './HoldersTable'
+import TopHolders from './TopHoldersChart'
+import VeCrvFees from './VeCrvFeesTable'
 
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 
 const Analytics = () => {
-  const { getVeCrvHolders, veCrvHolders } = useStore((state) => state.analytics)
+  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
 
   const navItems: SubNavItem[] = [

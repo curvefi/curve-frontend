@@ -1,10 +1,9 @@
-import React from 'react'
-import { breakpoints } from '@ui/utils'
+import { Fragment, ReactElement } from 'react'
 import styled from 'styled-components'
-
-import Chip from '@ui/Typography/Chip'
-import ExternalLink from '@ui/Link/ExternalLink'
 import Icon from '@ui/Icon'
+import ExternalLink from '@ui/Link/ExternalLink'
+import Chip from '@ui/Typography/Chip'
+import { breakpoints } from '@ui/utils'
 
 const PoolAlertCustomMessage = ({
   className = '',
@@ -14,7 +13,7 @@ const PoolAlertCustomMessage = ({
 }: {
   className?: string
   title: string
-  titleIcon: React.ReactElement
+  titleIcon: ReactElement
   externalLinks: { label: string; url: string }[]
 }) => (
   <MessageWrapper className={className} $isManyLinks={externalLinks.length > 2}>
@@ -24,13 +23,13 @@ const PoolAlertCustomMessage = ({
     </Title>{' '}
     <MessageLinksWrapper>
       {externalLinks.map(({ label, url }) => (
-        <React.Fragment key={url}>
+        <Fragment key={url}>
           <StyledChip isBold>
             <StyledExternalLink href={url}>
               {label} <Icon className="svg-tooltip" name="Launch" size={16} />
             </StyledExternalLink>
           </StyledChip>{' '}
-        </React.Fragment>
+        </Fragment>
       ))}
     </MessageLinksWrapper>
   </MessageWrapper>
@@ -74,7 +73,6 @@ const Title = styled.div`
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
 `
 
 const StyledChip = styled(Chip)`
