@@ -8,8 +8,9 @@ import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
-import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@ui/utils/'
+import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined
@@ -17,9 +18,8 @@ interface GaugeMetricsProps {
 }
 
 const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
-  const gaugeCurveApiData = useStore(
-    (state) => state.gauges.gaugeCurveApiData.data[gaugeData?.address.toLowerCase() || ''],
-  )
+  const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
+  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeAddress])
   const chainId = getChainIdFromGaugeData(gaugeData)
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]
@@ -35,23 +35,23 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`Gauge`}
             data={
               <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.address || '')}</StyledMetricsColumnData>
+                <StyledMetricsColumnData>{shortenAddress(gaugeAddress)}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
+                    href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeAddress)}
                     tooltip={t`View on explorer`}
                   />
-                  <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
+                  <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
                 </BigScreenButtonsWrapper>
               </Box>
             }
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData?.address || '')}
+              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeAddress)}
               tooltip={t`View on explorer`}
             />
-            <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
+            <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
           </SmallScreenButtonsWrapper>
         </Box>
         <MetricsComp
@@ -140,7 +140,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               title={t`Pool`}
               data={
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
+                  <StyledMetricsColumnData>{shortenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
                   <BigScreenButtonsWrapper>
                     <ExternalLinkIconButton
                       href={gaugeExternalLink}

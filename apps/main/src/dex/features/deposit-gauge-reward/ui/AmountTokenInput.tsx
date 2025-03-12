@@ -1,7 +1,7 @@
 import { MouseEvent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
-import { NETWORK_TOKEN } from '@/dex/constants'
+import { ethAddress } from 'viem'
 import {
   useDepositRewardApproveIsMutating,
   useDepositRewardIsMutating,
@@ -137,7 +137,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           <InputMaxBtn
             loading={isMaxLoading}
             disabled={isDisabled}
-            isNetworkToken={rewardTokenId === NETWORK_TOKEN}
+            isNetworkToken={rewardTokenId === ethAddress}
             testId="max"
             onClick={onMaxButtonClick}
           />

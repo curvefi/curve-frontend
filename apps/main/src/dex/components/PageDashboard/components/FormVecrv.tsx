@@ -198,7 +198,6 @@ const FormVecrv = () => {
 const AdjustVecrvLink = styled(InternalLink)`
   color: inherit;
   font-weight: bold;
-  text-transform: initial;
 `
 
 const StyledTitle = styled(Title)`

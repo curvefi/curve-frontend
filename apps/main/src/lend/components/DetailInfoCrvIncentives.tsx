@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { INVALID_ADDRESS } from '@/lend/constants'
+import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useAbiTotalSupply from '@/lend/hooks/useAbiTotalSupply'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
@@ -32,7 +32,7 @@ const DetailInfoCrvIncentives = ({
   const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
   const gaugeAddress = useOneWayMarket(rChainId, rOwmId).data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
-  const isGaugeAddressInvalid = gaugeAddress === INVALID_ADDRESS
+  const isGaugeAddressInvalid = gaugeAddress === zeroAddress
 
   const { crvBase = '', incentivesObj = [] } = tooltipValues ?? {}
 

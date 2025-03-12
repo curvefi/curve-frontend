@@ -9,7 +9,7 @@ import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { addressShort } from '@ui-kit/utils'
+import { shortenAddress } from '@ui-kit/utils'
 import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
@@ -28,8 +28,8 @@ export type Props = Option & TokenOptionCallbacks & TokenOptionsProps
 
 export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice, disabled, onToken }: Props) => {
   const hasBalance = +(balance ?? '0') > 0
-  const hasBalanceUsd = hasBalance && (tokenPrice ?? 0 > 0)
-  const showAddress = !hasBalance
+  const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
+  const showAddress = !hasBalanceUsd
 
   const menuItem = useRef<HTMLLIElement>(null)
   const isFocusVisible = useClassObserver(menuItem, 'Mui-focusVisible')
@@ -98,7 +98,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
 
           {showAddress && (
             <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textTertiary'}>
-              {addressShort(address)}
+              {shortenAddress(address)}
             </Typography>
           )}
         </Stack>

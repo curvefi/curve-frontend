@@ -1,30 +1,9 @@
 import upperFirst from 'lodash/upperFirst'
-import { AlertFormErrorKey, GaugeFormattedData } from '@/dao/types/dao.types'
+import { AlertFormErrorKey, GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
 import { Chain } from '@ui-kit/utils'
 
 export * from './utilsRouter'
 export * from './utilsDates'
-
-export function copyToClipboard(text: string) {
-  if (window.clipboardData && window.clipboardData.setData) {
-    // IE specific code path to prevent textarea being shown while dialog is visible.
-    return window.clipboardData.setData('Text', text)
-  } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
-    const textarea = document.createElement('textarea')
-    textarea.textContent = text
-    textarea.style.position = 'fixed' // Prevent scrolling to bottom of page in MS Edge.
-    document.body.appendChild(textarea)
-    textarea.select()
-    try {
-      return document.execCommand('copy') // Security exception may be thrown by some browsers.
-    } catch (ex) {
-      console.warn('Copy to clipboard failed.', ex)
-      return false
-    } finally {
-      document.body.removeChild(textarea)
-    }
-  }
-}
 
 export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | string) {
   if (error?.message) {
@@ -58,4 +37,13 @@ export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefine
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'
   return Chain[upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
+}
+
+export const findRootGauge = (gaugeAddress: string, gaugeMapper: GaugeMapper) => {
+  for (const key in gaugeMapper) {
+    if (gaugeMapper[key].address === gaugeAddress) {
+      return gaugeMapper[key].effective_address ?? gaugeMapper[key].address
+    }
+  }
+  return ''
 }

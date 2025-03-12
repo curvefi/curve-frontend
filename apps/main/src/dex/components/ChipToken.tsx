@@ -2,11 +2,11 @@ import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
-import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { formatNumberUsdRate } from '@ui/utils'
+import { copyToClipboard } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -50,11 +50,6 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   const fetchUsdRateByToken = useStore((state) => state.usdRates.fetchUsdRateByToken)
   const parsedUsdRate = formatNumberUsdRate(usdRate)
 
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-    console.log(`Copied ${address}`)
-  }
-
   const handleMouseEnter = (foundUsdRate?: string) => {
     if (!foundUsdRate && curve) {
       fetchUsdRateByToken(curve, tokenAddress)
@@ -72,7 +67,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
     <ChipTokenWrapper className={className} onMouseEnter={() => handleMouseEnter(parsedUsdRate)}>
       <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
-        <Button {...props} onPress={() => handleCopyClick(tokenAddress)}>
+        <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
           <ChipTokenUsdRate>{typeof usdRate === 'undefined' ? <Spinner size={10} /> : parsedUsdRate}</ChipTokenUsdRate>
           <ChipTokenCopyButtonIcon name="Copy" size={16} />
         </Button>

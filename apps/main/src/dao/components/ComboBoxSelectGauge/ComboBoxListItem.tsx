@@ -5,7 +5,7 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Chip from '@ui/Typography/Chip'
 import { focusVisible } from '@ui/utils'
-import { shortenTokenAddress } from '@ui/utils'
+import { shortenAddress } from '@ui-kit/utils'
 
 const ComboBoxListItem = ({
   testId,
@@ -21,12 +21,12 @@ const ComboBoxListItem = ({
     <ItemButton
       variant="outlined"
       className={selectedGauge?.address === item.address ? 'active' : ''}
-      onClick={() => handleOnSelectChange(item.address)}
+      onClick={() => handleOnSelectChange(item.effective_address ?? item.address)}
     >
       <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
         <LabelText data-testid={`li-${testId}`}>{item.title}</LabelText>
         <Chip isMono opacity={0.5}>
-          {shortenTokenAddress(item.address)}
+          {shortenAddress(item.effective_address ?? item.address)}
         </Chip>
       </LabelTextWrapper>
     </ItemButton>

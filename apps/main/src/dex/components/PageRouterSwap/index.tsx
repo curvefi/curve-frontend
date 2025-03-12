@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ethAddress } from 'viem'
 import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
@@ -17,7 +18,6 @@ import type {
   SearchedParams,
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
-import { NETWORK_TOKEN } from '@/dex/constants'
 import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
@@ -384,7 +384,7 @@ const QuickSwap = ({
               <InputMaxBtn
                 loading={isMaxLoading}
                 disabled={isDisable}
-                isNetworkToken={searchedParams.fromAddress === NETWORK_TOKEN}
+                isNetworkToken={searchedParams.fromAddress === ethAddress}
                 testId="max"
                 onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
               />

@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import CurrencyReservesContent from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import usePoolTokensLinksMapper from '@/dex/hooks/usePoolTokensLinksMapper'
-import { copyToClipboard } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, TokensMapper, Tvl } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
@@ -10,6 +9,7 @@ import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { copyToClipboard } from '@ui-kit/utils'
 
 interface Props {
   rChainId: ChainId
@@ -27,11 +27,6 @@ const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
   const poolDataCachedOrApi = poolData ?? poolDataMapperCached
   const poolTokensLinks = usePoolTokensLinksMapper(rChainId, poolDataCachedOrApi)
 
-  const handleCopyClick = (address: string) => {
-    copyToClipboard(address)
-    console.log(`Copied ${address}`)
-  }
-
   return (
     <article>
       <StyledTitle>{t`Currency reserves`}</StyledTitle>
@@ -48,7 +43,7 @@ const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
             token={token}
             tokenAddress={tokenAddress}
             tokenLink={poolTokensLinks?.[tokenAddress]}
-            handleCopyClick={handleCopyClick}
+            handleCopyClick={copyToClipboard}
           />
         )
       })}

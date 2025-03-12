@@ -10,8 +10,12 @@ import { t } from '@ui-kit/lib/i18n'
 
 const CrvStats = () => {
   const { provider } = useWallet()
-  const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
-  const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)
+  const veCrvData = useStore((state) => state.analytics.veCrvData)
+  const getVeCrvData = useStore((state) => state.analytics.getVeCrvData)
+  const veCrvFees = useStore((state) => state.analytics.veCrvFees)
+  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const usdRatesLoading = useStore((state) => state.usdRates.loading)
+  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const crv = usdRatesMapper.crv
 
   const noProvider = !provider

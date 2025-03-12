@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import type {
   FormEstGas,
@@ -9,7 +10,6 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
-import { NETWORK_TOKEN } from '@/dex/constants'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@/dex/types/main.types'
@@ -137,7 +137,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
 
         // get max amount for native token
-        if (fromAddress.toLowerCase() === NETWORK_TOKEN) {
+        if (fromAddress.toLowerCase() === ethAddress) {
           await state.gas.fetchGasInfo(curve)
           const { basePlusPriority } = get().gas.gasInfo ?? {}
           const firstBasePlusPriority = basePlusPriority?.[0]
@@ -377,7 +377,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       )
 
       // Get prices of user balance tokens
-      await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, NETWORK_TOKEN])
+      await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, ethAddress])
     },
 
     // steps

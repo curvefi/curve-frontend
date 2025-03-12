@@ -243,7 +243,6 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
 const StyledInternalLink = styled(InternalLink)`
   color: inherit;
-  text-transform: inherit;
 
   &:hover {
     color: var(--link_light--hover--color);

@@ -3,7 +3,7 @@ import ChipInactive from '@/lend/components/ChipInactive'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
-import { handleClickCopy, shortenTokenName } from '@/lend/utils/helpers'
+import { shortenTokenName } from '@/lend/utils/helpers'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
@@ -13,6 +13,7 @@ import TextCaption from '@ui/TextCaption'
 import Chip from '@ui/Typography/Chip'
 import { breakpoints, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { copyToClipboard } from '@ui-kit/utils'
 
 // TODO: refactor to UI
 const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
@@ -74,7 +75,7 @@ const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId:
                   </TokenWrapper>
                 </StyledExternalLink>
 
-                <StyledIconButton size="small" onClick={() => handleClickCopy(tokenAddress)}>
+                <StyledIconButton size="small" onClick={() => copyToClipboard(tokenAddress)}>
                   <Icon name="Copy" size={16} />
                 </StyledIconButton>
               </Box>
