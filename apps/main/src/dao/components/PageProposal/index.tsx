@@ -32,11 +32,14 @@ type ProposalProps = {
 const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
-  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(
-    (state) => state.proposals,
-  )
+  const proposalsLoadingState = useStore((state) => state.proposals.proposalsLoadingState)
+  const getProposal = useStore((state) => state.proposals.getProposal)
+  const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
+  const getUserProposalVote = useStore((state) => state.proposals.getUserProposalVote)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[`${voteId}-${voteType}`]) ?? null
-  const { setSnapshotVeCrv, userAddress, userProposalVotesMapper } = useStore((state) => state.user)
+  const setSnapshotVeCrv = useStore((state) => state.user.setSnapshotVeCrv)
+  const userAddress = useStore((state) => state.user.userAddress)
+  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { proposalMapper } = useProposalMapper()
   const { proposalsMapper } = useProposalsMapper()
@@ -99,7 +102,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
 
   return (
     <Wrapper>
-      <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label={t`Back to proposals`} />
+      <BackButton path={getEthPath(DAO_ROUTES.PAGE_PROPOSALS)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">
