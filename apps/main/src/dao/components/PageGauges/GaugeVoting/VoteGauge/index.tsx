@@ -31,7 +31,12 @@ const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) 
       </TitleWrapper>
       <MainWrapper>
         <TitleComp gaugeData={gaugeData} />
-        <VoteGaugeField newVote powerUsed={powerUsed} userVeCrv={+userVeCrv} userGaugeVoteData={userGaugeVoteData} />
+        <VoteGaugeField
+          newVote
+          powerUsed={powerUsed}
+          userVeCrv={+userVeCrv.veCrv}
+          userGaugeVoteData={userGaugeVoteData}
+        />
       </MainWrapper>
       <Box>
         <StyledIconButton
