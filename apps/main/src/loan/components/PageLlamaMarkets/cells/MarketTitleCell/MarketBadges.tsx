@@ -46,11 +46,16 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
         </Tooltip>
       )}
 
-      {rewards && (
-        <Tooltip title={getRewardsDescription(rewards)} placement="top" data-testid={`rewards-${rewards.action}`}>
+      {rewards.map((reward, index) => (
+        <Tooltip
+          key={index}
+          title={getRewardsDescription(reward)}
+          placement="top"
+          data-testid={`rewards-${reward.action}`}
+        >
           <PointsIcon htmlColor={iconsColor} />
         </Tooltip>
-      )}
+      ))}
 
       <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
         <IconButton

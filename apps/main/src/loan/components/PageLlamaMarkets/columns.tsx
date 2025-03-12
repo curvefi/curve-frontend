@@ -24,6 +24,8 @@ const multiFilterFn: FilterFnOption<LlamaMarket> = (row, columnId, filterValue) 
   !filterValue?.length || filterValue.includes(row.getValue(columnId))
 const boolFilterFn: FilterFnOption<LlamaMarket> = (row, columnId, filterValue) =>
   filterValue === undefined || Boolean(row.getValue(columnId)) === Boolean(filterValue)
+const listFilterFn: FilterFnOption<LlamaMarket> = (row, columnId, filterValue) =>
+  filterValue === undefined || row.getValue<unknown[]>(columnId).length > 0 === Boolean(filterValue)
 
 /** Define a hidden column. */
 const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
@@ -117,7 +119,7 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.IsFavorite, boolFilterFn),
   hidden(LlamaMarketColumnId.UserHasPosition, boolFilterFn),
-  hidden(LlamaMarketColumnId.Rewards, boolFilterFn),
+  hidden(LlamaMarketColumnId.Rewards, listFilterFn),
   hidden(LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies ColumnDef<LlamaMarket, any>[]
 

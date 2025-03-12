@@ -29,9 +29,11 @@ export function CopyIconButton({
           {...iconProps}
           onClick={() =>
             navigator.clipboard
-              .writeText(copyText)
-              .then(() => setAlertText(confirmationText))
-              .catch((e) => setAlertText(e.message))
+              ? navigator.clipboard
+                  .writeText(copyText)
+                  .then(() => setAlertText(confirmationText))
+                  .catch((e) => setAlertText(e.message))
+              : setAlertText('Clipboard not available due to unsecure origin')
           }
         >
           <CopyIcon color="primary" />

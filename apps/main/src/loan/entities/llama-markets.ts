@@ -41,7 +41,7 @@ export type LlamaMarket = {
   }
   type: LlamaMarketType
   url: string
-  rewards: PoolRewards | null
+  rewards: PoolRewards[]
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
@@ -71,7 +71,7 @@ const convertLendingVault = (
     leverage,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
-  campaigns: Record<string, PoolRewards> | undefined = {},
+  campaigns: Record<string, PoolRewards[]> = {},
   userVaults: Set<Address>,
 ): LlamaMarket => ({
   chain,
@@ -95,7 +95,7 @@ const convertLendingVault = (
   type: LlamaMarketType.Lend,
   url: `${APP_LINK.lend.root}/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
   isFavorite: favoriteMarkets.has(vault),
-  rewards: campaigns[vault.toLowerCase()] ?? null,
+  rewards: campaigns[vault.toLowerCase()] ?? [],
   leverage,
   userHasPosition: userVaults.has(controller),
 })
@@ -118,7 +118,7 @@ const convertMintMarket = (
     chain,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
-  campaigns: Record<string, PoolRewards> | undefined = {},
+  campaigns: Record<string, PoolRewards[]> = {},
   userMintMarkets: Set<Address>,
 ): LlamaMarket => ({
   chain,
@@ -148,7 +148,7 @@ const convertMintMarket = (
     `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
   ),
   isFavorite: favoriteMarkets.has(address),
-  rewards: campaigns[address.toLowerCase()] ?? null,
+  rewards: campaigns[address.toLowerCase()] ?? [],
   leverage: 0,
   userHasPosition: userMintMarkets.has(address),
 })

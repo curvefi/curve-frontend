@@ -26,25 +26,26 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphTyp
       <Stack direction="row" gap={Spacing.xs} alignSelf="end">
         {rate != null && (
           <Tooltip title={t`Current rate`} placement="top">
-            <Typography variant="bodySRegular" color="textSecondary">
+            <Typography variant="bodySRegular" color="textSecondary" sx={{ alignSelf: 'center' }}>
               {rate.toPrecision(4)}%
             </Typography>
           </Tooltip>
         )}
-        {rewards && (
+        {rewards.map((reward, index) => (
           <Tooltip
-            title={getRewardsDescription(rewards)}
+            key={index}
+            title={getRewardsDescription(reward)}
             placement="top"
-            data-testid={`rewards-${type}-${rewards.action}`}
+            data-testid={`rewards-${type}-${reward.action}`}
           >
             <Chip
               icon={<PointsIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
               size="extraSmall"
               color="highlight"
-              label={`x${rewards.multiplier}`}
+              label={reward.multiplier}
             />
           </Tooltip>
-        )}
+        ))}
       </Stack>
     </Stack>
   )
