@@ -131,9 +131,9 @@ const GaugeListItem = ({
             >
               {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
             </ExternalLinkIconButton>
-            <InternalLinkButton
-              to={getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`)}
-            >{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}>
+              {t`VISIT GAUGE`}
+            </InternalLinkButton>
           </Box>
         </OpenContainer>
       )}
