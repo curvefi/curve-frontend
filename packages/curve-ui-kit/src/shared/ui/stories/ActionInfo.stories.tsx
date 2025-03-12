@@ -1,5 +1,6 @@
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WhatshotIcon from '@mui/icons-material/Whatshot'
+import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react'
 import { shortenAddress } from '@ui-kit/utils'
 import ActionInfo from '../ActionInfo'
@@ -151,6 +152,24 @@ export const WithTooltip: Story = {
     docs: {
       description: {
         story: 'Shows value with a tooltip that appears on hover',
+      },
+    },
+  },
+}
+
+export const WithEmptyValueAndSwitch: Story = {
+  args: {
+    label: 'Toggle Setting',
+    value: '',
+    valueRight: <Switch size="small" />,
+    link: '',
+    copy: false,
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows an ActionInfo with an empty value and a MUI Switch component as valueRight',
       },
     },
   },

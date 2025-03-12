@@ -31,6 +31,7 @@ type ActionInfoProps = {
   valueLeft?: ReactNode
   /** Optional content to display to the right of the value */
   valueRight?: ReactNode
+  /** Tooltip text to display when hovering over the value */
   valueTooltip?: string
   /** Previous value (if needed for comparison) */
   prevValue?: string
