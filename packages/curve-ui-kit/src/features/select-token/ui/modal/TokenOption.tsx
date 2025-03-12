@@ -28,8 +28,8 @@ export type Props = Option & TokenOptionCallbacks & TokenOptionsProps
 
 export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice, disabled, onToken }: Props) => {
   const hasBalance = +(balance ?? '0') > 0
-  const hasBalanceUsd = hasBalance && (tokenPrice ?? 0 > 0)
-  const showAddress = !hasBalance
+  const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
+  const showAddress = !hasBalanceUsd
 
   const menuItem = useRef<HTMLLIElement>(null)
   const isFocusVisible = useClassObserver(menuItem, 'Mui-focusVisible')

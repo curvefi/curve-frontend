@@ -18,8 +18,8 @@ type VoteGaugeProps = {
 
 const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const [showDetails, setShowDetails] = useState(false)
-  const { setSelectedGauge } = useStore((state) => state.gauges)
-  const { veCrv } = useStore((state) => state.user.userVeCrv)
+  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
 
   return (
     <Wrapper showDetails={showDetails}>
@@ -31,7 +31,12 @@ const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) 
       </TitleWrapper>
       <MainWrapper>
         <TitleComp gaugeData={gaugeData} />
-        <VoteGaugeField newVote powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeVoteData} />
+        <VoteGaugeField
+          newVote
+          powerUsed={powerUsed}
+          userVeCrv={+userVeCrv.veCrv}
+          userGaugeVoteData={userGaugeVoteData}
+        />
       </MainWrapper>
       <Box>
         <StyledIconButton

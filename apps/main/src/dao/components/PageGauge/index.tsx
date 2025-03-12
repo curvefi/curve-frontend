@@ -16,7 +16,8 @@ type GaugeProps = {
 
 const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
-  const { gaugeMapper, gaugesLoading } = useStore((state) => state.gauges)
+  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
 
   const tableMinWidth = 21.875
   const gaugeData = gaugeMapper[gaugeAddress]
@@ -29,9 +30,9 @@ const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) =>
         <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />
         <Content>
-          <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />
+          <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />
         </Content>
-        <GaugeVotesTable gaugeAddress={gaugeAddress} tableMinWidth={tableMinWidth} />
+        <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />
       </GaugePageContainer>
     </Wrapper>
   )

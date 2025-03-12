@@ -422,6 +422,7 @@ export type UserGaugeVoteWeight = {
   userFutureVeCrv: number
   expired: boolean
   gaugeAddress: string
+  rootGaugeAddress: string
   isKilled: boolean
   lpTokenAddress: string
   network: string

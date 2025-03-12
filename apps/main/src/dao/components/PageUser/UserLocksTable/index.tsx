@@ -12,7 +12,10 @@ interface UserLocksTableProps {
 }
 
 const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
-  const { getUserLocks, userLocksMapper, userLocksSortBy, setUserLocksSortBy } = useStore((state) => state.user)
+  const getUserLocks = useStore((state) => state.user.getUserLocks)
+  const userLocksMapper = useStore((state) => state.user.userLocksMapper)
+  const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
+  const setUserLocksSortBy = useStore((state) => state.user.setUserLocksSortBy)
 
   const gridTemplateColumns = '5.375rem 1fr 10rem 8rem'
   const minWidth = 36

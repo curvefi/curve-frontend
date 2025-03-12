@@ -21,12 +21,12 @@ const ComboBoxListItem = ({
     <ItemButton
       variant="outlined"
       className={selectedGauge?.address === item.address ? 'active' : ''}
-      onClick={() => handleOnSelectChange(item.address)}
+      onClick={() => handleOnSelectChange(item.effective_address ?? item.address)}
     >
       <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
         <LabelText data-testid={`li-${testId}`}>{item.title}</LabelText>
         <Chip isMono opacity={0.5}>
-          {shortenAddress(item.address)}
+          {shortenAddress(item.effective_address ?? item.address)}
         </Chip>
       </LabelTextWrapper>
     </ItemButton>

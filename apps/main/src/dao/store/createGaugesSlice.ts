@@ -125,6 +125,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const newGaugeMapper: GaugeMapper = {}
 
         formattedGauges.gauges.forEach((gauge) => {
+          // effective_address is the sidechain gauge address
           newGaugeMapper[gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()] = {
             ...gauge,
             platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : '',
@@ -162,7 +163,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         const gaugeDataMapper: GaugeCurveApiDataMapper = Object.values(data.data).reduce((acc, gaugeData) => {
           if (gaugeData.gauge) {
-            acc[gaugeData.rootGauge?.toLowerCase() ?? gaugeData.gauge.toLowerCase()] = gaugeData
+            acc[gaugeData.gauge.toLowerCase()] = gaugeData
           }
           return acc
         }, {} as GaugeCurveApiDataMapper)
@@ -363,10 +364,10 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       const curve = get().curve
       const { provider } = useWallet.getState()
       const { getUserGaugeVoteWeights } = get().user
+      const address = get().gauges.gaugeMapper[gaugeAddress].address
 
       if (!curve) return
 
-      const address = gaugeAddress.toLowerCase()
       const { dismiss: dismissConfirm } = notify(t`Please confirm cast vote.`, 'pending')
 
       set(
@@ -427,6 +428,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           )
         }, 5000)
       } catch (error) {
+        dismissConfirm()
         console.error('Error casting vote:', error)
         set(
           produce(get(), (state) => {
@@ -456,24 +458,8 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   const fuse = new Fuse<GaugeFormattedData>(gauges, {
     ignoreLocation: true,
-    threshold: 0.3,
-    includeScore: true,
-    keys: [
-      'address',
-      'lp_token',
-      'name',
-      'platform',
-      'pool.chain',
-      'market.chain',
-      // {
-      //   name: 'metaData',
-      //   getFn: (proposal) => {
-      //     // Preprocess the metaData field
-      //     const metaData = proposal.metadata || ''
-      //     return metaData.toLowerCase()
-      //   },
-      // },
-    ],
+    threshold: 0.01,
+    keys: ['address', 'effective_address', 'title', 'platform', 'pool.chain', 'market.chain'],
   })
 
   const result = fuse.search(filterValue)

@@ -10,6 +10,7 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
 import GaugeDetailsSm from './GaugeDetailsSm'
 import TitleComp from './TitleComp'
@@ -29,8 +30,10 @@ const SmallScreenCard = ({
   userGaugeVote = false,
   addUserVote = false,
 }: Props) => {
-  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights, gaugeListSortBy } = useStore((state) => state.gauges)
-  const { veCrv } = useStore((state) => state.user.userVeCrv)
+  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
+  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const gaugeHistoryLoading =
@@ -95,7 +98,11 @@ const SmallScreenCard = ({
           <ChartWrapper>
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
-                <VoteGaugeField powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeWeightVoteData} />
+                <VoteGaugeField
+                  powerUsed={powerUsed}
+                  userVeCrv={+userVeCrv}
+                  userGaugeVoteData={userGaugeWeightVoteData}
+                />
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
@@ -121,7 +128,9 @@ const SmallScreenCard = ({
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
-            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
+            <InternalLinkButton
+              to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}
+            >{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}

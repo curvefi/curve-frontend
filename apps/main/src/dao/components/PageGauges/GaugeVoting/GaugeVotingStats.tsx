@@ -13,7 +13,8 @@ import { shortenAddress } from '@ui-kit/utils'
 import { calculateUserPowerStale } from './utils'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
-  const { userEns, userVeCrv } = useStore((state) => state.user)
+  const userEns = useStore((state) => state.user.userEns)
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
   const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
 
   const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'

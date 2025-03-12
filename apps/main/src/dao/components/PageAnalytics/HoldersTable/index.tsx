@@ -13,7 +13,10 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
 
 const TopHoldersTable = () => {
-  const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
+  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const allHoldersSortBy = useStore((state) => state.analytics.allHoldersSortBy)
+  const setAllHoldersSortBy = useStore((state) => state.analytics.setAllHoldersSortBy)
+  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
 
   const tableMinWidth = 41.875
 
