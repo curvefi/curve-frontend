@@ -95,7 +95,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
           {pricesData.base_pool && (
             <PoolParameter>
               <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
-              <DataAddressLink $noCap href={network.scanTokenPath(pricesData.base_pool)}>
+              <DataAddressLink href={network.scanTokenPath(pricesData.base_pool)}>
                 {shortenAddress(pricesData.base_pool)}
               </DataAddressLink>
             </PoolParameter>
@@ -106,7 +106,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
           </PoolParameter>
           <PoolParameter>
             <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
-            <PoolParameterLink $noCap href={network.scanTokenPath(pricesData.registry)}>
+            <PoolParameterLink href={network.scanTokenPath(pricesData.registry)}>
               {shortenAddress(pricesData.registry)}
             </PoolParameterLink>
           </PoolParameter>
@@ -144,10 +144,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      <IndentDataAddressLink
-                        $noCap
-                        href={network.scanTokenPath(pricesData.oracles[idx].oracle_address)}
-                      >
+                      <IndentDataAddressLink href={network.scanTokenPath(pricesData.oracles[idx].oracle_address)}>
                         {shortenAddress(pricesData.oracles[idx].oracle_address)}
                       </IndentDataAddressLink>
                     </Box>

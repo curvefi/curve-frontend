@@ -38,7 +38,6 @@ const InfoText = styled.p`
 
 const StyledExternalLink = styled(ExternalLink)`
   color: var(--white);
-  text-transform: none;
   &:hover {
     text-decoration: none;
   }

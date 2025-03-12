@@ -73,7 +73,6 @@ const UserDataWrapper = styled(Box)`
 const StyledInternalLink = styled(InternalLink)`
   text-decoration: none;
   color: inherit;
-  text-transform: none;
 `
 
 export default GaugeVotingStats

@@ -73,7 +73,6 @@ const Title = styled.div`
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
 `
 
 const StyledChip = styled(Chip)`

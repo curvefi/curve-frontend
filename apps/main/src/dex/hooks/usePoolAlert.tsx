@@ -64,7 +64,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
             <div>
               This pool has been deprecated. Please use the{' '}
               {redirectPathname ? (
-                <InternalLink $noCap $noStyles href={redirectPathname}>
+                <InternalLink $noStyles href={redirectPathname}>
                   {redirectText}
                 </InternalLink>
               ) : (

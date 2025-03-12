@@ -24,7 +24,6 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
       {address && (
         <span>
           <StyledExternalLink
-            $noCap
             isValid={isValidAddress}
             isNumber={isValidAddress}
             href={isValidAddress ? networks[chainId]?.scanAddressPath(address) : ''}
@@ -71,7 +70,6 @@ const CopyIconButton = styled(IconButton)<{ isValid: boolean }>`
 const StyledExternalLink = styled(ExternalLink)<{ isValid: boolean }>`
   color: inherit;
   font-size: var(--font-size-2);
-  text-transform: inherit;
 
   svg {
     padding-top: 0.3125rem;

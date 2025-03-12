@@ -15,7 +15,7 @@ const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => (
     <PendingWrapper>
       <PendingMessage>{pendingMessage}</PendingMessage>
       <StyledPendingSpinner isDisabled size={24} />
-      <Transaction $noCap variant={'contained'} href={txLink}>
+      <Transaction variant={'contained'} href={txLink}>
         <p>Transaction:</p>
         {shortenAddress(transactionHash)}
         <StyledIcon name={'Launch'} size={16} />
@@ -53,7 +53,6 @@ const Transaction = styled(ExternalLink)`
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
   color: var(--page--text-color);
-  text-transform: none;
   text-decoration: none;
   background-color: var(--page--background-color);
   padding: var(--spacing-2);

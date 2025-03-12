@@ -6,7 +6,6 @@ export type LinkProps = {
   className?: string
   active?: boolean
   isDarkBg?: boolean
-  $noCap?: boolean
   $noStyles?: boolean
   size?: LinkSize
   variant?: LinkVariant
@@ -18,11 +17,6 @@ export const linkStyles = css<LinkProps>`
   color: var(--link--color);
   font: var(--link--font-weight) var(--link--font);
   text-decoration: underline;
-  ${({ $noCap }) => {
-    if (!$noCap) {
-      return `text-transform: uppercase;`
-    }
-  }}
 
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 

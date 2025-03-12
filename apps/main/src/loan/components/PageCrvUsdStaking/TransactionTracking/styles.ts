@@ -33,7 +33,6 @@ export const TransactionLink = styled(ExternalLink)`
   color: var(--primary-400);
   text-decoration: none;
   border: none;
-  text-transform: none;
 `
 
 export const IconWrapper = styled.div`

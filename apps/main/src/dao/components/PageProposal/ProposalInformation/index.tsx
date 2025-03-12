@@ -29,7 +29,7 @@ const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationPro
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink $noCap href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
+        <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
           {shortenAddress(proposal?.creator)}
         </StyledInternalLink>
       </Box>
@@ -71,7 +71,6 @@ const StyledInternalLink = styled(InternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  text-transform: none;
 
   &:hover {
     cursor: pointer;

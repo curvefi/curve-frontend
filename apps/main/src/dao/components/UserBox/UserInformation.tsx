@@ -115,7 +115,6 @@ const StyledInternalLink = styled(InternalLink)`
   color: inherit;
   font-weight: 500;
   text-decoration: none;
-  text-transform: none;
 `
 
 const UserIdentifier = styled.h4`

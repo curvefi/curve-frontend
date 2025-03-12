@@ -62,7 +62,6 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
             {(gaugeVote.weight / 100).toFixed(2)}%
           </TableData>
           <TableDataLink
-            $noCap
             onClick={(e) => {
               e.preventDefault()
               push(getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`))

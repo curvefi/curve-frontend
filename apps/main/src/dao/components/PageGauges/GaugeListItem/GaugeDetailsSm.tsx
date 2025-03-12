@@ -87,7 +87,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
-          <StyledExternalLink $noCap href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
+          <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
             {shortenAddress(gaugeData.address)}
           </StyledExternalLink>
         </StatsRow>
@@ -126,7 +126,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
           <StatTitle>{t`Contract Address`}</StatTitle>
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
-              <StyledExternalLink $noCap href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.pool.address)}>
+              <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.pool.address)}>
                 {shortenAddress(gaugeData.pool.address)}
               </StyledExternalLink>
             </Box>
@@ -178,7 +178,6 @@ const StyledExternalLink = styled(ExternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  text-transform: none;
   text-decoration: none;
 
   &:hover {

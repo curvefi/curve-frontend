@@ -93,7 +93,6 @@ const CopyIconButton = styled(IconButton)`
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   font-size: var(--font-size-2);
-  text-transform: inherit;
   text-decoration: none;
 
   svg {

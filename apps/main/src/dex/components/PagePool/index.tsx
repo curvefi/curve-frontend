@@ -373,7 +373,6 @@ const Wrapper = styled(AppPageFormContainer)<{ chartExpanded: boolean }>`
 
 const StyledExternalLink = styled(ExternalLink)`
   color: var(--nav--page--color);
-  text-transform: none;
 `
 
 const Title = styled(TextEllipsis)`

@@ -33,7 +33,7 @@ const CurrencyReservesContent = ({
       />
 
       <Box grid gridGap={1}>
-        <TokenLabelLink $noCap $noStyles href={network.scanTokenPath(tokenAddress)}>
+        <TokenLabelLink $noStyles href={network.scanTokenPath(tokenAddress)}>
           <ExternalLinkToken>{token}</ExternalLinkToken>{' '}
           {haveSameTokenName ? (
             <Chip opacity={0.7} size="xs">
@@ -83,7 +83,6 @@ const TokenLabelLink = styled(ExternalLink)`
   display: inline-flex;
   grid-gap: var(--spacing-1);
   text-decoration: none;
-  text-transform: initial;
 `
 
 export const TokenBalancePercent = styled(Chip)`
@@ -105,7 +104,6 @@ export const ExternalLinkToken = styled(TextEllipsis)`
 
 export const TokenLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
 `
 
 export default CurrencyReservesContent

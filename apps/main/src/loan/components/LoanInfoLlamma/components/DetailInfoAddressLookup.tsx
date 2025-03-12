@@ -18,7 +18,7 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
   <StyledStats {...props}>
     <strong>{title}</strong>
     <span>
-      <StyledExternalLink $noCap href={networks[chainId]?.scanAddressPath(address)}>
+      <StyledExternalLink href={networks[chainId]?.scanAddressPath(address)}>
         {shortenAddress(address)}
         <Icon name="Launch" size={16} />
       </StyledExternalLink>
@@ -48,7 +48,6 @@ const CopyIconButton = styled(IconButton)`
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   font-size: var(--font-size-2);
-  text-transform: inherit;
 
   svg {
     padding-top: 0.3125rem;
