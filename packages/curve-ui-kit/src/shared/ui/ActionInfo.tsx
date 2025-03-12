@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,8 +19,8 @@ type ComponentSize = 'small' | 'medium' | 'large'
 type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
-  /** Address to display and copy */
-  address: string
+  /** Primary value to display and copy */
+  value: string
   /** URL to navigate to when clicking the external link button */
   linkAddress: string
   /** Message displayed in the snackbar when the address is copied */
@@ -41,11 +41,11 @@ const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingS
   large: 'headingSBold',
 }
 
-const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }: ActionInfoProps) => {
+const ActionInfo = ({ label, value, linkAddress, size = 'medium', copiedText }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
-    copyToClipboard(address)
+    copyToClipboard(value)
     open()
   }
 
@@ -54,13 +54,16 @@ const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }
       <Typography variant={labelSize[size]} color="textSecondary">
         {label}
       </Typography>
+
       <Stack direction="row" alignItems="center">
         <Typography variant={addressSize[size]} color="textPrimary" sx={{ marginRight: Spacing.sm }}>
-          {shortenAddress(address)}
+          {value}
         </Typography>
+
         <IconButton size="small" onClick={copyValue} color="primary">
           <ContentCopy />
         </IconButton>
+
         <IconButton component={Link} href={linkAddress} target="_blank" rel="noopener" size="small" color="primary">
           <CallMade />
         </IconButton>
@@ -69,7 +72,7 @@ const ActionInfo = ({ label, address, linkAddress, size = 'medium', copiedText }
       <Snackbar open={isOpen} onClose={close} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
           <AlertTitle>{copiedText}</AlertTitle>
-          {address}
+          {value}
         </Alert>
       </Snackbar>
     </Stack>

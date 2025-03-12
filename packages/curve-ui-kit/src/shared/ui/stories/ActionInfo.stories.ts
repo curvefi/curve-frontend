@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { shortenAddress } from '@ui-kit/utils'
 import ActionInfo from '../ActionInfo'
 
 const meta: Meta<typeof ActionInfo> = {
@@ -9,9 +10,9 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'Label text displayed on the left side',
     },
-    address: {
+    value: {
       control: 'text',
-      description: 'The address to display and copy',
+      description: 'Primary value to display and copy',
     },
     linkAddress: {
       control: 'text',
@@ -25,7 +26,7 @@ const meta: Meta<typeof ActionInfo> = {
   },
   args: {
     label: 'Contract',
-    address: '0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     linkAddress: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
     size: 'small',
   },
