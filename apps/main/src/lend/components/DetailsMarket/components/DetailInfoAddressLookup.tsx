@@ -26,7 +26,6 @@ const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) =
           <StyledExternalLink
             $noCap
             isValid={isValidAddress}
-            isMono={isValidAddress}
             isNumber={isValidAddress}
             href={isValidAddress ? networks[chainId]?.scanAddressPath(address) : ''}
           >

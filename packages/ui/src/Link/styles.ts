@@ -6,7 +6,6 @@ export type LinkProps = {
   className?: string
   active?: boolean
   isDarkBg?: boolean
-  isMono?: boolean
   $noCap?: boolean
   $noStyles?: boolean
   size?: LinkSize
@@ -75,12 +74,6 @@ export const linkStyles = css<LinkProps>`
           text-decoration-color: var(--link_light--hover--color);
         }
       `
-    }
-  }}
-
-  ${({ isMono }) => {
-    if (isMono) {
-      return `font-family: var(--font-mono);`
     }
   }}
 
