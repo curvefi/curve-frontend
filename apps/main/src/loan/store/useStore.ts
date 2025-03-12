@@ -5,6 +5,7 @@ import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
 import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
 import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/loan/store/createCampaignRewardsSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
 import createCollateralListSlice, { CollateralListSlice } from '@/loan/store/createCollateralListSlice'
 import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
@@ -49,7 +50,8 @@ export type State = CacheSlice &
   IntegrationsSlice &
   OhlcChartSlice &
   PegKeepersSlice &
-  ScrvUsdSlice
+  ScrvUsdSlice &
+  CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
@@ -73,6 +75,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createOhlcChartSlice(set, get),
   ...createPegKeepersSlice(set, get),
   ...createScrvUsdSlice(set, get),
+  ...createCampaignRewardsSlice(set, get),
 })
 
 // cache all items in CacheSlice store

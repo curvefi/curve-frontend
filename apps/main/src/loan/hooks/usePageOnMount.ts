@@ -25,6 +25,8 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const initCampaignRewards = useStore((state) => state.campaigns.initCampaignRewards)
+  const initiated = useStore((state) => state.campaigns.initiated)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -270,6 +272,15 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!curve) return
+
+    if (!initiated) {
+      initCampaignRewards(curve.chainId)
+    }
+  }, [initCampaignRewards, curve, initiated])
 
   return {
     pageLoaded: connectState.status === 'success',

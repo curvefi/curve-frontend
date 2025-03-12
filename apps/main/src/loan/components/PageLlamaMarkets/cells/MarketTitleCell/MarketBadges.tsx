@@ -30,6 +30,7 @@ const getRewardsDescription = ({ action, description, multiplier }: PoolRewards)
       lp: description ?? t`Earn points by providing liquidity.`,
       supply: t`Earn points by supplying liquidity.`,
       borrow: t`Earn points by borrowing.`,
+      loan: t`Earn points by borrowing.`,
     }[action]
   }`
 
