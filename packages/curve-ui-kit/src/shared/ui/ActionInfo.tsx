@@ -1,3 +1,4 @@
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
 import { Stack } from '@mui/material'
@@ -11,9 +12,10 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
 type ComponentSize = 'small' | 'medium' | 'large'
 
@@ -22,6 +24,8 @@ type ActionInfoProps = {
   label: string
   /** Primary value to display and copy */
   value: string
+  /** Previous value (if needed for comparison) */
+  prevValue?: string
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Whether or not the value can be copied */
@@ -32,19 +36,25 @@ type ActionInfoProps = {
   size?: ComponentSize
 }
 
-const labelSize: Record<ComponentSize, 'bodyXsRegular' | 'bodyMRegular'> = {
+const labelSize = {
   small: 'bodyXsRegular',
   medium: 'bodyMRegular',
   large: 'bodyMRegular',
-}
+} as const satisfies Record<ComponentSize, TypographyVariantKey>
 
-const addressSize: Record<ComponentSize, 'bodyXsBold' | 'highlightM' | 'headingSBold'> = {
+const prevValueSize = {
+  small: 'bodySRegular',
+  medium: 'bodyMRegular',
+  large: 'bodyMRegular',
+} as const satisfies Record<ComponentSize, TypographyVariantKey>
+
+const valueSize = {
   small: 'bodyXsBold',
   medium: 'highlightM',
   large: 'headingSBold',
-}
+} as const satisfies Record<ComponentSize, TypographyVariantKey>
 
-const ActionInfo = ({ label, value, link, size = 'medium', copy = false, copiedTitle }: ActionInfoProps) => {
+const ActionInfo = ({ label, prevValue, value, link, size = 'medium', copy = false, copiedTitle }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
@@ -53,13 +63,29 @@ const ActionInfo = ({ label, value, link, size = 'medium', copy = false, copiedT
   }
 
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.md} justifyContent="space-between">
-      <Typography variant={labelSize[size]} color="textSecondary">
+    <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+      <Typography flexGrow={1} variant={labelSize[size]} color="textSecondary">
         {label}
       </Typography>
 
-      <Stack direction="row" alignItems="center">
-        <Typography variant={addressSize[size]} color="textPrimary" sx={{ marginRight: Spacing.sm }}>
+      {prevValue && (
+        <Stack direction="row" alignItems="center">
+          <Typography variant={prevValueSize[size]} color="textSecondary">
+            {prevValue}
+          </Typography>
+
+          <ArrowForwardIcon
+            sx={{
+              width: IconSize.sm,
+              height: IconSize.sm,
+              color: (t) => t.palette.text.primary,
+            }}
+          />
+        </Stack>
+      )}
+
+      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        <Typography variant={valueSize[size]} color="textPrimary" sx={{ marginRight: Spacing.sm }}>
           {value}
         </Typography>
 

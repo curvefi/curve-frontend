@@ -14,6 +14,10 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'Primary value to display and copy',
     },
+    prevValue: {
+      control: 'text',
+      description: 'Previous value (if needed for comparison)',
+    },
     link: {
       control: 'text',
       description: 'The URL to navigate to when clicking the external link button',
@@ -64,6 +68,20 @@ export const Medium: Story = {
 export const Large: Story = {
   args: {
     size: 'large',
+  },
+}
+
+export const WithPreviousValue: Story = {
+  args: {
+    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows comparison between previous and current values',
+      },
+    },
   },
 }
 
