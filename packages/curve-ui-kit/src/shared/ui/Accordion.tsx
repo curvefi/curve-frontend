@@ -65,8 +65,7 @@ export const Accordion = ({
         aria-controls={id}
         sx={{
           paddingBlock: Spacing.sm,
-          paddingInlineEnd: Spacing.sm,
-          paddingInlineStart: ghost ? 0 : Spacing.sm,
+          paddingInline: ghost ? 0 : Spacing.sm,
           ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
           transition: `background-color ${TransitionFunction}`,
 
