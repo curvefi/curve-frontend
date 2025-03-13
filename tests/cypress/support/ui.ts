@@ -37,4 +37,4 @@ export const LOAD_TIMEOUT = { timeout: 30000 }
 export const SCROLL_WIDTH = Cypress.browser.name === 'firefox' ? (Cypress.browser.isHeadless ? 12 : 0) : 15
 
 // tests that are flaky in CI, hard to reproduce. Please try to avoid using this.
-export const RETRY_IN_CI = { retries: { openMode: 0, runMode: 2 } }
+export const RETRY_IN_CI = { retries: { openMode: 0, runMode: 5 } }

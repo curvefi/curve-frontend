@@ -1,7 +1,6 @@
-import { useRef } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import TextField from '@mui/material/TextField'
-import useDebounce from '@ui-kit/hooks/useDebounce'
+import { useSearchDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -9,22 +8,15 @@ type Props = {
   debounceMs?: number
 }
 
-export const SearchInput = ({ onSearch, debounceMs = 200 }: Props) => {
-  const lastSearch = useRef('')
+const defaultSearch = ''
 
-  const [search, setSearch] = useDebounce('', debounceMs, (value) => {
-    const trimmed = value.trim()
-    if (trimmed !== lastSearch.current) {
-      lastSearch.current = trimmed
-      onSearch(trimmed)
-    }
-  })
-
+export const SearchInput = ({ onSearch }: Props) => {
+  const [search, setSearch] = useSearchDebounce<string>(defaultSearch, onSearch)
   return (
     <TextField
       fullWidth
       placeholder={t`Search name or paste address`}
-      onChange={(e) => setSearch(e.target.value)}
+      onChange={(e) => setSearch(e.target.value.trim())}
       slotProps={{ input: { startAdornment: <SearchIcon /> } }}
       variant="outlined"
       value={search}

@@ -1,10 +1,12 @@
 import { get } from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
+import type { SliderProps } from '@mui/material/Slider/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { useSearchDebounce } from '@ui-kit/hooks/useDebounce'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 /**
@@ -15,6 +17,8 @@ const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], fi
   data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
 
 type Range = [number, number]
+
+type OnSliderChange = NonNullable<SliderProps['onChange']>
 
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
@@ -36,8 +40,15 @@ export const RangeSliderFilter = <T extends unknown>({
 }) => {
   const id = cleanColumnId(field)
   const max = useMemo(() => Math.ceil(+getMaxValueFromData(data, field).toPrecision(3) * 10) / 10, [data, field])
-  const [range, setRange] = useState(() => (columnFilters[id] ?? [0, max]) as Range)
   const step = useMemo(() => Math.ceil(+max.toPrecision(2) / 100), [max])
+
+  const [range, setRange] = useSearchDebounce(
+    (columnFilters[id] ?? [0, max]) as Range,
+    useCallback((newRange: Range) => setColumnFilter(id, newRange as Range), [id, setColumnFilter]),
+  )
+
+  const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as Range), [setRange])
+
   return (
     // this is not a real select, but we reuse the component so the design is correct
     <Select
@@ -45,8 +56,6 @@ export const RangeSliderFilter = <T extends unknown>({
       size="small"
       displayEmpty
       data-testid={`minimum-slider-filter-${id}`}
-      // only actually apply the filter once we finished moving the slider
-      onChange={() => setColumnFilter(id, range)}
       renderValue={() => (
         <Typography variant="bodyMRegular">
           {`${title}: `}
@@ -65,7 +74,7 @@ export const RangeSliderFilter = <T extends unknown>({
           aria-label={title}
           getAriaValueText={format}
           value={range}
-          onChange={(_, newRange) => setRange(newRange as Range)}
+          onChange={onChange}
           min={0}
           max={max}
           step={step}

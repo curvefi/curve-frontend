@@ -18,6 +18,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
+// todo: rename to LlamaMarketsTable
 export const LendingMarketsTable = ({
   onReload,
   data,

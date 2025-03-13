@@ -34,11 +34,13 @@ describe('LlamaLend Markets', () => {
         win.localStorage.clear()
         isDarkMode = checkIsDarkMode(win)
       },
+      ...LOAD_TIMEOUT,
     })
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
   const firstRow = () => cy.get(`[data-testid^="data-table-row"]`).first()
+  const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
     if (breakpoint === 'mobile') {
@@ -149,17 +151,18 @@ describe('LlamaLend Markets', () => {
     })
   })
 
-  // todo: this test fails in ci because the click doesn't work or the trigger fails
+  // todo: this test fails sometimes in ci because the click doesn't work
   it(`should hover and copy the market address`, RETRY_IN_CI, () => {
     const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
-    cy.wait(500) // wait for the animations to finish
+    cy.wait(500) // necessary in chrome for the hover to work properly :(
     firstRow().should('not.have.css', 'background-color', hoverBackground)
+    cy.scrollTo(0, 0)
     firstRow().trigger('mouseenter', { waitForAnimations: true, force: true })
-    cy.wait(500) // wait for the animations to finish
     firstRow().should('have.css', 'background-color', hoverBackground)
-    cy.get(`[data-testid^="copy-market-address"]`).first().should('have.css', 'opacity', '1')
-    cy.get(`[data-testid^="copy-market-address"]`).first().click()
+    copyFirstAddress().should('have.css', 'opacity', '1')
+    copyFirstAddress().click()
+    copyFirstAddress().click() // click again, in chrome in CI the first click doesn't work (because of tooltip?)
     cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
   })
 

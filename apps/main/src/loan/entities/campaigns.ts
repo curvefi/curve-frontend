@@ -10,7 +10,6 @@ export type PoolRewards = {
   description: string | null
 }
 
-console.log(campaigns)
 const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
   (result, { pools }: CampaignRewardsItem) => ({
     ...result,
