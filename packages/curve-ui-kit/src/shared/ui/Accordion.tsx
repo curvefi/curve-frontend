@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Box, ButtonBase, Collapse, Stack, Typography, type Theme } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -19,8 +19,8 @@ const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 
 type Props = {
-  /** The title text displayed in the accordion header */
-  title: string
+  /** The title displayed in the accordion header */
+  title: ReactNode
   /** Optional icon to display before the title */
   icon?: ReactNode
   /** Whether to render the accordion without a border */
@@ -55,7 +55,7 @@ export const Accordion = ({
   children,
 }: Props) => {
   const [isOpen, , , toggle] = useSwitch(defaultExpanded)
-  const id = `accordion-content-${title.replace(/\s+/g, '-').toLowerCase()}`
+  const id = `accordion-${useId()}`
 
   return (
     <Stack>
@@ -105,16 +105,22 @@ export const Accordion = ({
             </Box>
           )}
 
-          <Typography
-            flexGrow={1}
-            variant={titleVariants[size]}
-            color="textSecondary"
-            sx={{
-              textAlign: 'start',
-            }}
-          >
-            {title}
-          </Typography>
+          {typeof title === 'string' ? (
+            <Typography
+              flexGrow={1}
+              variant={titleVariants[size]}
+              color="textSecondary"
+              sx={{
+                textAlign: 'start',
+              }}
+            >
+              {title}
+            </Typography>
+          ) : (
+            <Box display="flex" flexGrow={1}>
+              {title}
+            </Box>
+          )}
 
           {info}
 

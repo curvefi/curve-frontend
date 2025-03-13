@@ -6,14 +6,15 @@ import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Accordion } from '../Accordion'
+import { WithSkeleton } from '../WithSkeleton'
 
 const meta: Meta<typeof Accordion> = {
   title: 'UI Kit/Widgets/Accordion',
   component: Accordion,
   argTypes: {
     title: {
-      control: 'text',
-      description: 'Title text displayed in the accordion header',
+      control: { disable: true },
+      description: 'Title displayed in the accordion header (string or ReactNode)',
     },
     icon: {
       control: { disable: true },
@@ -115,6 +116,44 @@ export const WithInfo: Story = {
     docs: {
       description: {
         story: 'Accordion with additional information in the header',
+      },
+    },
+  },
+}
+
+export const WithReactNodeTitle: Story = {
+  args: {
+    title: (
+      <WithSkeleton loading={false}>
+        <Typography variant="highlightM" color="textPrimary">
+          1 crvUSD = 1.0234 scrvUSD
+        </Typography>
+      </WithSkeleton>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion with a ReactNode title containing custom typography',
+      },
+    },
+  },
+}
+
+export const WithLoadingTitle: Story = {
+  args: {
+    title: (
+      <WithSkeleton loading={true}>
+        <Typography variant="highlightM" color="textPrimary">
+          1 crvUSD = 1.0234 scrvUSD
+        </Typography>
+      </WithSkeleton>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion with a loading state in the title',
       },
     },
   },
