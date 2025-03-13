@@ -16,7 +16,7 @@ export const SearchInput = ({ onSearch }: Props) => {
     <TextField
       fullWidth
       placeholder={t`Search name or paste address`}
-      onChange={(e) => setSearch(e.target.value.trim())}
+      onChange={(e) => setSearch(e.target.value)}
       slotProps={{ input: { startAdornment: <SearchIcon /> } }}
       variant="outlined"
       value={search}

@@ -79,6 +79,9 @@ export function useSearchDebounce<T>(defaultValue: T, callback: (value: T) => vo
   const lastValue = useRef(defaultValue)
   const debounceCallback = useCallback(
     (value: T) => {
+      if (typeof value === 'string') {
+        value = value.trim() as unknown as T
+      }
       if (value !== lastValue.current) {
         lastValue.current = value
         callback(value)
