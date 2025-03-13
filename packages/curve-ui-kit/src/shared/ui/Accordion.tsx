@@ -64,12 +64,8 @@ export const Accordion = ({
         aria-expanded={isOpen}
         aria-controls={id}
         sx={{
-          paddingBlock: Spacing.sm,
-          paddingInlineStart: Spacing.xs,
-          paddingInlineEnd: Spacing.sm,
-
+          padding: Spacing.sm,
           ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
-
           transition: `background-color ${TransitionFunction}`,
 
           // Render border insize without layout shift on hover
@@ -90,7 +86,7 @@ export const Accordion = ({
           },
         }}
       >
-        <Stack flexGrow={1} direction="row" alignItems="center" gap={Spacing.xs}>
+        <Stack flexGrow={1} direction="row" alignItems="center" gap={Spacing.sm}>
           {icon && (
             <Box
               display="flex"
