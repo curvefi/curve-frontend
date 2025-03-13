@@ -41,9 +41,10 @@ export const RangeSliderFilter = <T extends unknown>({
   const id = cleanColumnId(field)
   const max = useMemo(() => Math.ceil(+getMaxValueFromData(data, field).toPrecision(3) * 10) / 10, [data, field])
   const step = useMemo(() => Math.ceil(+max.toPrecision(2) / 100), [max])
+  const defaultValue = useMemo(() => (columnFilters[id] ?? [0, max]) as Range, [columnFilters, id, max])
 
   const [range, setRange] = useSearchDebounce(
-    (columnFilters[id] ?? [0, max]) as Range,
+    defaultValue,
     useCallback((newRange: Range) => setColumnFilter(id, newRange as Range), [id, setColumnFilter]),
   )
 
