@@ -9,6 +9,7 @@ import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
 import ModalDialog from '@ui/Dialog'
+import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import { t } from '@ui-kit/lib/i18n'
 
 const ComboBoxGauges = ({
@@ -29,7 +30,7 @@ const ComboBoxGauges = ({
 
   const { userAddress, userGaugeVoteWeightsMapper } = useStore((state) => state.user)
   const { selectedGauge, setSelectedGauge, setStateByKey, gaugeMapper } = useStore((state) => state.gauges)
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useIsMobile()
 
   const userGaugeVoteWeights = userGaugeVoteWeightsMapper[userAddress ?? '']
   const gauges = Object.values(gaugeMapper)

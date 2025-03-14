@@ -14,6 +14,7 @@ import Checkbox from '@ui/Checkbox'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Chip } from '@ui/Typography'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
+import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { type Address, filterTokens, shortenAddress } from '@ui-kit/utils'
@@ -45,7 +46,7 @@ const SelectTokenButton = ({
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useIsMobile()
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
 
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)

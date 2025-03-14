@@ -7,9 +7,10 @@ import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
-import { getIsMobile, getPageWidthClassName, isSuccess } from '@ui/utils'
+import { getPageWidthClassName, isSuccess } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -31,17 +32,17 @@ export const App = ({ children }: { children: ReactNode }) => {
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
   const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
+  const isMobile = useIsMobile()
 
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
-    updateGlobalStoreByKey('isMobile', getIsMobile())
     if (window.innerWidth) setPageWidth(getPageWidthClassName(window.innerWidth))
-  }, [setPageWidth, updateGlobalStoreByKey])
+  }, [setPageWidth])
 
   useEffect(() => {
     if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth} ${getIsMobile() ? '' : 'scrollSmooth'}`
+    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
     document.body.setAttribute('data-theme', theme)
   })
 

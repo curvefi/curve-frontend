@@ -11,6 +11,7 @@ import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
+import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
 type PoolListProps = {
@@ -42,7 +43,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
 
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useIsMobile()
   const searchedTerms = useStore((state) => state.poolList.searchedTerms)
 
   const { quickViewValue, onClick } = poolListProps ?? {}

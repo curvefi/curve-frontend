@@ -9,6 +9,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils/responsive'
+import useIsMobile from '@ui-kit/hooks/useIsMobile'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
   footerContent?: ReactNode
@@ -37,7 +38,7 @@ const ModalDialog = ({
   const { titleProps } = useDialog(props, modalRef)
   usePreventScroll({ isDisabled: false }) // prevent scrolling while modal is open
 
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useIsMobile()
   const isSmUp = useStore((state) => state.isSmUp)
 
   const { buttonProps: closeButtonProps } = useButton(
