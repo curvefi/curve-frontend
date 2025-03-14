@@ -7,8 +7,6 @@ import Page from '@/loan/layout'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import type { PageWidthClassName } from '@/loan/types/loan.types'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -32,6 +30,12 @@ export const App = ({ children }: { children: ReactNode }) => {
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth])
+
+  useEffect(() => {
+    if (!pageWidth) return
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
+    document.body.setAttribute('data-theme', theme)
+  }, [pageWidth, theme])
 
   // init app
   useEffect(() => {
@@ -73,7 +77,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <BodyClassHandler pageWidth={pageWidth} theme={theme} />
         {appLoaded && (
           <QueryProvider persister={persister} queryClient={queryClient}>
             <Page>{children}</Page>
@@ -82,19 +85,4 @@ export const App = ({ children }: { children: ReactNode }) => {
       </ThemeProvider>
     </div>
   )
-}
-
-const BodyClassHandler = ({ pageWidth, theme }: { pageWidth: PageWidthClassName | null; theme: string }) => {
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
-  useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
-      .replace(/ +(?= )/g, '')
-      .trim()
-
-    document.body.setAttribute('data-theme', theme)
-  }, [isMobile, pageWidth, theme])
-
-  return null
 }

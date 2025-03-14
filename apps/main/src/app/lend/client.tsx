@@ -7,8 +7,6 @@ import Page from '@/lend/layout'
 import networks from '@/lend/networks'
 import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
-import type { PageWidthClassName } from '@/lend/types/lend.types'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { OverlayProvider } from '@react-aria/overlays'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -27,6 +25,12 @@ export const App = ({ children }: { children: ReactNode }) => {
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth])
+
+  useEffect(() => {
+    if (!pageWidth) return
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
+    document.body.setAttribute('data-theme', theme)
+  }, [pageWidth, theme])
 
   // init app
   useEffect(() => {
@@ -61,7 +65,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <BodyClassHandler pageWidth={pageWidth} theme={theme} />
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
@@ -72,19 +75,4 @@ export const App = ({ children }: { children: ReactNode }) => {
       </ThemeProvider>
     </div>
   )
-}
-
-const BodyClassHandler = ({ pageWidth, theme }: { pageWidth: PageWidthClassName | null; theme: string }) => {
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
-  useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
-      .replace(/ +(?= )/g, '')
-      .trim()
-
-    document.body.setAttribute('data-theme', theme)
-  }, [isMobile, pageWidth, theme])
-
-  return null
 }

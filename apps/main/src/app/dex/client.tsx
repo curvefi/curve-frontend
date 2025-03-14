@@ -5,9 +5,8 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import Page from '@/dex/layout/default'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import { CurveApi, type PageWidthClassName } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import GlobalStyle from '@/globalStyle'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { OverlayProvider } from '@react-aria/overlays'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -52,6 +51,12 @@ export const App = ({ children }: { children: ReactNode }) => {
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
+
+  useEffect(() => {
+    if (!pageWidth) return
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
+    document.body.setAttribute('data-theme', theme)
+  }, [pageWidth, theme])
 
   useEffect(() => {
     ;(async () => {
@@ -113,7 +118,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <BodyClassHandler pageWidth={pageWidth} theme={theme} />
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
@@ -124,19 +128,4 @@ export const App = ({ children }: { children: ReactNode }) => {
       </ThemeProvider>
     </div>
   )
-}
-
-const BodyClassHandler = ({ pageWidth, theme }: { pageWidth: PageWidthClassName | null; theme: string }) => {
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
-  useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
-      .replace(/ +(?= )/g, '')
-      .trim()
-
-    document.body.setAttribute('data-theme', theme)
-  }, [isMobile, pageWidth, theme])
-
-  return null
 }

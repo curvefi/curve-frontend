@@ -5,9 +5,7 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import Page from '@/dao/layout'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import type { PageWidthClassName } from '@/dao/types/dao.types'
 import GlobalStyle from '@/globalStyle'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { OverlayProvider } from '@react-aria/overlays'
 import { getPageWidthClassName, isSuccess } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -39,6 +37,12 @@ export const App = ({ children }: { children: ReactNode }) => {
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setPageWidth(getPageWidthClassName(window.innerWidth))
   }, [setPageWidth])
+
+  useEffect(() => {
+    if (!pageWidth) return
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
+    document.body.setAttribute('data-theme', theme)
+  }, [pageWidth, theme])
 
   useEffect(() => {
     const handleScrollListener = () => {
@@ -102,7 +106,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <BodyClassHandler pageWidth={pageWidth} theme={theme} />
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
@@ -113,19 +116,4 @@ export const App = ({ children }: { children: ReactNode }) => {
       </ThemeProvider>
     </div>
   )
-}
-
-const BodyClassHandler = ({ pageWidth, theme }: { pageWidth: PageWidthClassName | null; theme: string }) => {
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
-  useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
-      .replace(/ +(?= )/g, '')
-      .trim()
-
-    document.body.setAttribute('data-theme', theme)
-  }, [isMobile, pageWidth, theme])
-
-  return null
 }
