@@ -16,10 +16,6 @@ export function shortenTokenName(token: string) {
 export const isValidAddress = (address: string) =>
   address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
 
-export function removeExtraSpaces(str: string) {
-  return str.replace(/ +(?= )/g, '').trim()
-}
-
 export function isHighSlippage(slippage: number, maxSlippage: string) {
   return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
 }

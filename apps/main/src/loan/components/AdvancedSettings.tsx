@@ -1,6 +1,7 @@
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { delayAction } from '@/loan/utils/helpers'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -13,7 +14,6 @@ import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import { t } from '@ui-kit/lib/i18n'
 
 type FormValues = {
@@ -55,7 +55,7 @@ function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: str
  */
 export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
-  const isMobile = useIsMobile()
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
 
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 

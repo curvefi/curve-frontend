@@ -7,10 +7,10 @@ import Page from '@/loan/layout'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { removeExtraSpaces } from '@/loan/utils/helpers'
+import type { PageWidthClassName } from '@/loan/types/loan.types'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -26,19 +26,12 @@ export const App = ({ children }: { children: ReactNode }) => {
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const theme = useUserProfileStore((state) => state.theme)
-  const isMobile = useIsMobile()
 
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth])
-
-  // update on every state change
-  useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`)
-  })
 
   // init app
   useEffect(() => {
@@ -80,6 +73,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
+        <BodyClassHandler pageWidth={pageWidth} theme={theme} />
         {appLoaded && (
           <QueryProvider persister={persister} queryClient={queryClient}>
             <Page>{children}</Page>
@@ -88,4 +82,19 @@ export const App = ({ children }: { children: ReactNode }) => {
       </ThemeProvider>
     </div>
   )
+}
+
+const BodyClassHandler = ({ pageWidth, theme }: { pageWidth: PageWidthClassName | null; theme: string }) => {
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+
+  useEffect(() => {
+    if (!pageWidth) return
+    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
+      .replace(/ +(?= )/g, '')
+      .trim()
+
+    document.body.setAttribute('data-theme', theme)
+  }, [isMobile, pageWidth, theme])
+
+  return null
 }

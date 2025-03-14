@@ -5,13 +5,12 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import Page from '@/dex/layout/default'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import { CurveApi } from '@/dex/types/main.types'
-import { removeExtraSpaces } from '@/dex/utils'
+import { CurveApi, type PageWidthClassName } from '@/dex/types/main.types'
 import GlobalStyle from '@/globalStyle'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { OverlayProvider } from '@react-aria/overlays'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -37,7 +36,6 @@ export const App = ({ children }: { children: ReactNode }) => {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const network = useStore((state) => state.networks.networks[chainId])
   const theme = useUserProfileStore((state) => state.theme)
-  const isMobile = useIsMobile()
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -54,12 +52,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
-
-  useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`)
-    document.body.setAttribute('data-theme', theme)
-  })
 
   useEffect(() => {
     ;(async () => {
@@ -121,6 +113,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
+        <BodyClassHandler pageWidth={pageWidth} theme={theme} />
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
@@ -131,4 +124,19 @@ export const App = ({ children }: { children: ReactNode }) => {
       </ThemeProvider>
     </div>
   )
+}
+
+const BodyClassHandler = ({ pageWidth, theme }: { pageWidth: PageWidthClassName | null; theme: string }) => {
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+
+  useEffect(() => {
+    if (!pageWidth) return
+    document.body.className = `theme-${theme} ${pageWidth} ${isMobile ? '' : 'scrollSmooth'}`
+      .replace(/ +(?= )/g, '')
+      .trim()
+
+    document.body.setAttribute('data-theme', theme)
+  }, [isMobile, pageWidth, theme])
+
+  return null
 }

@@ -12,10 +12,6 @@ export function isNumber<T>(val: T) {
 
 export const isDevelopment = process.env.NODE_ENV === 'development'
 
-export function removeExtraSpaces(str: string) {
-  return str.replace(/ +(?= )/g, '').trim()
-}
-
 export function isHighSlippage(slippage: number, maxSlippage: string) {
   return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
 }

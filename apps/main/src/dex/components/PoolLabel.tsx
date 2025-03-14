@@ -7,11 +7,11 @@ import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
-import useIsMobile from '@ui-kit/hooks/useIsMobile'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
 type PoolListProps = {
@@ -43,7 +43,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
 
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const isMobile = useIsMobile()
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const searchedTerms = useStore((state) => state.poolList.searchedTerms)
 
   const { quickViewValue, onClick } = poolListProps ?? {}
