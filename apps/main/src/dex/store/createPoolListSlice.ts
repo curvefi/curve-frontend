@@ -13,7 +13,6 @@ import type {
 } from '@/dex/components/PagePoolList/types'
 import { parseSearchTermResults } from '@/dex/components/PagePoolList/utils'
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
-import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -24,6 +23,7 @@ import {
   TvlMapper,
   UserPoolListMapper,
   VolumeMapper,
+  type ValueMapperCached,
 } from '@/dex/types/main.types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'
@@ -63,9 +63,9 @@ export type PoolListSlice = {
   poolList: SliceState & {
     filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
-    filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper, chainId: ChainId): P[]
-    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper, isCrvRewardsEnabled: boolean): P[]
-    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
+    filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper | ValueMapperCached, chainId: ChainId): P[]
+    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, campaignRewardsMapper: CampaignRewardsMapper, isCrvRewardsEnabled: boolean): P[]
+    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
     setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): void
 
@@ -298,7 +298,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
     // use local storage data till actual data returns
     setSortAndFilterCachedData: (rChainId, searchParams, poolDatasCached, volumeMapperCached, tvlMapperCached) => {
-      const { activeKey, formStatus, ...sliceState } = get()[sliceKey]
+      const { filterSmallTvl, activeKey, formStatus, ...sliceState } = get()[sliceKey]
 
       const { sortBy, sortByOrder } = searchParams
 
@@ -308,7 +308,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       let poolList: PoolDataCache[] = []
 
       if (haveVolumeCachedMapper || haveTvlCachedMapper) {
-        poolList = [...poolDatasCached]
+        poolList = filterSmallTvl(poolDatasCached, tvlMapperCached, rChainId)
 
         if (haveTvlCachedMapper) {
           poolList = orderBy(poolList, ({ pool }) => Number(tvlMapperCached[pool.id]?.value ?? 0), [sortByOrder])
@@ -391,8 +391,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           hideSmallPools,
           poolDatas,
           rewardsApyMapper,
-          volumeMapper,
-          tvlMapper,
+          Object.keys(volumeMapper).length ? volumeMapper : volumeMapperCached,
+          Object.keys(tvlMapper).length ? tvlMapper : tvlMapperCached,
           userPoolList,
           campaignRewardsMapper,
         )

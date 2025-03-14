@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { getPoolName } from '@/app/dex/[network]/pools/[pool]/pool-name.util'
 import Pool from '@/dex/components/PagePool/Page'
 import { type PoolUrlParams } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
+import { getPoolName } from '../../../pools.util'
 
 type PoolPageProps = { params: Promise<PoolUrlParams> }
 

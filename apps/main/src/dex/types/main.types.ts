@@ -4,7 +4,6 @@ import type { SearchParams as PoolListSearchParams } from '@/dex/components/Page
 import type curveApi from '@curvefi/api'
 import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import { IGaugePool } from '@curvefi/api/lib/pools/subClasses/gaugePool'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import type { WalletState } from '@web3-onboard/core'
@@ -208,7 +207,7 @@ export type PoolDataCache = {
     id: string
     name: string
     address: string
-    gauge: IGaugePool
+    gauge: { address: string }
     lpToken: string
     isCrypto: boolean
     isNg: boolean
@@ -282,6 +281,7 @@ export type Tvl = {
   errorMessage: string
 }
 export type TvlMapper = { [poolId: string]: Tvl }
+export type ValueMapperCached = { [poolId: string]: { value: string } }
 export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
 export type UserPoolListMapper = { [poolId: string]: boolean }
 export type Volume = {

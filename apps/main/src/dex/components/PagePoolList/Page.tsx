@@ -21,7 +21,9 @@ enum SEARCH {
   search = 'search',
 }
 
-const Page = (params: NetworkUrlParams) => {
+type PageProps = NetworkUrlParams
+
+const Page = (params: PageProps) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
   const { routerParams, curve } = usePageOnMount()
