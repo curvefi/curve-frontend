@@ -26,7 +26,6 @@ type GlobalState = {
   hasRouter: { [chainId: string]: boolean | null }
   isLoadingApi: boolean
   isLoadingCurve: boolean
-  isMobile: boolean
   isPageVisible: boolean
   isXXSm: boolean
   isXSmDown: boolean
@@ -67,7 +66,6 @@ const DEFAULT_STATE = {
   hasDepositAndStake: {},
   hasRouter: {},
   pageWidthPx: null,
-  isMobile: false,
   isLoadingApi: false,
   isLoadingCurve: true,
   isPageVisible: true,

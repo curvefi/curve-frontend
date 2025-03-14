@@ -4,6 +4,7 @@ import type { AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
 import useStore from '@/dex/store/useStore'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import type { AriaDialogProps } from '@react-types/dialog'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
@@ -37,7 +38,7 @@ const ModalDialog = ({
   const { titleProps } = useDialog(props, modalRef)
   usePreventScroll({ isDisabled: false }) // prevent scrolling while modal is open
 
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const isSmUp = useStore((state) => state.isSmUp)
 
   const { buttonProps: closeButtonProps } = useButton(
