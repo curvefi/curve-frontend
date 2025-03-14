@@ -1,6 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search'
 import TextField from '@mui/material/TextField'
-import { useSearchDebounce } from '@ui-kit/hooks/useDebounce'
+import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 const defaultSearch = ''
 
 export const SearchInput = ({ onSearch }: Props) => {
-  const [search, setSearch] = useSearchDebounce<string>(defaultSearch, onSearch)
+  const [search, setSearch] = useUniqueDebounce<string>(defaultSearch, onSearch)
   return (
     <TextField
       fullWidth
