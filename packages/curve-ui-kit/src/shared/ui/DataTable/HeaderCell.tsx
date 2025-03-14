@@ -1,9 +1,10 @@
+import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { flexRender, type Header, type SortDirection } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { getAlignment, getExtraColumnPadding, type TableItem } from './data-table.utils'
+import { getAlignment, getExtraColumnPadding, getFlexAlignment, type TableItem } from './data-table.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -49,8 +50,10 @@ export const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, 
         data-testid={`data-table-header-${column.id}`}
         variant="tableHeaderS"
       >
-        {flexRender(column.columnDef.header, header.getContext())}
-        <SortArrow isSorted={isSorted} canSort={canSort} />
+        <Stack direction="row" justifyContent={getFlexAlignment(column)} alignItems="end">
+          {flexRender(column.columnDef.header, header.getContext())}
+          <SortArrow isSorted={isSorted} canSort={canSort} />
+        </Stack>
       </Typography>
     )
   )
