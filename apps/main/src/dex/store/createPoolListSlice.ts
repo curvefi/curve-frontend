@@ -63,7 +63,7 @@ export type PoolListSlice = {
   poolList: SliceState & {
     filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
-    filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper, chainId: ChainId): P[]
+    filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper | ValueMapperCached, chainId: ChainId): P[]
     sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper, isCrvRewardsEnabled: boolean): P[]
     setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
@@ -298,7 +298,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
     // use local storage data till actual data returns
     setSortAndFilterCachedData: (rChainId, searchParams, poolDatasCached, volumeMapperCached, tvlMapperCached) => {
-      const { activeKey, formStatus, ...sliceState } = get()[sliceKey]
+      const { filterSmallTvl, activeKey, formStatus, ...sliceState } = get()[sliceKey]
 
       const { sortBy, sortByOrder } = searchParams
 
@@ -308,7 +308,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       let poolList: PoolDataCache[] = []
 
       if (haveVolumeCachedMapper || haveTvlCachedMapper) {
-        poolList = [...poolDatasCached]
+        poolList = filterSmallTvl(poolDatasCached, tvlMapperCached, rChainId)
 
         if (haveTvlCachedMapper) {
           poolList = orderBy(poolList, ({ pool }) => Number(tvlMapperCached[pool.id]?.value ?? 0), [sortByOrder])

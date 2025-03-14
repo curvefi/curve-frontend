@@ -99,12 +99,6 @@ const PoolList = ({
     return keys.concat([COLUMN_KEYS.volume, COLUMN_KEYS.tvl])
   }, [isLite, isMdUp, showInPoolColumn])
 
-  console.log({
-    isReadyWithApiData,
-    noResult: formStatus.noResult,
-    isReady,
-    result: result?.length,
-  })
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
       setFormValues(

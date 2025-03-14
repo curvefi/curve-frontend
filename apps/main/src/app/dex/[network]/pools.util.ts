@@ -45,7 +45,7 @@ const getTvlCache = async (network: NetworkConfig, pools: PoolDataMapper): Promi
     await Promise.all(
       Object.values(pools).map(async ({ pool }) => [
         pool.id,
-        network.poolCustomTVL[pool.id] || (await pool.stats.totalLiquidity()),
+        { value: network.poolCustomTVL[pool.id] || (await pool.stats.totalLiquidity()) },
       ]),
     ),
   )
@@ -56,7 +56,7 @@ const getVolumeCache = async (network: NetworkConfig, pools: PoolDataMapper) => 
   }
   const promises = Object.values(pools).map(async ({ pool }) => {
     try {
-      return [pool.id, await pool.stats.volume()]
+      return [pool.id, { value: await pool.stats.volume() }]
     } catch (e) {
       const logMethod = pool.id === 'crveth' ? 'log' : 'warn' // this pool is always throwing an error
       console[logMethod](e)
