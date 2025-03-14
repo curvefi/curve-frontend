@@ -1,5 +1,4 @@
 import chunk from 'lodash/chunk'
-import countBy from 'lodash/countBy'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
 import memoizee from 'memoizee'
@@ -29,7 +28,6 @@ import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
 import {
   filterCrvProfit,
   filterRewardsApy,
-  hasNoWrapped,
   parseBaseProfit,
   separateCrvProfit,
   separateCrvReward,
@@ -46,7 +44,6 @@ import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import { log } from '@ui-kit/lib/logging'
-import { shortenAddress } from '@ui-kit/utils'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -191,61 +188,6 @@ const pool = {
       }
       return resp
     }
-  },
-  getPoolData: (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
-    const isWrappedOnly = network.poolIsWrappedOnly[p.id]
-    const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx])!)
-    const tokens = isWrappedOnly
-      ? tokensWrapped
-      : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx])!)
-    const tokensLowercase = tokens.map((c) => c.toLowerCase())
-    const tokensAll = isWrappedOnly ? tokensWrapped : [...tokens, ...tokensWrapped]
-    const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
-    const tokenAddressesAll = isWrappedOnly
-      ? p.wrappedCoinAddresses
-      : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
-    const tokenDecimalsAll = isWrappedOnly ? p.wrappedDecimals : [...p.underlyingDecimals, ...p.wrappedDecimals]
-    const tokensCountBy = countBy(tokens)
-
-    const poolData: PoolData = {
-      pool: p,
-      chainId: network.chainId,
-      curvefiUrl: '',
-
-      // stats
-      currenciesReserves: null,
-      parameters: storedPoolData?.parameters
-        ? storedPoolData.parameters
-        : {
-            A: '',
-            adminFee: '',
-            fee: '',
-            future_A: undefined,
-            future_A_time: undefined,
-            gamma: undefined,
-            initial_A: undefined,
-            initial_A_time: undefined,
-            lpTokenSupply: '',
-            virtualPrice: '',
-          },
-      hasVyperVulnerability: p.hasVyperVulnerability(),
-      hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
-      isWrapped: isWrappedOnly ?? false,
-      tokenAddressesAll,
-      tokenDecimalsAll,
-      tokenAddresses,
-      tokens,
-      tokensCountBy,
-      tokensAll,
-      tokensLowercase,
-      failedFetching24hOldVprice: false,
-      gauge: {
-        status: null,
-        isKilled: null,
-      },
-    }
-
-    return poolData
   },
   getVolume: async (p: Pool, network: NetworkConfig) => {
     const resp = { poolId: p.id, value: '0', errorMessage: '' }

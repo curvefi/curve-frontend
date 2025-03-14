@@ -13,7 +13,6 @@ import type {
 } from '@/dex/components/PagePoolList/types'
 import { parseSearchTermResults } from '@/dex/components/PagePoolList/utils'
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
-import type { ValueMapperCached } from '@/dex/store/createCacheSlice'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -24,6 +23,7 @@ import {
   TvlMapper,
   UserPoolListMapper,
   VolumeMapper,
+  type ValueMapperCached,
 } from '@/dex/types/main.types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'

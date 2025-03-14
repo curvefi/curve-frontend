@@ -8,18 +8,21 @@ type Props = {
   volume: Volume | undefined
 }
 
-const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => (
-  <Chip
-    isBold={isHighLight}
-    size="md"
-    tooltip={formatNumber(volume?.value, FORMAT_OPTIONS.USD)}
-    tooltipProps={{ placement: 'bottom end' }}
-  >
-    {formatNumber(volume?.value ?? volumeCached?.value, {
-      currency: 'USD',
-      notation: 'compact',
-    })}
-  </Chip>
-)
+const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => {
+  console.log(volume, volumeCached)
+  return (
+    <Chip
+      isBold={isHighLight}
+      size="md"
+      tooltip={formatNumber(volume?.value, FORMAT_OPTIONS.USD)}
+      tooltipProps={{ placement: 'bottom end' }}
+    >
+      {formatNumber(volume?.value ?? volumeCached?.value, {
+        currency: 'USD',
+        notation: 'compact',
+      })}
+    </Chip>
+  )
+}
 
 export default TableCellVolume
