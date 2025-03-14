@@ -1,3 +1,4 @@
+import type { Address } from '../index'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -91,6 +92,17 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   oraclePrice: x.oracle_price,
   blockNumber: x.block_number,
   timestamp: toDate(x.timestamp),
+})
+
+export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse) => ({
+  user: x.user as Address,
+  earnings: parseFloat(x.earnings),
+  deposited: parseFloat(x.deposited),
+  withdrawn: parseFloat(x.withdrawn),
+  transfersInShares: parseFloat(x.transfers_in_shares),
+  transfersOutAssets: parseFloat(x.transfers_out_assets),
+  transfersInAssets: parseFloat(x.transfers_in_assets),
+  transfersOutShares: parseFloat(x.transfers_out_shares),
 })
 
 export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>

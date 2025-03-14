@@ -8,38 +8,34 @@ import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
-import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable'
+import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
-
-const showIconOnHover = {
-  '& .MuiIconButton-root': { opacity: 0, transition: `opacity ${TransitionFunction}` },
-  [`&:hover .MuiIconButton-root`]: { opacity: 1 },
-}
 
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => (
   <Stack direction="row" gap={Spacing.sm} alignItems="center">
     <TokenPair chain={market.chain} assets={market.assets} />
     <Stack direction="column" gap={Spacing.xs}>
       <MarketBadges market={market} />
-      <Typography component={Stack} variant="tableCellL" sx={showIconOnHover} direction="row" gap={2}>
+      <Typography component={Stack} variant="tableCellL" direction="row" gap={2}>
         <MuiLink
           color="inherit"
           underline="none"
           href={market.url}
           {...(!market.url.startsWith('http') && { component: RouterLink })}
           className={ClickableInRowClass}
+          data-testid={`market-link-${market.address}`}
         >
-          {market.assets.borrowed.symbol} - {market.assets.collateral.symbol}
+          {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
         </MuiLink>
         <CopyIconButton
-          className={ClickableInRowClass}
+          className={`${DesktopOnlyHoverClass} ${ClickableInRowClass}`}
           label={t`Copy market address`}
           copyText={market.address}
           confirmationText={t`Market address copied`}
+          data-testid={`copy-market-address-${market.address}`}
         />
       </Typography>
       <MarketWarnings market={market} />

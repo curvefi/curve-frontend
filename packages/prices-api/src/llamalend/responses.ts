@@ -108,6 +108,19 @@ type UserMarketStats = {
 
 export type GetUserMarketStatsResponse = UserMarketStats
 
+type UserMarketEarnings = {
+  user: string
+  earnings: string
+  deposited: string
+  withdrawn: string
+  transfers_in_shares: string
+  transfers_out_shares: string
+  transfers_in_assets: string
+  transfers_out_assets: string
+}
+
+export type GetUserMarketEarningsResponse = UserMarketEarnings
+
 export type GetUserMarketSnapshotsResponse = {
   user: Address
   page: number

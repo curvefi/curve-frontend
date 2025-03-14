@@ -4,7 +4,6 @@ require('dotenv-flow').config()
 
 const { exec, spawn } = require('child_process')
 const waitOn = require('wait-on')
-
 const networks = require('./cypress/fixtures/networks.json')
 
 const BASIC_PORT = 8545

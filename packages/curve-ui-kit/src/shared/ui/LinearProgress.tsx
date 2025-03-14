@@ -10,5 +10,14 @@ const SIZE_MAPPING = {
 export const LinearProgress = ({ percent, size }: { percent: number; size: keyof typeof SIZE_MAPPING }) => {
   const [value, setValue] = useState(0)
   useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
-  return <MuiLinearProgress sx={{ height: SIZE_MAPPING[size] }} value={value} variant="determinate" />
+  return (
+    <MuiLinearProgress
+      sx={{
+        height: SIZE_MAPPING[size],
+        ...(value < 0 && { '& .MuiLinearProgress-bar': { backgroundColor: 'error.main' } }),
+      }}
+      value={value < 0 ? 100 : Math.min(100, value)}
+      variant="determinate"
+    />
+  )
 }

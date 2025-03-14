@@ -10,6 +10,5 @@ async function _fetchAppDailyVolume() {
 export const { useQuery: useAppStatsDailyVolume } = queryFactory({
   queryKey: () => ['appStatsDailyVolume'] as const,
   queryFn: _fetchAppDailyVolume,
-  staleTime: '5m',
   validationSuite: EmptyValidationSuite,
 })

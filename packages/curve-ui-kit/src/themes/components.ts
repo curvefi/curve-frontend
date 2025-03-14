@@ -104,13 +104,16 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-
   MuiMenuItem: defineMuiMenuItem(design),
   MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: {
     styleOverrides: {
       thumb: {
         borderRadius: 0,
+        backgroundImage: `url(${design.Inputs.SliderThumbImage})`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
       },
     },
   },

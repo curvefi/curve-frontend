@@ -1,5 +1,5 @@
 import { kebabCase } from 'lodash'
-import { forwardRef, ReactNode, useCallback, useRef, useState } from 'react'
+import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
@@ -70,7 +70,7 @@ export const TableFilters = ({
   onReload: () => void
   onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
-  toggleVisibility: (columnId: string) => void
+  toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode
   children: ReactNode
 }) => {
@@ -144,14 +144,18 @@ export function useColumnFilters() {
           value,
         },
       ]),
-    [setColumnFilters],
+    [],
   )
-  const columnFiltersById: Record<string, unknown> = columnFilters.reduce(
-    (acc, filter) => ({
-      ...acc,
-      [filter.id]: filter.value,
-    }),
-    {},
+  const columnFiltersById: Record<string, unknown> = useMemo(
+    () =>
+      columnFilters.reduce(
+        (acc, filter) => ({
+          ...acc,
+          [filter.id]: filter.value,
+        }),
+        {},
+      ),
+    [columnFilters],
   )
 
   const resetFilters = useCallback(() => setColumnFilters([]), [setColumnFilters])

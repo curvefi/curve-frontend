@@ -9,5 +9,7 @@ declare module '@tanstack/table-core' {
     type?: 'numeric'
     hidden?: boolean
     variant?: TypographyVariantKey
+    borderRight?: boolean
+    hideZero?: boolean
   }
 }

@@ -29,7 +29,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
  * // The hook will update its internal value when initialValue changes
  * const [debouncedValue, setDebouncedValue] = useDebounce(externalValue, 200, handleChange);
  */
-function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
+export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
   const timerRef = useRef<number | null>(null)
 
@@ -70,4 +70,25 @@ function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T
   return [value, setDebouncedValue] as const
 }
 
-export default useDebounce
+const SearchDebounceMs = 166 // 10 frames at 60fps
+
+/**
+ * A hook that debounces a search value and calls a callback when the debounce period has elapsed.
+ */
+export function useSearchDebounce<T>(defaultValue: T, callback: (value: T) => void, debounceMs = SearchDebounceMs) {
+  const lastValue = useRef(defaultValue)
+  const debounceCallback = useCallback(
+    (value: T) => {
+      if (typeof value === 'string') {
+        value = value.trim() as unknown as T
+      }
+      if (value !== lastValue.current) {
+        lastValue.current = value
+        callback(value)
+      }
+    },
+    [callback],
+  )
+  const [search, setSearch] = useDebounce(defaultValue, debounceMs, debounceCallback)
+  return [search, setSearch] as const
+}

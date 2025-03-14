@@ -97,6 +97,17 @@ export type UserMarketStats = {
   timestamp: Date
 }
 
+export type UserMarketEarnings = {
+  user: Address
+  earnings: number
+  deposited: number
+  withdrawn: number
+  transfersInShares: number
+  transfersOutAssets: number
+  transfersInAssets: number
+  transfersOutShares: number
+}
+
 export type UserMarketSnapshots = UserMarketStats[]
 
 export type UserCollateralEvents = {

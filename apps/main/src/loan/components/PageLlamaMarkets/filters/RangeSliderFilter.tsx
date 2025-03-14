@@ -1,10 +1,12 @@
 import { get } from 'lodash'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
+import type { SliderProps } from '@mui/material/Slider/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { useSearchDebounce } from '@ui-kit/hooks/useDebounce'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 /**
@@ -14,10 +16,14 @@ import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
 
+type Range = [number, number]
+
+type OnSliderChange = NonNullable<SliderProps['onChange']>
+
 /**
- * A filter for tanstack tables that allows filtering by a minimum value using a slider.
+ * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const MinimumSliderFilter = <T extends unknown>({
+export const RangeSliderFilter = <T extends unknown>({
   columnFilters,
   setColumnFilter,
   data,
@@ -33,8 +39,17 @@ export const MinimumSliderFilter = <T extends unknown>({
   format: (value: number) => string
 }) => {
   const id = cleanColumnId(field)
-  const max = useMemo(() => getMaxValueFromData(data, field), [data, field])
-  const [value] = (columnFilters[id] ?? [0, max]) as [number, number] // tanstack expects a [min, max] tuple
+  const max = useMemo(() => Math.ceil(+getMaxValueFromData(data, field).toPrecision(3) * 10) / 10, [data, field])
+  const step = useMemo(() => Math.ceil(+max.toPrecision(2) / 100), [max])
+  const defaultValue = useMemo(() => (columnFilters[id] ?? [0, max]) as Range, [columnFilters, id, max])
+
+  const [range, setRange] = useSearchDebounce(
+    defaultValue,
+    useCallback((newRange: Range) => setColumnFilter(id, newRange as Range), [id, setColumnFilter]),
+  )
+
+  const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as Range), [setRange])
+
   return (
     // this is not a real select, but we reuse the component so the design is correct
     <Select
@@ -46,11 +61,12 @@ export const MinimumSliderFilter = <T extends unknown>({
         <Typography variant="bodyMRegular">
           {`${title}: `}
           <Typography component="span" variant="bodyMBold">
-            {format(value)}
+            {range.map(format).join(' - ')}
           </Typography>
         </Typography>
       )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
+      MenuProps={{ elevation: 3 }}
     >
       <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6} alignItems="center">
         <Typography>{format(0)}</Typography>
@@ -58,11 +74,11 @@ export const MinimumSliderFilter = <T extends unknown>({
           data-testid={`slider-${id}`}
           aria-label={title}
           getAriaValueText={format}
-          value={value}
-          onChange={(_, min) => setColumnFilter(id, [min, max])}
+          value={range}
+          onChange={onChange}
           min={0}
           max={max}
-          step={+max.toPrecision(2) / 100}
+          step={step}
         />
         <Typography>{format(max)}</Typography>
       </Stack>

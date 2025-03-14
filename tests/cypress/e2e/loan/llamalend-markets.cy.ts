@@ -1,4 +1,5 @@
-import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport } from '@/support/ui'
+import { capitalize } from 'lodash'
+import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
   createLendingVaultResponses,
   type LendingVaultResponses,
@@ -7,8 +8,8 @@ import {
   mockLendingVaults,
 } from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
-import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import { mockTokenPrices } from '@/support/helpers/tokens'
+import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
 
 describe('LlamaLend Markets', () => {
   let isDarkMode: boolean
@@ -23,7 +24,7 @@ describe('LlamaLend Markets', () => {
     mockLendingChains()
     mockTokenPrices()
     mockLendingVaults(vaultData)
-    mockLendingSnapshots().as('snapshots')
+    mockLendingSnapshots().as('lend-snapshots')
     mockMintMarkets()
     mockMintSnapshots()
 
@@ -33,9 +34,13 @@ describe('LlamaLend Markets', () => {
         win.localStorage.clear()
         isDarkMode = checkIsDarkMode(win)
       },
+      ...LOAD_TIMEOUT,
     })
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
+
+  const firstRow = () => cy.get(`[data-testid^="data-table-row"]`).first()
+  const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
     if (breakpoint === 'mobile') {
@@ -55,7 +60,8 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
-  it('should sort', () => {
+  // todo: contains(%) seems to be too early still, sometimes the handler doesn't react to the click
+  it('should sort', RETRY_IN_CI, () => {
     cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
     cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
@@ -69,21 +75,21 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
-    cy.get(`@snapshots.all`).then((calls1) => {
+    cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
       cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
-      cy.wait('@snapshots')
+      cy.wait('@lend-snapshots')
       cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
-      cy.wait(range(calls1.length).map(() => '@snapshots'))
-      cy.get(`@snapshots.all`).then((calls2) => {
-        expect(calls2.length).to.be.greaterThan(calls1.length)
-      })
+      cy.wait(range(calls1.length).map(() => '@lend-snapshots'))
+      cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls2) =>
+        expect(calls2.length).to.be.greaterThan(calls1.length),
+      )
     })
   })
 
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', 'Min Liquidity: $0'],
-      ['utilizationPercent', 'Min Utilization: 0.00%'],
+      ['liquidityUsd', 'Liquidity: $0 -'],
+      ['utilizationPercent', 'Utilization: 0.00% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
@@ -138,13 +144,37 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       const [type, otherType] = shuffle('mint', 'lend')
       cy.get(`[data-testid="chip-${type}"]`).click()
-      cy.get(`[data-testid^="pool-type-"]`).each(($el) =>
-        expect($el.attr('data-testid')).equals(`pool-type-${otherType}`),
-      )
+      cy.get(`[data-testid^="pool-type-"]`).each(($el) => expect($el.attr('data-testid')).equals(`pool-type-${type}`))
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
       cy.get(`[data-testid="chip-${otherType}"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
     })
+  })
+
+  // todo: this test fails sometimes in ci because the click doesn't work
+  it(`should hover and copy the market address`, RETRY_IN_CI, () => {
+    const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
+    cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
+    cy.wait(500) // necessary in chrome for the hover to work properly :(
+    firstRow().should('not.have.css', 'background-color', hoverBackground)
+    cy.scrollTo(0, 0)
+    firstRow().trigger('mouseenter', { waitForAnimations: true, force: true })
+    firstRow().should('have.css', 'background-color', hoverBackground)
+    copyFirstAddress().should('have.css', 'opacity', '1')
+    copyFirstAddress().click()
+    copyFirstAddress().click() // click again, in chrome in CI the first click doesn't work (because of tooltip?)
+    cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
+  })
+
+  it(`should navigate to market details`, () => {
+    const [type, urlRegex] = oneOf(
+      ['mint', /\/crvusd\/\w+\/markets\/.+\/create/],
+      ['lend', /\/lend\/\w+\/markets\/.+\/create/],
+    )
+    cy.get(`[data-testid="chip-${type}"]`).click()
+    firstRow().contains(capitalize(type))
+    cy.get(`[data-testid^="market-link-"]`).first().click()
+    cy.url().should('match', urlRegex, LOAD_TIMEOUT)
   })
 
   it(`should allow filtering by rewards`, () => {
@@ -175,7 +205,7 @@ describe('LlamaLend Markets', () => {
 
 function selectChain(chain: string) {
   cy.get('[data-testid="multi-select-filter-chain"]').click()
-  cy.get(`#menu-chain [data-value="${chain}"]`).click()
+  cy.get(`[data-testid="menu-chain"] [value="${chain}"]`).click()
   cy.get(`body`).click(0, 0) // close popover
 }
 
@@ -184,9 +214,9 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
 
   // deselect previously selected tokens
-  cy.forEach(`#menu-${columnId} [aria-selected="true"]`, (el) => el.click())
+  cy.forEach(`[data-testid="${columnId}"] [aria-selected="true"]`, (el) => el.click())
 
-  cy.get(`#menu-${columnId} [data-value="${symbol}"]`).click()
+  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
 }

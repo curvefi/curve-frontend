@@ -11,36 +11,40 @@ type UseSnapshotsResult<T> = {
   isLoading: boolean
   snapshotKey: keyof T
   rate: number | null
+  averageRate: number | null
+  error: unknown
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
-  { address, chain, controllerAddress, type: marketType, rates }: LlamaMarket,
+  { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: GraphType,
 ): UseSnapshotsResult<T> {
   const isPool = marketType == LlamaMarketType.Lend
   const showMintGraph = !isPool && type === 'borrow'
-  const contractAddress = isPool ? controllerAddress : address
+  const contractAddress = controllerAddress
   const params = { blockchainId: chain, contractAddress }
-  const { data: poolSnapshots, isLoading: poolIsLoading } = useLendingSnapshots(params, isPool)
-  const { data: mintSnapshots, isLoading: mintIsLoading } = useCrvUsdSnapshots(params, showMintGraph)
+  const { data: poolSnapshots, isLoading: poolIsLoading, error: poolError } = useLendingSnapshots(params, isPool)
+  const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
-  const currentValue = rates[type]
-  const { snapshots, isLoading, snapshotKey } = isPool
+  const currentValue = rates[type] ?? null
+  const { snapshots, isLoading, snapshotKey, error } = isPool
     ? {
         snapshots: poolSnapshots ?? null,
         isLoading: poolIsLoading,
         snapshotKey: `${type}Apy` as const,
+        error: poolError,
       }
     : {
         snapshots: (showMintGraph && mintSnapshots) || null,
         isLoading: mintIsLoading,
         snapshotKey: 'rate' as const,
+        error: mintError,
       }
 
-  const rate = useMemo(
-    () => (snapshots?.length ? meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) : (currentValue ?? null)),
-    [snapshots, currentValue, snapshotKey],
+  const averageRate = useMemo(
+    () => snapshots && meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
+    [snapshots, snapshotKey],
   )
 
-  return { snapshots, isLoading, snapshotKey, rate } as UseSnapshotsResult<T>
+  return { snapshots, isLoading, snapshotKey, rate: currentValue, averageRate, error } as UseSnapshotsResult<T>
 }

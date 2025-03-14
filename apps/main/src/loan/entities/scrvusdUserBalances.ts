@@ -24,6 +24,5 @@ export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUs
   queryKey: (params: { userAddress: string }) =>
     ['useScrvUsdUserBalances', { userAddress: params.userAddress }] as const,
   queryFn: _fetchSavingsUserBalances,
-  staleTime: '5m',
   validationSuite: userAddressValidationSuite,
 })
