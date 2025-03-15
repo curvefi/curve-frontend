@@ -295,9 +295,8 @@ export const TokenList = ({
           <TokenSection
             title={myTokens.length > 0 ? t`Tokens by 24h volume` : undefined}
             tokens={allTokens}
-            // Balances and token prices are not relevant, given they go into the 'My tokens' section
-            balances={{}}
-            tokenPrices={{}}
+            balances={balances}
+            tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
             preview={previewAll}
             onShowAll={() => setShowPreviewAll(false)}
