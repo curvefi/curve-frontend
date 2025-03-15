@@ -160,13 +160,21 @@ export const TokenList = ({
     return uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
   }, [tokens, search])
 
-  const { myTokens, allTokens } = useMemo(() => {
-    const myTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) > 0)
-    const allTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
+  /**
+   * Filters and sorts tokens that the user owns (has a balance > 0).
+   *
+   * When disableSorting is false, tokens are sorted by:
+   * 1. USD value of balance (highest first)
+   * 2. Raw token balance (highest first) as a tiebreaker
+   *
+   * This prioritizes showing the most valuable tokens at the top of the list.
+   */
+  const myTokens = useMemo(() => {
+    const balanceTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
-      myTokens.sort((a, b) => {
+      balanceTokens.sort((a, b) => {
         const aBalance = +(balances[a.address] ?? 0)
         const bBalance = +(balances[b.address] ?? 0)
         const aBalanceUsd = (tokenPrices[a.address] ?? 0) * aBalance
@@ -174,12 +182,9 @@ export const TokenList = ({
 
         return bBalanceUsd - aBalanceUsd || bBalance - aBalance
       })
-
-      // Sort all non-balance tokens by volume then symbol
-      allTokens.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
     }
 
-    return { myTokens, allTokens }
+    return balanceTokens
   }, [tokensSearched, disableSorting, balances, tokenPrices])
 
   /**
@@ -208,6 +213,36 @@ export const TokenList = ({
       return balance * price > threshold
     })
   }, [myTokens, balances, tokenPrices, showPreviewMy])
+
+  /**
+   * Constructs the "All tokens" list by combining:
+   * 1. Tokens with zero balance from the search results
+   * 2. "Dust tokens" - tokens with non-zero balance that didn't make it to the preview
+   *    because their value is below the threshold (less than 1% of portfolio value)
+   *
+   * This ensures that:
+   * - Zero-balance tokens are always shown in the "All tokens" section
+   * - Low-value tokens (dust) are still accessible but don't clutter the main view
+   */
+  const allTokens = useMemo(() => {
+    const zeroBalanceTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
+
+    // Add tokens that have balance but aren't in the preview (dust tokens)
+    // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
+    // When showPreviewMy is false, those dust tokens should be in the myTokens section
+    const dustTokens = showPreviewMy
+      ? myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address))
+      : []
+
+    zeroBalanceTokens.push(...dustTokens)
+
+    if (!disableSorting) {
+      // Sort all non-balance tokens by volume then symbol
+      zeroBalanceTokens.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
+    }
+
+    return zeroBalanceTokens
+  }, [tokensSearched, myTokens, disableSorting, balances, previewMy, showPreviewMy])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.
