@@ -445,9 +445,7 @@ const QuickSwap = ({
             <TokenSelector
               selectedToken={toToken}
               tokens={tokens}
-              balances={userBalancesMapper}
               disabled={isDisable || !toToken}
-              tokenPrices={usdRatesMapper}
               onToken={(token) => {
                 const toAddress = token.address
                 const fromAddress =
