@@ -81,6 +81,8 @@ const QuickSwap = ({
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
+  const isStableswapRoute = routesAndOutput?.isStableswapRoute
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -486,9 +488,9 @@ const QuickSwap = ({
           />
         )}
         <DetailInfoSlippageTolerance
-          maxSlippage={globalMaxSlippage || routesAndOutput?.maxSlippage}
+          maxSlippage={isStableswapRoute ? stableMaxSlippage : globalMaxSlippage}
           testId="slippage-tolerance"
-          stateKey="global"
+          stateKey={isStableswapRoute ? 'stable' : 'global'}
         />
       </div>
 
