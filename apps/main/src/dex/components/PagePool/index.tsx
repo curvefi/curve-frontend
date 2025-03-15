@@ -90,7 +90,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
+  const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
     chainId: rChainId,
@@ -121,11 +121,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [signerAddress, pricesApi, pricesApiPoolData, snapshotsMapper, poolData?.pool.address])
 
   const maxSlippage = useMemo(() => {
-    if (globalMaxSlippage) return globalMaxSlippage
+    if (storeMaxSlippage) return storeMaxSlippage
     if (!pool) return ''
 
     return pool.isCrypto ? '0.1' : '0.03'
-  }, [globalMaxSlippage, pool])
+  }, [storeMaxSlippage, pool])
 
   const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.secondaryNav, [layoutHeight])
 

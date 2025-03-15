@@ -7,7 +7,7 @@ import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type State = {
   theme: ThemeKey
-  /** Key is either 'global' or a chainIdPoolId from getChainPoolIdActiveKey. */
+  /** Key is either 'global', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { global: string; stable: string } & Partial<Record<string, string>>
   isAdvancedMode: boolean
   hideSmallPools: boolean
