@@ -83,6 +83,7 @@ const QuickSwap = ({
   const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
+  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : globalMaxSlippage
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -128,12 +129,12 @@ const QuickSwap = ({
         updatedFormValues,
         searchedParams,
         isGetMaxFrom,
-        maxSlippage || globalMaxSlippage,
+        maxSlippage || storeMaxSlippage,
         isFullReset,
         isRefetch,
       )
     },
-    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
+    [curve, storeMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -488,7 +489,7 @@ const QuickSwap = ({
           />
         )}
         <DetailInfoSlippageTolerance
-          maxSlippage={isStableswapRoute ? stableMaxSlippage : globalMaxSlippage}
+          maxSlippage={storeMaxSlippage}
           testId="slippage-tolerance"
           stateKey={isStableswapRoute ? 'stable' : 'global'}
         />
