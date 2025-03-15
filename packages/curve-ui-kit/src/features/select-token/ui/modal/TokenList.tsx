@@ -29,18 +29,13 @@ export type TokenSectionProps = Required<
     title?: string
     /** The label to show on the button that expands the section to show all */
     showAllLabel?: string
-    showAll: boolean
-    /**
-     * Controls which tokens are visible before "Show more".
-     * Can be a number (quantity limit) or a function that filters tokens.
-     */
-    preview: number | ((token: Option) => boolean)
+    /** List of tokens visible before "Show more" is clicked */
+    preview: Option[]
     onShowAll: () => void
   }
 
 const TokenSection = ({
   title,
-  showAll,
   showAllLabel,
   preview,
   tokens,
@@ -52,14 +47,11 @@ const TokenSection = ({
 }: TokenSectionProps) => {
   if (!tokens.length) return null
 
-  const displayTokens = showAll
-    ? tokens
-    : typeof preview === 'number'
-      ? tokens.slice(0, preview)
-      : tokens.filter(preview)
+  const displayTokens = preview.length === 0 ? tokens : preview
+  const hasMore = preview.length > 0
 
-  const hasMore = displayTokens.length < tokens.length
-
+  // If there's a list of preview tokens, show that with a 'Show more' button.
+  // If not, then just display all tokens from the list.
   return (
     <>
       {title && (
@@ -88,7 +80,7 @@ const TokenSection = ({
           />
         ))}
 
-        {hasMore && !showAll && (
+        {hasMore && (
           <Button
             fullWidth
             variant="link"
@@ -152,10 +144,9 @@ export const TokenList = ({
   onSearch,
 }: Props) => {
   const [search, setSearch] = useState('')
-  const [sections, setSections] = useState<Record<Section, boolean>>({
-    my: false,
-    all: false,
-  })
+  const [showPreviewMy, setShowPreviewMy] = useState(true)
+  const [showPreviewAll, setShowPreviewAll] = useState(true)
+
   const showFavorites = favorites.length > 0 && !search
 
   const tokensFiltered = useMemo(() => {
@@ -192,12 +183,14 @@ export const TokenList = ({
   }, [tokensFiltered, disableSorting, balances, tokenPrices])
 
   /**
-   * Creates a filter function that determines which tokens to show in the preview section
-   * of 'My Tokens' based on their USD value relative to the total portfolio.
+   * Filters tokens to show only those with significant value.
    *
-   * @returns A filter function that returns true for tokens with USD value > 1% of total balance
+   * When showPreviewMy is true, returns tokens whose USD value exceeds 1% of total portfolio value.
+   * This filtering helps prevent dust and potential scam tokens from cluttering the interface.
    */
-  const myTokensPreview = useMemo(() => {
+  const previewMy = useMemo(() => {
+    if (!showPreviewMy) return []
+
     const totalUsdBalance = myTokens.reduce((sum, token) => {
       const balance = +(balances[token.address] ?? 0)
       const price = tokenPrices[token.address] ?? 0
@@ -206,15 +199,28 @@ export const TokenList = ({
 
     const threshold = totalUsdBalance * 0.01
 
-    return (token: Option) => {
+    return myTokens.filter((token: Option) => {
       const balance = +(balances[token.address] ?? 0)
       const price = tokenPrices[token.address] ?? 0
 
       // We used to include tokens with a balance > 0, but no $ price (0),
       // but it turns out that way quite a few scam tokens show up in the preview.
       return balance * price > threshold
-    }
-  }, [myTokens, balances, tokenPrices])
+    })
+  }, [myTokens, balances, tokenPrices, showPreviewMy])
+
+  /**
+   * Filters tokens to show in the preview of "All tokens" section.
+   *
+   * When showPreviewAll is true, returns the first 300 tokens from the allTokens array.
+   * This limit prevents rendering too many tokens at once, improving performance
+   * while still showing users a meaningful selection of available tokens.
+   */
+  const previewAll = useMemo(() => {
+    if (!showPreviewAll) return []
+
+    return allTokens.slice(0, 300)
+  }, [allTokens, showPreviewAll])
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
@@ -245,10 +251,9 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            preview={myTokensPreview}
-            showAll={sections.my || !!search}
+            preview={previewMy}
             showAllLabel={t`Show dust`}
-            onShowAll={() => setSections((prev) => ({ ...prev, my: true }))}
+            onShowAll={() => setShowPreviewMy(false)}
             onToken={onToken}
           />
 
@@ -259,9 +264,8 @@ export const TokenList = ({
             balances={{}}
             tokenPrices={{}}
             disabledTokens={disabledTokens}
-            preview={300}
-            showAll={sections.all || !!search}
-            onShowAll={() => setSections((prev) => ({ ...prev, all: true }))}
+            preview={previewAll}
+            onShowAll={() => setShowPreviewAll(false)}
             onToken={onToken}
           />
         </Stack>
