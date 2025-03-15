@@ -124,6 +124,8 @@ export type TokenListProps = {
   disabledTokens: string[]
   /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
   disableSorting: boolean
+  /** Disable the "My Tokens" section that shows tokens with non-zero balances */
+  disableMyTokens: boolean
   /** Custom React nodes to render below favorites section */
   customOptions: ReactNode
 }
@@ -139,6 +141,7 @@ export const TokenList = ({
   error,
   disabledTokens,
   disableSorting,
+  disableMyTokens,
   customOptions,
   onToken,
   onSearch,
@@ -170,6 +173,8 @@ export const TokenList = ({
    * This prioritizes showing the most valuable tokens at the top of the list.
    */
   const myTokens = useMemo(() => {
+    if (disableMyTokens) return []
+
     const balanceTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
@@ -185,7 +190,7 @@ export const TokenList = ({
     }
 
     return balanceTokens
-  }, [tokensSearched, disableSorting, balances, tokenPrices])
+  }, [disableMyTokens, tokensSearched, disableSorting, balances, tokenPrices])
 
   /**
    * Filters tokens to show only those with significant value.
@@ -215,17 +220,17 @@ export const TokenList = ({
   }, [myTokens, balances, tokenPrices, showPreviewMy])
 
   /**
-   * Constructs the "All tokens" list by combining:
-   * 1. Tokens with zero balance from the search results
-   * 2. "Dust tokens" - tokens with non-zero balance that didn't make it to the preview
-   *    because their value is below the threshold (less than 1% of portfolio value)
+   * Builds the "All tokens" list from:
+   * - All tokens when disableMyTokens is true
+   * - Zero-balance tokens when disableMyTokens is false
+   * - "Dust tokens" (low-value tokens below 1% portfolio threshold) when hidden from 'my tokens'
    *
-   * This ensures that:
-   * - Zero-balance tokens are always shown in the "All tokens" section
-   * - Low-value tokens (dust) are still accessible but don't clutter the main view
+   * This keeps the UI clean while ensuring all tokens remain accessible.
    */
   const allTokens = useMemo(() => {
-    const zeroBalanceTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
+    const allTokensBase = disableMyTokens
+      ? tokensSearched
+      : tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
 
     // Add tokens that have balance but aren't in the preview (dust tokens)
     // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
@@ -234,15 +239,15 @@ export const TokenList = ({
       ? myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address))
       : []
 
-    zeroBalanceTokens.push(...dustTokens)
+    allTokensBase.push(...dustTokens)
 
     if (!disableSorting) {
       // Sort all non-balance tokens by volume then symbol
-      zeroBalanceTokens.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
+      allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
     }
 
-    return zeroBalanceTokens
-  }, [tokensSearched, myTokens, disableSorting, balances, previewMy, showPreviewMy])
+    return allTokensBase
+  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.
