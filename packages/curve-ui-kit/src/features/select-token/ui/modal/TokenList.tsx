@@ -149,7 +149,7 @@ export const TokenList = ({
 
   const showFavorites = favorites.length > 0 && !search
 
-  const tokensFiltered = useMemo(() => {
+  const tokensSearched = useMemo(() => {
     if (!search) return tokens
 
     const { addressesResult, tokensResult } = searchByText(search, tokens, ['symbol'], {
@@ -161,8 +161,8 @@ export const TokenList = ({
   }, [tokens, search])
 
   const { myTokens, allTokens } = useMemo(() => {
-    const myTokens = tokensFiltered.filter((token) => +(balances[token.address] ?? 0) > 0)
-    const allTokens = tokensFiltered.filter((token) => +(balances[token.address] ?? 0) === 0)
+    const myTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) > 0)
+    const allTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
@@ -180,7 +180,7 @@ export const TokenList = ({
     }
 
     return { myTokens, allTokens }
-  }, [tokensFiltered, disableSorting, balances, tokenPrices])
+  }, [tokensSearched, disableSorting, balances, tokenPrices])
 
   /**
    * Filters tokens to show only those with significant value.
