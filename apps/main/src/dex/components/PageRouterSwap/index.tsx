@@ -491,7 +491,7 @@ const QuickSwap = ({
         <DetailInfoSlippageTolerance
           maxSlippage={storeMaxSlippage}
           testId="slippage-tolerance"
-          stateKey={isStableswapRoute ? 'stable' : 'global'}
+          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
         />
       </div>
 

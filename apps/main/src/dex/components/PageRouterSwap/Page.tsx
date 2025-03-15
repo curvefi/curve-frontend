@@ -124,7 +124,7 @@ const Page = (params: NetworkUrlParams) => {
         <IconButton testId="hidden" hidden />
         {t`Swap`}
         <AdvancedSettings
-          stateKey={isStableswapRoute ? 'stable' : 'global'}
+          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
           testId="advance-settings"
           maxSlippage={storeMaxSlippage}
         />
