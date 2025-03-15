@@ -33,11 +33,11 @@ const Page = (params: NetworkUrlParams) => {
   const network = useStore((state) => state.networks.networks[rChainId])
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
-  const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
-  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : globalMaxSlippage
+  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
