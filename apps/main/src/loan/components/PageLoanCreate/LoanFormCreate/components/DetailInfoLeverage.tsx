@@ -43,7 +43,7 @@ const DetailInfoLeverage = ({
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const LeverageDetail = () => (
     <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>

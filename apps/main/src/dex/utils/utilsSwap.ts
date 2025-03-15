@@ -111,6 +111,7 @@ export function _parseRoutesAndOutput(
       : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount),
     isHighImpact: priceImpact > +parsedMaxSlippage,
     isHighSlippage: haveCryptoRoutes ? false : Number(exchangeRates[0]) > 0.98,
+    isStableswapRoute: !haveCryptoRoutes,
     maxSlippage: parsedMaxSlippage,
     priceImpact: priceImpact,
     routes: parsedRouterRoutes.routes,
