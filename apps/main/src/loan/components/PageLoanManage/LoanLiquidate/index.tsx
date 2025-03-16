@@ -45,7 +45,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
   const resetState = useStore((state) => state.loanLiquidate.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)

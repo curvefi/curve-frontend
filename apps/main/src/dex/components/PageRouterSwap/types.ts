@@ -43,6 +43,7 @@ export type RoutesAndOutput = {
   isExchangeRateLow: boolean
   isHighImpact: boolean
   isHighSlippage: boolean
+  isStableswapRoute: boolean
   maxSlippage: string
   priceImpact: number | null
   routes: Route[]
