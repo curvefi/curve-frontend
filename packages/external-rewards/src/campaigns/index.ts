@@ -19,6 +19,7 @@ import Pumpbtc from './Pumpbtc.json'
 import Renzo from './Renzo.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
+import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import TurtleSeeds from './TurtleSeeds.json'
 import TurtleTotems from './TurtleTotems.json'
@@ -26,7 +27,6 @@ import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import YieldNest from './YieldNest.json'
-import StableLabs from './StableLabs.json'
 
 export {
   DLCLink,
