@@ -1,7 +1,8 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
-import { MinimumSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/MinimumSliderFilter'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
+import { RangeSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/RangeSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Grid from '@mui/material/Grid2'
 import Typography from '@mui/material/Typography'
@@ -32,6 +33,9 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   )
 }
 
+const formatUsd = (value: number) => formatNumber(value, { currency: 'USD' })
+const formatPercent = (value: number) => value.toFixed(2) + '%'
+
 /**
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
@@ -45,7 +49,7 @@ export const LendingMarketsFilters = ({
   <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="chain"
+        field={LlamaMarketColumnId.Chain}
         renderItem={(chain) => (
           <>
             <ChainIcon blockchainId={chain} size="md" />
@@ -61,7 +65,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="assets.collateral.symbol"
+        field={LlamaMarketColumnId.CollateralSymbol}
         renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="collateral" />}
         defaultText={t`All Collateral Tokens`}
         {...props}
@@ -70,7 +74,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field="assets.borrowed.symbol"
+        field={LlamaMarketColumnId.BorrowedSymbol}
         renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="borrowed" />}
         defaultText={t`All Debt Tokens`}
         {...props}
@@ -78,19 +82,14 @@ export const LendingMarketsFilters = ({
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <MinimumSliderFilter
-        field="liquidityUsd"
-        title={t`Min Liquidity`}
-        format={(value) => formatNumber(value, { currency: 'USD' })}
-        {...props}
-      />
+      <RangeSliderFilter field={LlamaMarketColumnId.LiquidityUsd} title={t`Liquidity`} format={formatUsd} {...props} />
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <MinimumSliderFilter
-        field="utilizationPercent"
-        title={t`Min Utilization`}
-        format={(value) => value.toFixed(2) + '%'}
+      <RangeSliderFilter
+        field={LlamaMarketColumnId.UtilizationPercent}
+        title={t`Utilization`}
+        format={formatPercent}
         {...props}
       />
     </Grid>

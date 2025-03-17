@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
+import type { Address } from '@curvefi/prices-api'
 import { getFromLocalStorage, useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,
-  queryFn: async () => getFromLocalStorage<string[]>('favoriteMarkets') ?? [],
-  staleTime: '5m',
+  queryFn: async () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? [],
   validationSuite: EmptyValidationSuite,
 })
 

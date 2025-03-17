@@ -1,0 +1,57 @@
+{
+  "campaignName": "S-points",
+  "platform": "Stables Labs",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "s-points.png",
+  "dashboardLink": "https://app.usdx.money/airdrop/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Earn 1 S-Point per dollar daily, with up to 2.5x booster multiplier. For more information please visit usdx.money Dapp.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x3f131bb401c5f322bce82e1f06fb25aca08d3f7e",
+      "network": "ethereum",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Earn 1 S-Point per dollar daily, with up to 2.5x booster multiplier. For more information please visit usdx.money Dapp.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x541d4752d992046787d3a21be1daff8e816bb02e",
+      "network": "ethereum",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Earn 1 S-Point per dollar daily, with up to 2.5x booster multiplier. For more information please visit usdx.money Dapp.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x80eb9a1b48df52534430a7dc11e63c73669d5a06",
+      "network": "bsc",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Earn 1 S-Point per dollar daily, with up to 2.5x booster multiplier. For more information please visit usdx.money Dapp.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x7be2dbf222eec2c2f06e05eab88c168b37144933",
+      "network": "bsc",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

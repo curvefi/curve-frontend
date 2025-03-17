@@ -43,7 +43,7 @@ const DetailInfoLeverage = ({
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const { signerAddress } = api ?? {}
   const { minBands, maxBands, borrowed_token, collateral_token } = market ?? {}

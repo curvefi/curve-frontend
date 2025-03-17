@@ -12,16 +12,20 @@ const invertPrimary = (color: DesignSystem['Color']) => color.Neutral[50]
 
 const { Sizing, Spacing, IconSize } = SizesAndSpaces
 
-type ChipSizeDefinition = { font: TypographyVariantKey; height: Responsive }
+type ChipSizeDefinition = {
+  font: TypographyVariantKey
+  height: Responsive
+  iconSize: Responsive
+}
 
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.md },
-  small: { font: 'buttonXs', height: IconSize.md },
-  medium: { font: 'buttonXs', height: Sizing.md },
-  large: { font: 'buttonM', height: Sizing.md },
-  extraLarge: { font: 'headingSBold', height: Sizing.xl },
+  extraSmall: { font: 'bodyXsBold', height: IconSize.md, iconSize: IconSize.xs },
+  small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm },
+  medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md },
+  large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg },
+  extraLarge: { font: 'headingSBold', height: Sizing.xl, iconSize: IconSize.xl },
 }
 
 // overrides for clickable chips
@@ -53,9 +57,33 @@ export const defineMuiChip = (
       color: TextColors.Primary,
       backgroundColor: 'transparent',
       ...handleBreakpoints({ paddingInline: Spacing.xs }),
+      '&:has(.MuiChip-icon)': {
+        ...handleBreakpoints({ gap: Spacing.xs }),
+        '& .MuiChip-icon': { marginInline: 0 },
+        '& .MuiChip-label': { paddingInline: 0 },
+      },
     },
   },
   variants: [
+    // 'clickable' is the "Chip" in the design system. This needs to be before the colors, so they may be overridden.
+    {
+      props: { clickable: true },
+      style: {
+        borderRadius: Chips.BorderRadius.Clickable,
+        borderColor: Chips.Default.Stroke,
+        cursor: 'pointer',
+        '& .MuiChip-deleteIcon': { margin: 0 },
+        '&:hover, &:focus-visible': {
+          borderColor: 'transparent',
+          backgroundColor: Chips.Hover.Fill,
+          color: Chips.Hover.Label,
+          '& .MuiChip-deleteIcon': {
+            fill: Chips.Hover.Label,
+          },
+        },
+      },
+    },
+
     // 'badge' colors not in design system but defined directly in components
     {
       props: { color: 'alert' },
@@ -102,33 +130,15 @@ export const defineMuiChip = (
       },
     },
 
-    // 'clickable' is the "Chip" in the design system
-    {
-      props: { clickable: true },
+    ...Object.entries(chipSizes).map(([size, { font, iconSize, ...rest }]) => ({
+      props: { size: size as ChipSizes },
       style: {
-        borderRadius: Chips.BorderRadius.Clickable,
-        borderColor: Chips.Default.Stroke,
-        cursor: 'pointer',
-        '& .MuiChip-deleteIcon': { margin: 0 },
+        ...handleBreakpoints({ ...typography[font], ...rest }),
+        '& .MuiChip-deleteIcon': handleBreakpoints({ width: iconSize, height: iconSize }),
         '&:has(.MuiChip-icon)': {
-          ...handleBreakpoints({ paddingInline: Spacing.sm, gap: Spacing.xs }),
-          '& .MuiChip-icon': { marginInline: 0 },
-          '& .MuiChip-label': { paddingInline: 0 },
-        },
-        '&:hover, &:focus-visible': {
-          borderColor: 'transparent',
-          backgroundColor: Chips.Hover.Fill,
-          color: Chips.Hover.Label,
-          '& .MuiChip-deleteIcon': {
-            fill: Chips.Hover.Label,
-          },
+          '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
         },
       },
-    },
-
-    ...Object.entries(chipSizes).map(([size, { font, ...rest }]) => ({
-      props: { size: size as ChipSizes },
-      style: handleBreakpoints({ ...typography[font], ...rest }),
     })),
     ...Object.entries(chipSizeClickable).map(([size, { font, ...rest }]) => ({
       props: { size: size as ChipSizes, clickable: true },

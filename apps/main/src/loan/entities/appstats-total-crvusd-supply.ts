@@ -13,6 +13,5 @@ function _fetchAppStatsTotalCrvusdSupply({ chainId }: ChainQuery<ChainId>) {
 export const { useQuery: useAppStatsTotalCrvusdSupply } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsTotalCrvusdSupply', { chainId: params.chainId }] as const,
   queryFn: _fetchAppStatsTotalCrvusdSupply,
-  staleTime: '5m',
   validationSuite: curvejsValidationSuite,
 })

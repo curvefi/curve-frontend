@@ -55,7 +55,7 @@ export type Props = TokenSelectButtonProps &
 /** The token selector is Select but acts like a button, so it's a bit unique */
 export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
   <Select
-    value={token?.address ?? ''}
+    value=""
     onClick={disabled ? undefined : onClick}
     open={false}
     disabled={disabled}

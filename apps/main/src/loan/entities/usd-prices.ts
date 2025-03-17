@@ -1,6 +1,8 @@
+import type { Chain } from '@curvefi/prices-api'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { ContractParams, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
+import type { Address } from '@ui-kit/utils'
 
 export const { getQueryOptions: getCoinPriceOptions } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'usd-price'] as const,
@@ -9,11 +11,10 @@ export const { getQueryOptions: getCoinPriceOptions } = queryFactory({
     const { data } = (await response.json()) as { data: { address: string; usd_price: number; last_updated: string } }
     return data.usd_price
   },
-  staleTime: '5m',
   validationSuite: contractValidationSuite,
 })
 
-export const getCoinPrices = async (stablecoinAddresses: string[], chain: string): Promise<Record<string, number>> =>
+export const getCoinPrices = async (stablecoinAddresses: Address[], chain: Chain): Promise<Record<string, number>> =>
   Object.fromEntries(
     await Promise.all(
       stablecoinAddresses.map(async (contractAddress) => [

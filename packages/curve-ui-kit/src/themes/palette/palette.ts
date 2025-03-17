@@ -21,7 +21,7 @@ export const createPalette = (
   },
   action: {
     // note: action, disabled, focus themes are left default for now
-    hover: Layer.TypeAction.Hover,
+    hover: Layer.TypeAction.Hover, // note that we usually invert the theme when hovering
     selected: Layer.TypeAction.Selected,
   },
   background: { default: Layer.App.Background, paper: Layer[2].Fill },

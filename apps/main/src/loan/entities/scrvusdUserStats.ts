@@ -9,6 +9,5 @@ const _fetchScrvUsdUserStats = async ({ userAddress }: { userAddress: string }):
 export const { useQuery: useScrvUsdUserStats } = queryFactory({
   queryKey: (params: { userAddress: string }) => ['scrvUsdUserStats', { userAddress: params.userAddress }] as const,
   queryFn: _fetchScrvUsdUserStats,
-  staleTime: '5m',
   validationSuite: userAddressValidationSuite,
 })

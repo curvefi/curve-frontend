@@ -26,16 +26,20 @@ const Page = (params: NetworkUrlParams) => {
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
+  const activeKey = useStore((state) => state.quickSwap.activeKey)
+  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const { provider } = useWallet()
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
-  const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
-
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const isStableswapRoute = routesAndOutput?.isStableswapRoute
+  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
 
+  const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
@@ -119,7 +123,11 @@ const Page = (params: NetworkUrlParams) => {
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
-        <AdvancedSettings stateKey="global" testId="advance-settings" maxSlippage={maxSlippage} />
+        <AdvancedSettings
+          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
+          testId="advance-settings"
+          maxSlippage={storeMaxSlippage}
+        />
       </BoxHeader>
 
       <Box grid gridRowGap={3} padding>

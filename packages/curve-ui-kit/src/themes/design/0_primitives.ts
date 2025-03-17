@@ -103,4 +103,4 @@ export const Duration = {
   Snackbar: 6000,
 }
 
-export const TransitionFunction = `ease-out 0.256s`
+export const TransitionFunction = `ease-out 256ms`

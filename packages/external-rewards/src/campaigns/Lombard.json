@@ -3,7 +3,7 @@
   "platform": "Lombard",
   "description": "Points for providing liquidity.",
   "platformImageId": "lombard.png",
-  "dashboardLink": "https://www.lombard.finance/app/defi/",
+  "dashboardLink": "https://www.lombard.finance/app/dashboard/",
   "pools": [
     {
       "id": "null",

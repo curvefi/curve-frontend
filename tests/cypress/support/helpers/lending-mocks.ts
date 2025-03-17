@@ -62,9 +62,15 @@ function oneLendingVaultResponse(chain: Chain) {
   const count = oneInt(2, 20)
   const data = [
     ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
-    // add a pool with a fixed vault address to test campaign rewards
     ...(chain == 'ethereum'
-      ? [{ ...oneLendingPool(chain, oneFloat()), vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b' }]
+      ? [
+          {
+            ...oneLendingPool(chain, oneFloat()),
+            vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b', // fixed vault address to test campaign rewards
+            collateral_balance_usd: 0, // 0 liquidity to test the slider filter
+            total_debt_usd: 0, // 0 utilization to test the slider filter
+          },
+        ]
       : []),
   ]
   return { chain, count: data.length, data }

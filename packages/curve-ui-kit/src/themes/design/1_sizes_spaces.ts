@@ -279,6 +279,9 @@ export const SizesAndSpaces = {
     actionCard: '29rem', // 464px
     section: '59.5rem', // 952px
   },
+  MinHeight: {
+    tableNoResults: '35vh',
+  },
   MaxHeight: {
     popover: '17rem', // 272px
     tokenSelector: '47rem', // 752px

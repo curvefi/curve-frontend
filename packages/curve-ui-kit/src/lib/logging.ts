@@ -1,4 +1,5 @@
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
+import { isCypress } from '@ui-kit/utils'
 
 export enum LogStatus {
   ERROR = 'error',
@@ -92,6 +93,10 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
       default:
         return console.log
     }
+  }
+  if (isCypress) {
+    // electron is able to print all console logs to the output, but the formatting does not work
+    return logMethod(status)(status, JSON.stringify({ keyArray, args }).slice(0, 300))
   }
 
   const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
