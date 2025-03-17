@@ -1,6 +1,5 @@
 import { kebabCase } from 'lodash'
 import { forwardRef, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import SearchIcon from '@mui/icons-material/Search'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
@@ -13,6 +12,7 @@ import { ColumnFiltersState } from '@tanstack/react-table'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
 import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
@@ -105,7 +105,7 @@ export const TableFilters = ({
                 onSearch={onSearch}
                 onClose={closeSearch}
                 size="small"
-                data-testid="llama-text-search"
+                data-testid="table-text-search"
               />
             </Collapse>
           </Stack>

@@ -1,11 +1,11 @@
 import { RefObject, useCallback, useRef } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
-import SearchIcon from '@mui/icons-material/Search'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField/TextField'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
+import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 
 type SearchFieldProps = TextFieldProps & {
   onSearch: (search: string) => void
