@@ -44,7 +44,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       networkName={rNetwork}
       mainNavRef={mainNavRef}
       currentMenu="llama"
-      routes={APP_LINK.llama.pages}
+      routes={APP_LINK.llama.routes}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

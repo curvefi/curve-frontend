@@ -58,10 +58,10 @@ export const MobileHeader = <TChainId extends number>({
     () =>
       Object.entries(APP_LINK)
         .filter(([appName]) => appName != currentMenu)
-        .map(([appName, { label, pages }]) => ({
+        .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: pages.map((p) => routeToPage(p, { networkName, pathname })),
+          pages: routes.map((p) => routeToPage(p, { networkName, pathname })),
         })),
     [currentMenu, networkName, pathname],
   )

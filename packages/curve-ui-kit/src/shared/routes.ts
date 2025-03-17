@@ -41,7 +41,7 @@ export type AppMenuOption = (typeof AppMenuOptions)[number]
 export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   dex: {
     label: 'DEX',
-    pages: [
+    routes: [
       { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
       { app: 'dex', route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
       { app: 'dex', route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
@@ -50,7 +50,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   },
   llama: {
     label: 'Llamalend',
-    pages: [
+    routes: [
       { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
       { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` },
@@ -60,7 +60,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   },
   dao: {
     label: 'DAO',
-    pages: [
+    routes: [
       { app: 'dao', route: DAO_ROUTES.PAGE_VECRV_CREATE, label: () => t`Lock CRV` },
       { app: 'dao', route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
       { app: 'dao', route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },

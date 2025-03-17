@@ -60,7 +60,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
                 },
               ]
             : []),
-          ...APP_LINK.dex.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+          ...APP_LINK.dex.routes.filter((page) => page.route !== ROUTE.PAGE_SWAP),
         ],
         [hasRouter, network, routerCached],
       )}

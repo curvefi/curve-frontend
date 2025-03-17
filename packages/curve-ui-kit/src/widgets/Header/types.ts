@@ -20,7 +20,7 @@ export type AppRoute = {
 
 export type AppRoutes = {
   label: string
-  pages: AppRoute[]
+  routes: AppRoute[]
 }
 
 export type NavigationSection = {

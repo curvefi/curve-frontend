@@ -7,7 +7,7 @@ type AppNavAppsProps = { currentMenu: AppMenuOption; onChange: (appName: AppMenu
 
 export const AppButtonLinks = ({ currentMenu, onChange, networkName }: AppNavAppsProps) => (
   <Box display="flex" alignItems="center" marginX={[2, 3, 4]} gap={2}>
-    {Object.entries(APP_LINK).map(([menu, { label, pages }]) => (
+    {Object.entries(APP_LINK).map(([menu, { label, routes }]) => (
       <Button
         key={menu}
         color="navigation"
@@ -15,7 +15,7 @@ export const AppButtonLinks = ({ currentMenu, onChange, networkName }: AppNavApp
         className={currentMenu === menu ? 'current' : ''}
         component={Link}
         onClick={() => onChange(menu as AppMenuOption)}
-        href={getInternalUrl(pages[0].app, networkName)}
+        href={getInternalUrl(routes[0].app, networkName)}
         data-testid={`app-link-${menu}`}
       >
         {label}
