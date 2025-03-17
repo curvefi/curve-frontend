@@ -82,5 +82,8 @@
   },
   {
     "campaign": "Bills.json"
+  },
+  {
+    "campaign": "StableLabs.json"
   }
 ]
