@@ -1,12 +1,4 @@
 import { useMemo } from 'react'
-import {
-  CompactUsdCell,
-  LineGraphCell,
-  MarketTitleCell,
-  PercentageCell,
-  RateCell,
-} from '@/loan/components/PageLlamaMarkets/cells'
-import { PriceCell } from '@/loan/components/PageLlamaMarkets/cells/PriceCell'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
@@ -15,20 +7,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Address } from '@ui-kit/utils'
+import { CompactUsdCell, LineGraphCell, MarketTitleCell, PercentageCell, PriceCell, RateCell } from './cells'
+import { MarketTitleHeaderCell } from './cells/MarketTitleHeaderCell'
+import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
 const { ColumnWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LlamaMarket>()
 
-const multiFilterFn: FilterFnOption<LlamaMarket> = (row, columnId, filterValue) =>
-  !filterValue?.length || filterValue.includes(row.getValue(columnId))
-const boolFilterFn: FilterFnOption<LlamaMarket> = (row, columnId, filterValue) =>
-  filterValue === undefined || Boolean(row.getValue(columnId)) === Boolean(filterValue)
-const listFilterFn: FilterFnOption<LlamaMarket> = (row, columnId, filterValue) =>
-  filterValue === undefined || row.getValue<unknown[]>(columnId).length > 0 === Boolean(filterValue)
-
 /** Define a hidden column. */
-const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
+export const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
   columnHelper.accessor(id, {
     filterFn,
     meta: { hidden: true },
@@ -37,9 +25,10 @@ const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
-    header: t`Collateral • Borrow`,
+    header: MarketTitleHeaderCell,
     cell: MarketTitleCell,
     size: ColumnWidth.lg,
+    filterFn: filterByText,
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,

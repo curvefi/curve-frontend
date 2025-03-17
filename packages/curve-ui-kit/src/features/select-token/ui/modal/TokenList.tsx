@@ -1,5 +1,5 @@
 import uniqBy from 'lodash/uniqBy'
-import { useMemo, useState, type ReactNode } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -10,12 +10,12 @@ import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { searchByText } from '@ui-kit/utils/searchText'
 import type { TokenOption as Option } from '../../types'
 import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
-import { SearchInput } from './SearchInput'
 import { TokenOption } from './TokenOption'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
@@ -265,7 +265,8 @@ export const TokenList = ({
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
       {showSearch && (
-        <SearchInput
+        <SearchField
+          name="tokenName"
           onSearch={(val) => {
             setSearch(val)
             onSearch(val)
