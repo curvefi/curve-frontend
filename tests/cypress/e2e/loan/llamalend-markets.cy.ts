@@ -70,13 +70,18 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
+    cy.get(`[data-testid="chip-lend"]`).click()
+    cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     cy.get('[data-testid="line-graph-lend"] path').first().should('have.attr', 'stroke', green)
     cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
-      cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
+      cy.get('[data-testid^="data-table-row"]')
+        .last()
+        .scrollIntoView({ offset: { top: -100, left: 0 } }) // scroll to the last row, make sure it's still visible
       cy.wait('@lend-snapshots')
       cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
       cy.wait(range(calls1.length).map(() => '@lend-snapshots'))

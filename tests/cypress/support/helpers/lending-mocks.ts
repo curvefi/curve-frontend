@@ -67,7 +67,7 @@ function oneLendingVaultResponse(chain: Chain) {
           {
             ...oneLendingPool(chain, oneFloat()),
             vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b', // fixed vault address to test campaign rewards
-            collateral_balance_usd: 0, // 0 liquidity to test the slider filter
+            total_assets_usd: 0, // 0 liquidity to test the slider filter
             total_debt_usd: 0, // 0 utilization to test the slider filter
           },
         ]

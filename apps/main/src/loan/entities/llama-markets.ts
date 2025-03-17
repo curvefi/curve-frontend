@@ -90,7 +90,7 @@ const convertLendingVault = (
     },
   },
   utilizationPercent: (100 * totalDebtUsd) / totalAssetsUsd,
-  liquidityUsd: collateralBalanceUsd + borrowedBalanceUsd,
+  liquidityUsd: totalAssetsUsd - totalDebtUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
   url: `${APP_LINK.lend.root}/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
