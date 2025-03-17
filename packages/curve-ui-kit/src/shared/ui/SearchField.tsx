@@ -32,7 +32,7 @@ export const SearchField = ({
   const resetSearch = useCallback(() => {
     setSearch('')
     onClose ? onClose() : ref.current?.focus()
-  }, [setSearch, ref])
+  }, [setSearch, ref, onClose])
   return (
     <TextField
       {...props}

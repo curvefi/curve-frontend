@@ -1,8 +1,10 @@
+import { useCallback } from 'react'
 import {
   DEFAULT_SORT,
   LLAMA_MARKET_COLUMNS,
   useDefaultMarketColumnsVisibility,
 } from '@/loan/components/PageLlamaMarkets/columns'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
@@ -15,8 +17,6 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
-import { useCallback } from 'react'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
