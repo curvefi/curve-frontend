@@ -1,24 +1,24 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
-import { APP_LINK, AppNames, type AppName } from '@ui-kit/shared/routes'
+import { APP_LINK, type AppMenuOption, getInternalUrl } from '@ui-kit/shared/routes'
 
-type AppNavAppsProps = { selectedApp: AppName; onChange: (appName: AppName) => void; networkName: string }
+type AppNavAppsProps = { currentMenu: AppMenuOption; onChange: (appName: AppMenuOption) => void; networkName: string }
 
-export const AppButtonLinks = ({ selectedApp, onChange, networkName }: AppNavAppsProps) => (
+export const AppButtonLinks = ({ currentMenu, onChange, networkName }: AppNavAppsProps) => (
   <Box display="flex" alignItems="center" marginX={[2, 3, 4]} gap={2}>
-    {AppNames.map((appName) => (
+    {Object.entries(APP_LINK).map(([menu, { label, pages }]) => (
       <Button
-        key={appName}
+        key={menu}
         color="navigation"
         size="small"
-        className={selectedApp === appName ? 'current' : ''}
+        className={currentMenu === menu ? 'current' : ''}
         component={Link}
-        onClick={() => onChange(appName)}
-        href={`${APP_LINK[appName].root}/${networkName}`}
-        data-testid={`app-link-${appName}`}
+        onClick={() => onChange(menu as AppMenuOption)}
+        href={getInternalUrl(pages[0].app, networkName)}
+        data-testid={`app-link-${menu}`}
       >
-        {APP_LINK[appName].label}
+        {label}
       </Button>
     ))}
   </Box>

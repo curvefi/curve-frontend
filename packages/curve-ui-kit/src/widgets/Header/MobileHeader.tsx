@@ -8,7 +8,7 @@ import { type Theme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import GlobalBanner from '@ui/Banner'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, AppName, findCurrentRoute, getAppUrl } from '@ui-kit/shared/routes'
+import { APP_LINK, findCurrentRoute, getInternalUrl } from '@ui-kit/shared/routes'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 import { HeaderStats } from './HeaderStats'
 import { MobileTopBar } from './MobileTopBar'
@@ -31,7 +31,7 @@ export const calcMobileHeaderHeight = (theme: Theme) => `2 * ${theme.spacing(pad
 
 export const MobileHeader = <TChainId extends number>({
   mainNavRef,
-  currentApp,
+  currentMenu,
   pages,
   appStats,
   sections,
@@ -58,19 +58,19 @@ export const MobileHeader = <TChainId extends number>({
   const otherAppSections = useMemo(
     () =>
       Object.entries(APP_LINK)
-        .filter(([appName]) => appName != currentApp)
+        .filter(([appName]) => appName != currentMenu)
         .map(([appName, { label, pages }]) => ({
           appName,
           title: label,
           pages: pages.map(
-            ({ route, label }): AppPage => ({
+            ({ app, route, label }): AppPage => ({
               label: label(),
-              route: getAppUrl(route, networkName, appName as AppName),
+              route: getInternalUrl(app, networkName, route),
               isActive: false,
             }),
           ),
         })),
-    [currentApp, networkName],
+    [currentMenu, networkName],
   )
   return (
     <>
@@ -80,7 +80,7 @@ export const MobileHeader = <TChainId extends number>({
           <MobileTopBar
             isLite={isLite}
             ChainProps={{ ...ChainProps, headerHeight: height }}
-            currentApp={currentApp}
+            currentMenu={currentMenu}
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
@@ -107,10 +107,10 @@ export const MobileHeader = <TChainId extends number>({
               </Stack>
 
               <SidebarSection
-                title={APP_LINK[currentApp].label}
-                pages={pages.map(({ route, label }) => ({
+                title={APP_LINK[currentMenu].label}
+                pages={pages.map(({ app, route, label }) => ({
                   label: label(),
-                  route: getAppUrl(route, networkName, currentApp),
+                  route: getInternalUrl(app, networkName, route),
                   isActive: route === currentRoute,
                 }))}
               />

@@ -2,7 +2,7 @@ import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
-import { APP_LINK } from '@ui-kit/shared/routes'
+import { getAppRoot } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
@@ -46,7 +46,7 @@ export const defaultNetworks = Object.entries({
       'factory-v2-370': true, // PRISMA/yPRISMA
     },
     swapCustomRouteRedirect: {
-      'sfrxeth-llamma': APP_LINK.crvusd.root,
+      'sfrxeth-llamma': getAppRoot('crvusd'),
     },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',

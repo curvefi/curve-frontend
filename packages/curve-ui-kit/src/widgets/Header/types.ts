@@ -1,8 +1,8 @@
-import { RefObject } from 'react'
-import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
-import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
-import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
-import { AppName } from '@ui-kit/shared/routes'
+import type { RefObject } from 'react'
+import type { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
+import type { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
+import type { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
+import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
 export type AppPage = {
   route: string // this is the full pathname to the page, including leading slash, the app name and the network
@@ -12,13 +12,13 @@ export type AppPage = {
 }
 
 export type AppRoute = {
+  app: AppName
   route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank' // note this is only used for external routes
 }
 
 export type AppRoutes = {
-  root: string // root to the application, e.g. /dex
   label: string
   pages: AppRoute[]
 }
@@ -30,7 +30,7 @@ export type NavigationSection = {
 
 export type BaseHeaderProps<TChainId = number> = {
   mainNavRef: RefObject<HTMLDivElement | null>
-  currentApp: AppName
+  currentMenu: AppMenuOption
   isLite?: boolean
   ChainProps: Omit<ChainSwitcherProps<TChainId>, 'headerHeight'>
   WalletProps: ConnectWalletIndicatorProps

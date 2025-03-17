@@ -1,9 +1,9 @@
-import { APP_LINK } from 'curve-ui-kit/src/shared/routes'
+import { APP_LINK, getInternalUrl } from 'curve-ui-kit/src/shared/routes'
 
 export default function sitemap() {
   return Object.entries(APP_LINK).flatMap(([app, { pages }]) =>
     pages.map((page) => ({
-      url: `${APP_LINK[app].root}${page.route}`,
+      url: getInternalUrl(app, 'ethereum', page.route),
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

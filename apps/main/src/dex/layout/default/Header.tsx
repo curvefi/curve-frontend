@@ -49,13 +49,14 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       networkName={rNetwork}
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
-      currentApp="dex"
+      currentMenu="dex"
       isLite={network?.isLite}
       pages={useMemo(
         () => [
           ...(hasRouter && (!network || network.showRouterSwap)
             ? [
                 {
+                  app: 'dex' as const,
                   route: _createSwapPath(network.swap, routerCached),
                   label: QuickSwap,
                 },

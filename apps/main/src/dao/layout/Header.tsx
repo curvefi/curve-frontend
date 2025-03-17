@@ -34,7 +34,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       networkName={rNetwork}
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
-      currentApp="dao"
+      currentMenu="dao"
       pages={APP_LINK.dao.pages}
       ChainProps={{
         options: visibleNetworksList,

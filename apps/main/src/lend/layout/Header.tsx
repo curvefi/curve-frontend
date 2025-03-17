@@ -36,8 +36,8 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
       networkName={rNetwork}
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
-      currentApp="lend"
-      pages={APP_LINK.lend.pages}
+      currentMenu="llamalend"
+      pages={APP_LINK.llamalend.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
