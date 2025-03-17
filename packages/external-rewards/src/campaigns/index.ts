@@ -24,7 +24,6 @@ import TurtleSeeds from './TurtleSeeds.json'
 import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
-import XPoints from './XPoints.json'
 import YieldFi from './YieldFi.json'
 import YieldNest from './YieldNest.json'
 
@@ -48,7 +47,6 @@ export {
   Inception,
   TurtleTotems,
   LevelMoney,
-  XPoints,
   DTrinity,
   YieldFi,
   Babylon,
