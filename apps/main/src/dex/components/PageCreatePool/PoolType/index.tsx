@@ -27,7 +27,7 @@ const PoolType = ({ chainId }: Props) => {
               selected={swapType === STABLESWAP}
               name={STABLESWAP}
               descriptionName={t`Stableswap`}
-              description={t`Bonding Curve specialising in pegged assets.`}
+              description={t`Bonding Curve specialising in pegged assets, also supports yield bearing stables.`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
               disabled={!stableswapFactory}
             />
