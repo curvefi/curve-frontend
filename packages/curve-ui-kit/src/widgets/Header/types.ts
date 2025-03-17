@@ -46,6 +46,5 @@ export type HeaderImplementationProps<TChainId> = HeaderBaseProps<TChainId> & {
 }
 
 export type HeaderProps<TChainId> = HeaderBaseProps<TChainId> & {
-  isMdUp: boolean
   routes: AppRoute[]
 }

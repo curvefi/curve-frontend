@@ -27,7 +27,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const chainId = useStore((state) => state.curve?.chainId)
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.isMdUp)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
@@ -48,7 +47,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
       currentMenu="dex"
       isLite={network?.isLite}
       routes={useMemo(

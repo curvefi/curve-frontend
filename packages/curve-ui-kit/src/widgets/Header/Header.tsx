@@ -10,7 +10,7 @@ import { HeaderProps } from './types'
 
 const isDesktopQuery = (theme: Theme) => theme.breakpoints.up('desktop')
 
-export const Header = <TChainId extends number>({ isMdUp, routes, ...props }: HeaderProps<TChainId>) => {
+export const Header = <TChainId extends number>({ routes, ...props }: HeaderProps<TChainId>) => {
   const isDesktop = useMediaQuery(isDesktopQuery, { noSsr: true })
   const pathname = usePathname()
   const { networkName } = props

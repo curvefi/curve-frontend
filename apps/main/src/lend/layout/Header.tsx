@@ -28,16 +28,14 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const { rNetwork } = getNetworkFromUrl()
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
 
   return (
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
-      currentMenu="llamalend"
-      routes={APP_LINK.llamalend.pages}
+      currentMenu="llama"
+      routes={APP_LINK.llama.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

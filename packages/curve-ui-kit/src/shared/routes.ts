@@ -35,7 +35,7 @@ export const DAO_ROUTES = {
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const AppMenuOptions = ['dex', 'llamalend', 'dao'] as const
+export const AppMenuOptions = ['dex', 'llama', 'dao'] as const // llamalend contains links to crvusd and lend
 export type AppMenuOption = (typeof AppMenuOptions)[number]
 
 export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
@@ -48,7 +48,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
       { app: 'dex', route: DEX_ROUTES.PAGE_DASHBOARD, label: () => t`Dashboard` },
     ],
   },
-  llamalend: {
+  llama: {
     label: 'Llamalend',
     pages: [
       { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
@@ -77,13 +77,13 @@ export const getInternalUrl = (app: AppName, networkName: string, route: string 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
   { route, target, label, app }: AppRoute,
-  { networkName, pathname }: { networkName: string; pathname: string },
+  { networkName, pathname }: { networkName: string; pathname: string | null },
 ): AppPage => {
   const href = route.startsWith('http') ? route : getInternalUrl(app, networkName, route)
   return {
     href,
     target,
     label: label(),
-    isActive: pathname.startsWith(href),
+    isActive: pathname?.startsWith(href),
   }
 }

@@ -31,7 +31,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
-  const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const updateConnectState = useStore((state) => state.updateConnectState)
@@ -44,9 +43,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
-      currentMenu="llamalend"
-      routes={APP_LINK.llamalend.pages}
+      currentMenu="llama"
+      routes={APP_LINK.llama.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

@@ -25,7 +25,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
@@ -33,7 +32,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
       currentMenu="dao"
       routes={APP_LINK.dao.pages}
       ChainProps={{
