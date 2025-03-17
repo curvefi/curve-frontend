@@ -15,6 +15,8 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
+import { useCallback } from 'react'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
@@ -43,7 +45,6 @@ export const LendingMarketsTable = ({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: { sorting, columnVisibility, columnFilters },
-    meta: { setColumnFilter },
     onSortingChange,
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
@@ -69,7 +70,12 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
+          setColumnFilter={setColumnFilter}
           onResetFilters={resetFilters}
+          onSearch={useCallback(
+            (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search),
+            [setColumnFilter],
+          )}
           collapsible={
             <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
           }

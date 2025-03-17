@@ -1,5 +1,6 @@
 import { kebabCase } from 'lodash'
-import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
+import { forwardRef, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import SearchIcon from '@mui/icons-material/Search'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
@@ -17,6 +18,7 @@ import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 import { FilterIcon } from '../icons/FilterIcon'
 import { ReloadIcon } from '../icons/ReloadIcon'
+import { SearchField } from './SearchField'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,10 +30,11 @@ const TableButton = forwardRef<
   {
     onClick: () => void
     active?: boolean
+    hidden?: boolean
     testId?: string
     icon: typeof SvgIcon
   }
->(function TableButton({ onClick, active, icon: Icon, testId }, ref) {
+>(function TableButton({ onClick, active, icon: Icon, testId, hidden }, ref) {
   return (
     <IconButton
       ref={ref}
@@ -42,6 +45,7 @@ const TableButton = forwardRef<
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
         transition: t.design.Button.Transition,
+        filter: hidden ? 'opacity(0)' : 'none',
       })}
     >
       <Icon />
@@ -63,6 +67,7 @@ export const TableFilters = ({
   toggleVisibility,
   collapsible,
   children,
+  onSearch,
 }: {
   title: string
   subtitle: string
@@ -73,10 +78,17 @@ export const TableFilters = ({
   toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode
   children: ReactNode
+  onSearch: (value: string) => void
 }) => {
+  const [isSearching, openSearch, closeSearch] = useSwitch()
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    isSearching && searchInputRef.current?.focus()
+  }, [isSearching])
+
   return (
     <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
       <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
@@ -85,6 +97,18 @@ export const TableFilters = ({
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
         <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
+          <Stack direction="row">
+            <TableButton onClick={openSearch} hidden={isSearching} icon={SearchIcon} testId="btn-search" />
+            <Collapse orientation="horizontal" in={isSearching}>
+              <SearchField
+                inputRef={searchInputRef}
+                onSearch={onSearch}
+                onClose={closeSearch}
+                size="small"
+                data-testid="llama-text-search"
+              />
+            </Collapse>
+          </Stack>
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}

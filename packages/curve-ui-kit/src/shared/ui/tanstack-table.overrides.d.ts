@@ -14,7 +14,5 @@ declare module '@tanstack/react-table' {
     hideZero?: boolean
   }
 
-  export interface TableMeta<TData extends RowData> {
-    setColumnFilter(id: string, value: unknown): void
-  }
+  interface TableMeta<TData extends RowData> {}
 }

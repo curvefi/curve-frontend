@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { RefObject, useCallback, useRef } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search'
 import IconButton from '@mui/material/IconButton'
@@ -9,6 +9,8 @@ import { t } from '@ui-kit/lib/i18n'
 
 type SearchFieldProps = TextFieldProps & {
   onSearch: (search: string) => void
+  onClose?: () => void
+  inputRef?: RefObject<HTMLInputElement | null>
 }
 
 const defaultSearch = ''
@@ -18,15 +20,18 @@ const defaultSearch = ''
  */
 export const SearchField = ({
   onSearch,
+  onClose,
   placeholder = t`Search name or paste address`,
   name = 'search',
+  inputRef,
   ...props
 }: SearchFieldProps) => {
   const [search, setSearch] = useUniqueDebounce<string>(defaultSearch, onSearch)
-  const ref = useRef<HTMLInputElement | null>(null)
+  const localInputRef = useRef<HTMLInputElement | null>(null)
+  const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {
     setSearch('')
-    ref.current?.focus()
+    onClose ? onClose() : ref.current?.focus()
   }, [setSearch, ref])
   return (
     <TextField
@@ -38,7 +43,7 @@ export const SearchField = ({
         htmlInput: { ref },
         input: {
           startAdornment: <SearchIcon />,
-          endAdornment: search && (
+          endAdornment: (onClose || search) && (
             <IconButton size="extraSmall" onClick={resetSearch}>
               <CloseIcon />
             </IconButton>
