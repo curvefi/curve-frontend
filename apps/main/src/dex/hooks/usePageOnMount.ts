@@ -187,7 +187,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
   // onMount
   useEffect(() => {
-    if (connectState.status === '' && connectState.stage === '') {
+    if (connectState.status === '' && connectState.stage === '' && Object.values(networksIdMapper).length) {
       const routerNetwork = params.network?.toLowerCase()
       const routerNetworkId = routerNetwork ? networksIdMapper[routerNetwork as INetworkName] : null
       const isActiveNetwork = routerNetworkId ? (networks[routerNetworkId]?.isActiveNetwork ?? false) : false

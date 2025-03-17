@@ -84,6 +84,6 @@ export const routeToPage = (
     href,
     target,
     label: label(),
-    isActive: pathname?.startsWith(href),
+    isActive: pathname?.startsWith(href.split('?')[0]),
   }
 }
