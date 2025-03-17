@@ -451,6 +451,7 @@ const QuickSwap = ({
               balances={userBalancesMapper}
               disabled={isDisable || !toToken}
               tokenPrices={usdRatesMapper}
+              disableMyTokens={true}
               onToken={(token) => {
                 const toAddress = token.address
                 const fromAddress =
