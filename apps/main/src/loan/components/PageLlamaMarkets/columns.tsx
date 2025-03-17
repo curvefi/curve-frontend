@@ -16,7 +16,7 @@ const { ColumnWidth } = SizesAndSpaces
 const columnHelper = createColumnHelper<LlamaMarket>()
 
 /** Define a hidden column. */
-export const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
+const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
   columnHelper.accessor(id, {
     filterFn,
     meta: { hidden: true },

@@ -1,7 +1,6 @@
-import '@tanstack/react-table'
 import '@tanstack/table-core'
-import type { RowData } from '@tanstack/table-core/src/types'
-import { TypographyVariantKey } from '../../themes/typography'
+import type { RowData } from '@tanstack/table-core'
+import type { TypographyVariantKey } from '../../themes/typography'
 
 /**
  * Extend the tanstack ColumnMeta interface to add our custom properties
