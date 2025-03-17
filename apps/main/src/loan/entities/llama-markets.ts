@@ -95,7 +95,7 @@ const convertLendingVault = (
   type: LlamaMarketType.Lend,
   url: `${APP_LINK.lend.root}/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
   isFavorite: favoriteMarkets.has(vault),
-  rewards: campaigns[vault.toLowerCase()] ?? [],
+  rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
   leverage,
   userHasPosition: userVaults.has(controller),
 })
@@ -148,7 +148,7 @@ const convertMintMarket = (
     `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
   ),
   isFavorite: favoriteMarkets.has(address),
-  rewards: campaigns[address.toLowerCase()] ?? [],
+  rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
   leverage: 0,
   userHasPosition: userMintMarkets.has(address),
 })
