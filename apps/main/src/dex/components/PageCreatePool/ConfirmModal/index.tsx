@@ -43,14 +43,17 @@ const ConfirmModal = ({
   fixedNavButton,
   hideOnMediumSize,
 }: Props) => {
-  const {
-    transactionState: { txStatus, txLink, transaction, poolId, fetchPoolStatus },
-    tokensInPool,
-    poolName,
-    userAddedTokens,
-    validation,
-    resetState,
-  } = useStore((state) => state.createPool)
+  const transactionState = useStore((state) => state.createPool.transactionState)
+  const txStatus = transactionState.txStatus
+  const txLink = transactionState.txLink
+  const transaction = transactionState.transaction
+  const poolId = transactionState.poolId
+  const fetchPoolStatus = transactionState.fetchPoolStatus
+  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
+  const poolName = useStore((state) => state.createPool.poolName)
+  const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
+  const validation = useStore((state) => state.createPool.validation)
+  const resetState = useStore((state) => state.createPool.resetState)
 
   const { push } = useRouter()
   const params = useParams() as UrlParams

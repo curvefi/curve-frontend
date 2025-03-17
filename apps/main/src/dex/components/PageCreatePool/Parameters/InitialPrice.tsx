@@ -13,10 +13,11 @@ type Props = {
 }
 
 const InitialPrice = ({ curve }: Props) => {
-  const {
-    tokensInPool: { tokenA, tokenB, tokenC, tokenAmount },
-    initialPrice,
-  } = useStore((state) => state.createPool)
+  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
+  const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
+  const initialPrice = useStore((state) => state.createPool.initialPrice)
   const updateTokenPrice = useStore((state) => state.createPool.updateTokenPrice)
 
   return (

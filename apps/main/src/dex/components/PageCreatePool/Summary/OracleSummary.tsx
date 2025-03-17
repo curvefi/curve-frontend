@@ -26,9 +26,14 @@ type OracleTokenSummaryProps = {
 }
 
 const OracleSummary = ({ chainId }: Props) => {
-  const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
-    (state) => state.createPool.tokensInPool,
-  )
+  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
+  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
+  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
+  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
+  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
+  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
 
   return (
     <OraclesWrapper>

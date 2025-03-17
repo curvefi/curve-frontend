@@ -13,7 +13,9 @@ import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 const PoolInfoSummary = () => {
-  const { poolSymbol, poolName, validation } = useStore((state) => state.createPool)
+  const poolSymbol = useStore((state) => state.createPool.poolSymbol)
+  const poolName = useStore((state) => state.createPool.poolName)
+  const validation = useStore((state) => state.createPool.validation)
 
   return (
     <StyledCategoryColumn>
