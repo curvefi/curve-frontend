@@ -70,7 +70,6 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
-          setColumnFilter={setColumnFilter}
           onResetFilters={resetFilters}
           onSearch={useCallback(
             (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search),
