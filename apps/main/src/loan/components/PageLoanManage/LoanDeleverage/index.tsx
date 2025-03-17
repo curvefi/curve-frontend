@@ -68,7 +68,7 @@ const LoanDeleverage = ({
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

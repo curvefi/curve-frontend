@@ -35,7 +35,7 @@ const DetailInfo = ({
   const formValues = useStore((state) => state.loanRepay.formValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const detailInfo = detailInfoNonLeverage ?? detailInfoLeverage
 

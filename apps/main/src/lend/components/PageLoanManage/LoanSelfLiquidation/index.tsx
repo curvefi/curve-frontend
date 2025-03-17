@@ -52,7 +52,7 @@ const LoanSelfLiquidation = ({
   const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
   const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
