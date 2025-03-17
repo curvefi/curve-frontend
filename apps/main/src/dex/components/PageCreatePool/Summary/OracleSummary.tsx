@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { getAddress } from 'viem'
+import { isAddress } from 'viem'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -76,19 +76,15 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
         <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
         {token.oracleAddress === '' ? (
           <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
-        ) : (
+        ) : isAddress(token.oracleAddress) ? (
           <SummaryData>
-            {token.oracleAddress.length === 42 ? (
-              <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
-                {shortenAddress(token.oracleAddress)}
-                <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
-              </AddressLink>
-            ) : token.oracleAddress.length > 13 ? (
-              shortenAddress(token.oracleAddress)
-            ) : (
-              getAddress(token.oracleAddress)
-            )}
+            <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
+              {shortenAddress(token.oracleAddress)}
+              <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
+            </AddressLink>
           </SummaryData>
+        ) : (
+          <SummaryDataPlaceholder>{t`Invalid address`}</SummaryDataPlaceholder>
         )}
       </CategoryDataRow>
       <CategoryDataRow>

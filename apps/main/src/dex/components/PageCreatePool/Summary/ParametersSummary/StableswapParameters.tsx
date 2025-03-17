@@ -14,11 +14,12 @@ type Props = {
 }
 
 const StableswapParameters = ({ chainId }: Props) => {
-  const {
-    parameters: { stableSwapFee, stableA, maExpTime, offpegFeeMultiplier },
-    advanced,
-  } = useStore((state) => state.createPool)
-  const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
+  const advanced = useStore((state) => state.createPool.advanced)
+  const stableSwapFee = useStore((state) => state.createPool.parameters.stableSwapFee)
+  const stableA = useStore((state) => state.createPool.parameters.stableA)
+  const maExpTime = useStore((state) => state.createPool.parameters.maExpTime)
+  const offpegFeeMultiplier = useStore((state) => state.createPool.parameters.offpegFeeMultiplier)
+  const stableswapFactory = useStore((state) => state.networks.networks[chainId].stableswapFactory)
 
   return (
     <>

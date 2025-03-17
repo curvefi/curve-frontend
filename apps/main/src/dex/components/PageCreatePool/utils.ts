@@ -1,7 +1,7 @@
+import { isAddress } from 'viem'
 import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { BasePool } from '@/dex/types/main.types'
-
 export const checkSwapType = (swapType: SwapType) => swapType !== ''
 
 export const checkTokensInPoolUnset = (
@@ -77,7 +77,7 @@ export const checkParameters = (
 export const checkPoolInfo = (stableswapNg: boolean, swapType: SwapType, poolSymbol: string, poolName: string) =>
   poolSymbol !== '' && poolName !== '' && (swapType == STABLESWAP || stableswapNg)
 
-export const checkOracle = (oracle: string) => oracle.length === 42
+export const checkOracle = (oracle: string) => oracle.length === 42 && isAddress(oracle)
 
 export const validateOracleFunction = (functionName: string) => functionName.endsWith('()')
 

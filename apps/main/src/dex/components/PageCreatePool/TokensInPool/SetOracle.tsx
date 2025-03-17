@@ -1,5 +1,6 @@
 import { debounce } from 'lodash'
 import styled from 'styled-components'
+import { isAddress } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -83,6 +84,9 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       )}
       {token.oracleAddress.length !== 0 && token.oracleAddress.length < 42 && (
         <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
+      )}
+      {token.oracleAddress.length === 42 && !isAddress(token.oracleAddress) && (
+        <WarningBox message={t`Invalid EVM address.`} />
       )}
       <TextInput
         row
