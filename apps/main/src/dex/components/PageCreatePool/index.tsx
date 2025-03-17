@@ -40,7 +40,6 @@ const CreatePool = ({ curve }: Props) => {
     tokensInPool,
     parameters,
     poolName,
-    assetType,
     initialPrice,
     navigationIndex,
     setNavigationIndex,
@@ -161,10 +160,8 @@ const CreatePool = ({ curve }: Props) => {
 
   useEffect(() => {
     if (!chainId) return
-    updatePoolInfoValidation(
-      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType),
-    )
-  }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
+    updatePoolInfoValidation(checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName))
+  }, [chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>
@@ -194,7 +191,7 @@ const CreatePool = ({ curve }: Props) => {
                   {navigationIndex === 0 && <PoolType chainId={chainId} />}
                   {navigationIndex === 1 && <TokensInPool curve={curve} chainId={chainId} haveSigner={haveSigner} />}
                   {navigationIndex === 2 && <Parameters curve={curve} chainId={chainId} haveSigner={haveSigner} />}
-                  {navigationIndex === 3 && <PoolInfo chainId={chainId} />}
+                  {navigationIndex === 3 && <PoolInfo />}
                 </CreateFlowContainer>
               )}
             </CreateBoxStyles>

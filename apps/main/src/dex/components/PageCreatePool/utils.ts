@@ -74,13 +74,8 @@ export const checkParameters = (
   return false
 }
 
-export const checkPoolInfo = (
-  stableswapNg: boolean,
-  swapType: SwapType,
-  poolSymbol: string,
-  poolName: string,
-  assetType: string | null,
-) => poolSymbol !== '' && poolName !== '' && (swapType == STABLESWAP || stableswapNg || assetType !== null)
+export const checkPoolInfo = (stableswapNg: boolean, swapType: SwapType, poolSymbol: string, poolName: string) =>
+  poolSymbol !== '' && poolName !== '' && (swapType == STABLESWAP || stableswapNg)
 
 export const checkOracle = (oracle: string) => oracle.length === 42
 

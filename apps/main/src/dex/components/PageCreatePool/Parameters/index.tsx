@@ -12,7 +12,6 @@ import {
   POOL_PRESETS,
 } from '@/dex/components/PageCreatePool/constants'
 import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
-import SelectPoolImplementation from '@/dex/components/PageCreatePool/Parameters/SelectPoolImplementation'
 import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
@@ -321,8 +320,6 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                       />
                     </>
                   )}
-                  {/* Select pool implementation when stableswap-ng is not available on the current chain */}
-                  {!networks[chainId].stableswapFactory && <SelectPoolImplementation chainId={chainId} />}
                 </>
               )}
               {advanced && swapType !== STABLESWAP && (

@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryColumn,
   CategoryDataRow,
@@ -10,17 +9,11 @@ import {
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import useStore from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
-  chainId: ChainId
-}
-
-const PoolInfoSummary = ({ chainId }: Props) => {
-  const { poolSymbol, swapType, poolName, assetType, validation } = useStore((state) => state.createPool)
-  const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
+const PoolInfoSummary = () => {
+  const { poolSymbol, poolName, validation } = useStore((state) => state.createPool)
 
   return (
     <StyledCategoryColumn>
@@ -46,16 +39,6 @@ const PoolInfoSummary = ({ chainId }: Props) => {
           <SummaryData>{poolSymbol}</SummaryData>
         )}
       </CategoryDataRow>
-      {swapType === STABLESWAP && stableswapFactory && (
-        <CategoryDataRow>
-          <SummaryDataTitle>{t`Asset Type:`}</SummaryDataTitle>
-          {assetType === null ? (
-            <SummaryDataPlaceholder>{t`No asset type set`}</SummaryDataPlaceholder>
-          ) : (
-            <SummaryData>{assetType}</SummaryData>
-          )}
-        </CategoryDataRow>
-      )}
     </StyledCategoryColumn>
   )
 }

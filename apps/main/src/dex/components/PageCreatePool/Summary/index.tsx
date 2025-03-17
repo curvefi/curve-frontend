@@ -29,7 +29,7 @@ const Summary = ({ blockchainId, chainId, curve }: Props) => {
         <PoolTypeSummary />
         <TokensInPoolSummary blockchainId={blockchainId} chainId={chainId} />
         <ParametersSummary chainId={chainId} />
-        <PoolInfoSummary chainId={chainId} />
+        <PoolInfoSummary />
       </SummaryBox>
       <BottomBox flex>
         <ConfirmModal

@@ -64,8 +64,8 @@ const InitialPrice = ({ curve }: Props) => {
               )}
             </InputsWrapper>
             <SwitchWrapper>
-              <StyledSwitchTokensButton curve={curve} from={'tokenA'} to={'tokenB'} />
-              {tokenAmount === 3 && <StyledSwitchTokensButton curve={curve} from={'tokenB'} to={'tokenC'} />}
+              <SwitchTokensButton curve={curve} from={'tokenA'} to={'tokenB'} />
+              {tokenAmount === 3 && <SwitchTokensButton curve={curve} from={'tokenB'} to={'tokenC'} />}
             </SwitchWrapper>
           </InputSwitchWrapper>
           <InitialPriceWrapper>
@@ -94,7 +94,6 @@ const InitialPrice = ({ curve }: Props) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  /* column-gap: var(--spacing-3); */
   @media (min-width: 41.25rem) {
     flex-direction: row;
   }
@@ -115,10 +114,6 @@ const SwitchWrapper = styled(Box)`
   align-content: space-around;
   padding: var(--spacing-3) 0;
   margin: 2.15em var(--spacing-1) 0;
-`
-
-const StyledSwitchTokensButton = styled(SwitchTokensButton)`
-  /* margin-top: var(--spacing-2); */
 `
 
 const DisabledMessage = styled.h5`

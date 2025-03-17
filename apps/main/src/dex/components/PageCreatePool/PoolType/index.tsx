@@ -15,7 +15,7 @@ const PoolType = ({ chainId }: Props) => {
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
   const networks = useStore((state) => state.networks.networks)
 
-  const { stableswapFactory, stableswapFactoryOld, tricryptoFactory, twocryptoFactory } = networks[chainId]
+  const { stableswapFactory, tricryptoFactory, twocryptoFactory } = networks[chainId]
 
   return (
     <>
@@ -29,9 +29,9 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Stableswap`}
               description={t`Bonding Curve specialising in pegged assets.`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
-              disabled={!stableswapFactory && !stableswapFactoryOld}
+              disabled={!stableswapFactory}
             />
-            {!stableswapFactory && !stableswapFactoryOld && (
+            {!stableswapFactory && (
               <DisabledMessage>{t`Stableswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
           </SelectButtonWrapper>

@@ -202,7 +202,7 @@ const ConfirmModal = ({
                   <PoolTypeSummary />
                   <TokensInPoolSummary blockchainId={blockchainId} chainId={chainId} />
                   <ParametersSummary chainId={chainId} />
-                  <PoolInfoSummary chainId={chainId} />
+                  <PoolInfoSummary />
                 </SummaryContent>
               )}
             </BlurWrapper>

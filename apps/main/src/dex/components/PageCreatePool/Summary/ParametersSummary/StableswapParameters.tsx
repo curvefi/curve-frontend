@@ -1,4 +1,3 @@
-import { IMPLEMENTATION_IDS } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -18,12 +17,8 @@ const StableswapParameters = ({ chainId }: Props) => {
   const {
     parameters: { stableSwapFee, stableA, maExpTime, offpegFeeMultiplier },
     advanced,
-    implementation,
   } = useStore((state) => state.createPool)
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
-
-  const implementations = IMPLEMENTATION_IDS(nativeToken)
 
   return (
     <>
@@ -61,12 +56,6 @@ const StableswapParameters = ({ chainId }: Props) => {
                 )}
               </CategoryDataRow>
             </>
-          )}
-          {!stableswapFactory && advanced && (
-            <CategoryDataRow>
-              <SummaryDataTitle>{t`Pool Implementation:`}</SummaryDataTitle>
-              <SummaryData>{implementations[implementation].name}</SummaryData>
-            </CategoryDataRow>
           )}
         </>
       )}
