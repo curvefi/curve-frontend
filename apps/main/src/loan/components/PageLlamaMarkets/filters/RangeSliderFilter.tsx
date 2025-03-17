@@ -6,7 +6,7 @@ import type { SliderProps } from '@mui/material/Slider/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { useSearchDebounce } from '@ui-kit/hooks/useDebounce'
+import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 /**
@@ -43,7 +43,7 @@ export const RangeSliderFilter = <T extends unknown>({
   const step = useMemo(() => Math.ceil(+max.toPrecision(2) / 100), [max])
   const defaultValue = useMemo(() => (columnFilters[id] ?? [0, max]) as Range, [columnFilters, id, max])
 
-  const [range, setRange] = useSearchDebounce(
+  const [range, setRange] = useUniqueDebounce(
     defaultValue,
     useCallback((newRange: Range) => setColumnFilter(id, newRange as Range), [id, setColumnFilter]),
   )

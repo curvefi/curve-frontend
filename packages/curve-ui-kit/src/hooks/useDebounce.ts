@@ -75,7 +75,7 @@ const SearchDebounceMs = 166 // 10 frames at 60fps
 /**
  * A hook that debounces a search value and calls a callback when the debounce period has elapsed.
  */
-export function useSearchDebounce<T>(defaultValue: T, callback: (value: T) => void, debounceMs = SearchDebounceMs) {
+export function useUniqueDebounce<T>(defaultValue: T, callback: (value: T) => void, debounceMs = SearchDebounceMs) {
   const lastValue = useRef(defaultValue)
   const debounceCallback = useCallback(
     (value: T) => {
