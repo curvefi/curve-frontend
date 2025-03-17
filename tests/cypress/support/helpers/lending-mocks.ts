@@ -65,10 +65,20 @@ function oneLendingVaultResponse(chain: Chain) {
     ...(chain == 'ethereum'
       ? [
           {
+            // fixed vault address to test campaign rewards
             ...oneLendingPool(chain, oneFloat()),
-            vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b', // fixed vault address to test campaign rewards
-            total_assets_usd: 0, // 0 liquidity to test the slider filter
-            total_debt_usd: 0, // 0 utilization to test the slider filter
+            vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
+          },
+          {
+            // 0 liquidity to test the slider filter
+            ...oneLendingPool(chain, oneFloat()),
+            total_assets_usd: 100,
+            total_debt_usd: 100,
+          },
+          {
+            // 0 utilization to test the slider filter
+            ...oneLendingPool(chain, oneFloat()),
+            total_debt_usd: 0,
           },
         ]
       : []),

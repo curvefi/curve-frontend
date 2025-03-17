@@ -139,7 +139,7 @@ const convertMintMarket = (
       chain,
     },
   },
-  utilizationPercent: (100 * borrowed) / debtCeiling,
+  utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
   liquidityUsd: borrowable,
   rates: { borrow: rate, lend: null },
   type: LlamaMarketType.Mint,
