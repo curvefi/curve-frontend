@@ -51,7 +51,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       isMdUp={isMdUp}
       currentMenu="dex"
       isLite={network?.isLite}
-      pages={useMemo(
+      routes={useMemo(
         () => [
           ...(hasRouter && (!network || network.showRouterSwap)
             ? [

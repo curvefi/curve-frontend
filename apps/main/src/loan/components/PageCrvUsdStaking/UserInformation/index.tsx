@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from 'ui/src/images'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
@@ -8,11 +9,12 @@ import Typography from '@mui/material/Typography'
 import Icon from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
-import { APP_LINK, getAppRoot } from '@ui-kit/shared/routes'
+import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
 const { Spacing } = SizesAndSpaces
 
-const UserInformation = () => {
+const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => {
   const {
     design: { Layer },
   } = useTheme()
@@ -41,7 +43,8 @@ const UserInformation = () => {
             {t`You can acquire it on the open markets or borrow it in the LLAMALEND markets.`}
           </Typography>
           <Typography variant="bodyMRegular">
-            {t`We recommend using Curve's`} <Link href={getAppRoot('dex')}>QuickSwap</Link>
+            {t`We recommend using Curve's`}{' '}
+            <Link href={getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}>QuickSwap</Link>
             {t`, or alternatively an aggregator like`}{' '}
             <Link href="https://swap.cow.fi/#/1/swap/WETH/crvUSD">Cowswap</Link>.
           </Typography>

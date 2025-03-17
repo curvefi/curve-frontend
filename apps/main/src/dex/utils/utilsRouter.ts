@@ -2,8 +2,10 @@ import { useMemo } from 'react'
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { FormTypes, NetworkEnum, RouterParams, type UrlParams } from '@/dex/types/main.types'
+import { getInternalUrl } from '@ui-kit/shared/routes'
 
-export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dex/${network}${rerouteRoute}`
+/** Get the path for the given route in this app */
+export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('dex', network, route)
 
 export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean) {
   const { pool, formType } = params

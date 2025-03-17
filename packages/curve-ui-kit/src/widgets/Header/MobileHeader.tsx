@@ -8,14 +8,14 @@ import { type Theme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import GlobalBanner from '@ui/Banner'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, findCurrentRoute, getInternalUrl } from '@ui-kit/shared/routes'
+import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 import { HeaderStats } from './HeaderStats'
 import { MobileTopBar } from './MobileTopBar'
 import { SideBarFooter } from './SideBarFooter'
 import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
-import { AppPage, BaseHeaderProps } from './types'
+import { HeaderImplementationProps } from './types'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -41,12 +41,11 @@ export const MobileHeader = <TChainId extends number>({
   isLite = false,
   networkName,
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
-}: BaseHeaderProps<TChainId>) => {
+}: HeaderImplementationProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
-  const currentRoute = useMemo(() => pathname && findCurrentRoute(pathname, pages), [pathname, pages])
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
@@ -62,15 +61,9 @@ export const MobileHeader = <TChainId extends number>({
         .map(([appName, { label, pages }]) => ({
           appName,
           title: label,
-          pages: pages.map(
-            ({ app, route, label }): AppPage => ({
-              label: label(),
-              route: getInternalUrl(app, networkName, route),
-              isActive: false,
-            }),
-          ),
+          pages: pages.map((p) => routeToPage(p, { networkName, pathname })),
         })),
-    [currentMenu, networkName],
+    [currentMenu, networkName, pathname],
   )
   return (
     <>
@@ -106,14 +99,7 @@ export const MobileHeader = <TChainId extends number>({
                 <HeaderStats appStats={appStats} />
               </Stack>
 
-              <SidebarSection
-                title={APP_LINK[currentMenu].label}
-                pages={pages.map(({ app, route, label }) => ({
-                  label: label(),
-                  route: getInternalUrl(app, networkName, route),
-                  isActive: route === currentRoute,
-                }))}
-              />
+              <SidebarSection title={APP_LINK[currentMenu].label} pages={pages} />
 
               {otherAppSections.map(({ appName, ...props }) => (
                 <SidebarSection key={appName} {...props} />

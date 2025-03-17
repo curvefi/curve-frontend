@@ -35,7 +35,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentMenu="dao"
-      pages={APP_LINK.dao.pages}
+      routes={APP_LINK.dao.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

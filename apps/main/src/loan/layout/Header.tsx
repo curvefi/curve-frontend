@@ -46,7 +46,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       mainNavRef={mainNavRef}
       isMdUp={isMdUp}
       currentMenu="llamalend"
-      pages={APP_LINK.llamalend.pages}
+      routes={APP_LINK.llamalend.pages}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import type { AppRoutes } from '@ui-kit/widgets/Header/types'
+import type { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
@@ -35,9 +35,10 @@ export const DAO_ROUTES = {
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const getAppRoot = (app: AppName) => `/${app}`
+export const AppMenuOptions = ['dex', 'llamalend', 'dao'] as const
+export type AppMenuOption = (typeof AppMenuOptions)[number]
 
-export const APP_LINK = {
+export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   dex: {
     label: 'DEX',
     pages: [
@@ -51,8 +52,8 @@ export const APP_LINK = {
     label: 'Llamalend',
     pages: [
       { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Mint` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Markets (beta)` },
+      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
+      { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
     ],
@@ -67,15 +68,22 @@ export const APP_LINK = {
       { app: 'dao', route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
   },
-} as const satisfies Record<string, AppRoutes>
+}
 
-export type AppMenuOption = keyof typeof APP_LINK
-
+/** Returns the full pathname for a given app and network */
 export const getInternalUrl = (app: AppName, networkName: string, route: string = '/') =>
-  `${getAppRoot(app)}/${networkName}${route}`
+  `/${app}/${networkName}${route}`
 
-export const findCurrentRoute = (pathname: string, pages: { route: string }[]) => {
-  const [_, _app, _network, ...route] = pathname.split('/')
-  const routePath = `/${route.join('/')}`
-  return pages.find((p) => routePath.startsWith(p.route))?.route
+/** Converts a route to a page object, adding href and isActive properties */
+export const routeToPage = (
+  { route, target, label, app }: AppRoute,
+  { networkName, pathname }: { networkName: string; pathname: string },
+): AppPage => {
+  const href = route.startsWith('http') ? route : getInternalUrl(app, networkName, route)
+  return {
+    href,
+    target,
+    label: label(),
+    isActive: pathname.startsWith(href),
+  }
 }
