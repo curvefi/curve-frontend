@@ -7,7 +7,7 @@ import {
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
-import { LlamaMarket, type LlamaMarketsResult } from '@/loan/entities/llama-markets'
+import { type LlamaMarketsResult } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
 import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 import { useWallet } from '@ui-kit/features/connect-wallet'

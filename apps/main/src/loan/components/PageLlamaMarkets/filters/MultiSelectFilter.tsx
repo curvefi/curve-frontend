@@ -11,8 +11,8 @@ import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
+import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
