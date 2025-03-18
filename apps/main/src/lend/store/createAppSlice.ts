@@ -16,7 +16,6 @@ type SliceState = {
   connectState: ConnectState
   isLoadingApi: boolean
   isLoadingCurve: true
-  isMobile: boolean
   isPageVisible: boolean
   scrollY: number
 }
@@ -37,7 +36,6 @@ const DEFAULT_STATE: SliceState = {
   connectState: { status: '', stage: '' },
   isLoadingApi: true,
   isLoadingCurve: true,
-  isMobile: false,
   isPageVisible: true,
   scrollY: 0,
 }
