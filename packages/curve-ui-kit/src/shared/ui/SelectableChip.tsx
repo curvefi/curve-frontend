@@ -16,6 +16,7 @@ export const SelectableChip = ({
   toggle: () => void
 } & ChipProps) => (
   <Chip
+    size="large"
     clickable
     color={selected ? 'selected' : 'unselected'}
     onDelete={toggle}
@@ -24,7 +25,7 @@ export const SelectableChip = ({
       <CancelIcon
         sx={{
           transition: `width ${TransitionFunction}, height ${TransitionFunction}`,
-          ...(!selected && { '&&': { width: 0, height: 0 } }),
+          ...(!selected && { '&&&': { width: 0, height: 0 } }),
         }}
       />
     }

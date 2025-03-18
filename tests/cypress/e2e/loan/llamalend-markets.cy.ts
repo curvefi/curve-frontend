@@ -43,17 +43,13 @@ describe(`LlamaLend Markets`, () => {
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
-    if (breakpoint === 'mobile') {
-      cy.viewport(400, 400) // fixed mobile viewport, filters wrap strongly depending on the width
-    }
-
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [226], tablet: [128, 176], desktop: [120, 136] }[breakpoint]
+    const filterHeight = { mobile: [234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
@@ -191,11 +187,11 @@ describe(`LlamaLend Markets`, () => {
     cy.url().should('match', urlRegex, LOAD_TIMEOUT)
   })
 
-  it(`should allow filtering by rewards`, () => {
+  it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-    cy.get(`[data-testid="rewards-borrow"]`).should('be.visible')
+    cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })

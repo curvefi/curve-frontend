@@ -46,7 +46,7 @@ export const LendingMarketsFilters = ({
   setColumnFilter: (id: string, value: unknown) => void
   data: LlamaMarket[]
 }) => (
-  <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
+  <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
         field={LlamaMarketColumnId.Chain}

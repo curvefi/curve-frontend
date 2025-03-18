@@ -80,13 +80,14 @@ export const TableFilters = ({
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
-      <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
+    <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 16px)">
+      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs}>
+        {/* flex-wrap below is for screens < 500px */}
+        <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}
@@ -104,10 +105,10 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 5, desktop: 5 }}>
+        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
           <TableSearchField onSearch={onSearch} />
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 7, desktop: 6 }} justifyContent="flex-end" gap={0}>
+        <Grid size={{ mobile: 12, tablet: 7, desktop: 8 }} justifyContent="flex-end" gap={0}>
           {children}
         </Grid>
       </Grid>

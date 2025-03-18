@@ -20,7 +20,6 @@ export const TableSearchField = ({ onSearch }: { onSearch: (value: string) => vo
             borderColor: `transparent transparent ${t.design.Inputs.Base.Default.Border.Default} transparent`,
           },
         }),
-        maxWidth: '320px',
       })}
     />
   )

@@ -14,10 +14,9 @@ export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; h
     sx={{
       minWidth: 0,
       marginInlineStart: Spacing.xs,
-      transition: `font-size ${TransitionFunction}, border ${TransitionFunction}, padding ${TransitionFunction}, margin ${TransitionFunction}`,
+      transition: `font-size ${TransitionFunction}, padding ${TransitionFunction}, margin ${TransitionFunction}`,
       ...(hidden && {
         fontSize: '0 !important', // unfortunately, MUI overrides the font-size very specifically
-        border: 0,
         padding: 0,
         marginInlineStart: '-16px', // negative margin to compensate for the flex gap
       }),
