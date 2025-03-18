@@ -48,7 +48,7 @@ export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, .
         false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
       }
       sx={{
-        '& .MuiPaper-root': {
+        '& .MuiPaper-root:not(.MuiAlert-root)': {
           overflowY: 'hidden',
           maxHeight: MaxHeight.tokenSelector,
           height: 'auto',
