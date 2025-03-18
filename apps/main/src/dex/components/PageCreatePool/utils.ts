@@ -77,7 +77,7 @@ export const checkParameters = (
 export const checkPoolInfo = (stableswapNg: boolean, swapType: SwapType, poolSymbol: string, poolName: string) =>
   poolSymbol !== '' && poolName !== '' && (swapType == STABLESWAP || stableswapNg)
 
-export const checkOracle = (oracle: string) => oracle.length === 42 && isAddress(oracle)
+export const checkOracle = isAddress
 
 export const validateOracleFunction = (functionName: string) => functionName.endsWith('()')
 
