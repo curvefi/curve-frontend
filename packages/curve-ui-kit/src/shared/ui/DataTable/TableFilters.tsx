@@ -86,7 +86,8 @@ export const TableFilters = ({
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs}>
+        {/* flex-wrap below is for screens < 500px */}
+        <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}
