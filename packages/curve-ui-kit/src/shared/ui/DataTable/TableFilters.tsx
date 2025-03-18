@@ -11,12 +11,12 @@ import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
-import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
-import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
-import { FilterIcon } from '../icons/FilterIcon'
-import { ReloadIcon } from '../icons/ReloadIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FilterIcon } from '../../icons/FilterIcon'
+import { ReloadIcon } from '../../icons/ReloadIcon'
+import { ToolkitIcon } from '../../icons/ToolkitIcon'
+import { TableSearchField } from './TableSearchField'
+import { TableVisibilitySettingsPopover, VisibilityGroup } from './TableVisibilitySettingsPopover'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,10 +28,11 @@ const TableButton = forwardRef<
   {
     onClick: () => void
     active?: boolean
+    hidden?: boolean
     testId?: string
     icon: typeof SvgIcon
   }
->(function TableButton({ onClick, active, icon: Icon, testId }, ref) {
+>(function TableButton({ onClick, active, icon: Icon, testId, hidden }, ref) {
   return (
     <IconButton
       ref={ref}
@@ -42,6 +43,7 @@ const TableButton = forwardRef<
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
         transition: t.design.Button.Transition,
+        filter: hidden ? 'opacity(0)' : 'none',
       })}
     >
       <Icon />
@@ -57,22 +59,22 @@ export const TableFilters = ({
   title,
   subtitle,
   onReload,
-  onResetFilters,
   learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
   collapsible,
   children,
+  onSearch,
 }: {
   title: string
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
-  onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
   toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode
   children: ReactNode
+  onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
@@ -84,7 +86,7 @@ export const TableFilters = ({
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
+        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs}>
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}
@@ -102,19 +104,13 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
+        <Grid size={{ mobile: 12, tablet: 5, desktop: 5 }}>
+          <TableSearchField onSearch={onSearch} />
+        </Grid>
+        <Grid size={{ mobile: 12, tablet: 7, desktop: 6 }} justifyContent="flex-end" gap={0}>
+          {children}
+        </Grid>
       </Grid>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        paddingInline={Spacing.md}
-        flexWrap="wrap"
-      >
-        {children}
-        <Button color="ghost" size="small" onClick={onResetFilters} data-testid="reset-filter">
-          {t`Reset Filters`}
-        </Button>
-      </Stack>
       <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
@@ -139,10 +135,14 @@ export function useColumnFilters() {
     (id: string, value: unknown) =>
       setColumnFilters((filters) => [
         ...filters.filter((f) => f.id !== id),
-        {
-          id,
-          value,
-        },
+        ...(value == null
+          ? []
+          : [
+              {
+                id,
+                value,
+              },
+            ]),
       ]),
     [],
   )

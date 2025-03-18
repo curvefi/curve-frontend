@@ -33,7 +33,7 @@ function TooltipButton({
     iconStyles?: IconStyles
   }) {
   const state = useTooltipTriggerState({ delay: 0, ...props })
-  const ref = useRef<HTMLButtonElement | null>(null)
+  const ref = useRef<HTMLButtonElement>(null)
   const { triggerProps, tooltipProps } = useTooltipTrigger(props, state, ref)
 
   const [scrollY, setScrollY] = useState<number | null>(null)

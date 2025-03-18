@@ -4,11 +4,10 @@ import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Address } from '@ui-kit/utils'
 import { CompactUsdCell, LineGraphCell, MarketTitleCell, PercentageCell, PriceCell, RateCell } from './cells'
-import { MarketTitleHeaderCell } from './cells/MarketTitleHeaderCell'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
 const { ColumnWidth } = SizesAndSpaces
@@ -25,7 +24,7 @@ const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
-    header: MarketTitleHeaderCell,
+    header: t`Collateral • Borrow`,
     cell: MarketTitleCell,
     size: ColumnWidth.lg,
     filterFn: filterByText,
