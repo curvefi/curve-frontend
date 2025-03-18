@@ -15,7 +15,7 @@ type SearchFieldProps = TextFieldProps & {
 const defaultSearch = ''
 
 /**
- * Search field with debounced search. The search field is cleared when the user clicks the close button.
+ * Search field with debounced search. It is cleared and focused when clicking the close button.
  */
 export const SearchField = ({
   onSearch,

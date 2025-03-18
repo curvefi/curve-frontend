@@ -11,7 +11,7 @@ import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helper
 import { mockTokenPrices } from '@/support/helpers/tokens'
 import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
 
-describe('LlamaLend Markets', () => {
+describe(`LlamaLend Markets`, () => {
   let isDarkMode: boolean
   let breakpoint: Breakpoint
   let vaultData: LendingVaultResponses
@@ -44,7 +44,7 @@ describe('LlamaLend Markets', () => {
 
   it('should have sticky headers', () => {
     if (breakpoint === 'mobile') {
-      cy.viewport(400, 400) // fixed mobile viewport, filters wrap depending on the width
+      cy.viewport(400, 400) // fixed mobile viewport, filters wrap strongly depending on the width
     }
 
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
@@ -53,7 +53,7 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [202], tablet: [112, 144, 200], desktop: [120] }[breakpoint]
+    const filterHeight = { mobile: [226], tablet: [128, 176], desktop: [120, 136] }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]

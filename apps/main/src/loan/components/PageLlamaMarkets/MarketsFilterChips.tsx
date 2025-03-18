@@ -80,7 +80,7 @@ export const MarketsFilterChips = ({
   const { signerAddress } = useWallet()
 
   return (
-    <Stack direction="row" rowGap={Spacing.md} flexWrap="wrap" alignItems="center" justifyContent="flex-end">
+    <Stack direction="row" gap={Spacing.md} flexWrap="wrap" alignItems="center" justifyContent="flex-end">
       <Stack direction="row" columnGap="4px">
         <SelectableChip
           label={t`Mint Markets`}
@@ -103,6 +103,7 @@ export const MarketsFilterChips = ({
             toggle={toggleMyMarkets}
             icon={<PersonIcon />}
             data-testid="chip-my-markets"
+            disabled={!hasPositions}
           />
         )}
         <SelectableChip
@@ -119,10 +120,9 @@ export const MarketsFilterChips = ({
           toggle={toggleRewards}
           icon={<PointsIcon />}
           data-testid="chip-rewards"
-          disabled={!hasPositions}
         />
       </Stack>
-      <ResetFiltersButton onClick={resetFilters} disabled={!hasFilters} />
+      <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
     </Stack>
   )
 }

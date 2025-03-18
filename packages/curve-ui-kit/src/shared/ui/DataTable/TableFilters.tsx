@@ -104,10 +104,10 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
+        <Grid size={{ mobile: 12, tablet: 5, desktop: 5 }}>
           <TableSearchField onSearch={onSearch} />
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 7, desktop: 8 }} justifyContent="flex-end" gap={0}>
+        <Grid size={{ mobile: 12, tablet: 7, desktop: 6 }} justifyContent="flex-end" gap={0}>
           {children}
         </Grid>
       </Grid>

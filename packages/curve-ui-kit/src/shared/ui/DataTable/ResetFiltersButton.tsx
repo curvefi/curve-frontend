@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const ResetFiltersButton = ({ onClick, disabled }: { onClick: () => void; disabled: boolean }) => (
+export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; hidden: boolean }) => (
   <Button
     color="ghost"
     size="small"
@@ -15,7 +15,12 @@ export const ResetFiltersButton = ({ onClick, disabled }: { onClick: () => void;
       minWidth: 0,
       marginInlineStart: Spacing.xs,
       transition: `font-size ${TransitionFunction}, border ${TransitionFunction}, padding ${TransitionFunction}, margin ${TransitionFunction}`,
-      ...(disabled && { fontSize: '0 !important', border: 0, padding: 0, margin: 0 }), // unfortunately, MUI overrides the font-size very specifically
+      ...(hidden && {
+        fontSize: '0 !important', // unfortunately, MUI overrides the font-size very specifically
+        border: 0,
+        padding: 0,
+        marginInlineStart: '-16px', // negative margin to compensate for the flex gap
+      }),
     }}
   >
     {t`Reset Filters`}
