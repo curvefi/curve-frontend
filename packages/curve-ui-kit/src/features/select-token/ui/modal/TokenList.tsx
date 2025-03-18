@@ -48,7 +48,7 @@ const TokenSection = ({
   if (!tokens.length) return null
 
   const displayTokens = preview.length === 0 ? tokens : preview
-  const hasMore = preview.length > 0
+  const hasMore = preview.length > 0 && preview.length < tokens.length
 
   // If there's a list of preview tokens, show that with a 'Show more' button.
   // If not, then just display all tokens from the list.
