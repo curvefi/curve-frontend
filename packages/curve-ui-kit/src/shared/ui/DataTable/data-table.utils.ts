@@ -19,6 +19,10 @@ export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable
 export const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
   columnDef.meta?.type == 'numeric' ? 'right' : 'left'
 
+/** Similar to `getAlignment`, but for the flex alignment. */
+export const getFlexAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
+  columnDef.meta?.type == 'numeric' ? 'end' : 'start'
+
 const { Spacing } = SizesAndSpaces
 
 /**

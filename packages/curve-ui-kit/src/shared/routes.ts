@@ -54,7 +54,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     label: 'crvUSD',
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      ...(isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` }] : []),
+      ...(isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Markets (beta)` }] : []),
       { route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
       { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
     ],

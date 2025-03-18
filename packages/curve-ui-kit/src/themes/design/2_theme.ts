@@ -3,8 +3,7 @@ import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
 
-const Transition = `color ${TransitionFunction}, background-color ${TransitionFunction}, filter ${TransitionFunction}`
-
+const Transition = `all ${TransitionFunction}`
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 

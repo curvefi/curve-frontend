@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
-import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -45,7 +45,11 @@ export const RangeSliderFilter = <T extends unknown>({
 
   const [range, setRange] = useUniqueDebounce(
     defaultValue,
-    useCallback((newRange: Range) => setColumnFilter(id, newRange as Range), [id, setColumnFilter]),
+    useCallback(
+      (newRange: Range) =>
+        setColumnFilter(id, newRange.every((value, i) => value === defaultValue[i]) ? undefined : (newRange as Range)),
+      [defaultValue, id, setColumnFilter],
+    ),
   )
 
   const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as Range), [setRange])

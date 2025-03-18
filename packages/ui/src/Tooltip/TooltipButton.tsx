@@ -35,7 +35,7 @@ function TooltipButton({
   }) {
   const state = useTooltipTriggerState({ delay: 0, ...props })
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-  const ref = useRef<HTMLButtonElement | null>(null)
+  const ref = useRef<HTMLButtonElement>(null)
   const { triggerProps, tooltipProps } = useTooltipTrigger(props, state, ref)
 
   const [scrollY, setScrollY] = useState<number | null>(null)
