@@ -38,7 +38,7 @@ export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMint
       // todo: create separate query for the loop, so it can be cached separately
       chains.map(async (blockchainId) => {
         const chain = blockchainId as Chain
-        const data = await getMarkets(chain, {})
+        const data = await getMarkets(chain)
         return await addStableCoinPrices({ chain, data })
       }),
     )
