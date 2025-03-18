@@ -7,7 +7,7 @@ import {
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
-import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { LlamaMarket, type LlamaMarketsResult } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
 import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -23,12 +23,12 @@ const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 // todo: rename to LlamaMarketsTable
 export const LendingMarketsTable = ({
   onReload,
-  data,
+  result,
   headerHeight,
   isError,
 }: {
   onReload: () => void
-  data: LlamaMarket[]
+  result: LlamaMarketsResult | undefined
   headerHeight: string
   isError: boolean
 }) => {
@@ -38,6 +38,7 @@ export const LendingMarketsTable = ({
   const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(defaultVisibility)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const data = result?.markets ?? []
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
@@ -82,6 +83,8 @@ export const LendingMarketsTable = ({
             columnFiltersById={columnFiltersById}
             setColumnFilter={setColumnFilter}
             hasFilters={columnFilters.length > 0}
+            hasPositions={result?.hasPositions}
+            hasFavorites={result?.hasFavorites}
             resetFilters={resetFilters}
           />
         </TableFilters>

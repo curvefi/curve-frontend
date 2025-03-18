@@ -8,9 +8,9 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,12 +23,12 @@ type ColumnFilterProps = {
 
 /** Hook for managing a single boolean filter */
 function useToggleFilter(key: LlamaMarketKey, { columnFiltersById, setColumnFilter }: ColumnFilterProps) {
-  const isFiltered = !!columnFiltersById[key]
+  const isSelected = !!columnFiltersById[key]
   const toggle = useCallback(
-    () => setColumnFilter(key, isFiltered ? undefined : true),
-    [isFiltered, key, setColumnFilter],
+    () => setColumnFilter(key, isSelected ? undefined : true),
+    [isSelected, key, setColumnFilter],
   )
-  return [isFiltered, toggle] as const
+  return [isSelected, toggle] as const
 }
 
 /**
@@ -62,9 +62,17 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
 type MarketsFilterChipsProps = ColumnFilterProps & {
   resetFilters: () => void
   hasFilters: boolean
+  hasPositions: boolean | undefined
+  hasFavorites: boolean | undefined
 }
 
-export const MarketsFilterChips = ({ resetFilters, hasFilters, ...props }: MarketsFilterChipsProps) => {
+export const MarketsFilterChips = ({
+  resetFilters,
+  hasFilters,
+  hasPositions,
+  hasFavorites,
+  ...props
+}: MarketsFilterChipsProps) => {
   const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPosition, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
@@ -72,7 +80,7 @@ export const MarketsFilterChips = ({ resetFilters, hasFilters, ...props }: Marke
   const { signerAddress } = useWallet()
 
   return (
-    <Stack direction="row" columnGap={Spacing.lg} flexWrap="wrap" alignItems="flex-end">
+    <Stack direction="row" rowGap={Spacing.md} flexWrap="wrap" alignItems="center" justifyContent="flex-end">
       <Stack direction="row" columnGap="4px">
         <SelectableChip
           label={t`Mint Markets`}
@@ -103,6 +111,7 @@ export const MarketsFilterChips = ({ resetFilters, hasFilters, ...props }: Marke
           toggle={toggleFavorites}
           icon={<HeartIcon />}
           data-testid="chip-favorites"
+          disabled={!hasFavorites}
         />
         <SelectableChip
           label={t`Rewards`}
@@ -110,6 +119,7 @@ export const MarketsFilterChips = ({ resetFilters, hasFilters, ...props }: Marke
           toggle={toggleRewards}
           icon={<PointsIcon />}
           data-testid="chip-rewards"
+          disabled={!hasPositions}
         />
       </Stack>
       <ResetFiltersButton onClick={resetFilters} disabled={!hasFilters} />

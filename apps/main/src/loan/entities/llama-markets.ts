@@ -154,6 +154,11 @@ const convertMintMarket = (
   userHasPosition: userMintMarkets.has(address),
 })
 
+export type LlamaMarketsResult = {
+  markets: LlamaMarket[]
+  hasPositions: boolean
+  hasFavorites: boolean
+}
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (withouth the details).
@@ -169,26 +174,29 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       getUserLendingVaultsOptions({ userAddress }),
       getUserMintMarketsOptions({ userAddress }),
     ],
-    combine: (results): PartialQueryResult<LlamaMarket[]> => {
+    combine: (results): PartialQueryResult<LlamaMarketsResult> => {
       const [lendingVaults, mintMarkets, campaigns, favoriteMarkets, userLendingVaults, userMintMarkets] = results
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
       const userVaults = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
 
-      return {
-        ...combineQueriesMeta(results),
-        data:
-          // only render table when both lending and mint markets are ready, however show one of them if the other is in error
-          (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
-            ? [
-                ...(lendingVaults.data ?? [])
-                  .filter((vault) => vault.totalAssetsUsd)
-                  .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
-                ...(mintMarkets.data ?? []).map((market) =>
-                  convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
-                ),
-              ]
-            : undefined,
-      }
+      // only render table when both lending and mint markets are ready, however show one of them if the other is in error
+      const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
+
+      const data = showData
+        ? {
+            hasPositions: userVaults.size > 0 || userMints.size > 0,
+            hasFavorites: favoriteMarketsSet.size > 0,
+            markets: [
+              ...(lendingVaults.data ?? [])
+                .filter((vault) => vault.totalAssetsUsd)
+                .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
+              ...(mintMarkets.data ?? []).map((market) =>
+                convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
+              ),
+            ],
+          }
+        : undefined
+      return { ...combineQueriesMeta(results), data }
     },
   })
