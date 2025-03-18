@@ -1,2 +1,5 @@
 export * from './DataTable'
+export * from './TableFilters'
+export * from './TableVisibilitySettingsPopover'
 export * from './data-table.utils'
+export { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable/ResetFiltersButton'

@@ -1,5 +1,5 @@
 import { kebabCase } from 'lodash'
-import { forwardRef, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
@@ -11,14 +11,12 @@ import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
-import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
-import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
-import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
-import { FilterIcon } from '../icons/FilterIcon'
-import { ReloadIcon } from '../icons/ReloadIcon'
-import { SearchField } from './SearchField'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FilterIcon } from '../../icons/FilterIcon'
+import { ReloadIcon } from '../../icons/ReloadIcon'
+import { ToolkitIcon } from '../../icons/ToolkitIcon'
+import { TableSearchField } from './TableSearchField'
+import { TableVisibilitySettingsPopover, VisibilityGroup } from './TableVisibilitySettingsPopover'
 
 const { Spacing } = SizesAndSpaces
 
@@ -61,7 +59,6 @@ export const TableFilters = ({
   title,
   subtitle,
   onReload,
-  onResetFilters,
   learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
@@ -73,22 +70,15 @@ export const TableFilters = ({
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
-  onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
   toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode
   children: ReactNode
   onSearch: (value: string) => void
 }) => {
-  const [isSearching, openSearch, closeSearch] = useSwitch()
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    isSearching && searchInputRef.current?.focus()
-  }, [isSearching])
-
   return (
     <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
       <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
@@ -96,19 +86,7 @@ export const TableFilters = ({
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
-          <Stack direction="row">
-            <TableButton onClick={openSearch} hidden={isSearching} icon={SearchIcon} testId="btn-search" />
-            <Collapse orientation="horizontal" in={isSearching}>
-              <SearchField
-                inputRef={searchInputRef}
-                onSearch={onSearch}
-                onClose={closeSearch}
-                size="small"
-                data-testid="table-text-search"
-              />
-            </Collapse>
-          </Stack>
+        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs}>
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}
@@ -126,19 +104,13 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
+        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
+          <TableSearchField onSearch={onSearch} />
+        </Grid>
+        <Grid size={{ mobile: 12, tablet: 7, desktop: 8 }} justifyContent="flex-end" gap={0}>
+          {children}
+        </Grid>
       </Grid>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        paddingInline={Spacing.md}
-        flexWrap="wrap"
-      >
-        {children}
-        <Button color="ghost" size="small" onClick={onResetFilters} data-testid="reset-filter">
-          {t`Reset Filters`}
-        </Button>
-      </Stack>
       <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
@@ -163,10 +135,14 @@ export function useColumnFilters() {
     (id: string, value: unknown) =>
       setColumnFilters((filters) => [
         ...filters.filter((f) => f.id !== id),
-        {
-          id,
-          value,
-        },
+        ...(value == null
+          ? []
+          : [
+              {
+                id,
+                value,
+              },
+            ]),
       ]),
     [],
   )

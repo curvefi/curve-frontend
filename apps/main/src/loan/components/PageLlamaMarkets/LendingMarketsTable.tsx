@@ -14,8 +14,8 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
-import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
-import { useVisibilitySettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
@@ -70,16 +70,20 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
-          onResetFilters={resetFilters}
           onSearch={useCallback(
-            (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search),
+            (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
             [setColumnFilter],
           )}
           collapsible={
             <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
           }
         >
-          <MarketsFilterChips columnFiltersById={columnFiltersById} setColumnFilter={setColumnFilter} />
+          <MarketsFilterChips
+            columnFiltersById={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            hasFilters={columnFilters.length > 0}
+            resetFilters={resetFilters}
+          />
         </TableFilters>
       </DataTable>
     </Stack>

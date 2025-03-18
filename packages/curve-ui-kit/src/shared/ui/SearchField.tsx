@@ -9,7 +9,6 @@ import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 
 type SearchFieldProps = TextFieldProps & {
   onSearch: (search: string) => void
-  onClose?: () => void
   inputRef?: RefObject<HTMLInputElement | null>
 }
 
@@ -20,7 +19,6 @@ const defaultSearch = ''
  */
 export const SearchField = ({
   onSearch,
-  onClose,
   placeholder = t`Search name or paste address`,
   name = 'search',
   inputRef,
@@ -31,19 +29,17 @@ export const SearchField = ({
   const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {
     setSearch('')
-    onClose ? onClose() : ref.current?.focus()
-  }, [setSearch, ref, onClose])
+    ref.current?.focus()
+  }, [setSearch, ref])
   return (
     <TextField
-      {...props}
       fullWidth
-      placeholder={placeholder}
       onChange={(e) => setSearch(e.target.value)}
       slotProps={{
         htmlInput: { ref },
         input: {
           startAdornment: <SearchIcon />,
-          endAdornment: (onClose || search) && (
+          endAdornment: search && (
             <IconButton size="extraSmall" onClick={resetSearch}>
               <CloseIcon />
             </IconButton>
@@ -51,9 +47,11 @@ export const SearchField = ({
         },
       }}
       variant="outlined"
+      autoFocus
+      {...props}
       value={search}
       name={name}
-      autoFocus
+      placeholder={placeholder}
     />
   )
 }

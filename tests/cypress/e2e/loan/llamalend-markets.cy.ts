@@ -92,7 +92,6 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should find markets by text', () => {
-    cy.get("[data-testid='btn-search']").click()
     cy.get("[data-testid='table-text-search']").type('wstETH crvUSD')
     cy.scrollTo(0, 0)
     // sfrxETH market is filtered out
