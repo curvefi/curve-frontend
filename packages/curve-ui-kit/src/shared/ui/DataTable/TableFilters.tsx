@@ -28,11 +28,10 @@ const TableButton = forwardRef<
   {
     onClick: () => void
     active?: boolean
-    hidden?: boolean
     testId?: string
     icon: typeof SvgIcon
   }
->(function TableButton({ onClick, active, icon: Icon, testId, hidden }, ref) {
+>(function TableButton({ onClick, active, icon: Icon, testId }, ref) {
   return (
     <IconButton
       ref={ref}
@@ -43,7 +42,6 @@ const TableButton = forwardRef<
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
         transition: t.design.Button.Transition,
-        filter: hidden ? 'opacity(0)' : 'none',
       })}
     >
       <Icon />
@@ -93,6 +91,7 @@ export const TableFilters = ({
             onClick={openVisibilitySettings}
             icon={ToolkitIcon}
             testId="btn-visibility-settings"
+            active={visibilitySettingsOpen}
           />
           <TableButton
             onClick={() => setFilterExpanded((prev) => !prev)}
