@@ -196,7 +196,7 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-    cy.get(`[data-testid="rewards-lp"]`).should('be.visible')
+    cy.get(`[data-testid="rewards-borrow"]`).should('be.visible')
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
