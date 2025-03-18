@@ -7,8 +7,8 @@ import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type State = {
   theme: ThemeKey
-  /** Key is either 'global' or a chainIdPoolId from getChainPoolIdActiveKey. */
-  maxSlippage: { global: string } & Partial<Record<string, string>>
+  /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
+  maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
   isAdvancedMode: boolean
   hideSmallPools: boolean
 }
@@ -19,11 +19,14 @@ type Action = {
   /**
    * Sets or removes a max slippage value for a given key.
    * @param slippage - The slippage value as a string percentage (e.g. "0.1" for 0.1%), or null to remove
-   * @param key - Optional key to set slippage for (e.g. "global" or chainId-poolId). If omitted, sets slippage to all existing keys.
+   * @param key - Optional key to set slippage for (e.g. "crypto", "stable" or chainId-poolId). If omitted, sets slippage to all existing keys.
    * @returns boolean - True if slippage was successfully set/removed, false if invalid input
    * @example
    * // Set router slippage to 0.1%
-   * setMaxSlippage("0.1", "global")
+   * setMaxSlippage("0.1", "crypto")
+   *
+   * // Set router slippage to 0.03% for a stableswap pool
+   * setMaxSlippage("0.03", "stable")
    *
    * // Remove slippage for specific pool
    * setMaxSlippage(null, "1-0x123...")
@@ -44,7 +47,7 @@ const INITIAL_THEME =
 
 const INITIAL_STATE: State = {
   theme: INITIAL_THEME,
-  maxSlippage: { global: '0.1' },
+  maxSlippage: { crypto: '0.1', stable: '0.03' },
   isAdvancedMode: false,
   hideSmallPools: true,
 }
@@ -57,7 +60,7 @@ const store: StateCreator<Store> = (set) => ({
     // Check if we want to delete a slippage value first.
     if (maxSlippage === null) {
       if (!key) return false
-      if (key === 'global') return false
+      if (key === 'crypto' || key === 'stable') return false
 
       set(
         produce((state) => {

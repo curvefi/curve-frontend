@@ -3,7 +3,7 @@
   "platform": "Resolv",
   "description": "Points for providing liquidity.",
   "platformImageId": "resolv.png",
-  "dashboardLink": "https://app.resolv.xyz/overview/",
+  "dashboardLink": "https://app.resolv.xyz/points/",
   "pools": [
     {
       "id": "null",

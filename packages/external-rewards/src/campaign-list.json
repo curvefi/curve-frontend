@@ -57,9 +57,6 @@
     "campaign": "LevelMoney.json"
   },
   {
-    "campaign": "XPoints.json"
-  },
-  {
     "campaign": "DTrinity.json"
   },
   {
@@ -85,5 +82,8 @@
   },
   {
     "campaign": "Bills.json"
+  },
+  {
+    "campaign": "StableLabs.json"
   }
 ]

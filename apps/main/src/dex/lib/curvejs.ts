@@ -331,6 +331,7 @@ const router = {
       isExpectedToAmount: false,
       isHighImpact: false,
       isHighSlippage: false,
+      isStableswapRoute: false,
       maxSlippage: '',
       priceImpact: 0,
       routes: [] as Route[],

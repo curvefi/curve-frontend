@@ -80,7 +80,10 @@ const QuickSwap = ({
   const updateTokenList = useStore((state) => state.quickSwap.updateTokenList)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
-  const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
+  const isStableswapRoute = routesAndOutput?.isStableswapRoute
+  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -126,12 +129,12 @@ const QuickSwap = ({
         updatedFormValues,
         searchedParams,
         isGetMaxFrom,
-        maxSlippage || globalMaxSlippage,
+        maxSlippage || storeMaxSlippage,
         isFullReset,
         isRefetch,
       )
     },
-    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
+    [curve, storeMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -202,7 +205,7 @@ const QuickSwap = ({
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(activeKey, curve, formValues, searchedParams, globalMaxSlippage)
+            await fetchStepApprove(activeKey, curve, formValues, searchedParams, storeMaxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -278,7 +281,7 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, steps],
+    [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, steps],
   )
 
   const fetchData = useCallback(() => {
@@ -300,9 +303,9 @@ const QuickSwap = ({
 
   // maxSlippage
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, globalMaxSlippage)
+    if (isReady) updateFormValues({}, false, cryptoMaxSlippage)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [globalMaxSlippage])
+  }, [cryptoMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {
@@ -448,6 +451,7 @@ const QuickSwap = ({
               balances={userBalancesMapper}
               disabled={isDisable || !toToken}
               tokenPrices={usdRatesMapper}
+              disableMyTokens={true}
               onToken={(token) => {
                 const toAddress = token.address
                 const fromAddress =
@@ -486,9 +490,9 @@ const QuickSwap = ({
           />
         )}
         <DetailInfoSlippageTolerance
-          maxSlippage={globalMaxSlippage || routesAndOutput?.maxSlippage}
+          maxSlippage={storeMaxSlippage}
           testId="slippage-tolerance"
-          stateKey="global"
+          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
         />
       </div>
 

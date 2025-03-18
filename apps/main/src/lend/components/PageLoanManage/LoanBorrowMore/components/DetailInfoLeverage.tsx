@@ -39,7 +39,7 @@ const DetailInfoLeverage = ({
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral, routeImage } = detailInfo ?? {}
