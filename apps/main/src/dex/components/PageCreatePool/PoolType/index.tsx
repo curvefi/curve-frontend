@@ -27,7 +27,7 @@ const PoolType = ({ chainId }: Props) => {
               selected={swapType === STABLESWAP}
               name={STABLESWAP}
               descriptionName={t`Stableswap`}
-              description={t`Bonding Curve specialising in pegged assets, also supports yield bearing stables.`}
+              description={t`For pools holding equivalent (fe ETH/stETH, USDC/USDT) and yield bearing assets (USDe/sUSDe)`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
               disabled={!stableswapFactory}
             />
@@ -40,7 +40,7 @@ const PoolType = ({ chainId }: Props) => {
               selected={swapType === CRYPTOSWAP}
               name={CRYPTOSWAP}
               descriptionName={t`Cryptoswap`}
-              description={t`Bonding Curve specialising in unpegged assets.`}
+              description={t`For pools holding unpegged assets (ETH/USDC, CRV/WBTC)`}
               handleClick={() => updateSwapType(CRYPTOSWAP, chainId)}
               disabled={!tricryptoFactory && !twocryptoFactory}
             />
