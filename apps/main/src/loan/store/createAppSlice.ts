@@ -19,7 +19,6 @@ type SliceState = {
   isLoadingApi: false
   isLoadingLendApi: false
   isLoadingCurve: true
-  isMobile: boolean
   isPageVisible: boolean
   scrollY: number
 }
@@ -45,7 +44,6 @@ const DEFAULT_STATE: SliceState = {
   isLoadingApi: false,
   isLoadingCurve: true,
   isLoadingLendApi: false,
-  isMobile: false,
   isPageVisible: true,
   scrollY: 0,
 }
