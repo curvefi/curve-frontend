@@ -7,7 +7,6 @@ import Page from '@/loan/layout'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { isMobile, removeExtraSpaces } from '@/loan/utils/helpers'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -29,15 +28,14 @@ export const App = ({ children }: { children: ReactNode }) => {
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
-    updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
-  }, [setLayoutWidth, updateGlobalStoreByKey])
+  }, [setLayoutWidth])
 
-  // update on every state change
   useEffect(() => {
     if (!pageWidth) return
-    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
-  })
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
+    document.body.setAttribute('data-theme', theme)
+  }, [pageWidth, theme])
 
   // init app
   useEffect(() => {

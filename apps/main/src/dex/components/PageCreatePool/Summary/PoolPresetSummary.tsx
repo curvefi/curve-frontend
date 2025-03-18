@@ -9,7 +9,7 @@ import useStore from '@/dex/store/useStore'
 import { t } from '@ui-kit/lib/i18n'
 
 const PoolPresetSummary = () => {
-  const { poolPresetIndex } = useStore((state) => state.createPool)
+  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
 
   return (
     <>
