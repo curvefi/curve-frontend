@@ -80,13 +80,13 @@ export const TableFilters = ({
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
-      <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
+    <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 16px)">
+      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs}>
+        <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs}>
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}

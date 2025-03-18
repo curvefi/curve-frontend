@@ -12,6 +12,7 @@ import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { classNames } from '@ui-kit/utils/dom'
+import Box from '@mui/material/Box'
 
 const { Spacing } = SizesAndSpaces
 
@@ -46,16 +47,17 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
         </Tooltip>
       )}
 
-      {rewards.map((reward, index) => (
+      {rewards.length > 0 && (
         <Tooltip
-          key={index}
-          title={getRewardsDescription(reward)}
+          title={rewards.map((r, i) => (
+            <Box key={i}>{getRewardsDescription(r)}</Box>
+          ))}
           placement="top"
-          data-testid={`rewards-${reward.action}`}
+          data-testid="rewards-badge"
         >
           <PointsIcon htmlColor={iconsColor} />
         </Tooltip>
-      ))}
+      )}
 
       <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
         <IconButton

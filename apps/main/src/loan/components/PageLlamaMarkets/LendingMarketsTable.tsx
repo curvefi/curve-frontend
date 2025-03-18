@@ -66,7 +66,7 @@ export const LendingMarketsTable = ({
       >
         <TableFilters
           title={t`Llamalend Markets`}
-          subtitle={t`Select a market to view more details`}
+          subtitle={t`Borrow with the power of Curve soft liquidations`}
           onReload={onReload}
           learnMoreUrl="https://docs.curve.fi/lending/overview/"
           visibilityGroups={columnSettings}
