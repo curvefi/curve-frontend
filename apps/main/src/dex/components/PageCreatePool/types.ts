@@ -52,7 +52,6 @@ export type SelectTokenFormValues = {
 }
 
 export type SwapType = typeof CRYPTOSWAP | typeof STABLESWAP | ''
-export type ImplementationId = 0 | 1 | 2 | 3
 export type NgAssetType = 0 | 1 | 2 | 3
 export type TokenId =
   | typeof TOKEN_A

@@ -15,14 +15,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
-import {
-  CreateToken,
-  ImplementationId,
-  NgAssetType,
-  SwapType,
-  TokenId,
-  TokenState,
-} from '@/dex/components/PageCreatePool/types'
+import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
@@ -74,8 +67,6 @@ type SliceState = {
   }
   poolName: string
   poolSymbol: string
-  assetType: string | null
-  implementation: ImplementationId
   validation: {
     poolType: boolean
     tokensInPool: boolean
@@ -136,8 +127,6 @@ export type CreatePoolSlice = {
     updateOffpegFeeMultiplier: (value: string | number) => void
     updatePoolName: (name: string) => void
     updatePoolSymbol: (symbol: string) => void
-    updateAssetType: (type: string) => void
-    updateImplementation: (type: ImplementationId) => void
     updatePoolTypeValidation: (poolType: boolean) => void
     updateTokensInPoolValidation: (tokensInPool: boolean) => void
     updateParametersValidation: (parameters: boolean) => void
@@ -220,7 +209,6 @@ export const DEFAULT_CREATE_POOL_STATE = {
       oracleFunction: '',
     },
   },
-  implementation: 0,
   initialPrice: {
     [TOKEN_A]: 0,
     [TOKEN_B]: 0,
@@ -248,7 +236,6 @@ export const DEFAULT_CREATE_POOL_STATE = {
   },
   poolName: '',
   poolSymbol: '',
-  assetType: null,
   userAddedTokens: [],
   validation: {
     poolType: false,
@@ -725,12 +712,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.createPool.assetType = type
         }),
       ),
-    updateImplementation: (type: ImplementationId) =>
-      set(
-        produce((state) => {
-          state.createPool.implementation = type
-        }),
-      ),
     updatePoolTypeValidation: (poolType: boolean) => {
       set(
         produce((state) => {
@@ -783,9 +764,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             offpegFeeMultiplier,
           },
           poolName,
-          assetType,
           initialPrice,
-          implementation,
         },
         networks: { networks },
       } = get()
@@ -984,7 +963,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           ? convertTokenAddressToPoolAddress(tokenA.address)
           : convertTokenAddressToPoolAddress(tokenB.address)
         const coin = tokenA.basePool ? tokenB : tokenA
-        const implementationIdx = implementation === 1 ? 1 : 0
 
         if (networks[chainId].stableswapFactory) {
           // STABLE NG META
@@ -1040,76 +1018,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
-            set(
-              produce((state) => {
-                state.createPool.transactionState.poolId = poolId
-              }),
-            )
-
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
-              set(
-                produce((state) => {
-                  state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                }),
-              )
-            }
-          } catch (error) {
-            if (typeof dismissNotificationHandler === 'function') {
-              dismissNotificationHandler()
-            }
-            set(
-              produce((state) => {
-                state.createPool.transactionState.txStatus = 'ERROR'
-                state.createPool.transactionState.errorMessage = error.message
-              }),
-            )
-            console.log(error)
-          }
-          // STABLE META
-        } else {
-          try {
-            const deployPoolTx = await curve.factory.deployMetaPool(
-              basePool,
-              poolName,
-              poolSymbol,
-              coin.address,
-              stableA,
-              stableSwapFee,
-              implementationIdx,
-            )
-            set(
-              produce((state) => {
-                state.createPool.transactionState.txStatus = 'LOADING'
-                state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              }),
-            )
-
-            // set up deploying message
-            dismissConfirm()
-            const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
-            dismissNotificationHandler = dismissDeploying
-
-            const poolAddress = await curve.factory.getDeployedMetaPoolAddress(deployPoolTx)
-            // deploy pool tx success
-            set(
-              produce((state) => {
-                state.createPool.transactionState.txStatus = 'SUCCESS'
-                state.createPool.transactionState.txSuccess = true
-                state.createPool.transactionState.fetchPoolStatus = 'LOADING'
-                state.createPool.transactionState.poolAddress = poolAddress
-              }),
-            )
-
-            // set up success message
-            dismissDeploying()
-            const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
-
-            const poolId = await curve.factory.fetchRecentlyDeployedPool(poolAddress)
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
@@ -1199,86 +1107,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             notify(successNotificationMessage, 'success', 15000)
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
-            set(
-              produce((state) => {
-                state.createPool.transactionState.poolId = poolId
-              }),
-            )
-
-            const poolData = await fetchNewPool(curve, poolId)
-            if (poolData) {
-              set(
-                produce((state) => {
-                  state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
-                  state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                }),
-              )
-            }
-          } catch (error) {
-            if (typeof dismissNotificationHandler === 'function') {
-              dismissNotificationHandler()
-            }
-            set(
-              produce((state) => {
-                state.createPool.transactionState.txStatus = 'ERROR'
-                state.createPool.transactionState.errorMessage = error.message
-              }),
-            )
-            console.log(error)
-          }
-        } else {
-          // STABLE PLAIN (Old)
-          const coins = [tokenA.address, tokenB.address, tokenC.address, tokenD.address].filter((coin) => coin !== '')
-
-          const assetTypeNumber = () => {
-            if (assetType === 'USD') return 0
-            if (assetType === 'ETH') return 1
-            if (assetType === 'BTC') return 2
-            return 3
-          }
-
-          try {
-            const deployPoolTx = await curve.factory.deployPlainPool(
-              poolName,
-              poolSymbol,
-              coins,
-              stableA,
-              stableSwapFee,
-              assetTypeNumber(),
-              implementation,
-            )
-            set(
-              produce((state) => {
-                state.createPool.transactionState.txStatus = 'LOADING'
-                state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              }),
-            )
-
-            // set up deploying message
-            dismissConfirm()
-            const deployingNotificationMessage = t`Deploying pool ${poolName}...`
-            const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
-            dismissNotificationHandler = dismissDeploying
-
-            const poolAddress = await curve.factory.getDeployedPlainPoolAddress(deployPoolTx)
-            // deploy pool tx success
-
-            set(
-              produce((state) => {
-                state.createPool.transactionState.txStatus = 'SUCCESS'
-                state.createPool.transactionState.txSuccess = true
-                state.createPool.transactionState.fetchPoolStatus = 'LOADING'
-                state.createPool.transactionState.poolAddress = poolAddress
-              }),
-            )
-
-            // set up success message
-            dismissDeploying()
-            const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
-
-            const poolId = await curve.factory.fetchRecentlyDeployedPool(poolAddress)
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId

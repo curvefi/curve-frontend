@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { getAddress } from 'viem'
+import { isAddress } from 'viem'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -26,9 +26,14 @@ type OracleTokenSummaryProps = {
 }
 
 const OracleSummary = ({ chainId }: Props) => {
-  const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
-    (state) => state.createPool.tokensInPool,
-  )
+  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
+  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
+  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
+  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
+  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
+  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
 
   return (
     <OraclesWrapper>
@@ -71,19 +76,15 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
         <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
         {token.oracleAddress === '' ? (
           <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
-        ) : (
+        ) : isAddress(token.oracleAddress) ? (
           <SummaryData>
-            {token.oracleAddress.length === 42 ? (
-              <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
-                {shortenAddress(token.oracleAddress)}
-                <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
-              </AddressLink>
-            ) : token.oracleAddress.length > 13 ? (
-              shortenAddress(token.oracleAddress)
-            ) : (
-              getAddress(token.oracleAddress)
-            )}
+            <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
+              {shortenAddress(token.oracleAddress)}
+              <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
+            </AddressLink>
           </SummaryData>
+        ) : (
+          <SummaryDataPlaceholder>{t`Invalid address`}</SummaryDataPlaceholder>
         )}
       </CategoryDataRow>
       <CategoryDataRow>

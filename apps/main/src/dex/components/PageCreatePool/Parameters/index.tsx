@@ -12,7 +12,6 @@ import {
   POOL_PRESETS,
 } from '@/dex/components/PageCreatePool/constants'
 import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
-import SelectPoolImplementation from '@/dex/components/PageCreatePool/Parameters/SelectPoolImplementation'
 import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
@@ -27,40 +26,36 @@ type Props = {
 }
 
 const Parameters = ({ curve, chainId, haveSigner }: Props) => {
-  const {
-    advanced,
-    parameters: {
-      midFee,
-      outFee,
-      stableSwapFee,
-      stableA,
-      cryptoA,
-      gamma,
-      allowedExtraProfit,
-      feeGamma,
-      adjustmentStep,
-      maHalfTime,
-      maExpTime,
-      offpegFeeMultiplier,
-    },
-    tokensInPool,
-    swapType,
-    updateStableSwapFee,
-    updateMidFee,
-    updateOutFee,
-    updateStableA,
-    updateCryptoA,
-    updateGamma,
-    updateAllowedExtraProfit,
-    updateFeeGamma,
-    updateAdjustmentStep,
-    updateMaHalfTime,
-    updateMaExpTime,
-    updateOffpegFeeMultiplier,
-    updateAdvanced,
-    refreshInitialPrice,
-    initialPrice,
-  } = useStore((state) => state.createPool)
+  const advanced = useStore((state) => state.createPool.advanced)
+  const midFee = useStore((state) => state.createPool.parameters.midFee)
+  const outFee = useStore((state) => state.createPool.parameters.outFee)
+  const stableSwapFee = useStore((state) => state.createPool.parameters.stableSwapFee)
+  const stableA = useStore((state) => state.createPool.parameters.stableA)
+  const cryptoA = useStore((state) => state.createPool.parameters.cryptoA)
+  const gamma = useStore((state) => state.createPool.parameters.gamma)
+  const allowedExtraProfit = useStore((state) => state.createPool.parameters.allowedExtraProfit)
+  const feeGamma = useStore((state) => state.createPool.parameters.feeGamma)
+  const adjustmentStep = useStore((state) => state.createPool.parameters.adjustmentStep)
+  const maHalfTime = useStore((state) => state.createPool.parameters.maHalfTime)
+  const maExpTime = useStore((state) => state.createPool.parameters.maExpTime)
+  const offpegFeeMultiplier = useStore((state) => state.createPool.parameters.offpegFeeMultiplier)
+  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
+  const swapType = useStore((state) => state.createPool.swapType)
+  const updateStableSwapFee = useStore((state) => state.createPool.updateStableSwapFee)
+  const updateMidFee = useStore((state) => state.createPool.updateMidFee)
+  const updateOutFee = useStore((state) => state.createPool.updateOutFee)
+  const updateStableA = useStore((state) => state.createPool.updateStableA)
+  const updateCryptoA = useStore((state) => state.createPool.updateCryptoA)
+  const updateGamma = useStore((state) => state.createPool.updateGamma)
+  const updateAllowedExtraProfit = useStore((state) => state.createPool.updateAllowedExtraProfit)
+  const updateFeeGamma = useStore((state) => state.createPool.updateFeeGamma)
+  const updateAdjustmentStep = useStore((state) => state.createPool.updateAdjustmentStep)
+  const updateMaHalfTime = useStore((state) => state.createPool.updateMaHalfTime)
+  const updateMaExpTime = useStore((state) => state.createPool.updateMaExpTime)
+  const updateOffpegFeeMultiplier = useStore((state) => state.createPool.updateOffpegFeeMultiplier)
+  const updateAdvanced = useStore((state) => state.createPool.updateAdvanced)
+  const refreshInitialPrice = useStore((state) => state.createPool.refreshInitialPrice)
+  const initialPrice = useStore((state) => state.createPool.initialPrice)
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex!)
   const networks = useStore((state) => state.networks.networks)
 
@@ -321,8 +316,6 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                       />
                     </>
                   )}
-                  {/* Select pool implementation when stableswap-ng is not available on the current chain */}
-                  {!networks[chainId].stableswapFactory && <SelectPoolImplementation chainId={chainId} />}
                 </>
               )}
               {advanced && swapType !== STABLESWAP && (

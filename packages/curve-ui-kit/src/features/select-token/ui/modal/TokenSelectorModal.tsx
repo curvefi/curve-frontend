@@ -20,11 +20,13 @@ export type TokenSelectorModalProps = {
   isOpen: boolean
   /** Shows token list management options (currently disabled in UI but wired for future use) */
   showManageList: boolean
+  /** Controls whether the modal should use a compact layout with fixed height */
+  compact: boolean
 }
 
 export type Props = TokenListProps & TokenSelectorModalCallbacks & TokenSelectorModalProps
 
-export const TokenSelectorModal = ({ isOpen, showManageList, onClose, ...tokenListProps }: Props) => {
+export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, ...tokenListProps }: Props) => {
   const [isManageListOpen, openManageList, closeManageList] = useSwitch()
 
   return (
@@ -46,11 +48,11 @@ export const TokenSelectorModal = ({ isOpen, showManageList, onClose, ...tokenLi
         false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
       }
       sx={{
-        '& .MuiPaper-root': {
+        '& .MuiPaper-root:not(.MuiAlert-root)': {
           overflowY: 'hidden',
           maxHeight: MaxHeight.tokenSelector,
           height: 'auto',
-          minHeight: 'auto',
+          minHeight: compact ? 'auto' : MaxHeight.tokenSelector,
         },
       }}
     >

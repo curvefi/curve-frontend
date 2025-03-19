@@ -25,7 +25,7 @@
     "typescript": "*"
   },
   "dependencies": {
-    "@curvefi/api": "^2.66.8",
+    "@curvefi/api": "^2.66.9",
     "@curvefi/lending-api": "^2.5.6",
     "@curvefi/stablecoin-api": "^1.5.17",
     "@hookform/error-message": "^2.0.1",

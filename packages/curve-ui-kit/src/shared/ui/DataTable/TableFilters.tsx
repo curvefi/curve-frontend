@@ -11,12 +11,12 @@ import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
-import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
-import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
-import { FilterIcon } from '../icons/FilterIcon'
-import { ReloadIcon } from '../icons/ReloadIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FilterIcon } from '../../icons/FilterIcon'
+import { ReloadIcon } from '../../icons/ReloadIcon'
+import { ToolkitIcon } from '../../icons/ToolkitIcon'
+import { TableSearchField } from './TableSearchField'
+import { TableVisibilitySettingsPopover, VisibilityGroup } from './TableVisibilitySettingsPopover'
 
 const { Spacing } = SizesAndSpaces
 
@@ -57,39 +57,41 @@ export const TableFilters = ({
   title,
   subtitle,
   onReload,
-  onResetFilters,
   learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
   collapsible,
   children,
+  onSearch,
 }: {
   title: string
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
-  onResetFilters: () => void
   visibilityGroups: VisibilityGroup[]
   toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode
   children: ReactNode
+  onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Stack paddingBlockEnd={Spacing.md} maxWidth="calc(100vw - 16px)">
-      <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
+    <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 16px)">
+      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        <Grid container size={{ mobile: 6 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
+        {/* flex-wrap below is for screens < 500px */}
+        <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           <TableButton
             ref={settingsRef}
             onClick={openVisibilitySettings}
             icon={ToolkitIcon}
             testId="btn-visibility-settings"
+            active={visibilitySettingsOpen}
           />
           <TableButton
             onClick={() => setFilterExpanded((prev) => !prev)}
@@ -102,19 +104,13 @@ export const TableFilters = ({
             Learn More
           </Button>
         </Grid>
+        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
+          <TableSearchField onSearch={onSearch} />
+        </Grid>
+        <Grid size={{ mobile: 12, tablet: 7, desktop: 8 }} justifyContent="flex-end" gap={0}>
+          {children}
+        </Grid>
       </Grid>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        paddingInline={Spacing.md}
-        flexWrap="wrap"
-      >
-        {children}
-        <Button color="ghost" size="small" onClick={onResetFilters} data-testid="reset-filter">
-          {t`Reset Filters`}
-        </Button>
-      </Stack>
       <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
@@ -139,10 +135,14 @@ export function useColumnFilters() {
     (id: string, value: unknown) =>
       setColumnFilters((filters) => [
         ...filters.filter((f) => f.id !== id),
-        {
-          id,
-          value,
-        },
+        ...(value == null
+          ? []
+          : [
+              {
+                id,
+                value,
+              },
+            ]),
       ]),
     [],
   )

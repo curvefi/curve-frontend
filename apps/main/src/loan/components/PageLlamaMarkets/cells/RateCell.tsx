@@ -1,10 +1,11 @@
 import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { GraphType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
-import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import { RewardsAction } from '@ui/CampaignRewards/types'
 import { t } from '@ui-kit/lib/i18n'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -14,7 +15,9 @@ const { IconSize, Spacing } = SizesAndSpaces
 
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphType }) => {
   const { rate, averageRate } = useSnapshots(market, type)
-  const { rewards } = market
+  const { rewards, type: marketType } = market
+  const rewardsAction: RewardsAction =
+    marketType === LlamaMarketType.Mint ? 'loan' : type == 'borrow' ? 'borrow' : 'supply'
   return (
     <Stack gap={Spacing.xs}>
       <Tooltip title={t`Average rate`} placement="top">
@@ -31,21 +34,24 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphTyp
             </Typography>
           </Tooltip>
         )}
-        {rewards.map((reward, index) => (
-          <Tooltip
-            key={index}
-            title={getRewardsDescription(reward)}
-            placement="top"
-            data-testid={`rewards-${type}-${reward.action}`}
-          >
-            <Chip
-              icon={<PointsIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
-              size="extraSmall"
-              color="highlight"
-              label={reward.multiplier}
-            />
-          </Tooltip>
-        ))}
+        {rate != null &&
+          rewards
+            .filter(({ action }) => action == rewardsAction)
+            .map((reward, index) => (
+              <Tooltip
+                key={index}
+                title={getRewardsDescription(reward)}
+                placement="top"
+                data-testid={`rewards-${type}-${reward.action}`}
+              >
+                <Chip
+                  icon={<PointsIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+                  size="extraSmall"
+                  color="highlight"
+                  label={reward.multiplier}
+                />
+              </Tooltip>
+            ))}
       </Stack>
     </Stack>
   )

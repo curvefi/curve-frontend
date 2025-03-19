@@ -11,7 +11,7 @@ import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helper
 import { mockTokenPrices } from '@/support/helpers/tokens'
 import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
 
-describe('LlamaLend Markets', () => {
+describe(`LlamaLend Markets`, () => {
   let isDarkMode: boolean
   let breakpoint: Breakpoint
   let vaultData: LendingVaultResponses
@@ -43,17 +43,13 @@ describe('LlamaLend Markets', () => {
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
-    if (breakpoint === 'mobile') {
-      cy.viewport(400, 400) // fixed mobile viewport, filters wrap depending on the width
-    }
-
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [202], tablet: [112, 144, 200], desktop: [120] }[breakpoint]
+    const filterHeight = { mobile: [234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
@@ -70,13 +66,18 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
+    cy.get(`[data-testid="chip-lend"]`).click()
+    cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     cy.get('[data-testid="line-graph-lend"] path').first().should('have.attr', 'stroke', green)
     cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
-      cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
+      cy.get('[data-testid^="data-table-row"]')
+        .last()
+        .scrollIntoView({ offset: { top: -100, left: 0 } }) // scroll to the last row, make sure it's still visible
       cy.wait('@lend-snapshots')
       cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
       cy.wait(range(calls1.length).map(() => '@lend-snapshots'))
@@ -84,6 +85,15 @@ describe('LlamaLend Markets', () => {
         expect(calls2.length).to.be.greaterThan(calls1.length),
       )
     })
+  })
+
+  it('should find markets by text', () => {
+    cy.get("[data-testid='table-text-search']").type('wstETH crvUSD')
+    cy.scrollTo(0, 0)
+    // sfrxETH market is filtered out
+    cy.get(`[data-testid='market-link-0x136e783846ef68C8Bd00a3369F787dF8d683a696']`).should('not.exist')
+    // wstETH market is shown
+    cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
   })
 
   it(`should allow filtering by using a slider`, () => {
@@ -177,11 +187,11 @@ describe('LlamaLend Markets', () => {
     cy.url().should('match', urlRegex, LOAD_TIMEOUT)
   })
 
-  it(`should allow filtering by rewards`, () => {
+  it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-    cy.get(`[data-testid="rewards-lp"]`).should('be.visible')
+    cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })

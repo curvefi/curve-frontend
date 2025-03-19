@@ -1,17 +1,16 @@
 import groupBy from 'lodash/groupBy'
 import { Fragment, useMemo, useRef, useState } from 'react'
-import SearchIcon from '@mui/icons-material/Search'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
+import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { ChainOption } from './ChainSwitcher'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
@@ -77,16 +76,11 @@ export function ChainList<TChainId extends number>({
   const entries = Object.entries(groupedOptions)
   return (
     <>
-      <TextField
-        fullWidth
+      <SearchField
         sx={{ marginBottom: 2 }}
         placeholder={t`Search Networks`}
-        onChange={(e) => setSearchValue(e.target.value)}
-        slotProps={{ input: { startAdornment: <SearchIcon /> } }}
-        variant="outlined"
-        value={searchValue}
+        onSearch={setSearchValue}
         name="chainName"
-        autoFocus
       />
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
         {entries.length ? (

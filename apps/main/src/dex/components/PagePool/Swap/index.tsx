@@ -381,6 +381,7 @@ const Swap = ({
                 disabled={isDisabled || selectList.length === 0}
                 showSearch={false}
                 showManageList={false}
+                compact={true}
                 onToken={(token) => {
                   const val = token.address
                   const cFormValues = cloneDeep(formValues)
@@ -463,6 +464,7 @@ const Swap = ({
               disabled={isDisabled || selectList.length === 0}
               showSearch={false}
               showManageList={false}
+              compact={true}
               onToken={(token) => {
                 const val = token.address
                 const cFormValues = cloneDeep(formValues)

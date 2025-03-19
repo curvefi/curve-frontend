@@ -43,7 +43,7 @@ export const PageLlamaMarkets = () => {
       ) : (
         <LendingMarketsTable
           onReload={() => onReload(signerAddress)}
-          data={data ?? []}
+          result={data}
           headerHeight={headerHeight}
           isError={isError}
         />

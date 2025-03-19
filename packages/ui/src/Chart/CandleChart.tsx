@@ -71,7 +71,7 @@ const CandleChart = ({
   latestOraclePrice,
 }: Props) => {
   const chartContainerRef = useRef(null)
-  const chartRef = useRef<IChartApi | null>(null)
+  const chartRef = useRef<IChartApi>(null)
 
   const newAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const newAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)

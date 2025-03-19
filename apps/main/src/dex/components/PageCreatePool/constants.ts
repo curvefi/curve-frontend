@@ -1,6 +1,4 @@
 import BigNumber from 'bignumber.js'
-import type { ImplementationId } from '@/dex/components/PageCreatePool/types'
-import { NativeToken } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
 
 export const CRYPTOSWAP = 'Cryptoswap'
@@ -194,39 +192,6 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
-}
-
-export const IMPLEMENTATION_IDS = (
-  nativeToken: NativeToken | undefined,
-): { [K in ImplementationId]: ImplementationDetail } => {
-  const nativeTokenSymbol = nativeToken?.symbol ?? ''
-
-  return {
-    0: {
-      name: 'Basic',
-      descriptionName: t`Basic`,
-      titleDescription: '',
-      description: t`For pools that supports any major ERC20 return implementation (”return True / revert”, “return None / revert”, “return True / return False”), and any number of decimal places up to 18`,
-    },
-    1: {
-      name: 'Balances',
-      descriptionName: t`Balances`,
-      titleDescription: '',
-      description: t`For pools with rebase tokens like aTokens, or where there's a fee-on-transfer.`,
-    },
-    2: {
-      name: `${nativeTokenSymbol} (currently not available)`,
-      descriptionName: t`${nativeTokenSymbol}`,
-      titleDescription: t`(only available for pools with pegged assets)`,
-      description: t`For pools containing native ${nativeTokenSymbol} (represented as 0xEE…EE)`,
-    },
-    3: {
-      name: 'Optimised',
-      descriptionName: t`Optimised`,
-      titleDescription: t`(only available for pools with pegged assets)`,
-      description: t`A more gas-efficient implementation that can be used when every token in the pool has 18 decimals and returns True on success / reverts on error`,
-    },
-  }
 }
 
 // MIN-MAX PARAMS

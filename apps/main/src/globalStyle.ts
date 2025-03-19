@@ -16,9 +16,7 @@ const GlobalStyle = createGlobalStyle`
 
     color: var(--page--text-color);
     background-color: var(--page--background-color);
-    &.scrollSmooth {
-      scroll-behavior: smooth;
-    }
+    scroll-behavior: smooth;
   }
 
   * {

@@ -21,7 +21,6 @@ type SliceState = {
   connectState: ConnectState
   isLoadingApi: boolean
   isLoadingCurve: boolean
-  isMobile: boolean
   isPageVisible: boolean
   layoutHeight: LayoutHeight
   loaded: boolean
@@ -44,7 +43,6 @@ export interface AppSlice extends SliceState {
 
 const DEFAULT_STATE = {
   curve: null,
-  isMobile: false,
   isLoadingApi: false,
   isLoadingCurve: true,
   isPageVisible: true,

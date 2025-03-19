@@ -1,5 +1,6 @@
 import { debounce } from 'lodash'
 import styled from 'styled-components'
+import { isAddress } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -25,9 +26,14 @@ type OracleInputProps = {
 }
 
 const SetOracle = () => {
-  const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
-    (state) => state.createPool.tokensInPool,
-  )
+  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
+  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
+  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
+  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
+  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
+  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
 
   return (
     <OracleWrapper>
@@ -78,6 +84,9 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       )}
       {token.oracleAddress.length !== 0 && token.oracleAddress.length < 42 && (
         <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
+      )}
+      {token.oracleAddress.length === 42 && !isAddress(token.oracleAddress) && (
+        <WarningBox message={t`Invalid EVM address.`} />
       )}
       <TextInput
         row

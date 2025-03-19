@@ -1,4 +1,3 @@
-import { IMPLEMENTATION_IDS } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -15,15 +14,12 @@ type Props = {
 }
 
 const StableswapParameters = ({ chainId }: Props) => {
-  const {
-    parameters: { stableSwapFee, stableA, maExpTime, offpegFeeMultiplier },
-    advanced,
-    implementation,
-  } = useStore((state) => state.createPool)
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
-  const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
-
-  const implementations = IMPLEMENTATION_IDS(nativeToken)
+  const advanced = useStore((state) => state.createPool.advanced)
+  const stableSwapFee = useStore((state) => state.createPool.parameters.stableSwapFee)
+  const stableA = useStore((state) => state.createPool.parameters.stableA)
+  const maExpTime = useStore((state) => state.createPool.parameters.maExpTime)
+  const offpegFeeMultiplier = useStore((state) => state.createPool.parameters.offpegFeeMultiplier)
+  const stableswapFactory = useStore((state) => state.networks.networks[chainId].stableswapFactory)
 
   return (
     <>
@@ -61,12 +57,6 @@ const StableswapParameters = ({ chainId }: Props) => {
                 )}
               </CategoryDataRow>
             </>
-          )}
-          {!stableswapFactory && advanced && (
-            <CategoryDataRow>
-              <SummaryDataTitle>{t`Pool Implementation:`}</SummaryDataTitle>
-              <SummaryData>{implementations[implementation].name}</SummaryData>
-            </CategoryDataRow>
           )}
         </>
       )}

@@ -17,7 +17,11 @@ const CreatePoolButton = ({ disabled, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const deployPool = useStore((state) => state.createPool.deployPool)
-  const { txStatus, txSuccess, txLink, poolId, errorMessage } = useStore((state) => state.createPool.transactionState)
+  const txStatus = useStore((state) => state.createPool.transactionState.txStatus)
+  const txSuccess = useStore((state) => state.createPool.transactionState.txSuccess)
+  const txLink = useStore((state) => state.createPool.transactionState.txLink)
+  const poolId = useStore((state) => state.createPool.transactionState.poolId)
+  const errorMessage = useStore((state) => state.createPool.transactionState.errorMessage)
   const connectWallet = useStore((s) => s.updateConnectState)
 
   return !haveSigner ? (

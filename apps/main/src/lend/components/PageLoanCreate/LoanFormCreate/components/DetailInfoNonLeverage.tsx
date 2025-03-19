@@ -1,7 +1,6 @@
 import DetailInfoEstGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoLiqRangeEdit from '@/lend/components/DetailInfoLiqRangeEdit'
 import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
 import DetailInfoN from '@/lend/components/DetailInfoN'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
@@ -9,6 +8,7 @@ import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/
 import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
 const DetailInfoNonLeverage = ({
   activeStep,
@@ -55,7 +55,7 @@ const DetailInfoNonLeverage = ({
             handleLiqRangesEdit={handleLiqRangesEdit}
           />
           <DetailInfoN isLoaded={isLoaded} n={formValues.n} />
-          <DetailInfoLiqRangeEdit
+          <LiquidationRangeSlider
             {...detailInfo}
             liqRanges={liqRanges}
             maxBands={market?.maxBands}

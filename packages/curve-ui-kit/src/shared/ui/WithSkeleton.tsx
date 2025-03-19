@@ -1,5 +1,5 @@
 import React from 'react'
-import { Skeleton, SkeletonProps } from '@mui/material'
+import { default as Skeleton, SkeletonProps } from '@mui/material/Skeleton'
 
 /**
  * A component that wraps children with a Skeleton when loading.

@@ -123,8 +123,8 @@ describe('Header', () => {
       cy.url().then((url) => {
         const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
-        cy.get(`[data-testid='mobile-drawer']`, LOAD_TIMEOUT).should('not.exist')
-        cy.url().should('not.equal', url)
+        cy.url().should('not.equal', url, LOAD_TIMEOUT)
+        cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       })
     })
 

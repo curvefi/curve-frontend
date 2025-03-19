@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import { RadioGroup } from 'ui/src/Radio'
-import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
+import { delayAction } from 'ui/src/utils/helpers'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'
 import TableButtonFiltersMobileItemIcon from './components/TableButtonFiltersMobileItemIcon'
@@ -20,9 +21,10 @@ const TableButtonFiltersMobile = ({
   updateRouteFilterKey(filterKey: string): void
 }) => {
   const overlayTriggerState = useOverlayTriggerState({})
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
 
   const handleClose = () => {
-    if (getIsMobile()) {
+    if (isMobile) {
       delayAction(overlayTriggerState.close)
     } else {
       overlayTriggerState.close()

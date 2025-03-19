@@ -1,5 +1,7 @@
 import type { Address } from '@curvefi/prices-api'
 
+export const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
+
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
   maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
 
@@ -22,7 +24,7 @@ export const oneAddress = (): Address =>
     .toString(16)
     .padStart(40, '0')}`
 
-export const onePrice = (max = 1e10) => oneFloat(max)
+export const onePrice = (max = MAX_USD_VALUE) => oneFloat(max)
 
 export const shuffle = <T>(...options: T[]): T[] => {
   const result = [...options]
