@@ -2,7 +2,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import AdvancedSettings from '@/dex/components/AdvancedSettings'
+import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
@@ -123,11 +123,7 @@ const Page = (params: NetworkUrlParams) => {
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
-        <AdvancedSettings
-          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
-          testId="advance-settings"
-          maxSlippage={storeMaxSlippage}
-        />
+        <SlippageSettings stateKey={isStableswapRoute ? 'stable' : 'crypto'} maxSlippage={storeMaxSlippage} />
       </BoxHeader>
 
       <Box grid gridRowGap={3} padding>

@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import AdvancedSettings from '@/loan/components/AdvancedSettings'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
+import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => (
   <StyledDetailInfo label={noLabel ? undefined : t`Slippage tolerance:`}>
-    <StyledAdvancedSettings
+    <StyledSlippageSettings
       maxSlippage={maxSlippage}
       buttonIcon={
         <>
@@ -24,7 +24,7 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => (
   </StyledDetailInfo>
 )
 
-const StyledAdvancedSettings = styled(AdvancedSettings)`
+const StyledSlippageSettings = styled(SlippageSettings)`
   justify-content: flex-end;
 `
 

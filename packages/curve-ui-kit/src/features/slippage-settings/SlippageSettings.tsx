@@ -1,6 +1,5 @@
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { delayAction } from '@/loan/utils/helpers'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box from '@ui/Box'
@@ -23,19 +22,14 @@ type FormValues = {
   errorVariant: InputVariant | ''
 }
 
-type Props = {
-  children?: ReactNode
-  className?: string
-  buttonIcon?: ReactNode
-  maxSlippage: string
-}
-
 const DEFAULT_FORM_VALUES: FormValues = {
   selected: '',
   customValue: '',
   error: '',
   errorVariant: '',
 }
+
+const MIN_SLIPPAGE = 0.01
 
 function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: string) {
   const updatedFormValues = { ...formValues }
@@ -47,23 +41,42 @@ function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: str
   return updatedFormValues
 }
 
+function delayAction<T>(cb: T) {
+  if (typeof cb === 'function') {
+    setTimeout(() => cb(), 100)
+  }
+}
+
+type Props = {
+  children?: ReactNode
+  className?: string
+  buttonIcon?: ReactNode
+  maxSlippage: string
+  stateKey?: string
+}
+
 /**
  * SLIPPAGE:
  * Min slippage should be >= 0.01, max slippage <5
  * If saved, it is custom slippage and should be used globally.
  * If custom slippage is not saved, set 0.1 for stablecoin and 0.5 for crypto.
  */
-export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: Props) => {
+export const SlippageSettings = ({
+  className,
+  buttonIcon,
+  maxSlippage,
+  stateKey, // object key for slippage state
+}: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 
   const handleSave = () => {
     const updatedCustomSlippage = formValues.selected === 'custom' ? formValues.customValue : formValues.selected
-    setMaxSlippage(updatedCustomSlippage)
+
+    setMaxSlippage(updatedCustomSlippage, stateKey)
     if (isMobile) {
       delayAction(overlayTriggerState.close)
     } else {
@@ -103,7 +116,7 @@ export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: Props) 
       if (Number(value) > 5) {
         updatedFormValues.error = 'too-high'
         updatedFormValues.errorVariant = 'warning'
-      } else if (Number(value) < 0.01) {
+      } else if (Number(value) < MIN_SLIPPAGE) {
         updatedFormValues.error = 'too-low'
         updatedFormValues.errorVariant = 'error'
       }
@@ -113,7 +126,7 @@ export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: Props) 
 
   const inputErrorMapper = {
     'too-high': { message: 'Too high', helperText: '' },
-    'too-low': { message: 'Too low', helperText: t`Min. slippage is 0.01%` },
+    'too-low': { message: 'Too low', helperText: t`Min. slippage is ${MIN_SLIPPAGE}%` },
   }
 
   useEffect(() => {
@@ -127,11 +140,11 @@ export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: Props) 
   return (
     <>
       <OpenDialogIconButton className={className} overlayTriggerState={overlayTriggerState}>
-        {buttonIcon || <Icon name="SettingsAdjust" size={24} aria-label="Advanced Settings" />}
+        {buttonIcon || <Icon name="SettingsAdjust" size={24} aria-label="Slippage Settings" />}
       </OpenDialogIconButton>
       {overlayTriggerState.isOpen && (
         <ModalDialog
-          title={t`Advanced Settings`}
+          title={t`Slippage Settings`}
           state={{ ...overlayTriggerState, close: handleDiscard }}
           footerContent={
             <StyledFooter grid gridTemplateColumns="repeat(2, auto)" gridColumnGap="normal">
@@ -233,4 +246,4 @@ const RadioGroupWrapper = styled.div`
   position: relative;
 `
 
-export default AdvancedSettings
+export default SlippageSettings

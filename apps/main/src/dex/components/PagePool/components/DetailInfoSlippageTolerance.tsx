@@ -1,18 +1,24 @@
 import styled from 'styled-components'
-import type { AdvancedSettingsProps } from '@/dex/components/AdvancedSettings'
-import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
+import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => (
+type Props = {
+  maxSlippage: string
+  stateKey: string
+  customLabel?: string
+}
+
+const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Props) => (
   <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
-    <StyledAdvancedSettings
-      {...props}
+    <StyledSlippageSettings
+      maxSlippage={maxSlippage}
+      stateKey={stateKey}
       buttonIcon={
         <>
-          {formatNumber(props.maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
+          {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
           <Icon name="Settings" size={16} />
         </>
       }
@@ -20,7 +26,7 @@ const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettings
   </StyledDetailInfo>
 )
 
-const StyledAdvancedSettings = styled(AdvancedSettings)`
+const StyledSlippageSettings = styled(SlippageSettings)`
   justify-content: flex-end;
 `
 
