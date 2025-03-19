@@ -33,8 +33,25 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         content: '""',
         position: 'absolute',
         inset: 0,
+        // Enlarger the border by the thumb width so that the thumb 0% and 100% don't overlap with said border
+        right: -THUMB_WIDTH / 2,
+        left: -THUMB_WIDTH / 2,
         border: `1px solid ${design.Color.Neutral[500]}`,
         zIndex: -1,
+      },
+      // Paste a primary colored rectangle on the left side of the enlargened border
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        left: -THUMB_WIDTH / 2,
+        width: THUMB_WIDTH / 2,
+        height: '100%',
+        backgroundColor: design.Button.Primary.Default.Fill,
+        zIndex: 0,
+      },
+      '&.Mui-disabled::before': {
+        // Copy mui's slider disabled color
+        backgroundColor: 'var(--mui-palette-grey-400)',
       },
     },
 
