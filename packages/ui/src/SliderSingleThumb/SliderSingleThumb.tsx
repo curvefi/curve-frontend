@@ -114,11 +114,11 @@ const ThumbWrapper = styled.div`
 `
 
 const SliderTrack = styled.div`
+  background: var(--switch--background-color);
   &:before {
     content: attr(x);
     display: block;
     position: absolute;
-    background: var(--switch--background-color);
     box-shadow: inset 1px 1px 2px var(--switch--box-shadow);
   }
 

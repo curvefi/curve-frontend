@@ -5,7 +5,6 @@ import DetailInfoLeverageAvgPrice from '@/lend/components/DetailInfoLeverageAvgP
 import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpected'
 import DetailInfoLeverageX from '@/lend/components/DetailInfoLeverageX'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoLiqRangeEdit from '@/lend/components/DetailInfoLiqRangeEdit'
 import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
 import DetailInfoN from '@/lend/components/DetailInfoN'
 import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
@@ -17,6 +16,7 @@ import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
 const DetailInfoLeverage = ({
   activeStep,
@@ -120,7 +120,7 @@ const DetailInfoLeverage = ({
             handleLiqRangesEdit={handleLiqRangesEdit}
           />
           <DetailInfoN isLoaded={isLoaded} n={formValues.n} />
-          <DetailInfoLiqRangeEdit
+          <LiquidationRangeSlider
             {...detailInfo}
             liqRanges={liqRanges}
             maxBands={maxBands}
