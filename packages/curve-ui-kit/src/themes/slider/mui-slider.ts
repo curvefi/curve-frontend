@@ -1,5 +1,5 @@
 import type { Components } from '@mui/material/styles'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -8,14 +8,20 @@ const { IconSize } = SizesAndSpaces
 
 const THUMB_WIDTH = 20 // 20px is a default MUI value, not responsive to reduce headaches
 
+type Size = 'medium' | 'large'
+const heights: Record<Size, Responsive> = {
+  medium: IconSize.xxs,
+  large: IconSize.lg,
+}
+
 // Equalizes track and thumb height with support for responsiveness
 const trackAndThumbHeights = {
-  ...handleBreakpoints({ height: IconSize.xxs }),
+  ...handleBreakpoints({ height: heights['medium'] }),
   borderRadius: 0,
   border: 'none',
 
   '.MuiSlider-sizeLarge &': {
-    ...handleBreakpoints({ height: IconSize.lg }),
+    ...handleBreakpoints({ height: heights['large'] }),
   },
 }
 
@@ -81,7 +87,7 @@ const borderLeftFillPseudoElement = (design: DesignSystem) => {
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   styleOverrides: {
     root: {
-      ...handleBreakpoints({ minHeight: IconSize.xxs }),
+      ...handleBreakpoints({ minHeight: heights['medium'] }),
       borderRadius: 0,
       // Nesting required as otherwise it'll break in mobile for some reason
       '&': { paddingBlock: 0 },
@@ -91,9 +97,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     },
 
     // Can't use trackAndThumbHeights here, need a different CSS selector for 'large' adjustments
-    sizeLarge: handleBreakpoints({
-      minHeight: IconSize.lg,
-    }),
+    sizeLarge: handleBreakpoints({ minHeight: heights['large'] }),
 
     thumb: {
       ...trackAndThumbHeights,
