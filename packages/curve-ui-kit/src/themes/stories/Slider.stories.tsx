@@ -5,10 +5,10 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
 const SliderComponent = (props: React.ComponentProps<typeof Slider>) => {
-  const [value, setValue] = useState<number>(props.defaultValue as number)
+  const [value, setValue] = useState<number | number[]>(props.defaultValue as number | number[])
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
-    setValue(newValue as number)
+    setValue(newValue)
   }
 
   return (
@@ -120,6 +120,21 @@ export const LargeSize: Story = {
     docs: {
       description: {
         story: 'Large-sized slider variant',
+      },
+    },
+  },
+}
+
+export const RangeSlider: Story = {
+  args: {
+    defaultValue: [20, 80],
+    valueLabelDisplay: 'auto',
+    size: 'large',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Range slider with two thumbs for selecting a range of values',
       },
     },
   },
