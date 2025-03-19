@@ -4,7 +4,7 @@ import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/loan/entities/crvusd-snaps
 import { LendingSnapshot, useLendingSnapshots } from '@/loan/entities/lending-snapshots'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 
-export type GraphType = 'borrow' | 'lend'
+export type RateType = 'borrow' | 'lend'
 
 type UseSnapshotsResult<T> = {
   snapshots: T[] | null
@@ -13,11 +13,12 @@ type UseSnapshotsResult<T> = {
   rate: number | null
   averageRate: number | null
   error: unknown
+  period: '7D' // this will be extended in the future
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
-  type: GraphType,
+  type: RateType,
 ): UseSnapshotsResult<T> {
   const isPool = marketType == LlamaMarketType.Lend
   const showMintGraph = !isPool && type === 'borrow'
@@ -46,5 +47,13 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
     [snapshots, snapshotKey],
   )
 
-  return { snapshots, isLoading, snapshotKey, rate: currentValue, averageRate, error } as UseSnapshotsResult<T>
+  return {
+    snapshots,
+    isLoading,
+    snapshotKey,
+    rate: currentValue,
+    averageRate,
+    error,
+    period: '7D',
+  } as UseSnapshotsResult<T>
 }
