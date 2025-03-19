@@ -85,16 +85,18 @@ const TableRow = ({
           {columnKey === COLUMN_KEYS.rewardsLite && (
             <Td className="right">
               <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
-                {rewardsApy &&
-                  (isCrvRewardsEnabled ? (
-                    <TableCellRewardsCrv
-                      isHighlight={sortBy === 'rewardsCrv'}
-                      poolData={poolData}
-                      rewardsApy={rewardsApy}
-                    />
-                  ) : (
+                {rewardsApy && (
+                  <>
+                    {isCrvRewardsEnabled && (
+                      <TableCellRewardsCrv
+                        isHighlight={sortBy === 'rewardsCrv'}
+                        poolData={poolData}
+                        rewardsApy={rewardsApy}
+                      />
+                    )}
                     <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
-                  ))}
+                  </>
+                )}
                 {poolData && campaignRewardsMapper[poolData.pool.address] && (
                   <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
                 )}

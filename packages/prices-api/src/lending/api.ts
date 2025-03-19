@@ -45,3 +45,17 @@ export async function getOracle(
 
   return Parsers.parseOracle(resp)
 }
+
+export async function getUserMarketCollateralEvents(
+  userAddr: string,
+  chain: Chain,
+  marketController: string,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetUserCollateralEventsResponse>(
+    `${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}`,
+  )
+
+  return Parsers.parseUserCollateralEvents(resp)
+}
