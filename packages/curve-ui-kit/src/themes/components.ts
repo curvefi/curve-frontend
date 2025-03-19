@@ -108,12 +108,13 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: {
     styleOverrides: {
+      track: {height: 20, borderRadius: 0},
       thumb: {
         borderRadius: 0,
-        backgroundImage: `url(${design.Inputs.SliderThumbImage})`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain',
+        background: `${design.Color.Neutral[950]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
+        '&:hover': {
+          filter: 'invert(1)',
+        }
       },
     },
   },
