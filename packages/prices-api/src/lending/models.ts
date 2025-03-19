@@ -38,3 +38,52 @@ export type OracleOHLC = {
   basePrice: number
   oraclePrice: number
 }
+
+export type UserCollateralEvents = {
+  controller: Address
+  user: Address
+  totalDeposit: number
+  totalBorrowed: number
+  totalDepositPrecise: string
+  totalBorrowedPrecise: string
+  totalDepositFromUser: number
+  totalDepositFromUserPrecise: string
+  totalDepositUsdValue: number
+  totalBorrowedUsdValue: number
+  events: {
+    timestamp: Date
+    txHash: Address
+    type: 'Borrow' | 'Deposit'
+    user: Address
+    collateralChange: number
+    collateralChangeUsd: number
+    loanChange: number
+    loanChangeUsd: number
+    liquidation?: {
+      user: Address
+      liquidator: Address
+      collateralReceived: number
+      collateralReceivedUsd: number
+      stablecoinReceived: number
+      stablecoinRecievedUsd: number
+      debt: number
+      debtUsd: number
+    }
+    leverage?: {
+      eventType: 'Deposit' | 'Borrow'
+      user: Address
+      userCollateral: number
+      userBorrowed: number
+      userCollateralFromBorrowed: number
+      debt: number
+      leverageCollateral: number
+      stateCollateralUsed: number
+      borrowedFromStateCollateral: number
+      userCollateralUsed: number
+      borrowedFromUserCollateral: number
+    }
+    n1: number
+    n2: number
+    oraclePrice: number
+  }[]
+}
