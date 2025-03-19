@@ -8,10 +8,12 @@ import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiSelect } from '@ui-kit/themes/mui-select'
 import { basicMuiTheme } from './basic-theme'
+import { getShadow } from './basic-theme/shadows'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { DesignSystem } from './design'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiSwitch } from './mui-switch'
+import { defineMuiTooltip } from './mui-tooltip'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
 
@@ -131,47 +133,19 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
     },
   },
+  MuiTooltip: defineMuiTooltip(design, typography),
   MuiPaper: {
     styleOverrides: {
       root: {
-        boxShadow: [
-          '0px 0px 0px 1px #2A334524',
-          '0px 1px 1px -0.5px #2A334524',
-          '0px 3px 3px -1.5px #2A334624',
-          '0px 4px 4px -2px #2A334524',
-          '0px 8px 8px -8px #2A334514',
-        ].join(','),
+        boxShadow: getShadow(design, 1),
         // Disable elevation making the background color lighter in dark mode (default mui behavior)
         backgroundImage: 'none',
       },
-      elevation2: {
-        boxShadow: [
-          '0px 0px 0px 1px #2A334524',
-          '0px 1px 1px -0.5px #2A334524',
-          '0px 3px 3px -1.5px #2A334624',
-          '0px 6px 6px -3px #2A334624',
-          '0px 8px 8px -6px #2A334524',
-          '0px 12px 12px -6px #2A334514',
-        ].join(','),
-      },
-      elevation3: {
-        boxShadow: [
-          '0px 0px 0px 1px #2A334524',
-          '0px 1px 1px -0.5px #2A334524',
-          '0px 3px 3px -1.5px #2A334524',
-          '0px 8px 8px -4px #2A334524',
-          '0px 16px 16px -8px #2A334524',
-          '0px 32px 32px -16px #2A33451A',
-        ].join(','),
-      },
-      // this should actually be elevation -1 from our design system, but negative is not supported by mui
-      elevation11: {
-        boxShadow: `1px 1px 0px 0px ${design.Color.Neutral[800]} inset`,
-      },
-      // this should actually be elevation -2 from our design system, but negative is not supported by mui
-      elevation12: {
-        boxShadow: `2px 2px 0px 0px ${design.Color.Neutral[800]} inset`,
-      },
+      elevation2: { boxShadow: getShadow(design, 2) },
+      elevation3: { boxShadow: getShadow(design, 3) },
+      // mui does not support negative elevations, use 11 and 12 instead
+      elevation11: { boxShadow: getShadow(design, -1) },
+      elevation12: { boxShadow: getShadow(design, -2) },
     },
   },
   MuiPopover: {
