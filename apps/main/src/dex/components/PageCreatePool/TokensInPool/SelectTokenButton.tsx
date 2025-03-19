@@ -168,6 +168,7 @@ const SelectTokenButton = ({
           disabledTokens={disabledKeys ?? []}
           disableSorting={true}
           disableMyTokens={false}
+          compact={false}
           customOptions={
             swapType === STABLESWAP && (
               <Checkbox

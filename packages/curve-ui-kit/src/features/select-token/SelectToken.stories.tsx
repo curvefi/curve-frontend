@@ -242,7 +242,10 @@ const meta: Meta<typeof TokenSelector> = {
       control: false,
       description: 'Adds extra custom options to the modal, below the favorites',
     },
-
+    disableMyTokens: {
+      control: 'boolean',
+      description: 'Disables the "My Tokens" tab in the token selector modal',
+    },
     onToken: {
       action: 'token selected',
       description: 'Callback when a token is selected',
@@ -285,6 +288,22 @@ export const WithError: Story = {
     docs: {
       description: {
         story: 'Token selector displaying an error message',
+      },
+    },
+  },
+}
+
+export const CompactMode: Story = {
+  args: {
+    compact: true,
+    favorites: [],
+    tokens: defaultTokens.slice(0, 3),
+    disableMyTokens: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token selector in compact mode with reduced size modal',
       },
     },
   },
