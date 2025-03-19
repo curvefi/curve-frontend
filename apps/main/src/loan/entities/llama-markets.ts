@@ -8,7 +8,7 @@ import { Chain } from '@curvefi/prices-api'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
+import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type Address } from '@ui-kit/utils'
 
 export enum LlamaMarketType {

@@ -6,8 +6,6 @@ import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, type NetworkEnum } from '@/lend/types/lend.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
-import { type Theme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
@@ -17,8 +15,6 @@ import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
-
-const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const { wallet } = useWallet()
