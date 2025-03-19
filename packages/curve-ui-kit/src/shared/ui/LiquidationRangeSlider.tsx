@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 
 // the real type has more fields, but we only use this one
-type LiqRange = {n: number}
+type LiqRange = { n: number }
 
 const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
 

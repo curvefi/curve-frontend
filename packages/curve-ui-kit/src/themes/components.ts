@@ -1,16 +1,17 @@
 import { type ThemeOptions } from '@mui/material/styles'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { alpha } from '@mui/system'
-import { defineMuiCardHeader } from '@ui-kit/themes/card-header/mui-card-header'
-import { defineMuiChip } from '@ui-kit/themes/chip/mui-chip'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { defineMuiAlert, defineMuiAlertTitle } from '@ui-kit/themes/mui-alert'
-import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
-import { defineMuiSelect } from '@ui-kit/themes/mui-select'
 import { basicMuiTheme } from './basic-theme'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
+import { defineMuiCardHeader } from './card-header'
+import { defineMuiChip } from './chip/mui-chip'
 import { DesignSystem } from './design'
+import { TransitionFunction } from './design/0_primitives'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
+import { defineMuiAlert, defineMuiAlertTitle } from './mui-alert'
+import { defineMuiMenuItem } from './mui-menu-item'
+import { defineMuiSelect } from './mui-select'
+import { defineMuiSlider } from './mui-slider'
 import { defineMuiSwitch } from './mui-switch'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
@@ -106,18 +107,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   },
   MuiMenuItem: defineMuiMenuItem(design),
   MuiSelect: defineMuiSelect(design, typography),
-  MuiSlider: {
-    styleOverrides: {
-      track: {height: 20, borderRadius: 0},
-      thumb: {
-        borderRadius: 0,
-        background: `${design.Color.Neutral[950]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
-        '&:hover': {
-          filter: 'invert(1)',
-        }
-      },
-    },
-  },
+  MuiSlider: defineMuiSlider(design),
   MuiSkeleton: {
     styleOverrides: {
       root: {
