@@ -76,6 +76,7 @@ describe('Header', () => {
 
     it('should change chains', () => {
       if (['crvusd', 'dao'].includes(appPath)) {
+        // apps that only support Ethereum
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/ethereum`)
@@ -121,7 +122,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0
+        const clickIndex = appPath === 'lend' ? 1 : 0 // first option is the default page
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.url().should('not.equal', url, LOAD_TIMEOUT)
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
