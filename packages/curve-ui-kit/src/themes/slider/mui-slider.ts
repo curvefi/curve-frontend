@@ -99,9 +99,13 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       ...trackAndThumbHeights,
       width: THUMB_WIDTH,
       background: `${design.Color.Neutral[950]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
-      transition: `filter ${TransitionFunction}`,
+      transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
       '&:hover': {
-        filter: 'invert(1)',
+        backdropFilter: 'invert(1)', // This won't work for background images
+        // Instead, explicitly set an inverted background
+        background: `${design.Color.Neutral[50]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
+        backgroundBlendMode: 'difference', // This inverts colors in the background
+        border: `1px solid ${design.Color.Primary[500]}`,
       },
       '&:hover, &.Mui-focusVisible': {
         boxShadow: 'none', // Remove default MUI focus ring
