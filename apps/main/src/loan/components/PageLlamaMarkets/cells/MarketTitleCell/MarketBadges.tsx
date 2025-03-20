@@ -1,6 +1,7 @@
 import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
+import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -12,7 +13,6 @@ import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { classNames } from '@ui-kit/utils/dom'
-import Box from '@mui/material/Box'
 
 const { Spacing } = SizesAndSpaces
 
