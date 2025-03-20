@@ -65,6 +65,7 @@ export const defineMuiCheckbox = (design: DesignSystem): Components['MuiCheckbox
   defaultProps: {
     icon: createIconWrapper(<EmptyIcon />),
     checkedIcon: createIconWrapper(<CheckIcon />),
+    disableRipple: true,
   },
   styleOverrides: {
     root: { ...buttonSize({ size: 'sm' }) },
