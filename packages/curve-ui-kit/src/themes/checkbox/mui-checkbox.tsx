@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+import Box from '@mui/material/Box'
 import type { Components } from '@mui/material/styles'
 import { createSvgIcon } from '@mui/material/utils'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
@@ -7,6 +9,34 @@ import type { DesignSystem } from '../design'
 
 const { Sizing } = SizesAndSpaces
 
+// Empty icon that will only show the border defined the root style
+const EmptyIcon = createSvgIcon(<svg viewBox="0 0 24 24" />, 'Empty')
+
+const createIconWrapper = (icon: ReactNode) => (
+  <Box
+    className="icon-wrapper"
+    display="flex"
+    sx={{
+      outline: '1px solid currentColor',
+
+      // Animate the checkbox as it appears. It's not possible to animate it when unchecking.
+      '& svg': {
+        animation: 'checkmark-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
+      },
+      '@keyframes checkmark-appear': {
+        from: {
+          transform: 'scale(0)',
+        },
+        to: {
+          transform: 'scale(1)',
+        },
+      },
+    }}
+  >
+    {icon}
+  </Box>
+)
+
 /**
  * Using standard Sizing instead of ButtonSize because:
  * 1. ButtonSize is not responsive
@@ -14,11 +44,8 @@ const { Sizing } = SizesAndSpaces
  * 3. Checkbox buttons need more precise size control
  */
 const buttonSize = ({ size }: { size: keyof typeof Sizing }) => ({
-  '& .MuiSvgIcon-root': handleBreakpoints({ fontSize: Sizing[size] }),
+  '& .icon-wrapper svg': handleBreakpoints({ fontSize: Sizing[size] }),
 })
-
-// Empty icon that will only show the border defined the root style
-const EmptyIcon = createSvgIcon(<svg viewBox="0 0 24 24" />, 'Empty')
 
 /**
  * Checkbox sizes are slightly larger than in Figma to match radio button sizes
@@ -36,14 +63,11 @@ const EmptyIcon = createSvgIcon(<svg viewBox="0 0 24 24" />, 'Empty')
  */
 export const defineMuiCheckbox = (design: DesignSystem): Components['MuiCheckbox'] => ({
   defaultProps: {
-    icon: <EmptyIcon />,
-    checkedIcon: <CheckIcon />,
+    icon: createIconWrapper(<EmptyIcon />),
+    checkedIcon: createIconWrapper(<CheckIcon />),
   },
   styleOverrides: {
-    root: {
-      ...buttonSize({ size: 'sm' }),
-      '& .MuiSvgIcon-root': { outline: '1px solid currentColor' },
-    },
+    root: { ...buttonSize({ size: 'sm' }) },
 
     sizeSmall: { ...buttonSize({ size: 'xs' }) },
     sizeLarge: { ...buttonSize({ size: 'md' }) },
