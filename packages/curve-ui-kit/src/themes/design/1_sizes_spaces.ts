@@ -269,6 +269,7 @@ export const SizesAndSpaces = {
     table: '60rem', // 960px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
+    tooltip: '27.5rem', // 440px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px

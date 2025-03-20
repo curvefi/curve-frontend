@@ -1,15 +1,15 @@
-import { formatPercent, getRewardsAction } from '@/loan/components/PageLlamaMarkets/cells/cell.format'
-import { RateTooltipContent } from '@/loan/components/PageLlamaMarkets/cells/RateCellTooltip'
-import { RateType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import { t } from '@ui-kit/lib/i18n'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
-import { OmitTooltipPadding } from '@ui-kit/shared/ui/TooltipContent'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../hooks/useSnapshots'
+import { RateType } from '../hooks/useSnapshots'
+import { formatPercent, getRewardsAction } from './cell.format'
+import { RateTooltipContent } from './RateCellTooltip'
 
 const { IconSize, Spacing } = SizesAndSpaces
 
@@ -20,8 +20,13 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
   return (
     <Tooltip
-      slotProps={OmitTooltipPadding}
       title={
+        {
+          borrow: t`Borrow APR`,
+          lend: t`Supply APR`,
+        }[type]
+      }
+      body={
         <RateTooltipContent
           type={type}
           rate={rate}

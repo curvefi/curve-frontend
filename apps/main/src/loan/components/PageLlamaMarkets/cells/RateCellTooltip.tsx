@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { formatPercent } from '@/loan/components/PageLlamaMarkets/cells/cell.format'
+import { formatPercent } from './cell.format'
 import { RateType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import type { PoolRewards } from '@/loan/entities/campaigns'
 import { LlamaMarketType } from '@/loan/entities/llama-markets'
@@ -9,16 +9,10 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
-import { TooltipContent } from '@ui-kit/shared/ui/TooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getRewardsDescription } from './MarketTitleCell/cell.utils'
 
 const { Spacing } = SizesAndSpaces
-
-const titles = {
-  borrow: t`Borrow APR`,
-  lend: t`Supply APR`,
-}
 
 const rateName = {
   borrow: t`Borrow Rate`,
@@ -66,7 +60,7 @@ export const RateTooltipContent = ({
   period: string
   marketType: LlamaMarketType
 }) => (
-  <TooltipContent title={titles[type]}>
+  <>
     <Stack gap={2}>
       {paragraphs[type].map((p) => (
         <Typography color="textSecondary" key={p}>
@@ -88,5 +82,5 @@ export const RateTooltipContent = ({
       {t`Learn More`}
       <ArrowTopRightIcon />
     </Button>
-  </TooltipContent>
+  </>
 )

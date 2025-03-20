@@ -5,14 +5,15 @@ import { handleBreakpoints } from './basic-theme'
 import { getShadow } from './basic-theme/shadows'
 import type { DesignSystem } from './design'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MinWidth } = SizesAndSpaces
 
 export const defineMuiTooltip = (design: DesignSystem, typography: TypographyOptions): Components['MuiTooltip'] => ({
   styleOverrides: {
     tooltip: {
+      color: design.Text.TextColors.Secondary,
       backgroundColor: design.Layer[3].Fill,
       boxShadow: getShadow(design, 2),
-      minWidth: '27.5rem', // hardcoded 440px in the design
+      minWidth: MinWidth.tooltip,
       display: 'flex',
       alignItems: 'center',
       ...handleBreakpoints({

@@ -1,4 +1,4 @@
-import Tooltip from '@mui/material/Tooltip'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
