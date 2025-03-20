@@ -5,7 +5,6 @@ import { createSvgIcon } from '@mui/material/utils'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../basic-theme'
-import type { DesignSystem } from '../design'
 
 const { Sizing } = SizesAndSpaces
 
@@ -64,7 +63,7 @@ const onHoverFocusOrLabelHover =
  * This is a limitation as attempts to maintain the original color with reduced opacity
  * don't work well with custom color properties.
  */
-export const defineMuiCheckbox = (design: DesignSystem): Components['MuiCheckbox'] => ({
+export const defineMuiCheckbox = (): Components['MuiCheckbox'] => ({
   defaultProps: {
     icon: createIconWrapper(<EmptyIcon />),
     checkedIcon: createIconWrapper(<CheckIcon />),

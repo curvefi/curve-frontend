@@ -40,7 +40,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-  MuiCheckbox: defineMuiCheckbox(design),
+  MuiCheckbox: defineMuiCheckbox(),
   MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
