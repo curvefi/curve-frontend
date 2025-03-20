@@ -7,11 +7,11 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { RewardsAction } from '@ui/CampaignRewards/types'
 import { t } from '@ui-kit/lib/i18n'
-import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../hooks/useSnapshots'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 
-const { IconSize, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphType }) => {
   const { rate, averageRate } = useSnapshots(market, type)
@@ -45,7 +45,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphTyp
                 data-testid={`rewards-${type}-${reward.action}`}
               >
                 <Chip
-                  icon={<PointsIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+                  icon={<RewardIcon imageId={reward.platformImageId} />}
                   size="extraSmall"
                   color="highlight"
                   label={reward.multiplier}
