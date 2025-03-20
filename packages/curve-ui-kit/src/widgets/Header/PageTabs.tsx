@@ -1,6 +1,6 @@
 import RouterLink from 'next/link'
 import { useMemo } from 'react'
-import Link from '@mui/material/Link'
+import MuiLink from '@mui/material/Link'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import type { AppPage } from './types'
 
@@ -15,7 +15,7 @@ export const PageTabs = ({ pages }: PageTabsProps) => (
       () =>
         pages.map(({ label, href, target }) => ({
           label,
-          component: href.startsWith('http') ? Link : RouterLink,
+          component: href.startsWith('http') ? MuiLink : RouterLink,
           value: href,
           href,
           target,

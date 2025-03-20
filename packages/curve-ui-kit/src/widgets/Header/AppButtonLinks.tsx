@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
+import MuiLink from '@mui/material/Link'
 import { APP_LINK, type AppMenuOption, getInternalUrl } from '@ui-kit/shared/routes'
 
 type AppNavAppsProps = { currentMenu: AppMenuOption; onChange: (appName: AppMenuOption) => void; networkName: string }
@@ -13,7 +13,7 @@ export const AppButtonLinks = ({ currentMenu, onChange, networkName }: AppNavApp
         color="navigation"
         size="small"
         className={currentMenu === menu ? 'current' : ''}
-        component={Link}
+        component={MuiLink} // todo: using next/link breaks the wallet connection on app switch :(
         onClick={() => onChange(menu as AppMenuOption)}
         href={getInternalUrl(routes[0].app, networkName)}
         data-testid={`app-link-${menu}`}

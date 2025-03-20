@@ -59,6 +59,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [pageWidth, theme])
 
   useEffect(() => {
+    // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
+    useStore.setState(useStore.getInitialState())
     ;(async () => {
       const networks = await fetchNetworks()
 
