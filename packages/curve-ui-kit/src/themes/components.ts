@@ -182,7 +182,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-  MuiRadio: defineMuiRadio(design),
+  MuiRadio: defineMuiRadio(),
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(design),
 })

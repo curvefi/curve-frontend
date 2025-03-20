@@ -1,25 +1,42 @@
 import { useState, useEffect } from 'react'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio, { RadioProps } from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
 const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
-  const [isChecked, setIsChecked] = useState(checked)
+  const [value, setValue] = useState(checked ? 'option1' : 'option2')
 
   // Update internal state when the checked prop changes
   useEffect(() => {
-    setIsChecked(checked)
+    setValue(checked ? 'option1' : 'option2')
   }, [checked])
 
   return (
-    <Radio
-      {...props}
-      checked={isChecked}
-      onChange={(event, value) => {
-        setIsChecked(value)
-        onChange?.(event, value)
-      }}
-    />
+    <FormControl>
+      <RadioGroup
+        value={value}
+        onChange={(event) => {
+          const newValue = event.target.value
+          setValue(newValue)
+          const isChecked = newValue === 'option1'
+          onChange?.(event as any, isChecked)
+        }}
+      >
+        <FormControlLabel
+          value="option1"
+          control={<Radio {...props} checked={value === 'option1'} />}
+          label="Option 1"
+        />
+        <FormControlLabel
+          value="option2"
+          control={<Radio {...props} checked={value === 'option2'} />}
+          label="Option 2"
+        />
+      </RadioGroup>
+    </FormControl>
   )
 }
 
