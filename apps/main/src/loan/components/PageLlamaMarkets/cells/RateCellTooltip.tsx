@@ -2,9 +2,13 @@ import type { ReactNode } from 'react'
 import { formatPercent } from '@/loan/components/PageLlamaMarkets/cells/cell.format'
 import { RateType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import type { PoolRewards } from '@/loan/entities/campaigns'
+import { LlamaMarketType } from '@/loan/entities/llama-markets'
+import Button from '@mui/material/Button'
+import MuiLink from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { TooltipContent } from '@ui-kit/shared/ui/TooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getRewardsDescription } from './MarketTitleCell/cell.utils'
@@ -32,14 +36,19 @@ const paragraphs = {
   ],
 }
 
+const learnMoreLinks = {
+  [LlamaMarketType.Lend]: 'https://resources.curve.fi/lending/overview/#utilization-lend-apy-and-borrow-apy',
+  [LlamaMarketType.Mint]: 'https://resources.curve.fi/crvusd/loan-concepts/#borrow-rate',
+}
+
 const Item = ({ icon, title, children }: { icon?: ReactNode; title: string; children: string }) => (
-  <Stack direction="row" justifyContent="space-between">
+  <Typography component={Stack} color="textSecondary" direction="row" justifyContent="space-between">
     <Stack direction="row" flexShrink={1}>
       {icon}
       {title}
     </Stack>
     {children}
-  </Stack>
+  </Typography>
 )
 
 export const RateTooltipContent = ({
@@ -48,23 +57,25 @@ export const RateTooltipContent = ({
   rate,
   rewards,
   period,
+  marketType,
 }: {
   type: RateType
   rate: number | null
   averageRate: number | null
   rewards: PoolRewards[]
   period: string
+  marketType: LlamaMarketType
 }) => (
   <TooltipContent title={titles[type]}>
-    <Stack gap={1}>
+    <Stack gap={2}>
       {paragraphs[type].map((p) => (
         <Typography color="textSecondary" key={p}>
           {p}
         </Typography>
       ))}
     </Stack>
-    <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm}>
-      <Typography variant="bodyMBold">{t`Rates Breakdown`}</Typography>
+    <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
+      <Typography variant="bodyMBold" color="textPrimary">{t`Rates Breakdown`}</Typography>
       {averageRate != null && <Item title={`${period} ${rateName[type]}`}>{formatPercent(averageRate)}</Item>}
       {rate != null && <Item title={`${t`Current`} ${rateName[type]}`}>{formatPercent(rate)}</Item>}
       {rewards.map((r, i) => (
@@ -73,5 +84,9 @@ export const RateTooltipContent = ({
         </Item>
       ))}
     </Stack>
+    <Button component={MuiLink} href={learnMoreLinks[marketType]} color="ghost" target="_blank">
+      {t`Learn More`}
+      <ArrowTopRightIcon />
+    </Button>
   </TooltipContent>
 )

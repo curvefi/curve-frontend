@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { OmitTooltipPadding } from '@ui-kit/shared/ui/TooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../hooks/useSnapshots'
 
@@ -19,8 +20,16 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
   return (
     <Tooltip
+      slotProps={OmitTooltipPadding}
       title={
-        <RateTooltipContent type={type} rate={rate} averageRate={averageRate} rewards={poolRewards} period={period} />
+        <RateTooltipContent
+          type={type}
+          rate={rate}
+          averageRate={averageRate}
+          rewards={poolRewards}
+          period={period}
+          marketType={marketType}
+        />
       }
       placement="top"
     >

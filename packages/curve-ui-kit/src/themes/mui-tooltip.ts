@@ -1,8 +1,11 @@
 import type { Components } from '@mui/material/styles'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from './basic-theme'
 import { getShadow } from './basic-theme/shadows'
 import type { DesignSystem } from './design'
+
+const { Spacing } = SizesAndSpaces
 
 export const defineMuiTooltip = (design: DesignSystem, typography: TypographyOptions): Components['MuiTooltip'] => ({
   styleOverrides: {
@@ -12,8 +15,8 @@ export const defineMuiTooltip = (design: DesignSystem, typography: TypographyOpt
       minWidth: '27.5rem', // hardcoded 440px in the design
       display: 'flex',
       alignItems: 'center',
-      padding: 0, // not according to the design, otherwise it breaks on inverted mode. See <TooltipContent />
       ...handleBreakpoints({
+        padding: Spacing.md,
         ...typography.bodyMBold,
       }),
     },
