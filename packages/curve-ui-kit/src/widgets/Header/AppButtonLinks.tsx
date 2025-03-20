@@ -15,7 +15,7 @@ export const AppButtonLinks = ({ currentMenu, onChange, networkName }: AppNavApp
         className={currentMenu === menu ? 'current' : ''}
         component={MuiLink} // todo: change to next/link
         onClick={() => onChange(menu as AppMenuOption)}
-        href={getInternalUrl(routes[0].app, networkName, routes[0].route)}
+        href={getInternalUrl(routes[0].app, networkName)}
         data-testid={`app-link-${menu}`}
       >
         {label}
