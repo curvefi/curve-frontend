@@ -4,6 +4,7 @@ import { alpha } from '@mui/system'
 import { basicMuiTheme } from './basic-theme'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiCardHeader } from './card-header'
+import { defineMuiCheckbox } from './checkbox'
 import { defineMuiChip } from './chip/mui-chip'
 import { DesignSystem } from './design'
 import { TransitionFunction } from './design/0_primitives'
@@ -39,6 +40,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiCheckbox: defineMuiCheckbox(design),
   MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
