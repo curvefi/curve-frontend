@@ -4,14 +4,14 @@ import { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { IconSize } = SizesAndSpaces
+const { Sizing } = SizesAndSpaces
 
 const THUMB_WIDTH = 20 // 20px is a default MUI value, not responsive to reduce headaches
 
 type Size = 'small' | 'medium'
 const heights: Record<Size, Responsive> = {
-  small: IconSize.xxs,
-  medium: IconSize.lg,
+  small: Sizing.xs,
+  medium: Sizing.sm,
 }
 
 // Equalizes track and thumb height with support for responsiveness
