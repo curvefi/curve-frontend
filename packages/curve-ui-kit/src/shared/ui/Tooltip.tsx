@@ -31,6 +31,7 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
 
 /**
  * Adds a tooltip to the children with a title and content, making sure the content is not inverted on hover.
+ * It sucks that we have many components with this name, but we should try to use this one only 🤓
  */
 export const Tooltip = ({ title, body, children, ...props }: TooltipProps) => (
   <MuiTooltip
