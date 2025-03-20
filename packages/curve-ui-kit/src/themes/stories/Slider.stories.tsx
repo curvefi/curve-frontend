@@ -49,7 +49,7 @@ const meta: Meta<typeof Slider> = {
     },
     size: {
       control: 'select',
-      options: ['medium', 'large'],
+      options: ['small', 'medium'],
       description: 'The size of the slider',
     },
   },
@@ -61,7 +61,7 @@ const meta: Meta<typeof Slider> = {
     disabled: false,
     valueLabelDisplay: 'off',
     onChange: fn(),
-    size: 'medium',
+    size: 'small',
   },
 }
 
@@ -106,19 +106,6 @@ export const MediumSize: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Medium-sized slider variant (default)',
-      },
-    },
-  },
-}
-
-export const LargeSize: Story = {
-  args: {
-    size: 'large',
-  },
-  parameters: {
-    docs: {
-      description: {
         story: 'Large-sized slider variant',
       },
     },
@@ -129,7 +116,7 @@ export const RangeSlider: Story = {
   args: {
     defaultValue: [20, 80],
     valueLabelDisplay: 'auto',
-    size: 'large',
+    size: 'medium',
   },
   parameters: {
     docs: {

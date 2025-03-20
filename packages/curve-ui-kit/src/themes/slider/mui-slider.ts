@@ -8,20 +8,20 @@ const { IconSize } = SizesAndSpaces
 
 const THUMB_WIDTH = 20 // 20px is a default MUI value, not responsive to reduce headaches
 
-type Size = 'medium' | 'large'
+type Size = 'small' | 'medium'
 const heights: Record<Size, Responsive> = {
-  medium: IconSize.xxs,
-  large: IconSize.lg,
+  small: IconSize.xxs,
+  medium: IconSize.lg,
 }
 
 // Equalizes track and thumb height with support for responsiveness
 const trackAndThumbHeights = {
-  ...handleBreakpoints({ height: heights['medium'] }),
+  ...handleBreakpoints({ height: heights['small'] }),
   borderRadius: 0,
   border: 'none',
 
-  '.MuiSlider-sizeLarge &': {
-    ...handleBreakpoints({ height: heights['large'] }),
+  '&.MuiSlider-sizeMedium, .MuiSlider-sizeMedium &': {
+    ...handleBreakpoints({ height: heights['medium'] }),
   },
 }
 
@@ -85,9 +85,12 @@ const borderLeftFillPseudoElement = (design: DesignSystem) => {
 }
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
+  defaultProps: {
+    size: 'small',
+  },
   styleOverrides: {
     root: {
-      ...handleBreakpoints({ minHeight: heights['medium'] }),
+      ...trackAndThumbHeights,
       borderRadius: 0,
       // Nesting required as otherwise it'll break in mobile for some reason
       '&': { paddingBlock: 0 },
@@ -95,9 +98,6 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       ...borderPseudoElement(design),
       ...borderLeftFillPseudoElement(design),
     },
-
-    // Can't use trackAndThumbHeights here, need a different CSS selector for 'large' adjustments
-    sizeLarge: handleBreakpoints({ minHeight: heights['large'] }),
 
     thumb: {
       ...trackAndThumbHeights,
