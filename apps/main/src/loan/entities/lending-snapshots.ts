@@ -10,7 +10,7 @@ export type LendingSnapshot = LendingSnapshotFromApi
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots', 'v1'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshot[]> => {
-    const chains = await fetchSupportedLendingChains()
+    const chains = await fetchSupportedLendingChains({})
     const chain = blockchainId as Chain
     if (!chains.includes(chain)) return [] // backend gives 404 for optimism
 
