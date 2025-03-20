@@ -110,6 +110,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       '&:hover, &.Mui-focusVisible': {
         boxShadow: 'none', // Remove default MUI focus ring
       },
+      '&.Mui-disabled': {
+        background: `${design.Color.Neutral[600]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
+      },
     },
 
     track: trackAndThumbHeights,
