@@ -1,4 +1,4 @@
-import { oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
+import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
 import { oneToken } from '@/support/helpers/tokens'
 import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend/responses'
 
@@ -13,9 +13,9 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
   const borrowed = oneToken(chain)
   const collateralBalance = oneFloat()
   const borrowedBalance = oneFloat()
-  const totalAssets = onePrice()
   const borrowedPrice = borrowed.usdPrice ?? onePrice()
   const collateralPrice = collateral.usdPrice ?? onePrice()
+  const totalAssets = onePrice(MAX_USD_VALUE / collateralPrice)
   const totalAssetsUsd = totalAssets * collateralPrice
   const totalDebtUsd = utilization * totalAssetsUsd
   const minBand = oneInt()

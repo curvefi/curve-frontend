@@ -6,7 +6,8 @@ import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip/Tooltip'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
-import { breakpoints, getIsMobile } from 'ui/src/utils'
+import { breakpoints } from 'ui/src/utils'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 export type IconStyles = { $svgTop?: string }
 
@@ -33,7 +34,8 @@ function TooltipButton({
     iconStyles?: IconStyles
   }) {
   const state = useTooltipTriggerState({ delay: 0, ...props })
-  const ref = useRef<HTMLButtonElement | null>(null)
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const ref = useRef<HTMLButtonElement>(null)
   const { triggerProps, tooltipProps } = useTooltipTrigger(props, state, ref)
 
   const [scrollY, setScrollY] = useState<number | null>(null)
@@ -51,13 +53,13 @@ function TooltipButton({
       if (typeof onClick === 'function') onClick()
 
       // handle mobile click tooltip
-      if (getIsMobile()) {
+      if (isMobile) {
         state.open()
         setScrollY(window.scrollY)
         window.addEventListener('scroll', handleScroll)
       }
     },
-    [handleScroll, onClick, state, triggerProps],
+    [handleScroll, onClick, state, triggerProps, isMobile],
   )
 
   return (

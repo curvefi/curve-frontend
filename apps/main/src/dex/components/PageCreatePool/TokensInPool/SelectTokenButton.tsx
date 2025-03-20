@@ -5,6 +5,7 @@ import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
 import { useOverlayTriggerState } from '@react-stately/overlays'
@@ -45,7 +46,7 @@ const SelectTokenButton = ({
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
 
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
@@ -167,6 +168,7 @@ const SelectTokenButton = ({
           disabledTokens={disabledKeys ?? []}
           disableSorting={true}
           disableMyTokens={false}
+          compact={false}
           customOptions={
             swapType === STABLESWAP && (
               <Checkbox

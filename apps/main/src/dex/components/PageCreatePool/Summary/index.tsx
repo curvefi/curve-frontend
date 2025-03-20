@@ -17,7 +17,11 @@ type Props = {
 }
 
 const Summary = ({ blockchainId, chainId, curve }: Props) => {
-  const { advanced, validation } = useStore((state) => state.createPool)
+  const advanced = useStore((state) => state.createPool.advanced)
+  const validationPoolType = useStore((state) => state.createPool.validation.poolType)
+  const validationTokensInPool = useStore((state) => state.createPool.validation.tokensInPool)
+  const validationParameters = useStore((state) => state.createPool.validation.parameters)
+  const validationPoolInfo = useStore((state) => state.createPool.validation.poolInfo)
 
   return (
     <Wrapper flex flexColumn>
@@ -29,13 +33,13 @@ const Summary = ({ blockchainId, chainId, curve }: Props) => {
         <PoolTypeSummary />
         <TokensInPoolSummary blockchainId={blockchainId} chainId={chainId} />
         <ParametersSummary chainId={chainId} />
-        <PoolInfoSummary chainId={chainId} />
+        <PoolInfoSummary />
       </SummaryBox>
       <BottomBox flex>
         <ConfirmModal
           chainId={chainId}
           disabled={
-            !checkFormReady(validation.poolType, validation.tokensInPool, validation.parameters, validation.poolInfo)
+            !checkFormReady(validationPoolType, validationTokensInPool, validationParameters, validationPoolInfo)
           }
           curve={curve}
           blockchainId={blockchainId}

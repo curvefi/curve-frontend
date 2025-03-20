@@ -1,6 +1,7 @@
 import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
+import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -46,16 +47,17 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
         </Tooltip>
       )}
 
-      {rewards.map((reward, index) => (
+      {rewards.length > 0 && (
         <Tooltip
-          key={index}
-          title={getRewardsDescription(reward)}
+          title={rewards.map((r, i) => (
+            <Box key={i}>{getRewardsDescription(r)}</Box>
+          ))}
           placement="top"
-          data-testid={`rewards-${reward.action}`}
+          data-testid="rewards-badge"
         >
           <PointsIcon htmlColor={iconsColor} />
         </Tooltip>
-      ))}
+      )}
 
       <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
         <IconButton

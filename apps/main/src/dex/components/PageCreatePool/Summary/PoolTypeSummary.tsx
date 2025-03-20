@@ -12,11 +12,9 @@ import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 const PoolTypeSummary = () => {
-  const {
-    swapType,
-    validation,
-    tokensInPool: { metaPoolToken },
-  } = useStore((state) => state.createPool)
+  const swapType = useStore((state) => state.createPool.swapType)
+  const validation = useStore((state) => state.createPool.validation)
+  const metaPoolToken = useStore((state) => state.createPool.tokensInPool.metaPoolToken)
 
   return (
     <StyledCategoryColumn>

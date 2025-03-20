@@ -1,25 +1,14 @@
 import styled from 'styled-components'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
-import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import useStore from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
-import Button from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
-type Props = {
-  chainId: ChainId
-}
-
-const PoolInfo = ({ chainId }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
-  const swapType = useStore((state) => state.createPool.swapType)
+const PoolInfo = () => {
   const poolName = useStore((state) => state.createPool.poolName)
   const poolSymbol = useStore((state) => state.createPool.poolSymbol)
-  const assetType = useStore((state) => state.createPool.assetType)
   const updatePoolName = useStore((state) => state.createPool.updatePoolName)
   const updatePoolSymbol = useStore((state) => state.createPool.updatePoolSymbol)
-  const updateAssetType = useStore((state) => state.createPool.updateAssetType)
 
   return (
     <>
@@ -33,51 +22,6 @@ const PoolInfo = ({ chainId }: Props) => {
             label={t`Pool Symbol (e.g. stETHETH)`}
           />
         </Row>
-        {swapType === STABLESWAP && !networks[chainId].stableswapFactory && (
-          <>
-            <TagButtonsWrapper flex flexColumn>
-              <TagsTitle>{t`Set pool asset type tag:`}</TagsTitle>
-              <Row>
-                <TagButton
-                  nowrap
-                  className={assetType === 'USD' ? 'active' : ''}
-                  size="small"
-                  variant="select"
-                  onClick={() => updateAssetType('USD')}
-                >
-                  USD
-                </TagButton>
-                <TagButton
-                  nowrap
-                  className={assetType === 'ETH' ? 'active' : ''}
-                  size="small"
-                  variant="select"
-                  onClick={() => updateAssetType('ETH')}
-                >
-                  ETH
-                </TagButton>
-                <TagButton
-                  nowrap
-                  className={assetType === 'BTC' ? 'active' : ''}
-                  size="small"
-                  variant="select"
-                  onClick={() => updateAssetType('BTC')}
-                >
-                  BTC
-                </TagButton>
-                <TagButton
-                  nowrap
-                  className={assetType === 'OTHER' ? 'active' : ''}
-                  size="small"
-                  variant="select"
-                  onClick={() => updateAssetType('OTHER')}
-                >
-                  OTHER
-                </TagButton>
-              </Row>
-            </TagButtonsWrapper>
-          </>
-        )}
       </Wrapper>
     </>
   )
@@ -95,36 +39,6 @@ const Row = styled(Box)`
   width: 100%;
   @media (min-width: 31.25rem) {
     flex-direction: row;
-  }
-`
-
-const TagButtonsWrapper = styled(Box)`
-  display: flex;
-  margin: var(--spacing-normal) 0;
-`
-
-const TagsTitle = styled.p`
-  font-size: var(--font-size-2);
-  margin: var(--spacing-narrow) var(--spacing-2) var(--spacing-2);
-  color: var(--box--primary--color);
-`
-
-const TagButton = styled(Button)`
-  margin-right: var(--spacing-2);
-  &:hover:not(:disabled) {
-    background: var(--dropdown--active--background-color);
-    color: var(--button-text-contrast--color);
-    border-color: var(--nav_button--border-color);
-    box-shadow: 3px 3px 0 var(--button--shadow-color);
-  }
-  &.active:not(:disabled) {
-    background: var(--dropdown--active--background-color);
-    color: var(--button-text-contrast--color);
-    &:hover {
-      background-color: var(--button_filled-hover-contrast--background-color);
-      color: var(--button-text-contrast--color);
-      border-color: var(--nav_button--border-color);
-    }
   }
 `
 

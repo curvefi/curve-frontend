@@ -46,7 +46,9 @@ type TokenSummary = {
 }
 
 const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
-  const { tokensInPool, swapType, validation } = useStore((state) => state.createPool)
+  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
+  const swapType = useStore((state) => state.createPool.swapType)
+  const validation = useStore((state) => state.createPool.validation)
 
   return (
     <CategoryColumn>

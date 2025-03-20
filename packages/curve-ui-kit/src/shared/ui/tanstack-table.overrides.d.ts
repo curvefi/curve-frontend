@@ -1,10 +1,11 @@
-import '@tanstack/react-table'
-import { TypographyVariantKey } from '../../themes/typography'
+import '@tanstack/table-core'
+import type { RowData } from '@tanstack/table-core'
+import type { TypographyVariantKey } from '../../themes/typography'
 
 /**
  * Extend the tanstack ColumnMeta interface to add our custom properties
  */
-declare module '@tanstack/table-core' {
+declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     type?: 'numeric'
     hidden?: boolean
@@ -12,4 +13,6 @@ declare module '@tanstack/table-core' {
     borderRight?: boolean
     hideZero?: boolean
   }
+
+  interface TableMeta<TData extends RowData> {}
 }
