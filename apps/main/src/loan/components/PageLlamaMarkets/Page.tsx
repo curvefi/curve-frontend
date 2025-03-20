@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
+import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/chains'
 import {
   invalidateAllUserLendingVaults,
@@ -35,20 +36,22 @@ const onReload = (userAddress?: Address) => {
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
-type LlamaMarketsPageProps = {
-  lendingVaults: LendingVault[]
-  mintMarkets: MintMarket[]
-  supportedChains: Chain[]
-  supportedLendingChains: Chain[]
+export type LlamaMarketsPageProps = {
+  lendingVaults?: LendingVault[]
+  mintMarkets?: MintMarket[]
+  supportedChains?: Chain[]
+  supportedLendingChains?: Chain[]
+  dailyVolume?: number
 }
 
 function useInjectServerData(props: LlamaMarketsPageProps) {
   useEffect(() => {
-    const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains } = props
-    setLendingVaults({}, lendingVaults)
-    setMintMarkets({}, mintMarkets)
-    setSupportedChains({}, supportedChains)
-    setSupportedLendingChains({}, supportedLendingChains)
+    const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume } = props
+    lendingVaults && setLendingVaults({}, lendingVaults)
+    mintMarkets && setMintMarkets({}, mintMarkets)
+    supportedChains && setSupportedChains({}, supportedChains)
+    supportedLendingChains && setSupportedLendingChains({}, supportedLendingChains)
+    dailyVolume != null && setAppStatsDailyVolume({}, dailyVolume)
   }, [props])
 }
 

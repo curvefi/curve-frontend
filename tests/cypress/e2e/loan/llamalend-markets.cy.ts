@@ -23,12 +23,13 @@ describe(`LlamaLend Markets`, () => {
     mockChains()
     mockLendingChains()
     mockTokenPrices()
-    mockLendingVaults(vaultData)
+    mockLendingVaults({ ...vaultData, ethereum: { data: [], chain: 'ethereum', count: 0 } })
     mockLendingSnapshots().as('lend-snapshots')
     mockMintMarkets()
     mockMintSnapshots()
 
     cy.viewport(width, height)
+    cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
     cy.visit('/crvusd/ethereum/beta-markets/', {
       onBeforeLoad: (win) => {
         win.localStorage.clear()
