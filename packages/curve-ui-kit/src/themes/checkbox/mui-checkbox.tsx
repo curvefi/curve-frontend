@@ -47,6 +47,9 @@ const buttonSize = ({ size }: { size: keyof typeof Sizing }) => ({
   '& .icon-wrapper svg': handleBreakpoints({ fontSize: Sizing[size] }),
 })
 
+const onHoverFocusOrLabelHover =
+  '&:hover .icon-wrapper, .MuiFormControlLabel-root:hover &:not(.Mui-disabled) .icon-wrapper, &.Mui-focusVisible .icon-wrapper'
+
 /**
  * Checkbox sizes are slightly larger than in Figma to match radio button sizes
  * for better usability in practice.
@@ -70,7 +73,7 @@ export const defineMuiCheckbox = (design: DesignSystem): Components['MuiCheckbox
   styleOverrides: {
     root: {
       ...buttonSize({ size: 'sm' }),
-      '&:hover .icon-wrapper': { outlineWidth: '2px' },
+      [onHoverFocusOrLabelHover]: { outlineWidth: '2px' },
     },
 
     sizeSmall: { ...buttonSize({ size: 'xs' }) },

@@ -1,25 +1,44 @@
 import { useState, useEffect } from 'react'
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormGroup from '@mui/material/FormGroup'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
 const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
-  const [isChecked, setIsChecked] = useState(checked)
+  const [state, setState] = useState({
+    option1: checked ?? false,
+    option2: false,
+  })
 
   // Update internal state when the checked prop changes
   useEffect(() => {
-    setIsChecked(checked)
+    setState((prev) => ({ ...prev, option1: checked ?? false }))
   }, [checked])
 
+  const handleChange = (option: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newState = { ...state, [option]: event.target.checked }
+    setState(newState)
+
+    if (option === 'option1') {
+      onChange?.(event, event.target.checked)
+    }
+  }
+
   return (
-    <Checkbox
-      {...props}
-      checked={isChecked}
-      onChange={(event, value) => {
-        setIsChecked(value)
-        onChange?.(event, value)
-      }}
-    />
+    <FormControl component="fieldset">
+      <FormGroup>
+        <FormControlLabel
+          control={<Checkbox {...props} checked={state.option1} onChange={handleChange('option1')} />}
+          label="Option 1"
+        />
+        <FormControlLabel
+          control={<Checkbox {...props} checked={state.option2} onChange={handleChange('option2')} />}
+          label="Option 2"
+        />
+      </FormGroup>
+    </FormControl>
   )
 }
 
