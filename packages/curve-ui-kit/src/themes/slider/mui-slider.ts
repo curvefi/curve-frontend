@@ -49,6 +49,9 @@ const borderPseudoElement = (design: DesignSystem) => ({
   },
 })
 
+// Shared selector for single-thumb sliders
+const singleThumbSelector = ':not(:has([data-index="1"]))'
+
 /**
  * Creates a pseudo-element style object for the left fill of the slider
  *
@@ -62,27 +65,22 @@ const borderPseudoElement = (design: DesignSystem) => ({
  * @param design - The design system containing color definitions
  * @returns CSS style object for the left fill pseudo-element
  */
-const borderLeftFillPseudoElement = (design: DesignSystem) => {
-  // Shared selector for single-thumb sliders
-  const singleThumbSelector = ':not(:has([data-index="1"]))'
-
-  return {
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      left: -THUMB_WIDTH / 2,
-      width: THUMB_WIDTH / 2,
-      height: '100%',
-    },
-    // Only fill the left border gap if there's a single thumb
-    [`&${singleThumbSelector}::before`]: {
-      backgroundColor: design.Button.Primary.Default.Fill,
-    },
-    [`&.Mui-disabled${singleThumbSelector}::before`]: {
-      backgroundColor: 'var(--mui-palette-grey-400)',
-    },
-  }
-}
+const borderLeftFillPseudoElement = (design: DesignSystem) => ({
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    left: -THUMB_WIDTH / 2,
+    width: THUMB_WIDTH / 2,
+    height: '100%',
+  },
+  // Only fill the left border gap if there's a single thumb
+  [`&${singleThumbSelector}::before`]: {
+    backgroundColor: design.Button.Primary.Default.Fill,
+  },
+  [`&.Mui-disabled${singleThumbSelector}::before`]: {
+    backgroundColor: 'var(--mui-palette-grey-400)',
+  },
+})
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   defaultProps: {
