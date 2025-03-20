@@ -20,9 +20,7 @@ const trackAndThumbHeights = {
   borderRadius: 0,
   border: 'none',
 
-  '&.MuiSlider-sizeMedium, .MuiSlider-sizeMedium &': {
-    ...handleBreakpoints({ height: heights['medium'] }),
-  },
+  '&.MuiSlider-sizeMedium, .MuiSlider-sizeMedium &': handleBreakpoints({ height: heights['medium'] }),
 }
 
 /**
@@ -110,7 +108,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       },
     },
 
-    track: { ...trackAndThumbHeights },
+    track: trackAndThumbHeights,
     rail: { height: 0 },
   },
 })
