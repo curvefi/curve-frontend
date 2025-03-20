@@ -68,7 +68,10 @@ export const defineMuiCheckbox = (design: DesignSystem): Components['MuiCheckbox
     disableRipple: true,
   },
   styleOverrides: {
-    root: { ...buttonSize({ size: 'sm' }) },
+    root: {
+      ...buttonSize({ size: 'sm' }),
+      '&:hover .icon-wrapper': { outlineWidth: '2px' },
+    },
 
     sizeSmall: { ...buttonSize({ size: 'xs' }) },
     sizeLarge: { ...buttonSize({ size: 'md' }) },
