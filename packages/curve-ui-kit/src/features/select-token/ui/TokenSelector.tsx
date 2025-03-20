@@ -30,6 +30,7 @@ export const TokenSelector = ({
   disableSorting = false,
   disableMyTokens = false,
   customOptions,
+  compact = false,
   onToken,
   onSearch,
   sx,
@@ -52,6 +53,7 @@ export const TokenSelector = ({
         disableSorting={disableSorting}
         disableMyTokens={disableMyTokens}
         customOptions={customOptions}
+        compact={compact}
         onClose={closeModal}
         onToken={(token) => {
           toggleModal()
