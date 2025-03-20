@@ -15,9 +15,6 @@ export const InjectServeSideData = ({ chainId, pools, tvl, volume, children }: S
   const setServerPreloadData = useStore((state) => state.storeCache.setServerPreloadData)
   useEffect(() => {
     setServerPreloadData(chainId, { pools, tvl, volume })
-    console.log(
-      `Injected ${Object.values(pools).length} pools, ${Object.keys(tvl).length} TVL, and ${Object.keys(volume).length} volume for chain ${chainId}`,
-    )
   }, [setServerPreloadData, chainId, pools, tvl, volume])
   return children
 }
