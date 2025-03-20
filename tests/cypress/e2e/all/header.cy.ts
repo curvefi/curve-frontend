@@ -122,8 +122,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = appPath === 'lend' ? 1 : 0 // first option is the default page
-        cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
+        cy.get('[data-testid^="sidebar-item-"]').first().click()
         cy.url().should('not.equal', url, LOAD_TIMEOUT)
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       })
