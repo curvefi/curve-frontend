@@ -13,9 +13,9 @@ export const AppButtonLinks = ({ currentMenu, onChange, networkName }: AppNavApp
         color="navigation"
         size="small"
         className={currentMenu === menu ? 'current' : ''}
-        component={MuiLink} // todo: using next/link breaks the wallet connection on app switch :(
+        component={MuiLink} // todo: change to next/link
         onClick={() => onChange(menu as AppMenuOption)}
-        href={getInternalUrl(routes[0].app, networkName)}
+        href={getInternalUrl(routes[0].app, networkName, routes[0].route)}
         data-testid={`app-link-${menu}`}
       >
         {label}

@@ -51,8 +51,8 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   llama: {
     label: 'Llamalend',
     routes: [
-      { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
+      { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
       { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Markets (beta)` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
