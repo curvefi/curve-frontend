@@ -13,6 +13,7 @@ import { defineMuiMenuItem } from './mui-menu-item'
 import { defineMuiSelect } from './mui-select'
 import { defineMuiSlider } from './mui-slider'
 import { defineMuiSwitch } from './mui-switch'
+import { defineMuiRadio } from './radio'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
 
@@ -179,6 +180,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiRadio: defineMuiRadio(design),
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(design),
 })
