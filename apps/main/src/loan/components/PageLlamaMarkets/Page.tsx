@@ -1,11 +1,21 @@
 'use client'
+import { useEffect } from 'react'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
-import { invalidateAllUserLendingVaults, invalidateLendingVaults } from '@/loan/entities/lending-vaults'
+import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
+import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/chains'
+import {
+  invalidateAllUserLendingVaults,
+  invalidateLendingVaults,
+  type LendingVault,
+} from '@/loan/entities/lending-vaults'
+import { setLendingVaults } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/loan/entities/mint-markets'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets, type MintMarket } from '@/loan/entities/mint-markets'
+import { setMintMarkets } from '@/loan/entities/mint-markets'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
+import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -26,10 +36,30 @@ const onReload = (userAddress?: Address) => {
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
+export type LlamaMarketsPageProps = {
+  lendingVaults?: LendingVault[]
+  mintMarkets?: MintMarket[]
+  supportedChains?: Chain[]
+  supportedLendingChains?: Chain[]
+  dailyVolume?: number
+}
+
+function useInjectServerData(props: LlamaMarketsPageProps) {
+  useEffect(() => {
+    const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume } = props
+    lendingVaults && setLendingVaults({}, lendingVaults)
+    mintMarkets && setMintMarkets({}, mintMarkets)
+    supportedChains && setSupportedChains({}, supportedChains)
+    supportedLendingChains && setSupportedLendingChains({}, supportedLendingChains)
+    dailyVolume != null && setAppStatsDailyVolume({}, dailyVolume)
+  }, [props])
+}
+
 /**
  * Page for displaying the lending markets table.
  */
-export const PageLlamaMarkets = () => {
+export const LlamaMarketsPage = (props: LlamaMarketsPageProps) => {
+  useInjectServerData(props)
   const { signerAddress } = useWallet()
   const { data, isError, isLoading } = useLlamaMarkets(signerAddress)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

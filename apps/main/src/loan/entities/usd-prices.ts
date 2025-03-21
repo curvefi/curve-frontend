@@ -4,7 +4,7 @@ import { ContractParams, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import type { Address } from '@ui-kit/utils'
 
-export const { getQueryOptions: getCoinPriceOptions } = queryFactory({
+const { fetchQuery: fetchCoinPrice } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'usd-price'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractParams) => {
     const response = await fetch(`https://prices.curve.fi/v1/usd_price/${blockchainId}/${contractAddress}`)
@@ -19,7 +19,7 @@ export const getCoinPrices = async (stablecoinAddresses: Address[], chain: Chain
     await Promise.all(
       stablecoinAddresses.map(async (contractAddress) => [
         contractAddress,
-        await queryClient.fetchQuery(getCoinPriceOptions({ blockchainId: chain, contractAddress })),
+        await fetchCoinPrice({ blockchainId: chain, contractAddress }),
       ]),
     ),
   )

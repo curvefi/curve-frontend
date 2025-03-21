@@ -29,6 +29,7 @@ describe(`LlamaLend Markets`, () => {
     mockMintSnapshots()
 
     cy.viewport(width, height)
+    cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
     cy.visit('/crvusd/ethereum/beta-markets/', {
       onBeforeLoad: (win) => {
         win.localStorage.clear()
@@ -229,7 +230,7 @@ const selectCoin = (symbol: string, type: TokenType) => {
   const columnId = `assets_${type}_symbol`
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
 
-  // deselect previously selected tokens
+  // deselect previously selected tokens (actually we could now use the clear button)
   cy.forEach(`[data-testid="${columnId}"] [aria-selected="true"]`, (el) => el.click())
 
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
