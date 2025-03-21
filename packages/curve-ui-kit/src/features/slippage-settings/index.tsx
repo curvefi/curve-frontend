@@ -11,7 +11,6 @@ import { Radio, RadioGroup } from '@ui/Radio'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 type FormValues = {
@@ -45,7 +44,7 @@ type Props = {
   className?: string
   buttonIcon?: ReactNode
   maxSlippage: string
-  stateKey?: string
+  setMaxSlippage: (slippage: string | null) => boolean
 }
 
 /**
@@ -54,21 +53,15 @@ type Props = {
  * If saved, it is custom slippage and should be used globally.
  * If custom slippage is not saved, set 0.1 for stablecoin and 0.5 for crypto.
  */
-export const SlippageSettings = ({
-  className,
-  buttonIcon,
-  maxSlippage,
-  stateKey, // object key for slippage state
-}: Props) => {
+export const SlippageSettings = ({ className, buttonIcon, maxSlippage, setMaxSlippage }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 
   const handleSave = () => {
     const updatedCustomSlippage = formValues.selected === 'custom' ? formValues.customValue : formValues.selected
 
-    setMaxSlippage(updatedCustomSlippage, stateKey)
+    setMaxSlippage(updatedCustomSlippage)
     overlayTriggerState.close()
   }
 

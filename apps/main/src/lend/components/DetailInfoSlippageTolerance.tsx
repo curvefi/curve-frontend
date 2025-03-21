@@ -3,25 +3,31 @@ import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   maxSlippage: string
 }
 
-const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => (
-  <StyledDetailInfo label={t`Slippage tolerance:`}>
-    <StyledSlippageSettings
-      maxSlippage={maxSlippage}
-      buttonIcon={
-        <>
-          {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}&nbsp;
-          <Icon name="Settings" size={16} />
-        </>
-      }
-    />
-  </StyledDetailInfo>
-)
+const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+
+  return (
+    <StyledDetailInfo label={t`Slippage tolerance:`}>
+      <StyledSlippageSettings
+        maxSlippage={maxSlippage}
+        setMaxSlippage={setMaxSlippage}
+        buttonIcon={
+          <>
+            {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}&nbsp;
+            <Icon name="Settings" size={16} />
+          </>
+        }
+      />
+    </StyledDetailInfo>
+  )
+}
 
 const StyledSlippageSettings = styled(SlippageSettings)`
   justify-content: flex-end;
