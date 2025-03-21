@@ -242,7 +242,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     set(
       produce((state) => {
         const storedValues = state[sliceKey][key]
-        const storedActiveKeyValues = storedValues[activeKey]
+        const storedActiveKeyValues = storedValues[activeKey] // todo: this means the following branch is unreachable?
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {

@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, PoolDataCacheMapper } from '@/dex/types/main.types'
+import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
 
 export type SwapFormValuesCache = {
@@ -9,8 +9,6 @@ export type SwapFormValuesCache = {
   toAddress: string
   toToken: string
 }
-
-export type ValueMapperCached = { [poolId: string]: { value: string } }
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -28,6 +26,10 @@ const sliceKey = 'storeCache'
 export type CacheSlice = {
   [sliceKey]: SliceState & {
     setTvlVolumeMapper(type: 'tvlMapper' | 'volumeMapper', chainId: ChainId, mapper: ValueMapperCached): void
+    setServerPreloadData(
+      chainId: ChainId,
+      data: { pools: PoolDataCacheMapper; tvl: ValueMapperCached; volume: ValueMapperCached },
+    ): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): Promise<void>
@@ -63,6 +65,12 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
       })
 
       sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper)
+    },
+
+    setServerPreloadData: (chainId, { tvl, volume, pools }) => {
+      get().setAppStateByActiveKey(sliceKey, 'poolsMapper', chainId.toString(), pools)
+      get().setAppStateByActiveKey(sliceKey, 'tvlMapper', chainId.toString(), tvl)
+      get().setAppStateByActiveKey(sliceKey, 'volumeMapper', chainId.toString(), volume)
     },
 
     // slice helpers

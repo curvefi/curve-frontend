@@ -68,7 +68,7 @@ const PoolList = ({
   const isReady = useMemo(() => {
     // volume
     const haveVolumeMapper = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
-    const volumeCacheOrApi = volumeMapper || volumeMapper || {}
+    const volumeCacheOrApi = volumeMapper || volumeMapperCached || {}
     const haveVolume = haveVolumeMapper || Object.keys(volumeCacheOrApi).length > 0
 
     // tvl
@@ -77,7 +77,7 @@ const PoolList = ({
     const haveTvl = haveTvlMapper || Object.keys(tvlCacheOrApi).length > 0
 
     return isLite ? haveTvl : haveVolume && haveTvl
-  }, [isLite, tvlMapper, tvlMapperCached, volumeMapper])
+  }, [isLite, tvlMapper, tvlMapperCached, volumeMapper, volumeMapperCached])
 
   const isReadyWithApiData = useMemo(() => {
     const haveVolume = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0

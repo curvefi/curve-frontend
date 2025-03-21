@@ -1,17 +1,17 @@
+import uniq from 'lodash/uniq'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useSnapshots } from '../hooks/useSnapshots'
-import { RateType } from '../hooks/useSnapshots'
+import { RateType, useSnapshots } from '../hooks/useSnapshots'
 import { formatPercent, getRewardsAction } from './cell.format'
 import { RateTooltipContent } from './RateCellTooltip'
 
-const { IconSize, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType }) => {
   const { rate, averageRate, period } = useSnapshots(market, type)
@@ -51,7 +51,13 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
           )}
           {rate != null && poolRewards.length > 0 && (
             <Chip
-              icon={<PointsIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+              icon={
+                <>
+                  {uniq(rewards.map((r) => r.platformImageId)).map((img) => (
+                    <RewardIcon key={img} imageId={img} />
+                  ))}
+                </>
+              }
               size="extraSmall"
               color="highlight"
               label={rewards.map((r) => r.multiplier).join(', ')}

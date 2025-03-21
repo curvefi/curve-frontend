@@ -1,4 +1,4 @@
-import { APP_LINK, CRVUSD_ROUTES } from '@ui-kit/shared/routes'
+import { CRVUSD_ROUTES, DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
 export const SCRVUSD_VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367' // same address as token
@@ -49,13 +49,11 @@ export enum TITLE {
   llammaBalances = 'llammaBalances',
 }
 
-const BASE_URL = APP_LINK.dex.root
-
 export const PEG_KEEPERS = {
   '0x9201da0d97caaaff53f01b2fb56767c7072de340': {
     address: '0x9201da0d97caaaff53f01b2fb56767c7072de340',
     token: 'USDC',
-    poolUrl: `${BASE_URL}/ethereum/pools/factory-crvusd-0/deposit`,
+    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-crvusd-0/deposit`),
     pool: {
       id: 'factory-crvusd-0',
       name: 'crvUSD/USDC',
@@ -69,7 +67,7 @@ export const PEG_KEEPERS = {
   '0xfb726f57d251ab5c731e5c64ed4f5f94351ef9f3': {
     address: '0xfb726f57d251ab5c731e5c64ed4f5f94351ef9f3',
     token: 'USDT',
-    poolUrl: `${BASE_URL}/ethereum/pools/factory-crvusd-1/deposit`,
+    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-crvusd-1/deposit`),
     pool: {
       id: 'factory-crvusd-1',
       name: 'crvUSD/USDT',
@@ -83,7 +81,7 @@ export const PEG_KEEPERS = {
   '0x3fa20eaa107de08b38a8734063d605d5842fe09c': {
     address: '0x3fa20eaa107de08b38a8734063d605d5842fe09c',
     token: 'pyUSD',
-    poolUrl: `${BASE_URL}/ethereum/pools/factory-stable-ng-42/deposit`,
+    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-42/deposit`),
     pool: {
       id: 'factory-stable-ng-42',
       name: 'pyUSD/crvUSD',
@@ -97,7 +95,7 @@ export const PEG_KEEPERS = {
   '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8': {
     address: '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8',
     token: 'USDM',
-    poolUrl: `${BASE_URL}/ethereum/pools/factory-stable-ng-154/deposit`,
+    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-154/deposit`),
     pool: {
       id: 'factory-stable-ng-154',
       name: 'crvUSD/USDM',

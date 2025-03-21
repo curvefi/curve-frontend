@@ -8,7 +8,7 @@ import { Chain } from '@curvefi/prices-api'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, CRVUSD_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
+import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type Address } from '@ui-kit/utils'
 
 export enum LlamaMarketType {
@@ -93,7 +93,7 @@ const convertLendingVault = (
   liquidityUsd: totalAssetsUsd - totalDebtUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
-  url: `${APP_LINK.lend.root}/${chain}${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`,
+  url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`),
   isFavorite: favoriteMarkets.has(vault),
   rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
   leverage,
