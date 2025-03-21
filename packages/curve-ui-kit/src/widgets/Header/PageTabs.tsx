@@ -1,30 +1,26 @@
 import RouterLink from 'next/link'
 import { useMemo } from 'react'
-import Link from '@mui/material/Link'
-import { APP_LINK, AppName } from '@ui-kit/shared/routes'
+import MuiLink from '@mui/material/Link'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-import type { AppRoute } from './types'
+import type { AppPage } from './types'
 
 export type PageTabsProps = {
-  pages: AppRoute[]
-  currentRoute: string | undefined | null
-  selectedApp: AppName
-  networkName: string
+  pages: AppPage[]
 }
 
-export const PageTabs = ({ pages, currentRoute, networkName, selectedApp }: PageTabsProps) => (
+export const PageTabs = ({ pages }: PageTabsProps) => (
   <TabsSwitcher
-    value={currentRoute ?? undefined}
+    value={useMemo(() => pages.find(({ isActive }) => isActive)?.href, [pages])}
     options={useMemo(
       () =>
-        pages.map(({ label, route, target }) => ({
-          label: label(),
-          value: route,
-          component: target ? Link : RouterLink,
-          href: target ? route : `${APP_LINK[selectedApp].root}/${networkName}${route}`,
+        pages.map(({ label, href, target }) => ({
+          label,
+          component: href.startsWith('http') ? MuiLink : RouterLink,
+          value: href,
+          href,
           target,
         })),
-      [networkName, pages, selectedApp],
+      [pages],
     )}
     variant="overlined"
     muiVariant="standard"

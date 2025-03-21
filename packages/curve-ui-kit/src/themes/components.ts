@@ -4,6 +4,7 @@ import { alpha } from '@mui/system'
 import { basicMuiTheme } from './basic-theme'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiCardHeader } from './card-header'
+import { defineMuiCheckbox } from './checkbox'
 import { defineMuiChip } from './chip/mui-chip'
 import { DesignSystem } from './design'
 import { TransitionFunction } from './design/0_primitives'
@@ -11,8 +12,8 @@ import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiAlert, defineMuiAlertTitle } from './mui-alert'
 import { defineMuiMenuItem } from './mui-menu-item'
 import { defineMuiSelect } from './mui-select'
-import { defineMuiSlider } from './mui-slider'
 import { defineMuiSwitch } from './mui-switch'
+import { defineMuiSlider } from './slider'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
 
@@ -38,6 +39,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiCheckbox: defineMuiCheckbox(design),
   MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
