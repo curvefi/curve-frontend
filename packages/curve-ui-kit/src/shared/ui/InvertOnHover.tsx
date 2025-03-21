@@ -29,7 +29,7 @@ type InvertOnHoverProps = {
   hoverColor?: string | ((t: Theme) => string)
 
   /**
-   * A ref to the element that should trigger the hover effect.
+   * A ref to the element that should trigger the hover effect. Used to handle the focus-visible state.
    */
   hoverRef: RefObject<HTMLLIElement | HTMLTableRowElement | null>
 }

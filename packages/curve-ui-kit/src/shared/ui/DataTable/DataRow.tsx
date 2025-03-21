@@ -3,11 +3,10 @@ import { type MouseEvent, useCallback, useRef } from 'react'
 import TableRow from '@mui/material/TableRow'
 import type { SystemStyleObject, Theme } from '@mui/system'
 import { type Row } from '@tanstack/react-table'
-import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
-import { AssumeRowsVisible, ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
+import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
@@ -26,7 +25,6 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
 export const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: SystemStyleObject<Theme> }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const { push } = useRouter()
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   const url = row.original.url
   const onClick = useCallback((e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push), [url, push])
   return (
@@ -49,9 +47,9 @@ export const DataRow = <T extends TableItem>({ row, sx }: { row: Row<T>; sx?: Sy
         data-testid={`data-table-row-${row.id}`}
         onClick={onClick}
       >
-        {/* render cells when visible vertically, so content is lazy loaded */}
-        {(entry?.isIntersecting || row.index < AssumeRowsVisible) &&
-          row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
+        {row.getVisibleCells().map((cell) => (
+          <DataCell key={cell.id} cell={cell} />
+        ))}
       </TableRow>
     </InvertOnHover>
   )

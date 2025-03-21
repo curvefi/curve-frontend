@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { GraphType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
@@ -6,20 +7,23 @@ import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { RewardsAction } from '@ui/CampaignRewards/types'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../hooks/useSnapshots'
-import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 
 const { Spacing } = SizesAndSpaces
 
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphType }) => {
-  const { rate, averageRate } = useSnapshots(market, type)
+  const ref = useRef<HTMLDivElement>(null)
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const { rate, averageRate } = useSnapshots(market, type, entry?.isIntersecting)
   const { rewards, type: marketType } = market
   const rewardsAction: RewardsAction =
     marketType === LlamaMarketType.Mint ? 'loan' : type == 'borrow' ? 'borrow' : 'supply'
   return (
-    <Stack gap={Spacing.xs}>
+    <Stack gap={Spacing.xs} ref={ref}>
       <Tooltip title={t`Average rate`} placement="top">
         <Typography variant="tableCellMBold" color="textPrimary">
           {averageRate != null && `${averageRate.toPrecision(4)}%`}
