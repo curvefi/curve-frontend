@@ -8,10 +8,11 @@ export type PoolRewards = {
   multiplier: string // usually formatted like '1x', but it might be just a string
   tags: RewardsTags[]
   description: string | null
+  platformImageId: string
 }
 
 const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
-  (result, { pools }: CampaignRewardsItem) => ({
+  (result, { pools, platformImageId }: CampaignRewardsItem) => ({
     ...result,
     ...pools.reduce(
       (
@@ -26,6 +27,7 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
             tags,
             action,
             description: description === 'null' ? null : description,
+            platformImageId,
           },
         ],
       }),

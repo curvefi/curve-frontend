@@ -27,7 +27,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const chainId = useStore((state) => state.curve?.chainId)
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.isMdUp)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
@@ -48,20 +47,20 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
-      currentApp="dex"
+      currentMenu="dex"
       isLite={network?.isLite}
-      pages={useMemo(
+      routes={useMemo(
         () => [
           ...(hasRouter && (!network || network.showRouterSwap)
             ? [
                 {
+                  app: 'dex' as const,
                   route: _createSwapPath(network.swap, routerCached),
                   label: QuickSwap,
                 },
               ]
             : []),
-          ...APP_LINK.dex.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+          ...APP_LINK.dex.routes.filter((page) => page.route !== ROUTE.PAGE_SWAP),
         ],
         [hasRouter, network, routerCached],
       )}
