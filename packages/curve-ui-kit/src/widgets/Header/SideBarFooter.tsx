@@ -5,16 +5,15 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Box, { type BoxProps } from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletIndicator, type ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
 import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ThemeSwitcherButtons } from '@ui-kit/features/switch-theme'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
-import { BaseHeaderProps } from './types'
 
-type SideBarFooterProps = Pick<BaseHeaderProps, 'WalletProps'>
+type SideBarFooterProps = { WalletProps: ConnectWalletIndicatorProps }
 
 const backgroundColor = 'background.paper'
 

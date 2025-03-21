@@ -1,9 +1,10 @@
 import { ROUTE } from '@/lend/constants'
 import networks, { networksIdMapper } from '@/lend/networks'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/lend/types/lend.types'
-import { LEND_ROUTES } from '@ui-kit/shared/routes'
+import { getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 
-export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/lend/${network}${rerouteRoute}`
+/** Get the path for the given route in this app */
+export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('lend', network, route)
 
 export const getCollateralListPathname = (params: UrlParams) => getPath(params, ROUTE.PAGE_MARKETS)
 

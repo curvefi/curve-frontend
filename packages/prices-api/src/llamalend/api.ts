@@ -42,7 +42,7 @@ export async function getSnapshots(
 export async function getUserMarkets(userAddr: string, chain: Chain, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetUserMarketsResponse>(
-    `${host}/v1/lending/users/${chain}/${userAddr}?page=1&per_page=100`,
+    `${host}/v1/lending/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`,
   )
 
   return Parsers.parseUserMarkets(resp)

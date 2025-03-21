@@ -1,5 +1,4 @@
-import { usePathname } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
@@ -11,20 +10,20 @@ import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
 import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
-import { AppName, findCurrentRoute } from '@ui-kit/shared/routes'
+import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { isBeta, isCypress } from '@ui-kit/utils'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
-import { BaseHeaderProps } from './types'
+import { HeaderImplementationProps } from './types'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
 
 export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
-  currentApp,
+  currentMenu,
   ChainProps,
   WalletProps,
   BannerProps,
@@ -33,11 +32,8 @@ export const DesktopHeader = <TChainId extends number>({
   appStats,
   networkName,
   isLite = false,
-}: BaseHeaderProps<TChainId>) => {
-  const [selectedApp, setSelectedApp] = useState<AppName>(currentApp)
-  const pathname = usePathname()
-  const currentRoute = useMemo(() => pathname && findCurrentRoute(pathname, pages), [pathname, pages])
-
+}: HeaderImplementationProps<TChainId>) => {
+  const [menu, setMenu] = useState<AppMenuOption>(currentMenu)
   const theme = useUserProfileStore((state) => state.theme)
   const setTheme = useUserProfileStore((state) => state.setTheme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -53,8 +49,8 @@ export const DesktopHeader = <TChainId extends number>({
           data-testid="main-nav"
         >
           <Container>
-            <HeaderLogo isLite={isLite} appName={currentApp} />
-            <AppButtonLinks selectedApp={selectedApp} onChange={setSelectedApp} networkName={networkName} />
+            <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
+            <AppButtonLinks currentMenu={menu} onChange={setMenu} networkName={networkName} />
 
             <Box sx={{ flexGrow: 1 }} />
 
@@ -86,7 +82,7 @@ export const DesktopHeader = <TChainId extends number>({
           data-testid="subnav"
         >
           <Container>
-            <PageTabs pages={pages} currentRoute={currentRoute} selectedApp={selectedApp} networkName={networkName} />
+            <PageTabs pages={pages} />
             <Box flexGrow={1} />
             <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
               <HeaderStats appStats={appStats} />

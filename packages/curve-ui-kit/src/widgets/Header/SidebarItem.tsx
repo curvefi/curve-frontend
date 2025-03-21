@@ -12,9 +12,9 @@ type SidebarItemProps = {
 export const SidebarItem = ({ page, child }: SidebarItemProps) => (
   <ListItem disableGutters sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>
     <Button
-      {...(page.route.startsWith('http')
-        ? { component: Link, href: page.route, target: page.target }
-        : { component: RouterLink, href: page.route, className: page.isActive ? 'current' : '' })}
+      {...(page.href.startsWith('http')
+        ? { component: Link, href: page.href, target: page.target }
+        : { component: RouterLink, href: page.href, className: page.isActive ? 'current' : '' })}
       color="navigation"
       size="small"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}

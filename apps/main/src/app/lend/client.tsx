@@ -21,6 +21,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const theme = useUserProfileStore((state) => state.theme)
 
   const [appLoaded, setAppLoaded] = useState(false)
+  console.log('appLoaded', appLoaded)
 
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
@@ -34,6 +35,9 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   // init app
   useEffect(() => {
+    // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
+    useStore.setState(useStore.getInitialState())
+
     const handleScrollListener = () => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
