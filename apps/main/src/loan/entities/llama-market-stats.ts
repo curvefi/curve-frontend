@@ -40,7 +40,8 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const { data: earnData, error: earnError } = useUserLendingVaultEarnings(params, enableLendEarnings)
   const { data: mintData, error: mintError } = useUserMintMarketStats(params, enableMintStats)
 
-  const stats = lendData ?? mintData
+  const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
+  const earnings = earnData && enableLendEarnings
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
   return {
     ...(stats && {
@@ -51,7 +52,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         deposited: stats.totalDeposited,
       },
     }),
-    ...(earnData && { data: { earnings: earnData.earnings } }),
+    ...(earnings && { data: { earnings: earnData.earnings } }),
     ...(error && { error }),
   }
 }
