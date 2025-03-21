@@ -452,15 +452,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             })
           }
 
-          if (item.open && item.close && item.high && item.low) {
-            ohlcDataArray.push({
-              time,
-              open: item.open,
-              close: item.close,
-              high: item.high,
-              low: item.low,
-            })
-          }
+          ohlcDataArray.push({
+            time,
+            open: item.open,
+            close: item.close,
+            high: item.high,
+            low: item.low,
+          })
         }
 
         set(
@@ -542,15 +540,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             })
           }
 
-          if (item.open && item.close && item.high && item.low) {
-            ohlcDataArray.push({
-              time,
-              open: item.open,
-              close: item.close,
-              high: item.high,
-              low: item.low,
-            })
-          }
+          ohlcDataArray.push({
+            time,
+            open: item.open,
+            close: item.close,
+            high: item.high,
+            low: item.low,
+          })
         }
 
         return {
