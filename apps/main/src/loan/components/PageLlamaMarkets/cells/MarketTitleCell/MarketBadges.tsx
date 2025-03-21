@@ -9,10 +9,11 @@ import { useTheme } from '@mui/material/styles'
 import Tooltip from '@mui/material/Tooltip'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
-import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { classNames } from '@ui-kit/utils/dom'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
+import uniq from 'lodash/uniq'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,7 +30,7 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market: { address, rewards, type, leverage } }: { market: LlamaMarket }) => {
   const [isFavorite, toggleFavorite] = useFavoriteMarket(address)
-  const iconsColor = useTheme().design.Text.TextColors.Highlight
+  const iconColor = useTheme().design.Text.TextColors.Highlight
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
       <Tooltip title={poolTypeTooltips[type]()}>
@@ -55,7 +56,11 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
           placement="top"
           data-testid="rewards-badge"
         >
-          <PointsIcon htmlColor={iconsColor} />
+          <Box component="span">
+            {uniq(rewards.map((r) => r.platformImageId)).map((img) => (
+              <RewardIcon size="md" key={img} imageId={img} />
+            ))}
+          </Box>
         </Tooltip>
       )}
 
@@ -65,7 +70,7 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
           onClick={toggleFavorite}
           className={classNames(!isFavorite && DesktopOnlyHoverClass, ClickableInRowClass)}
         >
-          <FavoriteHeartIcon color={iconsColor} isFavorite={isFavorite} />
+          <FavoriteHeartIcon color={iconColor} isFavorite={isFavorite} />
         </IconButton>
       </Tooltip>
     </Stack>

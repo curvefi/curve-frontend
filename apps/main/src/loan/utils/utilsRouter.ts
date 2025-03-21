@@ -2,15 +2,12 @@ import type { FormType as ManageFormType } from '@/loan/components/PageLoanManag
 import { ROUTE } from '@/loan/constants'
 import networks, { networksIdMapper } from '@/loan/networks'
 import { type NetworkUrlParams, RouterParams, type UrlParams } from '@/loan/types/loan.types'
-import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
+import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 
-export const getPath = ({ network = 'ethereum' }: UrlParams, rerouteRoute: string) =>
-  `/crvusd/${network}${rerouteRoute}`
+/** Get the path for the given route in this app */
+export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('crvusd', network, route)
 
-export function getCollateralListPathname(params: NetworkUrlParams) {
-  const endPath = `${ROUTE.PAGE_MARKETS}`
-  return getPath(params, endPath)
-}
+export const getCollateralListPathname = (params: NetworkUrlParams) => getPath(params, `${ROUTE.PAGE_MARKETS}`)
 
 export function getLoanCreatePathname(
   params: NetworkUrlParams,

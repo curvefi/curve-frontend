@@ -12,10 +12,6 @@ export async function initCurveJs(chainId: ChainId, wallet?: Wallet) {
   return curveApi
 }
 
-export function hasNoWrapped(pool: Pool) {
-  return pool?.isPlain || pool?.isFake
-}
-
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
   if (Array.isArray(rewards)) {
     return rewards.filter((r) => Number(r.apy) !== 0)
