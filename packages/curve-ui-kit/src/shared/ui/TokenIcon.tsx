@@ -27,18 +27,7 @@ export const TokenIcon = ({
   address,
   sx,
 }: TokenIconProps) => (
-  <Tooltip
-    title={tooltip}
-    placement="top"
-    slotProps={{
-      popper: {
-        sx: {
-          userSelect: 'none',
-          pointerEvents: 'none',
-        },
-      },
-    }}
-  >
+  <Tooltip title={tooltip} placement="top">
     <Box
       component="img"
       data-testid={`token-icon-${tooltip}`}

@@ -21,7 +21,6 @@ export const App = ({ children }: { children: ReactNode }) => {
   const theme = useUserProfileStore((state) => state.theme)
 
   const [appLoaded, setAppLoaded] = useState(false)
-  console.log('appLoaded', appLoaded)
 
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
