@@ -1,6 +1,5 @@
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -41,12 +40,6 @@ function getDefaultFormValuesState(formValues: FormValues, propsMaxSlippage: str
   return updatedFormValues
 }
 
-function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 100)
-  }
-}
-
 type Props = {
   children?: ReactNode
   className?: string
@@ -68,7 +61,6 @@ export const SlippageSettings = ({
   stateKey, // object key for slippage state
 }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
@@ -77,20 +69,12 @@ export const SlippageSettings = ({
     const updatedCustomSlippage = formValues.selected === 'custom' ? formValues.customValue : formValues.selected
 
     setMaxSlippage(updatedCustomSlippage, stateKey)
-    if (isMobile) {
-      delayAction(overlayTriggerState.close)
-    } else {
-      overlayTriggerState.close()
-    }
+    overlayTriggerState.close()
   }
 
   const handleDiscard = () => {
     setFormValues(getDefaultFormValuesState(DEFAULT_FORM_VALUES, maxSlippage))
-    if (isMobile) {
-      delayAction(overlayTriggerState.close)
-    } else {
-      overlayTriggerState.close()
-    }
+    overlayTriggerState.close()
   }
 
   const handleSelChangeSlippage = (selected: string) => {
