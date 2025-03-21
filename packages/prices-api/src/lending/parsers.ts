@@ -23,12 +23,12 @@ export const parseOracle = (x: Responses.GetOracleResponse): Models.Oracle => ({
   })),
   ohlc: x.data.map((ohlc) => ({
     time: toDate(ohlc.time),
-    open: ohlc.open,
-    close: ohlc.close,
-    high: ohlc.high,
-    low: ohlc.low,
-    basePrice: ohlc.base_price,
-    oraclePrice: ohlc.oracle_price,
+    open: ohlc.open ?? null,
+    close: ohlc.close ?? null,
+    high: ohlc.high ?? null,
+    low: ohlc.low ?? null,
+    basePrice: ohlc.base_price ?? null,
+    oraclePrice: ohlc.oracle_price ?? null,
   })),
 })
 

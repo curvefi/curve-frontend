@@ -31,12 +31,12 @@ export type OraclePool = {
 
 export type OracleOHLC = {
   time: Date
-  open: number
-  close: number
-  high: number
-  low: number
-  basePrice: number
-  oraclePrice: number
+  open: number | null
+  close: number | null
+  high: number | null
+  low: number | null
+  basePrice: number | null
+  oraclePrice: number | null
 }
 
 export type UserCollateralEvents = {

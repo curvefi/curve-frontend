@@ -28,12 +28,12 @@ export type GetOracleResponse = {
   ]
   data: {
     time: number
-    open: number
-    close: number
-    high: number
-    low: number
-    base_price: number
-    oracle_price: number
+    open: number | null
+    close: number | null
+    high: number | null
+    low: number | null
+    base_price: number | null
+    oracle_price: number | null
   }[]
 }
 
