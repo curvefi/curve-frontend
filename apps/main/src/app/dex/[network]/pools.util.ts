@@ -13,13 +13,13 @@ import {
 
 const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as const
 
-const getAllNetworks = memoizee(getNetworks, options)
+export const getAllNetworks = memoizee(getNetworks, options)
 
 /**
  * Retrieves a mapping of pool IDs and addresses to pool names.
  * Unfortunately we cannot use an API as the pool names are generated in CurveJS
  */
-export const getServerSideCache = memoizee(async (network: NetworkConfig) => {
+export const getServerSideCache = async (network: NetworkConfig) => {
   const curveJS = cloneDeep((await import('@curvefi/api')).default) as CurveApi
   await curveJS.init('NoRPC', 'NoRPC', { chainId: network.chainId })
   await Promise.all([
@@ -33,7 +33,7 @@ export const getServerSideCache = memoizee(async (network: NetworkConfig) => {
   const { poolsMapper, poolsMapperCache } = await getPools(curveJS, curveJS.getPoolList(), network, {})
   const [tvl, volume] = await Promise.all([getTvlCache(network, poolsMapper), getVolumeCache(network, poolsMapper)])
   return { pools: poolsMapperCache, tvl, volume }
-}, options)
+}
 
 export async function getNetworkConfig(networkName: string) {
   const networks = await getAllNetworks()
