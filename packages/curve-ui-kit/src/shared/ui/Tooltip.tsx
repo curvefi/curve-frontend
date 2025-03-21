@@ -2,8 +2,8 @@ import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { InvertTheme } from './ThemeProvider'
 
 type TooltipProps = MuiTooltipProps & {
   body?: ReactNode
@@ -18,7 +18,7 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
   // cancel any theme inversion as it's often applied on hover
   <InvertTheme inverted={false}>
     <Box
-      sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill }}
+      sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill, width: '100%' }}
       onClick={(e) => e.stopPropagation()} // prevent changing pages when clicking on the tooltip
     >
       <Typography variant="bodyMBold" color="textPrimary">

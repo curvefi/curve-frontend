@@ -1,6 +1,4 @@
 import type { ReactNode } from 'react'
-import { formatPercent } from './cell.format'
-import { RateType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import type { PoolRewards } from '@/loan/entities/campaigns'
 import { LlamaMarketType } from '@/loan/entities/llama-markets'
 import Button from '@mui/material/Button'
@@ -9,7 +7,10 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { RateType } from '../hooks/useSnapshots'
+import { formatPercent } from './cell.format'
 import { getRewardsDescription } from './MarketTitleCell/cell.utils'
 
 const { Spacing } = SizesAndSpaces
@@ -73,7 +74,7 @@ export const RateTooltipContent = ({
       {averageRate != null && <Item title={`${period} ${rateName[type]}`}>{formatPercent(averageRate)}</Item>}
       {rate != null && <Item title={`${t`Current`} ${rateName[type]}`}>{formatPercent(rate)}</Item>}
       {rewards.map((r, i) => (
-        <Item key={i} title={getRewardsDescription(r)}>
+        <Item key={i} title={getRewardsDescription(r)} icon={<RewardIcon imageId={r.platformImageId} />}>
           {r.multiplier}
         </Item>
       ))}
