@@ -12,10 +12,11 @@ import { TransitionFunction } from './design/0_primitives'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiAlert, defineMuiAlertTitle } from './mui-alert'
 import { defineMuiMenuItem } from './mui-menu-item'
+import { defineMuiRadio } from './radio'
 import { defineMuiSelect } from './mui-select'
+import { defineMuiSlider } from './slider'
 import { defineMuiSwitch } from './mui-switch'
 import { defineMuiTooltip } from './mui-tooltip'
-import { defineMuiSlider } from './slider'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
 
@@ -41,7 +42,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-  MuiCheckbox: defineMuiCheckbox(design),
+  MuiCheckbox: defineMuiCheckbox(),
   MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
@@ -155,6 +156,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiRadio: defineMuiRadio(),
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(design),
 })
