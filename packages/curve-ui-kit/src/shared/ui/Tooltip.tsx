@@ -7,6 +7,7 @@ import { InvertTheme } from './ThemeProvider'
 
 type TooltipProps = MuiTooltipProps & {
   body?: ReactNode
+  clickable?: boolean
 }
 
 const { Spacing } = SizesAndSpaces
@@ -33,11 +34,11 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
  * Adds a tooltip to the children with a title and content, making sure the content is not inverted on hover.
  * It sucks that we have many components with this name, but we should try to use this one only 🤓
  */
-export const Tooltip = ({ title, body, children, slotProps, ...props }: TooltipProps) => (
+export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) => (
   <MuiTooltip
     title={<TooltipContent title={title}>{body}</TooltipContent>}
     slotProps={{
-      popper: { sx: { userSelect: 'none', pointerEvents: 'none' } }, // prevent text selection and pointer events
+      ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
       tooltip: { sx: { '&': { padding: 0 } } }, // remove padding with inverted color
     }}
     {...props}

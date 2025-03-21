@@ -19,6 +19,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
   return (
     <Tooltip
+      clickable
       title={
         {
           borrow: t`Borrow APR`,
