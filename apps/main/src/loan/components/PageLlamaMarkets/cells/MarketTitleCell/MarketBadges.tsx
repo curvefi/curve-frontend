@@ -12,8 +12,7 @@ import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { classNames } from '@ui-kit/utils/dom'
-import { RewardIcon, RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
-import uniq from 'lodash/uniq'
+import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 
 const { Spacing } = SizesAndSpaces
 
@@ -54,9 +53,8 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
             <Box key={i}>{getRewardsDescription(r)}</Box>
           ))}
           placement="top"
-          data-testid="rewards-badge"
         >
-          <RewardIcons size="md" rewards={rewards} />
+          <RewardIcons data-testid="rewards-badge" size="md" rewards={rewards} />
         </Tooltip>
       )}
 

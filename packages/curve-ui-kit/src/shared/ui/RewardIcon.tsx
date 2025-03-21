@@ -1,6 +1,6 @@
 import uniq from 'lodash/uniq'
 import NextImage from 'next/image'
-import Box from '@mui/material/Box'
+import Box, { type BoxProps } from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { CURVE_ASSETS_URL } from '@ui/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
@@ -27,8 +27,12 @@ export function RewardIcon({ imageId, size = 'xs' }: { imageId: string; size?: I
   )
 }
 
-export const RewardIcons = ({ size, rewards }: { size?: IconSize; rewards: { platformImageId: string }[] }) => (
-  <Box component="span">
+export const RewardIcons = ({
+  size,
+  rewards,
+  ...props
+}: { size?: IconSize; rewards: { platformImageId: string }[] } & BoxProps) => (
+  <Box component="span" {...props}>
     {uniq(rewards.map((r) => r.platformImageId)).map((img) => (
       <RewardIcon size={size} key={img} imageId={img} />
     ))}

@@ -269,7 +269,6 @@ export const SizesAndSpaces = {
     table: '60rem', // 960px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
-    tooltip: '27.5rem', // 440px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px
@@ -279,6 +278,7 @@ export const SizesAndSpaces = {
     connectWallet: '50rem', // 800px
     actionCard: '29rem', // 464px
     section: '59.5rem', // 952px
+    tooltip: '27.5rem', // 440px
   },
   MinHeight: {
     tableNoResults: '35vh',
