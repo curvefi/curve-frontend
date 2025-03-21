@@ -6,7 +6,7 @@ import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-valida
 
 export type CrvUsdSnapshot = Snapshot
 
-export const { useQuery: useCrvUsdSnapshots } = queryFactory({
+export const { useQuery: useCrvUsdSnapshots, fetchQuery: fetchCrvUsdSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'crvUsd', 'snapshots'] as const,
   queryFn: ({ blockchainId, contractAddress }: ContractQuery): Promise<CrvUsdSnapshot[]> =>
     getSnapshots(blockchainId as Chain, contractAddress, { agg: 'none' }),

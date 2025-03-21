@@ -1,4 +1,5 @@
 import { fetchSupportedLendingChains } from '@/loan/entities/chains'
+import { fetchLendingSnapshots, type LendingSnapshot } from '@/loan/entities/lending-snapshots'
 import {
   type UserContractParams,
   type UserContractQuery,
@@ -19,7 +20,7 @@ import { userValidationSuite } from '@ui-kit/lib/model/query/user-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import type { Address } from '@ui-kit/utils'
 
-export type LendingVault = Market & { chain: Chain }
+export type LendingVault = Market & { chain: Chain; snapshots: LendingSnapshot[] }
 
 export const {
   getQueryOptions: getLendingVaultsOptions,
@@ -31,7 +32,19 @@ export const {
   queryFn: async (): Promise<LendingVault[]> => {
     const chains = await fetchSupportedLendingChains({})
     const markets = await Promise.all(
-      chains.map(async (chain) => (await getMarkets(chain)).map((market) => ({ ...market, chain }))),
+      chains.map(
+        async (blockchainId) =>
+          await Promise.all(
+            (await getMarkets(blockchainId)).map(async (market) => ({
+              ...market,
+              snapshots: await fetchLendingSnapshots({
+                blockchainId,
+                contractAddress: market.controller,
+              }).catch(() => []),
+              chain: blockchainId,
+            })),
+          ),
+      ),
     )
     return markets.flat()
   },
@@ -80,6 +93,7 @@ export function invalidateAllUserLendingVaults(userAddress: Address | undefined)
     contracts.forEach((contractAddress) => {
       invalidateUserLendingVaultStats({ userAddress, blockchainId, contractAddress })
       invalidateUserLendingVaultEarnings({ userAddress, blockchainId, contractAddress })
+      // todo invalidate snapshots
     })
   })
 }

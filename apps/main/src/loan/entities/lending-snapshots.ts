@@ -7,7 +7,7 @@ import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-valida
 type LendingSnapshotFromApi = Snapshot
 export type LendingSnapshot = LendingSnapshotFromApi
 
-export const { useQuery: useLendingSnapshots } = queryFactory({
+export const { useQuery: useLendingSnapshots, fetchQuery: fetchLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots', 'v1'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshot[]> => {
     const chains = await fetchSupportedLendingChains({})

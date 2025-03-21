@@ -1,5 +1,6 @@
 import uniq from 'lodash/uniq'
 import { fetchSupportedChains } from '@/loan/entities/chains'
+import { type CrvUsdSnapshot, fetchCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
 import { getCoinPrices } from '@/loan/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
 import { getMarkets, getUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
@@ -14,18 +15,20 @@ type MintMarketFromApi = Market
 export type MintMarket = MintMarketFromApi & {
   stablecoin_price: number
   chain: Chain
+  snapshots: CrvUsdSnapshot[]
 }
 
-/**
- * Note: The API does not provide stablecoin prices, fetch them separately and add them to the data.
- * I requested benber86 to add stablecoin prices to the API, but it may take some time.
- */
-async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMarketFromApi[] }) {
+async function getMintMarketChainData(blockchainId: Chain) {
+  const data = await getMarkets(blockchainId)
   const stablecoinAddresses = uniq(data.map((market) => market.stablecoinToken.address))
-  const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
-  return data.map((market) => ({
+  const [snapshots, stablecoinPrices] = await Promise.all([
+    Promise.all(data.map((d) => fetchCrvUsdSnapshots({ blockchainId, contractAddress: d.address }).catch(() => []))),
+    getCoinPrices(stablecoinAddresses, blockchainId),
+  ])
+  return data.map((market, index) => ({
     ...market,
-    chain,
+    chain: blockchainId,
+    snapshots: snapshots[index],
     stablecoin_price: stablecoinPrices[market.stablecoinToken.address],
   }))
 }
@@ -40,12 +43,8 @@ export const {
   queryFn: async (): Promise<MintMarket[]> => {
     const chains = await fetchSupportedChains({})
     const allMarkets = await Promise.all(
-      // todo: create separate query for the loop, so it can be cached separately
-      chains.map(async (blockchainId) => {
-        const chain = blockchainId as Chain
-        const data = await getMarkets(chain)
-        return await addStableCoinPrices({ chain, data })
-      }),
+      // todo: create separate query for each loop, so it can be cached separately
+      chains.map((blockchainId) => getMintMarketChainData(blockchainId as Chain)),
     )
     return allMarkets.flat()
   },

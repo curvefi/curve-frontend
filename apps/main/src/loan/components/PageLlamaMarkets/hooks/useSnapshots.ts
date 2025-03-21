@@ -16,31 +16,23 @@ type UseSnapshotsResult<T> = {
 }
 
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
-  { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
+  { chain, controllerAddress, type: marketType, rates, snapshots }: LlamaMarket,
   type: GraphType,
   enabled: boolean,
 ): UseSnapshotsResult<T> {
   const isLend = marketType == LlamaMarketType.Lend
-  const showLendGraph = isLend && enabled
-  const showMintGraph = !isLend && type === 'borrow' && enabled
-  const contractAddress = controllerAddress
-  const params = { blockchainId: chain, contractAddress }
-  const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
-  const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
   const currentValue = rates[type] ?? null
-  const { snapshots, isLoading, snapshotKey, error } = isLend
+  const { isLoading, snapshotKey, error } = isLend
     ? {
-        snapshots: (showLendGraph && poolSnapshots) || null,
-        isLoading: !enabled || lendIsLoading,
+        isLoading: false,
         snapshotKey: `${type}Apy` as const,
-        error: poolError,
+        error: null,
       }
     : {
-        snapshots: (showMintGraph && mintSnapshots) || null,
-        isLoading: !enabled || mintIsLoading,
+        isLoading: false,
         snapshotKey: 'rate' as const,
-        error: mintError,
+        error: null,
       }
 
   const averageRate = useMemo(

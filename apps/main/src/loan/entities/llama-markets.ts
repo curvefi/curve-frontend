@@ -10,6 +10,8 @@ import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type Address } from '@ui-kit/utils'
+import type { LendingSnapshot } from '@/loan/entities/lending-snapshots'
+import type { CrvUsdSnapshot } from '@/loan/entities/crvusd-snapshots'
 
 export enum LlamaMarketType {
   Mint = 'Mint',
@@ -46,6 +48,7 @@ export type LlamaMarket = {
   leverage: number
   deprecatedMessage?: string
   userHasPosition: boolean
+  snapshots: LendingSnapshot[] | CrvUsdSnapshot[] // todo: make a common format for snapshots
 }
 
 const DEPRECATED_LLAMAS: Record<string, () => string> = {
@@ -69,6 +72,7 @@ const convertLendingVault = (
     apyBorrow,
     apyLend,
     leverage,
+    snapshots,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
@@ -98,6 +102,7 @@ const convertLendingVault = (
   rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
   leverage,
   userHasPosition: userVaults.has(controller),
+  snapshots,
 })
 
 /** We show WETH as ETH in the UI and market URL */
@@ -117,6 +122,7 @@ const convertMintMarket = (
     debtCeiling,
     stablecoin_price,
     chain,
+    snapshots,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
@@ -152,6 +158,7 @@ const convertMintMarket = (
   rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
   leverage: 0,
   userHasPosition: userMintMarkets.has(address),
+  snapshots,
 })
 
 export type LlamaMarketsResult = {
