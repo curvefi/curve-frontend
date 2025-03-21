@@ -18,7 +18,7 @@ interface GaugeVotesTableProps {
 }
 
 // weight is recieved in bps, 10000 = 100%
-const formatGaugeVoteWeight = (weight: number) => weight / 100
+const weightBpsToPercentage = (weight: number) => weight / 100
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
   const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
@@ -69,7 +69,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatGaugeVoteWeight(gaugeVote.weight)}%
+            {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
           <TableDataLink
             onClick={(e) => {
