@@ -57,6 +57,7 @@ const convertLendingVault = (
   {
     controller,
     chain,
+    totalAssets,
     totalAssetsUsd,
     totalDebtUsd,
     vault,
@@ -80,7 +81,7 @@ const convertLendingVault = (
   assets: {
     borrowed: {
       ...borrowedToken,
-      usdPrice: borrowedBalanceUsd / borrowedBalance,
+      usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
       chain,
     },
     collateral: {

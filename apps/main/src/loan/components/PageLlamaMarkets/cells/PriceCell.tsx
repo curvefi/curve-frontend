@@ -20,7 +20,8 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   if (!value) {
     return statsError && <ErrorCell error={statsError} />
   }
-  const { usdPrice, chain, address, symbol } = row.original.assets.borrowed
+  const { usdPrice, chain, address, symbol } =
+    row.original.assets[column.id === LlamaMarketColumnId.UserBorrowed ? 'borrowed' : 'collateral']
   const usdValue = usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
   const usdTooltip =
     usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', showAllFractionDigits: true })
