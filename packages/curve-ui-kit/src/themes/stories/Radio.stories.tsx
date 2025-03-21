@@ -1,50 +1,48 @@
 import { useState, useEffect } from 'react'
-import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import FormGroup from '@mui/material/FormGroup'
+import Radio, { RadioProps } from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 
-const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
-  const [state, setState] = useState({
-    option1: checked ?? false,
-    option2: false,
-  })
+const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
+  const [value, setValue] = useState(checked ? 'option1' : 'option2')
 
   // Update internal state when the checked prop changes
   useEffect(() => {
-    setState((prev) => ({ ...prev, option1: checked ?? false }))
+    setValue(checked ? 'option1' : 'option2')
   }, [checked])
 
-  const handleChange = (option: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newState = { ...state, [option]: event.target.checked }
-    setState(newState)
-
-    if (option === 'option1') {
-      onChange?.(event, event.target.checked)
-    }
-  }
-
   return (
-    <FormControl component="fieldset">
-      <FormGroup>
+    <FormControl>
+      <RadioGroup
+        value={value}
+        onChange={(event) => {
+          const newValue = event.target.value
+          setValue(newValue)
+          const isChecked = newValue === 'option1'
+          onChange?.(event as any, isChecked)
+        }}
+      >
         <FormControlLabel
-          control={<Checkbox {...props} checked={state.option1} onChange={handleChange('option1')} />}
+          value="option1"
+          control={<Radio {...props} checked={value === 'option1'} />}
           label="Option 1"
         />
         <FormControlLabel
-          control={<Checkbox {...props} checked={state.option2} onChange={handleChange('option2')} />}
+          value="option2"
+          control={<Radio {...props} checked={value === 'option2'} />}
           label="Option 2"
         />
-      </FormGroup>
+      </RadioGroup>
     </FormControl>
   )
 }
 
-const meta: Meta<typeof Checkbox> = {
-  title: 'UI Kit/Primitives/Checkbox',
-  component: CheckboxStory,
+const meta: Meta<typeof Radio> = {
+  title: 'UI Kit/Primitives/Radio',
+  component: RadioStory,
   argTypes: {
     color: {
       control: 'select',
@@ -73,13 +71,13 @@ const meta: Meta<typeof Checkbox> = {
   },
 }
 
-type Story = StoryObj<typeof Checkbox>
+type Story = StoryObj<typeof Radio>
 
 export const Primary: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Primary checkbox',
+        story: 'Primary radio button',
       },
     },
   },
@@ -90,7 +88,7 @@ export const Secondary: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Secondary checkbox',
+        story: 'Secondary radio button',
       },
     },
   },
@@ -101,7 +99,7 @@ export const Small: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Small-sized checkbox (xs)',
+        story: 'Small-sized radio button (xs)',
       },
     },
   },
@@ -112,7 +110,7 @@ export const Medium: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Medium-sized checkbox (sm)',
+        story: 'Medium-sized radio button (sm)',
       },
     },
   },
@@ -123,7 +121,7 @@ export const Large: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large-sized checkbox (md)',
+        story: 'Large-sized radio button (md)',
       },
     },
   },
@@ -134,7 +132,7 @@ export const Disabled: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Disabled checkbox',
+        story: 'Disabled radio button',
       },
     },
   },
@@ -145,7 +143,7 @@ export const Unchecked: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Unchecked checkbox',
+        story: 'Unchecked radio button',
       },
     },
   },
