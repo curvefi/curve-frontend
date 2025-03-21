@@ -59,9 +59,10 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           title={t`Created`}
           data={
             <StyledMetricsColumnData>
-              {formatDateFromTimestamp(
-                convertToLocaleTimestamp(new Date(gaugeData?.creation_date || '').getTime() / 1000),
-              )}
+              {!dataLoading &&
+                formatDateFromTimestamp(
+                  convertToLocaleTimestamp(new Date(gaugeData?.creation_date || '').getTime() / 1000),
+                )}
             </StyledMetricsColumnData>
           }
         />

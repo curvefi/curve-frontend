@@ -17,7 +17,7 @@ interface GaugeVotesTableProps {
   tableMinWidth: number
 }
 
-// weight is formatted in bps, 10000 = 100%
+// weight is recieved in bps, 10000 = 100%
 const formatGaugeVoteWeight = (weight: number) => weight / 100
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
