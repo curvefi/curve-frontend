@@ -13,6 +13,7 @@ import { defineMuiAlert, defineMuiAlertTitle } from './mui-alert'
 import { defineMuiMenuItem } from './mui-menu-item'
 import { defineMuiSelect } from './mui-select'
 import { defineMuiSwitch } from './mui-switch'
+import { defineMuiRadio } from './radio'
 import { defineMuiSlider } from './slider'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
@@ -39,7 +40,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-  MuiCheckbox: defineMuiCheckbox(design),
+  MuiCheckbox: defineMuiCheckbox(),
   MuiChip: defineMuiChip(design, typography),
   MuiContainer: {
     styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
@@ -181,6 +182,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
+  MuiRadio: defineMuiRadio(),
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(design),
 })
