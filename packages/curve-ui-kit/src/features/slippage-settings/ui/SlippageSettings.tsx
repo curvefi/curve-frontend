@@ -10,8 +10,11 @@ import {
 
 type Props = Pick<SlippageSettingsProps, 'maxSlippage'> &
   Pick<SlippageSettingsCallbacks, 'onSave'> & {
+    /** Custom button component to render instead of the default IconButton */
     button?: (props: { maxSlippage?: string; onClick: () => void }) => ReactNode
+    /** Custom icon to use in the default IconButton (ignored if button prop is provided) */
     buttonIcon?: ReactNode
+    /** Whether the button should be disabled */
     disabled?: boolean
   }
 
