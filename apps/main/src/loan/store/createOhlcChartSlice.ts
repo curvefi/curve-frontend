@@ -132,34 +132,41 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
 
-          if (item.volume && item.open && item.close) {
-            volumeArray.push({
+          volumeArray = [
+            ...volumeArray,
+            {
               time,
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
-            })
-          }
-          if (item.basePrice) {
-            baselinePriceArray.push({
+            },
+          ]
+
+          baselinePriceArray = [
+            ...baselinePriceArray,
+            {
               time,
               base_price: item.basePrice,
-            })
-          }
-          if (item.oraclePrice) {
-            oraclePriceArray.push({
+            },
+          ]
+
+          oraclePriceArray = [
+            ...oraclePriceArray,
+            {
               time,
               value: item.oraclePrice,
-            })
-          }
-          if (item.open && item.close && item.high && item.low) {
-            ohlcDataArray.push({
+            },
+          ]
+
+          ohlcDataArray = [
+            ...ohlcDataArray,
+            {
               time,
               open: item.open,
               close: item.close,
               high: item.high,
               low: item.low,
-            })
-          }
+            },
+          ]
         }
         const arrLength = oraclePriceArray.length - 1
         const loanPriceInfo = get().loans.detailsMapper[llammaId]?.priceInfo
@@ -218,34 +225,41 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
 
-          if (item.volume && item.open && item.close) {
-            volumeArray.push({
+          volumeArray = [
+            ...volumeArray,
+            {
               time,
               value: item.volume,
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
-            })
-          }
-          if (item.basePrice) {
-            baselinePriceArray.push({
+            },
+          ]
+
+          baselinePriceArray = [
+            ...baselinePriceArray,
+            {
               time,
               base_price: item.basePrice,
-            })
-          }
-          if (item.oraclePrice) {
-            oraclePriceArray.push({
+            },
+          ]
+
+          oraclePriceArray = [
+            ...oraclePriceArray,
+            {
               time,
               value: item.oraclePrice,
-            })
-          }
-          if (item.open && item.close && item.high && item.low) {
-            ohlcDataArray.push({
+            },
+          ]
+
+          ohlcDataArray = [
+            ...ohlcDataArray,
+            {
               time,
               open: item.open,
               close: item.close,
               high: item.high,
               low: item.low,
-            })
-          }
+            },
+          ]
         }
 
         set(
