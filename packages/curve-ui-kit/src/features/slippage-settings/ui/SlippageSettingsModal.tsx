@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -115,7 +116,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
       variant="standard"
       type="number"
       value={customValue}
-      placeholder={t`Custom`}
+      placeholder={t`Custom slippage`}
       slotProps={{
         input: {
           endAdornment: '%',
@@ -133,9 +134,10 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
           error: validateCustomValue(e.target.value),
         })
       }
+      // Toggle to 'custom' the moment you click the text input
       onClick={() => setFormValues({ ...formValues, selected: 'custom' })}
       sx={{
-        maxWidth: '8rem', // Not bothering with a constant, without it it stretches too much on mobile
+        flexGrow: 1,
         '& .MuiInputBase-adornedEnd': {
           color: (t) => (selected === 'custom' ? 'inherit' : t.design.Text.TextColors.Disabled),
           paddingRight: '1ch', // TODO: rely on input styling in different PR
@@ -167,19 +169,25 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
             {t`Max Slippage`} {tooltip}
           </FormLabel>
 
-          <RadioGroup
-            row
-            value={formValues.selected}
-            onChange={(e) => setFormValues({ ...formValues, selected: e.target.value })}
-            sx={{
-              justifyContent: 'space-between',
-              gap: Spacing.xs,
-            }}
-          >
-            <FormControlLabel value={SLIPPAGE_PRESETS.STABLE.toString()} label={FORMATTED_01} control={<Radio />} />
-            <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO.toString()} label={FORMATTED_05} control={<Radio />} />
-            <FormControlLabel value="custom" control={<Radio />} label={customTextField} />
-          </RadioGroup>
+          <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.sm}>
+            <RadioGroup
+              row
+              value={formValues.selected}
+              onChange={(e) => setFormValues({ ...formValues, selected: e.target.value })}
+              sx={{
+                flexGrow: 1,
+                justifyContent: { mobile: 'space-between', tablet: 'start' },
+                gap: Spacing.xs,
+              }}
+            >
+              <FormControlLabel value={SLIPPAGE_PRESETS.STABLE.toString()} label={FORMATTED_01} control={<Radio />} />
+              <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO.toString()} label={FORMATTED_05} control={<Radio />} />
+            </RadioGroup>
+
+            <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
+              {customTextField}
+            </Box>
+          </Stack>
         </FormControl>
 
         {/* Going for an alert instead of textfield helpertext because it looks better wrt layout */}
