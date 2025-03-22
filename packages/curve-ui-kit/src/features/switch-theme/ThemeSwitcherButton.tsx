@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { themes, ThemeSwitcherProps } from './types'
 
 export const ThemeSwitcherButton = ({ theme, onChange, label }: ThemeSwitcherProps) => {

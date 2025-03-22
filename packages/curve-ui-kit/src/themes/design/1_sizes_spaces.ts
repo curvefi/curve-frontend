@@ -278,6 +278,7 @@ export const SizesAndSpaces = {
     connectWallet: '50rem', // 800px
     actionCard: '29rem', // 464px
     section: '59.5rem', // 952px
+    tooltip: '27.5rem', // 440px
   },
   MinHeight: {
     tableNoResults: '35vh',

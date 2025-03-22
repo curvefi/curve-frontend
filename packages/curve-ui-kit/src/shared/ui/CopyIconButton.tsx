@@ -4,9 +4,9 @@ import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import type { IconButtonProps } from '@mui/material/IconButton/IconButton'
 import Snackbar from '@mui/material/Snackbar'
-import Tooltip from '@mui/material/Tooltip'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 export function CopyIconButton({

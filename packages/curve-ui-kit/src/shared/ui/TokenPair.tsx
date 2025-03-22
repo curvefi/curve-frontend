@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import Tooltip from '@mui/material/Tooltip'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ChainIcon } from '../icons/ChainIcon'
 import { TokenIcon } from './TokenIcon'
