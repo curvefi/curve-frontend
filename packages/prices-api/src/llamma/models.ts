@@ -44,11 +44,11 @@ export type LlammaTrade = {
 
 export type LlammaOHLC = {
   time: Date
-  open: number | null
-  close: number | null
-  high: number | null
-  low: number | null
-  basePrice: number | null
-  oraclePrice: number | null
-  volume: number | null
+  open: number
+  close: number
+  high: number
+  low: number
+  basePrice: number
+  oraclePrice: number
+  volume: number
 }
