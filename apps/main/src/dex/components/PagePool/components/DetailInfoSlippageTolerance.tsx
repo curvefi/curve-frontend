@@ -1,28 +1,36 @@
 import styled from 'styled-components'
-import type { AdvancedSettingsProps } from '@/dex/components/AdvancedSettings'
-import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
+import { SlippageSettings } from '@ui-kit/features/slippage-settings'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => (
-  <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
-    <StyledAdvancedSettings
-      {...props}
-      buttonIcon={
-        <>
-          {formatNumber(props.maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
-          <Icon name="Settings" size={16} />
-        </>
-      }
-    />
-  </StyledDetailInfo>
-)
+type Props = {
+  maxSlippage: string
+  stateKey: string
+  customLabel?: string
+}
 
-const StyledAdvancedSettings = styled(AdvancedSettings)`
-  justify-content: flex-end;
-`
+const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Props) => {
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+
+  return (
+    <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
+      <SlippageSettings
+        maxSlippage={maxSlippage}
+        button={({ onClick }) => (
+          <IconButton onClick={onClick}>
+            {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
+            <Icon name="Settings" size={16} />
+          </IconButton>
+        )}
+        onSave={(slippage) => setMaxSlippage(slippage, stateKey)}
+      />
+    </StyledDetailInfo>
+  )
+}
 
 const StyledDetailInfo = styled(DetailInfo)`
   button {

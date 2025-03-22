@@ -77,9 +77,3 @@ export function curveProps(curve: Curve | null) {
     }
   }
 }
-
-export function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 100)
-  }
-}

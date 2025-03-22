@@ -59,12 +59,6 @@ export function sleep(ms?: number) {
   return new Promise((resolve) => setTimeout(resolve, parsedMs))
 }
 
-export function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 100)
-  }
-}
-
 export function shortenTokenName(token: string) {
   const tokenLength = token.length
   if (tokenLength > 30) {
