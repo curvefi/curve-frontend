@@ -1,9 +1,11 @@
+import { useRef } from 'react'
 import { Line, LineChart, YAxis } from 'recharts'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { GraphType, useSnapshots } from '../hooks/useSnapshots'
@@ -37,12 +39,13 @@ type RateCellProps = {
  * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
  */
 export const LineGraphCell = ({ market, type }: RateCellProps) => {
-  const sns = useSnapshots(market, type)
-  const { snapshots, snapshotKey, isLoading, averageRate, rate, error } = sns
+  const ref = useRef<HTMLDivElement>(null)
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const { snapshots, snapshotKey, isLoading, rate, error } = useSnapshots(market, type, entry?.isIntersecting)
   const { design } = useTheme()
-  if (rate == null) return null // supply yeld disabled for mint markets
+  if (rate == null) return null // supply yield disabled for mint markets
   return (
-    <Box data-testid={`line-graph-${type}`}>
+    <Box data-testid={`line-graph-${type}`} ref={ref}>
       {snapshots?.length ? (
         <LineChart data={snapshots} {...graphSize} compact>
           <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
@@ -52,6 +55,7 @@ export const LineGraphCell = ({ market, type }: RateCellProps) => {
             stroke={getColor(design, snapshots, snapshotKey)}
             strokeWidth={1}
             dot={false}
+            isAnimationActive={false}
           />
         </LineChart>
       ) : isLoading && !error ? (
