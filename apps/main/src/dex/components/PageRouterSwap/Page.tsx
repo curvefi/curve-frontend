@@ -125,7 +125,7 @@ const Page = (params: NetworkUrlParams) => {
         {t`Swap`}
         <SlippageSettings
           maxSlippage={storeMaxSlippage}
-          setMaxSlippage={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
+          onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
         />
       </BoxHeader>
 

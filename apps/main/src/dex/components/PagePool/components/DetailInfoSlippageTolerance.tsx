@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
+import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -17,23 +18,19 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Pro
 
   return (
     <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
-      <StyledSlippageSettings
+      <SlippageSettings
         maxSlippage={maxSlippage}
-        setMaxSlippage={(slippage) => setMaxSlippage(slippage, stateKey)}
-        buttonIcon={
-          <>
+        button={({ onClick }) => (
+          <IconButton onClick={onClick}>
             {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
             <Icon name="Settings" size={16} />
-          </>
-        }
+          </IconButton>
+        )}
+        onSave={(slippage) => setMaxSlippage(slippage, stateKey)}
       />
     </StyledDetailInfo>
   )
 }
-
-const StyledSlippageSettings = styled(SlippageSettings)`
-  justify-content: flex-end;
-`
 
 const StyledDetailInfo = styled(DetailInfo)`
   button {
