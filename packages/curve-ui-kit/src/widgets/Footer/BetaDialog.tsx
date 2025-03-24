@@ -33,7 +33,7 @@ export const BetaDialog = ({
         }
         title={
           <Typography variant="headingXsBold" color="textSecondary">
-            {isBeta ? t`Enable Beta Features` : t`Disable Beta Features`}
+            {isBeta ? t`Disable Beta Features` : t`Enable Beta Features`}
           </Typography>
         }
       />

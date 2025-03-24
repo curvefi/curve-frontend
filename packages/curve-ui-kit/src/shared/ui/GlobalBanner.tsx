@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { BannerMessage } from '@ui-kit/shared/ui/BannerMessage'
+import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 export type GlobalBannerProps = {
@@ -27,21 +27,21 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
       (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || isBeta) && (
         <Box ref={ref}>
           {isBeta && (
-            <BannerMessage severity="info" onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
+            <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
               <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
-            </BannerMessage>
+            </Banner>
           )}
-          {maintenanceMessage && <BannerMessage severity="warning">{maintenanceMessage}</BannerMessage>}
+          {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
           {showSwitchNetworkMessage && (
-            <BannerMessage severity="error" buttonText={t`Change network`} onClick={handleNetworkChange}>
+            <Banner severity="warning" buttonText={t`Change network`} onClick={handleNetworkChange}>
               {t`Please switch your wallet's network to`} <strong>{networkName}</strong> {t`to use Curve on`}{' '}
               <strong>{networkName}</strong>.{' '}
-            </BannerMessage>
+            </Banner>
           )}
           {showConnectApiErrorMessage && (
-            <BannerMessage severity="error">
+            <Banner severity="alert">
               {t`There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.`}
-            </BannerMessage>
+            </Banner>
           )}
         </Box>
       )
