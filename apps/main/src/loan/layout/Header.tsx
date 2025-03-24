@@ -114,9 +114,10 @@ function _getTvl(
   ) {
     Object.keys(collateralDatasMapper).forEach((key) => {
       const collateralData = collateralDatasMapper[key]
+      const loanDetails = loansDetailsMapper[key]
 
-      if (collateralData) {
-        const { totalCollateral, totalStablecoin } = loansDetailsMapper[key]
+      if (collateralData && loanDetails) {
+        const { totalCollateral, totalStablecoin } = loanDetails
         const usdRate = usdRatesMapper[collateralData.llamma.collateral]
 
         if (usdRate === 'NaN') {
