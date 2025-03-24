@@ -23,6 +23,7 @@ import {
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const { WEEK } = TIME_FRAMES
 
@@ -335,7 +336,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const { curve } = get()
+      const curve = useApiStore.getState().curve
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -430,7 +431,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const { curve } = get()
+      const curve = useApiStore.getState().curve
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()

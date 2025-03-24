@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import useStore from '@/dao/store/useStore'
 import { isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
   const userGaugeVoteWeightsMapper = useStore((state) => state.user.userGaugeVoteWeightsMapper)
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
