@@ -239,7 +239,7 @@ const detailInfo = {
     ] = await Promise.allSettled([
       loanExists ? llamma.stats.activeBand() : Promise.resolve(null),
       loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
-      loanExists ? llamma.userHealth(false, address) : Promise.resolve(''),
+      loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
       loanExists ? llamma.userBands(address) : Promise.resolve([0, 0]),
       loanExists ? llamma.userState(address) : Promise.resolve(DEFAULT_USER_STATE),
       loanExists ? llamma.stats.liquidatingBand() : Promise.resolve(null),
@@ -359,8 +359,8 @@ const loanCreate = {
   ) => {
     log('detailInfo', llamma.collateralSymbol, collateral, debt, n, address)
     const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
-      address ? llamma.createLoanHealth(collateral, debt, n, undefined, address) : Promise.resolve(''),
-      address ? llamma.createLoanHealth(collateral, debt, n, false, address) : Promise.resolve(''),
+      address ? llamma.createLoanHealth(collateral, debt, n, true, address) : Promise.resolve(''),
+      address ? llamma.createLoanHealth(collateral, debt, n, true, address) : Promise.resolve(''),
       llamma.createLoanBands(collateral, debt, n),
       llamma.createLoanPrices(collateral, debt, n),
     ])
@@ -405,8 +405,8 @@ const loanCreate = {
         llamma.leverage.getMaxRange(userCollateral, debt),
         llamma.leverage.createLoanBands(userCollateral, debt, n),
         llamma.leverage.createLoanPrices(userCollateral, debt, n),
-        llamma.leverage.createLoanHealth(userCollateral, debt, n),
-        llamma.leverage.createLoanHealth(userCollateral, debt, n, false),
+        llamma.leverage.createLoanHealth(userCollateral, debt, n, true),
+        llamma.leverage.createLoanHealth(userCollateral, debt, n, true),
         llamma.leverage.priceImpact(userCollateral, debt),
       ])
 
@@ -600,7 +600,7 @@ const loanIncrease = {
     log('detailInfo', parsedCollateral, parsedDebt, address)
     const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.borrowMoreHealth(parsedCollateral, parsedDebt, true, address),
-      llamma.borrowMoreHealth(parsedCollateral, parsedDebt, false, address),
+      llamma.borrowMoreHealth(parsedCollateral, parsedDebt, true, address),
       llamma.borrowMoreBands(parsedCollateral, parsedDebt),
       llamma.borrowMorePrices(parsedCollateral, parsedDebt),
     ])
@@ -706,7 +706,7 @@ const loanDecrease = {
     log('collateralDecreaseHealth', llamma.collateralSymbol, debt, address)
     const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.repayHealth(debt, true, address),
-      llamma.repayHealth(debt, false, address),
+      llamma.repayHealth(debt, true, address),
       llamma.repayBands(debt),
       llamma.repayPrices(debt),
     ])
@@ -857,7 +857,7 @@ const collateralIncrease = {
     log('detailInfo', llamma.collateralSymbol, collateral)
     const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.addCollateralHealth(collateral, true, address),
-      llamma.addCollateralHealth(collateral, false, address),
+      llamma.addCollateralHealth(collateral, true, address),
       llamma.addCollateralBands(collateral),
       llamma.addCollateralPrices(collateral),
     ])
@@ -948,7 +948,7 @@ const collateralDecrease = {
 
     const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.removeCollateralHealth(collateral, true, address),
-      llamma.removeCollateralHealth(collateral, false, address),
+      llamma.removeCollateralHealth(collateral, true, address),
       llamma.removeCollateralBands(collateral),
       llamma.removeCollateralPrices(collateral),
     ])
@@ -1150,7 +1150,7 @@ const loanDeleverage = {
         if (!resp.isFullRepayment) {
           const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
             llamma.deleverage.repayHealth(collateral, true, address),
-            llamma.deleverage.repayHealth(collateral, false, address),
+            llamma.deleverage.repayHealth(collateral, true, address),
             llamma.deleverage.repayBands(collateral, address),
             llamma.deleverage.repayPrices(collateral, address),
           ])
