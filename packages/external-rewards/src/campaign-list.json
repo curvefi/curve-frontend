@@ -85,5 +85,8 @@
   },
   {
     "campaign": "StableLabs.json"
+  },
+  {
+    "campaign": "Taiko.json"
   }
 ]
