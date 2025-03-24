@@ -30,8 +30,8 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      currentMenu="llama"
-      routes={APP_LINK.llama.routes}
+      currentMenu="lend"
+      routes={APP_LINK.lend.routes}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

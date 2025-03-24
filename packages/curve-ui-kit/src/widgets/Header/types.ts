@@ -16,6 +16,7 @@ export type AppRoute = {
   route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
+  betaFeature?: boolean
 }
 
 export type AppRoutes = {

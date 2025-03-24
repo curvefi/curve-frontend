@@ -9,10 +9,11 @@ import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
 import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
-import { isBeta, isCypress } from '@ui-kit/utils'
+import { isCypress } from '@ui-kit/utils'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
@@ -38,6 +39,7 @@ export const DesktopHeader = <TChainId extends number>({
   const setTheme = useUserProfileStore((state) => state.setTheme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
+  const [isBeta] = useLocalStorage<boolean>('beta')
 
   return (
     <>
