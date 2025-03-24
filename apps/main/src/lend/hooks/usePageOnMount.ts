@@ -12,6 +12,7 @@ import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
@@ -19,11 +20,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
-  const api = useStore((state) => state.api)
+  const lending = useApiStore((state) => state.lending)
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const updateApi = useStore((state) => state.updateApi)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const updateLending = useApiStore((state) => state.updateLending)
+  const setIsLoadingLending = useApiStore((state) => state.setIsLoadingLending)
+  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
+  const hydrate = useStore((s) => s.hydrate)
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
   const parsedParams = parseParams(params, chainIdNotRequired)
@@ -33,23 +36,30 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevApi = api ?? null
-          updateGlobalStoreByKey('isLoadingApi', true)
-          updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
+          const prevApi = lending ?? null
+
+          setIsLoadingLending(true)
+          setIsLoadingCurve(true)
+
           if (useWallet && wallet) {
             const api = await helpers.initApi(chainId, wallet)
-            updateApi(api, prevApi, wallet)
+            updateLending(api)
             updateConnectState('success', '')
+
+            hydrate(api, prevApi, wallet)
           } else {
             updateConnectState('', '')
           }
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        } finally {
+          setIsLoadingLending(false)
+          setIsLoadingCurve(false)
         }
       }
     },
-    [wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
+    [lending, setIsLoadingLending, setIsLoadingCurve, wallet, updateLending, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(
@@ -205,12 +215,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      (!!walletChainId || !!walletSignerAddress || !!api) &&
-      (api?.chainId !== walletChainId || api?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      (!!walletChainId || !!walletSignerAddress || !!lending) &&
+      (lending?.chainId !== walletChainId ||
+        lending?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (walletSignerAddress && api?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (walletSignerAddress && lending?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
-      } else if (api?.chainId !== walletChainId) {
+      } else if (lending?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
@@ -229,16 +240,16 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     if (isSuccess(connectState)) {
       if (
         walletChainId &&
-        api &&
-        api.chainId === walletChainId &&
+        lending &&
+        lending.chainId === walletChainId &&
         parsedParams.rChainId !== walletChainId &&
         pathname !== ROUTE.PAGE_INTEGRATIONS
       ) {
         // switch network if url network is not same as wallet
         updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
-      } else if (api && api.chainId !== parsedParams.rChainId) {
+      } else if (lending && lending.chainId !== parsedParams.rChainId) {
         // switch network if url network is not same as api
-        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [api.chainId, parsedParams.rChainId])
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [lending.chainId, parsedParams.rChainId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -247,7 +258,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   return {
     pageLoaded: connectState.status === 'success',
     routerParams: parsedParams,
-    api,
+    api: lending,
   } as PageProps
 }
 
