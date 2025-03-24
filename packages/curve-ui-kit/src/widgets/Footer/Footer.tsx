@@ -1,15 +1,20 @@
-import { FormControlLabel } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Dialog from '@mui/material/Dialog'
 import Grid from '@mui/material/Grid2'
+import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
-import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import { LlamaImg } from '@ui/images'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { AppName } from '@ui-kit/shared/routes'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Description } from './Description'
 import { Section } from './Section'
@@ -82,26 +87,45 @@ export const Footer = ({ appName, networkName }: Props) => {
           onClick={openBetaModal}
         />
         {isBetaModalOpen != null && (
-          <ModalDialog open={isBetaModalOpen} title={t`Enable Beta UI Features`} onClose={closeBetaModal}>
-            <Typography color="textSecondary">{t`You are enabling beta features that are still in development.`}</Typography>
-            <Typography color="textSecondary">{t`These features may not be fully functional.`}</Typography>
-            <Typography color="textSecondary">{t`Please provide us feedback if you find any problems.`}</Typography>
-
-            <Box display="inline-flex" alignItems="center" paddingBlock={4}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={isBeta ?? false}
-                    onChange={() => setIsBeta(!isBeta)}
-                    inputProps={{ 'aria-label': t`Beta Features` }}
-                    size="small"
-                  />
+          <Dialog open={isBetaModalOpen} onClose={closeBetaModal}>
+            <Card
+              sx={{ width: SizesAndSpaces.ModalWidth.md, maxWidth: '100vw', display: 'flex', flexDirection: 'column' }}
+            >
+              <CardHeader
+                action={
+                  <IconButton onClick={closeBetaModal} size="extraSmall">
+                    <CloseIcon />
+                  </IconButton>
                 }
-                label={t`Beta Features`}
-                sx={{ marginLeft: 2 }}
+                title={
+                  <Typography variant="headingXsBold" color="textSecondary">
+                    {isBeta ? t`Enable Beta Features` : t`Disable Beta Features`}
+                  </Typography>
+                }
               />
-            </Box>
-          </ModalDialog>
+              <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                {[
+                  t`Get early access to upcoming features and UI experiments before they go live.`,
+                  t`These are work-in-progress tools meant for testing, feedback, and iteration. You might experience minor bugs or visual inconsistencies — but your funds remain safe, and core functionality is unaffected.`,
+                  t`By enabling beta mode, you help shape the future of the Curve interface.`,
+                  t`You can turn this off at any time.`,
+                ].map((p) => (
+                  <Typography color="textSecondary" key={p} paddingBlock={4}>
+                    {p}
+                  </Typography>
+                ))}
+              </CardContent>
+              <CardActions>
+                <Button
+                  color={isBeta ? 'secondary' : 'primary'}
+                  onClick={() => setIsBeta(!isBeta)}
+                  sx={{ width: '100%' }}
+                >
+                  {isBeta ? t`Disable Beta Features` : t`Enable Beta Features`}
+                </Button>
+              </CardActions>
+            </Card>
+          </Dialog>
         )}
       </Grid>
     </Box>
