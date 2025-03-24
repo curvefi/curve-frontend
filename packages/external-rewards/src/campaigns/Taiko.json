@@ -1,0 +1,45 @@
+{
+  "campaignName": "Liquidity Royale",
+  "platform": "Taiko",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "taiko.png",
+  "dashboardLink": "https://trailblazers.taiko.xyz/journeys/liquidity/3/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Join Liquidity Royale, with the total reward pool of 1 Million TAIKO tokens. But now, in two tracks based on the assets provided as liquidity. Please visit issuer for more information.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xB391F2D5B83B3900997B4D6880ba7818Bef3591a",
+      "network": "taiko",
+      "multiplier": "Liquidity Royale",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Join Liquidity Royale, with the total reward pool of 1 Million TAIKO tokens. But now, in two tracks based on the assets provided as liquidity. Please visit issuer for more information.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x761BEe8c6ec207CFf409456cdf6856818cD0b83c",
+      "network": "taiko",
+      "multiplier": "Liquidity Royale",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Join Liquidity Royale, with the total reward pool of 1 Million TAIKO tokens. But now, in two tracks based on the assets provided as liquidity. Please visit issuer for more information.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x3da34fBc8FF2Bf12a4dfD499a2361823E348d8D7",
+      "network": "taiko",
+      "multiplier": "Liquidity Royale",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
