@@ -11,6 +11,7 @@ import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
+import { useHeaderHeight } from '@ui-kit/widgets/Header'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
@@ -20,6 +21,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
+  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
   const { rChainId, rNetwork } = useNetworkFromUrl()
 
@@ -55,7 +57,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dex" networkName={rNetwork} />
+      <Footer appName="dex" networkName={rNetwork} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

@@ -21,6 +21,7 @@ import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
+import Taiko from './Taiko.json'
 import TurtleSeeds from './TurtleSeeds.json'
 import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
@@ -58,4 +59,5 @@ export {
   Carrot,
   Bills,
   StableLabs,
+  Taiko,
 }

@@ -8,7 +8,7 @@ import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
 import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
-import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
+import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -43,8 +43,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      currentMenu="llama"
-      routes={APP_LINK.llama.routes}
+      currentMenu="crvusd"
+      routes={APP_LINK.crvusd.routes}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
@@ -114,9 +114,10 @@ function _getTvl(
   ) {
     Object.keys(collateralDatasMapper).forEach((key) => {
       const collateralData = collateralDatasMapper[key]
+      const loanDetails = loansDetailsMapper[key]
 
-      if (collateralData) {
-        const { totalCollateral, totalStablecoin } = loansDetailsMapper[key]
+      if (collateralData && loanDetails) {
+        const { totalCollateral, totalStablecoin } = loanDetails
         const usdRate = usdRatesMapper[collateralData.llamma.collateral]
 
         if (usdRate === 'NaN') {
