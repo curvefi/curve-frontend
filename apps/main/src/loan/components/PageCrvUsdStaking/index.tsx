@@ -12,6 +12,7 @@ import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -24,9 +25,9 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const lendApi = useStore((state) => state.lendApi)
+  const lendApi = useApiStore((state) => state.lending)
   const { signerAddress, connecting, walletName } = useWallet()
-  const chainId = useStore((state) => state.curve?.chainId)
+  const chainId = useApiStore((state) => state.stable?.chainId)
 
   const {
     data: userScrvUsdBalance,

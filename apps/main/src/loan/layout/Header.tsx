@@ -8,11 +8,12 @@ import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
 import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -26,7 +27,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const { rChainId, rNetwork } = parseNetworkFromUrl(params)
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.stable)
   const chainId = curve?.chainId
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])

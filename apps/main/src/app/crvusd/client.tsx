@@ -14,9 +14,10 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.stable)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
