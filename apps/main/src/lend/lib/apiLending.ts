@@ -446,7 +446,7 @@ const user = {
       })
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
-        const [healthFull, healthNotFull] = await Promise.all([market.userHealth(true), market.userHealth(true)])
+        const [healthFull, healthNotFull] = await Promise.all([market.userHealth(false), market.userHealth(false)])
 
         results[userActiveKey] = { healthFull, healthNotFull, error: '' }
       })
@@ -493,8 +493,8 @@ const user = {
         const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
           await Promise.all([
             market.userState(),
-            market.userHealth(true),
-            market.userHealth(true),
+            market.userHealth(false),
+            market.userHealth(false),
             market.userRange(),
             market.userBands(),
             market.userPrices(),
