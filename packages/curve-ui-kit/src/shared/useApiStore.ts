@@ -5,7 +5,7 @@ import type lendingApi from '@curvefi/lending-api'
 import type { IChainId } from '@curvefi/lending-api/lib/interfaces'
 import type stablecoinApi from '@curvefi/stablecoin-api'
 
-export type CurveApi = typeof curveApi & { chainId: 1 }
+export type CurveApi = typeof curveApi & { chainId: number }
 export type LendingApi = typeof lendingApi & { chainId: IChainId }
 export type StableApi = typeof stablecoinApi & { chainId: 1 }
 

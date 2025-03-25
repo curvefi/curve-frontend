@@ -5,10 +5,11 @@ import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)

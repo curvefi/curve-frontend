@@ -21,12 +21,13 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)

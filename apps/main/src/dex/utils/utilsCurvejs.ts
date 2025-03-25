@@ -1,5 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
-import { CurveApi, ChainId, Pool, RewardsApy, Wallet } from '@/dex/types/main.types'
+import { CurveApi, ChainId, RewardsApy, Wallet } from '@/dex/types/main.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 export async function initCurveJs(chainId: ChainId, wallet?: Wallet) {

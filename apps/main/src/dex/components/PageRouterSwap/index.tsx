@@ -38,6 +38,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const QuickSwap = ({
   pageLoaded,
@@ -58,7 +59,7 @@ const QuickSwap = ({
 }) => {
   const isSubscribed = useRef(false)
 
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const { chainId, signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(rChainId)
   const tokenList = useStore((state) => state.quickSwap.tokenList[rChainId])
@@ -66,7 +67,7 @@ const QuickSwap = ({
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
@@ -339,6 +340,7 @@ const QuickSwap = ({
 
   // steps
   useEffect(() => {
+    if (!curve) return
     const updatedSteps = getSteps(
       activeKey,
       curve,

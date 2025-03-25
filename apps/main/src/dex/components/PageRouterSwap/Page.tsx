@@ -16,6 +16,7 @@ import { breakpoints, isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: NetworkUrlParams) => {
   const { push } = useRouter()
@@ -24,7 +25,7 @@ const Page = (params: NetworkUrlParams) => {
   const { rChainId } = routerParams
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
