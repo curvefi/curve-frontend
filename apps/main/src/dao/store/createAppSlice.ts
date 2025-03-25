@@ -30,6 +30,7 @@ export interface AppSlice extends SliceState {
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
+  /** Hydrate resets states and refreshes store data from the API */
   hydrate(api: CurveApi, prevApi: CurveApi | null, wallet: Wallet | null): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void

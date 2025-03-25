@@ -25,6 +25,7 @@ export interface AppSlice extends SliceState {
   updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
+  /** Hydrate resets states and refreshes store data from the API */
   hydrate(curve: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void

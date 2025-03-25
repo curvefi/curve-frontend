@@ -21,7 +21,10 @@ type SliceState = {
 export interface AppSlice extends SliceState {
   updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
+
+  /** Hydrate resets states and refreshes store data from the API */
   hydrate(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
+
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
   setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void

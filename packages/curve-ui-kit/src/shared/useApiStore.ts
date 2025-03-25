@@ -50,4 +50,9 @@ const store: StateCreator<Store> = (set) => ({
   setIsLoadingStable: (isLoadingStable) => set({ isLoadingStable }),
 })
 
+/**
+ * Store for managing Curve API instances
+ * This store provides access to different Curve API instances (curve, lending, stable)
+ * and tracks their loading states.
+ */
 export const useApiStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)

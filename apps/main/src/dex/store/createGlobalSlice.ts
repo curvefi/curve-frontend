@@ -46,7 +46,10 @@ export interface GlobalSlice extends GlobalState {
     stage?: ConnectState['stage'],
     options?: ConnectState['options'],
   ): void
+
+  /** Hydrate resets states and refreshes store data from the API */
   hydrate(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
