@@ -634,8 +634,8 @@ const loanCreate = {
     const resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
-        market.createLoanHealth(userCollateral, debt, n, true),
-        market.createLoanHealth(userCollateral, debt, n, true),
+        market.createLoanHealth(userCollateral, debt, n, undefined),
+        market.createLoanHealth(userCollateral, debt, n, false),
         market.stats.futureRates(0, debt),
         market.createLoanBands(userCollateral, debt, n),
         market.createLoanPrices(userCollateral, debt, n),
@@ -686,8 +686,8 @@ const loanCreate = {
 
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp, routesResp, priceImpactResp] =
         await Promise.allSettled([
-          market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, n, true),
-          market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, n, true),
+          market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, n),
+          market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, n, false),
           market.stats.futureRates(0, debt),
           market.leverage.createLoanBands(userCollateral, userBorrowed, debt, n),
           market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, n),
@@ -942,7 +942,7 @@ const loanBorrowMore = {
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
         signerAddress ? market.borrowMoreHealth(userCollateral, debt, true) : '',
-        signerAddress ? market.borrowMoreHealth(userCollateral, debt, true) : '',
+        signerAddress ? market.borrowMoreHealth(userCollateral, debt, false) : '',
         market.stats.futureRates(0, debt),
         market.borrowMoreBands(userCollateral, debt),
         market.borrowMorePrices(userCollateral, debt),
@@ -998,7 +998,7 @@ const loanBorrowMore = {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp, routesResp, priceImpactResp] =
         await Promise.allSettled([
           signerAddress ? market.leverage.borrowMoreHealth(userCollateral, userBorrowed, debt, true) : '',
-          signerAddress ? market.leverage.borrowMoreHealth(userCollateral, userBorrowed, debt, true) : '',
+          signerAddress ? market.leverage.borrowMoreHealth(userCollateral, userBorrowed, debt, false) : '',
           market.stats.futureRates(0, debt),
           market.leverage.borrowMoreBands(userCollateral, userBorrowed, debt),
           market.leverage.borrowMorePrices(userCollateral, userBorrowed, debt),
@@ -1138,7 +1138,7 @@ const loanRepay = {
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
         signerAddress && !isFullRepay ? market.repayHealth(userBorrowed, true) : '',
-        signerAddress && !isFullRepay ? market.repayHealth(userBorrowed, true) : '',
+        signerAddress && !isFullRepay ? market.repayHealth(userBorrowed, false) : '',
         market.stats.futureRates(0, `-${isFullRepay ? userStateDebt : userBorrowed}`),
         isFullRepay ? ([0, 0] as [number, number]) : market.repayBands(userBorrowed),
         isFullRepay ? ['', ''] : market.repayPrices(userBorrowed),
@@ -1213,7 +1213,7 @@ const loanRepay = {
         repayIsAvailableResp,
       ] = await Promise.allSettled([
         signerAddress ? market.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, true) : '',
-        signerAddress ? market.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, true) : '',
+        signerAddress ? market.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, false) : '',
         market.stats.futureRates(0, `-${repayIsFull ? userStateDebt : expectedBorrowed?.totalBorrowed}`),
         repayIsFull
           ? ([0, 0] as [number, number])
@@ -1417,7 +1417,7 @@ const loanCollateralAdd = {
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
         signerAddress ? market.addCollateralHealth(collateral, true, address) : '',
-        signerAddress ? market.addCollateralHealth(collateral, true, address) : '',
+        signerAddress ? market.addCollateralHealth(collateral, false, address) : '',
         market.addCollateralBands(collateral),
         market.addCollateralPrices(collateral),
       ])
@@ -1500,7 +1500,7 @@ const loanCollateralRemove = {
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
         signerAddress ? market.removeCollateralHealth(collateral, true, address) : '',
-        signerAddress ? market.removeCollateralHealth(collateral, true, address) : '',
+        signerAddress ? market.removeCollateralHealth(collateral, false, address) : '',
         market.removeCollateralBands(collateral),
         market.removeCollateralPrices(collateral),
       ])
