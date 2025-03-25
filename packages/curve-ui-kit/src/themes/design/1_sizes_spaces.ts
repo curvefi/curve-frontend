@@ -274,6 +274,7 @@ export const SizesAndSpaces = {
     disclaimer: '43rem', // 688px
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
+    banner: '96rem', // 1536px
     footer: '96rem', // 1536px
     connectWallet: '50rem', // 800px
     actionCard: '29rem', // 464px

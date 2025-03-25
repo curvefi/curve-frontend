@@ -122,7 +122,7 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = appPath === 'crvusd' ? 1 : 0 // first option is the default page for crvUSD
+        const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0 // first option is the default page for crvUSD/lend
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.url().should('not.equal', url, LOAD_TIMEOUT)
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')

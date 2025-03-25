@@ -10,6 +10,7 @@ import { isChinese, t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
+import { useHeaderHeight } from '@ui-kit/widgets/Header'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
@@ -20,6 +21,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
+  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight ?? null)
@@ -67,7 +69,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dao" networkName={rNetwork} />
+      <Footer appName="dao" networkName={rNetwork} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }
