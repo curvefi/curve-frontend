@@ -5,9 +5,9 @@ import type { ChainId, PoolDataCacheMapper, ValueMapperCached } from '@/dex/type
 
 type ServerSideStoreProps = {
   chainId: ChainId
-  pools: PoolDataCacheMapper
-  tvl: ValueMapperCached
-  volume: ValueMapperCached
+  pools?: PoolDataCacheMapper
+  tvl?: ValueMapperCached
+  volume?: ValueMapperCached
   children: ReactNode
 }
 

@@ -1,30 +1,16 @@
-'use server'
-import memoizee from 'memoizee'
+import { lendServerSideCache } from '@/app/lend/server-side.data'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
-import type { Chain } from '@curvefi/prices-api'
-import { fetchJson } from '@curvefi/prices-api/fetch'
-
-const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as const
-
-type Asset = { symbol: string }
-type Data = {
-  lendingVaultData: { id: string; controllerAddress: string; assets: { borrowed: Asset; collateral: Asset } }[]
-}
-
-const getAllMarkets = memoizee(
-  async (network: string) => fetchJson<{ data: Data }>(`https://api.curve.fi/api/getLendingVaults/${network}/oneway`),
-  options,
-)
 
 export async function getLendMarketSymbols({ market, network }: MarketUrlParams): Promise<[string, string]> {
-  const {
-    data: { lendingVaultData },
-  } = await getAllMarkets(network as Chain)
+  const marketData = lendServerSideCache.lendingVaultData?.find(
+    (m) => m.blockchainId == network && (m.id === id || m.controllerAddress === id),
+  )
 
-  const id = market.replace('one-way-market', 'oneway') // API ids are different then those generated in curve-lending-js
-  const marketData = lendingVaultData.find((m) => m.id === id || m.controllerAddress === id)
+  const id = market.replace('one-way-market', 'oneway') // API ids are different from those generated in curve-lending-js
   if (!marketData) {
-    const marketKeys = lendingVaultData.map(({ id, controllerAddress }) => ({ id, controllerAddress }))
+    const marketKeys = lendServerSideCache.lendingVaultData
+      ?.filter((m) => m.blockchainId == network)
+      ?.map(({ id, controllerAddress }) => ({ id, controllerAddress }))
     console.warn(`Cannot find market ${market} in ${network}. Markets: ${JSON.stringify(marketKeys, null, 2)}`)
     return ['', market]
   }

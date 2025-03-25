@@ -28,7 +28,7 @@ export type CacheSlice = {
     setTvlVolumeMapper(type: 'tvlMapper' | 'volumeMapper', chainId: ChainId, mapper: ValueMapperCached): void
     setServerPreloadData(
       chainId: ChainId,
-      data: { pools: PoolDataCacheMapper; tvl: ValueMapperCached; volume: ValueMapperCached },
+      data: { pools?: PoolDataCacheMapper; tvl?: ValueMapperCached; volume?: ValueMapperCached },
     ): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
@@ -68,9 +68,10 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
     },
 
     setServerPreloadData: (chainId, { tvl, volume, pools }) => {
-      get().setAppStateByActiveKey(sliceKey, 'poolsMapper', chainId.toString(), pools)
-      get().setAppStateByActiveKey(sliceKey, 'tvlMapper', chainId.toString(), tvl)
-      get().setAppStateByActiveKey(sliceKey, 'volumeMapper', chainId.toString(), volume)
+      const setState = get().setAppStateByActiveKey
+      pools && setState(sliceKey, 'poolsMapper', chainId.toString(), pools)
+      tvl && setState(sliceKey, 'tvlMapper', chainId.toString(), tvl)
+      volume && setState(sliceKey, 'volumeMapper', chainId.toString(), volume)
     },
 
     // slice helpers
