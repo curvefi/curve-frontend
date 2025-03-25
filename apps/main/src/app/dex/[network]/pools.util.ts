@@ -10,6 +10,7 @@ import {
   type PoolUrlParams,
   type ValueMapperCached,
 } from '@/dex/types/main.types'
+import { DexServerSideCache } from '@/server-side-data'
 
 const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as const
 
@@ -67,19 +68,15 @@ const getVolumeCache = async (network: NetworkConfig, pools: PoolDataMapper) => 
 }
 
 export const getPoolName = async ({ network: networkName, pool: poolFromUrl }: PoolUrlParams) => {
-  const network = await getNetworkConfig(networkName)
-  if (!network) {
-    console.warn(`Cannot find network ${network}`)
-    return poolFromUrl
-  }
-
   try {
-    const { pools } = await getServerSideCache(network)
-    const poolCache = poolFromUrl.startsWith('0x')
-      ? Object.values(pools).find(({ pool }) => pool.address === poolFromUrl)
-      : pools[poolFromUrl]
-    if (poolCache) return poolCache.pool.name
-    console.warn(`Cannot find pool ${poolCache} in ${networkName}. Pools: ${JSON.stringify(poolCache, null, 2)}`)
+    const { pools } = DexServerSideCache[networkName] ?? {}
+    if (pools) {
+      const poolCache = poolFromUrl.startsWith('0x')
+        ? Object.values(pools).find(({ pool }) => pool.address === poolFromUrl)
+        : pools[poolFromUrl]
+      if (poolCache) return poolCache.pool.name
+      console.warn(`Cannot find pool ${poolFromUrl} in ${networkName}. Pools: ${JSON.stringify(poolCache, null, 2)}`)
+    }
   } catch (e) {
     console.error(`Cannot retrieve pool name`, e)
   }

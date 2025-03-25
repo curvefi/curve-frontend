@@ -1,4 +1,3 @@
-'use server'
 import { lendServerSideCache } from '@/app/lend/server-side.data'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
 
