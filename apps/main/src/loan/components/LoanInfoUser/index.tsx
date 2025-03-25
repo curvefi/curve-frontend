@@ -35,7 +35,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   useEffect(() => {
     if (!isUndefined(activeBand) && healthFull && healthNotFull && userBands) {
-      const fetchedHealthMode = getHealthMode(activeBand, '', userBands, '', healthFull, healthNotFull, false, '', '')
+      const fetchedHealthMode = getHealthMode(activeBand, '', userBands, '', healthFull, false, '', '')
       setHealthMode(fetchedHealthMode)
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)

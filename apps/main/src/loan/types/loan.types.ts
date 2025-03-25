@@ -131,6 +131,7 @@ export type BandsBalancesData = {
 }
 export type UserLoanDetails = {
   healthFull: string
+  /** healthNotFull is only used for checking hard liquidation status in certain cases */
   healthNotFull: string
   userBands: number[]
   userBandsRange: number | null

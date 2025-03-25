@@ -205,6 +205,8 @@ const detailInfo = {
     const userLoss = fulfilledValue(userLossResult) ?? DEFAULT_USER_LOSS
     const userBandsBalances = fulfilledValue(userBandsBalancesResult) ?? DEFAULT_BAND_BALANCES
 
+    console.log('fetchedPartialUserLoanInfo', fetchedPartialUserLoanInfo)
+
     const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
 
     const parsedBandsBalances = await getChartBandBalancesData(
@@ -239,6 +241,7 @@ const detailInfo = {
     ] = await Promise.allSettled([
       loanExists ? llamma.stats.activeBand() : Promise.resolve(null),
       loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
+      // the only place we should be getting healthNotFull is here
       loanExists ? llamma.userHealth(false, address) : Promise.resolve(''),
       loanExists ? llamma.userBands(address) : Promise.resolve([0, 0]),
       loanExists ? llamma.userState(address) : Promise.resolve(DEFAULT_USER_STATE),
@@ -358,15 +361,13 @@ const loanCreate = {
     address: string | undefined,
   ) => {
     log('detailInfo', llamma.collateralSymbol, collateral, debt, n, address)
-    const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
-      address ? llamma.createLoanHealth(collateral, debt, n, undefined, address) : Promise.resolve(''),
-      address ? llamma.createLoanHealth(collateral, debt, n, false, address) : Promise.resolve(''),
+    const [healthFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+      address ? llamma.createLoanHealth(collateral, debt, n, true, address) : Promise.resolve(''),
       llamma.createLoanBands(collateral, debt, n),
       llamma.createLoanPrices(collateral, debt, n),
     ])
 
     const healthFull = fulfilledValue(healthFullResult) ?? ''
-    const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
     const prices = fulfilledValue(pricesResult) ?? []
     const bands = fulfilledValue(bandsResult) ?? [0, 0]
 
@@ -374,7 +375,6 @@ const loanCreate = {
       activeKey,
       resp: {
         healthFull,
-        healthNotFull,
         prices,
         bands: reverseBands(bands),
       },
@@ -398,15 +398,13 @@ const loanCreate = {
         loanBandsResult,
         loanPricesResult,
         loanHealthFullResult,
-        loanHealthNotFullResult,
         priceImpactResult,
       ] = await Promise.allSettled([
         llamma.leverage.getRouteName(routeIdx),
         llamma.leverage.getMaxRange(userCollateral, debt),
         llamma.leverage.createLoanBands(userCollateral, debt, n),
         llamma.leverage.createLoanPrices(userCollateral, debt, n),
-        llamma.leverage.createLoanHealth(userCollateral, debt, n),
-        llamma.leverage.createLoanHealth(userCollateral, debt, n, false),
+        llamma.leverage.createLoanHealth(userCollateral, debt, n, true),
         llamma.leverage.priceImpact(userCollateral, debt),
       ])
 
@@ -422,7 +420,6 @@ const loanCreate = {
           bands: reverseBands(fulfilledValue(loanBandsResult) ?? [0, 0]),
           prices: fulfilledValue(loanPricesResult) ?? [],
           healthFull: fulfilledValue(loanHealthFullResult) ?? '',
-          healthNotFull: fulfilledValue(loanHealthNotFullResult) ?? '',
           priceImpact,
           isHighImpact: +priceImpact > 0 && +maxSlippage > 0 ? +priceImpact > +maxSlippage : false,
           error: '',
@@ -440,7 +437,6 @@ const loanCreate = {
           bands: [0, 0],
           prices: [],
           healthFull: '',
-          healthNotFull: '',
           priceImpact: '',
           isHighImpact: false,
           error: getErrorMessage(error, ''),
@@ -598,9 +594,8 @@ const loanIncrease = {
     const parsedCollateral = collateral || '0'
     const parsedDebt = debt || '0'
     log('detailInfo', parsedCollateral, parsedDebt, address)
-    const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+    const [healthFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.borrowMoreHealth(parsedCollateral, parsedDebt, true, address),
-      llamma.borrowMoreHealth(parsedCollateral, parsedDebt, false, address),
       llamma.borrowMoreBands(parsedCollateral, parsedDebt),
       llamma.borrowMorePrices(parsedCollateral, parsedDebt),
     ])
@@ -610,7 +605,6 @@ const loanIncrease = {
         activeKey,
         resp: {
           healthFull: '',
-          healthNotFull: '',
           prices: [],
           bands: [],
           error: pricesResult.reason,
@@ -618,7 +612,6 @@ const loanIncrease = {
       }
     } else {
       const healthFull = fulfilledValue(healthFullResult) ?? ''
-      const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
       const prices = fulfilledValue(pricesResult) ?? []
       const bands = fulfilledValue(bandsResult) ?? [0, 0]
 
@@ -626,7 +619,6 @@ const loanIncrease = {
         activeKey,
         resp: {
           healthFull,
-          healthNotFull,
           prices,
           bands: reverseBands(bands),
           error: '',
@@ -704,15 +696,13 @@ const loanDecrease = {
   },
   detailInfo: async (activeKey: string, llamma: Llamma, debt: string, address?: string) => {
     log('collateralDecreaseHealth', llamma.collateralSymbol, debt, address)
-    const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+    const [healthFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.repayHealth(debt, true, address),
-      llamma.repayHealth(debt, false, address),
       llamma.repayBands(debt),
       llamma.repayPrices(debt),
     ])
 
     const healthFull = fulfilledValue(healthFullResult) ?? ''
-    const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
     const bands = fulfilledValue(bandsResult) ?? [0, 0]
     const prices = fulfilledValue(pricesResult) ?? []
 
@@ -720,7 +710,6 @@ const loanDecrease = {
       activeKey,
       resp: {
         healthFull,
-        healthNotFull,
         bands: reverseBands(bands),
         prices,
       },
@@ -855,15 +844,13 @@ const collateralIncrease = {
   },
   detailInfo: async (activeKey: string, llamma: Llamma, collateral: string, address?: string) => {
     log('detailInfo', llamma.collateralSymbol, collateral)
-    const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+    const [healthFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.addCollateralHealth(collateral, true, address),
-      llamma.addCollateralHealth(collateral, false, address),
       llamma.addCollateralBands(collateral),
       llamma.addCollateralPrices(collateral),
     ])
 
     const healthFull = fulfilledValue(healthFullResult) ?? ''
-    const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
     const prices = fulfilledValue(pricesResult) ?? []
     const bands = fulfilledValue(bandsResult) ?? [0, 0]
 
@@ -871,7 +858,6 @@ const collateralIncrease = {
       activeKey,
       resp: {
         healthFull,
-        healthNotFull,
         prices,
         bands: reverseBands(bands),
       },
@@ -946,15 +932,13 @@ const collateralDecrease = {
   detailInfo: async (activeKey: string, llamma: Llamma, collateral: string, address?: string) => {
     log('removeCollateralInfo', llamma.collateralSymbol, collateral)
 
-    const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+    const [healthFullResult, bandsResult, pricesResult] = await Promise.allSettled([
       llamma.removeCollateralHealth(collateral, true, address),
-      llamma.removeCollateralHealth(collateral, false, address),
       llamma.removeCollateralBands(collateral),
       llamma.removeCollateralPrices(collateral),
     ])
 
     const healthFull = fulfilledValue(healthFullResult) ?? ''
-    const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
     const prices = fulfilledValue(pricesResult) ?? []
     const bands = fulfilledValue(bandsResult) ?? [0, 0]
 
@@ -962,7 +946,6 @@ const collateralDecrease = {
       activeKey,
       resp: {
         healthFull,
-        healthNotFull,
         prices,
         bands: reverseBands(bands),
       },
@@ -1121,7 +1104,6 @@ const loanDeleverage = {
       priceImpact: '',
       isHighImpact: false,
       healthFull: '',
-      healthNotFull: '',
       bands: [0, 0],
       prices: [],
       loading: false,
@@ -1148,15 +1130,13 @@ const loanDeleverage = {
         resp.isHighImpact = +priceImpact > 0 && +maxSlippage > 0 ? +priceImpact > +maxSlippage : false
 
         if (!resp.isFullRepayment) {
-          const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+          const [healthFullResult, bandsResult, pricesResult] = await Promise.allSettled([
             llamma.deleverage.repayHealth(collateral, true, address),
-            llamma.deleverage.repayHealth(collateral, false, address),
             llamma.deleverage.repayBands(collateral, address),
             llamma.deleverage.repayPrices(collateral, address),
           ])
 
           resp.healthFull = fulfilledValue(healthFullResult) ?? ''
-          resp.healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
           resp.bands = reverseBands(fulfilledValue(bandsResult) ?? [0, 0])
           resp.prices = fulfilledValue(pricesResult) ?? []
         }

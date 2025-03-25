@@ -13,7 +13,6 @@ export const DEFAULT_HEALTH_MODE: HealthMode = {
 
 export const DEFAULT_DETAIL_INFO: FormDetailInfo = {
   healthFull: '',
-  healthNotFull: '',
   bands: [0, 0],
   prices: [],
   loading: false,

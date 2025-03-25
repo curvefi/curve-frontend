@@ -19,7 +19,6 @@ const DetailInfoHealth = ({
   bands,
   formType,
   healthFull,
-  healthNotFull,
   healthMode,
   isPayoff,
   isManage,
@@ -33,7 +32,6 @@ const DetailInfoHealth = ({
   bands: [number, number]
   formType: FormType
   healthFull: string
-  healthNotFull: string
   healthMode: HealthMode
   isPayoff?: boolean
   isManage: boolean
@@ -51,7 +49,7 @@ const DetailInfoHealth = ({
 
   // new health mode
   useEffect(() => {
-    if (typeof activeBand !== 'undefined' && healthFull && healthNotFull) {
+    if (typeof activeBand !== 'undefined' && healthFull) {
       setHealthMode(
         getHealthMode(
           activeBand,
@@ -59,7 +57,6 @@ const DetailInfoHealth = ({
           bands,
           formType,
           healthFull,
-          healthNotFull,
           true,
           currentHealthModeColorKey ?? '',
           newHealthModeColorKey ?? '',
@@ -68,34 +65,14 @@ const DetailInfoHealth = ({
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)
     }
-  }, [
-    activeBand,
-    amount,
-    bands,
-    currentHealthModeColorKey,
-    formType,
-    healthFull,
-    healthNotFull,
-    newHealthModeColorKey,
-    setHealthMode,
-  ])
+  }, [activeBand, amount, bands, currentHealthModeColorKey, formType, healthFull, newHealthModeColorKey, setHealthMode])
 
   // current health mode
   useEffect(() => {
     if (typeof activeBand !== 'undefined' && userLoanDetails) {
       const { healthFull, healthNotFull, userBands } = userLoanDetails
       setCurrentHealthMode(
-        getHealthMode(
-          activeBand,
-          amount,
-          userBands,
-          formType,
-          healthFull,
-          healthNotFull,
-          false,
-          '',
-          newHealthModeColorKey,
-        ),
+        getHealthMode(activeBand, amount, userBands, formType, healthFull, false, '', newHealthModeColorKey),
       )
     }
   }, [activeBand, amount, formType, newHealthModeColorKey, userLoanDetails])
@@ -157,15 +134,12 @@ const HealthPercent = styled.span<{ colorKey: HeathColorKey }>`
 
 export default DetailInfoHealth
 
-// 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
-// 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
   activeBand: number | null,
   amount: string,
   bands: [number, number] | number[],
   formType: FormType,
   healthFull: string,
-  healthNotFull: string,
   isNew: boolean,
   currColorKey: string,
   newColorKey: string,
@@ -198,7 +172,7 @@ export function getHealthMode(
     }
 
     healthMode = {
-      percent: healthNotFull,
+      percent: healthFull,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,

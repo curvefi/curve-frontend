@@ -18,7 +18,6 @@ export type FormEstGas = {
 
 export type FormDetailInfo = {
   healthFull: string
-  healthNotFull: string
   bands: [number, number]
   prices: string[]
   loading: boolean

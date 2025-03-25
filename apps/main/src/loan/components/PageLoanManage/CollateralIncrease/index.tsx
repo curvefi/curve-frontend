@@ -292,7 +292,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       <LoanFormConnect haveSigner={haveSigner} loading={!curve}>
         {formStatus.error ? (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-        ) : detailInfo.healthNotFull !== healthMode.percent && healthMode.message ? (
+        ) : detailInfo.healthFull !== healthMode.percent && healthMode.message ? (
           <AlertBox alertType="warning">{healthMode.message}</AlertBox>
         ) : null}
         {txInfoBar}

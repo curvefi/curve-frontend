@@ -109,7 +109,6 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         if (fDetailInfo.isAvailable && isSoftLiquidation && !cFormValues.isFullRepay) {
           cFormStatus.error = 'error-full-repayment-required'
           fDetailInfo.healthFull = ''
-          fDetailInfo.healthNotFull = ''
           fDetailInfo.prices = []
           get()[sliceKey].setStateByKey('detailInfo', { [activeKey]: { ...fDetailInfo } })
         }
