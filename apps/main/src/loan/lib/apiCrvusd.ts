@@ -205,8 +205,6 @@ const detailInfo = {
     const userLoss = fulfilledValue(userLossResult) ?? DEFAULT_USER_LOSS
     const userBandsBalances = fulfilledValue(userBandsBalancesResult) ?? DEFAULT_BAND_BALANCES
 
-    console.log('fetchedPartialUserLoanInfo', fetchedPartialUserLoanInfo)
-
     const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
 
     const parsedBandsBalances = await getChartBandBalancesData(
@@ -241,7 +239,7 @@ const detailInfo = {
     ] = await Promise.allSettled([
       loanExists ? llamma.stats.activeBand() : Promise.resolve(null),
       loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
-      // the only place we should be getting healthNotFull is here
+      /** the only place we get healthNotFull is here, it is only used for checking hard liquidation status */
       loanExists ? llamma.userHealth(false, address) : Promise.resolve(''),
       loanExists ? llamma.userBands(address) : Promise.resolve([0, 0]),
       loanExists ? llamma.userState(address) : Promise.resolve(DEFAULT_USER_STATE),
