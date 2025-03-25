@@ -4,7 +4,7 @@ import { fetchSupportedChains, fetchSupportedLendingChains } from '@/loan/entiti
 import { fetchLendingVaults } from '@/loan/entities/lending-vaults'
 import { fetchMintMarkets } from '@/loan/entities/mint-markets'
 
-export const LlamaMarketsServerSideData: { result: LlamaMarketsPageProps } = { result: {} }
+export const LlamaMarketsServerSideCache: { result: LlamaMarketsPageProps } = { result: {} }
 
 export const getLlamaMarketsServerSideData = async (): Promise<LlamaMarketsPageProps> => {
   const [lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume] = await Promise.all([

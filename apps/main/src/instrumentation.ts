@@ -1,38 +1,32 @@
-import {
-  getLlamaMarketsServerSideData,
-  LlamaMarketsServerSideData,
-} from '@/app/crvusd/[network]/beta-markets/server-side-data'
+import { getLlamaMarketsServerSideData, LlamaMarketsServerSideCache } from '@/app/crvusd/server-side-data'
 import { getAllNetworks, getServerSideCache } from '@/app/dex/[network]/pools.util'
-import type { NetworkConfig } from '@/dex/types/main.types'
+import { getAllLendingVaults, lendServerSideCache } from '@/app/lend/server-side.data'
 import { DexServerSideCache } from '@/server-side-data'
 
 const timeout = 1000 * 60 // 1 minute
 
-// todo: we could optimize further by setting field by field
-async function refreshDataInBackground(dexNetworks: { [p: number]: NetworkConfig }) {
+async function refreshDex() {
+  const dexNetworks = await getAllNetworks()
+  for (const network of Object.values(dexNetworks)) {
+    const networkStart = Date.now()
+    DexServerSideCache[network.id] = await getServerSideCache(network)
+    console.log(`Refreshed DEX ${network.id} in ${Date.now() - networkStart}ms`)
+  }
+}
+
+const refreshLend = async () => (lendServerSideCache.lendingVaultData = await getAllLendingVaults())
+
+const refreshCrvUsd = async () => (LlamaMarketsServerSideCache.result = await getLlamaMarketsServerSideData())
+
+async function refreshDataInBackground(name: string, callback: () => Promise<unknown>) {
   // noinspection InfiniteLoopJS
   while (true) {
     const start = Date.now()
-    const times: Record<string, number> = {}
-
-    for (const network of Object.values(dexNetworks)) {
-      const networkStart = Date.now()
-      DexServerSideCache[network.id] = await getServerSideCache(network).catch((e) => {
-        console.error('Failed to fetch server-side cache for network', network.id, e)
-        return {}
-      })
-      times[network.id] = Date.now() - networkStart
-    }
-
-    const llamaMarketsStart = Date.now()
-    LlamaMarketsServerSideData.result = await getLlamaMarketsServerSideData().catch((e) => {
-      console.error('Failed to fetch server-side data for Llama Markets', e)
-      return {}
+    await callback().catch((e) => {
+      console.error(`Failed to refresh ${name}`, e)
     })
-    times.llamaMarkets = Date.now() - llamaMarketsStart
-
     const elapsed = Date.now() - start
-    console.log(`Refreshed server-side data in ${elapsed}ms: ${JSON.stringify(times)}`)
+    console.log(`Refreshed ${name} in ${elapsed}ms`)
     if (elapsed < timeout) {
       await new Promise((resolve) => setTimeout(resolve, timeout - elapsed))
     }
@@ -40,6 +34,7 @@ async function refreshDataInBackground(dexNetworks: { [p: number]: NetworkConfig
 }
 
 export async function register() {
-  const dexNetworks = await getAllNetworks()
-  refreshDataInBackground(dexNetworks).catch(console.error)
+  refreshDataInBackground('Dex', refreshDex).catch(console.error)
+  refreshDataInBackground('Lend', refreshLend).catch(console.error)
+  refreshDataInBackground('CrvUsd', refreshCrvUsd).catch(console.error)
 }
