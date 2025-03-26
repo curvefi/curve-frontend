@@ -40,8 +40,29 @@ const FORMATTED_01 = formatNumber(SLIPPAGE_PRESETS.STABLE, { style: 'percent', m
 const FORMATTED_05 = formatNumber(SLIPPAGE_PRESETS.CRYPTO, { style: 'percent', maximumFractionDigits: 1 })
 
 const inputErrorMapper = {
-  'too-high': { message: t`Too high`, helperText: t`This can result in unexpected losses` },
-  'too-low': { message: t`Too low`, helperText: t`Min. slippage is ${MIN_SLIPPAGE}%` },
+  'too-high': {
+    message: t`High slippage selected`,
+    helperText: (
+      <>
+        {t`This may lead to fewer tokens received and potential loss of funds.`}
+        <br />
+        {t`Proceed with caution.`}
+      </>
+    ),
+  },
+  'too-low': {
+    message: t`Low slippage selected`,
+    helperText: (
+      <>
+        {t`Your transaction may fail if price moves slightly.`}
+        <br />
+        {t`Consider increasing slippage if it doesn't go through.`}
+        <br />
+        <br />
+        {t`Min. slippage is ${MIN_SLIPPAGE}%`}
+      </>
+    ),
+  },
 }
 
 /** Validates a custom slippage value */
@@ -176,7 +197,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
         <FormControl fullWidth>
           {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
           <FormLabel sx={{ color: 'text.secondary', '&.Mui-focused': { color: 'text.secondary' } }}>
-            {t`Max Slippage`} {tooltip}
+            {t`Max slippage`} {tooltip}
           </FormLabel>
 
           <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.sm}>
