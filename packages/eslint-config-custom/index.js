@@ -1,5 +1,6 @@
 module.exports = {
-  extends: ['next', 'turbo', 'prettier'],
+  // "plugin:turbo/recommended" should be renamed to "turbo" after eslint-plugin-turbo v2.4.5 is published. See https://github.com/vercel/turborepo/pull/10105
+  extends: ['next', 'plugin:turbo/recommended', 'prettier'],
   plugins: ['no-only-tests', 'unused-imports', 'import'],
   rules: {
     'arrow-body-style': ['error', 'as-needed'],
