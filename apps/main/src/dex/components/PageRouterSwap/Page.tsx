@@ -2,7 +2,6 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
@@ -14,6 +13,7 @@ import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints, isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
@@ -124,10 +124,9 @@ const Page = (params: NetworkUrlParams) => {
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
-        <AdvancedSettings
-          stateKey={isStableswapRoute ? 'stable' : 'crypto'}
-          testId="advance-settings"
+        <SlippageSettings
           maxSlippage={storeMaxSlippage}
+          onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
         />
       </BoxHeader>
 
