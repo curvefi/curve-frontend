@@ -223,7 +223,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
 
         {/* Going for an alert instead of textfield helpertext because it looks better wrt layout */}
         <Collapse in={error && selected === 'custom'}>
-          <Alert variant="outlined" severity={error === 'too-low' ? 'error' : 'warning'} sx={{ boxShadow: 'none' }}>
+          <Alert variant="outlined" severity={lastError === 'too-low' ? 'error' : 'warning'} sx={{ boxShadow: 'none' }}>
             <AlertTitle>{lastError ? inputErrorMapper[lastError].message : ''}</AlertTitle>
             {lastError ? inputErrorMapper[lastError].helperText : ''}
           </Alert>
