@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
@@ -7,15 +8,12 @@ import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/c
 import {
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
-  type LendingVault,
+  setLendingVaults,
 } from '@/loan/entities/lending-vaults'
-import { setLendingVaults } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets, type MintMarket } from '@/loan/entities/mint-markets'
-import { setMintMarkets } from '@/loan/entities/mint-markets'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
-import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -36,15 +34,7 @@ const onReload = (userAddress?: Address) => {
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
-export type LlamaMarketsPageProps = {
-  lendingVaults?: LendingVault[]
-  mintMarkets?: MintMarket[]
-  supportedChains?: Chain[]
-  supportedLendingChains?: Chain[]
-  dailyVolume?: number
-}
-
-function useInjectServerData(props: LlamaMarketsPageProps) {
+function useInjectServerData(props: CrvUsdServerData) {
   useEffect(() => {
     const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume } = props
     lendingVaults && setLendingVaults({}, lendingVaults)
@@ -58,7 +48,7 @@ function useInjectServerData(props: LlamaMarketsPageProps) {
 /**
  * Page for displaying the lending markets table.
  */
-export const LlamaMarketsPage = (props: LlamaMarketsPageProps) => {
+export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   useInjectServerData(props)
   const { signerAddress } = useWallet()
   const { data, isError, isLoading } = useLlamaMarkets(signerAddress)

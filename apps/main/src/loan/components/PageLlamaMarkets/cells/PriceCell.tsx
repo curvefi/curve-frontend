@@ -3,11 +3,11 @@ import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.
 import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const { data: stats, error: statsError } = useUserMarketStats(row.original, column.id as LlamaMarketColumnId)
