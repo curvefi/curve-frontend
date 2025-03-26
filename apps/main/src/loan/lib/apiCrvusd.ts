@@ -134,7 +134,6 @@ const detailInfo = {
   loanPartialInfo: async (llamma: Llamma) => {
     log('loanPartialInfo', llamma.collateralSymbol)
     const [
-      activeBandResult,
       oraclePriceBandResult,
       parametersResult,
       totalDebtResult,
@@ -142,7 +141,6 @@ const detailInfo = {
       totalStablecoinResult,
       capAndAvailableResult,
     ] = await Promise.allSettled([
-      llamma.stats.activeBand(),
       llamma.oraclePriceBand(),
       llamma.stats.parameters(),
       llamma.stats.totalDebt(),
@@ -150,7 +148,6 @@ const detailInfo = {
       llamma.stats.totalStablecoin(),
       llamma.stats.capAndAvailable(),
     ])
-    const activeBand = fulfilledValue(activeBandResult) ?? null
     const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
@@ -159,7 +156,6 @@ const detailInfo = {
     const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { cap: '0', available: '0' }
 
     return {
-      activeBand,
       oraclePriceBand,
       collateralId: llamma.id,
       parameters,
@@ -275,7 +271,7 @@ const detailInfo = {
       healthFull,
       healthNotFull,
       userBands: reversedUserBands,
-      userHealth: userIsCloseToLiquidation ? healthNotFull : healthFull,
+      userHealth: +healthNotFull < 0 ? healthNotFull : healthFull,
       userIsCloseToLiquidation,
       userState,
       userLiquidationBand,

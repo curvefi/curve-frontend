@@ -40,9 +40,9 @@ export function getIsUserCloseToLiquidation(
   userLiquidationBand: number | null,
   oraclePriceBand: number | null | undefined,
 ) {
-  if (typeof userLiquidationBand !== null && oraclePriceBand === null) {
+  if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
     return false
-  } else if (typeof oraclePriceBand !== 'undefined' && oraclePriceBand !== null) {
+  } else if (typeof oraclePriceBand === 'number') {
     return userFirstBand <= oraclePriceBand + 2
   }
   return false
