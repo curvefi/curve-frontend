@@ -1,5 +1,5 @@
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
-import { isCypress } from '@ui-kit/utils'
+import { enableLogging, isCypress } from '@ui-kit/utils'
 
 export enum LogStatus {
   ERROR = 'error',
@@ -59,7 +59,7 @@ function argToString(i: unknown, max = 200, trailing = 3) {
 type LogKey = string | QueryKey | MutationKey | string[]
 
 export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[]) {
-  if (process.env.NODE_ENV !== 'development') return
+  if (!enableLogging) return
 
   const timestamp = new Date().toISOString()
   const keyArray = typeof key === 'string' ? key.split('.') : Array.isArray(key) ? key : [key]
@@ -94,8 +94,8 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
         return console.log
     }
   }
-  if (isCypress) {
-    // electron is able to print all console logs to the output, but the formatting does not work
+  if (isCypress || typeof window === 'undefined') {
+    // disable formatting when on cypress or server side. Electron prints logs to the output, but formatting breaks.
     return logMethod(status)(status, JSON.stringify({ keyArray, args }).slice(0, 300))
   }
 
