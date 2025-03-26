@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { getBorrowedSymbol } from '@/app/lend/[network]/markets/[market]/market-name.utils'
 import Vault from '@/lend/components/PageVault/Page'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
-import { headers } from 'next/headers'
 
 type VaultPageProps = { params: Promise<MarketUrlParams> }
 

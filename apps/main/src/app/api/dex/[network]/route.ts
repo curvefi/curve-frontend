@@ -1,11 +1,11 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { getAllNetworks } from '@/app/dex/[network]/pools.util'
-import { refreshDataInBackground, RefreshTimeoutMs } from '@/background'
+import { refreshDataInBackground } from '@/background'
 import { getPools } from '@/dex/lib/pools'
 import { CurveApi, NetworkConfig, PoolDataMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import type { DexServerSideNetworkCache } from '../types'
 
-export const DexServerSideCache: Record<string, DexServerSideNetworkCache> = {}
+const DexServerSideCache: Record<string, DexServerSideNetworkCache> = {}
 
 const getTvlCache = async (network: NetworkConfig, pools: PoolDataMapper): Promise<ValueMapperCached> =>
   Object.fromEntries(
@@ -65,6 +65,6 @@ async function refreshDex() {
 refreshDataInBackground('DEX', refreshDex).catch(console.error)
 
 export const dynamic = 'force-dynamic' // don't cache this route on the front-end, we are caching it on the server-side
-export const revalidate = RefreshTimeoutMs / 1000
+export const revalidate = 60 // same as refreshDataInBackground, but cannot use variable here
 export const GET = async (_request: Request, { params }: { params: Promise<{ network: string }> }) =>
   Response.json(DexServerSideCache[(await params).network])

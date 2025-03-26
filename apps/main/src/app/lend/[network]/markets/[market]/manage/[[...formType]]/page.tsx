@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import React from 'react'
 import { getLendMarketSymbols } from '@/app/lend/[network]/markets/[market]/market-name.utils'
 import LoanManage from '@/lend/components/PageLoanManage/Page'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
-import { headers } from 'next/headers'
 
 type LoanManagePageProps = { params: Promise<MarketUrlParams> }
 

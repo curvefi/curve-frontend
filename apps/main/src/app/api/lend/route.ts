@@ -1,4 +1,4 @@
-import { refreshDataInBackground, RefreshTimeoutMs } from '@/background'
+import { refreshDataInBackground } from '@/background'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import type { LendServerData, LendingVaultFromApi } from './types'
 
@@ -14,6 +14,6 @@ refreshDataInBackground('Lend', async () => {
 }).catch(console.error)
 
 export const dynamic = 'force-dynamic' // don't cache this route on the front-end, we are caching it on the server-side
-export const revalidate = RefreshTimeoutMs / 1000
+export const revalidate = 60 // same as refreshDataInBackground, but cannot use variable here
 
 export const GET = () => Response.json(LendServerSideCache)

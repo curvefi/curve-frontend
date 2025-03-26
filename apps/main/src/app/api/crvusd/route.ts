@@ -1,5 +1,5 @@
 import type { CrvUsdServerData } from '@/app/api/crvusd/types'
-import { refreshDataInBackground, RefreshTimeoutMs } from '@/background'
+import { refreshDataInBackground } from '@/background'
 import { fetchAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { fetchSupportedChains, fetchSupportedLendingChains } from '@/loan/entities/chains'
 import { fetchLendingVaults } from '@/loan/entities/lending-vaults'
@@ -25,5 +25,5 @@ const getLlamaMarketsServerSideData = async () => {
 refreshDataInBackground('CrvUsd', getLlamaMarketsServerSideData).catch(console.error)
 
 export const dynamic = 'force-dynamic' // don't cache this route on the front-end, we are caching it on the server-side
-export const revalidate = RefreshTimeoutMs / 1000
+export const revalidate = 60 // same as refreshDataInBackground, but cannot use variable here
 export const GET = async () => Response.json(CrvUsdServerSideCache)

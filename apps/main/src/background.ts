@@ -1,6 +1,6 @@
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
 
-export const RefreshTimeoutMs = 1000 * 60 // 1 minute
+const RefreshTimeoutMs = 1000 * 60 // 1 minute
 
 export async function refreshDataInBackground(name: string, callback: () => Promise<unknown>) {
   // noinspection InfiniteLoopJS
