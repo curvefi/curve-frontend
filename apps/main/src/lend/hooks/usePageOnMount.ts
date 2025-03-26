@@ -25,7 +25,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLending = useApiStore((state) => state.updateLending)
   const setIsLoadingLending = useApiStore((state) => state.setIsLoadingLending)
-  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
   const hydrate = useStore((s) => s.hydrate)
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -39,7 +38,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           const prevApi = lending ?? null
 
           setIsLoadingLending(true)
-          setIsLoadingCurve(true)
 
           if (useWallet && wallet) {
             const api = await helpers.initApi(chainId, wallet)
@@ -55,11 +53,10 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
           setIsLoadingLending(false)
-          setIsLoadingCurve(false)
         }
       }
     },
-    [lending, setIsLoadingLending, setIsLoadingCurve, wallet, updateLending, updateConnectState, hydrate],
+    [lending, setIsLoadingLending, wallet, updateLending, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(

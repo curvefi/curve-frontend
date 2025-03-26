@@ -24,7 +24,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const lending = useApiStore((state) => state.lending)
   const updateStable = useApiStore((state) => state.updateStable)
   const updateLending = useApiStore((state) => state.updateLending)
-  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
   const setIsLoadingStable = useApiStore((state) => state.setIsLoadingStable)
   const setIsLoadingLending = useApiStore((state) => state.setIsLoadingLending)
   const hydrate = useStore((s) => s.hydrate)
@@ -46,7 +45,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           const [chainId, useWallet] = options
           const prevApi = curve ?? null
 
-          setIsLoadingCurve(true)
+          setIsLoadingStable(true)
 
           if (useWallet && wallet) {
             const api = await initStableJs(chainId, wallet)
@@ -61,11 +60,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
-          setIsLoadingCurve(false)
+          setIsLoadingStable(false)
         }
       }
     },
-    [curve, setIsLoadingCurve, wallet, updateStable, updateConnectState, hydrate],
+    [curve, setIsLoadingStable, wallet, updateStable, updateConnectState, hydrate],
   )
 
   const handleConnectLendApi = useCallback(
@@ -94,7 +93,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         }
       }
     },
-    [lending, setIsLoadingLending, setIsLoadingCurve, wallet, updateLending, updateConnectState, hydrate],
+    [lending, setIsLoadingLending, wallet, updateLending, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(
