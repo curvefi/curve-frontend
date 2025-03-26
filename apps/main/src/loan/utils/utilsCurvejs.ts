@@ -48,6 +48,10 @@ export function getIsUserCloseToLiquidation(
   return false
 }
 
+/** healthNotFull is needed here because:
+ * User full health can be > 0
+ * But user is at risk of liquidation if not full < 0
+ */
 export function getLiquidationStatus(
   healthNotFull: string,
   userIsCloseToLiquidation: boolean,

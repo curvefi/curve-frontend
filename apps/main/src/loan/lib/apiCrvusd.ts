@@ -135,6 +135,7 @@ const detailInfo = {
     log('loanPartialInfo', llamma.collateralSymbol)
     const [
       activeBandResult,
+      oraclePriceBandResult,
       parametersResult,
       totalDebtResult,
       totalCollateralResult,
@@ -142,6 +143,7 @@ const detailInfo = {
       capAndAvailableResult,
     ] = await Promise.allSettled([
       llamma.stats.activeBand(),
+      llamma.oraclePriceBand(),
       llamma.stats.parameters(),
       llamma.stats.totalDebt(),
       llamma.stats.totalCollateral(),
@@ -149,6 +151,7 @@ const detailInfo = {
       llamma.stats.capAndAvailable(),
     ])
     const activeBand = fulfilledValue(activeBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
     const totalCollateral = fulfilledValue(totalCollateralResult) ?? '0'
@@ -157,6 +160,7 @@ const detailInfo = {
 
     return {
       activeBand,
+      oraclePriceBand,
       collateralId: llamma.id,
       parameters,
       totalDebt,
