@@ -101,7 +101,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
 
   const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
   const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
-  const restArgs = (hasDefinedStatus ? args : [status, ...args]).filter(Boolean)
+  const restArgs = (hasDefinedStatus ? args : [status, ...args]).filter((x) => x != null)
   const argsFormat = restArgs.length ? `%c (%c${restArgs.map((i) => argToString(i)).join(', ')}%c)` : ''
   const format = `%cDApp%c @ %c${timestamp}%c -> ${hasDefinedStatus ? `%c${status}%c ` : ''}${formattedKeyString}${argsFormat}`
   const styles = [
