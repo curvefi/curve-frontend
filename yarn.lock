@@ -18216,12 +18216,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightweight-charts@npm:5.0.4":
-  version: 5.0.4
-  resolution: "lightweight-charts@npm:5.0.4"
+"lightweight-charts@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "lightweight-charts@npm:4.2.3"
   dependencies:
     fancy-canvas: "npm:2.1.0"
-  checksum: 10c0/ef229d23a9fc4a8d83392956a1e489aee53afc44b6f61615616e86b2f16a1de1eb72446dedca7117f69fdb1f31ede97b2ac5e81caf6d2facdecf1ebbe9ce4114
+  checksum: 10c0/8c3c7aa3e3a5fe980f38d99d2410893cb8baf13c11406a6edde6860b594b024fe7830db8fc5e85e4a71ec9363ee30180ae42a2e43dff5dfac624f05dd393cb64
   languageName: node
   linkType: hard
 
@@ -18668,7 +18668,7 @@ __metadata:
     external-rewards: "npm:*"
     fuse.js: "npm:^7.1.0"
     immer: "npm:^9.0.21"
-    lightweight-charts: "npm:5.0.4"
+    lightweight-charts: "npm:^4.2.3"
     lodash: "npm:4.17.21"
     memoizee: "npm:^0.4.17"
     next: "npm:^15.2.4"

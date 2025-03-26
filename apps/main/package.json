@@ -38,7 +38,7 @@
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "immer": "^9.0.21",
-    "lightweight-charts": "5.0.4",
+    "lightweight-charts": "^4.2.3",
     "lodash": "4.17.21",
     "memoizee": "^0.4.17",
     "next": "^15.2.4",
