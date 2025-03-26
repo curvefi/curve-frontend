@@ -4,6 +4,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Collapse from '@mui/material/Collapse'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
@@ -19,10 +20,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+type Error = keyof typeof inputErrorMapper
+
 type FormValues = {
   selected: string
   customValue: string
-  error?: keyof typeof inputErrorMapper
+  error?: Error
 }
 
 const SLIPPAGE_PRESETS = {
@@ -97,10 +100,17 @@ export type Props = SlippageSettingsProps & SlippageSettingsCallbacks
 export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: Props) => {
   const [formValues, setFormValues] = useState(initFormValues(maxSlippage))
   const { error, selected, customValue } = formValues
+  const [lastError, setLastError] = useState<Error | undefined>(undefined)
 
   useEffect(() => {
     setFormValues(initFormValues(maxSlippage))
   }, [maxSlippage])
+
+  useEffect(() => {
+    if (error) {
+      setLastError(error)
+    }
+  }, [error])
 
   // To save: require a selected value, and if 'custom', the custom value must be non-empty and pass validation
   // Allow 'too-high' error as it's discouraged but sometimes necessary for low-liquidity pools
@@ -191,12 +201,12 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
         </FormControl>
 
         {/* Going for an alert instead of textfield helpertext because it looks better wrt layout */}
-        {error && selected === 'custom' && (
+        <Collapse in={error && selected === 'custom'}>
           <Alert variant="outlined" severity={error === 'too-low' ? 'error' : 'warning'} sx={{ boxShadow: 'none' }}>
-            <AlertTitle>{inputErrorMapper[error].message}</AlertTitle>
-            {inputErrorMapper[error].helperText}
+            <AlertTitle>{lastError ? inputErrorMapper[lastError].message : ''}</AlertTitle>
+            {lastError ? inputErrorMapper[lastError].helperText : ''}
           </Alert>
-        )}
+        </Collapse>
       </Stack>
     </ModalDialog>
   )
