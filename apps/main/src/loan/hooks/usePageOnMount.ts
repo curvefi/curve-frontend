@@ -46,7 +46,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           const [chainId, useWallet] = options
           const prevApi = curve ?? null
 
-          setIsLoadingStable(true)
           setIsLoadingCurve(true)
 
           if (useWallet && wallet) {
@@ -62,12 +61,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
-          setIsLoadingStable(false)
           setIsLoadingCurve(false)
         }
       }
     },
-    [curve, setIsLoadingStable, setIsLoadingCurve, wallet, updateStable, updateConnectState, hydrate],
+    [curve, setIsLoadingCurve, wallet, updateStable, updateConnectState, hydrate],
   )
 
   const handleConnectLendApi = useCallback(
@@ -78,7 +76,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           const prevApi = lending ?? null
 
           setIsLoadingLending(true)
-          setIsLoadingCurve(true)
 
           const api = await initLendApi(chainId, useWallet ? wallet : null)
           if (api) {
@@ -94,7 +91,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
           setIsLoadingLending(false)
-          setIsLoadingCurve(false)
         }
       }
     },
