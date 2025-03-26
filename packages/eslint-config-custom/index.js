@@ -17,7 +17,7 @@ module.exports = {
         zones: [
           { target: 'packages', from: 'apps' },
           ...['dex', 'dao', 'lend', 'loan']
-            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`])
+            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`, `apps/main/src/app/api/${app}`])
             .map((from, index, paths) => ({
               target: paths.filter((_, i) => i !== index).flat(),
               from,

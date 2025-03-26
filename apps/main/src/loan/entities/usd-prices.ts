@@ -1,5 +1,4 @@
 import type { Chain } from '@curvefi/prices-api'
-import { queryClient } from '@ui-kit/lib/api/query-client'
 import { ContractParams, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import type { Address } from '@ui-kit/utils'

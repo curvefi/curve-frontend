@@ -6,13 +6,13 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
+import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { classNames } from '@ui-kit/utils/dom'
-import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 
 const { Spacing } = SizesAndSpaces
 

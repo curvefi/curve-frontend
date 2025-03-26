@@ -2,6 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
+import { logSuccess } from '@ui-kit/lib'
 
 export type SwapFormValuesCache = {
   fromAddress: string
@@ -72,6 +73,11 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
       pools && setState(sliceKey, 'poolsMapper', chainId.toString(), pools)
       tvl && setState(sliceKey, 'tvlMapper', chainId.toString(), tvl)
       volume && setState(sliceKey, 'volumeMapper', chainId.toString(), volume)
+      logSuccess('setServerPreloadData', {
+        pools: pools && Object.keys(pools).length,
+        tvl: tvl && Object.keys(tvl).length,
+        volume: volume && Object.keys(volume).length,
+      })
     },
 
     // slice helpers

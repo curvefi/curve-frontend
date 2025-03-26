@@ -12,8 +12,8 @@ import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
-import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
+import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const { wallet } = useWallet()
