@@ -36,7 +36,7 @@ const Page = (params: NetworkUrlParams) => {
   const titleMapper = useTitleMapper()
   const { rChainId } = routerParams
 
-  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
+  const isLoadingApi = useApiStore((state) => state.isLoadingLlamalend)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
   const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)

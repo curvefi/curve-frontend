@@ -3,7 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
-  Api,
+  LlamalendApi,
   UsersLoansHealthsMapper,
   UserLoanState,
   UsersLoansStatesMapper,
@@ -14,7 +14,7 @@ import {
   UserMarketBalances,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -35,16 +35,16 @@ const sliceKey = 'user'
 export type UserSlice = {
   [sliceKey]: SliceState & {
     // groups
-    fetchDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
-    fetchLoanDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
-    fetchUsersLoansExists(api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas(key: string, api: LlamalendApi, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchLoanDatas(key: string, api: LlamalendApi, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchUsersLoansExists(api: LlamalendApi, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchUserLoanExists(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanExists>
-    fetchUserLoanDetails(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanDetails>
-    fetchUserMarketBalances(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserMarketBalances>
-    fetchUserLoanState(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanState>
-    fetchAll(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
+    fetchUserLoanExists(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanExists>
+    fetchUserLoanDetails(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanDetails>
+    fetchUserMarketBalances(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<UserMarketBalances>
+    fetchUserLoanState(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanState>
+    fetchAll(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void

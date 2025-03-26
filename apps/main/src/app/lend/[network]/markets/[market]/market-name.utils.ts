@@ -6,7 +6,7 @@ export async function getLendMarketSymbols({ market, network }: MarketUrlParams)
     (m) => m.blockchainId == network && (m.id === id || m.controllerAddress === id),
   )
 
-  const id = market.replace('one-way-market', 'oneway') // API ids are different from those generated in curve-lending-js
+  const id = market.replace('one-way-market', 'oneway') // API ids are different from those generated in curve-llamalend-js
   if (!marketData) {
     const marketKeys = lendServerSideCache.lendingVaultData
       ?.filter((m) => m.blockchainId == network)

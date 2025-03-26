@@ -1598,16 +1598,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:^2.5.6":
-  version: 2.5.6
-  resolution: "@curvefi/lending-api@npm:2.5.6"
+"@curvefi/llamalend-api@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@curvefi/llamalend-api@npm:1.0.2"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.13"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.10.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/876908a898629c9e9b006d5ac8f79ca38c1616365eb535226dd9e58b399b20e44123829202fda57c393a75f64afaae28cacfe3e5220b69a3573310ce675be0e9
+  checksum: 10c0/9c518504ccd84575fa8b39015e516daa52fb953d05d240cad8eb7b8919419d9e5b73a2ef5db57f8ab02e603edaa416382294faa5abf59143c0bc0b0e8ea22538
   languageName: node
   linkType: hard
 
@@ -1622,19 +1622,6 @@ __metadata:
     typescript: "*"
   languageName: unknown
   linkType: soft
-
-"@curvefi/stablecoin-api@npm:^1.5.17":
-  version: 1.5.17
-  resolution: "@curvefi/stablecoin-api@npm:1.5.17"
-  dependencies:
-    "@ethersproject/networks": "npm:^5.5.0"
-    bignumber.js: "npm:^9.0.1"
-    ethcall: "npm:^4.2.5"
-    ethers: "npm:^5.4.6"
-    memoizee: "npm:^0.4.15"
-  checksum: 10c0/f14d525ab052f9d94ed5e5eb9be05fb236e24968709e2e777f994dc4dfcd5f200a2b9e64bd8a7e74df852c4ac8636ffd0e5631dbc631338a6e9a5971ef2c67fb
-  languageName: node
-  linkType: hard
 
 "@cypress/request@npm:^3.0.7":
   version: 3.0.7
@@ -2433,7 +2420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.0.0, @ethersproject/abi@npm:^5.1.2, @ethersproject/abi@npm:^5.5.0, @ethersproject/abi@npm:^5.7.0":
+"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.1.2, @ethersproject/abi@npm:^5.5.0, @ethersproject/abi@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abi@npm:5.7.0"
   dependencies:
@@ -2601,7 +2588,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/bytes@npm:5.7.0, @ethersproject/bytes@npm:^5.0.0, @ethersproject/bytes@npm:^5.5.0, @ethersproject/bytes@npm:^5.7.0":
+"@ethersproject/bytes@npm:5.7.0, @ethersproject/bytes@npm:^5.5.0, @ethersproject/bytes@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/bytes@npm:5.7.0"
   dependencies:
@@ -2646,7 +2633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/contracts@npm:5.7.0, @ethersproject/contracts@npm:^5.0.0":
+"@ethersproject/contracts@npm:5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/contracts@npm:5.7.0"
   dependencies:
@@ -2789,7 +2776,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/keccak256@npm:5.7.0, @ethersproject/keccak256@npm:^5.0.0, @ethersproject/keccak256@npm:^5.5.0, @ethersproject/keccak256@npm:^5.7.0":
+"@ethersproject/keccak256@npm:5.7.0, @ethersproject/keccak256@npm:^5.5.0, @ethersproject/keccak256@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/keccak256@npm:5.7.0"
   dependencies:
@@ -2896,7 +2883,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/providers@npm:5.7.2, @ethersproject/providers@npm:^5.0.0, @ethersproject/providers@npm:^5.5.0":
+"@ethersproject/providers@npm:5.7.2, @ethersproject/providers@npm:^5.5.0":
   version: 5.7.2
   resolution: "@ethersproject/providers@npm:5.7.2"
   dependencies:
@@ -3053,7 +3040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/strings@npm:5.7.0, @ethersproject/strings@npm:^5.0.0, @ethersproject/strings@npm:^5.5.0, @ethersproject/strings@npm:^5.7.0":
+"@ethersproject/strings@npm:5.7.0, @ethersproject/strings@npm:^5.5.0, @ethersproject/strings@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/strings@npm:5.7.0"
   dependencies:
@@ -8776,15 +8763,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.6.3":
-  version: 18.19.76
-  resolution: "@types/node@npm:18.19.76"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10c0/211250b264ca3967d4cce41921b8a4cd704d920152f723f95c18dc7b70771c43472c69a6adc1be1a8364007cfa6ae17408424b3b0bc1d55b5f29bab4a6741336
-  languageName: node
-  linkType: hard
-
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.2
   resolution: "@types/parse-json@npm:4.0.2"
@@ -10230,17 +10208,6 @@ __metadata:
   version: 3.0.0
   resolution: "abbrev@npm:3.0.0"
   checksum: 10c0/049704186396f571650eb7b22ed3627b77a5aedf98bb83caf2eac81ca2a3e25e795394b0464cfb2d6076df3db6a5312139eac5b6a126ca296ac53c5008069c28
-  languageName: node
-  linkType: hard
-
-"abi-coder@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "abi-coder@npm:4.1.1"
-  dependencies:
-    "@ethersproject/abi": "npm:^5.0.0"
-    "@ethersproject/keccak256": "npm:^5.0.0"
-    "@ethersproject/strings": "npm:^5.0.0"
-  checksum: 10c0/6ce51713650bcc6db2a1b6cd8f8aaaf89106168dcdb5357cb1320e2841483c65d788c59d36950be7c978cbd3f46c52a27c3bc822ce2f0638abe564c529e331a9
   languageName: node
   linkType: hard
 
@@ -14426,20 +14393,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethcall@npm:^4.2.5":
-  version: 4.8.13
-  resolution: "ethcall@npm:4.8.13"
-  dependencies:
-    "@ethersproject/abi": "npm:^5.0.0"
-    "@ethersproject/bytes": "npm:^5.0.0"
-    "@ethersproject/contracts": "npm:^5.0.0"
-    "@ethersproject/providers": "npm:^5.0.0"
-    "@types/node": "npm:^18.6.3"
-    abi-coder: "npm:^4.0.0"
-  checksum: 10c0/4743859302d84c3327070bb2a88973ddacc6485202fc460c6094d9bd95265421d228430a04ad6cb0832734dd39c1a758418e3647d04dca9eb7e87cb3e05f27e6
-  languageName: node
-  linkType: hard
-
 "ethereum-cryptography@npm:0.1.3, ethereum-cryptography@npm:^0.1.3":
   version: 0.1.3
   resolution: "ethereum-cryptography@npm:0.1.3"
@@ -14563,7 +14516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:5.7.2, ethers@npm:^5.4.6":
+"ethers@npm:5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -17479,8 +17432,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:^2.66.9"
-    "@curvefi/lending-api": "npm:^2.5.6"
-    "@curvefi/stablecoin-api": "npm:^1.5.17"
+    "@curvefi/llamalend-api": "npm:^1.0.2"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^4.0.0"
     "@next/bundle-analyzer": "npm:^15.1.6"
@@ -22182,13 +22134,6 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
   languageName: node
   linkType: hard
 

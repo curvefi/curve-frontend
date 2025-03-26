@@ -7,7 +7,7 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, type NetworkEnum, PageProps, type UrlParams, Wallet } from '@/loan/types/loan.types'
 import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
 import { getPath, parseNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
-import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
@@ -20,12 +20,9 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
 
-  const curve = useApiStore((state) => state.stable)
-  const lending = useApiStore((state) => state.lending)
-  const updateStable = useApiStore((state) => state.updateStable)
-  const updateLending = useApiStore((state) => state.updateLending)
-  const setIsLoadingStable = useApiStore((state) => state.setIsLoadingStable)
-  const setIsLoadingLending = useApiStore((state) => state.setIsLoadingLending)
+  const llamalend = useApiStore((state) => state.llamalend)
+  const updateLlamalend = useApiStore((state) => state.updateLlamalend)
+  const setIsLoadingLlamalend = useApiStore((state) => state.setIsLoadingLlamalend)
   const hydrate = useStore((s) => s.hydrate)
 
   const connectState = useStore((state) => state.connectState)
@@ -43,13 +40,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevApi = curve ?? null
+          const prevApi = llamalend ?? null
 
-          setIsLoadingStable(true)
+          setIsLoadingLlamalend(true)
 
           if (useWallet && wallet) {
             const api = await initStableJs(chainId, wallet)
-            updateStable(api)
+            updateLlamalend(api)
             updateConnectState('success', '')
 
             hydrate(api, prevApi, wallet)
@@ -60,11 +57,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
-          setIsLoadingStable(false)
+          setIsLoadingLlamalend(false)
         }
       }
     },
-    [curve, setIsLoadingStable, wallet, updateStable, updateConnectState, hydrate],
+    [llamalend, setIsLoadingLlamalend, wallet, updateLlamalend, updateConnectState, hydrate],
   )
 
   const handleConnectLendApi = useCallback(
@@ -72,13 +69,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevApi = lending ?? null
+          const prevApi = llamalend ?? null
 
-          setIsLoadingLending(true)
+          setIsLoadingLlamalend(true)
 
           const api = await initLendApi(chainId, useWallet ? wallet : null)
           if (api) {
-            updateLending(api)
+            updateLlamalend(api)
             updateConnectState('success', '')
 
             hydrate(api, prevApi, wallet)
@@ -89,11 +86,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
-          setIsLoadingLending(false)
+          setIsLoadingLlamalend(false)
         }
       }
     },
-    [lending, setIsLoadingLending, wallet, updateLending, updateConnectState, hydrate],
+    [llamalend, setIsLoadingLlamalend, wallet, updateLlamalend, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(
@@ -250,12 +247,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      (!!walletChainId || !!walletSignerAddress || !!curve) &&
-      (curve?.chainId !== walletChainId || curve?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      (!!walletChainId || !!walletSignerAddress || !!llamalend) &&
+      (llamalend?.chainId !== walletChainId ||
+        llamalend?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (walletSignerAddress && curve?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (walletSignerAddress && llamalend?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
-      } else if (curve?.chainId !== walletChainId) {
+      } else if (llamalend?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
@@ -274,16 +272,16 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     if (isSuccess(connectState)) {
       if (
         walletChainId &&
-        curve &&
-        curve.chainId === walletChainId &&
+        llamalend &&
+        llamalend.chainId === walletChainId &&
         parsedParams.rChainId !== walletChainId &&
         pathname !== ROUTE.PAGE_INTEGRATIONS
       ) {
         // switch network if url network is not same as wallet
         updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
-      } else if (curve && curve.chainId !== parsedParams.rChainId) {
+      } else if (llamalend && llamalend.chainId !== parsedParams.rChainId) {
         // switch network if url network is not same as api
-        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [curve.chainId, parsedParams.rChainId])
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [llamalend.chainId, parsedParams.rChainId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -291,17 +289,17 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
   // init campaignRewardsMapper
   useEffect(() => {
-    if (!curve) return
+    if (!llamalend) return
 
     if (!initiated) {
-      initCampaignRewards(curve.chainId)
+      initCampaignRewards(llamalend.chainId)
     }
-  }, [initCampaignRewards, curve, initiated])
+  }, [initCampaignRewards, llamalend, initiated])
 
   return {
     pageLoaded: connectState.status === 'success',
     routerParams: parsedParams,
-    curve,
+    curve: llamalend,
   } as PageProps
 }
 

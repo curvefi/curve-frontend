@@ -5,18 +5,17 @@ import {
   BandBalance,
   ChainId,
   HeathColorKey,
-  LendApi,
   Llamma,
   UserLoanDetails,
   Wallet,
-  type Curve,
+  type LlamalendApi,
 } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
-export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
+export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<LlamalendApi> {
   const { networkId } = networks[chainId]
-  const api = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
+  const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamalendApi
   await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
   return api
 }
@@ -24,7 +23,7 @@ export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Cu
 export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
   try {
     const { networkId } = networks[chainId]
-    const api = cloneDeep((await import('@curvefi/lending-api')).default) as LendApi
+    const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamalendApi
 
     if (wallet) {
       await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })

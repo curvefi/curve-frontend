@@ -14,7 +14,7 @@ import { DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE, hasDeleverage } from '@/loan
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import useStore from '@/loan/store/useStore'
-import { CollateralAlert, Curve, Llamma } from '@/loan/types/loan.types'
+import { CollateralAlert, LlamalendApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
@@ -112,7 +112,7 @@ const LoanCreate = ({
   const handleClickCreate = useCallback(
     async (
       payloadActiveKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       formValues: FormValues,
       isLeverage: boolean,
       llamma: Llamma,
@@ -134,7 +134,7 @@ const LoanCreate = ({
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       confirmedHealthWarning: boolean,

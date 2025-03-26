@@ -1,13 +1,13 @@
-import { ethers, Contract, ContractRunner } from 'ethers'
+import { Contract, ContractRunner, ethers } from 'ethers'
 import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
-import { Curve, Wallet } from '@/loan/types/loan.types'
+import { Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 import { Interface } from '@ethersproject/abi'
 import { CONNECT_STAGE, ConnectState } from '@ui/utils'
-import type { LendingApi } from '@ui-kit/shared/useApiStore'
+import type { LlamalendApi } from '@ui-kit/shared/useApiStore'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -26,7 +26,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curve: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null): void
+  hydrate(curve: LlamalendApi, prevCurveApi: LlamalendApi | null, wallet: Wallet | null): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -47,10 +47,12 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     try {
       const abi = await import(`@/loan/abis/${jsonModuleName}.json`).then((module) => module.default)
 
-      if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
+      if (!abi) {
+        console.error(`Unable to get abi ${jsonModuleName}`)
+        return null
+      }
 
-      const iface = new Interface(abi)
-      return new Contract(contractAddress, iface.format(), provider)
+      return new Contract(contractAddress, new Interface(abi).format(), provider)
     } catch (error) {
       console.error(error)
       return null
@@ -67,7 +69,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     )
   },
 
-  hydrate: async (curveApi: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null) => {
+  hydrate: async (curveApi: LlamalendApi, prevCurveApi: LlamalendApi | null, wallet: Wallet | null) => {
     const { loans, usdRates } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId

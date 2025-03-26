@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
-import { Api, Wallet } from '@/lend/types/lend.types'
+import { LlamalendApi, Wallet } from '@/lend/types/lend.types'
 import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import { log } from '@ui-kit/lib/logging'
 
@@ -23,7 +23,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
+  hydrate(api: LlamalendApi, prevApi: LlamalendApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -81,7 +81,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       state.user.resetState()
     }
 
-    // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
+    // unfortunately, we cannot use markets from the cache as that leaves curve-llamalend-js in an inconsistent state
     await prefetchMarkets({ chainId: api.chainId })
 
     log('Hydrating Lend - Complete')

@@ -16,7 +16,7 @@ export const chainValidationSuite = createValidationSuite(chainValidationGroup)
 export const apiValidationGroup = (data: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
-      const api = useApiStore.getState().lending
-      enforce(api?.chainId).message('Chain ID should be loaded').equals(data.chainId)
+      const { llamalend } = useApiStore.getState()
+      enforce(llamalend?.chainId).message('Chain ID should be loaded').equals(data.chainId)
     })
   })

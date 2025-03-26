@@ -5,7 +5,7 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
   ChainId,
-  Curve,
+  LlamalendApi,
   Llamma,
   CollateralData,
   CollateralDatasMapper,
@@ -25,7 +25,7 @@ const sliceKey = 'collaterals'
 // prettier-ignore
 export type CollateralsSlice = {
   [sliceKey]: SliceState & {
-    fetchCollaterals(curve: Curve): Promise<{ collateralDatasMapper: CollateralDatasMapper; collateralDatas: CollateralData[] }>
+    fetchCollaterals(curve: LlamalendApi): Promise<{ collateralDatasMapper: CollateralDatasMapper; collateralDatas: CollateralData[] }>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -43,7 +43,7 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchCollaterals: async (curve: Curve) => {
+    fetchCollaterals: async (curve: LlamalendApi) => {
       const chainId = curve.chainId
       const llammasMapper = networks[chainId].api.helpers.getLlammas(curve)
 
