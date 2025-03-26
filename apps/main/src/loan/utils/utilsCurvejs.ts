@@ -38,12 +38,12 @@ export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
 export function getIsUserCloseToLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
-  activeBand: number | null | undefined,
+  oraclePriceBand: number | null | undefined,
 ) {
-  if (typeof userLiquidationBand !== null && activeBand === null) {
+  if (typeof userLiquidationBand !== null && oraclePriceBand === null) {
     return false
-  } else if (typeof activeBand !== 'undefined' && activeBand !== null) {
-    return userFirstBand <= activeBand + 2
+  } else if (typeof oraclePriceBand !== 'undefined' && oraclePriceBand !== null) {
+    return userFirstBand <= oraclePriceBand + 2
   }
   return false
 }
