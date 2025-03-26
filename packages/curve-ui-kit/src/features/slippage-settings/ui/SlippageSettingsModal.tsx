@@ -121,6 +121,11 @@ export type Props = SlippageSettingsProps & SlippageSettingsCallbacks
 export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: Props) => {
   const [formValues, setFormValues] = useState(initFormValues(maxSlippage))
   const { error, selected, customValue } = formValues
+
+  /**
+   * Stores the last error to ensure the collapse animation transitions smoothly.
+   * Without this, the error message would disappear before the collapse animation completes.
+   */
   const [lastError, setLastError] = useState<Error | undefined>(undefined)
 
   useEffect(() => {
