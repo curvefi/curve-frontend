@@ -14,7 +14,7 @@ export const chainValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
 export const curvejsValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
-      const curve = useApiStore.getState().curve
+      const { curve } = useApiStore.getState()
       enforce(curve?.chainId).message('Chain ID should be loaded').equals(chainId).message('Incorrect chain ID')
     })
   })

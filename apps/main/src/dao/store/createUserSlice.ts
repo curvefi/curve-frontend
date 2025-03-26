@@ -361,7 +361,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
     getUserGaugeVoteWeights: async (userAddress: string, silentFetch = false) => {
       const address = userAddress.toLowerCase()
-      const curve = useApiStore.getState().curve
+      const { curve } = useApiStore.getState()
 
       if (!curve) return
 
@@ -430,7 +430,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       }
     },
     getVoteForGaugeNextTime: async (userAddress: string, gaugeAddress: string) => {
-      const curve = useApiStore.getState().curve
+      const { curve } = useApiStore.getState()
       if (!curve) return
 
       const address = userAddress.toLowerCase()

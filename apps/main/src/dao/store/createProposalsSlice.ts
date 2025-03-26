@@ -336,7 +336,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const curve = useApiStore.getState().curve
+      const { curve } = useApiStore.getState()
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -431,7 +431,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const curve = useApiStore.getState().curve
+      const { curve } = useApiStore.getState()
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()

@@ -362,7 +362,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
-      const curve = useApiStore.getState().curve
+      const { curve } = useApiStore.getState()
       const { provider } = useWallet.getState()
       const { getUserGaugeVoteWeights } = get().user
       const address = get().gauges.gaugeMapper[gaugeAddress].address
