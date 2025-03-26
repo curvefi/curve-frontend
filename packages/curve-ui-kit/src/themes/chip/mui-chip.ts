@@ -21,7 +21,7 @@ type ChipSizeDefinition = {
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.md, iconSize: IconSize.xs },
+  extraSmall: { font: 'bodyXsBold', height: IconSize.md, iconSize: IconSize.sm },
   small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm },
   medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md },
   large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg },
@@ -29,12 +29,12 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
 }
 
 // overrides for clickable chips
-const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
-  extraSmall: {},
-  small: { height: Sizing.md },
-  medium: { font: 'buttonS' },
-  large: { height: Sizing.lg, font: 'buttonS' },
-  extraLarge: { height: Sizing.xl },
+const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
+  extraSmall: { deleteIconSize: IconSize.xs },
+  small: { height: Sizing.md, deleteIconSize: IconSize.sm },
+  medium: { font: 'buttonS', deleteIconSize: IconSize.md },
+  large: { height: Sizing.lg, font: 'buttonS', deleteIconSize: IconSize.lg },
+  extraLarge: { height: Sizing.xl, deleteIconSize: IconSize.xl },
 }
 
 /**
@@ -134,15 +134,20 @@ export const defineMuiChip = (
       props: { size: size as ChipSizes },
       style: {
         ...handleBreakpoints({ ...typography[font], ...rest }),
-        '& .MuiChip-deleteIcon': handleBreakpoints({ width: iconSize, height: iconSize }),
         '&:has(.MuiChip-icon)': {
           '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
         },
       },
     })),
-    ...Object.entries(chipSizeClickable).map(([size, { font, ...rest }]) => ({
-      props: { size: size as ChipSizes, clickable: true },
-      style: handleBreakpoints({ ...(font && typography[font]), ...rest }),
+    ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, ...rest }]) => ({
+      props: {
+        size: size as ChipSizes,
+        clickable: true,
+      },
+      style: {
+        ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+        '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
+      },
     })),
   ],
 })
