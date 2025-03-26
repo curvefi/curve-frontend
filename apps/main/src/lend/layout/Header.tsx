@@ -6,11 +6,11 @@ import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, type NetworkEnum } from '@/lend/types/lend.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
-import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -30,8 +30,8 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      currentMenu="llama"
-      routes={APP_LINK.llama.routes}
+      currentMenu="lend"
+      routes={APP_LINK.lend.routes}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

@@ -57,6 +57,7 @@ const convertLendingVault = (
   {
     controller,
     chain,
+    totalAssets,
     totalAssetsUsd,
     totalDebtUsd,
     vault,
@@ -80,7 +81,7 @@ const convertLendingVault = (
   assets: {
     borrowed: {
       ...borrowedToken,
-      usdPrice: borrowedBalanceUsd / borrowedBalance,
+      usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
       chain,
     },
     collateral: {
@@ -93,7 +94,11 @@ const convertLendingVault = (
   liquidityUsd: totalAssetsUsd - totalDebtUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
-  url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}/create`),
+  url: getInternalUrl(
+    'lend',
+    chain,
+    `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${userVaults.has(controller) ? 'manage' : 'create'}`,
+  ),
   isFavorite: favoriteMarkets.has(vault),
   rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
   leverage,
@@ -146,7 +151,7 @@ const convertMintMarket = (
   deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
   url: getPath(
     { network: chain as NetworkEnum },
-    `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/create`,
+    `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${userMintMarkets.has(address) ? 'manage' : 'create'}`,
   ),
   isFavorite: favoriteMarkets.has(address),
   rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],

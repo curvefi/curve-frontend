@@ -1,36 +1,15 @@
-import memoizee from 'memoizee'
 import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
-import { LlamaMarketsPage, type LlamaMarketsPageProps } from '@/loan/components/PageLlamaMarkets/Page'
-import { fetchSupportedChains, fetchSupportedLendingChains } from '@/loan/entities/chains'
-import { fetchLendingVaults } from '@/loan/entities/lending-vaults'
-import { fetchMintMarkets } from '@/loan/entities/mint-markets'
-import { fetchAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
+import { cookies, headers } from 'next/headers'
+import type { CrvUsdServerData } from '@/app/api/crvusd/types'
+import { getServerData } from '@/background'
+import { LlamaMarketsPage } from '@/loan/components/PageLlamaMarkets/Page'
 
 export const metadata: Metadata = { title: 'Llamalend Markets - Curve' }
 
-const getServerData = memoizee(
-  async (): Promise<LlamaMarketsPageProps> => {
-    const [lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume] = await Promise.all([
-      fetchLendingVaults({}),
-      fetchMintMarkets({}),
-      fetchSupportedChains({}),
-      fetchSupportedLendingChains({}),
-      fetchAppStatsDailyVolume({}),
-    ])
-    return { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume }
-  },
-  {
-    promise: true,
-    preFetch: true,
-    maxAge: 5 * 60 * 1000, // 5 minutes
-  },
-)
-
 const Page = async () => {
-  const requestCookies = await cookies()
+  const [requestCookies, requestHeaders] = await Promise.all([cookies(), headers()])
   const isCypress = requestCookies.get('cypress') ?? false // skip server data fetching in Cypress so we can mock it
-  return <LlamaMarketsPage {...(!isCypress && (await getServerData()))} />
+  return <LlamaMarketsPage {...(!isCypress && (await getServerData<CrvUsdServerData>('crvusd', requestHeaders)))} />
 }
 
 export default Page

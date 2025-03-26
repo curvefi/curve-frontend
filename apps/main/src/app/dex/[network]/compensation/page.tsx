@@ -3,6 +3,6 @@ import PageCompensation from '@/dex/components/PageCompensation/Page'
 
 export const metadata: Metadata = { title: 'Compensation - Curve' }
 
-const CompensationPage = async () => <PageCompensation />
+const CompensationPage = () => <PageCompensation />
 
 export default CompensationPage

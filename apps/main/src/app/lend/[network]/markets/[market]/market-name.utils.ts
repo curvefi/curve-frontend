@@ -1,37 +1,32 @@
-'use server'
-import memoizee from 'memoizee'
+import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
+import type { LendServerData } from '@/app/api/lend/types'
+import { getServerData } from '@/background'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
-import type { Chain } from '@curvefi/prices-api'
-import { fetchJson } from '@curvefi/prices-api/fetch'
 
-const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as const
+export async function getLendMarketSymbols(
+  { market, network }: MarketUrlParams,
+  headers: ReadonlyHeaders,
+): Promise<[string, string]> {
+  const id = market.replace('one-way-market', 'oneway') // API ids are different from those generated in curve-lending-js
+  const resp = await getServerData<LendServerData>('lend', headers)
+  const marketData = resp.lendingVaultData?.find(
+    (m) => m.blockchainId == network && (m.id === id || m.controllerAddress === id || m.address == id),
+  )
 
-type Asset = { symbol: string }
-type Data = {
-  lendingVaultData: { id: string; controllerAddress: string; assets: { borrowed: Asset; collateral: Asset } }[]
-}
-
-const getAllMarkets = memoizee(
-  async (network: string) => fetchJson<{ data: Data }>(`https://api.curve.fi/api/getLendingVaults/${network}/oneway`),
-  options,
-)
-
-export async function getLendMarketSymbols({ market, network }: MarketUrlParams): Promise<[string, string]> {
-  const {
-    data: { lendingVaultData },
-  } = await getAllMarkets(network as Chain)
-
-  const id = market.replace('one-way-market', 'oneway') // API ids are different then those generated in curve-lending-js
-  const marketData = lendingVaultData.find((m) => m.id === id || m.controllerAddress === id)
   if (!marketData) {
-    const marketKeys = lendingVaultData.map(({ id, controllerAddress }) => ({ id, controllerAddress }))
-    console.warn(`Cannot find market ${market} in ${network}. Markets: ${JSON.stringify(marketKeys, null, 2)}`)
+    const marketKeys = resp.lendingVaultData?.map(({ id, controllerAddress, blockchainId, address }) => ({
+      id,
+      controllerAddress,
+      blockchainId,
+      address,
+    }))
+    console.warn(`Cannot find market ${market} in ${network}. Markets: ${JSON.stringify(marketKeys ?? resp, null, 2)}`)
     return ['', market]
   }
   return [marketData.assets.collateral.symbol, marketData.assets.borrowed.symbol]
 }
 
-export async function getBorrowedSymbol(params: MarketUrlParams): Promise<string> {
-  const [collateral, borrowed] = await getLendMarketSymbols(params)
+export async function getBorrowedSymbol(params: MarketUrlParams, headers: ReadonlyHeaders): Promise<string> {
+  const [collateral, borrowed] = await getLendMarketSymbols(params, headers)
   return borrowed ?? collateral
 }

@@ -1,4 +1,4 @@
-import { DesignSystem } from './design'
+import { DesignSystem } from '../design'
 
 declare module '@mui/material/IconButton' {
   export interface IconButtonPropsSizeOverrides {

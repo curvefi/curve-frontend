@@ -6,14 +6,13 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import Tooltip from '@mui/material/Tooltip'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
+import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { classNames } from '@ui-kit/utils/dom'
-import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
-import uniq from 'lodash/uniq'
 
 const { Spacing } = SizesAndSpaces
 
@@ -54,13 +53,8 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
             <Box key={i}>{getRewardsDescription(r)}</Box>
           ))}
           placement="top"
-          data-testid="rewards-badge"
         >
-          <Box component="span">
-            {uniq(rewards.map((r) => r.platformImageId)).map((img) => (
-              <RewardIcon size="md" key={img} imageId={img} />
-            ))}
-          </Box>
+          <RewardIcons data-testid="rewards-badge" size="md" rewards={rewards} />
         </Tooltip>
       )}
 

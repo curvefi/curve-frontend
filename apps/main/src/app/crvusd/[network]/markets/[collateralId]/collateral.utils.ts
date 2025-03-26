@@ -1,12 +1,9 @@
-'use server'
-import memoizee from 'memoizee'
+import { headers } from 'next/headers'
+import type { CrvUsdServerData } from '@/app/api/crvusd/types'
+import { getServerData } from '@/background'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
-import { Chain } from '@curvefi/prices-api'
-import { getMarkets } from '@curvefi/prices-api/crvusd'
 
-const getCrvUsdMarkets = memoizee(getMarkets, { promise: true, preFetch: true, maxAge: 1000 * 60 * 5 })
-
-export async function getCollateralName({ network, collateralId }: CollateralUrlParams) {
-  const markets = await getCrvUsdMarkets(network as Chain)
-  return markets.find((m) => m.collateralToken.symbol.toLowerCase() === collateralId)?.name ?? collateralId
-}
+export const getCollateralName = async ({ network, collateralId }: CollateralUrlParams) =>
+  (await getServerData<CrvUsdServerData>('crvusd', await headers())).mintMarkets?.find(
+    (m) => m.chain === network && m.collateralToken.symbol.toLowerCase() === collateralId,
+  )?.name ?? collateralId

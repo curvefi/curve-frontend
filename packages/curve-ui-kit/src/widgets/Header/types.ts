@@ -1,8 +1,8 @@
 import type { RefObject } from 'react'
-import type { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import type { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
 import type { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
+import type { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 
 export type AppPage = {
   href: string // this is the full pathname to the page, including leading slash, the app name and the network
@@ -16,6 +16,7 @@ export type AppRoute = {
   route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
+  betaFeature?: boolean
 }
 
 export type AppRoutes = {
