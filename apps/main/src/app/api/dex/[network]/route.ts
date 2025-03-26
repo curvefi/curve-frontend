@@ -66,5 +66,11 @@ refreshDataInBackground('DEX', refreshDex).catch(console.error)
 
 export const dynamic = 'force-dynamic' // don't cache this route on the front-end, we are caching it on the server-side
 export const revalidate = 60 // same as refreshDataInBackground, but cannot use variable here
-export const GET = async (_request: Request, { params }: { params: Promise<{ network: string }> }) =>
-  Response.json(DexServerSideCache[(await params).network])
+export const GET = async (_request: Request, { params }: { params: Promise<{ network: string }> }) => {
+  const network = (await params).network
+  const response = DexServerSideCache[network]
+  if (!response) {
+    console.warn(`No cache for ${network}: ${Object.keys(DexServerSideCache)}`)
+  }
+  return Response.json(response ?? {})
+}

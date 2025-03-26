@@ -12,6 +12,7 @@
     "paths": {
       "@ui": ["../../../packages/ui/src/index.ts"],
       "@ui/*": ["../../../packages/ui/src/*"],
+      "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
       "@ui-kit/*": ["./*"]
     }
   },

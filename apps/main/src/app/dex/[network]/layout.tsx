@@ -15,7 +15,7 @@ const Layout = async ({ children, params }: NetworkLayoutProps) => {
   if (!network) {
     return notFound()
   }
-  const cache = await getServerData<DexServerSideNetworkCache>(`dex/${network}`, httpHeaders)
+  const cache = await getServerData<DexServerSideNetworkCache>(`dex/${network.id}`, httpHeaders)
   return (
     <InjectServeSideData chainId={network.chainId} {...cache}>
       {children}

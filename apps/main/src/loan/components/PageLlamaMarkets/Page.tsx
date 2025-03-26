@@ -20,6 +20,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
+import { logSuccess } from '@ui-kit/lib'
 
 /**
  * Reloads the lending vaults and mint markets.
@@ -42,6 +43,14 @@ function useInjectServerData(props: CrvUsdServerData) {
     supportedChains && setSupportedChains({}, supportedChains)
     supportedLendingChains && setSupportedLendingChains({}, supportedLendingChains)
     dailyVolume != null && setAppStatsDailyVolume({}, dailyVolume)
+
+    logSuccess('useInjectServerData', {
+      lendingVaults: lendingVaults?.length,
+      mintMarkets: mintMarkets?.length,
+      supportedChains: supportedChains?.length,
+      supportedLendingChains: supportedLendingChains?.length,
+      dailyVolume,
+    })
   }, [props])
 }
 
