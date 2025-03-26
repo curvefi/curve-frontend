@@ -9,6 +9,7 @@ import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import TuneIcon from '@mui/icons-material/Tune'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints, isLoading } from '@ui/utils'
@@ -16,6 +17,7 @@ import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
 const Page = (params: NetworkUrlParams) => {
   const { push } = useRouter()
@@ -33,6 +35,7 @@ const Page = (params: NetworkUrlParams) => {
   const network = useStore((state) => state.networks.networks[rChainId])
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
+  const theme = useUserProfileStore((state) => state.theme)
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
@@ -126,6 +129,13 @@ const Page = (params: NetworkUrlParams) => {
         <SlippageSettings
           maxSlippage={storeMaxSlippage}
           onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
+          buttonIcon={
+            // This component is a MUI component on a non MUI page.
+            // That means the icon button color doesn't mesh well with the header box color in chad theme.
+            <InvertTheme inverted={theme === 'chad'}>
+              <TuneIcon color="action" />
+            </InvertTheme>
+          }
         />
       </BoxHeader>
 
