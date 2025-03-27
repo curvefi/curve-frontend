@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
-import { useQueries, UseQueryResult } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
+import { QueriesOptions, QueriesResults } from '@tanstack/react-query/build/legacy/useQueries'
 import {
   CombinedQueriesResult,
   CombinedQueryMappingResult,
@@ -32,15 +33,16 @@ const combineQueriesToObject = <T extends QueryOptionsArray, K extends string[]>
 
 /**
  * Combines multiple queries into a single object with keys for each query
- * @param queryOptions The query options to combine
+ * @param queries The query options to combine
  * @param keys The keys to use for each query
  * @returns The combined queries in an object
  */
-export const useQueryMapping = <T extends QueryOptionsArray, K extends string[]>(
-  queryOptions: [...T],
-  keys: [...K],
-): CombinedQueryMappingResult<T, K> =>
+export const useQueryMapping = <TOptions extends Array<any>, TKey extends string[]>(
+  queries: readonly [...QueriesOptions<TOptions>],
+  keys: [...TKey],
+) =>
   useQueries({
-    queries: queryOptions,
-    combine: useCallback((results: UseQueryResult<unknown, Error>[]) => combineQueriesToObject(results, keys), [keys]),
+    // todo: figure out why the type has broken in react-query, related to https://github.com/TanStack/query/pull/8624
+    queries: queries as Parameters<typeof useQueries>[0]['queries'],
+    combine: useCallback((results: QueriesResults<TKey>) => combineQueriesToObject(results, keys), [keys]),
   })

@@ -44,7 +44,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateLlamalend(api)
             updateConnectState('success', '')
 
-            hydrate(api, prevApi, wallet)
+            await hydrate(api, prevApi, wallet)
           } else {
             updateConnectState('', '')
           }

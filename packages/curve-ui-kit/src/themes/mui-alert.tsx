@@ -9,8 +9,10 @@ import { DesignSystem } from './design'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+const titleAndIconSelector = '.MuiAlertTitle-root, .MuiAlert-icon'
+
 export const defineMuiAlert = (
-  { Layer: { 1: Layer1, Feedback }, Text: { TextColors } }: DesignSystem,
+  { Layer: { 1: Layer1, Feedback, Highlight }, Text: { TextColors } }: DesignSystem,
   { bodyXsRegular }: TypographyOptions,
 ): Components['MuiAlert'] => ({
   defaultProps: {
@@ -32,10 +34,22 @@ export const defineMuiAlert = (
     outlined: {
       backgroundColor: Layer1.Fill,
       color: TextColors.Secondary,
-      '&.MuiAlert-colorInfo .MuiAlertTitle-root': { color: Feedback.Info },
-      '&.MuiAlert-colorSuccess .MuiAlertTitle-root': { color: Feedback.Success },
-      '&.MuiAlert-colorWarning .MuiAlertTitle-root': { color: Feedback.Warning },
-      '&.MuiAlert-colorError .MuiAlertTitle-root': { color: Feedback.Error },
+      '&.MuiAlert-colorInfo': {
+        [titleAndIconSelector]: { color: TextColors.Highlight },
+        borderColor: Highlight.Outline,
+      },
+      '&.MuiAlert-colorSuccess': {
+        [titleAndIconSelector]: { color: TextColors.Feedback.Success },
+        borderColor: Feedback.Success,
+      },
+      '&.MuiAlert-colorWarning': {
+        [titleAndIconSelector]: { color: TextColors.Feedback.Warning },
+        borderColor: Feedback.Warning,
+      },
+      '&.MuiAlert-colorError': {
+        [titleAndIconSelector]: { color: TextColors.Feedback.Error },
+        borderColor: Feedback.Error,
+      },
     },
     filled: {
       color: TextColors.Feedback.Inverted,

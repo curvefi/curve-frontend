@@ -17,6 +17,8 @@ export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Ll
   const { networkId } = networks[chainId]
   const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamalendApi
   await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+  // Explicitly set chainId to 1 (Ethereum mainnet) to prevent default value of 0 causing issues
+  api.chainId = 1
   return api
 }
 

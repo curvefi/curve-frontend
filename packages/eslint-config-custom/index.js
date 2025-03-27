@@ -1,5 +1,6 @@
 module.exports = {
-  extends: ['next', 'turbo', 'prettier'],
+  // "plugin:turbo/recommended" should be renamed to "turbo" after eslint-plugin-turbo v2.4.5 is published. See https://github.com/vercel/turborepo/pull/10105
+  extends: ['next', 'plugin:turbo/recommended', 'prettier'],
   plugins: ['no-only-tests', 'unused-imports', 'import'],
   rules: {
     'arrow-body-style': ['error', 'as-needed'],
@@ -17,7 +18,7 @@ module.exports = {
         zones: [
           { target: 'packages', from: 'apps' },
           ...['dex', 'dao', 'lend', 'loan']
-            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`])
+            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`, `apps/main/src/app/api/${app}`])
             .map((from, index, paths) => ({
               target: paths.filter((_, i) => i !== index).flat(),
               from,

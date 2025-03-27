@@ -4,6 +4,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Collapse from '@mui/material/Collapse'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
@@ -19,10 +20,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+type Error = keyof typeof inputErrorMapper
+
 type FormValues = {
   selected: string
   customValue: string
-  error?: keyof typeof inputErrorMapper
+  error?: Error
 }
 
 const SLIPPAGE_PRESETS = {
@@ -37,8 +40,29 @@ const FORMATTED_01 = formatNumber(SLIPPAGE_PRESETS.STABLE, { style: 'percent', m
 const FORMATTED_05 = formatNumber(SLIPPAGE_PRESETS.CRYPTO, { style: 'percent', maximumFractionDigits: 1 })
 
 const inputErrorMapper = {
-  'too-high': { message: t`Too high`, helperText: t`This can result in unexpected losses` },
-  'too-low': { message: t`Too low`, helperText: t`Min. slippage is ${MIN_SLIPPAGE}%` },
+  'too-high': {
+    message: t`High slippage selected`,
+    helperText: (
+      <>
+        {t`This may lead to fewer tokens received and potential loss of funds.`}
+        <br />
+        {t`Proceed with caution.`}
+      </>
+    ),
+  },
+  'too-low': {
+    message: t`Low slippage selected`,
+    helperText: (
+      <>
+        {t`Your transaction may fail if price moves slightly.`}
+        <br />
+        {t`Consider increasing slippage if it doesn't go through.`}
+        <br />
+        <br />
+        {t`Min. slippage is ${MIN_SLIPPAGE}%`}
+      </>
+    ),
+  },
 }
 
 /** Validates a custom slippage value */
@@ -98,9 +122,21 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
   const [formValues, setFormValues] = useState(initFormValues(maxSlippage))
   const { error, selected, customValue } = formValues
 
+  /**
+   * Stores the last error to ensure the collapse animation transitions smoothly.
+   * Without this, the error message would disappear before the collapse animation completes.
+   */
+  const [lastError, setLastError] = useState<Error | undefined>(undefined)
+
   useEffect(() => {
     setFormValues(initFormValues(maxSlippage))
   }, [maxSlippage])
+
+  useEffect(() => {
+    if (error) {
+      setLastError(error)
+    }
+  }, [error])
 
   // To save: require a selected value, and if 'custom', the custom value must be non-empty and pass validation
   // Allow 'too-high' error as it's discouraged but sometimes necessary for low-liquidity pools
@@ -166,7 +202,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
         <FormControl fullWidth>
           {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
           <FormLabel sx={{ color: 'text.secondary', '&.Mui-focused': { color: 'text.secondary' } }}>
-            {t`Max Slippage`} {tooltip}
+            {t`Max slippage`} {tooltip}
           </FormLabel>
 
           <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.sm}>
@@ -191,12 +227,12 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
         </FormControl>
 
         {/* Going for an alert instead of textfield helpertext because it looks better wrt layout */}
-        {error && selected === 'custom' && (
-          <Alert variant="filled" severity={error === 'too-low' ? 'error' : 'warning'}>
-            <AlertTitle>{inputErrorMapper[error].message}</AlertTitle>
-            {inputErrorMapper[error].helperText}
+        <Collapse in={error && selected === 'custom'}>
+          <Alert variant="outlined" severity={lastError === 'too-low' ? 'error' : 'warning'} sx={{ boxShadow: 'none' }}>
+            <AlertTitle>{lastError ? inputErrorMapper[lastError].message : ''}</AlertTitle>
+            {lastError ? inputErrorMapper[lastError].helperText : ''}
           </Alert>
-        )}
+        </Collapse>
       </Stack>
     </ModalDialog>
   )
