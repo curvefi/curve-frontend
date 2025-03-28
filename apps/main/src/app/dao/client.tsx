@@ -14,6 +14,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 export const App = ({ children }: { children: ReactNode }) => {
@@ -27,7 +28,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
   const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
@@ -57,7 +58,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
-    updateGlobalStoreByKey('loaded', true)
     handleResizeListener()
     handleVisibilityChange()
 

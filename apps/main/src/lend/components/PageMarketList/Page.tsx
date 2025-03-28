@@ -17,6 +17,7 @@ import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 enum SEARCH {
   filter = 'filter',
@@ -35,7 +36,7 @@ const Page = (params: NetworkUrlParams) => {
   const titleMapper = useTitleMapper()
   const { rChainId } = routerParams
 
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
   const { provider } = useWallet()
   const connectWallet = useStore((s) => s.updateConnectState)

@@ -193,6 +193,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
     <ModalDialog
       open={isOpen}
       onClose={onClose}
+      onTransitionExited={() => setFormValues(initFormValues(maxSlippage))}
       title={t`Slippage Settings`}
       footer={footer}
       // Compact modal

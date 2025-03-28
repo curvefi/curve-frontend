@@ -2,10 +2,11 @@ import { useMemo } from 'react'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { BN, formatNumber } from '@ui/utils'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number) => {
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.stable)
   const chainId = curve?.chainId
   const chainTokenUsdRate = useStore().usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault

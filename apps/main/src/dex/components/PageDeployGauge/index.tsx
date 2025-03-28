@@ -16,6 +16,7 @@ import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Switch from '@ui/Switch/Switch'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type Props = {
   curve: CurveApi
@@ -26,7 +27,7 @@ const DeployGauge = ({ curve }: Props) => {
   const { chainId } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const isLite = networks[chainId]?.isLite ?? false
 
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const {
     curveNetworks,
     setCurveNetworks,

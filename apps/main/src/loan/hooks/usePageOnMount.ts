@@ -5,13 +5,14 @@ import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, type NetworkEnum, PageProps, type UrlParams, Wallet } from '@/loan/types/loan.types'
-import { initCurveJs, initLendApi } from '@/loan/utils/utilsCurvejs'
+import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
 import { getPath, parseNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
@@ -19,12 +20,16 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
 
+  const curve = useApiStore((state) => state.stable)
+  const lending = useApiStore((state) => state.lending)
+  const updateStable = useApiStore((state) => state.updateStable)
+  const updateLending = useApiStore((state) => state.updateLending)
+  const setIsLoadingStable = useApiStore((state) => state.setIsLoadingStable)
+  const setIsLoadingLending = useApiStore((state) => state.setIsLoadingLending)
+  const hydrate = useStore((s) => s.hydrate)
+
   const connectState = useStore((state) => state.connectState)
-  const curve = useStore((state) => state.curve)
-  const { lendApi, updateLendApi } = useStore((state) => state)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const updateCurveJs = useStore((state) => state.updateCurveJs)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const initCampaignRewards = useStore((state) => state.campaigns.initCampaignRewards)
   const initiated = useStore((state) => state.campaigns.initiated)
 
@@ -38,23 +43,27 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevCurveApi = curve
-          updateGlobalStoreByKey('isLoadingApi', true)
-          updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
+          const prevApi = curve ?? null
+
+          setIsLoadingStable(true)
+
           if (useWallet && wallet) {
-            const api = await initCurveJs(chainId, wallet)
-            updateCurveJs({ ...api, chainId: 1 }, prevCurveApi, wallet)
+            const api = await initStableJs(chainId, wallet)
             updateConnectState('success', '')
+            await hydrate(api, prevApi, wallet)
+            updateStable(api)
           } else {
             updateConnectState('', '')
           }
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        } finally {
+          setIsLoadingStable(false)
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet],
+    [curve, setIsLoadingStable, wallet, updateStable, updateConnectState, hydrate],
   )
 
   const handleConnectLendApi = useCallback(
@@ -62,22 +71,28 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevApi = lendApi ?? null
-          updateGlobalStoreByKey('isLoadingLendApi', true)
-          const apiNew = await initLendApi(chainId, useWallet ? wallet : null)
+          const prevApi = lending ?? null
 
-          if (apiNew) {
-            updateLendApi(apiNew, prevApi, wallet)
+          setIsLoadingLending(true)
+
+          const api = await initLendApi(chainId, useWallet ? wallet : null)
+          if (api) {
+            updateLending(api)
+            updateConnectState('success', '')
+
+            hydrate(api, prevApi, wallet)
+          } else {
+            updateConnectState('', '')
           }
-
-          updateConnectState(apiNew ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        } finally {
+          setIsLoadingLending(false)
         }
       }
     },
-    [wallet, lendApi, updateGlobalStoreByKey, updateLendApi, updateConnectState],
+    [lending, setIsLoadingLending, wallet, updateLending, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(

@@ -1,12 +1,12 @@
 import { curvejsValidationSuite } from '@/loan/entities/validation/curve-lending-js-validation'
 import networks from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function _fetchAppStatsTotalCrvusdSupply({ chainId }: ChainQuery<ChainId>) {
-  const curve = useStore.getState().curve!
+  const curve = useApiStore.getState().stable!
   return networks[chainId].api.helpers.getTotalSupply(curve)
 }
 
