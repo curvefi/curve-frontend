@@ -131,6 +131,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
 
       const collateralDatas = collaterals.collateralDatas[rChainId]
 
+      console.log({ curve, collateralDatas, initialLoaded })
       if (!curve || !collateralDatas || (collateralDatas && collateralDatas?.length === 0)) return
 
       // allow UI to update paint

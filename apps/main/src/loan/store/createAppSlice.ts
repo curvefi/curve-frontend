@@ -87,13 +87,11 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     }
 
     // Check if curveApi is actually a Curve instance and not a LendingApi
-    if ('getLlamma' in curveApi) {
-      const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
-      await loans.fetchLoansDetails(curveApi, collateralDatas)
+    const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
+    await loans.fetchLoansDetails(curveApi, collateralDatas)
 
-      if (!prevCurveApi || isNetworkSwitched) {
-        usdRates.fetchAllStoredUsdRates(curveApi)
-      }
+    if (!prevCurveApi || isNetworkSwitched) {
+      await usdRates.fetchAllStoredUsdRates(curveApi)
     }
 
     log('Hydrate crvUSD - Complete')

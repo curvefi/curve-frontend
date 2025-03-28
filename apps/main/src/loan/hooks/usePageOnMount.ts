@@ -64,35 +64,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     [llamalend, setIsLoadingLlamalend, wallet, updateLlamalend, updateConnectState, hydrate],
   )
 
-  const handleConnectLendApi = useCallback(
-    async (options: ConnectState['options']) => {
-      if (options) {
-        try {
-          const [chainId, useWallet] = options
-          const prevApi = llamalend ?? null
-
-          setIsLoadingLlamalend(true)
-
-          const api = await initLendApi(chainId, useWallet ? wallet : null)
-          if (api) {
-            updateLlamalend(api)
-            updateConnectState('success', '')
-
-            hydrate(api, prevApi, wallet)
-          } else {
-            updateConnectState('', '')
-          }
-        } catch (error) {
-          console.error(error)
-          updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
-        } finally {
-          setIsLoadingLlamalend(false)
-        }
-      }
-    },
-    [llamalend, setIsLoadingLlamalend, wallet, updateLlamalend, updateConnectState, hydrate],
-  )
-
   const handleConnectWallet = useCallback(
     async (options: ConnectState['options']) => {
       if (options) {
@@ -237,7 +208,6 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         handleDisconnectWallet(wallet)
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
         handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
-        handleConnectLendApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
