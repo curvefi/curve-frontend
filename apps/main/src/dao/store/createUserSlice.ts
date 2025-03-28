@@ -25,6 +25,7 @@ import {
 } from '@/dao/types/dao.types'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import type { WalletState } from '@web3-onboard/core'
 
 const { WEEK } = TIME_FRAMES
@@ -360,7 +361,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
     getUserGaugeVoteWeights: async (userAddress: string, silentFetch = false) => {
       const address = userAddress.toLowerCase()
-      const curve = get().curve
+      const { curve } = useApiStore.getState()
 
       if (!curve) return
 
@@ -429,7 +430,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       }
     },
     getVoteForGaugeNextTime: async (userAddress: string, gaugeAddress: string) => {
-      const curve = get().curve
+      const { curve } = useApiStore.getState()
       if (!curve) return
 
       const address = userAddress.toLowerCase()

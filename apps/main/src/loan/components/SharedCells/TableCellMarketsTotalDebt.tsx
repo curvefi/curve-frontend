@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
-import useStore from '@/loan/store/useStore'
 import TextCaption from '@ui/TextCaption'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const TableCellMarketsTotalDebt = () => {
-  const chainId = useStore((state) => state.curve?.chainId)
+  const chainId = useApiStore((state) => state.stable?.chainId)
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}

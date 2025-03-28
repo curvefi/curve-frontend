@@ -13,6 +13,7 @@ import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wall
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -25,7 +26,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const chainId = useStore((state) => state.curve?.chainId)
+  const chainId = useApiStore((state) => state.curve?.chainId)
   const connectState = useStore((state) => state.connectState)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const updateConnectState = useStore((state) => state.updateConnectState)

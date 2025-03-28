@@ -12,6 +12,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { breakpoints, formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type Props = {
   rChainId: ChainId
@@ -22,7 +23,7 @@ type Props = {
 const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const isSubscribed = useRef(false)
 
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.stable)
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)

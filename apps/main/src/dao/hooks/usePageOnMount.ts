@@ -11,17 +11,19 @@ import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import type { ConnectState } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
   const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
+  const updateCurveJs = useApiStore((state) => state.updateCurve)
+  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
+  const hydrate = useStore((s) => s.hydrate)
   const connectState = useStore((s) => s.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const updateCurveJs = useStore((state) => state.updateCurveJs)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -33,18 +35,23 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         try {
           const [chainId, useWallet] = options
           const prevCurveApi = curve
-          updateGlobalStoreByKey('isLoadingApi', true)
-          updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
+
+          setIsLoadingCurve(true)
+
           const api = await helpers.initCurveJs(chainId, useWallet ? wallet : null)
-          updateCurveJs(api, prevCurveApi, wallet)
+          updateCurveJs(api)
           updateConnectState('success', '')
+
+          hydrate(api, prevCurveApi, wallet)
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        } finally {
+          setIsLoadingCurve(false)
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet],
+    [curve, hydrate, setIsLoadingCurve, updateConnectState, updateCurveJs, wallet],
   )
 
   const handleConnectWallet = useCallback(

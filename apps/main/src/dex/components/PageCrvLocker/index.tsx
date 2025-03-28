@@ -7,12 +7,13 @@ import type { FormType, PageVecrv } from '@/dex/components/PageCrvLocker/types'
 import useStore from '@/dex/store/useStore'
 import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo, toggleForm } = pageProps
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
 
