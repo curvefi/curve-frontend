@@ -1,5 +1,6 @@
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
 
+// use a much lower refresh rate during development, as this file can be sometimes be called multiple times
 const minute = 1000 * 60
 const RefreshTimeoutMs = process.env.NODE_ENV === 'development' ? 60 * minute : minute
 
