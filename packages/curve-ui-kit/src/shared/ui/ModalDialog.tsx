@@ -15,7 +15,7 @@ export type ModalDialogProps = {
   title: string
   open: boolean
   onClose: () => void
-  onTransitionExited: () => void
+  onTransitionExited?: () => void
   titleAction?: ReactNode
   footer?: ReactNode
   sx?: SxProps<Theme>
