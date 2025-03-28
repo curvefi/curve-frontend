@@ -16,7 +16,7 @@ import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/Pag
 import networks from '@/loan/networks'
 import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { ChainId, LlamalendApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
@@ -73,7 +73,7 @@ export type LoanCreateSlice = {
       formValues: FormValues,
     ): Promise<{ maxRecv: string; activeKey: string; error: string } | undefined>
     setFormValues(
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
@@ -83,7 +83,7 @@ export type LoanCreateSlice = {
     // steps
     fetchStepApprove(
       activeKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
@@ -91,7 +91,7 @@ export type LoanCreateSlice = {
     ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepCreate(
       activeKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
@@ -208,7 +208,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     setFormValues: async (
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
@@ -358,7 +358,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
     // steps
     fetchStepApprove: async (
       activeKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
@@ -393,7 +393,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
     },
     fetchStepCreate: async (
       activeKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,

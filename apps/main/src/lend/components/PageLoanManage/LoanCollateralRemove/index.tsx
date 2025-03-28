@@ -17,9 +17,9 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlice'
 import useStore from '@/lend/store/useStore'
-import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { LlamalendApi, HealthMode, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import AlertBox from '@ui/AlertBox'
 import Stepper from '@ui/Stepper'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -68,7 +68,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   )
 
   const handleBtnClickRemove = useCallback(
-    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
+    async (payloadActiveKey: string, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues) => {
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
@@ -92,8 +92,8 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const stepsObj = useCallback(
     (
       payloadActiveKey: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       healthMode: HealthMode,
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,

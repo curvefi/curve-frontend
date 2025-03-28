@@ -17,7 +17,7 @@ import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const curve = useApiStore((state) => state.stable)
+  const llamalend = useApiStore((state) => state.llamalend)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
@@ -68,9 +68,9 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   usePageVisibleInterval(
     () => {
-      if (isPageVisible && curve) {
-        fetchAllStoredUsdRates(curve)
-        fetchGasInfo(curve)
+      if (isPageVisible && llamalend) {
+        fetchAllStoredUsdRates(llamalend)
+        fetchGasInfo(llamalend)
       }
     },
     REFRESH_INTERVAL['5m'],

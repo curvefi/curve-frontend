@@ -1,6 +1,6 @@
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
-import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
@@ -24,7 +24,7 @@ export function _getIsSwapRequire({ stateCollateral, userCollateral }: FormValue
   return haveStateCollateral || haveUserCollateral
 }
 
-export function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: OneWayMarketTemplate) {
+export function _getStepTokensStr(formValues: FormValues, { collateral_token, borrowed_token }: LendMarketTemplate) {
   const { userCollateral, stateCollateral, userBorrowed } = formValues
   const collateralTotal = +userCollateral + +stateCollateral
 

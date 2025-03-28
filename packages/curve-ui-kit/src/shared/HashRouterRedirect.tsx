@@ -11,9 +11,9 @@ const oldOrigins = ['lend', 'crvusd', 'dao'] as const
  * Get the redirect URL for the app root URL. This is the entry point of the old routes with the hash router.
  * We remove the hash and redirect to the new routes. We also handle old routes that were hardcoded in react-router.
  */
-function getRedirectUrl({ search, hash }: Location, currentApp?: AppName, routes?: string[]) {
+function getRedirectUrl({ search, hash, origin }: Location, currentApp?: AppName, routes?: string[]) {
   const path = hash.replace(/^#\//, '')
-  const destApp = currentApp ?? oldOrigins.find((path) => origin.includes(path)) ?? 'dex'
+  const destApp = currentApp ?? oldOrigins.find((path) => origin.startsWith(path)) ?? 'dex'
   if (routes?.find((r) => r.startsWith(path))) {
     return `/${destApp}/ethereum/${path}${search}`
   }

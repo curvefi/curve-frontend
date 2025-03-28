@@ -6,8 +6,8 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import { Api, FutureRates } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LlamalendApi, FutureRates } from '@/lend/types/lend.types'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 
@@ -25,12 +25,12 @@ const sliceKey = 'loanSelfLiquidation'
 // prettier-ignore
 export type LoanSelfLiquidationSlice = {
   [sliceKey]: SliceState & {
-    fetchDetails(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
-    fetchEstGasApproval(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
+    fetchDetails(api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string): Promise<void>
+    fetchEstGasApproval(api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string): Promise<void>
 
     // step
-    fetchStepApprove(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepLiquidate(api: Api, market: OneWayMarketTemplate, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepLiquidate(api: LlamalendApi, market: LendMarketTemplate, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
