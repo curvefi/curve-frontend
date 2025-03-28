@@ -57,7 +57,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (llamalend && llamalend && inputAmount !== '0') {
+      if (llamalend && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
             estimateGasDeposit(inputAmount)
