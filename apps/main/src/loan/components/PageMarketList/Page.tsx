@@ -18,6 +18,7 @@ import Box from '@ui/Box'
 import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 enum SEARCH {
   sortBy = 'sortBy',
@@ -34,7 +35,7 @@ const Page = (params: CollateralUrlParams) => {
   const { rChainId } = routerParams
   const { provider } = useWallet()
 
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
@@ -67,7 +68,7 @@ const Page = (params: CollateralUrlParams) => {
   useEffect(() => {
     setLoaded(false)
 
-    if (!pageLoaded || isLoadingApi) return
+    if (!pageLoaded || isLoadingStable) return
 
     const parsedSearchParams = {
       sortBy: searchParams?.get(SEARCH.sortBy) || TITLE.totalBorrowed,
@@ -79,7 +80,7 @@ const Page = (params: CollateralUrlParams) => {
     setParsedSearchParams(parsedSearchParams)
     setLoaded(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi, searchParams])
+  }, [pageLoaded, isLoadingStable, searchParams])
 
   return (
     <>

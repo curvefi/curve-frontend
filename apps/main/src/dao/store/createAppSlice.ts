@@ -2,7 +2,7 @@ import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
-import { CurveApi, Wallet } from '@/dao/types/dao.types'
+import type { CurveApi, Wallet } from '@/dao/types/dao.types'
 import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import { log } from '@ui-kit/lib'
 
@@ -17,23 +17,21 @@ export type LayoutHeight = {
 }
 
 type SliceState = {
-  curve: CurveApi | null
   connectState: ConnectState
-  isLoadingApi: boolean
-  isLoadingCurve: boolean
   isPageVisible: boolean
   layoutHeight: LayoutHeight
-  loaded: boolean
   showScrollButton: boolean
 }
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
   updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
-  updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
+
+  /** Hydrate resets states and refreshes store data from the API */
+  hydrate(api: CurveApi, prevApi: CurveApi | null, wallet: Wallet | null): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
@@ -42,11 +40,7 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE = {
-  curve: null,
-  isLoadingApi: false,
-  isLoadingCurve: true,
   isPageVisible: true,
-  loaded: false,
   layoutHeight: {
     globalAlert: 0,
     mainNav: 0,
@@ -59,43 +53,8 @@ const DEFAULT_STATE = {
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
-
   updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
     set({ connectState: { status, stage, ...(options && { options }) } })
-  },
-  updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
-    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
-    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
-
-    log('updateCurveJs', curveApi?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
-      isNetworkSwitched,
-      isUserSwitched,
-    })
-
-    // reset store
-    if (isNetworkSwitched) {
-      get().gas.resetState()
-    }
-
-    if (isUserSwitched || !curveApi.signerAddress) {
-    }
-
-    // update network settings from api
-    get().updateGlobalStoreByKey('curve', curveApi)
-    get().updateGlobalStoreByKey('isLoadingCurve', false)
-
-    if (!prevCurveApi || isNetworkSwitched) {
-      get().gas.fetchGasInfo(curveApi)
-      get().updateGlobalStoreByKey('isLoadingApi', false)
-
-      // pull all api calls before isLoadingApi if it is not needed for initial load
-    } else {
-      get().updateGlobalStoreByKey('isLoadingApi', false)
-    }
-
-    if (curveApi.signerAddress) {
-    }
   },
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => {
     set(
@@ -120,6 +79,25 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         state[key] = value
       }),
     )
+  },
+
+  hydrate: async (api, prevApi, wallet) => {
+    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
+
+    log('Hydrating DAO', api?.chainId, {
+      wallet: wallet?.chains[0]?.id ?? '',
+      isNetworkSwitched,
+    })
+
+    if (isNetworkSwitched) {
+      get().gas.resetState()
+    }
+
+    if (!prevApi || isNetworkSwitched) {
+      get().gas.fetchGasInfo(api)
+    }
+
+    log('Hydrating DAO - Complete')
   },
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T) => {

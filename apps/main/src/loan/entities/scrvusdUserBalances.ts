@@ -1,6 +1,6 @@
-import useStore from '@/loan/store/useStore'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
 
@@ -9,7 +9,7 @@ async function _fetchSavingsUserBalances({
 }: {
   userAddress: string
 }): Promise<ScrvUsdUserBalances | null> {
-  const lendApi = useStore.getState().lendApi
+  const lendApi = useApiStore.getState().lending
 
   if (!lendApi) return null
 

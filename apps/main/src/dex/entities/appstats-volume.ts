@@ -3,10 +3,11 @@ import useStore from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { curvejsValidationSuite } from './validation/curvejs-validation'
 
 async function _fetchAppStatsVolume({ chainId }: ChainQuery<ChainId>) {
-  const curve = useStore.getState().curve
+  const curve = useApiStore.getState().curve!
   const networks = useStore.getState().networks.networks
   const { isLite } = networks[chainId]
   if (isLite) return null
