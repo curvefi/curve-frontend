@@ -8479,7 +8479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/blocks@npm:8.6.9, @storybook/blocks@npm:^8.6.9":
+"@storybook/blocks@npm:8.6.9":
   version: 8.6.9
   resolution: "@storybook/blocks@npm:8.6.9"
   dependencies:
@@ -8495,6 +8495,25 @@ __metadata:
     react-dom:
       optional: true
   checksum: 10c0/87b7094aba92f766bf6c30a1cb908f37c3ae178cd7630a8cc607ee0c701816ad42e5d9141fdbb727b523f9a834e36929995c9d65e62e6f8661936e0df51be087
+  languageName: node
+  linkType: hard
+
+"@storybook/blocks@npm:^8.6.11":
+  version: 8.6.11
+  resolution: "@storybook/blocks@npm:8.6.11"
+  dependencies:
+    "@storybook/icons": "npm:^1.2.12"
+    ts-dedent: "npm:^2.0.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    storybook: ^8.6.11
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/3bed2a65fa9bf0550cd074e0fa1936daa0a4b9509296f945b5ba485713f00db6faead36e73d7e246a41c29c847ec292a89bbd58e7c34675e0f36412682a7979a
   languageName: node
   linkType: hard
 
@@ -13676,7 +13695,7 @@ __metadata:
     "@storybook/addon-essentials": "npm:^8.6.9"
     "@storybook/addon-interactions": "npm:^8.6.9"
     "@storybook/addon-themes": "npm:^8.6.9"
-    "@storybook/blocks": "npm:^8.6.9"
+    "@storybook/blocks": "npm:^8.6.11"
     "@storybook/nextjs": "npm:^8.6.9"
     "@storybook/react": "npm:^8.6.9"
     "@storybook/test": "npm:^8.6.9"
