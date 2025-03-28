@@ -64,7 +64,7 @@
     "@svgr/webpack": "^8.1.0",
     "@types/lodash": "^4.17.16",
     "@types/memoizee": "^0.4.12",
-    "@types/node": "22.13.13",
+    "@types/node": "22.13.14",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/validator": "^13.12.2",
