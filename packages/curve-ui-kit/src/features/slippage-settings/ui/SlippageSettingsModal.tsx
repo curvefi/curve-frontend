@@ -128,12 +128,9 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
    */
   const [lastError, setLastError] = useState<Error | undefined>(undefined)
 
-  // Update form values when slippage changes or modal is closed without saving and re-opened
   useEffect(() => {
-    if (isOpen) {
-      setFormValues(initFormValues(maxSlippage))
-    }
-  }, [isOpen, maxSlippage])
+    setFormValues(initFormValues(maxSlippage))
+  }, [maxSlippage])
 
   useEffect(() => {
     if (error) {
@@ -196,6 +193,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
     <ModalDialog
       open={isOpen}
       onClose={onClose}
+      onTransitionExited={() => setFormValues(initFormValues(maxSlippage))}
       title={t`Slippage Settings`}
       footer={footer}
       // Compact modal
