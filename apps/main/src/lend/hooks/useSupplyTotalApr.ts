@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import useStore from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
@@ -10,19 +11,32 @@ function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
+  const {
+    data: onChainData,
+    isError: onChainError,
+    isSuccess: onChainSuccess,
+  } = useMarketOnChainRates({ chainId: rChainId, marketId: rOwmId })
 
   const { gauge } = market?.addresses ?? {}
   const { error: rewardsError } = marketRewardsResp ?? {}
   const { error: ratesError } = marketRatesResp ?? {}
+  const onChainRatesObj: MarketRates = {
+    rates: onChainData?.rates ?? null,
+    error: onChainError ? 'Error fetching on chain data' : '',
+  }
+
+  const marketRates = onChainRatesObj.rates ? onChainRatesObj : marketRatesResp
+  const isReady = onChainSuccess || (typeof marketRewardsResp !== 'undefined' && typeof marketRatesResp !== 'undefined')
+  const isError = (onChainError && ratesError) || rewardsError
 
   const { totalApr, tooltipValues } = useMemo(
-    () => _getTotalAndTooltip(marketRewardsResp, marketRatesResp),
-    [marketRewardsResp, marketRatesResp],
+    () => _getTotalAndTooltip(marketRewardsResp, marketRates),
+    [marketRewardsResp, marketRates],
   )
 
   return {
-    isReady: typeof marketRewardsResp !== 'undefined' && typeof marketRatesResp !== 'undefined',
-    isError: rewardsError || ratesError,
+    isReady,
+    isError,
     invalidGaugeAddress: typeof gauge !== 'undefined' && gauge === zeroAddress,
     totalApr,
     tooltipValues,
