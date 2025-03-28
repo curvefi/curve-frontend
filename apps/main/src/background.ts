@@ -1,6 +1,7 @@
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
 
-const RefreshTimeoutMs = 1000 * 60 // 1 minute
+const minute = 1000 * 60
+const RefreshTimeoutMs = process.env.NODE_ENV === 'development' ? 60 * minute : minute
 
 /**
  * Refreshes data in the background at a fixed interval. This is useful for keeping data up-to-date without relying on

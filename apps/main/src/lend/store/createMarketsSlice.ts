@@ -1,4 +1,5 @@
 import type { GetState, SetState } from 'zustand'
+import { invalidateMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
@@ -118,6 +119,8 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 
     fetchAll: async (api, OneWayMarketTemplate, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
+      const chainId = api.chainId
+      const marketId = OneWayMarketTemplate.id
 
       const keys = [
         'statsParametersMapper',
@@ -131,6 +134,8 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         'totalLiquidityMapper',
       ] as const
 
+      // invalidate and refetch onchain data
+      invalidateMarketOnChainRates({ chainId, marketId })
       await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
