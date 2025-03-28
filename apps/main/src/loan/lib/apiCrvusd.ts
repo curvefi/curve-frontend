@@ -134,21 +134,21 @@ const detailInfo = {
   loanPartialInfo: async (llamma: Llamma) => {
     log('loanPartialInfo', llamma.collateralSymbol)
     const [
-      activeBandResult,
+      oraclePriceBandResult,
       parametersResult,
       totalDebtResult,
       totalCollateralResult,
       totalStablecoinResult,
       capAndAvailableResult,
     ] = await Promise.allSettled([
-      llamma.stats.activeBand(),
+      llamma.oraclePriceBand(),
       llamma.stats.parameters(),
       llamma.stats.totalDebt(),
       llamma.stats.totalCollateral(),
       llamma.stats.totalStablecoin(),
       llamma.stats.capAndAvailable(),
     ])
-    const activeBand = fulfilledValue(activeBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
     const totalCollateral = fulfilledValue(totalCollateralResult) ?? '0'
@@ -156,7 +156,7 @@ const detailInfo = {
     const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { cap: '0', available: '0' }
 
     return {
-      activeBand,
+      oraclePriceBand,
       collateralId: llamma.id,
       parameters,
       totalDebt,
@@ -230,30 +230,34 @@ const detailInfo = {
     const loanExists = await llamma?.loanExists(address)
 
     const [
-      activeBandResult,
       healthFullResult,
       healthNotFullResult,
       userBandsResult,
       userStateResult,
       liquidatingBandResult,
+      oraclePriceBandResult,
     ] = await Promise.allSettled([
-      loanExists ? llamma.stats.activeBand() : Promise.resolve(null),
       loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
       loanExists ? llamma.userHealth(false, address) : Promise.resolve(''),
       loanExists ? llamma.userBands(address) : Promise.resolve([0, 0]),
       loanExists ? llamma.userState(address) : Promise.resolve(DEFAULT_USER_STATE),
       loanExists ? llamma.stats.liquidatingBand() : Promise.resolve(null),
+      loanExists ? llamma.oraclePriceBand() : Promise.resolve(null),
     ])
 
-    const activeBand = fulfilledValue(activeBandResult) ?? null
     const healthFull = fulfilledValue(healthFullResult) ?? ''
     const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
     const userBands = fulfilledValue(userBandsResult) ?? ([0, 0] as [number, number])
     const userState = fulfilledValue(userStateResult) ?? DEFAULT_USER_STATE
     const userLiquidationBand = fulfilledValue(liquidatingBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
 
     const reversedUserBands = reverseBands(userBands)
-    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], userLiquidationBand, activeBand)
+    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(
+      reversedUserBands[0],
+      userLiquidationBand,
+      oraclePriceBand,
+    )
 
     const fetchedUserDetails: {
       healthFull: UserLoanDetails['healthFull']
@@ -267,7 +271,7 @@ const detailInfo = {
       healthFull,
       healthNotFull,
       userBands: reversedUserBands,
-      userHealth: userIsCloseToLiquidation ? healthNotFull : healthFull,
+      userHealth: +healthNotFull < 0 ? healthNotFull : healthFull,
       userIsCloseToLiquidation,
       userState,
       userLiquidationBand,

@@ -28,19 +28,29 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { userBands, healthFull, healthNotFull, userStatus } = userLoanDetails ?? {}
-  const { activeBand } = loanDetails ?? {}
+  const { oraclePriceBand } = loanDetails ?? {}
   const isSoftLiquidation = userStatus?.colorKey === 'soft_liquidation'
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
 
   useEffect(() => {
-    if (!isUndefined(activeBand) && healthFull && healthNotFull && userBands) {
-      const fetchedHealthMode = getHealthMode(activeBand, '', userBands, '', healthFull, healthNotFull, false, '', '')
+    if (!isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
+      const fetchedHealthMode = getHealthMode(
+        oraclePriceBand,
+        '',
+        userBands,
+        '',
+        healthFull,
+        healthNotFull,
+        false,
+        '',
+        '',
+      )
       setHealthMode(fetchedHealthMode)
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)
     }
-  }, [activeBand, healthFull, healthNotFull, userBands])
+  }, [oraclePriceBand, healthFull, healthNotFull, userBands])
 
   return (
     <Wrapper>
