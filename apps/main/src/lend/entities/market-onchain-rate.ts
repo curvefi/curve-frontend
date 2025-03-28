@@ -1,15 +1,15 @@
 import { lendingJsValidationSuite } from '@/lend/entities/validation/lending-js-validation'
-import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type Params = ChainParams<ChainId> & {
   marketId: string
 }
 
 const _fetchOnChainMarketRate = async ({ chainId, marketId }: ChainQuery<ChainId> & { marketId: string }) => {
-  const api = useStore.getState().api
+  const api = useApiStore.getState().lending
   const market = api?.getOneWayMarket(marketId)
 
   if (!market) return null
