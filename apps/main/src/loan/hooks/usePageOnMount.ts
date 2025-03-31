@@ -46,10 +46,9 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           if (useWallet && wallet) {
             const api = await initStableJs(chainId, wallet)
-            updateLlamalend(api)
             updateConnectState('success', '')
-
-            hydrate(api, prevApi, wallet)
+            await hydrate(api, prevApi, wallet)
+            updateLlamalend(api)
           } else {
             updateConnectState('', '')
           }

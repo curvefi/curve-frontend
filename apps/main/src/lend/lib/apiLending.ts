@@ -531,7 +531,7 @@ const user = {
         results[userActiveKey] = {
           details: {
             state,
-            health: isCloseToLiquidation ? healthNotFull : healthFull,
+            health: +healthNotFull < 0 ? healthNotFull : healthFull,
             healthFull,
             healthNotFull,
             bands: reversedUserBands,
@@ -2003,6 +2003,10 @@ function _getWalletProvider(wallet: Wallet) {
   return wallet.provider
 }
 
+/** healthNotFull is needed here because:
+ * User full health can be > 0
+ * But user is at risk of liquidation if not full < 0
+ */
 function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: boolean, userStateStablecoin: string) {
   const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
     label: 'Healthy',

@@ -12,7 +12,7 @@
     "eslint-config-next": "^15.2.4",
     "eslint-config-prettier": "^10.1.1",
     "eslint-config-turbo": "^2.4.4",
-    "eslint-import-resolver-typescript": "^4.2.3",
+    "eslint-import-resolver-typescript": "^4.3.1",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "7.37.4",
