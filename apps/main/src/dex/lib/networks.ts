@@ -351,9 +351,9 @@ export async function getNetworks() {
         stableswapFactory: true,
         twocryptoFactory: true,
         tricryptoFactory: true,
-        pricesApi: chainId == 146, // only enabled for sonic
-        isLite: chainId != 146, // only disable for sonic
-        isCrvRewardsEnabled: chainId == 146, // only enabled for sonic
+        pricesApi: chainId == 146, // sonic is upgraded from lite to full
+        isLite: chainId != 146, // sonic is upgraded from lite to full
+        isCrvRewardsEnabled: chainId == 146, // sonic is upgraded from lite to full
         isTestnet: config.isTestnet,
       }
       return prev
