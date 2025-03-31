@@ -12,7 +12,7 @@ import trezorModule from '@web3-onboard/trezor'
 import trustModule from '@web3-onboard/trust'
 import walletConnectModule from '@web3-onboard/walletconnect'
 
-const WALLET_CONNECT_PROJECT_ID = 'c685334a8b28bf7c733632a5c49de23f'
+export const WALLET_CONNECT_PROJECT_ID = 'c685334a8b28bf7c733632a5c49de23f'
 
 export const injected = injectedModule()
 export const trezor = trezorModule({

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import type { Theme } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 import { routeToPage } from '@ui-kit/shared/routes'
 import { DESKTOP_HEADER_HEIGHT, DesktopHeader } from './DesktopHeader'
 import { calcMobileHeaderHeight, MobileHeader } from './MobileHeader'
@@ -13,7 +13,7 @@ const isDesktopQuery = (theme: Theme) => theme.breakpoints.up('desktop')
 
 export const Header = <TChainId extends number>({ routes, ...props }: HeaderProps<TChainId>) => {
   const isDesktop = useMediaQuery(isDesktopQuery, { noSsr: true })
-  const [isBeta] = useLocalStorage<boolean>('beta')
+  const [isBeta] = useBetaFlag()
   const pathname = usePathname()
   const { networkName } = props
   const pages = useMemo(

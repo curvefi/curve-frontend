@@ -1,6 +1,6 @@
 import { forwardRef, Ref } from 'react'
 import Box from '@mui/material/Box'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
@@ -22,7 +22,7 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
     ref,
   ) => {
-    const [isBeta, setIsBeta] = useLocalStorage<boolean>('beta')
+    const [isBeta, setIsBeta] = useBetaFlag()
     return (
       (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || isBeta) && (
         <Box ref={ref}>

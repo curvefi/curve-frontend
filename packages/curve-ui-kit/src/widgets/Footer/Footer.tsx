@@ -11,6 +11,7 @@ import { BetaSnackbar } from './BetaSnackbar'
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
+import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 
 const LlamaImageSrc = (LlamaImg as unknown as { src: string }).src
 const Llama = styled('img')({
@@ -27,7 +28,7 @@ type FooterProps = {
 export const Footer = ({ appName, networkName, headerHeight }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
-  const [isBeta, setIsBeta] = useLocalStorage<boolean>('beta')
+  const [isBeta, setIsBeta] = useBetaFlag()
   return (
     <Box
       component="footer"

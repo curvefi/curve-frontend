@@ -1,6 +1,8 @@
-import { BrowserProvider } from 'ethers'
-import { Dispatch, SetStateAction, useEffect } from 'react'
+import { BrowserProvider, FallbackProvider, JsonRpcProvider } from 'ethers'
+import { Dispatch, type ReactNode, SetStateAction, useEffect } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
+import { clientToProvider } from '@ui-kit/features/connect-wallet/lib/wagmi/adapter'
+import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
@@ -12,6 +14,9 @@ import type {
 } from '@web3-onboard/core/dist/types'
 import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
 import { getRpcProvider } from './utils/wallet-helpers'
+import { useWagmiWallet } from './wagmi/wallet'
+
+type EthersProvider = BrowserProvider | FallbackProvider | JsonRpcProvider
 
 type UseConnectWallet = {
   (): {
@@ -21,8 +26,9 @@ type UseConnectWallet = {
     disconnect: (wallet: DisconnectOptions) => Promise<Wallet[]>
     walletName: string | null
     setWalletName: Dispatch<SetStateAction<string | null>>
-    provider: BrowserProvider | null
+    provider: EthersProvider | null
     signerAddress: Address | undefined
+    modal: ReactNode
   }
   getState: () => typeof state
   initialize(...params: Parameters<typeof initOnboard>): void
@@ -30,7 +36,7 @@ type UseConnectWallet = {
 
 let onboard: OnboardAPI | null = null
 const state: {
-  provider: BrowserProvider | null
+  provider: EthersProvider | null
   wallet: Wallet | null
 } = {
   provider: null,
@@ -38,24 +44,29 @@ const state: {
 }
 
 export const useWallet: UseConnectWallet = () => {
-  const [{ wallet, connecting }, connect, disconnect] = useOnboardWallet()
+  const [isBeta] = useBetaFlag()
+  const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] = useOnboardWallet()
+  const [{ wallet: wagmiWallet, connecting: wagmiConnecting, modal }, wagmiConnect, wagmiDisconnect] = useWagmiWallet()
   const [walletName, setWalletName] = useLocalStorage<string | null>('walletName')
 
-  useEffect(() => {
-    state.wallet = wallet
-    state.provider = wallet && new BrowserProvider(getRpcProvider(wallet))
-  }, [wallet])
+  const useWagmi = isBeta && !onboardWallet && !onboardConnecting
 
-  const signerAddress = wallet?.accounts?.[0]?.address
+  useEffect(() => {
+    state.wallet = useWagmi ? wagmiWallet : onboardWallet
+    state.provider = useWagmi ? clientToProvider(wagmiWallet.client) : onboardWallet && new BrowserProvider(getRpcProvider(onboardWallet))
+  }, [onboardWallet, useWagmi, wagmiWallet])
+
+  const signerAddress = onboardWallet?.accounts?.[0]?.address
   return {
-    wallet,
-    connecting,
-    connect,
-    disconnect,
+    wallet: useWagmi  ? wagmiWallet : onboardWallet,
+    connecting: useWagmi  ? wagmiConnecting : onboardConnecting,
+    connect: useWagmi  ? wagmiConnect : onboardConnect,
+    disconnect: useWagmi  ? wagmiDisconnect : onboardDisconnect,
     walletName,
     setWalletName,
-    provider: useWallet.getState().provider,
+    provider: state.provider,
     signerAddress,
+    modal,
   }
 }
 useWallet.initialize = (...params) => (onboard = initOnboard(...params))

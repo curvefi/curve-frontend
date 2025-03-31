@@ -8,7 +8,7 @@ import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
 import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 import { t } from '@ui-kit/lib/i18n'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -39,7 +39,7 @@ export const DesktopHeader = <TChainId extends number>({
   const setTheme = useUserProfileStore((state) => state.setTheme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
-  const [isBeta] = useLocalStorage<boolean>('beta')
+  const [isBeta] = useBetaFlag()
 
   return (
     <>

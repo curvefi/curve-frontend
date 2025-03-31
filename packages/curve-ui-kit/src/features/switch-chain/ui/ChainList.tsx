@@ -19,34 +19,6 @@ enum ChainType {
   main = 'main',
 }
 
-function ChainListItem<TChainId extends number>({
-  chain,
-  onChange,
-  isSelected,
-}: {
-  chain: ChainOption<TChainId>
-  onChange: (chainId: TChainId) => void
-  isSelected: boolean
-}) {
-  const ref = useRef<HTMLLIElement | null>(null)
-  return (
-    <InvertOnHover hoverRef={ref}>
-      <MenuItem
-        onClick={() => onChange(chain.chainId)}
-        data-testid={`menu-item-chain-${chain.chainId}`}
-        selected={isSelected}
-        tabIndex={0}
-      >
-        <ChainSwitcherIcon chain={chain} size={36} />
-        <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-          {chain.label}
-        </Typography>
-        {isSelected && <CheckedIcon />}
-      </MenuItem>
-    </InvertOnHover>
-  )
-}
-
 export function ChainList<TChainId extends number>({
   options,
   onChange,
@@ -91,11 +63,13 @@ export function ChainList<TChainId extends number>({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {chains.map((chain) => (
-                    <ChainListItem
+                    <MenuItem
+                      data-testid={`menu-item-chain-${chain.chainId}`}
                       key={chain.chainId}
-                      chain={chain}
+                      value={chain.chainId}
                       onChange={onChange}
                       isSelected={chain.chainId == selectedNetwork?.chainId}
+                      icon={<ChainSwitcherIcon chain={chain} size={36} />}
                     />
                   ))}
                 </MenuList>
