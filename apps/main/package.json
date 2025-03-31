@@ -46,7 +46,7 @@
     "react": "*",
     "react-aria": "3.38.1",
     "react-dom": "*",
-    "react-hook-form": "^7.54.2",
+    "react-hook-form": "^7.55.0",
     "react-is": "19.0.0",
     "react-stately": "3.36.1",
     "recharts": "2.15.1",
