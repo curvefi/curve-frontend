@@ -45,16 +45,16 @@ const DetailInfoHealth = ({
 }) => {
   const [currentHealthMode, setCurrentHealthMode] = useState(DEFAULT_HEALTH_MODE)
 
-  const { activeBand } = loanDetails ?? {}
+  const { oraclePriceBand } = loanDetails ?? {}
   const currentHealthModeColorKey = userLoanDetails?.userStatus?.colorKey
   const newHealthModeColorKey = healthMode?.colorKey
 
   // new health mode
   useEffect(() => {
-    if (typeof activeBand !== 'undefined' && healthFull && healthNotFull) {
+    if (typeof oraclePriceBand !== 'undefined' && healthFull && healthNotFull) {
       setHealthMode(
         getHealthMode(
-          activeBand,
+          oraclePriceBand,
           amount,
           bands,
           formType,
@@ -69,7 +69,7 @@ const DetailInfoHealth = ({
       setHealthMode(DEFAULT_HEALTH_MODE)
     }
   }, [
-    activeBand,
+    oraclePriceBand,
     amount,
     bands,
     currentHealthModeColorKey,
@@ -82,11 +82,11 @@ const DetailInfoHealth = ({
 
   // current health mode
   useEffect(() => {
-    if (typeof activeBand !== 'undefined' && userLoanDetails) {
+    if (typeof oraclePriceBand !== 'undefined' && userLoanDetails) {
       const { healthFull, healthNotFull, userBands } = userLoanDetails
       setCurrentHealthMode(
         getHealthMode(
-          activeBand,
+          oraclePriceBand,
           amount,
           userBands,
           formType,
@@ -98,7 +98,7 @@ const DetailInfoHealth = ({
         ),
       )
     }
-  }, [activeBand, amount, formType, newHealthModeColorKey, userLoanDetails])
+  }, [oraclePriceBand, amount, formType, newHealthModeColorKey, userLoanDetails])
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
@@ -157,10 +157,8 @@ const HealthPercent = styled.span<{ colorKey: HeathColorKey }>`
 
 export default DetailInfoHealth
 
-// 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
-// 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  activeBand: number | null,
+  oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
   formType: FormType,
@@ -179,7 +177,7 @@ export function getHealthMode(
     warning: '',
   }
 
-  if (getIsUserCloseToLiquidation(bands?.[0], null, activeBand)) {
+  if (getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
     let message = ''
 
     if (newColorKey === 'close_to_liquidation') {
