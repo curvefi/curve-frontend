@@ -1258,7 +1258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.24.4, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.27.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.24.4, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.27.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7":
   version: 7.27.0
   resolution: "@babel/runtime@npm:7.27.0"
   dependencies:
@@ -4572,6 +4572,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mui/types@npm:^7.4.0":
+  version: 7.4.0
+  resolution: "@mui/types@npm:7.4.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.26.10"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/1f456206e8c6742a76c265d6c407a930d7126b03aac98949bd35a1edd14db1fd98c5169266a7948b9e24d0295adbeb3b58635eceb38217ee5f2d04d88b6b7d1c
+  languageName: node
+  linkType: hard
+
 "@mui/types@npm:~7.2.24":
   version: 7.2.24
   resolution: "@mui/types@npm:7.2.24"
@@ -4601,6 +4615,26 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/df2392c3a2bb5a9549eec9b897ec418d40d41f74f8317ccc0e86c6973358d0ede46e10927581415c9d265067739be3a5b7ce3ec8027375bf526cdaa2a8560862
+  languageName: node
+  linkType: hard
+
+"@mui/utils@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@mui/utils@npm:7.0.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.26.10"
+    "@mui/types": "npm:^7.4.0"
+    "@types/prop-types": "npm:^15.7.14"
+    clsx: "npm:^2.1.1"
+    prop-types: "npm:^15.8.1"
+    react-is: "npm:^19.0.0"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/bf5d721c9e09f2eba359db227dfafca51152a47753c6f32d020f8a9af572f8f14515e03592b2a95b5bea8207efe775d7d1ae4a0e42f0638f03a15fd1d303ffce
   languageName: node
   linkType: hard
 
@@ -13725,7 +13759,7 @@ __metadata:
     "@emotion/styled": "npm:^11.14.0"
     "@mui/icons-material": "npm:^6.4.8"
     "@mui/material": "npm:^6.4.8"
-    "@mui/utils": "npm:^6.4.8"
+    "@mui/utils": "npm:^7.0.1"
     "@safe-global/safe-apps-provider": "npm:^0.18.5"
     "@safe-global/safe-apps-sdk": "npm:^9.1.0"
     "@storybook/addon-a11y": "npm:^8.6.9"
