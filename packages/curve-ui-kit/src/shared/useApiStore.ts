@@ -3,10 +3,9 @@ import { devtools } from 'zustand/middleware'
 import type curveApi from '@curvefi/api'
 import type llamalendApi from '@curvefi/llamalend-api'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { Chain } from '@ui-kit/utils'
 
 export type CurveApi = typeof curveApi & { chainId: number }
-export type LlamalendChainId = IChainId | Chain.Sonic // todo: sonic should be part of IChainId
+export type LlamalendChainId = IChainId
 export type LlamalendApi = typeof llamalendApi & { chainId: LlamalendChainId }
 
 type State = {

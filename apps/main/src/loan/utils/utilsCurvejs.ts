@@ -22,20 +22,6 @@ export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Ll
   return api
 }
 
-export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
-  try {
-    const { networkId } = networks[chainId]
-    const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamalendApi
-
-    if (wallet) {
-      await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
-      return api
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 export function getIsUserCloseToLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,

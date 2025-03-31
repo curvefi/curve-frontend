@@ -50,9 +50,9 @@ export type MarketsSlice = {
     fetchDatas(key: string, api: LlamalendApi, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchAll(api: LlamalendApi, LendMarketTemplate: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
-    fetchVaultPricePerShare(chainId: ChainId, LendMarketTemplate: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
-    fetchTotalCollateralValue(chainId: ChainId, LendMarketTemplate: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchAll(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchVaultPricePerShare(chainId: ChainId, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchTotalCollateralValue(chainId: ChainId, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -118,10 +118,10 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       sliceState.setStateByActiveKey(k, chainId.toString(), cMapper)
     },
 
-    fetchAll: async (api, LendMarketTemplate, shouldRefetch) => {
+    fetchAll: async (api, market, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
       const chainId = api.chainId
-      const marketId = OneWayMarketTemplate.id
+      const marketId = market.id
 
       const keys = [
         'statsParametersMapper',
@@ -137,7 +137,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 
       // invalidate and refetch onchain data
       invalidateMarketOnChainRates({ chainId, marketId })
-      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [LendMarketTemplate], shouldRefetch)))
+      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [market], shouldRefetch)))
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
       const sliceState = get()[sliceKey]
