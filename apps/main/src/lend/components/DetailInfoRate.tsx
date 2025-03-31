@@ -1,6 +1,4 @@
-import { useMemo } from 'react'
-import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
-import useStore from '@/lend/store/useStore'
+import { useMarketRates } from '@/lend/hooks/useMarketRates'
 import { ChainId, FutureRates } from '@/lend/types/lend.types'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
@@ -18,28 +16,13 @@ const DetailInfoRate = ({
   isBorrow: boolean
   futureRates?: FutureRates | undefined | null
 }) => {
-  // uses onchain data if available
-  const { data: onChainData } = useMarketOnChainRates({ chainId: rChainId, marketId: rOwmId })
-  const ratesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
+  const { rates, loading, error } = useMarketRates(rChainId, rOwmId)
 
-  const { rates, error } = ratesResp ?? {}
   const futureRate = isBorrow ? futureRates?.borrowApy : futureRates?.lendApr
-
-  const rate = useMemo(() => {
-    if (isBorrow) {
-      // use on chain rate if available, fall back on api rate
-      return onChainData?.rates?.borrowApy ?? rates?.borrowApy
-    }
-    // use on chain rate if available, fall back on api rate
-    return onChainData?.rates?.lendApr ?? rates?.lendApr
-  }, [isBorrow, onChainData?.rates, rates?.borrowApy, rates?.lendApr])
+  const rate = isBorrow ? rates?.borrowApy : rates?.lendApr
 
   return (
-    <DetailInfo
-      loading={typeof ratesResp === 'undefined'}
-      loadingSkeleton={[100, 20]}
-      label={isBorrow ? t`Borrow APY:` : t`Lend APR:`}
-    >
+    <DetailInfo loading={loading} loadingSkeleton={[100, 20]} label={isBorrow ? t`Borrow APY:` : t`Lend APR:`}>
       <span>
         {error ? (
           '?'
