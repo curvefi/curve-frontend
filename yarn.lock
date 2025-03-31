@@ -1561,15 +1561,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.66.9":
-  version: 2.66.10
-  resolution: "@curvefi/api@npm:2.66.10"
+"@curvefi/api@npm:2.66.9":
+  version: 2.66.9
+  resolution: "@curvefi/api@npm:2.66.9"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.12"
     bignumber.js: "npm:^9.1.2"
     ethers: "npm:^6.13.4"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/709da290feb095c9744c507baed5c2752a36505c85878a664256620818b23a0c627ab07dd12ef3faafaa20ff0399a04a1d6fbf45982698b6ff8c67536cf93cc8
+  checksum: 10c0/f3a646c70865fddea5dc0d194d6012b70d8e2c2c661f9fadc7e93f79812621cb1fc0c0c4b8d64d907a970c6d70bbe113d070521e2a6a6d5a09dbe3e195c25951
   languageName: node
   linkType: hard
 
@@ -1597,16 +1597,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:^2.5.6":
-  version: 2.5.7
-  resolution: "@curvefi/lending-api@npm:2.5.7"
+"@curvefi/lending-api@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@curvefi/lending-api@npm:2.5.6"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.13"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.10.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/67157f83077e4b1d2718178e1e78353db1c4dca02292e16fef887682cc7f7a80d5f1a9b4abf02030301e6addc6d523fb7c5e0712581ea31cedd07c8f0982d850
+  checksum: 10c0/876908a898629c9e9b006d5ac8f79ca38c1616365eb535226dd9e58b399b20e44123829202fda57c393a75f64afaae28cacfe3e5220b69a3573310ce675be0e9
   languageName: node
   linkType: hard
 
@@ -1622,16 +1622,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/stablecoin-api@npm:^1.5.19":
-  version: 1.5.19
-  resolution: "@curvefi/stablecoin-api@npm:1.5.19"
+"@curvefi/stablecoin-api@npm:1.5.17":
+  version: 1.5.17
+  resolution: "@curvefi/stablecoin-api@npm:1.5.17"
   dependencies:
     "@ethersproject/networks": "npm:^5.5.0"
     bignumber.js: "npm:^9.0.1"
     ethcall: "npm:^4.2.5"
     ethers: "npm:^5.4.6"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/bb79653e86c6aeaf20ae928fd040f05777bd464dfdc6ae067d9229f47b4e09952789c77e45463dff4350bcdffbd28a4050cfcaf7098101b3b9f24520438d1f63
+  checksum: 10c0/f14d525ab052f9d94ed5e5eb9be05fb236e24968709e2e777f994dc4dfcd5f200a2b9e64bd8a7e74df852c4ac8636ffd0e5631dbc631338a6e9a5971ef2c67fb
   languageName: node
   linkType: hard
 
@@ -8306,7 +8306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-a11y@npm:^8.6.11":
+"@storybook/addon-a11y@npm:^8.6.9":
   version: 8.6.11
   resolution: "@storybook/addon-a11y@npm:8.6.11"
   dependencies:
@@ -8361,7 +8361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-docs@npm:8.6.11, @storybook/addon-docs@npm:^8.6.11":
+"@storybook/addon-docs@npm:8.6.11, @storybook/addon-docs@npm:^8.6.9":
   version: 8.6.11
   resolution: "@storybook/addon-docs@npm:8.6.11"
   dependencies:
@@ -8378,7 +8378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-essentials@npm:^8.6.11":
+"@storybook/addon-essentials@npm:^8.6.9":
   version: 8.6.11
   resolution: "@storybook/addon-essentials@npm:8.6.11"
   dependencies:
@@ -8448,7 +8448,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-themes@npm:^8.6.11":
+"@storybook/addon-themes@npm:^8.6.9":
   version: 8.6.11
   resolution: "@storybook/addon-themes@npm:8.6.11"
   dependencies:
@@ -8628,7 +8628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/nextjs@npm:^8.6.11":
+"@storybook/nextjs@npm:^8.6.9":
   version: 8.6.11
   resolution: "@storybook/nextjs@npm:8.6.11"
   dependencies:
@@ -8752,7 +8752,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react@npm:8.6.11, @storybook/react@npm:^8.6.11":
+"@storybook/react@npm:8.6.11, @storybook/react@npm:^8.6.9":
   version: 8.6.11
   resolution: "@storybook/react@npm:8.6.11"
   dependencies:
@@ -13680,14 +13680,14 @@ __metadata:
     "@mui/utils": "npm:^6.4.8"
     "@safe-global/safe-apps-provider": "npm:^0.18.5"
     "@safe-global/safe-apps-sdk": "npm:^9.1.0"
-    "@storybook/addon-a11y": "npm:^8.6.11"
-    "@storybook/addon-docs": "npm:^8.6.11"
-    "@storybook/addon-essentials": "npm:^8.6.11"
+    "@storybook/addon-a11y": "npm:^8.6.9"
+    "@storybook/addon-docs": "npm:^8.6.9"
+    "@storybook/addon-essentials": "npm:^8.6.9"
     "@storybook/addon-interactions": "npm:^8.6.11"
-    "@storybook/addon-themes": "npm:^8.6.11"
+    "@storybook/addon-themes": "npm:^8.6.9"
     "@storybook/blocks": "npm:^8.6.11"
-    "@storybook/nextjs": "npm:^8.6.11"
-    "@storybook/react": "npm:^8.6.11"
+    "@storybook/nextjs": "npm:^8.6.9"
+    "@storybook/react": "npm:^8.6.9"
     "@storybook/test": "npm:^8.6.11"
     "@tanstack/query-sync-storage-persister": "npm:5.71.1"
     "@tanstack/react-query": "npm:5.71.1"
@@ -13718,7 +13718,7 @@ __metadata:
     pino-pretty: "npm:^13.0.0"
     react: "npm:*"
     react-dom: "npm:*"
-    storybook: "npm:^8.6.11"
+    storybook: "npm:^8.6.9"
     tsconfig: "npm:*"
     type-fest: "npm:^4.38.0"
     typescript: "npm:*"
@@ -18709,9 +18709,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.66.9"
-    "@curvefi/lending-api": "npm:^2.5.6"
-    "@curvefi/stablecoin-api": "npm:^1.5.19"
+    "@curvefi/api": "npm:2.66.9"
+    "@curvefi/lending-api": "npm:2.5.6"
+    "@curvefi/stablecoin-api": "npm:1.5.17"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^4.1.3"
     "@next/bundle-analyzer": "npm:^15.2.4"
@@ -18739,7 +18739,7 @@ __metadata:
     react: "npm:*"
     react-aria: "npm:3.38.1"
     react-dom: "npm:*"
-    react-hook-form: "npm:^7.55.0"
+    react-hook-form: "npm:^7.54.2"
     react-is: "npm:19.1.0"
     react-stately: "npm:3.36.1"
     recharts: "npm:2.15.1"
@@ -18751,7 +18751,7 @@ __metadata:
     ui: "npm:*"
     validator: "npm:^13.15.0"
     vest: "npm:^5.4.6"
-    viem: "npm:^2.24.2"
+    viem: "npm:^2.23.15"
     webpack: "npm:^5.98.0"
     zustand: "npm:^4.5.6"
   peerDependencies:
@@ -20792,7 +20792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^19.0.0":
+"react-dom@npm:^19.1.0":
   version: 19.1.0
   resolution: "react-dom@npm:19.1.0"
   dependencies:
@@ -20803,7 +20803,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.55.0":
+"react-hook-form@npm:^7.54.2":
   version: 7.55.0
   resolution: "react-hook-form@npm:7.55.0"
   peerDependencies:
@@ -20919,7 +20919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^19.0.0":
+"react@npm:^19.1.0":
   version: 19.1.0
   resolution: "react@npm:19.1.0"
   checksum: 10c0/530fb9a62237d54137a13d2cfb67a7db6a2156faed43eecc423f4713d9b20c6f2728b026b45e28fcd72e8eadb9e9ed4b089e99f5e295d2f0ad3134251bdd3698
@@ -22291,7 +22291,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^8.6.11":
+"storybook@npm:^8.6.9":
   version: 8.6.11
   resolution: "storybook@npm:8.6.11"
   dependencies:
@@ -24069,7 +24069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.24.2":
+"viem@npm:^2.23.15":
   version: 2.24.2
   resolution: "viem@npm:2.24.2"
   dependencies:
