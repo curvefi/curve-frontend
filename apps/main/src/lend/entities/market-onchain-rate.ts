@@ -1,18 +1,17 @@
 import { lendingJsValidationSuite } from '@/lend/entities/validation/lending-js-validation'
 import { ChainId } from '@/lend/types/lend.types'
-import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
+import { FieldsOf } from '@ui-kit/lib'
+import type { ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
-type Params = ChainParams<ChainId> & {
-  marketId: string
-}
+type MarketQuery = ChainQuery<ChainId> & { marketId: string }
+type MarketParams = FieldsOf<MarketQuery>
 
-const _fetchOnChainMarketRate = async ({ chainId, marketId }: ChainQuery<ChainId> & { marketId: string }) => {
+const _fetchOnChainMarketRate = async ({ chainId, marketId }: MarketQuery) => {
   const api = useApiStore.getState().lending
-  const market = api?.getOneWayMarket(marketId)
+  const market = api!.getOneWayMarket(marketId)
 
-  if (!market) return null
   const ratesRes = await market.stats.rates(false, false)
 
   return { rates: ratesRes }
@@ -24,7 +23,7 @@ const _fetchOnChainMarketRate = async ({ chainId, marketId }: ChainQuery<ChainId
  * The api data can have a few minutes delay.
  * */
 export const { useQuery: useMarketOnChainRates, invalidate: invalidateMarketOnChainRates } = queryFactory({
-  queryKey: (params: Params) =>
+  queryKey: (params: MarketParams) =>
     ['marketOnchainData', { chainId: params.chainId }, { marketId: params.marketId }] as const,
   queryFn: _fetchOnChainMarketRate,
   refetchInterval: '1m',
