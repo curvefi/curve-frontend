@@ -1597,7 +1597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:2.5.6":
+"@curvefi/lending-api@npm:2.5.7":
   version: 2.5.6
   resolution: "@curvefi/lending-api@npm:2.5.6"
   dependencies:
@@ -1622,16 +1622,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/stablecoin-api@npm:1.5.17":
-  version: 1.5.17
-  resolution: "@curvefi/stablecoin-api@npm:1.5.17"
+"@curvefi/stablecoin-api@npm:1.5.19":
+  version: 1.5.19
+  resolution: "@curvefi/stablecoin-api@npm:1.5.19"
   dependencies:
     "@ethersproject/networks": "npm:^5.5.0"
     bignumber.js: "npm:^9.0.1"
     ethcall: "npm:^4.2.5"
     ethers: "npm:^5.4.6"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/f14d525ab052f9d94ed5e5eb9be05fb236e24968709e2e777f994dc4dfcd5f200a2b9e64bd8a7e74df852c4ac8636ffd0e5631dbc631338a6e9a5971ef2c67fb
+  checksum: 10c0/bb79653e86c6aeaf20ae928fd040f05777bd464dfdc6ae067d9229f47b4e09952789c77e45463dff4350bcdffbd28a4050cfcaf7098101b3b9f24520438d1f63
   languageName: node
   linkType: hard
 
@@ -18710,8 +18710,8 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:2.66.9"
-    "@curvefi/lending-api": "npm:2.5.6"
-    "@curvefi/stablecoin-api": "npm:1.5.17"
+    "@curvefi/lending-api": "npm:2.5.7"
+    "@curvefi/stablecoin-api": "npm:1.5.19"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^4.1.3"
     "@next/bundle-analyzer": "npm:^15.2.4"
