@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/cypress": "^1.1.6",
     "@types/wait-on": "^5.3.4",
-    "cypress": "^14.2.0",
+    "cypress": "^14.2.1",
     "dotenv-flow": "^4.1.0",
     "ethers": "^6.13.5",
     "hardhat": "^2.22.19",
