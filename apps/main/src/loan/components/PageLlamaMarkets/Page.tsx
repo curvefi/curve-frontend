@@ -17,10 +17,10 @@ import useStore from '@/loan/store/useStore'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { logSuccess } from '@ui-kit/lib'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
-import { logSuccess } from '@ui-kit/lib'
 
 /**
  * Reloads the lending vaults and mint markets.
