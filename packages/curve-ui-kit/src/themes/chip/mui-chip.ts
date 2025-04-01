@@ -3,7 +3,6 @@ import type { ChipProps } from '@mui/material/Chip/Chip'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { Grays } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
 
