@@ -63,5 +63,5 @@ module.exports = {
       presets: [require.resolve('next/babel')],
     },
   },
-  ignorePatterns: ['**/curve-ui-kit/.storybook/**/*'],
+  ignorePatterns: ['**/curve-ui-kit/.storybook/**/*', '**/*/*.js'],
 }
