@@ -26,7 +26,7 @@ module.exports = {
         ],
       },
     ],
-    "@typescript-eslint/no-floating-promises": "warn",
+    '@typescript-eslint/no-floating-promises': 'warn',
 
     'import/order': [
       'warn',
@@ -57,10 +57,10 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./tsconfig.json'],
+    project: ['./**/tsconfig.json'],
     tsconfigRootDir: process.cwd(),
     babelOptions: {
       presets: [require.resolve('next/babel')],
     },
-  }
+  },
 }
