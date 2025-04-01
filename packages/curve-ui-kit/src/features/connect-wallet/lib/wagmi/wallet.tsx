@@ -1,29 +1,32 @@
 import { Eip1193Provider } from 'ethers'
-import { type ReactNode, useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useClient } from 'wagmi'
+import { useIsWalletConnecting, useIsWalletModalOpen, useWalletStorage } from '@ui-kit/hooks/useGlobalStorage'
 import { connect, disconnect } from '@wagmi/core'
-import { WagmiConnectModal } from '../../ui/WagmiConnectModal'
 import type { Wallet } from '../types'
 import { clientToProvider } from './adapter'
-import { config, SupportedWallets } from './setup'
+import { config, Connectors, SupportedWallets } from './setup'
 
 export const useWagmiWallet = () => {
-  const [modal, setModal] = useState<ReactNode>()
-  const [connecting, setConnecting] = useState(false)
-  const [wallet, setWallet] = useState<Wallet | null>(null)
+  const [isModalOpen, setIsModalOpen] = useIsWalletModalOpen()
+  const [connecting, setConnecting] = useIsWalletConnecting()
+  const [wallet, setWallet] = useWalletStorage()
   const client = useClient()
 
   const connectWagmi = useCallback(
     async (label?: string): Promise<Wallet | null> => {
-      const connector = label && SupportedWallets.find((w) => w.label === label)?.connector
-      if (!connector) {
-        setModal(<WagmiConnectModal onConnect={connectWagmi} />)
+      const connectorType = label && SupportedWallets.find((w) => w.label === label)?.connector
+      if (!connectorType) {
+        console.log('set modal', label)
+        setIsModalOpen(true)
         return null
       }
 
+      console.log('connect', label, connectorType)
+
       setConnecting(true)
       try {
-        const { accounts, chainId } = await connect(config, { connector })
+        const { accounts, chainId } = await connect(config, { connector: Connectors[connectorType] })
         const provider = clientToProvider(client)
         const wallet: Wallet = {
           label,
@@ -42,10 +45,15 @@ export const useWagmiWallet = () => {
         setWallet(null)
       }
     },
-    [client],
+    [client, setConnecting, setIsModalOpen, setWallet],
   )
 
   const disconnectWagmi = useCallback(() => disconnect(config), [])
 
-  return [{ wallet, connecting, modal, client }, connectWagmi, disconnectWagmi] as const
+  const onModalClose = useCallback(() => {
+    setIsModalOpen(false)
+    setConnecting(false)
+  }, [setIsModalOpen, setConnecting])
+
+  return [{ wallet, connecting, isModalOpen, client }, connectWagmi, disconnectWagmi, onModalClose] as const
 }

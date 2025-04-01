@@ -1,8 +1,7 @@
 import { BrowserProvider, ethers } from 'ethers'
 import { Dispatch, type ReactNode, SetStateAction, useCallback, useEffect, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
-import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
 import { switchChain } from '@wagmi/core'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
@@ -53,7 +52,7 @@ export const useWallet: UseConnectWallet = () => {
     useOnboardWallet()
   const [{ wallet: wagmiWallet, connecting: wagmiConnecting, modal, client }, wagmiConnect, wagmiDisconnect] =
     useWagmiWallet()
-  const [walletName, setWalletName] = useLocalStorage<string | null>('walletName')
+  const [walletName, setWalletName] = useWalletName()
   const useWagmi = useUseWagmi()
 
   const wallet = useMemo(

@@ -1,8 +1,8 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
-import GlobalStyle from '@/globalStyle'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/loan/layout'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
@@ -10,10 +10,7 @@ import useStore from '@/loan/store/useStore'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 export const App = ({ children }: { children: ReactNode }) => {
@@ -78,15 +75,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <QueryProvider persister={persister} queryClient={queryClient}>
-            <Page>{children}</Page>
-          </QueryProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <Page>{children}</Page>
+    </ClientWrapper>
   )
 }

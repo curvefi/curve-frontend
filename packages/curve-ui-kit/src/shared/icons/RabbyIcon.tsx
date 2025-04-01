@@ -31,8 +31,8 @@ export const RabbyIcon = createSvgIcon(
         y2="25.7154"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#8797FF" />
-        <stop offset="1" stop-color="#AAA8FF" />
+        <stop stopColor="#8797FF" />
+        <stop offset="1" stopColor="#AAA8FF" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_8225_3012"
@@ -42,8 +42,8 @@ export const RabbyIcon = createSvgIcon(
         y2="-0.16586"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#3B22A0" />
-        <stop offset="1" stop-color="#5156D8" stop-opacity="0" />
+        <stop stopColor="#3B22A0" />
+        <stop offset="1" stopColor="#5156D8" stop-opacity="0" />
       </linearGradient>
       <linearGradient
         id="paint2_linear_8225_3012"
@@ -53,8 +53,8 @@ export const RabbyIcon = createSvgIcon(
         y2="18.1151"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#3B1E8F" />
-        <stop offset="1" stop-color="#6A6FFB" stop-opacity="0" />
+        <stop stopColor="#3B1E8F" />
+        <stop offset="1" stopColor="#6A6FFB" stop-opacity="0" />
       </linearGradient>
       <linearGradient
         id="paint3_linear_8225_3012"
@@ -64,8 +64,8 @@ export const RabbyIcon = createSvgIcon(
         y2="36.0715"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#8898FF" />
-        <stop offset="0.9839" stop-color="#5F47F1" />
+        <stop stopColor="#8898FF" />
+        <stop offset="0.9839" stopColor="#5F47F1" />
       </linearGradient>
     </defs>
   </svg>,

@@ -1,6 +1,6 @@
 import { forwardRef, Ref } from 'react'
 import Box from '@mui/material/Box'
-import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'

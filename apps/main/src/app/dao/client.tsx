@@ -5,17 +5,13 @@ import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import Page from '@/dao/layout'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import GlobalStyle from '@/globalStyle'
-import { OverlayProvider } from '@react-aria/overlays'
 import { getPageWidthClassName, isSuccess } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
-import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { ClientWrapper } from '../ClientWrapper'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
@@ -106,17 +102,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <OverlayProvider>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <Page>{children}</Page>
-            </QueryProvider>
-          </OverlayProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <Page>{children}</Page>
+    </ClientWrapper>
   )
 }

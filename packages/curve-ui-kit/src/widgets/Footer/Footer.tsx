@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -11,7 +11,6 @@ import { BetaSnackbar } from './BetaSnackbar'
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
-import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 
 const LlamaImageSrc = (LlamaImg as unknown as { src: string }).src
 const Llama = styled('img')({

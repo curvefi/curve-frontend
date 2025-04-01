@@ -6,72 +6,84 @@ import { MetamaskIcon } from '@ui-kit/shared/icons/MetamaskIcon'
 import { PhantomIcon } from '@ui-kit/shared/icons/PhantomIcon'
 import { RabbyIcon } from '@ui-kit/shared/icons/RabbyIcon'
 import { RainbowIcon } from '@ui-kit/shared/icons/RainbowIcon'
+import { WalletConnectIcon } from '@ui-kit/shared/icons/WalletConnectIcon'
 import { WalletIcon } from '@ui-kit/shared/icons/WalletIcon'
 import { coinbaseWallet, injected, safe, walletConnect } from '@wagmi/connectors'
 import { createConfig, http } from '@wagmi/core'
 import { mainnet, sepolia } from '@wagmi/core/chains'
 
 declare module 'wagmi' {
-  // enables Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone.
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone.
+   */
   interface Register {
     config: typeof config
   }
 }
 
-const Connectors = {
+export const Connectors = {
   [injected.type]: injected(),
   [coinbaseWallet.type]: coinbaseWallet(),
-  [safe.type]: safe(),
+  [safe.type]: safe() as ReturnType<typeof safe>,
   [walletConnect.type]: walletConnect({ projectId: WALLET_CONNECT_PROJECT_ID }),
 }
 
-type WalletType = {
+type ConnectorType = keyof typeof Connectors
+
+export type WalletType = {
   label: string
   icon: ReturnType<typeof createSvgIcon>
-  connector: (typeof Connectors)[keyof typeof Connectors]
+  connector: ConnectorType
 }
 
-export const SupportedWallets: WalletType[] = [
+export const SupportedWallets = [
   {
     label: `Rabby`,
     icon: RabbyIcon,
-    connector: Connectors.injected,
+    connector: 'injected',
   },
   {
     label: `Metamask`,
     icon: MetamaskIcon,
-    connector: Connectors.injected,
-  },
-  {
-    label: `Browser Plugin`,
-    icon: WalletIcon,
-    connector: Connectors.injected,
+    connector: 'injected',
   },
   {
     label: `Phantom`,
     icon: PhantomIcon,
-    connector: Connectors.injected,
+    connector: 'injected',
   },
   {
     label: `Keplr`,
     icon: KeplrIcon,
-    connector: Connectors.injected,
+    connector: 'injected',
   },
   {
     label: `Rainbow`,
     icon: RainbowIcon,
-    connector: Connectors.injected,
+    connector: 'injected',
   },
   {
     label: `Coinbase`,
     icon: CoinbaseIcon,
-    connector: Connectors.coinbaseWallet,
+    connector: 'coinbaseWallet',
   },
-]
+  {
+    label: `WalletConnect`,
+    icon: WalletConnectIcon,
+    connector: 'walletConnect',
+  },
+  {
+    label: `Browser`,
+    icon: WalletIcon,
+    connector: 'injected',
+  },
+] satisfies WalletType[]
 
 export const config = createConfig({
   chains: [mainnet, sepolia],
-  connectors: Object.values(Connectors),
+  // todo: get rid of this any
+  connectors: Object.values(Connectors) as any,
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
