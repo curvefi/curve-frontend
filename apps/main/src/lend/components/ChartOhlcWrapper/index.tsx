@@ -21,8 +21,10 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
   const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const { activeKey, formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
-  const loanCreateDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
+  const activeKey = useStore((state) => state.loanCreate.activeKey)
+  const formValues = useStore((state) => state.loanCreate.formValues)
+  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
+  const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
   const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
@@ -35,30 +37,27 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   const removeCollateralPrices = useStore(
     (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
-
   const theme = useUserProfileStore((state) => state.theme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const {
-    chartLlammaOhlc,
-    chartOraclePoolOhlc,
-    timeOption,
-    setChartTimeOption,
-    fetchLlammaOhlcData,
-    fetchOraclePoolOhlcData,
-    fetchMoreData,
-    activityHidden,
-    chartExpanded,
-    setChartExpanded,
-    toggleLiqRangeCurrentVisible,
-    toggleLiqRangeNewVisible,
-    toggleOraclePriceVisible,
-    liqRangeCurrentVisible,
-    liqRangeNewVisible,
-    oraclePriceVisible,
-  } = useStore((state) => state.ohlcCharts)
+  const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
+  const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
+  const timeOption = useStore((state) => state.ohlcCharts.timeOption)
+  const setChartTimeOption = useStore((state) => state.ohlcCharts.setChartTimeOption)
+  const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
+  const fetchOraclePoolOhlcData = useStore((state) => state.ohlcCharts.fetchOraclePoolOhlcData)
+  const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
+  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
+  const toggleLiqRangeCurrentVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeCurrentVisible)
+  const toggleLiqRangeNewVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeNewVisible)
+  const toggleOraclePriceVisible = useStore((state) => state.ohlcCharts.toggleOraclePriceVisible)
+  const liqRangeCurrentVisible = useStore((state) => state.ohlcCharts.liqRangeCurrentVisible)
+  const liqRangeNewVisible = useStore((state) => state.ohlcCharts.liqRangeNewVisible)
+  const oraclePriceVisible = useStore((state) => state.ohlcCharts.oraclePriceVisible)
   const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
+
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
   const [selectedChartIndex, setChartSelectedIndex] = useState(0)
@@ -93,7 +92,10 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
         price2: [],
       }
 
-      for (const data of currentChart.data) {
+      // if a pool only has oracle price data, use that
+      const chartArray = currentChart.data.length !== 0 ? currentChart.data : currentChart.oraclePriceData
+
+      for (const data of chartArray) {
         range.price1 = [
           ...range.price1,
           {
@@ -111,7 +113,6 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       }
       return range
     }
-
     // create loan prices
     if (formValues.n && liqRangesMapper && currentChart.data) {
       if (liqRangesMapper[formValues.n].prices.length !== 0) {
@@ -119,7 +120,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
         // flip order to match other data
         liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
       } else {
-        const currentPrices = loanCreateDetailInfo?.prices
+        const currentPrices = loanCreateLeverageDetailInfo?.prices
 
         if (currentPrices) {
           liqRanges.new = formatRange([currentPrices[0], currentPrices[1]])
@@ -157,13 +158,14 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     formValues.n,
     liqRangesMapper,
     currentChart.data,
+    currentChart.oraclePriceData,
     userPrices,
     borrowMorePrices,
     repayLoanPrices,
     addCollateralPrices,
     removeCollateralPrices,
     repayLeveragePrices,
-    loanCreateDetailInfo,
+    loanCreateLeverageDetailInfo?.prices,
   ])
 
   const coins: LendingMarketTokens = useMemo(
