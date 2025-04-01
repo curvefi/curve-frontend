@@ -1561,15 +1561,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.66.9":
-  version: 2.66.9
-  resolution: "@curvefi/api@npm:2.66.9"
+"@curvefi/api@npm:2.66.11":
+  version: 2.66.11
+  resolution: "@curvefi/api@npm:2.66.11"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.12"
     bignumber.js: "npm:^9.1.2"
     ethers: "npm:^6.13.4"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/f3a646c70865fddea5dc0d194d6012b70d8e2c2c661f9fadc7e93f79812621cb1fc0c0c4b8d64d907a970c6d70bbe113d070521e2a6a6d5a09dbe3e195c25951
+  checksum: 10c0/25dc160f71dae4ffd04a733439f7e60c2f5ce601be3d8ee6a506b0ece10eb24ac8039a861790717e041a3cacf477a6ffd4df6ac5288f703ff954e73759763856
   languageName: node
   linkType: hard
 
@@ -18821,7 +18821,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:2.66.9"
+    "@curvefi/api": "npm:2.66.11"
     "@curvefi/lending-api": "npm:2.5.6"
     "@curvefi/stablecoin-api": "npm:1.5.19"
     "@hookform/error-message": "npm:^2.0.1"
