@@ -208,7 +208,7 @@ function createChadSurfaces() {
         Accent: Grays[10],
       },
       Border: {
-        Default: Layer[1].Fill,
+        Default: Grays[975],
         Active: Greens[500],
         Alert: Reds[500],
         Highlight: Violet[800],
@@ -356,7 +356,7 @@ function createDarkInvertedSurfaces() {
         Accent: Grays[10],
       },
       Border: {
-        Default: Layer[1].Fill,
+        Default: Grays[975],
         Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[500],
