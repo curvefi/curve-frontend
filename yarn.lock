@@ -1561,15 +1561,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.66.11":
-  version: 2.66.11
-  resolution: "@curvefi/api@npm:2.66.11"
+"@curvefi/api@npm:2.66.9":
+  version: 2.66.9
+  resolution: "@curvefi/api@npm:2.66.9"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.12"
     bignumber.js: "npm:^9.1.2"
     ethers: "npm:^6.13.4"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/25dc160f71dae4ffd04a733439f7e60c2f5ce601be3d8ee6a506b0ece10eb24ac8039a861790717e041a3cacf477a6ffd4df6ac5288f703ff954e73759763856
+  checksum: 10c0/f3a646c70865fddea5dc0d194d6012b70d8e2c2c661f9fadc7e93f79812621cb1fc0c0c4b8d64d907a970c6d70bbe113d070521e2a6a6d5a09dbe3e195c25951
   languageName: node
   linkType: hard
 
@@ -1597,16 +1597,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:2.5.7":
-  version: 2.5.7
-  resolution: "@curvefi/lending-api@npm:2.5.7"
+"@curvefi/lending-api@npm:2.5.6":
+  version: 2.5.6
+  resolution: "@curvefi/lending-api@npm:2.5.6"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.13"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.10.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/67157f83077e4b1d2718178e1e78353db1c4dca02292e16fef887682cc7f7a80d5f1a9b4abf02030301e6addc6d523fb7c5e0712581ea31cedd07c8f0982d850
+  checksum: 10c0/876908a898629c9e9b006d5ac8f79ca38c1616365eb535226dd9e58b399b20e44123829202fda57c393a75f64afaae28cacfe3e5220b69a3573310ce675be0e9
   languageName: node
   linkType: hard
 
@@ -18821,8 +18821,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:2.66.11"
-    "@curvefi/lending-api": "npm:2.5.7"
+    "@curvefi/api": "npm:2.66.9"
+    "@curvefi/lending-api": "npm:2.5.6"
     "@curvefi/stablecoin-api": "npm:1.5.19"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^4.1.3"
@@ -18863,7 +18863,7 @@ __metadata:
     ui: "npm:*"
     validator: "npm:^13.15.0"
     vest: "npm:^5.4.6"
-    viem: "npm:^2.24.3"
+    viem: "npm:^2.23.15"
     webpack: "npm:^5.98.0"
     zustand: "npm:^4.5.6"
   peerDependencies:
@@ -24181,7 +24181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.24.3":
+"viem@npm:^2.23.15":
   version: 2.24.3
   resolution: "viem@npm:2.24.3"
   dependencies:
