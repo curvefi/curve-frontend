@@ -33,10 +33,10 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 
   const Text = {
     TextColors: {
-      Primary: Light.Text.primary,
-      Secondary: Light.Text.secondary,
-      Tertiary: Light.Text.tertiary,
-      Highlight: Light.Text.highlight,
+      Primary: Light.Text.Primary,
+      Secondary: Light.Text.Secondary,
+      Tertiary: Light.Text.Tertiary,
+      Highlight: Light.Text.Highlight,
       Disabled: Light.Text.Disabled,
       Feedback: Light.Text.Feedback,
     },
@@ -246,7 +246,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Grays[100],
         Border: {
           Default: Grays[400],
-          Active: Light.Text.highlight,
+          Active: Light.Text.Highlight,
           Filled: Grays[850],
           Error: Reds[500],
         },
@@ -256,7 +256,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Grays[100],
         Border: {
           Default: Grays[400],
-          Active: Light.Text.highlight,
+          Active: Light.Text.Highlight,
           Filled: Grays[850],
           Error: Reds[500],
         },
@@ -380,10 +380,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Text = {
     TextColors: {
-      Primary: Dark.Text.primary,
-      Secondary: Dark.Text.secondary,
-      Tertiary: Dark.Text.tertiary,
-      Highlight: Dark.Text.highlight,
+      Primary: Dark.Text.Primary,
+      Secondary: Dark.Text.Secondary,
+      Tertiary: Dark.Text.Tertiary,
+      Highlight: Dark.Text.Highlight,
       Disabled: Dark.Text.Disabled,
       Feedback: Dark.Text.Feedback,
     },
@@ -591,7 +591,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: color[850],
         Border: {
           Default: color[600],
-          Active: Dark.Text.highlight,
+          Active: Dark.Text.Highlight,
           Filled: color[75],
           Error: Reds[500],
         },
@@ -601,7 +601,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: color[850],
         Border: {
           Default: color[600],
-          Active: Dark.Text.highlight,
+          Active: Dark.Text.Highlight,
           Filled: color[75],
           Error: Reds[500],
         },
@@ -668,10 +668,10 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Text = {
     TextColors: {
-      Primary: Chad.Text.primary,
-      Secondary: Chad.Text.secondary,
-      Tertiary: Chad.Text.tertiary,
-      Highlight: Chad.Text.highlight,
+      Primary: Chad.Text.Primary,
+      Secondary: Chad.Text.Secondary,
+      Tertiary: Chad.Text.Tertiary,
+      Highlight: Chad.Text.Highlight,
       Disabled: Chad.Text.Disabled,
       Feedback: Chad.Text.Feedback,
     },
@@ -881,7 +881,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Violet[50],
         Border: {
           Default: Violet[200],
-          Active: Chad.Text.highlight,
+          Active: Chad.Text.Highlight,
           Filled: Violet[400],
           Error: Reds[500],
         },
@@ -891,7 +891,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Violet[50],
         Border: {
           Default: Violet[200],
-          Active: Chad.Text.highlight,
+          Active: Chad.Text.Highlight,
           Filled: Violet[400],
           Error: Reds[500],
         },
