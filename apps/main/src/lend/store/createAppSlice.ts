@@ -12,11 +12,7 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  api: Api | null
   connectState: ConnectState
-  isLoadingApi: boolean
-  isLoadingCurve: true
-  isMobile: boolean
   isPageVisible: boolean
   scrollY: number
 }
@@ -24,8 +20,11 @@ type SliceState = {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
-  updateApi(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
+
+  /** Hydrate resets states and refreshes store data from the API */
+  hydrate(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
+
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
   setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
@@ -33,11 +32,7 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  api: null,
   connectState: { status: '', stage: '' },
-  isLoadingApi: true,
-  isLoadingCurve: true,
-  isMobile: false,
   isPageVisible: true,
   scrollY: 0,
 }
@@ -48,12 +43,19 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
     set({ connectState: { status, stage, ...(options && { options }) } })
   },
-  updateApi: async (api, prevApi, wallet) => {
+  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
+    set(
+      produce((state) => {
+        state[key] = value
+      }),
+    )
+  },
+  hydrate: async (api, prevApi, wallet) => {
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
     const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== api.signerAddress
     const state = get()
 
-    log('updateApi', api?.chainId, {
+    log('Hydrating Lend', api?.chainId, {
       wallet: wallet?.chains[0]?.id ?? '',
       isNetworkSwitched,
       isUserSwitched,
@@ -79,20 +81,10 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       state.user.resetState()
     }
 
-    // update network settings from api
-    state.updateGlobalStoreByKey('api', api)
-    state.updateGlobalStoreByKey('isLoadingCurve', false)
-
     // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
     await prefetchMarkets({ chainId: api.chainId })
-    state.updateGlobalStoreByKey('isLoadingApi', false)
-  },
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
-    set(
-      produce((state) => {
-        state[key] = value
-      }),
-    )
+
+    log('Hydrating Lend - Complete')
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(

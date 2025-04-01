@@ -13,7 +13,7 @@ export type PageWidthClassName =
   | 'page-small'
   | 'page-small-x'
   | 'page-small-xx'
-export type CurveApi = typeof curveApi & { chainId: 1 }
+export type CurveApi = typeof curveApi & { chainId: number }
 export type ChainId = number
 export type NetworkEnum = INetworkName
 

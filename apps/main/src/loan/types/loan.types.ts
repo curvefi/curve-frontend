@@ -17,6 +17,7 @@ export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = 1
+/** Actually the stablecoin api, but not renaming to avoid a huge rename PR */
 export type Curve = typeof stablecoinApi & { chainId: ChainId }
 export type LendApi = typeof lendingApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
@@ -104,7 +105,7 @@ export type LoanParameter = {
 }
 export type BandBalance = Record<string, { stablecoin: string; collateral: string }>
 export type LoanDetails = {
-  activeBand: number | null
+  oraclePriceBand: number | null
   parameters: LoanParameter
   balances: [string, string]
   basePrice: string | undefined

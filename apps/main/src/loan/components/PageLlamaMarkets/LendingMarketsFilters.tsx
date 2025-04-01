@@ -33,6 +33,9 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   )
 }
 
+const formatUsd = (value: number) => formatNumber(value, { currency: 'USD' })
+const formatPercent = (value: number) => value.toFixed(2) + '%'
+
 /**
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
@@ -43,7 +46,7 @@ export const LendingMarketsFilters = ({
   setColumnFilter: (id: string, value: unknown) => void
   data: LlamaMarket[]
 }) => (
-  <Grid container spacing={Spacing.sm} paddingTop={Spacing.sm}>
+  <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
         field={LlamaMarketColumnId.Chain}
@@ -79,19 +82,14 @@ export const LendingMarketsFilters = ({
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <RangeSliderFilter
-        field={LlamaMarketColumnId.LiquidityUsd}
-        title={t`Liquidity`}
-        format={(value) => formatNumber(value, { currency: 'USD' })}
-        {...props}
-      />
+      <RangeSliderFilter field={LlamaMarketColumnId.LiquidityUsd} title={t`Liquidity`} format={formatUsd} {...props} />
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
       <RangeSliderFilter
         field={LlamaMarketColumnId.UtilizationPercent}
         title={t`Utilization`}
-        format={(value) => value.toFixed(2) + '%'}
+        format={formatPercent}
         {...props}
       />
     </Grid>

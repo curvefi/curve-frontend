@@ -23,6 +23,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table from '@ui/Table'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Dashboard = ({
   curve,
@@ -45,7 +46,7 @@ const Dashboard = ({
   const noResult = useStore((state) => state.dashboard.noResult)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
   const isLoading = useStore((state) => state.dashboard.loading)
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const isXSmDown = useStore((state) => state.isXSmDown)
   const poolsMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])

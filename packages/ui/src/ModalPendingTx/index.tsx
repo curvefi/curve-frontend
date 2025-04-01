@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import Spinner from 'ui/src/Spinner'
-import { shortenTokenAddress } from 'ui/src/utils'
 
 type Props = {
   transactionHash: string
@@ -10,19 +9,22 @@ type Props = {
   pendingMessage: string
 }
 
-const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => (
-  <PendingContainer>
-    <PendingWrapper>
-      <PendingMessage>{pendingMessage}</PendingMessage>
-      <StyledPendingSpinner isDisabled size={24} />
-      <Transaction variant={'contained'} href={txLink}>
-        <p>Transaction:</p>
-        {shortenTokenAddress(transactionHash)}
-        <StyledIcon name={'Launch'} size={16} />
-      </Transaction>
-    </PendingWrapper>
-  </PendingContainer>
-)
+const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => {
+  const formatAddress = `${transactionHash.slice(0, 4 + 2)}...${transactionHash.slice(-4)}`
+
+  return (
+    <PendingContainer>
+      <PendingWrapper>
+        <PendingMessage>{pendingMessage}</PendingMessage>
+        <StyledPendingSpinner isDisabled size={24} />
+        <Transaction variant={'contained'} href={txLink}>
+          <p>Transaction: {formatAddress}</p>
+          <StyledIcon name={'Launch'} size={16} />
+        </Transaction>
+      </PendingWrapper>
+    </PendingContainer>
+  )
+}
 
 const PendingContainer = styled.div`
   position: absolute;
@@ -53,7 +55,6 @@ const Transaction = styled(ExternalLink)`
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
   color: var(--page--text-color);
-  text-transform: none;
   text-decoration: none;
   background-color: var(--page--background-color);
   padding: var(--spacing-2);

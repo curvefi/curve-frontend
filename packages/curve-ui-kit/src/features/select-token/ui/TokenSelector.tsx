@@ -28,7 +28,9 @@ export const TokenSelector = ({
   error = '',
   disabledTokens = [],
   disableSorting = false,
+  disableMyTokens = false,
   customOptions,
+  compact = false,
   onToken,
   onSearch,
   sx,
@@ -49,7 +51,9 @@ export const TokenSelector = ({
         error={error}
         disabledTokens={disabledTokens}
         disableSorting={disableSorting}
+        disableMyTokens={disableMyTokens}
         customOptions={customOptions}
+        compact={compact}
         onClose={closeModal}
         onToken={(token) => {
           toggleModal()

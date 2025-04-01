@@ -1,4 +1,4 @@
-import { oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
+import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
 import { oneToken } from '@/support/helpers/tokens'
 import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend/responses'
 
@@ -13,9 +13,9 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
   const borrowed = oneToken(chain)
   const collateralBalance = oneFloat()
   const borrowedBalance = oneFloat()
-  const totalAssets = onePrice()
   const borrowedPrice = borrowed.usdPrice ?? onePrice()
   const collateralPrice = collateral.usdPrice ?? onePrice()
+  const totalAssets = onePrice(MAX_USD_VALUE / collateralPrice)
   const totalAssetsUsd = totalAssets * collateralPrice
   const totalDebtUsd = utilization * totalAssetsUsd
   const minBand = oneInt()
@@ -65,9 +65,20 @@ function oneLendingVaultResponse(chain: Chain) {
     ...(chain == 'ethereum'
       ? [
           {
+            // fixed vault address to test campaign rewards
             ...oneLendingPool(chain, oneFloat()),
-            vault: '0x8c65cec3847ad99bdc02621bdbc89f2ace56934b', // fixed vault address to test campaign rewards
-            collateral_balance_usd: 0, // 0 liquidity to test the slider filter
+            vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
+          },
+          {
+            // 0 liquidity to test the slider filter
+            ...oneLendingPool(chain, oneFloat()),
+            total_assets_usd: 100,
+            total_debt_usd: 100,
+          },
+          {
+            // 0 utilization to test the slider filter
+            ...oneLendingPool(chain, oneFloat()),
+            total_debt_usd: 0,
           },
         ]
       : []),

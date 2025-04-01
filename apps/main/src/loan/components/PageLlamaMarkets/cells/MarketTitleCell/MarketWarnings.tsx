@@ -2,10 +2,10 @@ import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -26,7 +26,7 @@ export const MarketWarnings = ({ market }: { market: LlamaMarket }) => {
         </Tooltip>
       )}
       {isCollateralEroded && (
-        <Tooltip title={t`Your position is in eroded`}>
+        <Tooltip title={t`Your position is eroded`}>
           <Chip label={t`Collateral erosion`} color="alert" size="small" />
         </Tooltip>
       )}

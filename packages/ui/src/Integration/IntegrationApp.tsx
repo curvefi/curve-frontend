@@ -131,7 +131,6 @@ const AppExternalLink = styled(ExternalLink)`
   color: inherit;
   padding: 0.2rem 0.5rem;
   font-size: var(--font-size-2);
-  text-transform: initial;
   text-decoration: none;
 
   transition:

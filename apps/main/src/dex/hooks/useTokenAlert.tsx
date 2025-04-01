@@ -54,7 +54,6 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
   word-break: break-word;
 `
 

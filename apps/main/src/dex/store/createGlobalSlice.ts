@@ -20,13 +20,9 @@ export type LayoutHeight = {
 export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
 
 type GlobalState = {
-  curve: CurveApi
   connectState: ConnectState
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
-  isLoadingApi: boolean
-  isLoadingCurve: boolean
-  isMobile: boolean
   isPageVisible: boolean
   isXXSm: boolean
   isXSmDown: boolean
@@ -50,7 +46,10 @@ export interface GlobalSlice extends GlobalState {
     stage?: ConnectState['stage'],
     options?: ConnectState['options'],
   ): void
-  updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+
+  /** Hydrate resets states and refreshes store data from the API */
+  hydrate(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
@@ -63,13 +62,9 @@ export interface GlobalSlice extends GlobalState {
 
 const DEFAULT_STATE = {
   connectState: { status: '' as const, stage: '' },
-  curve: null!,
   hasDepositAndStake: {},
   hasRouter: {},
   pageWidthPx: null,
-  isMobile: false,
-  isLoadingApi: false,
-  isLoadingCurve: true,
   isPageVisible: true,
   isXXSm: false,
   isXSmDown: false,
@@ -139,12 +134,12 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
     set({ connectState: { status, stage, ...(options && { options }) } })
   },
-  updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
+  hydrate: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const state = get()
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
-    log('updateCurveJs', curveApi?.chainId, {
+    log('Hydrating DEX', curveApi?.chainId, {
       wallet: wallet?.chains[0]?.id ?? '',
       isNetworkSwitched,
       isUserSwitched,
@@ -173,8 +168,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
-    state.updateGlobalStoreByKey('curve', curveApi)
-    state.updateGlobalStoreByKey('isLoadingCurve', false)
 
     const network = state.networks.networks[chainId]
     const { excludePoolsMapper } = network
@@ -189,7 +182,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.pools.setEmptyPoolListDefault(chainId)
       state.tokens.setEmptyPoolListDefault(chainId)
       state.pools.fetchBasePools(curveApi)
-      state.updateGlobalStoreByKey('isLoadingApi', false)
       return
     }
 
@@ -201,19 +193,19 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     if (!prevCurveApi || isNetworkSwitched) {
       state.gas.fetchGasInfo(curveApi)
-      state.updateGlobalStoreByKey('isLoadingApi', false)
       state.pools.fetchPricesApiPools(chainId)
       state.pools.fetchBasePools(curveApi)
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
       state.usdRates.fetchAllStoredUsdRates(curveApi)
     } else {
-      state.updateGlobalStoreByKey('isLoadingApi', false)
     }
 
     if (curveApi.signerAddress) {
       state.user.fetchUserPoolList(curveApi)
     }
+
+    log('Hydrating DEX - Complete')
   },
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => {
     set(
@@ -244,7 +236,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     set(
       produce((state) => {
         const storedValues = state[sliceKey][key]
-        const storedActiveKeyValues = storedValues[activeKey]
+        const storedActiveKeyValues = storedValues[activeKey] // todo: this means the following branch is unreachable?
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {

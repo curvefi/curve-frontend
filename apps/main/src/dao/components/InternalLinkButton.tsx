@@ -38,7 +38,6 @@ const StyledInternalLink = styled(InternalLink)<{ smallSize?: boolean }>`
   padding: ${({ smallSize }) =>
     smallSize ? 'var(--spacing-1) var(--spacing-2)' : 'var(--spacing-2) var(--spacing-4)'};
   font-weight: var(--bold);
-  text-transform: none;
   text-decoration: none;
   border: ${({ smallSize }) => (smallSize ? 'none' : '1px solid var(--link--color)')};
   margin-left: auto;

@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { LlamaImg } from '@ui/images'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { addressShort, type Address } from '@ui-kit/utils'
+import { shortenAddress, type Address } from '@ui-kit/utils'
 
 type Props = {
   walletAddress?: Address
@@ -28,7 +28,7 @@ export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (
     />
 
     <Typography variant="headingMLight" flexGrow={1}>
-      {addressShort(walletAddress)}
+      {shortenAddress(walletAddress)}
     </Typography>
 
     <Box display="flex">

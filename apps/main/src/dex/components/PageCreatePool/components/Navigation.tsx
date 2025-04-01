@@ -17,8 +17,7 @@ interface Props {
 }
 
 const Navigation = ({ navigation, setNavigation, blockchainId, chainId, curve }: Props) => {
-  const createPoolState = useStore((state) => state.createPool)
-  const { validation } = createPoolState
+  const validation = useStore((state) => state.createPool.validation)
 
   return (
     <NavigationStyles>

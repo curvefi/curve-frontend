@@ -15,13 +15,23 @@ export type ModalDialogProps = {
   title: string
   open: boolean
   onClose: () => void
+  onTransitionExited?: () => void
   titleAction?: ReactNode
   footer?: ReactNode
   sx?: SxProps<Theme>
 }
 
-export const ModalDialog = ({ children, open, onClose, title, titleAction, footer, sx }: ModalDialogProps) => (
-  <Dialog open={open} onClose={onClose} sx={sx} disableRestoreFocus>
+export const ModalDialog = ({
+  children,
+  open,
+  onClose,
+  onTransitionExited,
+  title,
+  titleAction,
+  footer,
+  sx,
+}: ModalDialogProps) => (
+  <Dialog open={open} onClose={onClose} onTransitionExited={onTransitionExited} sx={sx} disableRestoreFocus>
     <Card
       sx={{
         ...SizesAndSpaces.ModalHeight.sm,

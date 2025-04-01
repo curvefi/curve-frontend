@@ -1,4 +1,4 @@
-import { getSupportedLendingChains } from '@/loan/entities/chains'
+import { fetchSupportedLendingChains } from '@/loan/entities/chains'
 import {
   type UserContractParams,
   type UserContractQuery,
@@ -21,12 +21,17 @@ import type { Address } from '@ui-kit/utils'
 
 export type LendingVault = Market & { chain: Chain }
 
-export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateLendingVaults } = queryFactory({
+export const {
+  getQueryOptions: getLendingVaultsOptions,
+  invalidate: invalidateLendingVaults,
+  fetchQuery: fetchLendingVaults,
+  setQueryData: setLendingVaults,
+} = queryFactory({
   queryKey: () => ['lending-vaults', 'v1'] as const,
   queryFn: async (): Promise<LendingVault[]> => {
-    const chains = await getSupportedLendingChains()
+    const chains = await fetchSupportedLendingChains({})
     const markets = await Promise.all(
-      chains.map(async (chain) => (await getMarkets(chain, {})).map((market) => ({ ...market, chain }))),
+      chains.map(async (chain) => (await getMarkets(chain)).map((market) => ({ ...market, chain }))),
     )
     return markets.flat()
   },
@@ -40,7 +45,7 @@ const {
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-vaults', { userAddress }, 'v2'] as const,
   queryFn: async ({ userAddress }: UserQuery) => {
-    const chains = await getSupportedLendingChains()
+    const chains = await fetchSupportedLendingChains({})
     const markets = await Promise.all(
       chains.map(async (chain) => {
         const markets = await getUserMarkets(userAddress, chain, {})

@@ -27,11 +27,11 @@ import { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { checkTokensInPoolUnset, containsOracle } from '@/dex/components/PageCreatePool/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import { shortenTokenAddress } from '@/dex/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   blockchainId: string
@@ -46,7 +46,9 @@ type TokenSummary = {
 }
 
 const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
-  const { tokensInPool, swapType, validation } = useStore((state) => state.createPool)
+  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
+  const swapType = useStore((state) => state.createPool.swapType)
+  const validation = useStore((state) => state.createPool.validation)
 
   return (
     <CategoryColumn>
@@ -212,7 +214,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
         )}
       </Box>
       <AddressLink href={scanAddressPath(token.address)}>
-        {shortenTokenAddress(token.address)}
+        {shortenAddress(token.address)}
         <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
       </AddressLink>
     </TokenRow>

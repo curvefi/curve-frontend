@@ -4,9 +4,9 @@ import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import type { IconButtonProps } from '@mui/material/IconButton/IconButton'
 import Snackbar from '@mui/material/Snackbar'
-import Tooltip from '@mui/material/Tooltip'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 export function CopyIconButton({
@@ -27,14 +27,15 @@ export function CopyIconButton({
         <IconButton
           size="extraSmall"
           {...iconProps}
-          onClick={() =>
-            navigator.clipboard
+          onClick={() => {
+            console.log(`Copying to clipboard: ${copyText}`)
+            return navigator.clipboard
               ? navigator.clipboard
                   .writeText(copyText)
                   .then(() => setAlertText(confirmationText))
                   .catch((e) => setAlertText(e.message))
               : setAlertText('Clipboard not available due to unsecure origin')
-          }
+          }}
         >
           <CopyIcon color="primary" />
         </IconButton>

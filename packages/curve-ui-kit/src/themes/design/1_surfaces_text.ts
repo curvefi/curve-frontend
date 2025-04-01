@@ -8,7 +8,7 @@ function createLightSurfaces() {
     Disabled: Grays[400],
     Highlight: Blues[500],
     Feedback: {
-      Success: Greens[500],
+      Success: Greens[600],
       Warning: Reds[400],
       Error: Reds[500],
       Inverted: Grays[50],

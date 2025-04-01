@@ -8,11 +8,12 @@ import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
-import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -25,9 +26,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const chainId = useStore((state) => state.curve?.chainId)
+  const chainId = useApiStore((state) => state.curve?.chainId)
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.isMdUp)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
@@ -48,20 +48,20 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
-      currentApp="dex"
+      currentMenu="dex"
       isLite={network?.isLite}
-      pages={useMemo(
+      routes={useMemo(
         () => [
           ...(hasRouter && (!network || network.showRouterSwap)
             ? [
                 {
+                  app: 'dex' as const,
                   route: _createSwapPath(network.swap, routerCached),
                   label: QuickSwap,
                 },
               ]
             : []),
-          ...APP_LINK.dex.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+          ...APP_LINK.dex.routes.filter((page) => page.route !== ROUTE.PAGE_SWAP),
         ],
         [hasRouter, network, routerCached],
       )}

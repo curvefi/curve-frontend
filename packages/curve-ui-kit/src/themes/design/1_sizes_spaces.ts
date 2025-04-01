@@ -274,10 +274,12 @@ export const SizesAndSpaces = {
     disclaimer: '43rem', // 688px
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
+    banner: '96rem', // 1536px
     footer: '96rem', // 1536px
     connectWallet: '50rem', // 800px
     actionCard: '29rem', // 464px
     section: '59.5rem', // 952px
+    tooltip: '27.5rem', // 440px
   },
   MinHeight: {
     tableNoResults: '35vh',

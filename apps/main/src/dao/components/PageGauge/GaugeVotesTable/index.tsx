@@ -6,15 +6,19 @@ import { TOP_HOLDERS } from '@/dao/constants'
 import useStore from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber, shortenTokenAddress } from '@ui/utils/'
+import { convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { shortenAddress } from '@ui-kit/utils'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 
 interface GaugeVotesTableProps {
   gaugeAddress: string
   tableMinWidth: number
 }
+
+// weight is recieved in bps, 10000 = 100%
+const weightBpsToPercentage = (weight: number) => weight / 100
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
   const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
@@ -65,7 +69,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatNumber(gaugeVote.weight, { notation: 'compact' })}
+            {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
           <TableDataLink
             onClick={(e) => {
@@ -76,7 +80,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
           >
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
-              : shortenTokenAddress(gaugeVote.user)}
+              : shortenAddress(gaugeVote.user)}
           </TableDataLink>
         </TableRowWrapper>
       )}

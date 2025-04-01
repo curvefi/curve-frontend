@@ -1,4 +1,4 @@
-import useDebounce from 'curve-ui-kit/src/hooks/useDebounce'
+import { useDebounce } from 'curve-ui-kit/src/hooks/useDebounce'
 import Box from 'ui/src/Box/Box'
 import { InputLabel } from 'ui/src/InputComp'
 import Input from 'ui/src/InputComp/Input'

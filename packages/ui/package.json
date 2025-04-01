@@ -9,13 +9,13 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "@carbon/icons-react": "^11.55.0",
-    "@lingui/detect-locale": "^5.2.0",
+    "@carbon/icons-react": "^11.57.0",
+    "@lingui/detect-locale": "^5.3.0",
     "bignumber.js": "^9.1.2",
     "ethers": "^6.13.5",
     "lodash": "4.17.21",
-    "react-aria": "3.37.0",
-    "react-stately": "3.35.0"
+    "react-aria": "3.38.1",
+    "react-stately": "3.36.1"
   },
   "devDependencies": {
     "@types/react": "*",

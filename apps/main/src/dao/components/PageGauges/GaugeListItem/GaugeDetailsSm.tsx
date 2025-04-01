@@ -4,8 +4,9 @@ import networks from '@/dao/networks'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { shortenTokenAddress, formatNumber, convertToLocaleTimestamp } from '@ui/utils'
+import { formatNumber, convertToLocaleTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenAddress } from '@ui-kit/utils'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData
@@ -87,7 +88,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         <StatsRow>
           <StatTitle>{t`Contract Address`}</StatTitle>
           <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
-            {shortenTokenAddress(gaugeData.address)}
+            {shortenAddress(gaugeData.address)}
           </StyledExternalLink>
         </StatsRow>
       </Box>
@@ -126,7 +127,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
           {gaugeData.pool?.address && (
             <Box flex flexAlignItems="center">
               <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.pool.address)}>
-                {shortenTokenAddress(gaugeData.pool.address)}
+                {shortenAddress(gaugeData.pool.address)}
               </StyledExternalLink>
             </Box>
           )}
@@ -177,7 +178,6 @@ const StyledExternalLink = styled(ExternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  text-transform: none;
   text-decoration: none;
 
   &:hover {

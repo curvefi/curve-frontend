@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
-import { INVALID_ADDRESS } from '@/lend/constants'
+import { zeroAddress } from 'viem'
 import networks from '@/lend/networks'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
@@ -322,7 +322,7 @@ const market = {
       }
 
       // check if gauge is valid
-      if (market.addresses.gauge === INVALID_ADDRESS) {
+      if (market.addresses.gauge === zeroAddress) {
         return resp
       } else {
         const isRewardsOnly = market.vault.rewardsOnly()
@@ -531,7 +531,7 @@ const user = {
         results[userActiveKey] = {
           details: {
             state,
-            health: isCloseToLiquidation ? healthNotFull : healthFull,
+            health: +healthNotFull < 0 ? healthNotFull : healthFull,
             healthFull,
             healthNotFull,
             bands: reversedUserBands,
@@ -2008,6 +2008,10 @@ function _getWalletProvider(wallet: Wallet) {
   return wallet.provider
 }
 
+/** healthNotFull is needed here because:
+ * User full health can be > 0
+ * But user is at risk of liquidation if not full < 0
+ */
 function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: boolean, userStateStablecoin: string) {
   const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
     label: 'Healthy',

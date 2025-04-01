@@ -1,5 +1,5 @@
 import uniq from 'lodash/uniq'
-import { getSupportedChains } from '@/loan/entities/chains'
+import { fetchSupportedChains } from '@/loan/entities/chains'
 import { getCoinPrices } from '@/loan/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
 import { getMarkets, getUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
@@ -30,15 +30,20 @@ async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMa
   }))
 }
 
-export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
+export const {
+  getQueryOptions: getMintMarketOptions,
+  invalidate: invalidateMintMarkets,
+  fetchQuery: fetchMintMarkets,
+  setQueryData: setMintMarkets,
+} = queryFactory({
   queryKey: () => ['mint-markets', 'v1'] as const,
-  queryFn: async () => {
-    const chains = await getSupportedChains()
+  queryFn: async (): Promise<MintMarket[]> => {
+    const chains = await fetchSupportedChains({})
     const allMarkets = await Promise.all(
       // todo: create separate query for the loop, so it can be cached separately
       chains.map(async (blockchainId) => {
         const chain = blockchainId as Chain
-        const data = await getMarkets(chain, {})
+        const data = await getMarkets(chain)
         return await addStableCoinPrices({ chain, data })
       }),
     )
@@ -54,7 +59,7 @@ const {
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress }: UserQuery) => {
-    const chains = await getSupportedChains()
+    const chains = await fetchSupportedChains({})
     const markets = await Promise.all(
       chains.map(async (chain) => {
         const markets = await getUserMarkets(userAddress, chain, {})

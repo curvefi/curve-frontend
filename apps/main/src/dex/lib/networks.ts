@@ -2,7 +2,7 @@ import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
-import { APP_LINK } from '@ui-kit/shared/routes'
+import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
@@ -46,7 +46,7 @@ export const defaultNetworks = Object.entries({
       'factory-v2-370': true, // PRISMA/yPRISMA
     },
     swapCustomRouteRedirect: {
-      'sfrxeth-llamma': APP_LINK.crvusd.root,
+      'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS),
     },
     createDisabledTokens: [
       '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
@@ -351,8 +351,9 @@ export async function getNetworks() {
         stableswapFactory: true,
         twocryptoFactory: true,
         tricryptoFactory: true,
-        isLite: true,
-        isCrvRewardsEnabled: chainId == 146, // only enabled for sonic
+        pricesApi: chainId == 146, // sonic is upgraded from lite to full
+        isLite: chainId != 146, // sonic is upgraded from lite to full
+        isCrvRewardsEnabled: chainId == 146, // sonic is upgraded from lite to full
         isTestnet: config.isTestnet,
       }
       return prev

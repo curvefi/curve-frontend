@@ -5,7 +5,7 @@ import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK } from '@ui-kit/shared/routes'
+import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 
 const FieldLockedAmt = ({
   disabled,
@@ -49,7 +49,7 @@ const FieldLockedAmt = ({
       {!!crv && lockedAmtError ? (
         <Chip size="xs" isError>
           Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
-          <StyledExternalLink href={APP_LINK.dex.root}>here</StyledExternalLink>.
+          <StyledExternalLink href={getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}>here</StyledExternalLink>.
         </Chip>
       ) : formType === 'adjust_crv' ? (
         <Chip size="xs">{t`CRV Locked: ${formatNumber(lockedAmount)}`}</Chip>
@@ -67,7 +67,6 @@ const StyledInputProvider = styled(InputProvider)`
 export const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   font-weight: var(--bold);
-  text-transform: none;
 
   &:hover {
     cursor: pointer;

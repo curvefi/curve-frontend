@@ -30,7 +30,6 @@ const WarningBoxWrapper = styled.div<{ informational: boolean }>`
   }
   p {
     margin: auto auto auto 0;
-    white-space: pre-wrap;
   }
 `
 

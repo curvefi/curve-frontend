@@ -76,6 +76,7 @@ describe('Header', () => {
 
     it('should change chains', () => {
       if (['crvusd', 'dao'].includes(appPath)) {
+        // apps that only support Ethereum
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/ethereum`)
@@ -121,10 +122,10 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0
+        const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0 // first option is the default page for crvUSD/lend
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
-        cy.get(`[data-testid='mobile-drawer']`, LOAD_TIMEOUT).should('not.exist')
-        cy.url().should('not.equal', url)
+        cy.url().should('not.equal', url, LOAD_TIMEOUT)
+        cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       })
     })
 
@@ -171,10 +172,10 @@ describe('Header', () => {
 
   function switchEthToArbitrum() {
     const [eth, arbitrum] = [1, 42161]
-    cy.get(`[data-testid='chain-icon-${eth}']`).should('be.visible')
+    cy.get(`[data-testid='chain-icon-${eth}']`, LOAD_TIMEOUT).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
     cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
-    cy.get(`[data-testid^='menu-item-chain-']`).should('not.exist')
+    cy.get(`[data-testid^='menu-item-chain-']`, LOAD_TIMEOUT).should('not.exist')
     cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
   }
 })

@@ -1,52 +1,64 @@
-import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
-import { GraphType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useSnapshots } from '../hooks/useSnapshots'
+import { RateType, useSnapshots } from '../hooks/useSnapshots'
+import { formatPercent, getRewardsAction } from './cell.format'
+import { RateTooltipContent } from './RateCellTooltip'
 
-const { IconSize, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
-export const RateCell = ({ market, type }: { market: LlamaMarket; type: GraphType }) => {
-  const { rate, averageRate } = useSnapshots(market, type)
-  const { rewards } = market
+export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType }) => {
+  const { rate, averageRate, period } = useSnapshots(market, type)
+  const { rewards, type: marketType } = market
+  const rewardsAction = getRewardsAction(marketType, type)
+  const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
   return (
-    <Stack gap={Spacing.xs}>
-      <Tooltip title={t`Average rate`} placement="top">
+    <Tooltip
+      clickable
+      title={
+        {
+          borrow: t`Borrow APR`,
+          lend: t`Supply APR`,
+        }[type]
+      }
+      body={
+        <RateTooltipContent
+          type={type}
+          rate={rate}
+          averageRate={averageRate}
+          rewards={poolRewards}
+          period={period}
+          marketType={marketType}
+        />
+      }
+      placement="top"
+    >
+      <Stack gap={Spacing.xs}>
         <Typography variant="tableCellMBold" color="textPrimary">
-          {averageRate != null && `${averageRate.toPrecision(4)}%`}
+          {averageRate != null && formatPercent(averageRate)}
         </Typography>
-      </Tooltip>
 
-      <Stack direction="row" gap={Spacing.xs} alignSelf="end">
-        {rate != null && (
-          <Tooltip title={t`Current rate`} placement="top">
+        <Stack direction="row" gap={Spacing.xs} alignSelf="end">
+          {rate != null && (
             <Typography variant="bodySRegular" color="textSecondary" sx={{ alignSelf: 'center' }}>
-              {rate.toPrecision(4)}%
+              {formatPercent(rate)}
             </Typography>
-          </Tooltip>
-        )}
-        {rewards.map((reward, index) => (
-          <Tooltip
-            key={index}
-            title={getRewardsDescription(reward)}
-            placement="top"
-            data-testid={`rewards-${type}-${reward.action}`}
-          >
+          )}
+          {rate != null && poolRewards.length > 0 && (
             <Chip
-              icon={<PointsIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+              icon={<RewardIcons rewards={poolRewards} />}
               size="extraSmall"
               color="highlight"
-              label={reward.multiplier}
+              label={rewards.map((r) => r.multiplier).join(', ')}
             />
-          </Tooltip>
-        ))}
+          )}
+        </Stack>
       </Stack>
-    </Stack>
+    </Tooltip>
   )
 }

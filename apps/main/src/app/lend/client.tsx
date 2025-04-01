@@ -7,7 +7,6 @@ import Page from '@/lend/layout'
 import networks from '@/lend/networks'
 import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
-import { isMobile, removeExtraSpaces } from '@/lend/utils/helpers'
 import { OverlayProvider } from '@react-aria/overlays'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -24,18 +23,20 @@ export const App = ({ children }: { children: ReactNode }) => {
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
-    updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
-  }, [setLayoutWidth, updateGlobalStoreByKey])
+  }, [setLayoutWidth])
 
-  // update on every state change
   useEffect(() => {
     if (!pageWidth) return
-    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
-  })
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
+    document.body.setAttribute('data-theme', theme)
+  }, [pageWidth, theme])
 
   // init app
   useEffect(() => {
+    // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
+    useStore.setState(useStore.getInitialState())
+
     const handleScrollListener = () => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }

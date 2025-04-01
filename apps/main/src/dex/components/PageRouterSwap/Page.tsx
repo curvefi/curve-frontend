@@ -2,7 +2,6 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import AdvancedSettings from '@/dex/components/AdvancedSettings'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import usePageOnMount from '@/dex/hooks/usePageOnMount'
@@ -10,12 +9,16 @@ import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import TuneIcon from '@mui/icons-material/Tune'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints, isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: NetworkUrlParams) => {
   const { push } = useRouter()
@@ -24,18 +27,23 @@ const Page = (params: NetworkUrlParams) => {
   const { rChainId } = routerParams
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
+  const activeKey = useStore((state) => state.quickSwap.activeKey)
+  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const { provider } = useWallet()
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
-  const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
-
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const theme = useUserProfileStore((state) => state.theme)
+  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const isStableswapRoute = routesAndOutput?.isStableswapRoute
+  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
 
+  const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
@@ -119,7 +127,17 @@ const Page = (params: NetworkUrlParams) => {
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
-        <AdvancedSettings stateKey="global" testId="advance-settings" maxSlippage={maxSlippage} />
+        <SlippageSettings
+          maxSlippage={storeMaxSlippage}
+          onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
+          buttonIcon={
+            // This component is a MUI component on a non MUI page.
+            // That means the icon button color doesn't mesh well with the header box color in chad theme.
+            <InvertTheme inverted={theme === 'chad'}>
+              <TuneIcon color="action" />
+            </InvertTheme>
+          }
+        />
       </BoxHeader>
 
       <Box grid gridRowGap={3} padding>

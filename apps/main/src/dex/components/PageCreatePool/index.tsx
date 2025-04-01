@@ -33,23 +33,28 @@ type Props = {
 const CreatePool = ({ curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
-  const {
-    poolSymbol,
-    swapType,
-    poolPresetIndex,
-    tokensInPool,
-    parameters,
-    poolName,
-    assetType,
-    initialPrice,
-    navigationIndex,
-    setNavigationIndex,
-    validation,
-    updatePoolTypeValidation,
-    updateTokensInPoolValidation,
-    updateParametersValidation,
-    updatePoolInfoValidation,
-  } = useStore((state) => state.createPool)
+  const poolSymbol = useStore((state) => state.createPool.poolSymbol)
+  const swapType = useStore((state) => state.createPool.swapType)
+  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
+  const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
+  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
+  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
+  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
+  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
+  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
+  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
+  const parameters = useStore((state) => state.createPool.parameters)
+  const poolName = useStore((state) => state.createPool.poolName)
+  const initialPrice = useStore((state) => state.createPool.initialPrice)
+  const navigationIndex = useStore((state) => state.createPool.navigationIndex)
+  const setNavigationIndex = useStore((state) => state.createPool.setNavigationIndex)
+  const validation = useStore((state) => state.createPool.validation)
+  const updatePoolTypeValidation = useStore((state) => state.createPool.updatePoolTypeValidation)
+  const updateTokensInPoolValidation = useStore((state) => state.createPool.updateTokensInPoolValidation)
+  const updateParametersValidation = useStore((state) => state.createPool.updateParametersValidation)
+  const updatePoolInfoValidation = useStore((state) => state.createPool.updatePoolInfoValidation)
 
   const isNavEnabled = useCallback(() => {
     if (navigationIndex === 0) {
@@ -74,14 +79,14 @@ const CreatePool = ({ curve }: Props) => {
       updateTokensInPoolValidation(
         checkTokensInPool(
           swapType,
-          tokensInPool.tokenA,
-          tokensInPool.tokenB,
-          tokensInPool.tokenC,
-          tokensInPool.tokenD,
-          tokensInPool.tokenE,
-          tokensInPool.tokenF,
-          tokensInPool.tokenG,
-          tokensInPool.tokenH,
+          tokenA,
+          tokenB,
+          tokenC,
+          tokenD,
+          tokenE,
+          tokenF,
+          tokenG,
+          tokenH,
           networks[chainId].tricryptoFactory,
           networks[chainId].twocryptoFactory,
         ),
@@ -90,40 +95,30 @@ const CreatePool = ({ curve }: Props) => {
       updateTokensInPoolValidation(
         checkTokensInPool(
           swapType,
-          tokensInPool.tokenA,
-          tokensInPool.tokenB,
-          tokensInPool.tokenC,
-          tokensInPool.tokenD,
-          tokensInPool.tokenE,
-          tokensInPool.tokenF,
-          tokensInPool.tokenG,
-          tokensInPool.tokenH,
+          tokenA,
+          tokenB,
+          tokenC,
+          tokenD,
+          tokenE,
+          tokenF,
+          tokenG,
+          tokenH,
           networks[chainId].tricryptoFactory,
           networks[chainId].twocryptoFactory,
-        ) &&
-          oraclesReady([
-            tokensInPool.tokenA,
-            tokensInPool.tokenB,
-            tokensInPool.tokenC,
-            tokensInPool.tokenD,
-            tokensInPool.tokenE,
-            tokensInPool.tokenF,
-            tokensInPool.tokenG,
-            tokensInPool.tokenH,
-          ]),
+        ) && oraclesReady([tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH]),
       )
     }
   }, [
     chainId,
     swapType,
-    tokensInPool.tokenA,
-    tokensInPool.tokenB,
-    tokensInPool.tokenC,
-    tokensInPool.tokenD,
-    tokensInPool.tokenE,
-    tokensInPool.tokenF,
-    tokensInPool.tokenG,
-    tokensInPool.tokenH,
+    tokenA,
+    tokenB,
+    tokenC,
+    tokenD,
+    tokenE,
+    tokenF,
+    tokenG,
+    tokenH,
     updateTokensInPoolValidation,
     networks,
   ])
@@ -136,10 +131,10 @@ const CreatePool = ({ curve }: Props) => {
         parameters.stableSwapFee,
         parameters.midFee,
         initialPrice.initialPrice,
-        tokensInPool.tokenAmount,
-        tokensInPool.tokenA,
-        tokensInPool.tokenB,
-        tokensInPool.tokenC,
+        tokenAmount,
+        tokenA,
+        tokenB,
+        tokenC,
         networks[chainId].tricryptoFactory,
         poolPresetIndex,
       ),
@@ -151,20 +146,18 @@ const CreatePool = ({ curve }: Props) => {
     parameters.stableSwapFee,
     poolPresetIndex,
     swapType,
-    tokensInPool.tokenA,
-    tokensInPool.tokenAmount,
-    tokensInPool.tokenB,
-    tokensInPool.tokenC,
+    tokenA,
+    tokenAmount,
+    tokenB,
+    tokenC,
     updateParametersValidation,
     networks,
   ])
 
   useEffect(() => {
     if (!chainId) return
-    updatePoolInfoValidation(
-      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType),
-    )
-  }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
+    updatePoolInfoValidation(checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName))
+  }, [chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>
@@ -194,7 +187,7 @@ const CreatePool = ({ curve }: Props) => {
                   {navigationIndex === 0 && <PoolType chainId={chainId} />}
                   {navigationIndex === 1 && <TokensInPool curve={curve} chainId={chainId} haveSigner={haveSigner} />}
                   {navigationIndex === 2 && <Parameters curve={curve} chainId={chainId} haveSigner={haveSigner} />}
-                  {navigationIndex === 3 && <PoolInfo chainId={chainId} />}
+                  {navigationIndex === 3 && <PoolInfo />}
                 </CreateFlowContainer>
               )}
             </CreateBoxStyles>

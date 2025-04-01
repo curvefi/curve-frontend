@@ -18,9 +18,10 @@ import {
   SortDirection,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { shortenTokenAddress } from '@ui/utils'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -361,7 +362,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
-      const curve = get().curve
+      const { curve } = useApiStore.getState()
       const { provider } = useWallet.getState()
       const { getUserGaugeVoteWeights } = get().user
       const address = get().gauges.gaugeMapper[gaugeAddress].address
@@ -504,7 +505,7 @@ const formatGaugeTitle = (poolName: string | undefined, marketName: string | nul
       .replace(/\(FRAXBP\)/i, '')
       .trim()
   }
-  return marketName ?? shortenTokenAddress(address) ?? ''
+  return marketName ?? shortenAddress(address) ?? ''
 }
 
 export default createGaugesSlice

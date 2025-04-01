@@ -3,23 +3,18 @@ import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
-import { Curve, LendApi, Wallet } from '@/loan/types/loan.types'
+import { Curve, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 import { Interface } from '@ethersproject/abi'
 import { CONNECT_STAGE, ConnectState } from '@ui/utils'
+import type { LendingApi } from '@ui-kit/shared/useApiStore'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  curve: Curve | null
   connectState: ConnectState
-  lendApi: LendApi | null
-  isLoadingApi: false
-  isLoadingLendApi: false
-  isLoadingCurve: true
-  isMobile: boolean
   isPageVisible: boolean
   scrollY: number
 }
@@ -28,9 +23,10 @@ type SliceState = {
 export interface AppSlice extends SliceState {
   getContract(jsonModuleName: string, contractAddress: string, provider: ContractRunner): Promise<ethers.Contract | null>
   updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
-  updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
-  updateLendApi(lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
+
+  /** Hydrate resets states and refreshes store data from the API */
+  hydrate(curve: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -39,13 +35,7 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  curve: null,
   connectState: { status: '', stage: '' },
-  lendApi: null,
-  isLoadingApi: false,
-  isLoadingCurve: true,
-  isLoadingLendApi: false,
-  isMobile: false,
   isPageVisible: true,
   scrollY: 0,
 }
@@ -69,64 +59,42 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
     set({ connectState: { status, stage, ...(options && { options }) } })
   },
-  updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
-    const { gas, loans, usdRates, ...state } = get()
-
-    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
-    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
-    log('updateCurveJs', curveApi?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
-      isNetworkSwitched,
-      isUserSwitched,
-    })
-
-    // reset store
-    if (isUserSwitched || !curveApi.signerAddress) {
-      loans.setStateByKey('userWalletBalancesMapper', {})
-      loans.setStateByKey('userDetailsMapper', {})
-    }
-
-    // update network settings from api
-    state.updateGlobalStoreByKey('curve', curveApi)
-    state.updateGlobalStoreByKey('isLoadingCurve', false)
-
-    // get collateral list
-    const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
-    await loans.fetchLoansDetails(curveApi, collateralDatas)
-
-    if (!prevCurveApi || isNetworkSwitched) {
-      usdRates.fetchAllStoredUsdRates(curveApi)
-    }
-
-    state.updateGlobalStoreByKey('isLoadingApi', false)
-  },
-  updateLendApi: async (lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null) => {
-    const { gas, loans, usdRates, ...state } = get()
-
-    const isNetworkSwitched = !!prevLendApi?.chainId && prevLendApi.chainId !== lendApi.chainId
-    const isUserSwitched = !!prevLendApi?.signerAddress && prevLendApi.signerAddress !== lendApi.signerAddress
-    log('updateLendApi', lendApi?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
-      isNetworkSwitched,
-      isUserSwitched,
-    })
-
-    // reset store
-    if (isUserSwitched || !lendApi.signerAddress) {
-      loans.setStateByKey('userWalletBalancesMapper', {})
-      loans.setStateByKey('userDetailsMapper', {})
-    }
-
-    // update network settings from api
-    state.updateGlobalStoreByKey('lendApi', lendApi)
-    state.updateGlobalStoreByKey('isLoadingLendApi', false)
-  },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
       produce((state) => {
         state[key] = value
       }),
     )
+  },
+
+  hydrate: async (curveApi: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null) => {
+    const { loans, usdRates } = get()
+
+    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
+    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
+    log('Hydrate crvUSD (Curve API)', curveApi?.chainId, {
+      wallet: wallet?.chains[0]?.id ?? '',
+      isNetworkSwitched,
+      isUserSwitched,
+    })
+
+    // reset stores
+    if (isUserSwitched || !curveApi.signerAddress) {
+      loans.setStateByKey('userWalletBalancesMapper', {})
+      loans.setStateByKey('userDetailsMapper', {})
+    }
+
+    // Check if curveApi is actually a Curve instance and not a LendingApi
+    if ('getLlamma' in curveApi) {
+      const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
+      await loans.fetchLoansDetails(curveApi, collateralDatas)
+
+      if (!prevCurveApi || isNetworkSwitched) {
+        usdRates.fetchAllStoredUsdRates(curveApi)
+      }
+    }
+
+    log('Hydrate crvUSD - Complete')
   },
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

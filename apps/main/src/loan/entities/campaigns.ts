@@ -8,12 +8,11 @@ export type PoolRewards = {
   multiplier: string // usually formatted like '1x', but it might be just a string
   tags: RewardsTags[]
   description: string | null
+  platformImageId: string
 }
 
-console.log(campaigns)
-const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce((result, { pools }: CampaignRewardsItem) => {
-  if (!pools) debugger
-  return {
+const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
+  (result, { pools, platformImageId }: CampaignRewardsItem) => ({
     ...result,
     ...pools.reduce(
       (
@@ -28,13 +27,15 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce((result, { pools
             tags,
             action,
             description: description === 'null' ? null : description,
+            platformImageId,
           },
         ],
       }),
       {},
     ),
-  }
-}, {})
+  }),
+  {},
+)
 
 export const { getQueryOptions: getCampaignsOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,

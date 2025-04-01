@@ -1,4 +1,5 @@
 import type { GetState, SetState } from 'zustand'
+import { invalidateMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
@@ -19,6 +20,7 @@ import {
 } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -118,6 +120,8 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 
     fetchAll: async (api, OneWayMarketTemplate, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
+      const chainId = api.chainId
+      const marketId = OneWayMarketTemplate.id
 
       const keys = [
         'statsParametersMapper',
@@ -131,6 +135,8 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         'totalLiquidityMapper',
       ] as const
 
+      // invalidate and refetch onchain data
+      invalidateMarketOnChainRates({ chainId, marketId })
       await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
@@ -155,7 +161,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       }
     },
     fetchTotalCollateralValue: async (chainId, market, shouldRefetch) => {
-      const { api } = get()
+      const api = useApiStore.getState().lending
       const { totalCollateralValuesMapper, ...sliceState } = get()[sliceKey]
 
       const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[market.id]

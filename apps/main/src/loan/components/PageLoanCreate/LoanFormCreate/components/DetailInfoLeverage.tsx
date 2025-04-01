@@ -3,7 +3,6 @@ import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DetailInfoLiqRangeEdit from '@/loan/components/DetailInfoLiqRangeEdit'
 import DetailInfoN from '@/loan/components/DetailInfoN'
 import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import DetailInfoTradeRoutes from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
@@ -15,6 +14,7 @@ import DetailInfo from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
 const DetailInfoLeverage = ({
   activeKey,
@@ -43,7 +43,7 @@ const DetailInfoLeverage = ({
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const LeverageDetail = () => (
     <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>
@@ -107,7 +107,7 @@ const DetailInfoLeverage = ({
           />
 
           <DetailInfoN isReady={isReady} n={formValues.n} />
-          <DetailInfoLiqRangeEdit
+          <LiquidationRangeSlider
             {...detailInfo}
             liqRanges={liqRanges}
             maxBands={llamma?.maxBands}

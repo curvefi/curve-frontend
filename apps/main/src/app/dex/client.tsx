@@ -6,7 +6,6 @@ import Page from '@/dex/layout/default'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import { isMobile, removeExtraSpaces } from '@/dex/utils'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -15,11 +14,12 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const curve = useStore((state) => state.curve)
-  const chainId = curve?.chainId ?? ''
+  const curve = useApiStore((state) => state.curve)
+  const chainId = curve?.chainId ?? 1
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.pageWidth)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
@@ -40,9 +40,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
-    updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setPageWidth(window.innerWidth)
-  }, [setPageWidth, updateGlobalStoreByKey])
+  }, [setPageWidth])
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
@@ -56,11 +55,13 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!pageWidth) return
-    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
     document.body.setAttribute('data-theme', theme)
-  })
+  }, [pageWidth, theme])
 
   useEffect(() => {
+    // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
+    useStore.setState(useStore.getInitialState())
     ;(async () => {
       const networks = await fetchNetworks()
 

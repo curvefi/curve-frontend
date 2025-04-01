@@ -1,0 +1,34 @@
+# configuration options: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directories:
+      - /
+      - /apps/main/
+      - /packages/curve-ui-kit/
+      - /packages/tsconfig/
+      - /packages/prices-api/
+      - /packages/eslint-config-custom/
+      - /packages/ui/
+      - /packages/external-rewards/
+      - /tests/
+    schedule:
+      interval: "monthly"
+      time: "08:00"
+      timezone: "Europe/Zurich"
+    ignore:
+      - dependency-name: immer
+        update-types: ["version-update:semver-major"]
+      - dependency-name: lightweight-charts
+        update-types: ["version-update:semver-major"]
+      - dependency-name: zustand
+        update-types: ["version-update:semver-major"]
+    groups:
+      # Group all minor updates in a single PR
+      minor-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

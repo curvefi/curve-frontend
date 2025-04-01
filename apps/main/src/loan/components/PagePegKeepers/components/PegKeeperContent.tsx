@@ -9,7 +9,7 @@ import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
 import TextCaption from '@ui/TextCaption'
 import { breakpoints, formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK } from '@ui-kit/shared/routes'
+import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 
 type Props = {
   rChainId: ChainId
@@ -42,7 +42,7 @@ const PegKeeperContent = ({ rChainId, pegKeeperAddress, pool }: Props) => {
           <PegKeeperForm rChainId={rChainId} poolName={poolName} pegKeeperAddress={pegKeeperAddress} />
           <StyledLinks>
             <TextCaption isBold isCaps>{t`View:`}</TextCaption>
-            <StyledExternalLink href={`${APP_LINK.dex.root}/ethereum/pools/${pool.id}/deposit`}>
+            <StyledExternalLink href={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${pool.id}/deposit`)}>
               Pool
             </StyledExternalLink>
             <StyledExternalLink href={`https://etherscan.io/address/${pegKeeperAddress}`}>Contract</StyledExternalLink>
@@ -93,7 +93,6 @@ const StyledExternalLink = styled(ExternalLink)`
   font-size: var(--font-size-2);
   font-weight: bold;
   margin-left: var(--spacing-narrow);
-  text-transform: initial;
 `
 
 export default PegKeeperContent

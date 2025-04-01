@@ -1,5 +1,7 @@
 import styled from 'styled-components'
+import CampaignRewardsRow from '@/loan/components/CampaignRewardsRow'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
+import useStore from '@/loan/store/useStore'
 import { CollateralData, CollateralDataCache } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
@@ -27,6 +29,8 @@ const TokenLabel = ({
   onClick,
 }: Props) => {
   const collateralAlert = useCollateralAlert(collateralDataCachedOrApi?.llamma?.address)
+  const campaignRewardsMapper = useStore((state) => state.campaigns.campaignRewardsMapper)
+  const campaignRewards = campaignRewardsMapper[collateralDataCachedOrApi?.llamma?.controller ?? '']
 
   const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma ?? {}
   const symbol = coins?.[type === 'collateral' ? 1 : 0] ?? ''
@@ -49,6 +53,7 @@ const TokenLabel = ({
       )}
       <TokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} />{' '}
       <Label size={size}>{symbol}</Label>
+      {campaignRewards && type === 'collateral' && <CampaignRewardsRow rewardItems={campaignRewards} />}
     </Wrapper>
   )
 }

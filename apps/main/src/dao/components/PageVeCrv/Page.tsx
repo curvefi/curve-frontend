@@ -14,6 +14,7 @@ import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: VeCrvUrlParams) => {
   console.log(params)
@@ -23,7 +24,7 @@ const Page = (params: VeCrvUrlParams) => {
   const { rChainId } = routerParams
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
   const resetState = useStore((state) => state.lockedCrv.resetState)

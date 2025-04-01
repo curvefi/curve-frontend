@@ -1,9 +1,10 @@
 import { ROUTE } from '@/dao/constants'
 import networks, { networksIdMapper } from '@/dao/networks'
 import { NetworkEnum, RouterParams, type UrlParams } from '@/dao/types/dao.types'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { DAO_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 
-export const getPath = ({ network }: UrlParams, rerouteRoute: string) => `/dao/${network}${rerouteRoute}`
+/** Get the path for the given route in this app */
+export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('dao', network, route)
 
 export const getEthPath = (route: string) => getPath({ network: 'ethereum' }, route)
 

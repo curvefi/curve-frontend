@@ -44,7 +44,6 @@ const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null =>
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
-  text-transform: initial;
 `
 
 export default useTokenAlert

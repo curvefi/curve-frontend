@@ -1,4 +1,5 @@
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
+import { enableLogging, isCypress } from '@ui-kit/utils'
 
 export enum LogStatus {
   ERROR = 'error',
@@ -58,7 +59,7 @@ function argToString(i: unknown, max = 200, trailing = 3) {
 type LogKey = string | QueryKey | MutationKey | string[]
 
 export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[]) {
-  if (process.env.NODE_ENV !== 'development') return
+  if (!enableLogging) return
 
   const timestamp = new Date().toISOString()
   const keyArray = typeof key === 'string' ? key.split('.') : Array.isArray(key) ? key : [key]
@@ -93,10 +94,14 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
         return console.log
     }
   }
+  if (isCypress || typeof window === 'undefined') {
+    // disable formatting when on cypress or server side. Electron prints logs to the output, but formatting breaks.
+    return logMethod(status)(status, JSON.stringify({ keyArray, args }).slice(0, 300))
+  }
 
   const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
   const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
-  const restArgs = hasDefinedStatus ? args : [status, ...args]
+  const restArgs = (hasDefinedStatus ? args : [status, ...args]).filter((x) => x != null)
   const argsFormat = restArgs.length ? `%c (%c${restArgs.map((i) => argToString(i)).join(', ')}%c)` : ''
   const format = `%cDApp%c @ %c${timestamp}%c -> ${hasDefinedStatus ? `%c${status}%c ` : ''}${formattedKeyString}${argsFormat}`
   const styles = [

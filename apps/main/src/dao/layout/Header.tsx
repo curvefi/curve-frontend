@@ -6,11 +6,11 @@ import networks, { visibleNetworksList } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { ChainId } from '@/dao/types/dao.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
-import { GlobalBannerProps } from '@ui/Banner/GlobalBanner'
 import { isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -25,7 +25,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
@@ -33,9 +32,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      isMdUp={isMdUp}
-      currentApp="dao"
-      pages={APP_LINK.dao.pages}
+      currentMenu="dao"
+      routes={APP_LINK.dao.routes}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),

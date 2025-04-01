@@ -124,6 +124,18 @@
       "multiplier": "4x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "loan",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x652aEa6B22310C89DCc506710CaD24d2Dba56B11",
+      "network": "ethereum",
+      "multiplier": "2x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

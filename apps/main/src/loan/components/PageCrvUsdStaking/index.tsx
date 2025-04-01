@@ -7,25 +7,27 @@ import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation
 import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-const CrvUsdStaking = () => {
+const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
   const checkApproval = useStore((state) => state.scrvusd.checkApproval)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const lendApi = useStore((state) => state.lendApi)
+  const lendApi = useApiStore((state) => state.lending)
   const { signerAddress, connecting, walletName } = useWallet()
-  const chainId = useStore((state) => state.curve?.chainId)
+  const chainId = useApiStore((state) => state.stable?.chainId)
 
   const {
     data: userScrvUsdBalance,
@@ -144,7 +146,7 @@ const CrvUsdStaking = () => {
           )}
         </Stack>
       </Stack>
-      <UserInformation />
+      <UserInformation params={params} />
     </Stack>
   )
 }

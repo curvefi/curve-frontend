@@ -7,13 +7,14 @@ import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
-import { getIsMobile, getPageWidthClassName, isSuccess } from '@ui/utils'
+import { getPageWidthClassName, isSuccess } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 export const App = ({ children }: { children: ReactNode }) => {
@@ -27,7 +28,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
   const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
@@ -35,17 +36,19 @@ export const App = ({ children }: { children: ReactNode }) => {
   const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
-    updateGlobalStoreByKey('isMobile', getIsMobile())
     if (window.innerWidth) setPageWidth(getPageWidthClassName(window.innerWidth))
-  }, [setPageWidth, updateGlobalStoreByKey])
+  }, [setPageWidth])
 
   useEffect(() => {
     if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth} ${getIsMobile() ? '' : 'scrollSmooth'}`
+    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
     document.body.setAttribute('data-theme', theme)
-  })
+  }, [pageWidth, theme])
 
   useEffect(() => {
+    // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
+    useStore.setState(useStore.getInitialState())
+
     const handleScrollListener = () => {
       updateShowScrollButton(window.scrollY)
     }
@@ -55,7 +58,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
-    updateGlobalStoreByKey('loaded', true)
     handleResizeListener()
     handleVisibilityChange()
 

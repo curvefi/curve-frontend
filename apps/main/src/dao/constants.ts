@@ -1,7 +1,6 @@
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
-export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const ETHEREUM_CHAIN_ID = 1
 
 export const ROUTE = {

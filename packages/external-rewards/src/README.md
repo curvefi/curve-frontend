@@ -38,7 +38,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
   - `description`: Pool/market specific description or `null` (will overwrite the campaign description in tooltip if set)
   - `campaignStart`: Start of the rewards, as UTC timestamp
   - `campaignEnd`: End of the rewards, as UTC timestamp
-  - `address`: Address of the pool/market (use address identified as `controller` for lending markets and action: `borrow`, use address identified as `vault` for action: `supply`)
+  - `address`: Address of the pool/market (use address identified as `controller` for lending markets and action: `borrow`, use address identified as `vault` for action: `supply`, use address identified as `controller` for crvUSD mint markets and action: `loan`)
   - `network`: Network of the pool/market
   - `multiplier`: Multiplier, or `null`
   - `tags`: Array of pool/market specific tags (any of the tags ids listed here: [`rewards-tags.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/reward-tags.json))

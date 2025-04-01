@@ -11,8 +11,8 @@ import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
-import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -54,7 +54,7 @@ export const MultiSelectFilter = <T extends unknown>({
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
-      setColumnFilter(id, [])
+      setColumnFilter(id, undefined)
       close()
     },
     [id, setColumnFilter, close],
@@ -64,12 +64,10 @@ export const MultiSelectFilter = <T extends unknown>({
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
     ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
       const value = currentTarget.getAttribute('value')!
-      setColumnFilter(
-        id,
-        selectedOptions?.includes(value)
-          ? selectedOptions.filter((v) => v !== value)
-          : [...(selectedOptions ?? []), value],
-      )
+      const options = selectedOptions?.includes(value)
+        ? selectedOptions.filter((v) => v !== value)
+        : [...(selectedOptions ?? []), value]
+      setColumnFilter(id, options.length ? options : undefined)
     },
     [setColumnFilter, id, selectedOptions],
   )

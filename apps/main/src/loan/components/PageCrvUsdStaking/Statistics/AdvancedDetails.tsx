@@ -5,6 +5,7 @@ import { Card, CardHeader, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { shortenAddress } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -18,9 +19,10 @@ const AdvancedDetails = () => (
     <Stack direction="column" spacing={Spacing.md} sx={{ padding: Spacing.md }}>
       <ActionInfo
         label={t`Vault Contract Address`}
-        address={SCRVUSD_VAULT_ADDRESS}
-        linkAddress={networks[ETHEREUM_CHAIN_ID].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
-        copiedText={t`Vault Contract Address Copied!`}
+        value={shortenAddress(SCRVUSD_VAULT_ADDRESS)}
+        link={networks[ETHEREUM_CHAIN_ID].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
+        copy
+        copiedTitle={t`Vault contract address copied!`}
       />
     </Stack>
   </Card>

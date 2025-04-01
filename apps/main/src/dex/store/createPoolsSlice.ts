@@ -5,32 +5,28 @@ import cloneDeep from 'lodash/cloneDeep'
 import countBy from 'lodash/countBy'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
-import pick from 'lodash/pick'
+import { zeroAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
-import { INVALID_ADDRESS } from '@/dex/constants'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
-  CurveApi,
+  BasePool,
   ChainId,
-  NetworkConfig,
-  CurrencyReservesToken,
   CurrencyReserves,
   CurrencyReservesMapper,
-  RewardsApyMapper,
-  TokensMapper,
+  CurrencyReservesToken,
+  CurveApi,
   PoolData,
-  BasePool,
   PoolDataMapper,
-  PoolDataCache,
   PricesApiPoolData,
-  SnapshotsMapper,
   PricesApiSnapshotsResponse,
-  PoolDataCacheMapper,
+  RewardsApyMapper,
+  SnapshotsMapper,
+  TokensMapper,
   TvlMapper,
   VolumeMapper,
 } from '@/dex/types/main.types'
-import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/dex/utils'
+import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import type {
   FetchingStatus,
@@ -49,6 +45,8 @@ import type {
 } from '@ui/Chart/types'
 import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { log } from '@ui-kit/lib/logging'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -253,7 +251,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           poolIds,
           networks.networks[chainId],
           storedPoolsMapper[chainId] ?? {},
-          storeCache.poolsMapper[chainId] ?? {},
           failedFetching24hOldVprice,
         )
 
@@ -481,7 +478,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     setPoolIsWrapped: (poolData, isWrapped) => {
-      const curve = get().curve
+      const curve = useApiStore.getState().curve!
       const chainId = curve.chainId
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
@@ -915,80 +912,6 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
   }, {} as TokensMapper)
 }
 
-async function getPools(
-  curve: CurveApi,
-  poolList: string[],
-  network: NetworkConfig,
-  poolsMapper: PoolDataMapper,
-  poolsMapperCached: PoolDataCacheMapper,
-  failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
-) {
-  const { getPool } = curve
-  const { getPoolData } = curvejsApi.pool
-  const { orgUIPath } = network
-
-  const resp = poolList.reduce(
-    (prev, poolId) => {
-      const pool = getPool(poolId)
-      const poolData = getPoolData(pool, network, poolsMapper[poolId])
-
-      poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
-      poolData.curvefiUrl = getCurvefiUrl(poolId, orgUIPath)
-
-      prev.poolsMapper[poolId] = poolData
-
-      prev.poolsMapperCache[poolId] = pick(poolData, [
-        'hasWrapped',
-        'gauge',
-        'tokens',
-        'tokensCountBy',
-        'tokensAll',
-        'tokensLowercase',
-        'tokenAddresses',
-        'tokenAddressesAll',
-        'pool.id',
-        'pool.name',
-        'pool.address',
-        'pool.gauge',
-        'pool.lpToken',
-        'pool.implementation',
-        'pool.isCrypto',
-        'pool.isFactory',
-        'pool.isLending',
-        'pool.referenceAsset',
-        'pool.isNg',
-      ]) as PoolDataCache
-
-      return prev
-    },
-    { poolsMapper: {}, poolsMapperCache: {} } as { poolsMapper: PoolDataMapper; poolsMapperCache: PoolDataCacheMapper },
-  )
-
-  // get gauge info
-  PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
-    const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
-      pool.gaugeStatus(),
-      pool.isGaugeKilled(),
-    ])
-    const gaugeStatus = fulfilledValue(gaugeStatusResult) || null
-    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) || null
-
-    poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-    poolsMapperCached[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-
-    if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
-      log(
-        'rewardsNeedNudging, areCrvRewardsStuckInBridge',
-        pool.id,
-        gaugeStatus.rewardsNeedNudging,
-        gaugeStatus.areCrvRewardsStuckInBridge,
-      )
-    }
-  })
-
-  return resp
-}
-
 export function parsedTokensNameMapper(poolDatas: PoolData[]) {
   const tokensNameMapper: { [address: string]: string } = {}
 
@@ -1002,7 +925,7 @@ export function parsedTokensNameMapper(poolDatas: PoolData[]) {
       tokensNameMapper[address] = tokens[idx]
     })
 
-    if (lpToken !== INVALID_ADDRESS) {
+    if (lpToken !== zeroAddress) {
       tokensNameMapper[lpToken] = `${id} LP`
     }
   }

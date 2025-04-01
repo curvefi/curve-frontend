@@ -3,6 +3,7 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { ethAddress } from 'viem'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
 import AlertSlippage from '@/dex/components/AlertSlippage'
@@ -18,7 +19,6 @@ import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/c
 import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import { NETWORK_TOKEN } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -369,7 +369,7 @@ const Swap = ({
               <InputMaxBtn
                 disabled={isDisabled || isMaxLoading}
                 loading={isMaxLoading}
-                isNetworkToken={formValues.fromAddress.toLowerCase() === NETWORK_TOKEN}
+                isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
                 onClick={() => {
                   updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
                 }}
@@ -381,6 +381,7 @@ const Swap = ({
                 disabled={isDisabled || selectList.length === 0}
                 showSearch={false}
                 showManageList={false}
+                compact={true}
                 onToken={(token) => {
                   const val = token.address
                   const cFormValues = cloneDeep(formValues)
@@ -463,6 +464,7 @@ const Swap = ({
               disabled={isDisabled || selectList.length === 0}
               showSearch={false}
               showManageList={false}
+              compact={true}
               onToken={(token) => {
                 const val = token.address
                 const cFormValues = cloneDeep(formValues)

@@ -4,7 +4,8 @@ import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { delayAction, shortenTokenAddress } from '@/dex/utils'
+import { delayAction } from '@/dex/utils'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
 import { useOverlayTriggerState } from '@react-stately/overlays'
@@ -16,7 +17,7 @@ import { Chip } from '@ui/Typography'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { type Address, filterTokens } from '@ui-kit/utils'
+import { type Address, filterTokens, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   curve: CurveApi
@@ -45,7 +46,7 @@ const SelectTokenButton = ({
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
-  const isMobile = useStore((state) => state.isMobile)
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
 
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
@@ -146,7 +147,7 @@ const SelectTokenButton = ({
                 {selectedToken.basePool && swapType === STABLESWAP && <BasepoolLabel>{t`BASE`}</BasepoolLabel>}
               </SelectedLabelText>
             </LabelTextWrapper>
-            <SelectedLabelAddress>{shortenTokenAddress(selectedToken.address)}</SelectedLabelAddress>
+            <SelectedLabelAddress>{shortenAddress(selectedToken.address)}</SelectedLabelAddress>
           </>
         ) : (
           <LabelTextWrapper>
@@ -166,6 +167,8 @@ const SelectTokenButton = ({
           error={error}
           disabledTokens={disabledKeys ?? []}
           disableSorting={true}
+          disableMyTokens={false}
+          compact={false}
           customOptions={
             swapType === STABLESWAP && (
               <Checkbox

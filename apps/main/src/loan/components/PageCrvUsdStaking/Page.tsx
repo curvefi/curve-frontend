@@ -14,7 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-const Page = (_: NetworkUrlParams) => {
+const Page = (params: NetworkUrlParams) => {
   usePageOnMount() // handles connecting wallet
   return (
     <>
@@ -42,7 +42,7 @@ const Page = (_: NetworkUrlParams) => {
             <Typography variant="bodySRegular">{t`Let your idle crvUSD do more for you.`}</Typography>
           </Box>
         </Stack>
-        <CrvUsdStaking />
+        <CrvUsdStaking params={params} />
       </Stack>
       <Settings showScrollButton />
     </>
