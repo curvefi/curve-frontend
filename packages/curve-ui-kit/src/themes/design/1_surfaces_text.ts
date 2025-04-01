@@ -58,19 +58,19 @@ function createLightSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Blues[500],
+        Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[500],
-        Warning: Reds[400],
+        Warning: Reds[300],
         Accent: Blues[500],
       },
       Fill: {
         Default: Layer[1].Fill,
         Active: Greens[400],
         Alert: Reds[500],
-        Highlight: Blues[500],
+        Highlight: Layer[1].Fill,
         Warning: Reds[300],
-        Accent: Blues[400],
+        Accent: Blues[500],
       },
     },
   } as const
@@ -134,10 +134,10 @@ function createDarkSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[400],
+        Active: Greens[500],
         Alert: Reds[500],
         Highlight: Blues[400],
-        Warning: Reds[400],
+        Warning: Reds[300],
         Accent: Blues[400],
       },
       Fill: {
@@ -208,11 +208,11 @@ function createChadSurfaces() {
         Accent: Grays[10],
       },
       Border: {
-        Default: Grays[400],
-        Active: Violet[500],
+        Default: Layer[1].Fill,
+        Active: Greens[500],
         Alert: Reds[500],
         Highlight: Violet[800],
-        Warning: Reds[400],
+        Warning: Reds[300],
         Accent: Violet[800],
       },
       Fill: {
@@ -283,10 +283,10 @@ function createLightInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[400],
+        Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[400],
-        Warning: Reds[400],
+        Warning: Reds[300],
         Accent: Blues[400],
       },
       Fill: {
@@ -356,11 +356,11 @@ function createDarkInvertedSurfaces() {
         Accent: Grays[10],
       },
       Border: {
-        Default: Grays[400],
-        Active: Blues[500],
+        Default: Layer[1].Fill,
+        Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[500],
-        Warning: Reds[400],
+        Warning: Reds[300],
         Accent: Blues[500],
       },
       Fill: {
@@ -431,10 +431,10 @@ function createChadInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Violet[400],
+        Active: Greens[500],
         Alert: Reds[500],
         Highlight: Violet[200],
-        Warning: Reds[400],
+        Warning: Reds[300],
         Accent: Violet[400],
       },
       Fill: {
