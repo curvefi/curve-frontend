@@ -15,24 +15,19 @@ import { t } from '@ui-kit/lib/i18n'
 
 const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
   const theme = useUserProfileStore((state) => state.theme)
-
-  const {
-    pricesApiState: {
-      chartOhlcData,
-      chartStatus,
-      timeOption,
-      chartExpanded,
-      activityHidden,
-      tradesTokens,
-      refetchingCapped,
-      lastFetchEndTime,
-    },
-    setChartTimeOption,
-    setChartExpanded,
-    fetchPricesApiCharts,
-    fetchPricesApiActivity,
-    fetchMorePricesApiCharts,
-  } = useStore((state) => state.pools)
+  const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
+  const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
+  const timeOption = useStore((state) => state.pools.pricesApiState.timeOption)
+  const chartExpanded = useStore((state) => state.pools.pricesApiState.chartExpanded)
+  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
+  const tradesTokens = useStore((state) => state.pools.pricesApiState.tradesTokens)
+  const refetchingCapped = useStore((state) => state.pools.pricesApiState.refetchingCapped)
+  const lastFetchEndTime = useStore((state) => state.pools.pricesApiState.lastFetchEndTime)
+  const setChartTimeOption = useStore((state) => state.pools.setChartTimeOption)
+  const setChartExpanded = useStore((state) => state.pools.setChartExpanded)
+  const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
+  const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
+  const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
   const isMdUp = useStore((state) => state.isMdUp)
 
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
