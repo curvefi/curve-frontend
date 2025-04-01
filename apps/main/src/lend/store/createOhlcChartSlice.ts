@@ -300,7 +300,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             }
           }),
         )
-        console.error(error)
       }
     },
     fetchMoreLlammaOhlcData: async (
@@ -379,7 +378,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
           }),
         )
-        console.error(error)
         return {
           ohlcData: [],
           volumeData: [],
@@ -495,7 +493,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             }
           }),
         )
-        console.error(error)
       }
     },
     fetchMoreOraclePoolOhlcData: async (
@@ -570,7 +567,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'ERROR'
           }),
         )
-        console.error(error)
         return {
           ohlcData: [],
           oracleData: [],
@@ -727,7 +723,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].activityFetchStatus = 'ERROR'
           }),
         )
-        console.error(error)
       }
     },
     setActivityHidden: (bool?: boolean) => {

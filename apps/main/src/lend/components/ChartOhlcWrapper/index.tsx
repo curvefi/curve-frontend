@@ -24,7 +24,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   const activeKey = useStore((state) => state.loanCreate.activeKey)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const loanCreateDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
+  const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
   const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
@@ -92,7 +92,10 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
         price2: [],
       }
 
-      for (const data of currentChart.data) {
+      // if a pool only has oracle price data, use that
+      const chartArray = currentChart.data.length !== 0 ? currentChart.data : currentChart.oraclePriceData
+
+      for (const data of chartArray) {
         range.price1 = [
           ...range.price1,
           {
@@ -110,7 +113,6 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       }
       return range
     }
-
     // create loan prices
     if (formValues.n && liqRangesMapper && currentChart.data) {
       if (liqRangesMapper[formValues.n].prices.length !== 0) {
@@ -118,7 +120,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
         // flip order to match other data
         liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
       } else {
-        const currentPrices = loanCreateDetailInfo?.prices
+        const currentPrices = loanCreateLeverageDetailInfo?.prices
 
         if (currentPrices) {
           liqRanges.new = formatRange([currentPrices[0], currentPrices[1]])
@@ -156,13 +158,14 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     formValues.n,
     liqRangesMapper,
     currentChart.data,
+    currentChart.oraclePriceData,
     userPrices,
     borrowMorePrices,
     repayLoanPrices,
     addCollateralPrices,
     removeCollateralPrices,
     repayLeveragePrices,
-    loanCreateDetailInfo,
+    loanCreateLeverageDetailInfo?.prices,
   ])
 
   const coins: LendingMarketTokens = useMemo(

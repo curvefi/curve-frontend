@@ -186,7 +186,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartFetchStatus = 'ERROR'
           }),
         )
-        console.log(error)
       }
     },
     fetchMoreOhlcData: async (
@@ -264,7 +263,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartFetchStatus = 'ERROR'
           }),
         )
-        console.log(error)
       }
     },
     fetchPoolActivity: async (chainId: ChainId, poolAddress: string) => {
@@ -317,7 +315,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].activityFetchStatus = 'ERROR'
           }),
         )
-        console.log(error)
       }
     },
     setActivityHidden: (bool?: boolean) => {
