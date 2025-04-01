@@ -217,30 +217,30 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
 
   const Badges = {
-    Label: { 
+    Label: {
       Default: Light.Badges.Label.Default,
       Active: Light.Badges.Label.Active,
       Alert: Light.Badges.Label.Alert,
       Highlight: Light.Badges.Label.Highlight,
       Warning: Light.Badges.Label.Warning,
       Accent: Light.Badges.Label.Accent,
-      },
-    Border: { 
+    },
+    Border: {
       Default: Light.Badges.Border.Default,
       Active: Light.Badges.Border.Active,
       Alert: Light.Badges.Border.Alert,
       Highlight: Light.Badges.Border.Highlight,
       Warning: Light.Badges.Border.Warning,
       Accent: Light.Badges.Border.Accent,
-      },
-      Fill: { 
-        Default: Light.Badges.Fill.Default,
-        Active: Light.Badges.Fill.Active,
-        Alert: Light.Badges.Fill.Alert,
-        Highlight: Light.Badges.Fill.Highlight,
-        Warning: Light.Badges.Fill.Warning,
-        Accent: Light.Badges.Fill.Accent,  
-      },
+    },
+    Fill: {
+      Default: Light.Badges.Fill.Default,
+      Active: Light.Badges.Fill.Active,
+      Alert: Light.Badges.Fill.Alert,
+      Highlight: Light.Badges.Fill.Highlight,
+      Warning: Light.Badges.Fill.Warning,
+      Accent: Light.Badges.Fill.Accent,
+    },
   } as const
 
   const Toggles = {
@@ -317,6 +317,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Layer,
     Tabs,
     Chips,
+    Badges,
     Toggles,
     Table,
     Inputs,
@@ -587,32 +588,32 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Outline: Layer.Highlight.Outline,
     },
   } as const
-  
+
   const Badges = {
-    Label: { 
-      Default:Dark.Badges.Label.Default,
-      Active:Dark.Badges.Label.Active,
-      Alert:Dark.Badges.Label.Alert,
-      Highlight:Dark.Badges.Label.Highlight,
-      Warning:Dark.Badges.Label.Warning,
-      Accent:Dark.Badges.Label.Accent,
-      },
-    Border: { 
-      Default:Dark.Badges.Border.Default,
-      Active:Dark.Badges.Border.Active,
-      Alert:Dark.Badges.Border.Alert,
-      Highlight:Dark.Badges.Border.Highlight,
-      Warning:Dark.Badges.Border.Warning,
-      Accent:Dark.Badges.Border.Accent,
-      },
-      Fill: { 
-        Default:Dark.Badges.Fill.Default,
-        Active:Dark.Badges.Fill.Active,
-        Alert:Dark.Badges.Fill.Alert,
-        Highlight:Dark.Badges.Fill.Highlight,
-        Warning:Dark.Badges.Fill.Warning,
-        Accent:Dark.Badges.Fill.Accent,  
-      },
+    Label: {
+      Default: Dark.Badges.Label.Default,
+      Active: Dark.Badges.Label.Active,
+      Alert: Dark.Badges.Label.Alert,
+      Highlight: Dark.Badges.Label.Highlight,
+      Warning: Dark.Badges.Label.Warning,
+      Accent: Dark.Badges.Label.Accent,
+    },
+    Border: {
+      Default: Dark.Badges.Border.Default,
+      Active: Dark.Badges.Border.Active,
+      Alert: Dark.Badges.Border.Alert,
+      Highlight: Dark.Badges.Border.Highlight,
+      Warning: Dark.Badges.Border.Warning,
+      Accent: Dark.Badges.Border.Accent,
+    },
+    Fill: {
+      Default: Dark.Badges.Fill.Default,
+      Active: Dark.Badges.Fill.Active,
+      Alert: Dark.Badges.Fill.Alert,
+      Highlight: Dark.Badges.Fill.Highlight,
+      Warning: Dark.Badges.Fill.Warning,
+      Accent: Dark.Badges.Fill.Accent,
+    },
   } as const
 
   const Toggles = {
@@ -689,6 +690,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Layer,
     Tabs,
     Chips,
+    Badges,
     Toggles,
     Table,
     Inputs,
@@ -904,32 +906,32 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Outline: Layer.Highlight.Outline,
     },
   } as const
-  
+
   const Badges = {
-    Label: { 
-      Default:Chad.Badges.Label.Default,
-      Active:Chad.Badges.Label.Active,
-      Alert:Chad.Badges.Label.Alert,
-      Highlight:Chad.Badges.Label.Highlight,
-      Warning:Chad.Badges.Label.Warning,
-      Accent:Chad.Badges.Label.Accent,
-      },
-    Border: { 
-      Default:Chad.Badges.Border.Default,
-      Active:Chad.Badges.Border.Active,
-      Alert:Chad.Badges.Border.Alert,
-      Highlight:Chad.Badges.Border.Highlight,
-      Warning:Chad.Badges.Border.Warning,
-      Accent:Chad.Badges.Border.Accent,
-      },
-      Fill: { 
-        Default:Chad.Badges.Fill.Default,
-        Active:Chad.Badges.Fill.Active,
-        Alert:Chad.Badges.Fill.Alert,
-        Highlight:Chad.Badges.Fill.Highlight,
-        Warning:Chad.Badges.Fill.Warning,
-        Accent:Chad.Badges.Fill.Accent,  
-      },
+    Label: {
+      Default: Chad.Badges.Label.Default,
+      Active: Chad.Badges.Label.Active,
+      Alert: Chad.Badges.Label.Alert,
+      Highlight: Chad.Badges.Label.Highlight,
+      Warning: Chad.Badges.Label.Warning,
+      Accent: Chad.Badges.Label.Accent,
+    },
+    Border: {
+      Default: Chad.Badges.Border.Default,
+      Active: Chad.Badges.Border.Active,
+      Alert: Chad.Badges.Border.Alert,
+      Highlight: Chad.Badges.Border.Highlight,
+      Warning: Chad.Badges.Border.Warning,
+      Accent: Chad.Badges.Border.Accent,
+    },
+    Fill: {
+      Default: Chad.Badges.Fill.Default,
+      Active: Chad.Badges.Fill.Active,
+      Alert: Chad.Badges.Fill.Alert,
+      Highlight: Chad.Badges.Fill.Highlight,
+      Warning: Chad.Badges.Fill.Warning,
+      Accent: Chad.Badges.Fill.Accent,
+    },
   } as const
 
   const Toggles = {
@@ -1006,6 +1008,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Layer,
     Tabs,
     Chips,
+    Badges,
     Toggles,
     Table,
     Inputs,

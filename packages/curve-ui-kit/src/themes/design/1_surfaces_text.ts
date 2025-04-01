@@ -65,7 +65,7 @@ function createLightSurfaces() {
         Accent: Blues[500],
       },
       Fill: {
-        Default: Layer[1],
+        Default: Layer[1].Fill,
         Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[500],
@@ -141,10 +141,10 @@ function createDarkSurfaces() {
         Accent: Blues[400],
       },
       Fill: {
-        Default: Layer[1],
+        Default: Layer[1].Fill,
         Active: Greens[500],
         Alert: Reds[500],
-        Highlight: Layer[1],
+        Highlight: Layer[1].Fill,
         Warning: Reds[300],
         Accent: Blues[400],
       },
@@ -216,10 +216,10 @@ function createChadSurfaces() {
         Accent: Violet[800],
       },
       Fill: {
-        Default: Layer[1],
+        Default: Layer[1].Fill,
         Active: Greens[500],
         Alert: Reds[500],
-        Highlight: Layer[1],
+        Highlight: Layer[1].Fill,
         Warning: Reds[300],
         Accent: Violet[800],
       },
@@ -290,7 +290,7 @@ function createLightInvertedSurfaces() {
         Accent: Blues[400],
       },
       Fill: {
-        Default: Layer[1],
+        Default: Layer[1].Fill,
         Active: Greens[400],
         Alert: Reds[500],
         Highlight: Grays[10],
@@ -364,10 +364,10 @@ function createDarkInvertedSurfaces() {
         Accent: Blues[500],
       },
       Fill: {
-        Default: Layer[1],
+        Default: Layer[1].Fill,
         Active: Greens[500],
         Alert: Reds[500],
-        Highlight: Layer[1],
+        Highlight: Layer[1].Fill,
         Warning: Reds[300],
         Accent: Blues[500],
       },
@@ -415,7 +415,7 @@ function createChadInvertedSurfaces() {
     },
   } as const
   return {
-    Text: Text,    
+    Text: Text,
     Layer: Layer,
     Tables: {
       Header: { Fill: Violet[800] },
@@ -438,10 +438,10 @@ function createChadInvertedSurfaces() {
         Accent: Violet[400],
       },
       Fill: {
-        Default: Layer[1],
+        Default: Layer[1].Fill,
         Active: Greens[500],
         Alert: Reds[500],
-        Highlight: Layer[1],
+        Highlight: Layer[1].Fill,
         Warning: Reds[300],
         Accent: Violet[400],
       },
