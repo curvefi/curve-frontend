@@ -134,7 +134,7 @@ function createDarkSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[500],
+        Active: Blues[400],
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Reds[400],
@@ -146,7 +146,7 @@ function createDarkSurfaces() {
         Alert: Reds[500],
         Highlight: Layer[1],
         Warning: Reds[300],
-        Accent: Blues[500],
+        Accent: Blues[400],
       },
     },
   } as const
@@ -200,10 +200,10 @@ function createChadSurfaces() {
     },
     Badges: {
       Label: {
-        Default: Grays[975],
+        Default: Text.Primary,
         Active: Grays[10],
-        Alert: Violet[800],
-        Highlight: Blues[400],
+        Alert: Grays[10],
+        Highlight: Violet[800],
         Warning: Grays[975],
         Accent: Grays[10],
       },
@@ -272,6 +272,32 @@ function createLightInvertedSurfaces() {
     Tables: {
       Header: { Fill: Grays[800] },
     },
+    Badges: {
+      Label: {
+        Default: Text.Primary,
+        Active: Grays[10],
+        Alert: Grays[10],
+        Highlight: Blues[400],
+        Warning: Grays[975],
+        Accent: Grays[10],
+      },
+      Border: {
+        Default: Grays[600],
+        Active: Blues[400],
+        Alert: Reds[500],
+        Highlight: Blues[400],
+        Warning: Reds[400],
+        Accent: Blues[400],
+      },
+      Fill: {
+        Default: Layer[1],
+        Active: Greens[400],
+        Alert: Reds[500],
+        Highlight: Grays[10],
+        Warning: Reds[300],
+        Accent: Blues[400],
+      },
+    },
   } as const
 }
 
@@ -320,6 +346,32 @@ function createDarkInvertedSurfaces() {
     Tables: {
       Header: { Fill: Grays[200] },
     },
+    Badges: {
+      Label: {
+        Default: Grays[975],
+        Active: Grays[10],
+        Alert: Grays[10],
+        Highlight: Blues[500],
+        Warning: Grays[975],
+        Accent: Grays[10],
+      },
+      Border: {
+        Default: Grays[400],
+        Active: Blues[500],
+        Alert: Reds[500],
+        Highlight: Blues[500],
+        Warning: Reds[400],
+        Accent: Blues[500],
+      },
+      Fill: {
+        Default: Layer[1],
+        Active: Greens[500],
+        Alert: Reds[500],
+        Highlight: Layer[1],
+        Warning: Reds[300],
+        Accent: Blues[500],
+      },
+    },
   } as const
 }
 
@@ -363,11 +415,37 @@ function createChadInvertedSurfaces() {
     },
   } as const
   return {
-    Text: Text,
+    Text: Text,    
+    Layer: Layer,
     Tables: {
       Header: { Fill: Violet[800] },
     },
-    Layer: Layer,
+    Badges: {
+      Label: {
+        Default: Text.Primary,
+        Active: Grays[10],
+        Alert: Grays[10],
+        Highlight: Violet[200],
+        Warning: Grays[975],
+        Accent: Grays[10],
+      },
+      Border: {
+        Default: Grays[600],
+        Active: Violet[400],
+        Alert: Reds[500],
+        Highlight: Violet[200],
+        Warning: Reds[400],
+        Accent: Violet[400],
+      },
+      Fill: {
+        Default: Layer[1],
+        Active: Greens[500],
+        Alert: Reds[500],
+        Highlight: Layer[1],
+        Warning: Reds[300],
+        Accent: Violet[400],
+      },
+    },
   } as const
 }
 
