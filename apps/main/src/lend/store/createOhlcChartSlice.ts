@@ -233,29 +233,37 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
 
-          volumeArray.push({
-            time,
-            value: item.volume,
-            color: item.open < item.close ? '#26a69982' : '#ef53507e',
-          })
+          if (item.volume && item.open && item.close) {
+            volumeArray.push({
+              time,
+              value: item.volume,
+              color: item.open < item.close ? '#26a69982' : '#ef53507e',
+            })
+          }
 
-          baselinePriceArray.push({
-            time,
-            base_price: item.basePrice,
-          })
+          if (item.basePrice) {
+            baselinePriceArray.push({
+              time,
+              base_price: item.basePrice,
+            })
+          }
 
-          oraclePriceArray.push({
-            time,
-            value: item.oraclePrice,
-          })
+          if (item.oraclePrice) {
+            oraclePriceArray.push({
+              time,
+              value: item.oraclePrice,
+            })
+          }
 
-          ohlcDataArray.push({
-            time,
-            open: item.open,
-            close: item.close,
-            high: item.high,
-            low: item.low,
-          })
+          if (item.open && item.close && item.high && item.low) {
+            ohlcDataArray.push({
+              time,
+              open: item.open,
+              close: item.close,
+              high: item.high,
+              low: item.low,
+            })
+          }
         }
 
         const arrLength = oraclePriceArray.length - 1
@@ -292,7 +300,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             }
           }),
         )
-        console.log(error)
       }
     },
     fetchMoreLlammaOhlcData: async (
@@ -324,29 +331,37 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
 
-          volumeArray.push({
-            time,
-            value: item.volume,
-            color: item.open < item.close ? '#26a69982' : '#ef53507e',
-          })
+          if (item.volume && item.open && item.close) {
+            volumeArray.push({
+              time,
+              value: item.volume,
+              color: item.open < item.close ? '#26a69982' : '#ef53507e',
+            })
+          }
 
-          baselinePriceArray.push({
-            time,
-            base_price: item.basePrice,
-          })
+          if (item.basePrice) {
+            baselinePriceArray.push({
+              time,
+              base_price: item.basePrice,
+            })
+          }
 
-          oraclePriceArray.push({
-            time,
-            value: item.oraclePrice,
-          })
+          if (item.oraclePrice) {
+            oraclePriceArray.push({
+              time,
+              value: item.oraclePrice,
+            })
+          }
 
-          ohlcDataArray.push({
-            time,
-            open: item.open,
-            close: item.close,
-            high: item.high,
-            low: item.low,
-          })
+          if (item.open && item.close && item.high && item.low) {
+            ohlcDataArray.push({
+              time,
+              open: item.open,
+              close: item.close,
+              high: item.high,
+              low: item.low,
+            })
+          }
         }
 
         return {
@@ -363,7 +378,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
           }),
         )
-        console.log(error)
         return {
           ohlcData: [],
           volumeData: [],
@@ -479,7 +493,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             }
           }),
         )
-        console.log(error)
       }
     },
     fetchMoreOraclePoolOhlcData: async (
@@ -554,7 +567,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'ERROR'
           }),
         )
-        console.log(error)
         return {
           ohlcData: [],
           oracleData: [],
@@ -711,7 +723,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].activityFetchStatus = 'ERROR'
           }),
         )
-        console.log(error)
       }
     },
     setActivityHidden: (bool?: boolean) => {

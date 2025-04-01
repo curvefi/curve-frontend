@@ -19,7 +19,8 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
   const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
   const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
-  const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const formValues = useStore((state) => state.loanCreate.formValues)
+  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
   const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
@@ -31,33 +32,30 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
   const decreaseCollateralPrices = useStore(
     (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
-
   const theme = useUserProfileStore((state) => state.theme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const {
-    chartFetchStatus,
-    timeOption,
-    refetchingCapped,
-    lastFetchEndTime,
-    chartOhlcData,
-    volumeData,
-    oraclePriceData,
-    setChartTimeOption,
-    fetchOhlcData,
-    fetchMoreOhlcData,
-    activityHidden,
-    chartExpanded,
-    setChartExpanded,
-    toggleLiqRangeCurrentVisible,
-    toggleLiqRangeNewVisible,
-    toggleOraclePriceVisible,
-    liqRangeCurrentVisible,
-    liqRangeNewVisible,
-    oraclePriceVisible,
-  } = useStore((state) => state.ohlcCharts)
+  const chartFetchStatus = useStore((state) => state.ohlcCharts.chartFetchStatus)
+  const timeOption = useStore((state) => state.ohlcCharts.timeOption)
+  const refetchingCapped = useStore((state) => state.ohlcCharts.refetchingCapped)
+  const lastFetchEndTime = useStore((state) => state.ohlcCharts.lastFetchEndTime)
+  const chartOhlcData = useStore((state) => state.ohlcCharts.chartOhlcData)
+  const volumeData = useStore((state) => state.ohlcCharts.volumeData)
+  const oraclePriceData = useStore((state) => state.ohlcCharts.oraclePriceData)
+  const setChartTimeOption = useStore((state) => state.ohlcCharts.setChartTimeOption)
+  const fetchOhlcData = useStore((state) => state.ohlcCharts.fetchOhlcData)
+  const fetchMoreOhlcData = useStore((state) => state.ohlcCharts.fetchMoreOhlcData)
+  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
+  const toggleLiqRangeCurrentVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeCurrentVisible)
+  const toggleLiqRangeNewVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeNewVisible)
+  const toggleOraclePriceVisible = useStore((state) => state.ohlcCharts.toggleOraclePriceVisible)
+  const liqRangeCurrentVisible = useStore((state) => state.ohlcCharts.liqRangeCurrentVisible)
+  const liqRangeNewVisible = useStore((state) => state.ohlcCharts.liqRangeNewVisible)
+  const oraclePriceVisible = useStore((state) => state.ohlcCharts.oraclePriceVisible)
   const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
+
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
