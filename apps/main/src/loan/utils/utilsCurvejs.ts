@@ -17,7 +17,7 @@ import { BN } from '@ui/utils'
 export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
   const { networkId } = networks[chainId]
   const api = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
-  await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+  await api.init('Web3', { network: networkId, externalProvider: wallet.provider }, { chainId })
   // Explicitly set chainId to 1 (Ethereum mainnet) to prevent default value of 0 causing issues
   api.chainId = 1
   return api
@@ -29,7 +29,7 @@ export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
     const api = cloneDeep((await import('@curvefi/lending-api')).default) as LendApi
 
     if (wallet) {
-      await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+      await api.init('Web3', { network: networkId, externalProvider: wallet.provider }, { chainId })
       return api
     }
   } catch (error) {
@@ -153,16 +153,6 @@ export function sortBands(bandBalances: { [key: string]: { stablecoin: string; c
     bandBalancesArr.push({ ...bandBalances[k], band: k })
   }
   return { bandBalancesArr, bandBalances }
-}
-
-export function getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
 }
 
 export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {

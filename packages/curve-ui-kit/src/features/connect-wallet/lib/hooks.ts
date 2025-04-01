@@ -1,32 +1,27 @@
-import { BrowserProvider, FallbackProvider, JsonRpcProvider } from 'ethers'
-import { Dispatch, type ReactNode, SetStateAction, useEffect } from 'react'
+import { BrowserProvider, ethers } from 'ethers'
+import { Dispatch, type ReactNode, SetStateAction, useCallback, useEffect, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
-import { clientToProvider } from '@ui-kit/features/connect-wallet/lib/wagmi/adapter'
 import { useBetaFlag } from '@ui-kit/hooks/useBetaFlag'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
+import { switchChain } from '@wagmi/core'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
-import type {
-  ConnectOptions,
-  DisconnectOptions,
-  NotificationType,
-  WalletState as Wallet,
-} from '@web3-onboard/core/dist/types'
-import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
-import { getRpcProvider } from './utils/wallet-helpers'
+import type { NotificationType } from '@web3-onboard/core/dist/types'
+import { useConnectWallet as useOnboardWallet, useSetChain as useOnboardSetChain } from '@web3-onboard/react'
+import type { Wallet } from './types'
+import { convertOnboardWallet, getRpcProvider } from './utils/wallet-helpers'
+import { config, type WagmiChainId } from './wagmi/setup'
 import { useWagmiWallet } from './wagmi/wallet'
-
-type EthersProvider = BrowserProvider | FallbackProvider | JsonRpcProvider
 
 type UseConnectWallet = {
   (): {
     wallet: Wallet | null
     connecting: boolean
-    connect: (options?: ConnectOptions) => Promise<Wallet[]>
-    disconnect: (wallet: DisconnectOptions) => Promise<Wallet[]>
+    connect: (label?: string) => Promise<Wallet | null>
+    disconnect: () => Promise<void>
     walletName: string | null
     setWalletName: Dispatch<SetStateAction<string | null>>
-    provider: EthersProvider | null
+    provider: BrowserProvider | null
     signerAddress: Address | undefined
     modal: ReactNode
   }
@@ -36,32 +31,68 @@ type UseConnectWallet = {
 
 let onboard: OnboardAPI | null = null
 const state: {
-  provider: EthersProvider | null
+  provider: BrowserProvider | null
   wallet: Wallet | null
 } = {
   provider: null,
   wallet: null,
 }
 
-export const useWallet: UseConnectWallet = () => {
+/**
+ * Hook to determine if the Wagmi wallet should be used.
+ * @returns {boolean} - True if Wagmi wallet should be used, false if Onboard wallet should be used.
+ **/
+const useUseWagmi = (): boolean => {
   const [isBeta] = useBetaFlag()
-  const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] = useOnboardWallet()
-  const [{ wallet: wagmiWallet, connecting: wagmiConnecting, modal }, wagmiConnect, wagmiDisconnect] = useWagmiWallet()
-  const [walletName, setWalletName] = useLocalStorage<string | null>('walletName')
+  const [{ wallet, connecting }] = useOnboardWallet()
+  return isBeta && !wallet && !connecting
+}
 
-  const useWagmi = isBeta && !onboardWallet && !onboardConnecting
+export const useWallet: UseConnectWallet = () => {
+  const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
+    useOnboardWallet()
+  const [{ wallet: wagmiWallet, connecting: wagmiConnecting, modal, client }, wagmiConnect, wagmiDisconnect] =
+    useWagmiWallet()
+  const [walletName, setWalletName] = useLocalStorage<string | null>('walletName')
+  const useWagmi = useUseWagmi()
+
+  const wallet = useMemo(
+    () => (useWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)),
+    [onboardWallet, wagmiWallet, useWagmi],
+  )
 
   useEffect(() => {
-    state.wallet = useWagmi ? wagmiWallet : onboardWallet
-    state.provider = useWagmi ? clientToProvider(wagmiWallet.client) : onboardWallet && new BrowserProvider(getRpcProvider(onboardWallet))
-  }, [onboardWallet, useWagmi, wagmiWallet])
+    state.wallet = wallet
+    state.provider = wallet && new BrowserProvider(getRpcProvider(wallet))
+  }, [client, onboardWallet, useWagmi, wagmiWallet, wallet])
 
-  const signerAddress = onboardWallet?.accounts?.[0]?.address
+  const signerAddress = onboardWallet?.accounts[0]?.address
+  const connect = useMemo(
+    (): ((label?: string) => Promise<Wallet | null>) =>
+      useWagmi
+        ? wagmiConnect
+        : (label?: string) =>
+            onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) }).then((wallets) =>
+              convertOnboardWallet(wallets[0]),
+            ),
+    [onboardConnect, useWagmi, wagmiConnect],
+  )
+
+  const disconnect = useMemo(
+    () =>
+      useWagmi
+        ? wagmiDisconnect
+        : async () => {
+            wallet && (await onboardDisconnect(wallet))
+          },
+    [onboardDisconnect, useWagmi, wagmiDisconnect, wallet],
+  )
+
   return {
-    wallet: useWagmi  ? wagmiWallet : onboardWallet,
-    connecting: useWagmi  ? wagmiConnecting : onboardConnecting,
-    connect: useWagmi  ? wagmiConnect : onboardConnect,
-    disconnect: useWagmi  ? wagmiDisconnect : onboardDisconnect,
+    wallet: wallet,
+    connecting: useWagmi ? wagmiConnecting : onboardConnecting,
+    connect,
+    disconnect,
     walletName,
     setWalletName,
     provider: state.provider,
@@ -71,6 +102,26 @@ export const useWallet: UseConnectWallet = () => {
 }
 useWallet.initialize = (...params) => (onboard = initOnboard(...params))
 useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
+
+export const useSetChain = () => {
+  const [_, setOnboardChain] = useOnboardSetChain()
+  const useWagmi = useUseWagmi()
+  return useCallback(
+    async (chainId: number): Promise<boolean> => {
+      if (!useWagmi) {
+        return setOnboardChain({ chainId: ethers.toQuantity(chainId) })
+      }
+      try {
+        await switchChain(config, { chainId: chainId as WagmiChainId })
+        return true
+      } catch (error) {
+        console.error('Error switching chain:', error)
+        return false
+      }
+    },
+    [setOnboardChain, useWagmi],
+  )
+}
 
 export const notify = (
   message: string,

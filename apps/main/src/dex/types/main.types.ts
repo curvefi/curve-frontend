@@ -6,7 +6,8 @@ import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { WalletState } from '@web3-onboard/core'
+
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>
@@ -290,7 +291,6 @@ export type Volume = {
   errorMessage: string
 }
 export type VolumeMapper = { [poolId: string]: Volume }
-export type Wallet = WalletState
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export interface PoolAlert extends TooltipProps {

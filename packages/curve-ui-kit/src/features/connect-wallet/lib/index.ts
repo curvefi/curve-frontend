@@ -1,3 +1,4 @@
-export { useSetChain } from '@web3-onboard/react'
-export { useWallet, notify } from './hooks'
+export type { Wallet } from './types'
+export { SupportedWallets } from './wagmi/setup'
 export { getWalletSignerAddress, getWalletChainId, getWalletSignerEns } from './utils/wallet-helpers'
+export { useSetChain, useWallet, notify } from './hooks'

@@ -11,15 +11,15 @@ export type Item<T> = {
 }
 
 export type MenuItemProps<T> = Item<T> & {
-  onChange: (value: T) => void
-  isSelected: boolean
+  onSelected: (value: T) => void
+  isSelected?: boolean
 } & Omit<MuiMenuItemProps, 'onChange'>
 
-export function MenuItem<T>({ label, value, onChange, isSelected, icon, ...props }: MenuItemProps<T>) {
+export function MenuItem<T>({ label, value, onSelected, isSelected, icon, ...props }: MenuItemProps<T>) {
   const ref = useRef<HTMLLIElement | null>(null)
   return (
     <InvertOnHover hoverRef={ref}>
-      <MuiMenuItem selected={isSelected} tabIndex={0} {...props} onClick={() => onChange(value)}>
+      <MuiMenuItem selected={isSelected} tabIndex={0} {...props} onClick={() => onSelected(value)}>
         {icon}
         <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
           {label}

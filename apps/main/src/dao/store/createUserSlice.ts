@@ -22,11 +22,11 @@ import {
   UserProposalVotesRes,
   UserProposalVotesSortBy,
   UserVoteData,
+  type Wallet,
 } from '@/dao/types/dao.types'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
-import type { WalletState } from '@web3-onboard/core'
 
 const { WEEK } = TIME_FRAMES
 
@@ -88,7 +88,7 @@ const sliceKey = 'user'
 // prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
-    updateUserData(curve: CurveApi, wallet: WalletState): void
+    updateUserData(curve: CurveApi, wallet: Wallet): void
     getUserEns(userAddress: string): Promise<void>
     getUserProposalVotes(userAddress: string): Promise<void>
     getUserGaugeVotes(userAddress: string): Promise<void>
@@ -149,7 +149,7 @@ const DEFAULT_STATE: SliceState = {
 const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    updateUserData: async (curve: CurveApi, wallet: WalletState) => {
+    updateUserData: async (curve: CurveApi, wallet: Wallet) => {
       const getUserProposalVotes = get()[sliceKey].getUserProposalVotes
       const userAddress = getWalletSignerAddress(wallet)!
 

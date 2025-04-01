@@ -13,6 +13,7 @@ import {
 import { getErrorMessage } from '@/dao/utils'
 import type { DateValue } from '@internationalized/date'
 import PromisePool from '@supercharge/promise-pool/dist'
+import { getWalletProvider } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { log } from '@ui-kit/lib'
 import dayjs from '@ui-kit/lib/dayjs'
 
@@ -251,13 +252,3 @@ const curvejsApi = {
 }
 
 export default curvejsApi
-
-export function getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
-}

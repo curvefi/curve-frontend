@@ -1,3 +1,4 @@
+import createSvgIcon from '@mui/material/utils/createSvgIcon'
 import { WALLET_CONNECT_PROJECT_ID } from '@ui-kit/features/connect-wallet/lib/utils/walletModules'
 import { CoinbaseIcon } from '@ui-kit/shared/icons/CoinbaseIcon'
 import { KeplrIcon } from '@ui-kit/shared/icons/KeplrIcon'
@@ -24,7 +25,13 @@ const Connectors = {
   [walletConnect.type]: walletConnect({ projectId: WALLET_CONNECT_PROJECT_ID }),
 }
 
-export const SupportedWallets = [
+type WalletType = {
+  label: string
+  icon: ReturnType<typeof createSvgIcon>
+  connector: (typeof Connectors)[keyof typeof Connectors]
+}
+
+export const SupportedWallets: WalletType[] = [
   {
     label: `Rabby`,
     icon: RabbyIcon,
@@ -70,3 +77,5 @@ export const config = createConfig({
     [sepolia.id]: http(),
   },
 })
+
+export type WagmiChainId = (typeof config)['chains'][number]['id']

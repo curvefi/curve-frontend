@@ -19,7 +19,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const pathname = usePathname()
   const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
-  const [_, setChain] = useSetChain()
+  const setChain = useSetChain()
   const lending = useApiStore((state) => state.lending)
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
@@ -67,10 +67,10 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
         if (walletName) {
           // If found label in localstorage, after 30s if not connected, reconnect with modal
-          const walletStatesPromise = new Promise<Wallet[] | null>(async (resolve, reject) => {
+          const walletStatesPromise = new Promise<Wallet | null>(async (resolve, reject) => {
             try {
               const walletStates = await Promise.race([
-                connect({ autoSelect: { label: walletName, disableModals: true } }),
+                connect(walletName),
                 new Promise<never>((_, reject) =>
                   setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
                 ),
@@ -82,17 +82,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           })
 
           try {
-            const walletStates = await walletStatesPromise
-            if (!walletStates || (Array.isArray(walletStates) && walletStates.length === 0))
-              throw new Error('unable to connect')
-            walletState = walletStates[0]
+            walletState = await walletStatesPromise
           } catch (error) {
             // if failed to get walletState due to timeout, show connect modal.
             setWalletName(null)
-            ;[walletState] = await connect()
+            walletState = await connect()
           }
         } else {
-          ;[walletState] = await connect()
+          walletState = await connect()
         }
 
         try {
@@ -100,7 +97,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           setWalletName(walletState.label)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
+            const success = await setChain(parsedParams.rChainId)
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
@@ -125,18 +122,15 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     [connect, push, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
-  const handleDisconnectWallet = useCallback(
-    async (wallet: Wallet) => {
-      try {
-        await disconnect(wallet)
-        setWalletName(null)
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    [disconnect, parsedParams.rChainId, updateConnectState, setWalletName],
-  )
+  const handleDisconnectWallet = useCallback(async () => {
+    try {
+      await disconnect()
+      setWalletName(null)
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
+    } catch (error) {
+      console.error(error)
+    }
+  }, [disconnect, parsedParams.rChainId, updateConnectState, setWalletName])
 
   const handleNetworkSwitch = useCallback(
     async (options: ConnectState['options']) => {
@@ -144,7 +138,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         const [currChainId, newChainId] = options
         if (wallet) {
           try {
-            const success = await setChain({ chainId: ethers.toQuantity(newChainId) })
+            const success = await setChain(newChainId)
             if (!success) throw new Error('reject network switch')
             updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
           } catch (error) {
@@ -200,7 +194,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
         handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.DISCONNECT_WALLET) && wallet) {
-        handleDisconnectWallet(wallet)
+        handleDisconnectWallet()
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
         handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
       }
