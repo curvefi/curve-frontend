@@ -45,7 +45,7 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
 
   const handleCastVote = () => {
     if (!address) return
-    castVote(address, gaugeAddress, power)
+    void castVote(address, gaugeAddress, power)
   }
 
   return (

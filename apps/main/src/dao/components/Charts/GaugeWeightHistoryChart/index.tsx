@@ -21,7 +21,7 @@ const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistory
 
   useEffect(() => {
     if (!gaugeWeightHistoryMapper[gaugeAddress]) {
-      getHistoricGaugeWeights(gaugeAddress)
+      void getHistoricGaugeWeights(gaugeAddress)
     }
   }, [gaugeAddress, gaugeWeightHistoryMapper, getHistoricGaugeWeights])
 
@@ -33,7 +33,7 @@ const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistory
             message={t`Error fetching historical gauge weights data`}
             onClick={(e?: MouseEvent) => {
               e?.stopPropagation()
-              getHistoricGaugeWeights(gaugeAddress)
+              void getHistoricGaugeWeights(gaugeAddress)
             }}
           />
         </ErrorWrapper>

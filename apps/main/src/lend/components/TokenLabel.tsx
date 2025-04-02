@@ -50,7 +50,7 @@ const TokenLabel = ({
             size="medium"
             onClick={(evt) => {
               evt.stopPropagation()
-              copyToClipboard(address)
+              void copyToClipboard(address)
             }}
           >
             <Icon name="Copy" size={16} />

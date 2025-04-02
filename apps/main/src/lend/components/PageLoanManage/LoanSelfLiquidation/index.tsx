@@ -64,7 +64,7 @@ const LoanSelfLiquidation = ({
     setTxInfoBar(null)
 
     if (isLoaded && api && market) {
-      fetchDetails(api, market, maxSlippage)
+      void fetchDetails(api, market, maxSlippage)
     }
   }, [isLoaded, api, market, fetchDetails, maxSlippage])
 
@@ -173,7 +173,7 @@ const LoanSelfLiquidation = ({
 
   // max slippage
   useEffect(() => {
-    if (isLoaded && api && market && maxSlippage) fetchDetails(api, market, maxSlippage)
+    if (isLoaded && api && market && maxSlippage) void fetchDetails(api, market, maxSlippage)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
@@ -181,7 +181,7 @@ const LoanSelfLiquidation = ({
   useEffect(() => {
     if (isLoaded && api && market && maxSlippage) {
       resetState()
-      fetchDetails(api, market, maxSlippage)
+      void fetchDetails(api, market, maxSlippage)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])

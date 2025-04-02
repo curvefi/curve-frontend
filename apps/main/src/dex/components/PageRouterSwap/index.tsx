@@ -125,7 +125,7 @@ const QuickSwap = ({
       setTxInfoBar(null)
       setConfirmedLoss(false)
 
-      setFormValues(
+      void setFormValues(
         pageLoaded && !isLoadingApi ? curve : null,
         updatedFormValues,
         searchedParams,
@@ -236,7 +236,7 @@ const QuickSwap = ({
                   primaryBtnProps: {
                     onClick: () => {
                       if (typeof maxSlippage !== 'undefined' && typeof routesAndOutput !== 'undefined') {
-                        handleBtnClickSwap(
+                        void handleBtnClickSwap(
                           activeKey,
                           curve,
                           formValues,
@@ -256,7 +256,7 @@ const QuickSwap = ({
             : {
                 onClick: () => {
                   if (typeof maxSlippage !== 'undefined' && typeof routesAndOutput !== 'undefined') {
-                    handleBtnClickSwap(
+                    void handleBtnClickSwap(
                       activeKey,
                       curve,
                       formValues,
@@ -331,7 +331,7 @@ const QuickSwap = ({
   useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
 
   useEffect(() => {
-    updateTokenList(isReady ? curve : null, tokensMapper)
+    void updateTokenList(isReady ? curve : null, tokensMapper)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, tokensMapperStr, curve?.signerAddress])
 

@@ -26,11 +26,11 @@ const PoolActivity = ({
   chartCombinations: PricesApiCoin[][]
 }) => {
   const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
-  const {
-    pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },
-    setActivityHidden,
-    fetchPricesApiActivity,
-  } = useStore((state) => state.pools)
+  const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
+  const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)
+  const liquidityEventsData = useStore((state) => state.pools.pricesApiState.liquidityEventsData)
+  const setActivityHidden = useStore((state) => state.pools.setActivityHidden)
+  const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 

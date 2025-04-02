@@ -39,7 +39,7 @@ const Page = () => {
   useEffect(() => {
     if (!pageLoaded) return
     if (provider) {
-      fetchData(provider)
+      void fetchData(provider)
     }
   }, [fetchData, pageLoaded, provider])
 

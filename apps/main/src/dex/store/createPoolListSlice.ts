@@ -293,7 +293,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       })
 
       // get rest of pool list data
-      Promise.all([pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)])
+      void Promise.all([pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)])
     },
 
     // use local storage data till actual data returns
@@ -385,7 +385,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           return
         }
 
-        sliceState.setSortAndFilterData(
+        void sliceState.setSortAndFilterData(
           rChainId,
           searchParams,
           hideSmallPools,

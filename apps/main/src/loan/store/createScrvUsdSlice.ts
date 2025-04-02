@@ -244,7 +244,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].checkApproval.depositApprove(amount)
+          void get()[sliceKey].checkApproval.depositApprove(amount)
 
           const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
           notify(successNotificationMessage, 'success', 15000)
@@ -257,7 +257,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: null,
             errorMessage: error.message,
           })
-          console.log(error)
+          console.warn(error)
           return false
         }
       },
@@ -317,7 +317,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: null,
             errorMessage: error.message,
           })
-          console.log(error)
+          console.warn(error)
         }
       },
       withdraw: async (amount: string) => {
@@ -376,7 +376,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: null,
             errorMessage: error.message,
           })
-          console.log(error)
+          console.warn(error)
         }
       },
       redeem: async (amount: string) => {
@@ -400,7 +400,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
 
         try {
-          console.log('redeem', amount)
+          console.info('redeem', amount)
 
           const transactionHash = await lendApi.st_crvUSD.redeem(amount)
 
@@ -437,7 +437,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             transaction: null,
             errorMessage: error.message,
           })
-          console.log(error)
+          console.warn(error)
         }
       },
     },

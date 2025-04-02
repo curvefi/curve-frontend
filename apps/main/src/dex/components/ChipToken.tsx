@@ -53,7 +53,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
 
   const handleMouseEnter = (foundUsdRate?: string) => {
     if (!foundUsdRate && curve) {
-      fetchUsdRateByToken(curve, tokenAddress)
+      void fetchUsdRateByToken(curve, tokenAddress)
     }
   }
 

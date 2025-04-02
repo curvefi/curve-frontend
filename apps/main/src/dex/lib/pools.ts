@@ -120,7 +120,7 @@ export async function getPools(
   )
 
   // get gauge info
-  PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
+  await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
     const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
       pool.gaugeStatus(),
       pool.isGaugeKilled(),

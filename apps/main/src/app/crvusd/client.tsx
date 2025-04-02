@@ -13,8 +13,8 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const curve = useApiStore((state) => state.stable)
@@ -69,8 +69,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve) {
-        fetchAllStoredUsdRates(curve)
-        fetchGasInfo(curve)
+        void fetchAllStoredUsdRates(curve)
+        void fetchGasInfo(curve)
       }
     },
     REFRESH_INTERVAL['5m'],

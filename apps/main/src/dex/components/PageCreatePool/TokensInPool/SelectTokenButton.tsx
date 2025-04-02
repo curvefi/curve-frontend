@@ -112,12 +112,12 @@ const SelectTokenButton = ({
 
           updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
         } catch (error) {
-          console.log(error)
+          console.warn(error)
           setError(error)
         }
       }
     }
-    updateUserAddedToken()
+    void updateUserAddedToken()
   }, [basePools, chainId, curve, filterValue, options, updateUserAddedTokens, userAddedTokens])
 
   const selectedToken = useMemo(

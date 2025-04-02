@@ -68,7 +68,7 @@ const FormDeposit = ({
     ) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
-      setFormValues(
+      void setFormValues(
         'DEPOSIT',
         curve,
         poolDataCacheOrApi.pool.id,

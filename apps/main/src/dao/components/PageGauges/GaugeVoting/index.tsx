@@ -16,7 +16,7 @@ const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
 
   useEffect(() => {
     if (userAddress && curve && userGaugeVoteWeightsMapper[userAddress.toLowerCase()] === undefined) {
-      getUserGaugeVoteWeights(userAddress)
+      void getUserGaugeVoteWeights(userAddress)
     }
   }, [getUserGaugeVoteWeights, userAddress, curve, userGaugeVoteWeightsMapper])
 

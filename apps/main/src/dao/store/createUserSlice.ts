@@ -161,7 +161,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         console.error(error)
       }
 
-      getUserProposalVotes(userAddress)
+      void getUserProposalVotes(userAddress)
 
       get()[sliceKey].setStateByKeys({
         userAddress: userAddress.toLowerCase(),
@@ -297,7 +297,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           }),
         )
       } catch (error) {
-        console.log(error)
+        console.warn(error)
 
         set(
           produce((state) => {
@@ -496,7 +496,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const gauges = get()[sliceKey].userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? '']?.data.gauges
       if (!gauges) return
 
-      Promise.all(gauges.map((gauge) => getVoteForGaugeNextTime(userAddress, gauge.gaugeAddress)))
+      void Promise.all(gauges.map((gauge) => getVoteForGaugeNextTime(userAddress, gauge.gaugeAddress)))
     },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
       const address = userAddress.toLowerCase()

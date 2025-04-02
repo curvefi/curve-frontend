@@ -26,7 +26,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curve: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null): void
+  hydrate(curve: Curve | LendingApi, prevCurveApi: Curve | LendingApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -90,7 +90,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       await loans.fetchLoansDetails(curveApi, collateralDatas)
 
       if (!prevCurveApi || isNetworkSwitched) {
-        usdRates.fetchAllStoredUsdRates(curveApi)
+        void usdRates.fetchAllStoredUsdRates(curveApi)
       }
     }
 

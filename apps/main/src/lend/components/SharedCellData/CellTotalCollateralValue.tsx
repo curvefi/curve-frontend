@@ -17,7 +17,7 @@ const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOw
   const { total = null, tooltipContent = [], error } = totalCollateralValue ?? {}
 
   useEffect(() => {
-    if (market) fetchTotalCollateralValue(rChainId, market)
+    if (market) void fetchTotalCollateralValue(rChainId, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rChainId, market])
 

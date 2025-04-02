@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import useStore from '@/loan/store/useStore'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import SubNav from '../components/SubNav'
 import type { SubNavItem } from '../components/SubNav/types'
@@ -11,7 +12,6 @@ import { SUB_NAV_ITEMS } from './constants'
 import DeployButton from './DeployButton'
 import DepositModule from './DepositModule'
 import WithdrawModule from './WithdrawModule'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -61,13 +61,13 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
       if (lending && curve && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
-            estimateGasDeposit(inputAmount)
+            void estimateGasDeposit(inputAmount)
           } else {
-            estimateGasDepositApprove(inputAmount)
+            void estimateGasDepositApprove(inputAmount)
           }
           previewAction('deposit', inputAmount)
         } else {
-          estimateGasWithdraw(inputAmount)
+          void estimateGasWithdraw(inputAmount)
           previewAction('withdraw', inputAmount)
         }
       }
