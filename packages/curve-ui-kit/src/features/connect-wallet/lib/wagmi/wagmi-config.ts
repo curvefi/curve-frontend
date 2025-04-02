@@ -3,10 +3,7 @@ import { chains } from './chains'
 import { Connectors } from './connectors'
 
 declare module 'wagmi' {
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone.
-   */
+  /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
   interface Register {
     config: typeof config
   }
