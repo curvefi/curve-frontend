@@ -1,7 +1,7 @@
 module.exports = {
   // "plugin:turbo/recommended" should be renamed to "turbo" after eslint-plugin-turbo v2.4.5 is published. See https://github.com/vercel/turborepo/pull/10105
   extends: ['next', 'plugin:turbo/recommended', 'prettier'],
-  plugins: ['no-only-tests', 'unused-imports', 'import'],
+  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint'],
   rules: {
     'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
@@ -26,6 +26,7 @@ module.exports = {
         ],
       },
     ],
+    '@typescript-eslint/no-floating-promises': 'warn',
 
     'import/order': [
       'warn',
@@ -54,8 +55,13 @@ module.exports = {
     'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
   },
   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./**/tsconfig.json'],
+    tsconfigRootDir: process.cwd(),
     babelOptions: {
       presets: [require.resolve('next/babel')],
     },
   },
+  ignorePatterns: ['**/curve-ui-kit/.storybook/**/*', '**/*/*.js'],
 }
