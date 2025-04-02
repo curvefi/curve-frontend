@@ -34,7 +34,7 @@ const AlertSeedAmounts = ({ seed, poolData }: Props) => {
   }, [])
 
   useEffect(() => {
-    if (!!poolData && loaded && isSeed) getSeedRatio(poolData)
+    if (!!poolData && loaded && isSeed) void getSeedRatio(poolData)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolData?.pool?.id, loaded, isSeed])
 

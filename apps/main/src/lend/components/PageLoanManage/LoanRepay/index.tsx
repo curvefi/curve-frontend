@@ -83,7 +83,13 @@ const LoanRepay = ({
       shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      setFormValues(isLoaded ? api : null, market, updatedFormValues, updatedMaxSlippage || maxSlippage, shouldRefetch)
+      void setFormValues(
+        isLoaded ? api : null,
+        market,
+        updatedFormValues,
+        updatedMaxSlippage || maxSlippage,
+        shouldRefetch,
+      )
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },

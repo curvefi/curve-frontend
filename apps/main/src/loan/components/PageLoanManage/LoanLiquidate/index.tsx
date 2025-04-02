@@ -58,7 +58,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       if (chainId && llamma && (isErrorReset || isFullReset)) {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
-        fetchTokensToLiquidate(rChainId, llamma, llammaId, maxSlippage, userWalletBalances)
+        void fetchTokensToLiquidate(rChainId, llamma, llammaId, maxSlippage, userWalletBalances)
       }
     },
     [
@@ -169,7 +169,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   // init
   useEffect(() => {
     if (chainId && llamma && llammaId && typeof userWalletBalances?.stablecoin !== 'undefined') {
-      fetchTokensToLiquidate(chainId, llamma, llammaId, maxSlippage, userWalletBalances)
+      void fetchTokensToLiquidate(chainId, llamma, llammaId, maxSlippage, userWalletBalances)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.signerAddress, chainId, llamma, llammaId, maxSlippage, userWalletBalances?.stablecoin])

@@ -173,7 +173,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_EST_GAS),
               loading: true,
             })
-            get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
+            void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
           }
         }
 
@@ -313,7 +313,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         activeKey,
         cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
       )
-      get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
+      void get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
     },
 
     // steps
@@ -372,7 +372,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas, approval and exchange
-          get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
           await get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, formValues, maxSlippage)
         }
 
@@ -425,7 +425,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
           })
 
           // cache swapped tokens
-          get().storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
+          void get().storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
             fromAddress,
             fromToken,
             toAddress,

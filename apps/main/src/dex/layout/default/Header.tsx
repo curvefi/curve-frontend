@@ -30,7 +30,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const connectState = useStore((state) => state.connectState)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  console.log(useStore((state) => state.networks))
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)

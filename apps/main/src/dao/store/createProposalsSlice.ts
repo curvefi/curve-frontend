@@ -168,7 +168,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         }
 
         get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
-        get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
+        void get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'SUCCESS')
       } catch (error) {
         console.warn(error)

@@ -71,14 +71,14 @@ const Page = (params: MarketUrlParams) => {
       setTimeout(async () => {
         const { signerAddress } = api
 
-        fetchAllMarketDetails(api, market, true)
+        void fetchAllMarketDetails(api, market, true)
 
         if (signerAddress) {
           const loanExists = (await fetchUserLoanExists(api, market, true))?.loanExists
           if (loanExists) {
-            fetchAllUserMarketDetails(api, market, true)
+            void fetchAllUserMarketDetails(api, market, true)
           } else {
-            fetchUserMarketBalances(api, market, true)
+            void fetchUserMarketBalances(api, market, true)
           }
         }
         setInitialLoaded(true)
@@ -91,13 +91,13 @@ const Page = (params: MarketUrlParams) => {
     setLoaded(false)
 
     if (!isLoadingApi && api && market) {
-      fetchInitial(api, market)
+      void fetchInitial(api, market)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingApi])
 
   useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) fetchInitial(api, market)
+    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 

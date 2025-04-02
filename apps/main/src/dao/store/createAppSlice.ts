@@ -94,7 +94,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     }
 
     if (!prevApi || isNetworkSwitched) {
-      get().gas.fetchGasInfo(api)
+      void get().gas.fetchGasInfo(api)
     }
 
     log('Hydrating DAO - Complete')

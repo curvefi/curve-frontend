@@ -78,7 +78,7 @@ const LoanCreate = ({
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
       if (curve && llamma) {
-        setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
+        void setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
       }
     },
     [curve, isLeverage, llamma, maxSlippage, setFormValues],

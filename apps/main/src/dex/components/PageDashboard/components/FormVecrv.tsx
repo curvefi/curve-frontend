@@ -95,7 +95,7 @@ const FormVecrv = () => {
           type: 'action',
           content: !!formStatus.formTypeCompleted ? t`Withdraw CRV Complete` : t`Withdraw CRV`,
           onClick: () => {
-            if (curve) handleBtnClickWithdraw(activeKey, curve, lockedAmount)
+            if (curve) void handleBtnClickWithdraw(activeKey, curve, lockedAmount)
           },
         },
       }
@@ -155,7 +155,7 @@ const FormVecrv = () => {
               disabled={!curve}
               variant="filled"
               onClick={() => {
-                if (curve) handleBtnClickWithdraw(activeKey, curve, lockedAmount)
+                if (curve) void handleBtnClickWithdraw(activeKey, curve, lockedAmount)
               }}
               size="medium"
             >

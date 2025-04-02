@@ -82,7 +82,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
-      updateFormValues(
+      void updateFormValues(
         {
           utcDate: toCalendarDate(utcDate),
           utcDateError,
@@ -103,7 +103,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
-      updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
+      void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
       return calcdUtcDate
     },
     [currUnlockTime, currUnlockUtcTime, rChainId, rFormType, updateFormValues],
@@ -152,7 +152,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    updateFormValues({}, true)
+    void updateFormValues({}, true)
 
     return () => {
       isSubscribed.current = false

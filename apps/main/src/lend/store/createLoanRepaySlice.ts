@@ -190,7 +190,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
 
       // api calls
       await sliceState.fetchDetailInfo(activeKey, api, market, maxSlippage, userState)
-      sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
+      void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
     },
 
     // steps
@@ -226,7 +226,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
+        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
         return { ...resp, error }
       }
     },
@@ -274,13 +274,13 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
           return { ...resp, error, loanExists }
         } else {
           if (loanExists) {
-            user.fetchAll(api, market, true)
+            void user.fetchAll(api, market, true)
           } else {
-            user.fetchUserMarketBalances(api, market, true)
+            void user.fetchUserMarketBalances(api, market, true)
             const userActiveKey = getUserActiveKey(api, market)
             user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
           }
-          markets.fetchAll(api, market, true)
+          void markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({

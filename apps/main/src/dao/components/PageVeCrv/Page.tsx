@@ -57,7 +57,7 @@ const Page = (params: VeCrvUrlParams) => {
 
   // get initial data
   useEffect(() => {
-    fetchData(curve, isLoadingCurve)
+    void fetchData(curve, isLoadingCurve)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, isLoadingCurve])
 

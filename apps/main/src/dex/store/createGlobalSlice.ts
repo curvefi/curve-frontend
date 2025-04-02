@@ -181,7 +181,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     if (!poolIds.length) {
       state.pools.setEmptyPoolListDefault(chainId)
       state.tokens.setEmptyPoolListDefault(chainId)
-      state.pools.fetchBasePools(curveApi)
+      void state.pools.fetchBasePools(curveApi)
       return
     }
 
@@ -192,17 +192,17 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (!prevCurveApi || isNetworkSwitched) {
-      state.gas.fetchGasInfo(curveApi)
-      state.pools.fetchPricesApiPools(chainId)
-      state.pools.fetchBasePools(curveApi)
+      void state.gas.fetchGasInfo(curveApi)
+      void state.pools.fetchPricesApiPools(chainId)
+      void state.pools.fetchBasePools(curveApi)
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
-      state.usdRates.fetchAllStoredUsdRates(curveApi)
+      void state.usdRates.fetchAllStoredUsdRates(curveApi)
     } else {
     }
 
     if (curveApi.signerAddress) {
-      state.user.fetchUserPoolList(curveApi)
+      void state.user.fetchUserPoolList(curveApi)
     }
 
     log('Hydrating DEX - Complete')

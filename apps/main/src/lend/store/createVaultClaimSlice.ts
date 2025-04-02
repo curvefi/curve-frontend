@@ -66,7 +66,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
 
       // api calls
       if (signerAddress) {
-        get()[sliceKey].fetchClaimable(userActiveKey, api, market)
+        void get()[sliceKey].fetchClaimable(userActiveKey, api, market)
       }
     },
 
@@ -87,9 +87,9 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
 
       if (resp.userActiveKey === userActiveKey) {
         // re-fetch api
-        get()[sliceKey].fetchClaimable(resp.userActiveKey, api, market)
-        get().user.fetchUserMarketBalances(api, market, true)
-        get().markets.fetchAll(api, market, true)
+        void get()[sliceKey].fetchClaimable(resp.userActiveKey, api, market)
+        void get().user.fetchUserMarketBalances(api, market, true)
+        void get().markets.fetchAll(api, market, true)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

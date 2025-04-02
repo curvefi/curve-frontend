@@ -23,7 +23,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const minHeight = chartExpanded ? 548 : 330
 
   useEffect(() => {
-    fetchPoolActivity(chainId, poolAddress)
+    void fetchPoolActivity(chainId, poolAddress)
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (

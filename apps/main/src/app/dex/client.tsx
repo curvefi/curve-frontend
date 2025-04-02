@@ -44,7 +44,7 @@ export const App = ({ children }: { children: ReactNode }) => {
       const { chainId } = curve
       const poolDatas = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
-      setTokensMapper(chainId, poolDatas)
+      void setTokensMapper(chainId, poolDatas)
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
@@ -58,7 +58,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
     useStore.setState(useStore.getInitialState())
-    ;(async () => {
+    void (async () => {
       const networks = await fetchNetworks()
 
       useWallet.initialize(theme, networks)
@@ -82,7 +82,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const refetchPools = useCallback(
     async (curve: CurveApi) => {
       const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
-      fetchPools(curve, poolIds, null)
+      void fetchPools(curve, poolIds, null)
     },
     [fetchPools, network],
   )
@@ -90,12 +90,12 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (curve) {
-        fetchGasInfo(curve)
-        fetchAllStoredUsdRates(curve)
-        fetchPoolsVolumeTvl(curve)
+        void fetchGasInfo(curve)
+        void fetchAllStoredUsdRates(curve)
+        void fetchPoolsVolumeTvl(curve)
 
         if (curve.signerAddress) {
-          fetchAllStoredBalances(curve)
+          void fetchAllStoredBalances(curve)
         }
       }
     },
@@ -106,7 +106,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (curve) {
-        refetchPools(curve)
+        void refetchPools(curve)
       }
     },
     REFRESH_INTERVAL['11m'],

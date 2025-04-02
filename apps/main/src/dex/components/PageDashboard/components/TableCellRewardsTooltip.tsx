@@ -18,7 +18,7 @@ const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: P
 
   useEffect(() => {
     isSubscribed.current = true
-    ;(async () => {
+    void (async () => {
       const fetchedBoosted = await fetchUserPoolBoost()
 
       if (isSubscribed.current) {

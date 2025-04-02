@@ -78,24 +78,24 @@ export const App = ({ children }: { children: ReactNode }) => {
   // initiate proposals list
   useEffect(() => {
     getProposals()
-    getGauges()
-    getGaugesData()
+    void getGauges()
+    void getGaugesData()
   }, [getGauges, getProposals, getGaugesData])
 
   useEffect(() => {
     if (curve) {
-      fetchAllStoredUsdRates(curve)
+      void fetchAllStoredUsdRates(curve)
     }
   }, [curve, fetchAllStoredUsdRates])
 
   usePageVisibleInterval(
     () => {
       if (curve) {
-        fetchAllStoredUsdRates(curve)
+        void fetchAllStoredUsdRates(curve)
       }
       getProposals()
-      getGauges()
-      getGaugesData()
+      void getGauges()
+      void getGaugesData()
     },
     REFRESH_INTERVAL['5m'],
     isPageVisible,
