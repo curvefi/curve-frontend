@@ -80,7 +80,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateLending(api)
             updateConnectState('success', '')
 
-            hydrate(api, prevApi, wallet)
+            await hydrate(api, prevApi, wallet)
           } else {
             updateConnectState('', '')
           }
