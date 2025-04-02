@@ -87,11 +87,8 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
       case LogStatus.WARNING:
       case LogStatus.MUTATION:
         return console.warn
-      case LogStatus.INFO:
-      case LogStatus.QUERY:
-        return console.info
       default:
-        return console.log
+        return console.info
     }
   }
   if (isCypress || typeof window === 'undefined') {

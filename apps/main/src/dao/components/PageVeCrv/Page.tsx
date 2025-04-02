@@ -17,7 +17,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: VeCrvUrlParams) => {
-  console.log(params)
   const [rFormType] = params.formType
   const { push } = useRouter()
   const { routerParams, curve } = usePageOnMount()

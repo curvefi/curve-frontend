@@ -262,7 +262,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress].loadingState = 'ERROR'
           }),
         )
-        console.log(error)
+        console.warn(error)
       }
     },
 

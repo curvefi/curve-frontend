@@ -112,7 +112,7 @@ const SelectTokenButton = ({
 
           updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
         } catch (error) {
-          console.log(error)
+          console.warn(error)
           setError(error)
         }
       }

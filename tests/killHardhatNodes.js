@@ -13,7 +13,7 @@ const killNode = (chainId) => {
         reject(`Error killing Chain ID '${chainId}' node at port ${port}: ${stderr}`)
         return
       }
-      console.log(`Killed Chain ID '${chainId}' node at port ${port}`)
+      console.info(`Killed Chain ID '${chainId}' node at port ${port}`)
       resolve(stdout)
     })
   })
@@ -25,7 +25,7 @@ const main = async () => {
 
   try {
     await Promise.all(idsToKill.map(killNode))
-    console.log('Selected nodes killed successfully.')
+    console.info('Selected nodes killed successfully.')
   } catch (error) {
     console.error(error)
   }

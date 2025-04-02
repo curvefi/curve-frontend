@@ -27,7 +27,12 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
-
+    "no-console": [
+      "error", // use console.log only for debugging
+      {
+        "allow": ["warn", "error", "info", "trace", "assert"]
+      }
+    ],
     'import/order': [
       'warn',
       {
@@ -63,5 +68,5 @@ module.exports = {
       presets: [require.resolve('next/babel')],
     },
   },
-  ignorePatterns: ['**/curve-ui-kit/.storybook/**/*', '**/*/*.js'],
+  ignorePatterns: ['**/curve-ui-kit/.storybook/**/*', '**/*/*.js', '**/dist/**/*.*'],
 }
