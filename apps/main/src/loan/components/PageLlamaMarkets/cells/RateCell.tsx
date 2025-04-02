@@ -1,7 +1,9 @@
+import { useRef } from 'react'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -13,7 +15,9 @@ import { RateTooltipContent } from './RateCellTooltip'
 const { Spacing } = SizesAndSpaces
 
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType }) => {
-  const { rate, averageRate, period } = useSnapshots(market, type)
+  const ref = useRef<HTMLDivElement>(null)
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const { rate, averageRate, period } = useSnapshots(market, type, entry?.isIntersecting)
   const { rewards, type: marketType } = market
   const rewardsAction = getRewardsAction(marketType, type)
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
@@ -38,7 +42,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
       }
       placement="top"
     >
-      <Stack gap={Spacing.xs}>
+      <Stack gap={Spacing.xs} ref={ref}>
         <Typography variant="tableCellMBold" color="textPrimary">
           {averageRate != null && formatPercent(averageRate)}
         </Typography>

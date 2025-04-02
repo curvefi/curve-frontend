@@ -1,9 +1,6 @@
 import { type Column, type useReactTable } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-/** until we know which rows are visible, assume this number to avoid layout shift */
-export const AssumeRowsVisible = 10
-
 /** css class to hide elements on desktop unless the row is hovered */
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 
