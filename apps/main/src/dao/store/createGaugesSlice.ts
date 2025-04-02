@@ -141,7 +141,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         })
 
         get().setAppStateByKey(sliceKey, 'gaugeMapper', newGaugeMapper)
-        get().storeCache.setStateByKey('cacheGaugeMapper', newGaugeMapper)
+        void get().storeCache.setStateByKey('cacheGaugeMapper', newGaugeMapper)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'SUCCESS')
       } catch (error) {
         console.error('Error fetching gauges:', error)

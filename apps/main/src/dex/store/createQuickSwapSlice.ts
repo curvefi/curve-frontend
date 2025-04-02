@@ -346,7 +346,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
-      sliceState.fetchEstGasApproval(curve, searchedParams)
+      void sliceState.fetchEstGasApproval(curve, searchedParams)
     },
 
     // select token list
@@ -417,7 +417,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
           // re-fetch est gas, approval, routes and output
           await sliceState.fetchRoutesAndOutput(curve, searchedParams, globalMaxSlippage)
-          sliceState.fetchEstGasApproval(curve, searchedParams)
+          void sliceState.fetchEstGasApproval(curve, searchedParams)
         }
 
         return resp
@@ -477,10 +477,10 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
           })
 
           // cache swapped tokens
-          state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
+          void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
           // fetch data
-          state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
+          void state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
         }
 
         return resp

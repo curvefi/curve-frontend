@@ -124,7 +124,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
           const clonedStoredFormEstGas = cloneDeep(storedFormEstGas)
           clonedStoredFormEstGas.loading = true
           get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: clonedStoredFormEstGas })
-          get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues, maxSlippage)
+          void get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues, maxSlippage)
         }
       }
     },

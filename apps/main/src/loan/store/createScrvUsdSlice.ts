@@ -244,7 +244,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             errorMessage: '',
           })
           dismissNotificationHandler()
-          get()[sliceKey].checkApproval.depositApprove(amount)
+          void get()[sliceKey].checkApproval.depositApprove(amount)
 
           const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
           notify(successNotificationMessage, 'success', 15000)
