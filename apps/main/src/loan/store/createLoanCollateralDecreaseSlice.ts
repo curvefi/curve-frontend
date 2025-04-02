@@ -75,7 +75,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
     ...DEFAULT_STATE,
 
     init: (chainId: ChainId, llamma: Llamma) => {
-      get()[sliceKey].fetchMaxRemovable(chainId, llamma)
+      void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
     },
     fetchEstGas: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       const { collateral } = formValues
@@ -139,8 +139,8 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
 
       // fetch detail, approval, est gas, set loading
       if (haveCollateral) {
-        get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
-        get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues)
+        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
+        void get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues)
       } else {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -162,7 +162,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       const chainId = curve.chainId
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
-      get()[sliceKey].fetchMaxRemovable(chainId, llamma)
+      void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists.loanExists) {
         get().loans.resetUserDetailsState(llamma)

@@ -138,7 +138,7 @@ const PoolList = ({
   usePageVisibleInterval(
     useCallback(() => {
       if (curve && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
-        fetchPoolsRewardsApy(rChainId, poolDatas)
+        void fetchPoolsRewardsApy(rChainId, poolDatas)
       }
     }, [curve, fetchPoolsRewardsApy, poolDatas, rChainId, rewardsApyMapper]),
     REFRESH_INTERVAL['11m'],

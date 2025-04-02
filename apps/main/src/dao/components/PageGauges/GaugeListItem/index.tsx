@@ -58,7 +58,7 @@ const GaugeListItem = ({
 
   useEffect(() => {
     if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
-      getHistoricGaugeWeights(gaugeData.address)
+      void getHistoricGaugeWeights(gaugeData.address)
     }
   }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
@@ -102,7 +102,7 @@ const GaugeListItem = ({
                   message={t`Error fetching historical gauge weights data`}
                   onClick={(e?: MouseEvent) => {
                     e?.stopPropagation()
-                    getHistoricGaugeWeights(gaugeData.address)
+                    void getHistoricGaugeWeights(gaugeData.address)
                   }}
                 />
               </ErrorWrapper>

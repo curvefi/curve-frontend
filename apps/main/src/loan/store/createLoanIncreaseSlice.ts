@@ -82,7 +82,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
     ...DEFAULT_STATE,
 
     init: async (chainId: ChainId, llamma: Llamma) => {
-      get()[sliceKey].fetchMaxRecv(chainId, llamma, DEFAULT_FORM_VALUES)
+      void get()[sliceKey].fetchMaxRecv(chainId, llamma, DEFAULT_FORM_VALUES)
     },
     fetchEstGasApproval: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       const { collateral, debt } = formValues
@@ -159,10 +159,10 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
 
       // fetch detail, approval, est gas, set loading
       if (haveDebt || haveCollateral) {
-        get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
+        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
 
         if (!cFormValues.debtError && !cFormValues.collateralError && !cFormValues.debtError) {
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
         }
       } else if (!haveDebt || !haveCollateral) {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
@@ -197,7 +197,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
           formProcessing: !resp.error,
           error: resp.error,
         })
-        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
 
         return resp
       }
@@ -218,7 +218,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
 
       // re-fetch max
       const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
-      get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
+      void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 
       // re-fetch loan info
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)

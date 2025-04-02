@@ -65,7 +65,7 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
         }
       })
 
-      sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper)
+      void sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper)
     },
 
     setServerPreloadData: (chainId, { tvl, volume, pools }) => {

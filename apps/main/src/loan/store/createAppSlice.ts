@@ -90,7 +90,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       await loans.fetchLoansDetails(curveApi, collateralDatas)
 
       if (!prevCurveApi || isNetworkSwitched) {
-        usdRates.fetchAllStoredUsdRates(curveApi)
+        void usdRates.fetchAllStoredUsdRates(curveApi)
       }
     }
 

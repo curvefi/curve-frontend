@@ -273,7 +273,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
             ...(get()[sliceKey].formLpTokenExpected[storedActiveKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED),
             loading: true,
           })
-          get()[sliceKey].fetchExpected(activeKey, chainId, formType, pool, cFormValues)
+          void get()[sliceKey].fetchExpected(activeKey, chainId, formType, pool, cFormValues)
 
           if (!isSeed) {
             // fetch slippage
@@ -281,7 +281,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
               ...(get()[sliceKey].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
               loading: true,
             })
-            get()[sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
+            void get()[sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
           }
 
           if (!!signerAddress) {
@@ -300,7 +300,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
                 ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
                 loading: true,
               })
-              get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+              void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
             }
           }
         }
@@ -321,7 +321,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
               loading: true,
             })
-            get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+            void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
           }
         }
       }

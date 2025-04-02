@@ -35,7 +35,7 @@ const Page = (params: PoolUrlParams) => {
     if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
       push(reRoutePathname)
     } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
-      ;(async () => {
+      void (async () => {
         const foundPoolData = await fetchNewPool(curve, rPoolId)
         if (!foundPoolData) {
           push(reRoutePathname)

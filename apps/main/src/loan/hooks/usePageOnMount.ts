@@ -80,7 +80,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateLending(api)
             updateConnectState('success', '')
 
-            hydrate(api, prevApi, wallet)
+            await hydrate(api, prevApi, wallet)
           } else {
             updateConnectState('', '')
           }
@@ -232,14 +232,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     if (connectState.status || connectState.stage) {
       if (isSuccess(connectState)) {
       } else if (isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)) {
-        handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
+        void handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
-        handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
+        void handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.DISCONNECT_WALLET) && wallet) {
-        handleDisconnectWallet(wallet)
+        void handleDisconnectWallet(wallet)
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
-        handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
-        handleConnectLendApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
+        void handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
+        void handleConnectLendApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

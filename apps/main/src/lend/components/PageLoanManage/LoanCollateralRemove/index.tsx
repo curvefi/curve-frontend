@@ -60,7 +60,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      setFormValues(isLoaded ? api : null, market, updatedFormValues)
+      void setFormValues(isLoaded ? api : null, market, updatedFormValues)
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },

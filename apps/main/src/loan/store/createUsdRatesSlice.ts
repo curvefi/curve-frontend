@@ -70,7 +70,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
     fetchAllStoredUsdRates: async (curve: Curve) => {
       const tokenAddresses = Object.keys(get().usdRates.tokens)
-      get()[sliceKey].fetchUsdRateByTokens(curve, tokenAddresses)
+      void get()[sliceKey].fetchUsdRateByTokens(curve, tokenAddresses)
     },
 
     // slice helpers

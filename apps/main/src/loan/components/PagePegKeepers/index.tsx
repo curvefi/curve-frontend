@@ -17,7 +17,7 @@ const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: P
 
   useEffect(() => {
     if (provider) {
-      fetchDetails(provider)
+      void fetchDetails(provider)
       setLoaded(true)
     }
   }, [fetchDetails, provider])
@@ -27,7 +27,7 @@ const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: P
       if (!loaded) return
 
       resetState()
-      if (provider) fetchDetails(provider)
+      if (provider) void fetchDetails(provider)
     },
     REFRESH_INTERVAL['5m'],
     isPageVisible,

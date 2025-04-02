@@ -47,21 +47,21 @@ const DeployButton = ({ className }: DeployButtonProps) => {
   const handleClick = useCallback(async () => {
     if (stakingModule === 'deposit') {
       if (isInputAmountApproved) {
-        deposit(inputAmount)
+        void deposit(inputAmount)
       }
       if (!isInputAmountApproved) {
         const approved = await depositApprove(inputAmount)
         if (approved) {
-          deposit(inputAmount)
+          void deposit(inputAmount)
         }
       }
     }
 
     if (stakingModule === 'withdraw') {
       if (inputAmount === userBalance.scrvUSD) {
-        redeem(inputAmount)
+        void redeem(inputAmount)
       } else {
-        redeem(inputAmount)
+        void redeem(inputAmount)
       }
     }
   }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, redeem, userBalance])

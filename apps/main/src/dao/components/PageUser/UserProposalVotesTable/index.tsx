@@ -37,7 +37,7 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
   // Get user proposal votes
   useEffect(() => {
     if (!userProposalVotesMapper[userAddress] && userProposalVotesLoading && !userProposalVotesError) {
-      getUserProposalVotes(userAddress)
+      void getUserProposalVotes(userAddress)
     }
   }, [getUserProposalVotes, userAddress, userProposalVotesLoading, userProposalVotesError, userProposalVotesMapper])
 

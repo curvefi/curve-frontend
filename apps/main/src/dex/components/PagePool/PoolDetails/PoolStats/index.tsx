@@ -36,7 +36,7 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
   // fetch stats
   useEffect(() => {
     if (curve && poolData) {
-      fetchPoolStats(curve, poolData)
+      void fetchPoolStats(curve, poolData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId])

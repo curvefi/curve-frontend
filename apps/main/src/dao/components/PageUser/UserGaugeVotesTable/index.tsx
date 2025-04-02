@@ -35,7 +35,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   // Get user locks
   useEffect(() => {
     if (!userGaugeVotesMapper[userAddress] && userGaugeVotesLoading && !userGaugeVotesError) {
-      getUserGaugeVotes(userAddress)
+      void getUserGaugeVotes(userAddress)
     }
   }, [getUserGaugeVotes, userAddress, userGaugeVotesMapper, userGaugeVotesLoading, userGaugeVotesError])
 

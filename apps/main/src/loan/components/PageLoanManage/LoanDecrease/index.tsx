@@ -67,7 +67,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
 
   const updateFormValues = (updatedFormValues: FormValues) => {
     if (chainId && llamma) {
-      setFormValues(chainId, llamma, updatedFormValues)
+      void setFormValues(chainId, llamma, updatedFormValues)
     }
   }
 

@@ -74,7 +74,7 @@ const FormWithdraw = ({
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
-      setFormValues(
+      void setFormValues(
         'WITHDRAW',
         curve,
         poolDataCacheOrApi.pool.id,

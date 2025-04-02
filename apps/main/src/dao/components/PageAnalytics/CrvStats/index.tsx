@@ -25,7 +25,7 @@ const CrvStats = () => {
 
   useEffect(() => {
     if (provider && veCrvData.totalCrv === 0n && veCrvData.fetchStatus !== 'ERROR') {
-      getVeCrvData(provider)
+      void getVeCrvData(provider)
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 

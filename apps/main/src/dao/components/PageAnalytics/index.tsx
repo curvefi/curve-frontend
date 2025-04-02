@@ -26,7 +26,7 @@ const Analytics = () => {
 
   useEffect(() => {
     if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
-      getVeCrvHolders()
+      void getVeCrvHolders()
     }
   }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
