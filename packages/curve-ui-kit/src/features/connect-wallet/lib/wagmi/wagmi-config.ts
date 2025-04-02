@@ -1,6 +1,7 @@
-import { createConfig, http } from '@wagmi/core'
+import { createConfig } from '@wagmi/core'
 import { chains } from './chains'
-import { Connectors } from './connectors'
+import { connectors } from './connectors'
+import { transports } from './transports'
 
 declare module 'wagmi' {
   /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
@@ -11,11 +12,6 @@ declare module 'wagmi' {
 
 export const config = createConfig({
   chains,
-  connectors: Object.values(Connectors) as any, // todo: get rid of this any
-  transports: Object.fromEntries(chains.map((chain) => [chain.id, http()])) as Record<
-    (typeof chains)[number]['id'],
-    ReturnType<typeof http>
-  >,
+  connectors: Object.values(connectors),
+  transports,
 })
-
-export type WagmiChainId = (typeof config)['chains'][number]['id']

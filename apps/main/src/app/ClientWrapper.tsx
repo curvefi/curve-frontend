@@ -4,7 +4,6 @@ import { WagmiProvider } from 'wagmi'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
 import { config } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
-import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
@@ -18,10 +17,7 @@ export const ClientWrapper = ({ children, loading }: { children: ReactNode; load
       <ThemeProvider theme={theme}>
         <OverlayProvider>
           <QueryProvider persister={persister} queryClient={queryClient}>
-            <WagmiProvider config={config}>
-              {!loading && children}
-              <WagmiConnectModal />
-            </WagmiProvider>
+            <WagmiProvider config={config}>{!loading && children}</WagmiProvider>
           </QueryProvider>
         </OverlayProvider>
       </ThemeProvider>

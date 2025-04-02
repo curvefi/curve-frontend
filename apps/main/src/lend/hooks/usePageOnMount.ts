@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import { CONNECT_STAGE, ROUTE } from '@/lend/constants'

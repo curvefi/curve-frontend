@@ -1,44 +1,53 @@
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { useState } from 'react'
 import { BaseError } from 'viem/errors/base'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MenuList from '@mui/material/MenuList'
-import type { WalletType } from '@ui-kit/features/connect-wallet/lib/wagmi/wallets'
 import { t } from '@ui-kit/lib/i18n'
 import { WalletIcon } from '@ui-kit/shared/icons/WalletIcon'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
-import { SupportedWallets, type Wallet } from '../lib'
-import { useWagmiWallet } from '../lib/wagmi/useWagmiWallet'
+import { useWagmi } from '../lib/wagmi/useWagmi'
+import { supportedWallets, type WalletType } from '../lib/wagmi/wallets'
 
-const WalletListItem = ({
-  setError,
-  onConnect,
-  wallet,
-}: {
+type WalletItemProps = {
   wallet: WalletType
-  onConnect: (label?: string) => Promise<Wallet | null>
-  setError: Dispatch<SetStateAction<Error | null>>
-}) => {
-  const { label, icon: Icon, connector } = wallet
-  const onSelected = useCallback(async () => {
-    setError(null)
-    return onConnect(label).catch((e) => {
-      console.info(e) // e.g. user rejected
-      setError(e)
-    })
-  }, [onConnect, label, setError])
-  return <MenuItem key={label} label={label} icon={<Icon />} value={connector} onSelected={onSelected} />
+  onConnect: () => void
 }
 
-export const WagmiConnectModal = () => {
-  const [{ isModalOpen }, connect, , close] = useWagmiWallet()
+const WalletListItem = ({ onConnect, wallet }: WalletItemProps) => {
+  const { label, icon: Icon, connector } = wallet
+  return <MenuItem key={label} label={label} icon={<Icon />} value={connector} onSelected={onConnect} />
+}
+
+type Props = {
+  isOpen: boolean
+  onConnected: () => void
+  onClose: () => void
+}
+
+export const WagmiConnectModal = ({ isOpen, onConnected, onClose }: Props) => {
+  const [, connect] = useWagmi()
   const [error, setError] = useState<unknown>(null)
+
   return (
-    <ModalDialog open={isModalOpen} onClose={close} title={t`Connect Wallet`} titleAction={<WalletIcon />}>
+    <ModalDialog open={isOpen} onClose={onClose} title={t`Connect Wallet`} titleAction={<WalletIcon />}>
       <MenuList>
-        {SupportedWallets.map((wallet) => (
-          <WalletListItem wallet={wallet} onConnect={connect} setError={setError} key={wallet.label} />
+        {supportedWallets.map((wallet) => (
+          <WalletListItem
+            wallet={wallet}
+            onConnect={() => {
+              setError(null)
+              try {
+                connect(wallet.label)
+                onConnected()
+              } catch (e) {
+                console.info(e) // e.g. user rejected
+                setError(e)
+              }
+            }}
+            key={wallet.label}
+          />
         ))}
       </MenuList>
       {error ? (

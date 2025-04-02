@@ -9,8 +9,9 @@ import type { NotificationType } from '@web3-onboard/core/dist/types'
 import { useConnectWallet as useOnboardWallet, useSetChain as useOnboardSetChain } from '@web3-onboard/react'
 import type { Wallet } from './types'
 import { convertOnboardWallet, getWalletProvider } from './utils/wallet-helpers'
-import { useWagmiWallet } from './wagmi/useWagmiWallet'
-import { config, type WagmiChainId } from './wagmi/wagmi-config'
+import type { WagmiChainId } from './wagmi/chains'
+import { useWagmi } from './wagmi/useWagmi'
+import { config } from './wagmi/wagmi-config'
 
 type UseConnectWallet = {
   (): {
@@ -40,7 +41,7 @@ const state: {
  * Hook to determine if the Wagmi wallet should be used.
  * @returns {boolean} - True if Wagmi wallet should be used, false if Onboard wallet should be used.
  **/
-const useUseWagmi = (): boolean => {
+export const useUseWagmi = (): boolean => {
   const [isBeta] = useBetaFlag()
   const [{ wallet, connecting }] = useOnboardWallet()
   return isBeta && !wallet && !connecting
@@ -49,41 +50,46 @@ const useUseWagmi = (): boolean => {
 export const useWallet: UseConnectWallet = () => {
   const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
     useOnboardWallet()
-  const [{ wallet: wagmiWallet, connecting: wagmiConnecting }, wagmiConnect, wagmiDisconnect] = useWagmiWallet()
+  const [{ wallet: wagmiWallet, connecting: wagmiConnecting }, wagmiConnect, wagmiDisconnect] = useWagmi()
   const [walletName, setWalletName] = useWalletName()
-  const useWagmi = useUseWagmi()
+  const shouldUseWagmi = useUseWagmi()
 
   const { wallet, provider } = useMemo(() => {
-    state.wallet = useWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
+    state.wallet = shouldUseWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
     state.provider = state.wallet && new BrowserProvider(getWalletProvider(state.wallet))
     return state
-  }, [onboardWallet, wagmiWallet, useWagmi])
+  }, [onboardWallet, wagmiWallet, shouldUseWagmi])
 
   const signerAddress = onboardWallet?.accounts[0]?.address
   const connect = useMemo(
     (): ((label?: string) => Promise<Wallet | null>) =>
-      useWagmi
-        ? wagmiConnect
+      shouldUseWagmi
+        ? (label?: string) => {
+            wagmiConnect(label)
+            return Promise.resolve(wagmiWallet)
+          }
         : (label?: string) =>
             onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) }).then((wallets) =>
               convertOnboardWallet(wallets[0]),
             ),
-    [onboardConnect, useWagmi, wagmiConnect],
+    [onboardConnect, shouldUseWagmi, wagmiConnect, wagmiWallet],
   )
 
   const disconnect = useMemo(
     () =>
-      useWagmi
-        ? wagmiDisconnect
+      shouldUseWagmi
+        ? async () => {
+            wagmiDisconnect()
+          }
         : async () => {
             wallet && (await onboardDisconnect(wallet))
           },
-    [onboardDisconnect, useWagmi, wagmiDisconnect, wallet],
+    [onboardDisconnect, shouldUseWagmi, wagmiDisconnect, wallet],
   )
 
   return {
     wallet: wallet,
-    connecting: useWagmi ? wagmiConnecting : onboardConnecting,
+    connecting: shouldUseWagmi ? wagmiConnecting : onboardConnecting,
     connect,
     disconnect,
     walletName,
@@ -97,10 +103,10 @@ useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
 
 export const useSetChain = () => {
   const [_, setOnboardChain] = useOnboardSetChain()
-  const useWagmi = useUseWagmi()
+  const shouldUseWagmi = useUseWagmi()
   return useCallback(
     async (chainId: number): Promise<boolean> => {
-      if (!useWagmi) {
+      if (!shouldUseWagmi) {
         return setOnboardChain({ chainId: ethers.toQuantity(chainId) })
       }
       try {
@@ -111,7 +117,7 @@ export const useSetChain = () => {
         return false
       }
     },
-    [setOnboardChain, useWagmi],
+    [setOnboardChain, shouldUseWagmi],
   )
 }
 

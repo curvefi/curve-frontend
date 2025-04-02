@@ -57,3 +57,5 @@ export const chains = [
   neonMainnet,
   aurora,
 ] as const
+
+export type WagmiChainId = (typeof chains)[number]['id']

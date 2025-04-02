@@ -15,7 +15,7 @@ export type WalletType = {
   connector: ConnectorType
 }
 
-export const SupportedWallets = [
+export const supportedWallets = [
   {
     label: `Rabby`,
     icon: RabbyIcon,
