@@ -106,9 +106,8 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     ...DEFAULT_STATE,
     getProposals: async () => {
       const { proposalsMapper } = get()[sliceKey]
-      const { cacheProposalsMapper } = get().storeCache
 
-      if (Object.keys(proposalsMapper).length === 0 && Object.keys(cacheProposalsMapper).length === 0) {
+      if (Object.keys(proposalsMapper).length === 0) {
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'LOADING')
       }
 
@@ -168,7 +167,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         }
 
         get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
-        void get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'SUCCESS')
       } catch (error) {
         console.warn(error)
@@ -214,7 +212,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           produce((state: State) => {
             state[sliceKey].proposalLoadingState = 'SUCCESS'
             state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
-            state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
           }),
         )
       } catch (error) {
@@ -276,10 +273,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
               ...proposalData,
               ...formattedData,
             }
-            state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = {
-              ...proposalData,
-              ...formattedData,
-            }
           }),
         )
       } catch (error) {
@@ -293,10 +286,8 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     selectFilteredSortedProposals: () => {
       const { proposalsMapper, activeSortBy, activeSortDirection, activeFilter } = get()[sliceKey]
-      const cacheProposalsMapper = get().storeCache.cacheProposalsMapper
 
-      const proposalsData = proposalsMapper ?? cacheProposalsMapper
-      const proposals = Object.values(proposalsData)
+      const proposals = Object.values(proposalsMapper) as ProposalData[]
 
       const filteredProposals = filterProposals(proposals, activeFilter)
       return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
