@@ -27,7 +27,12 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
-
+    "no-console": [
+      "error", // use console.log only for debugging
+      {
+        "allow": ["warn", "error", "info", "trace", "assert"]
+      }
+    ],
     'import/order': [
       'warn',
       {

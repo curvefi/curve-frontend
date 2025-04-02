@@ -234,7 +234,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
 
@@ -271,7 +271,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
 
@@ -308,7 +308,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
 
@@ -345,7 +345,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'STABLEOLD') {
@@ -381,7 +381,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
       }
@@ -429,7 +429,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'TWOCRYPTO') {
@@ -467,7 +467,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'TWOCRYPTONG') {
@@ -505,7 +505,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'THREECRYPTO') {
@@ -543,7 +543,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'STABLEOLD') {
@@ -581,7 +581,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
       }
@@ -630,7 +630,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'TWOCRYPTO') {
@@ -669,7 +669,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'TWOCRYPTONG') {
@@ -708,7 +708,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'THREECRYPTO') {
@@ -747,7 +747,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         if (gaugeType === 'STABLEOLD') {
@@ -783,7 +783,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
       }

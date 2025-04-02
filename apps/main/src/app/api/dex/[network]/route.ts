@@ -58,7 +58,7 @@ async function refreshDex() {
   for (const network of Object.values(dexNetworks)) {
     const networkStart = Date.now()
     DexServerSideCache[network.id] = await getServerSideCache(network)
-    console.log(`Refreshed DEX ${network.id} in ${Date.now() - networkStart}ms`)
+    console.info(`Refreshed DEX ${network.id} in ${Date.now() - networkStart}ms`)
   }
 }
 

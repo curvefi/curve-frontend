@@ -1168,7 +1168,7 @@ const loanDeleverage = {
 
       return { activeKey, resp }
     } catch (error) {
-      console.log(error)
+      console.warn(error)
       resp.error = getErrorMessage(error, 'error-deleverage-api')
       return { activeKey, resp }
     }

@@ -187,7 +187,7 @@ const meta: Meta<typeof TokenSelector> = {
     error: '',
     disabledTokens: defaultDisabledTokens,
     disableSorting: false,
-    onToken: (token) => console.log('Selected token:', token),
+    onToken: (token) => console.info('Selected token:', token),
   },
   argTypes: {
     tokens: {
@@ -314,7 +314,7 @@ export const WithCustomOptions: Story = {
     customOptions: (
       <Stack gap={Spacing.xs}>
         <Typography variant="headingXsBold">Custom Options</Typography>
-        <Button variant="outlined" fullWidth onClick={() => console.log('Custom option clicked')}>
+        <Button variant="outlined" fullWidth onClick={() => console.info('Custom option clicked')}>
           Add Custom Token
         </Button>
       </Stack>

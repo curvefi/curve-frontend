@@ -524,7 +524,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             }),
           )
         } catch (error) {
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -555,7 +555,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             }),
           )
         } catch (error) {
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -621,7 +621,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               state.pools.pricesApiState.chartStatus = 'ERROR'
             }),
           )
-          console.log(error)
+          console.warn(error)
         }
       } else {
         try {
@@ -664,7 +664,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               state.pools.pricesApiState.chartStatus = 'ERROR'
             }),
           )
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -716,7 +716,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             )
           }
         } catch (error) {
-          console.log(error)
+          console.warn(error)
         }
       } else {
         try {
@@ -756,7 +756,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               state.pools.pricesApiState.chartStatus = 'ERROR'
             }),
           )
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -836,7 +836,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             state.pools.pricesApiState.activityStatus = 'ERROR'
           }),
         )
-        console.log(error)
+        console.warn(error)
       }
     },
     setChartTimeOption: (timeOption: TimeOptions) => {
