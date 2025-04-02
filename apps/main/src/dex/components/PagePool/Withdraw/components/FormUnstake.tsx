@@ -39,7 +39,16 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      setFormValues('UNSTAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
+      void setFormValues(
+        'UNSTAKE',
+        curve,
+        poolDataCacheOrApi.pool.id,
+        poolData,
+        updatedFormValues,
+        null,
+        seed.isSeed,
+        '',
+      )
     },
     [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )

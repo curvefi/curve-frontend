@@ -60,19 +60,19 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     const fetchData = async () => {
       if (!lendApi || !signerAddress) return
       // ensure user balances are up to date on load
-      refetchUserScrvUsdBalance()
+      void refetchUserScrvUsdBalance()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
     }
 
-    fetchData()
+    void fetchData()
   }, [lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
-      checkApproval.depositApprove(inputAmount)
+      void checkApproval.depositApprove(inputAmount)
     }
   }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
 

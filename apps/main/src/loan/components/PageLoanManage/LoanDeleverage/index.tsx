@@ -88,7 +88,7 @@ const LoanDeleverage = ({
         setHealthMode(DEFAULT_HEALTH_MODE)
       }
 
-      setFormValues(
+      void setFormValues(
         llammaId,
         curve,
         llamma,

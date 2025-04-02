@@ -81,10 +81,10 @@ const Page = (params: CollateralUrlParams) => {
       })
 
       const updatedFormValues = { ...formValues, n: formValues.n || llamma.defaultBands }
-      setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
+      void setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
 
       if (curve.signerAddress) {
-        fetchUserLoanWalletBalances(curve, llamma)
+        void fetchUserLoanWalletBalances(curve, llamma)
       }
     },
     [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
@@ -99,7 +99,7 @@ const Page = (params: CollateralUrlParams) => {
       } else {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
-        fetchLoanDetails(curve, llamma)
+        void fetchLoanDetails(curve, llamma)
         setLoaded(true)
       }
     }
@@ -125,7 +125,7 @@ const Page = (params: CollateralUrlParams) => {
   // max slippage updated
   useEffect(() => {
     if (loaded && !!curve) {
-      setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
+      void setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
@@ -133,7 +133,7 @@ const Page = (params: CollateralUrlParams) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve && llamma) {
-        fetchLoanDetails(curve, llamma)
+        void fetchLoanDetails(curve, llamma)
       }
     },
     REFRESH_INTERVAL['1m'],

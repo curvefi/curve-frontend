@@ -41,7 +41,7 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   // Get user locks
   useEffect(() => {
     if (!userLocksMapper[userAddress] && userLocksLoading && !userLocksError) {
-      getUserLocks(userAddress)
+      void getUserLocks(userAddress)
     }
   }, [getUserLocks, userAddress, userLocksMapper, userLocksLoading, userLocksError])
 

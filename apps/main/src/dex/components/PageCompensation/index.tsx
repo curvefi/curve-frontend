@@ -98,8 +98,8 @@ const FormCompensation = ({
     setVestedTotals({})
 
     if (signerAddress) {
-      getBalances(signerAddress, contracts)
-      getVestContract(signerAddress, contracts)
+      void getBalances(signerAddress, contracts)
+      void getVestContract(signerAddress, contracts)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signerAddress])

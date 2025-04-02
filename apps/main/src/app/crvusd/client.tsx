@@ -69,8 +69,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve) {
-        fetchAllStoredUsdRates(curve)
-        fetchGasInfo(curve)
+        void fetchAllStoredUsdRates(curve)
+        void fetchGasInfo(curve)
       }
     },
     REFRESH_INTERVAL['5m'],

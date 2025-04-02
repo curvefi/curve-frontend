@@ -42,7 +42,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
+      void setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
     [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )

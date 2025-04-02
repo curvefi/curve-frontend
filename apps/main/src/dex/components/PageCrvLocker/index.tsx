@@ -55,7 +55,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   // fetch locked crv data
   useEffect(() => {
-    setData()
+    void setData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, signerAddress, isPageVisible])
 

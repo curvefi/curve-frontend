@@ -39,7 +39,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   // Get user proposal votes
   useEffect(() => {
     if (!gaugeVotesMapper[gaugeAddress] && gaugeVotesLoading && !gaugeVotesError) {
-      getGaugeVotes(gaugeAddress)
+      void getGaugeVotes(gaugeAddress)
     }
   }, [getGaugeVotes, gaugeAddress, gaugeVotesLoading, gaugeVotesError, gaugeVotesMapper])
 

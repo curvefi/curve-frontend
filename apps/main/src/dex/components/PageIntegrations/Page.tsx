@@ -19,7 +19,7 @@ const Page = (params: NetworkUrlParams) => {
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
-    init(rChainId)
+    void init(rChainId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

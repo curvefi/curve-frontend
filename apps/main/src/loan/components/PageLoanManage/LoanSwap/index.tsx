@@ -64,7 +64,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        setFormValues(chainId, llamma, updatedFormValues, maxSlippage)
+        void setFormValues(chainId, llamma, updatedFormValues, maxSlippage)
       }
     },
     [chainId, llamma, maxSlippage, setFormValues],
@@ -101,7 +101,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       updatedFormValues.item1 = formValues.item2 ?? detailInfo.amount
       updatedFormValues.item2Key = formValues.item1Key
 
-      fetchMaxSwappable(chainId, llamma, updatedFormValues)
+      void fetchMaxSwappable(chainId, llamma, updatedFormValues)
       updateFormValues(updatedFormValues)
     }
   }
@@ -204,7 +204,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   // init
   useMemo(() => {
     if (chainId && llamma) {
-      init(chainId, llamma)
+      void init(chainId, llamma)
     }
   }, [chainId, init, llamma])
 

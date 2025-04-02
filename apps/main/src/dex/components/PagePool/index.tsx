@@ -131,7 +131,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const fetchData = useCallback(() => {
     if (isPageVisible && curve && poolData) {
-      fetchPoolStats(curve, poolData)
+      void fetchPoolStats(curve, poolData)
     }
   }, [curve, fetchPoolStats, isPageVisible, poolData])
 
@@ -145,7 +145,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       pricesApiPoolsMapper[poolAddress] !== undefined &&
       !snapshotsMapper[poolAddress]
     ) {
-      fetchPricesPoolSnapshots(rChainId, poolAddress)
+      void fetchPricesPoolSnapshots(rChainId, poolAddress)
     }
   }, [curve, fetchPricesPoolSnapshots, poolAddress, pricesApi, pricesApiPoolsMapper, rChainId, snapshotsMapper])
 
@@ -163,7 +163,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   // fetch user pool info
   useEffect(() => {
     if (curve && poolId && !!signerAddress) {
-      fetchUserPoolInfo(curve, poolId)
+      void fetchUserPoolInfo(curve, poolId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rChainId, poolId, signerAddress])
