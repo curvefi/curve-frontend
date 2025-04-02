@@ -1,12 +1,7 @@
 import { createSvgIcon } from '@mui/material/utils'
 
 export const RainbowIcon = createSvgIcon(
-  <svg
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlnsXlink="http://www.w3.org/1999/xlink"
-  >
+  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
     <rect width="40" height="40" rx="2" fill="url(#pattern0_8225_3105)" />
     <defs>
       <pattern id="pattern0_8225_3105" patternContentUnits="objectBoundingBox" width="1" height="1">

@@ -1,5 +1,5 @@
 import { BrowserProvider, ethers } from 'ethers'
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from 'react'
+import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
@@ -49,19 +49,15 @@ const useUseWagmi = (): boolean => {
 export const useWallet: UseConnectWallet = () => {
   const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
     useOnboardWallet()
-  const [{ wallet: wagmiWallet, connecting: wagmiConnecting, client }, wagmiConnect, wagmiDisconnect] = useWagmiWallet()
+  const [{ wallet: wagmiWallet, connecting: wagmiConnecting }, wagmiConnect, wagmiDisconnect] = useWagmiWallet()
   const [walletName, setWalletName] = useWalletName()
   const useWagmi = useUseWagmi()
 
-  const wallet = useMemo(
-    () => (useWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)),
-    [onboardWallet, wagmiWallet, useWagmi],
-  )
-
-  useEffect(() => {
-    state.wallet = wallet
-    state.provider = wallet && new BrowserProvider(getRpcProvider(wallet))
-  }, [client, onboardWallet, useWagmi, wagmiWallet, wallet])
+  const { wallet, provider } = useMemo(() => {
+    state.wallet = useWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
+    state.provider = state.wallet && new BrowserProvider(getRpcProvider(state.wallet))
+    return state
+  }, [onboardWallet, wagmiWallet, useWagmi])
 
   const signerAddress = onboardWallet?.accounts[0]?.address
   const connect = useMemo(
@@ -92,7 +88,7 @@ export const useWallet: UseConnectWallet = () => {
     disconnect,
     walletName,
     setWalletName,
-    provider: state.provider,
+    provider,
     signerAddress,
   }
 }
