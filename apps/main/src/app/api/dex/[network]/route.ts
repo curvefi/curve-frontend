@@ -25,7 +25,8 @@ const getVolumeCache = async (network: NetworkConfig, pools: PoolDataMapper) => 
     try {
       return [pool.id, { value: await pool.stats.volume() }]
     } catch (e) {
-      const logMethod = pool.id === 'crveth' ? 'log' : 'warn' // this pool is always throwing an error
+      const logMethod = pool.id === 'crveth' ? 'info' : 'warn' // this pool is always throwing an error
+      // eslint-disable-next-line no-console -- false positive
       console[logMethod](e)
       return [pool.id, null]
     }
