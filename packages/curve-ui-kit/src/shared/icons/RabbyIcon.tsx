@@ -7,14 +7,14 @@ export const RabbyIcon = createSvgIcon(
       fill="url(#paint0_linear_8225_3012)"
     />
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M28.6231 11.7808C28.9039 11.6604 28.8638 11.2594 28.7835 10.9385C28.6231 10.2166 25.6151 7.24867 22.8076 5.92514C18.9573 4.12033 16.1498 4.20054 15.7488 5.04279C16.5108 6.64707 20.1605 8.13103 23.9306 9.7353C25.4948 10.377 27.1392 11.0588 28.6231 11.7808Z"
       fill="url(#paint1_linear_8225_3012)"
     />
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M23.7299 27.9038C22.9679 27.623 22.0855 27.3423 21.0828 27.1016C22.1256 25.2166 22.3663 22.369 21.3636 20.6043C19.9599 18.1177 18.1951 16.7941 14.0641 16.7941C11.8181 16.7941 5.72188 17.5562 5.60156 22.6497C5.60156 23.1711 5.60156 23.6524 5.64167 24.1337H16.7914C15.3074 26.5 13.9037 28.2647 12.6604 29.5882C14.1443 29.9492 15.3475 30.2701 16.4705 30.5909C17.5133 30.8717 18.516 31.1123 19.5187 31.3931C21.0427 30.2701 22.4866 29.0669 23.7299 27.9038Z"
       fill="url(#paint2_linear_8225_3012)"
     />
@@ -43,7 +43,7 @@ export const RabbyIcon = createSvgIcon(
         gradientUnits="userSpaceOnUse"
       >
         <stop stopColor="#3B22A0" />
-        <stop offset="1" stopColor="#5156D8" stop-opacity="0" />
+        <stop offset="1" stopColor="#5156D8" stopOpacity="0" />
       </linearGradient>
       <linearGradient
         id="paint2_linear_8225_3012"
@@ -54,7 +54,7 @@ export const RabbyIcon = createSvgIcon(
         gradientUnits="userSpaceOnUse"
       >
         <stop stopColor="#3B1E8F" />
-        <stop offset="1" stopColor="#6A6FFB" stop-opacity="0" />
+        <stop offset="1" stopColor="#6A6FFB" stopOpacity="0" />
       </linearGradient>
       <linearGradient
         id="paint3_linear_8225_3012"

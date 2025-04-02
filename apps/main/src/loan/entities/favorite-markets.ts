@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { getFavoriteMarkets, useFavoriteMarkets } from '@ui-kit/hooks/useLocalStorage'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
+import type { Address } from 'viem'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,
@@ -9,7 +10,7 @@ const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavorit
   validationSuite: EmptyValidationSuite,
 })
 
-export function useFavoriteMarket(address: string) {
+export function useFavoriteMarket(address: Address) {
   const [favorites, setFavorites] = useFavoriteMarkets()
   const isFavorite = useMemo(() => favorites.includes(address), [favorites, address])
   const toggleFavorite = useCallback(() => {

@@ -38,7 +38,7 @@ export const KeplrIcon = createSvgIcon(
         gradientTransform="translate(1.91069 38.4844) rotate(-45.1556) scale(64.1475 65.1071)"
       >
         <stop stopColor="#232DE3" />
-        <stop offset="1" stopColor="#232DE3" stop-opacity="0" />
+        <stop offset="1" stopColor="#232DE3" stopOpacity="0" />
       </radialGradient>
       <radialGradient
         id="paint2_radial_8225_3088"
@@ -49,7 +49,7 @@ export const KeplrIcon = createSvgIcon(
         gradientTransform="translate(37.8457 39.7717) rotate(-138.45) scale(40.1083 61.1539)"
       >
         <stop stopColor="#8B4DFF" />
-        <stop offset="1" stopColor="#8B4DFF" stop-opacity="0" />
+        <stop offset="1" stopColor="#8B4DFF" stopOpacity="0" />
       </radialGradient>
       <radialGradient
         id="paint3_radial_8225_3088"
@@ -60,7 +60,7 @@ export const KeplrIcon = createSvgIcon(
         gradientTransform="translate(19.6668 0.296664) rotate(90) scale(31.5366 76.5166)"
       >
         <stop stopColor="#24D5FF" />
-        <stop offset="1" stopColor="#1BB8FF" stop-opacity="0" />
+        <stop offset="1" stopColor="#1BB8FF" stopOpacity="0" />
       </radialGradient>
       <clipPath id="clip0_8225_3088">
         <rect width="40" height="40" rx="2" fill="white" />

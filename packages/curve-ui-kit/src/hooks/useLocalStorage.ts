@@ -1,3 +1,4 @@
+import { kebabCase } from 'lodash'
 import type { Address } from '@curvefi/prices-api'
 import { isBetaDefault } from '@ui-kit/utils'
 import { useStorage } from './useStorage'
@@ -33,6 +34,8 @@ const useLocalStorage = <Type, Default = Type>(key: string, initialValue?: Defau
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
 export const useWalletName = () => useLocalStorage<string | null>('walletName', null)
+export const useFilterExpanded = (tableTitle: string) =>
+  useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`)
 
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
 export const useFavoriteMarkets = () => useLocalStorage<Address[]>('favoriteMarkets', [])

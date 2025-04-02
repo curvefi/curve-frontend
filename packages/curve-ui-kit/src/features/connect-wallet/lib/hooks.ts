@@ -1,5 +1,5 @@
 import { BrowserProvider, ethers } from 'ethers'
-import { Dispatch, type ReactNode, SetStateAction, useCallback, useEffect, useMemo } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
@@ -9,8 +9,8 @@ import type { NotificationType } from '@web3-onboard/core/dist/types'
 import { useConnectWallet as useOnboardWallet, useSetChain as useOnboardSetChain } from '@web3-onboard/react'
 import type { Wallet } from './types'
 import { convertOnboardWallet, getRpcProvider } from './utils/wallet-helpers'
-import { config, type WagmiChainId } from './wagmi/setup'
-import { useWagmiWallet } from './wagmi/wallet'
+import { useWagmiWallet } from './wagmi/useWagmiWallet'
+import { config, type WagmiChainId } from './wagmi/wagmi-config'
 
 type UseConnectWallet = {
   (): {
@@ -22,7 +22,6 @@ type UseConnectWallet = {
     setWalletName: Dispatch<SetStateAction<string | null>>
     provider: BrowserProvider | null
     signerAddress: Address | undefined
-    modal: ReactNode
   }
   getState: () => typeof state
   initialize(...params: Parameters<typeof initOnboard>): void
@@ -50,8 +49,7 @@ const useUseWagmi = (): boolean => {
 export const useWallet: UseConnectWallet = () => {
   const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
     useOnboardWallet()
-  const [{ wallet: wagmiWallet, connecting: wagmiConnecting, modal, client }, wagmiConnect, wagmiDisconnect] =
-    useWagmiWallet()
+  const [{ wallet: wagmiWallet, connecting: wagmiConnecting, client }, wagmiConnect, wagmiDisconnect] = useWagmiWallet()
   const [walletName, setWalletName] = useWalletName()
   const useWagmi = useUseWagmi()
 
@@ -96,7 +94,6 @@ export const useWallet: UseConnectWallet = () => {
     setWalletName,
     provider: state.provider,
     signerAddress,
-    modal,
   }
 }
 useWallet.initialize = (...params) => (onboard = initOnboard(...params))

@@ -1,4 +1,3 @@
-import { kebabCase } from 'lodash'
 import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -9,6 +8,7 @@ import Stack from '@mui/material/Stack'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
+import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
@@ -73,7 +73,7 @@ export const TableFilters = ({
   children: ReactNode
   onSearch: (value: string) => void
 }) => {
-  const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
+  const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
