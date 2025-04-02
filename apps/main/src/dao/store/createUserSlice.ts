@@ -297,7 +297,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           }),
         )
       } catch (error) {
-        console.log(error)
+        console.warn(error)
 
         set(
           produce((state) => {

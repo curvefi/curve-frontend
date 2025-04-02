@@ -576,7 +576,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           }),
         )
       }
-      console.log(get().createPool.initialPrice)
     },
     refreshInitialPrice: async (curve: CurveApi) => {
       const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(
@@ -779,7 +778,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       try {
         await fetchGasInfo(curve)
       } catch (error) {
-        console.log(error)
+        console.warn(error)
       }
 
       set(
@@ -865,7 +864,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
           // ----- TWOCRYPTO -----
         } else {
@@ -1043,7 +1042,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
         // ----- STABLE PLAIN POOL -----
@@ -1132,7 +1131,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
-            console.log(error)
+            console.warn(error)
           }
         }
       }

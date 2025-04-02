@@ -32,20 +32,20 @@ type Story = StoryObj<typeof SearchField>
 
 export const Default: Story = {
   args: {
-    onSearch: (value: string) => console.log('Search:', value),
+    onSearch: (value: string) => console.info('Search:', value),
   },
 }
 
 export const WithCustomPlaceholder: Story = {
   args: {
-    onSearch: (value: string) => console.log('Search:', value),
+    onSearch: (value: string) => console.info('Search:', value),
     placeholder: 'Search networks',
   },
 }
 
 export const Small: Story = {
   args: {
-    onSearch: (value: string) => console.log('Search:', value),
+    onSearch: (value: string) => console.info('Search:', value),
     size: 'small',
   },
 }
@@ -70,7 +70,7 @@ export const WithInputRef = () => {
 
 export const CustomStyled: Story = {
   args: {
-    onSearch: (value: string) => console.log('Search:', value),
+    onSearch: (value: string) => console.info('Search:', value),
     sx: {
       width: '300px',
       backgroundColor: '#f5f5f5',

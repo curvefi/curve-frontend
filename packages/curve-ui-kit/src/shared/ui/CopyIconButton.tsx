@@ -28,7 +28,7 @@ export function CopyIconButton({
           size="extraSmall"
           {...iconProps}
           onClick={() => {
-            console.log(`Copying to clipboard: ${copyText}`)
+            console.info(`Copying to clipboard: ${copyText}`)
             return navigator.clipboard
               ? navigator.clipboard
                   .writeText(copyText)

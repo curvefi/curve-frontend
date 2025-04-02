@@ -122,7 +122,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
-        console.log(error)
+        console.warn(error)
         get()[sliceKey].setStateByKey('veCrvFees', {
           fees: [],
           veCrvTotalFees: 0,
@@ -144,7 +144,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
-        console.log(error)
+        console.warn(error)
         get()[sliceKey].setStateByKey('veCrvLocks', {
           locks: [],
           fetchStatus: 'ERROR',
@@ -193,7 +193,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
-        console.log(error)
+        console.warn(error)
         get()[sliceKey].setStateByKey('veCrvHolders', {
           topHolders: [],
           allHolders: {},
@@ -278,7 +278,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
-        console.log(error)
+        console.warn(error)
         get()[sliceKey].setStateByKey('veCrvData', {
           totalVeCrv: 0,
           totalLockedCrv: 0,

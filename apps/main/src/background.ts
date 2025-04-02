@@ -20,7 +20,7 @@ export async function refreshDataInBackground(name: string, callback: () => Prom
     })
     const end = new Date()
     const elapsed = end.getTime() - start
-    console.log(`${end.toISOString()} Refreshed ${name} in ${elapsed}ms, waiting ${RefreshTimeoutMs}ms`)
+    console.info(`${end.toISOString()} Refreshed ${name} in ${elapsed}ms, waiting ${RefreshTimeoutMs}ms`)
     if (elapsed < RefreshTimeoutMs) {
       await new Promise((resolve) => setTimeout(resolve, RefreshTimeoutMs - elapsed))
     }
