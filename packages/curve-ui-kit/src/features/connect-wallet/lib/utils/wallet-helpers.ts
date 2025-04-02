@@ -1,4 +1,3 @@
-import type { Eip1193Provider } from 'ethers'
 import { Address } from '@ui-kit/utils'
 import type { WalletState } from '@web3-onboard/core/dist/types'
 import { Wallet } from '../types'
@@ -11,19 +10,8 @@ export const getWalletSignerAddress = (wallet: Wallet | undefined | null): Addre
 
 export const getWalletSignerEns = (wallet: Wallet | undefined | null): string | undefined => wallet?.account?.ensName
 
-export function getRpcProvider(wallet: Wallet): Eip1193Provider {
-  if ('isTrustWallet' in wallet.provider && window.ethereum) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  }
-  if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
-}
-
 export function getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
+  if ('isTrustWallet' in wallet.provider && window.ethereum) {
     // unable to connect to curvejs with wallet.provider
     return window.ethereum
   } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {

@@ -8,7 +8,7 @@ import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import type { NotificationType } from '@web3-onboard/core/dist/types'
 import { useConnectWallet as useOnboardWallet, useSetChain as useOnboardSetChain } from '@web3-onboard/react'
 import type { Wallet } from './types'
-import { convertOnboardWallet, getRpcProvider } from './utils/wallet-helpers'
+import { convertOnboardWallet, getWalletProvider } from './utils/wallet-helpers'
 import { useWagmiWallet } from './wagmi/useWagmiWallet'
 import { config, type WagmiChainId } from './wagmi/wagmi-config'
 
@@ -55,7 +55,7 @@ export const useWallet: UseConnectWallet = () => {
 
   const { wallet, provider } = useMemo(() => {
     state.wallet = useWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
-    state.provider = state.wallet && new BrowserProvider(getRpcProvider(state.wallet))
+    state.provider = state.wallet && new BrowserProvider(getWalletProvider(state.wallet))
     return state
   }, [onboardWallet, wagmiWallet, useWagmi])
 
