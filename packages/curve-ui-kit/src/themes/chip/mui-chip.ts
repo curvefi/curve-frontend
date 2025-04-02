@@ -3,9 +3,17 @@ import type { ChipProps } from '@mui/material/Chip/Chip'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { Grays } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
+
+const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: DesignSystem['Badges']) => ({
+  style: {
+    backgroundColor: Badges.Fill[color],
+    color: Badges.Label[color],
+    borderColor: Badges.Border[color],
+  },
+  props: { color: color.toLowerCase() as ChipProps['color'] },
+})
 
 // note: the design system is using inverted themes for this color, there is no semantic colors for the clickable chips.
 const invertPrimary = (color: DesignSystem['Color']) => color.Neutral[50]
@@ -45,7 +53,7 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { delet
  * - We do not use the "variant" prop (at the time of writing).
  */
 export const defineMuiChip = (
-  { Chips, Color, Text: { TextColors }, Layer }: DesignSystem,
+  { Chips, Color, Text: { TextColors }, Layer, Badges }: DesignSystem,
   typography: TypographyOptions,
 ): Components['MuiChip'] => ({
   styleOverrides: {
@@ -85,26 +93,12 @@ export const defineMuiChip = (
     },
 
     // 'badge' colors not in design system but defined directly in components
-    {
-      props: { color: 'alert' },
-      style: { backgroundColor: Layer.Feedback.Error, color: Grays[50] },
-    },
-    {
-      props: { color: 'default' },
-      style: { borderColor: Layer[1].Outline },
-    },
-
-    { props: { color: 'active' }, style: { backgroundColor: Color.Secondary[400], color: invertPrimary(Color) } },
-    { props: { color: 'warning' }, style: { backgroundColor: Color.Tertiary[200] } },
-    { props: { color: 'accent' }, style: { backgroundColor: Layer.Highlight.Fill, color: invertPrimary(Color) } },
-    {
-      props: { color: 'highlight' },
-      style: {
-        borderColor: Layer.Highlight.Outline,
-        color: TextColors.Highlight,
-        backgroundColor: invertPrimary(Color),
-      },
-    },
+    createColor('Default', Badges),
+    createColor('Active', Badges),
+    createColor('Alert', Badges),
+    createColor('Highlight', Badges),
+    createColor('Warning', Badges),
+    createColor('Accent', Badges),
 
     // chip colors taken from design system variables
     {

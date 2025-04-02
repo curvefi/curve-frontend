@@ -12,6 +12,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const curve = useApiStore((state) => state.stable)
