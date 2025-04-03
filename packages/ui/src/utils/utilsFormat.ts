@@ -195,7 +195,7 @@ export const formatDate = (date: Date, variant: 'short' | 'long' = 'short') => {
     // example: 31/01/25 adjusted for local timezone
     return new Intl.DateTimeFormat(undefined, {
       day: '2-digit',
-      month: '2-digit',
+      month: 'short',
       year: 'numeric',
     }).format(date)
     // long
