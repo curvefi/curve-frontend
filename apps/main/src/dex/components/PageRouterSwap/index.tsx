@@ -84,7 +84,10 @@ const QuickSwap = ({
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
-  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
+  const storeMaxSlippage = useMemo(
+    () => (isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage),
+    [cryptoMaxSlippage, isStableswapRoute, stableMaxSlippage],
+  )
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -115,13 +118,7 @@ const QuickSwap = ({
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const updateFormValues = useCallback(
-    (
-      updatedFormValues: Partial<FormValues>,
-      isGetMaxFrom?: boolean,
-      maxSlippage?: string,
-      isFullReset?: boolean,
-      isRefetch?: boolean,
-    ) => {
+    (updatedFormValues: Partial<FormValues>, isGetMaxFrom?: boolean, isFullReset?: boolean, isRefetch?: boolean) => {
       setTxInfoBar(null)
       setConfirmedLoss(false)
 
@@ -130,7 +127,7 @@ const QuickSwap = ({
         updatedFormValues,
         searchedParams,
         isGetMaxFrom,
-        maxSlippage || storeMaxSlippage,
+        storeMaxSlippage,
         isFullReset,
         isRefetch,
       )
@@ -166,7 +163,7 @@ const QuickSwap = ({
           <TxInfoBar
             description={txMessage}
             txHash={network.scanTxPath(resp.hash)}
-            onClose={() => updateFormValues({}, false, '', true)}
+            onClose={() => updateFormValues({}, false, true)}
           />,
         )
       }
@@ -183,6 +180,7 @@ const QuickSwap = ({
       routesAndOutput: RoutesAndOutput | undefined,
       formStatus: FormStatus,
       formValues: FormValues,
+      maxSlippage: string,
       searchedParams: SearchedParams,
       toToken: string,
       fromToken: string,
@@ -190,7 +188,6 @@ const QuickSwap = ({
       const { formProcessing, formTypeCompleted, step } = formStatus
       const { fromAmount } = formValues
 
-      const maxSlippage = routesAndOutput?.maxSlippage
       const isValidFromAmount = +fromAmount > 0 && !formValues.fromError
       const isValid =
         typeof routesAndOutput !== 'undefined' && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
@@ -206,7 +203,7 @@ const QuickSwap = ({
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(activeKey, curve, formValues, searchedParams, storeMaxSlippage)
+            await fetchStepApprove(activeKey, curve, formValues, searchedParams, maxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -282,12 +279,12 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, steps],
+    [confirmedLoss, fetchStepApprove, handleBtnClickSwap, steps],
   )
 
   const fetchData = useCallback(() => {
     if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
-      updateFormValues({}, false, '', false, true)
+      updateFormValues({}, false, false, true)
     }
   }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
 
@@ -297,16 +294,10 @@ const QuickSwap = ({
 
     return () => {
       isSubscribed.current = false
-      updateFormValues({}, false, '', true)
+      updateFormValues({}, false, true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // maxSlippage
-  useEffect(() => {
-    if (isReady) updateFormValues({}, false, cryptoMaxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cryptoMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {
@@ -347,13 +338,24 @@ const QuickSwap = ({
       routesAndOutput,
       isReady ? formStatus : { ...formStatus, formProcessing: true },
       formValues,
+      storeMaxSlippage,
       searchedParams,
       toToken?.address ?? '',
       fromToken?.address ?? '',
     )
     setSteps(updatedSteps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
+  }, [
+    isReady,
+    confirmedLoss,
+    routesAndOutput,
+    formEstGas,
+    formStatus,
+    formValues,
+    searchedParams,
+    userBalancesLoading,
+    storeMaxSlippage,
+  ])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing

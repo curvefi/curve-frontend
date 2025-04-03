@@ -19,12 +19,7 @@ const RouterSwapAlerts = ({
   formValues: FormValues
   routesAndOutput: RoutesAndOutput
   searchedParams: SearchedParams
-  updateFormValues: (
-    updatedFormValues: Partial<FormValues>,
-    isGetMaxFrom?: boolean,
-    maxSlippage?: string,
-    isFullReset?: boolean,
-  ) => void
+  updateFormValues: (updatedFormValues: Partial<FormValues>, isGetMaxFrom?: boolean, isFullReset?: boolean) => void
 }) => {
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
 
