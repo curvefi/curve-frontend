@@ -22,7 +22,7 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
   const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
   const { push } = useRouter()
 
-  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 6rem 6rem'
+  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 7rem 7rem'
 
   const userProposalVotes = userProposalVotesMapper[userAddress]?.votes ?? {}
   const userProposalVotesArray = Object.values(userProposalVotes)

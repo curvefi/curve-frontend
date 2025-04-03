@@ -17,18 +17,6 @@ export const convertDate = (input: Date | number | string): Date => {
 }
 
 /**
- * Converts date to localized time string (HH:MM:SS)
- * @example
- * convertTime(new Date()) // "12:30:23"
- */
-export const convertTime = (input: Date | number | string) =>
-  convertDate(input).toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  })
-
-/**
  * Converts date to relative time format
  * @example
  * convertTimeAgo(new Date(Date.now() - 2*60*60*1000)) // "2h"

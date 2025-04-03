@@ -27,7 +27,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
   const { push } = useRouter()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
-  const gridTemplateColumns = '5.3125rem 1fr 1fr'
+  const gridTemplateColumns = '7rem 1fr 1fr'
 
   const gaugeVotesLoading = gaugeVotesMapper[gaugeAddress]
     ? gaugeVotesMapper[gaugeAddress].fetchingState === 'LOADING'

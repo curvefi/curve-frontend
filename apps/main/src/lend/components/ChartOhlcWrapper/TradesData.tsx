@@ -3,7 +3,7 @@ import networks from '@/lend/networks'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TradesDataProps } from './types'
 
@@ -52,9 +52,7 @@ const TradesData = ({ lendTradesData, chainId }: TradesDataProps) => (
           </TradeTo>
         </Event>
         <TimestampColumn>
-          <Tooltip
-            tooltip={`${convertTime(transaction.timestamp)} ${convertDate(transaction.timestamp).toLocaleDateString()}`}
-          >
+          <Tooltip tooltip={formatDate(convertDate(transaction.timestamp), 'long')}>
             {convertTimeAgo(transaction.timestamp)}
           </Tooltip>
         </TimestampColumn>
