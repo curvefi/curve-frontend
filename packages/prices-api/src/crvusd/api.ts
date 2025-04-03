@@ -1,5 +1,6 @@
 import { getHost, type Options, type Chain } from '..'
 import { fetchJson as fetch, addQueryString } from '../fetch'
+import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
@@ -33,9 +34,12 @@ export async function getSnapshots(
   return resp.data.map(Parsers.parseSnapshot)
 }
 
-export async function getCrvUsdSupply(chain: Chain, options?: Options) {
+export async function getCrvUsdSupply(chain: Chain, days?: number, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetSupplyResponse>(`${host}/v1/crvusd/markets/${chain}/supply`)
+  const range = getTimeRange({ daysRange: days })
+  const resp = await fetch<Responses.GetSupplyResponse>(
+    `${host}/v1/crvusd/markets/${chain}/supply${addQueryString(range)}`,
+  )
 
   return resp.data.map(Parsers.parseSupply)
 }
