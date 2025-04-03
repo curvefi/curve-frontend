@@ -18,7 +18,7 @@ type UseConnectWallet = {
     wallet: Wallet | null
     connecting: boolean
     connect: (label?: string) => Promise<Wallet | null>
-    disconnect: () => Promise<void>
+    disconnect: () => Promise<unknown>
     walletName: string | null
     setWalletName: Dispatch<SetStateAction<string | null>>
     provider: BrowserProvider | null
@@ -64,26 +64,16 @@ export const useWallet: UseConnectWallet = () => {
   const connect = useMemo(
     (): ((label?: string) => Promise<Wallet | null>) =>
       shouldUseWagmi
-        ? (label?: string) => {
-            wagmiConnect(label)
-            return Promise.resolve(wagmiWallet)
-          }
-        : (label?: string) =>
-            onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) }).then((wallets) =>
-              convertOnboardWallet(wallets[0]),
-            ),
-    [onboardConnect, shouldUseWagmi, wagmiConnect, wagmiWallet],
+        ? async (label?: string) => await wagmiConnect(label)
+        : async (label?: string) => {
+            const [wallet] = await onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) })
+            return convertOnboardWallet(wallet)
+          },
+    [onboardConnect, shouldUseWagmi, wagmiConnect],
   )
 
   const disconnect = useMemo(
-    () =>
-      shouldUseWagmi
-        ? async () => {
-            wagmiDisconnect()
-          }
-        : async () => {
-            wallet && (await onboardDisconnect(wallet))
-          },
+    () => (shouldUseWagmi ? wagmiDisconnect : async () => wallet && (await onboardDisconnect(wallet))),
     [onboardDisconnect, shouldUseWagmi, wagmiDisconnect, wallet],
   )
 

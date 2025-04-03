@@ -1,6 +1,4 @@
 import type { SetOptional } from 'type-fest'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { useUseWagmi } from '../lib/hooks'
 import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
 import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletButton'
 import { WagmiConnectModal } from './WagmiConnectModal'
@@ -14,28 +12,14 @@ export const ConnectWalletIndicator = ({
   onConnectWallet,
   onDisconnectWallet,
   ...props
-}: ConnectWalletIndicatorProps) => {
-  const [isOpen, open, close] = useSwitch()
-  const shouldUseWagmi = useUseWagmi()
-
-  return (
-    <>
-      {walletAddress ? (
-        <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} {...props} />
-      ) : (
-        <ConnectWalletButton
-          label={label}
-          onConnectWallet={() => {
-            if (shouldUseWagmi) {
-              open()
-            }
-            onConnectWallet()
-          }}
-          {...props}
-        />
-      )}
-
-      <WagmiConnectModal isOpen={!!isOpen} onClose={close} onConnected={close} />
-    </>
-  )
-}
+}: ConnectWalletIndicatorProps) => (
+  <>
+    {walletAddress ? (
+      <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} {...props} />
+    ) : (
+      <ConnectWalletButton label={label} onConnectWallet={onConnectWallet} {...props} />
+    )}
+    {/* wagmi modal is here because this component is always rendered; however there are other buttons in the app! */}
+    <WagmiConnectModal />
+  </>
+)

@@ -8,7 +8,7 @@ const storedValues = new Map<string, unknown>()
  *
  * It is not exported, as we want to keep an overview of all the local keys used in the app.
  */
-export const useGlobalStorage = <Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> =>
+export const useGlobalState = <Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> =>
   useStorage({
     key,
     initialValue,
