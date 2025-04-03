@@ -53,7 +53,8 @@ export const useWagmi = () => {
 
   const { address, isConnecting } = useAccount()
   const { data: ensName } = useEnsName({ address })
-  const { wallet, provider } = useMemo(
+
+  const { wallet } = useMemo(
     () => walletType && address && createWallet({ client, label: walletType.label, address, ensName }),
     [address, client, walletType, ensName],
   ) ?? { wallet: null, provider: null }

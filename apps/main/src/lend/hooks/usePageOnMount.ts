@@ -246,7 +246,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   }, [pathname])
 
   return {
-    pageLoaded: connectState.status === 'success',
+    pageLoaded: ['success', 'failure'].includes(connectState.status),
     routerParams: parsedParams,
     api: lending,
   } as PageProps

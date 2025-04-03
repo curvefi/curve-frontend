@@ -55,7 +55,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateConnectState('', '')
           }
         } catch (error) {
-          console.error(error)
+          console.error('failed initStableJs', error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
           setIsLoadingStable(false)
@@ -84,7 +84,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateConnectState('', '')
           }
         } catch (error) {
-          console.error(error)
+          console.error('failed initLendApi', error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
           setIsLoadingLending(false)
@@ -291,7 +291,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   }, [initCampaignRewards, curve, initiated])
 
   return {
-    pageLoaded: connectState.status === 'success',
+    pageLoaded: ['success', 'failure'].includes(connectState.status),
     routerParams: parsedParams,
     curve,
   } as PageProps
