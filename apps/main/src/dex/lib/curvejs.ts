@@ -311,26 +311,23 @@ const router = {
     poolsMapper: { [poolId: string]: PoolData },
     formValues: FormValues,
     searchedParams: SearchedParams,
-    maxSlippage: string | undefined,
   ) => {
     const { isFrom, fromAmount, toAmount } = formValues
     const { fromAddress, toAddress } = searchedParams
-    log('routesAndOutput', isFrom, fromAddress, fromAmount, toAddress, toAmount, maxSlippage)
+    log('routesAndOutput', isFrom, fromAddress, fromAmount, toAddress, toAmount)
     let resp = {
       activeKey,
       exchangeRates: [] as string[],
       isExchangeRateLow: false,
-      isExpectedToAmount: false,
-      isHighImpact: false,
       isHighSlippage: false,
       isStableswapRoute: false,
-      maxSlippage: '',
       priceImpact: 0,
       routes: [] as Route[],
       toAmount: '',
       toAmountOutput: '',
       fromAmount: '',
       error: '',
+      fetchedToAmount: '',
     }
 
     try {
@@ -354,7 +351,6 @@ const router = {
             priceImpact,
             output,
             poolsMapper,
-            maxSlippage,
             fetchedToAmount,
             toAddress,
             fromAmount,
@@ -386,7 +382,6 @@ const router = {
             priceImpact,
             output,
             poolsMapper,
-            maxSlippage,
             toAmount,
             toAddress,
             fetchedFromAmount,
@@ -733,11 +728,11 @@ const poolSwap = {
       activeKey,
       exchangeRates: [] as ExchangeRate[],
       isExchangeRateLow: false,
-      isHighImpact: false,
       priceImpact: 0,
       fromAmount: '',
       toAmount: '',
       error: '',
+      fetchedToAmount: '',
     }
 
     const { isFrom, isWrapped, fromToken, fromAddress, fromAmount, toAddress, toToken, toAmount } = formValues
@@ -797,7 +792,6 @@ const poolSwap = {
         ignoreExchangeRateCheck || excludeLowExchangeRateCheck(fromAddress, toAddress, [])
           ? false
           : getSwapIsLowExchangeRate(p.isCrypto, exchangeRates[0])
-      resp.isHighImpact = priceImpact > +maxSlippage
       resp.priceImpact = priceImpact || 0
       resp.fromAmount = isFrom ? fromAmount : swapRequired
       resp.toAmount = isFrom ? swapExpected : toAmount

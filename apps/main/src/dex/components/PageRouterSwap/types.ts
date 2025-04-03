@@ -39,17 +39,15 @@ export type RoutesAndOutputModal = {
 export type RoutesAndOutput = {
   loading: boolean
   exchangeRates: ExchangeRate[]
-  isExpectedToAmount?: boolean
   isExchangeRateLow: boolean
-  isHighImpact: boolean
   isHighSlippage: boolean
   isStableswapRoute: boolean
-  maxSlippage: string
   priceImpact: number | null
   routes: Route[]
   toAmount: string
   toAmountOutput: string
   fromAmount: string
+  fetchedToAmount: string
   modal: RoutesAndOutputModal | null
 }
 

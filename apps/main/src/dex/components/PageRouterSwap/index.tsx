@@ -22,6 +22,7 @@ import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
+import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
@@ -85,6 +86,9 @@ const QuickSwap = ({
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
   const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
+  const slippageImpact = routesAndOutput
+    ? getSlippageImpact({ maxSlippage: storeMaxSlippage, ...routesAndOutput })
+    : null
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -129,8 +133,8 @@ const QuickSwap = ({
         pageLoaded && !isLoadingApi ? curve : null,
         updatedFormValues,
         searchedParams,
-        isGetMaxFrom,
         maxSlippage || storeMaxSlippage,
+        isGetMaxFrom,
         isFullReset,
         isRefetch,
       )
@@ -144,13 +148,13 @@ const QuickSwap = ({
       curve: CurveApi,
       formValues: FormValues,
       maxSlippage: string,
-      routesAndOutput: RoutesAndOutput,
+      isExpectedToAmount: boolean,
+      toAmountOutput: string,
       searchedParams: SearchedParams,
       toToken: string,
       fromToken: string,
     ) => {
       const { fromAmount, toAmount } = formValues
-      const { isExpectedToAmount, toAmountOutput } = routesAndOutput
 
       const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${
         isExpectedToAmount ? toAmountOutput : toAmount
@@ -190,7 +194,6 @@ const QuickSwap = ({
       const { formProcessing, formTypeCompleted, step } = formStatus
       const { fromAmount } = formValues
 
-      const maxSlippage = routesAndOutput?.maxSlippage
       const isValidFromAmount = +fromAmount > 0 && !formValues.fromError
       const isValid =
         typeof routesAndOutput !== 'undefined' && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
@@ -235,13 +238,14 @@ const QuickSwap = ({
                   },
                   primaryBtnProps: {
                     onClick: () => {
-                      if (typeof maxSlippage !== 'undefined' && typeof routesAndOutput !== 'undefined') {
+                      if (typeof routesAndOutput !== 'undefined') {
                         void handleBtnClickSwap(
                           activeKey,
                           curve,
                           formValues,
-                          maxSlippage,
-                          routesAndOutput,
+                          storeMaxSlippage,
+                          !!slippageImpact?.isExpectedToAmount,
+                          routesAndOutput.toAmountOutput,
                           searchedParams,
                           toToken,
                           fromToken,
@@ -255,13 +259,14 @@ const QuickSwap = ({
               }
             : {
                 onClick: () => {
-                  if (typeof maxSlippage !== 'undefined' && typeof routesAndOutput !== 'undefined') {
+                  if (typeof routesAndOutput !== 'undefined') {
                     void handleBtnClickSwap(
                       activeKey,
                       curve,
                       formValues,
-                      maxSlippage,
-                      routesAndOutput,
+                      storeMaxSlippage,
+                      !!slippageImpact?.isExpectedToAmount,
+                      routesAndOutput.toAmountOutput,
                       searchedParams,
                       toToken,
                       fromToken,
@@ -282,7 +287,7 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, steps],
+    [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, slippageImpact?.isExpectedToAmount, steps],
   )
 
   const fetchData = useCallback(() => {
@@ -473,7 +478,7 @@ const QuickSwap = ({
         <DetailInfoPriceImpact
           loading={routesAndOutputLoading}
           priceImpact={routesAndOutput?.priceImpact}
-          isHighImpact={routesAndOutput?.isHighImpact}
+          isHighImpact={slippageImpact ? slippageImpact.isHighImpact : null}
         />
         <DetailInfoTradeRoute
           params={params}
@@ -501,8 +506,12 @@ const QuickSwap = ({
       <RouterSwapAlerts
         formStatus={formStatus}
         formValues={formValues}
+        maxSlippage={storeMaxSlippage}
+        isHighImpact={slippageImpact?.isHighImpact}
+        isExpectedToAmount={slippageImpact?.isExpectedToAmount}
+        toAmountOutput={routesAndOutput?.toAmountOutput}
+        isExchangeRateLow={routesAndOutput?.isExchangeRateLow}
         searchedParams={searchedParams}
-        routesAndOutput={routesAndOutput}
         updateFormValues={updateFormValues}
       />
 

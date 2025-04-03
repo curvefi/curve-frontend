@@ -22,7 +22,6 @@ export const DEFAULT_EXCHANGE_OUTPUT: ExchangeOutput = {
   loading: false,
   exchangeRates: [],
   isExchangeRateLow: false,
-  isHighImpact: false,
   priceImpact: 0,
   toAmount: '',
   modal: null,
