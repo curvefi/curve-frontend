@@ -140,7 +140,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
     log('Hydrating DEX', curveApi?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
+      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
       isUserSwitched,
     })

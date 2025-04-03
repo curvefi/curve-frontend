@@ -5,7 +5,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 
 export const useSignerAddress = (): { data: Address | undefined } => {
   const { wallet } = useWallet.getState()
-  const signerAddress = wallet?.accounts?.[0]?.address
+  const signerAddress = wallet?.account?.address
   return { data: signerAddress }
 }
 

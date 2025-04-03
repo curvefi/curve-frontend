@@ -56,7 +56,6 @@
     "ui": "*",
     "validator": "^13.15.0",
     "vest": "^5.4.6",
-    "viem": "^2.23.15",
     "zustand": "^4.5.6"
   },
   "devDependencies": {
