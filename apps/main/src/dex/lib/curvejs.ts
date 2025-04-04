@@ -44,6 +44,7 @@ import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import { log } from '@ui-kit/lib/logging'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -104,17 +105,8 @@ const helpers = {
       })
     return results
   },
-  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
-  waitForTransactions: async (hashes: string[], provider: Provider) => {
-    const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash),
-    )
-    if (Array.isArray(errors) && errors.length > 0) {
-      throw errors
-    } else {
-      return results
-    }
-  },
+  waitForTransaction,
+  waitForTransactions,
 }
 
 // curve
