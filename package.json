@@ -38,7 +38,7 @@
     "prettier": "^3.5.3",
     "react": "*",
     "react-dom": "*",
-    "turbo": "^2.4.4",
+    "turbo": "^2.5.0",
     "typescript": "*"
   },
   "packageManager": "yarn@4.6.0",
