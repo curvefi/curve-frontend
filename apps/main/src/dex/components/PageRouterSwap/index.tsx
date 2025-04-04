@@ -151,21 +151,21 @@ const QuickSwap = ({
       isExpectedToAmount: boolean,
       toAmountOutput: string,
       searchedParams: SearchedParams,
-      toToken: string,
-      fromToken: string,
+      toSymbol: string,
+      fromSymbol: string,
     ) => {
       const { fromAmount, toAmount } = formValues
 
-      const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${
+      const notifyMessage = t`swap ${fromAmount} ${fromSymbol} for ${
         isExpectedToAmount ? toAmountOutput : toAmount
-      } ${toToken} at max slippage ${maxSlippage}%.`
+      } ${toSymbol} at max slippage ${maxSlippage}%.`
       const { dismiss } = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
-        const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toToken}.`
+        const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
@@ -188,8 +188,8 @@ const QuickSwap = ({
       formStatus: FormStatus,
       formValues: FormValues,
       searchedParams: SearchedParams,
-      toToken: string,
-      fromToken: string,
+      toSymbol: string,
+      fromSymbol: string,
     ) => {
       const { formProcessing, formTypeCompleted, step } = formStatus
       const { fromAmount } = formValues
@@ -207,7 +207,7 @@ const QuickSwap = ({
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const notifyMessage = t`Please approve spending your ${fromToken}.`
+            const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
             await fetchStepApprove(activeKey, curve, formValues, searchedParams, storeMaxSlippage)
             if (typeof dismiss === 'function') dismiss()
@@ -247,8 +247,8 @@ const QuickSwap = ({
                           !!slippageImpact?.isExpectedToAmount,
                           routesAndOutput.toAmountOutput,
                           searchedParams,
-                          toToken,
-                          fromToken,
+                          toSymbol,
+                          fromSymbol,
                         )
                       }
                     },
@@ -268,8 +268,8 @@ const QuickSwap = ({
                       !!slippageImpact?.isExpectedToAmount,
                       routesAndOutput.toAmountOutput,
                       searchedParams,
-                      toToken,
-                      fromToken,
+                      toSymbol,
+                      fromSymbol,
                     )
                   }
                 },
@@ -353,8 +353,8 @@ const QuickSwap = ({
       isReady ? formStatus : { ...formStatus, formProcessing: true },
       formValues,
       searchedParams,
-      toToken?.address ?? '',
-      fromToken?.address ?? '',
+      toToken?.symbol ?? toToken?.address ?? '',
+      fromToken?.symbol ?? fromToken?.address ?? '',
     )
     setSteps(updatedSteps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
