@@ -17,7 +17,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: VeCrvUrlParams) => {
-  console.log(params)
   const [rFormType] = params.formType
   const { push } = useRouter()
   const { routerParams, curve } = usePageOnMount()
@@ -58,7 +57,7 @@ const Page = (params: VeCrvUrlParams) => {
 
   // get initial data
   useEffect(() => {
-    fetchData(curve, isLoadingCurve)
+    void fetchData(curve, isLoadingCurve)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, isLoadingCurve])
 

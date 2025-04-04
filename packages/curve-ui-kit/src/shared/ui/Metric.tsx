@@ -213,7 +213,7 @@ export const Metric = ({
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
   const copyValue = () => {
-    copyToClipboard(value.toString())
+    void copyToClipboard(value.toString())
     setOpenCopyAlert(true)
   }
 

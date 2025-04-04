@@ -49,14 +49,14 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
 
   useEffect(() => {
     if (Object.keys(allHolders).length === 0 && holdersLoading && !holdersError) {
-      getVeCrvHolders()
+      void getVeCrvHolders()
     }
   }, [getVeCrvHolders, allHolders, holdersLoading, holdersError])
 
   // Get user ENS
   useEffect(() => {
     if (!userMapper[userAddress] && provider) {
-      getUserEns(userAddress)
+      void getUserEns(userAddress)
     }
   }, [getUserEns, userAddress, userMapper, provider])
 

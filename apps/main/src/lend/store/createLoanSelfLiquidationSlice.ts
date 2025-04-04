@@ -103,7 +103,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       sliceState.setStateByKey('formStatus', { ...get()[sliceKey].formStatus, loading: false })
 
       // api call
-      sliceState.fetchEstGasApproval(api, market, maxSlippage)
+      void sliceState.fetchEstGasApproval(api, market, maxSlippage)
     },
     fetchEstGasApproval: async (api, market, maxSlippage) => {
       const { gas } = get()
@@ -149,7 +149,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
           isInProgress: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(api, market, maxSlippage)
+        if (!error) void sliceState.fetchEstGasApproval(api, market, maxSlippage)
         return { ...resp, error }
       }
     },
@@ -184,8 +184,8 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
           return { ...resp, error, loanExists }
         } else {
           // api calls
-          if (loanExists) user.fetchAll(api, market, true)
-          markets.fetchAll(api, market, true)
+          if (loanExists) void user.fetchAll(api, market, true)
+          void markets.fetchAll(api, market, true)
 
           // update state
           sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true })

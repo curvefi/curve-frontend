@@ -17,7 +17,7 @@ const DailyLocks = () => {
 
   useEffect(() => {
     if (veCrvLocks.locks.length === 0 && veCrvLocks.fetchStatus !== 'ERROR') {
-      getVeCrvLocks()
+      void getVeCrvLocks()
     }
   }, [getVeCrvLocks, veCrvLocks.locks.length, veCrvLocks.fetchStatus])
 

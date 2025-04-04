@@ -110,7 +110,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
     init: async (chainId: ChainId, llamma: Llamma) => {
       const activeKey = getSwapActiveKey(llamma, DEFAULT_FORM_VALUES)
       get()[sliceKey].setStateByKey('activeKey', activeKey)
-      get()[sliceKey].fetchMaxSwappable(chainId, llamma, DEFAULT_FORM_VALUES)
+      void get()[sliceKey].fetchMaxSwappable(chainId, llamma, DEFAULT_FORM_VALUES)
     },
     fetchEstGasApproval: async (
       activeKey: string,
@@ -158,10 +158,10 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
 
         // fetch est gas
         if (!item1Error) {
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, resp.amount, maxSlippage)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, resp.amount, maxSlippage)
         } else {
           get()[sliceKey].setStateByKey('formValues', { ...get()[sliceKey].formValues, item1Error })
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, resp.amount, maxSlippage)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, resp.amount, maxSlippage)
         }
       }
     },
@@ -219,9 +219,9 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       // fetch approval, estimated gas and detail info
       if (haveItem1 || haveItem2) {
         if (haveItem1) {
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues, item1, maxSlippage)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues, item1, maxSlippage)
         }
-        get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues, maxSlippage)
+        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues, maxSlippage)
       } else if (!haveItem1) {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -258,7 +258,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
           error: resp.error,
         })
 
-        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, formValues.item1, maxSlippage)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues, formValues.item1, maxSlippage)
 
         return resp
       }
@@ -284,7 +284,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       const resp = await swapFn(activeKey, provider, llamma, formValues, maxSlippage)
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
-        get().loans.fetchLoanDetails(curve, llamma)
+        void get().loans.fetchLoanDetails(curve, llamma)
 
         // reset form
         const updatedFormValues = {
@@ -294,7 +294,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
         }
 
         // re-fetch max
-        get()[sliceKey].fetchMaxSwappable(chainId, llamma, updatedFormValues)
+        void get()[sliceKey].fetchMaxSwappable(chainId, llamma, updatedFormValues)
 
         get()[sliceKey].setStateByKeys({
           activeKey: getSwapActiveKey(llamma, updatedFormValues),

@@ -112,7 +112,7 @@ const Swap = ({
       setConfirmedLoss(false)
       setTxInfoBar(null)
 
-      setFormValues(
+      void setFormValues(
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -263,7 +263,7 @@ const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      fetchUserPoolInfo(curve, poolId, true)
+      void fetchUserPoolInfo(curve, poolId, true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance])
@@ -272,10 +272,10 @@ const Swap = ({
   useEffect(() => {
     if (formValues.fromAddress || formValues.toAddress) {
       if (formValues.fromAddress && isUndefined(fromUsdRate)) {
-        fetchUsdRateByTokens(curve, [formValues.fromAddress])
+        void fetchUsdRateByTokens(curve, [formValues.fromAddress])
       }
       if (formValues.toAddress && isUndefined(toUsdRate)) {
-        fetchUsdRateByTokens(curve, [formValues.toAddress])
+        void fetchUsdRateByTokens(curve, [formValues.toAddress])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

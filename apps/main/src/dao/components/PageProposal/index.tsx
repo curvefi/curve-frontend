@@ -73,7 +73,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
         setSnapshotVeCrv(signer, userAddress, proposal.snapshotBlock, rProposalId)
       }
 
-      getVeCrv()
+      void getVeCrv()
     }
   }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 

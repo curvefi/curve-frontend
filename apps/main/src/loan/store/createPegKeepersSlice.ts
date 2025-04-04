@@ -125,7 +125,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
         sliceState.setStateByKey('formStatus', { [pegKeeperAddress]: { ...DEFAULT_FORM_STATUS, isComplete: true } })
 
         // re-fetch data
-        sliceState.fetchEstCallerProfit(provider, pegKeeperAddress)
+        void sliceState.fetchEstCallerProfit(provider, pegKeeperAddress)
 
         return { hash, error: '' }
       } catch (error) {

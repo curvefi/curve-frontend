@@ -125,11 +125,11 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       }
 
       // api calls
-      get()[sliceKey].fetchDetails(activeKey, formType, market)
+      void get()[sliceKey].fetchDetails(activeKey, formType, market)
 
       if (signerAddress) {
         await get()[sliceKey].fetchMax(rChainId, formType, market)
-        get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
       }
     },
 
@@ -155,7 +155,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
           isInProgress: true,
         }
         get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
-        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
+        if (!resp.error) void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
         return resp
       }
     },
@@ -175,8 +175,8 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api
-        get().user.fetchUserMarketBalances(api, market, true)
-        get().markets.fetchAll(api, market, true)
+        void get().user.fetchUserMarketBalances(api, market, true)
+        void get().markets.fetchAll(api, market, true)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

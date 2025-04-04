@@ -82,7 +82,7 @@ const Page = (params: CollateralUrlParams) => {
       if (!rChainId || !rCollateralId || !rFormType) {
         push(getCollateralListPathname(params))
       } else if (curve.signerAddress && llamma) {
-        ;(async () => {
+        void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
           if (!fetchedLoanDetails.loanExists.loanExists) {
             resetUserDetailsState(llamma)
@@ -116,8 +116,8 @@ const Page = (params: CollateralUrlParams) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve && !!curve.signerAddress && llamma && loanExists) {
-        fetchLoanDetails(curve, llamma)
-        fetchUserLoanDetails(curve, llamma)
+        void fetchLoanDetails(curve, llamma)
+        void fetchUserLoanDetails(curve, llamma)
       }
     },
     REFRESH_INTERVAL['1m'],

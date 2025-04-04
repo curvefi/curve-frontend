@@ -48,7 +48,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
-      setFormValues(rChainId, pageLoaded ? llamalend : null, shouldRefetch)
+      void setFormValues(rChainId, pageLoaded ? llamalend : null, shouldRefetch)
     },
     [setFormValues, rChainId, pageLoaded, llamalend],
   )
@@ -67,7 +67,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
           const loanExists = loanExistsMapper[collateralId]?.loanExists
           if (loanExists) {
             loansExists = true
-            fetchUserLoanPartialDetails(llamalend, collateralData.llamma)
+            void fetchUserLoanPartialDetails(llamalend, collateralData.llamma)
           }
         }
       })
@@ -92,7 +92,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
     () => {
       //  re-fetch data
       if (llamalend && collateralDatas) {
-        fetchLoansDetails(llamalend, collateralDatas)
+        void fetchLoansDetails(llamalend, collateralDatas)
       }
     },
     REFRESH_INTERVAL['5m'],

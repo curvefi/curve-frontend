@@ -18,12 +18,12 @@ const startNode = (network) =>
 
     const isPortInUse = await checkPort(port)
     if (isPortInUse) {
-      console.log(`Network '${network.alias}' node is already running at http://${HOST_NAME}:${port}`)
+      console.info(`Network '${network.alias}' node is already running at http://${HOST_NAME}:${port}`)
       resolve(null)
       return
     }
 
-    console.log(`Starting network '${network.alias}' node at http://${HOST_NAME}:${port}`)
+    console.info(`Starting network '${network.alias}' node at http://${HOST_NAME}:${port}`)
     const command = `npx hardhat node --config ./hardhat.config.js --port ${port} --hostname ${HOST_NAME}`
     const nodeProcess = spawn('sh', ['-c', command], { env })
     nodeProcess.on('close', (code) => {
@@ -44,7 +44,7 @@ const startNode = (network) =>
           nodeProcess.kill()
           reject(`Network '${network.alias}' node not responding at http://${HOST_NAME}:${port}. Error: ${err}`)
         } else {
-          console.log(`Network '${network.alias}' node started at http://${HOST_NAME}:${port}`)
+          console.info(`Network '${network.alias}' node started at http://${HOST_NAME}:${port}`)
           resolve(nodeProcess)
         }
       },
@@ -71,7 +71,7 @@ const main = async () => {
 
   try {
     await Promise.all(validNetworkIds.map((networkId) => startNode(networks[networkId])))
-    console.log('Selected network nodes started successfully.')
+    console.info('Selected network nodes started successfully.')
   } catch (error) {
     console.error(error)
     process.exit(1)

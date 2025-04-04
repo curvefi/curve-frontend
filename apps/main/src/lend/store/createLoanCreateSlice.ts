@@ -248,11 +248,11 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       }
 
       // api calls
-      if (isLeverage) sliceState.fetchMaxLeverage(market)
+      if (isLeverage) void sliceState.fetchMaxLeverage(market)
       await sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, market, isLeverage)
       await sliceState.fetchDetailInfo(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
-      sliceState.fetchEstGasApproval(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
-      sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, market, isLeverage)
+      void sliceState.fetchEstGasApproval(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
+      void sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, market, isLeverage)
     },
 
     // steps
@@ -286,7 +286,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
+        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
         return { ...resp, error }
       }
     },
@@ -330,7 +330,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
           if (loanExits) {
             // api calls
             await user.fetchAll(api, market, true)
-            markets.fetchAll(api, market, true)
+            void markets.fetchAll(api, market, true)
             markets.setStateByKey('marketDetailsView', 'user')
 
             // update formStatus

@@ -28,7 +28,7 @@ export function HashRouterRedirect({ app, redirects }: { app?: AppName; redirect
   const { replace } = useRouter()
   useEffect(() => {
     const newUrl = getRedirectUrl(window.location, app, redirects)
-    console.log(`Redirecting from ${window.location.href} to ${newUrl}`)
+    console.info(`Redirecting from ${window.location.href} to ${newUrl}`)
     replace(newUrl)
   }, [app, replace, redirects])
   return <Skeleton />

@@ -55,7 +55,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
-      setFormValues(isLoaded ? api : null, market, isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues)
+      void setFormValues(isLoaded ? api : null, market, isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues)
     },
     [api, isLoaded, market, setFormValues],
   )

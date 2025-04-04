@@ -7,7 +7,7 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { formatNumber, convertToLocaleTimestamp } from '@ui/utils'
+import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -81,7 +81,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
                 })
               : 'N/A'}
           </h5>
-          <h5>{new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}</h5>
+          <h5>{formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}</h5>
         </StatsRow>
       </Box>
     </Wrapper>

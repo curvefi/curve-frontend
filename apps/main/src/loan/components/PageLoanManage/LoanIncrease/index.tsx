@@ -72,7 +72,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        setFormValues(chainId, llamma, updatedFormValues)
+        void setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],
@@ -224,7 +224,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   // init
   useEffect(() => {
     if (isReady && chainId && llamma) {
-      init(chainId, llamma)
+      void init(chainId, llamma)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, chainId, llamma])

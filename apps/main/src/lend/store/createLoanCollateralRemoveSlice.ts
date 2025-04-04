@@ -131,8 +131,8 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
       // api calls
       await sliceState.fetchMaxRemovable(api, market)
-      sliceState.fetchDetailInfo(activeKey, api, market)
-      sliceState.fetchEstGas(activeKey, api, market)
+      void sliceState.fetchDetailInfo(activeKey, api, market)
+      void sliceState.fetchEstGas(activeKey, api, market)
     },
 
     // steps
@@ -166,15 +166,15 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) user.fetchAll(api, market, true)
-          markets.fetchAll(api, market, true)
+          if (loanExists) void user.fetchAll(api, market, true)
+          void void markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({
             ...DEFAULT_STATE,
             formStatus: { ...DEFAULT_FORM_STATUS, isComplete: true },
           })
-          sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES)
+          void sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES)
           return { ...resp, error }
         }
       }

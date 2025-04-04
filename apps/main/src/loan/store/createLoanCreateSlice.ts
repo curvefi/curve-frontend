@@ -305,7 +305,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           storedFormValues.debt !== formValues.debt ||
           !get()[sliceKey].liqRangesMapper[activeKeyLiqRange]
         ) {
-          get()[sliceKey].fetchLiqRanges(activeKeyLiqRange, chainId, isLeverage, llamma, clonedFormValues)
+          void get()[sliceKey].fetchLiqRanges(activeKeyLiqRange, chainId, isLeverage, llamma, clonedFormValues)
         }
 
         // fetch approval and estimate gas, detail
@@ -319,7 +319,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           }
 
           // fetch detail info
-          get()[sliceKey].fetchDetailInfo(
+          void get()[sliceKey].fetchDetailInfo(
             activeKey,
             chainId,
             isLeverage,
@@ -330,7 +330,14 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           )
 
           if (signerAddress && !collateralError) {
-            get()[sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, clonedFormValues, maxSlippage)
+            void get()[sliceKey].fetchEstGasApproval(
+              activeKey,
+              chainId,
+              isLeverage,
+              llamma,
+              clonedFormValues,
+              maxSlippage,
+            )
           }
         } else {
           if (isLeverage) {
@@ -386,7 +393,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           error: resp.error,
         })
 
-        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, formValues, maxSlippage)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, formValues, maxSlippage)
 
         return resp
       }

@@ -233,7 +233,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       // api calls
       await sliceState.fetchMaxRecv(activeKey.activeKeyMax, api, market, isLeverage)
       await sliceState.fetchDetailInfo(activeKey.activeKey, api, market, maxSlippage, isLeverage)
-      sliceState.fetchEstGasApproval(activeKey.activeKey, api, market, maxSlippage, isLeverage)
+      void sliceState.fetchEstGasApproval(activeKey.activeKey, api, market, maxSlippage, isLeverage)
     },
 
     // steps
@@ -266,7 +266,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
+        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
         return { ...resp, error }
       }
     },
@@ -312,15 +312,15 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) user.fetchAll(api, market, true)
-          markets.fetchAll(api, market, true)
+          if (loanExists) void user.fetchAll(api, market, true)
+          void markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({
             ...DEFAULT_STATE,
             formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
           })
-          sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES, maxSlippage, isLeverage)
+          void sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES, maxSlippage, isLeverage)
           return { ...resp, error }
         }
       }

@@ -65,7 +65,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        setFormValues(chainId, llamma, updatedFormValues)
+        void setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],

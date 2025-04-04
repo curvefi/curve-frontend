@@ -161,7 +161,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
       })
 
       if (activeKey === `${rChainId}-${TITLE.totalBorrowed}-desc`) {
-        storeCache.setStateByActiveKey('collateralList', activeKey, newResult)
+        void storeCache.setStateByActiveKey('collateralList', activeKey, newResult)
       }
 
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)

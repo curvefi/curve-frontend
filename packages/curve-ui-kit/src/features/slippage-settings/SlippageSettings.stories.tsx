@@ -14,7 +14,7 @@ const SlippageSettingsComponent = ({
   // Mock the setMaxSlippage function
   const handleSave = (newSlippage: string) => {
     setMaxSlippage(newSlippage)
-    console.log('Max slippage updated:', newSlippage)
+    console.info('Max slippage updated:', newSlippage)
   }
 
   return <SlippageSettings {...props} maxSlippage={maxSlippage} onSave={handleSave} />

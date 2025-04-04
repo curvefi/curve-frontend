@@ -54,7 +54,7 @@ const MarketParameters = ({
     ]
 
   useEffect(() => {
-    if (type === 'supply' && owm) fetchVaultPricePerShare(rChainId, owm)
+    if (type === 'supply' && owm) void fetchVaultPricePerShare(rChainId, owm)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, owm])
 

@@ -69,8 +69,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && llamalend) {
-        fetchAllStoredUsdRates(llamalend)
-        fetchGasInfo(llamalend)
+        void fetchAllStoredUsdRates(llamalend)
+        void fetchGasInfo(llamalend)
       }
     },
     REFRESH_INTERVAL['5m'],

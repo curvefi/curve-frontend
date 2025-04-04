@@ -123,8 +123,8 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
       // api calls
       await get()[sliceKey].fetchMax(api, formType, market)
-      get()[sliceKey].fetchDetails(activeKey, formType, api, market)
-      get()[sliceKey].fetchEstGas(activeKey, formType, api, market)
+      void get()[sliceKey].fetchDetails(activeKey, formType, api, market)
+      void get()[sliceKey].fetchEstGas(activeKey, formType, api, market)
     },
 
     // steps
@@ -150,8 +150,8 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // api calls
-        get().user.fetchUserMarketBalances(api, market, true)
-        get()[sliceKey].fetchMax(api, formType, market)
+        void get().user.fetchUserMarketBalances(api, market, true)
+        void get()[sliceKey].fetchMax(api, formType, market)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = { error: resp.error, isComplete: !resp.error }

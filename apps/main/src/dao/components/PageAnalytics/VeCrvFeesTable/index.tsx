@@ -18,7 +18,7 @@ const VeCrcFees = () => {
 
   useEffect(() => {
     if (veCrvFees.fees.length === 0 && !feesError) {
-      getVeCrvFees()
+      void getVeCrvFees()
     }
   }, [getVeCrvFees, veCrvFees, feesError])
 

@@ -94,7 +94,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       // api calls
       if (signerAddress) {
-        get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
       }
     },
 
@@ -119,7 +119,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
           isInProgress: true,
         }
         get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
-        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
+        if (!resp.error) void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
         return resp
       }
     },
@@ -138,8 +138,8 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api
-        get().user.fetchUserMarketBalances(api, market, true)
-        get().markets.fetchAll(api, market, true)
+        void get().user.fetchUserMarketBalances(api, market, true)
+        void get().markets.fetchAll(api, market, true)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

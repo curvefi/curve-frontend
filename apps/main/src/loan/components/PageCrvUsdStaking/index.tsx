@@ -60,19 +60,19 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     const fetchData = async () => {
       if (!llamalend || !signerAddress) return
       // ensure user balances are up to date on load
-      refetchUserScrvUsdBalance()
+      void refetchUserScrvUsdBalance()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
     }
 
-    fetchData()
+    void fetchData()
   }, [llamalend, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
 
   useEffect(() => {
     if (!llamalend || !chainId || !signerAddress || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
-      checkApproval.depositApprove(inputAmount)
+      void checkApproval.depositApprove(inputAmount)
     }
   }, [checkApproval, llamalend, chainId, signerAddress, inputAmount, stakingModule])
 

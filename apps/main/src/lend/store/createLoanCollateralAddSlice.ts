@@ -118,8 +118,8 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       }
 
       // api calls
-      sliceState.fetchDetailInfo(activeKey, api, market)
-      sliceState.fetchEstGasApproval(activeKey, api, market)
+      void sliceState.fetchDetailInfo(activeKey, api, market)
+      void sliceState.fetchEstGasApproval(activeKey, api, market)
     },
 
     // step
@@ -145,7 +145,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
           isApproved: !error,
           isInProgress: !error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market)
+        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market)
         return { ...resp, error }
       }
     },
@@ -179,8 +179,8 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) user.fetchAll(api, market, true)
-          markets.fetchAll(api, market, true)
+          if (loanExists) void user.fetchAll(api, market, true)
+          void markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({

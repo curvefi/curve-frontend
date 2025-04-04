@@ -92,7 +92,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
 
       // api calls
       if (signerAddress) {
-        get()[sliceKey].fetchEstGas(activeKey, formType, api, market)
+        void get()[sliceKey].fetchEstGas(activeKey, formType, api, market)
       }
     },
 
@@ -112,8 +112,8 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api
-        get().user.fetchUserMarketBalances(api, market, true)
-        get().markets.fetchAll(api, market, true)
+        void get().user.fetchUserMarketBalances(api, market, true)
+        void get().markets.fetchAll(api, market, true)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

@@ -60,13 +60,13 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
       if (llamalend && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
-            estimateGasDeposit(inputAmount)
+            void estimateGasDeposit(inputAmount)
           } else {
-            estimateGasDepositApprove(inputAmount)
+            void estimateGasDepositApprove(inputAmount)
           }
           previewAction('deposit', inputAmount)
         } else {
-          estimateGasWithdraw(inputAmount)
+          void estimateGasWithdraw(inputAmount)
           previewAction('withdraw', inputAmount)
         }
       }

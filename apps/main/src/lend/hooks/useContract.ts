@@ -41,7 +41,7 @@ const useAbiGaugeTotalSupply = (
         : walletProvider || new JsonRpcProvider(networks[rChainId].rpcUrl)
 
       if (jsonModuleName && contractAddress && provider) {
-        ;(async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()
+        void (async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()
       }
     }
   }, [contractAddress, getContract, walletProvider, jsonModuleName, rChainId, signerRequired])

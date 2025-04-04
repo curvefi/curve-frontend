@@ -263,7 +263,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
 
   const refetchPricesData = useCallback(() => {
     if (market?.addresses.controller) {
-      fetchOraclePoolOhlcData(
+      void fetchOraclePoolOhlcData(
         rChainId,
         market.addresses.controller,
         chartInterval,
@@ -273,7 +273,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       )
     }
     if (market?.addresses.amm) {
-      fetchLlammaOhlcData(
+      void fetchLlammaOhlcData(
         rChainId,
         rOwmId,
         market.addresses.amm,
@@ -299,7 +299,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   // initial fetch
   useEffect(() => {
     if (market !== undefined) {
-      fetchLlammaOhlcData(
+      void fetchLlammaOhlcData(
         rChainId,
         rOwmId,
         market.addresses.amm,
@@ -308,7 +308,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
         chartTimeSettings.start,
         chartTimeSettings.end,
       )
-      fetchOraclePoolOhlcData(
+      void fetchOraclePoolOhlcData(
         rChainId,
         market.addresses.controller,
         chartInterval,
@@ -336,7 +336,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
       if (market?.addresses.controller && market?.addresses.amm) {
-        fetchMoreData(
+        void fetchMoreData(
           rChainId,
           market?.addresses.controller,
           market?.addresses.amm,

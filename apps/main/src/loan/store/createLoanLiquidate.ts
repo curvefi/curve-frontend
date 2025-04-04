@@ -96,7 +96,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
       if (canSelfLiquidate) {
-        get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, clonedFormStatus)
+        void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, clonedFormStatus)
       }
     },
 
@@ -121,7 +121,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         error: resp.error,
       }
       get()[sliceKey].setStateByKey('formStatus', updatedFormStatus)
-      get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
+      void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
       return resp
     },
     fetchStepLiquidate: async (curve: LlamalendApi, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
