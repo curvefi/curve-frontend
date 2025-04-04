@@ -56,7 +56,7 @@ const helpers = {
   },
   getLlammas: (curve: LlamalendApi) => {
     log('getCollaterals', curve.chainId)
-    const collaterals = curve.getLlammaList()
+    const collaterals = curve.mintMarkets.getMarketList()
 
     // set mappers
     const llammasMapper: { [llammaId: string]: Llamma } = {}
