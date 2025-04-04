@@ -11,18 +11,18 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
 
 type ProposalInformationProps = {
-  proposal: ProposalData
+  proposal: ProposalData | null
   snapshotBlock: number
 }
 
 const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationProps) => {
   const createdDate = useMemo(
-    () => new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString(),
-    [proposal?.startDate],
+    () => (proposal ? new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString() : '-'),
+    [proposal],
   )
   const endDate = useMemo(
-    () => new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString(),
-    [proposal?.startDate],
+    () => (proposal ? new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString() : '-'),
+    [proposal],
   )
 
   return (

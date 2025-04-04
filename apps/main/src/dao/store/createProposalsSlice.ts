@@ -23,7 +23,6 @@ import { useApiStore } from '@ui-kit/shared/useApiStore'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  proposalsLoadingState: FetchingState
   proposalLoadingState: FetchingState
   voteTxMapper: {
     [voteId: string]: {
@@ -74,7 +73,6 @@ export type ProposalsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  proposalsLoadingState: 'LOADING',
   proposalLoadingState: 'LOADING',
   voteTxMapper: {},
   executeTxMapper: {},

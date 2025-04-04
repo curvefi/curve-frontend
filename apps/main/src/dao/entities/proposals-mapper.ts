@@ -96,8 +96,8 @@ const _fetchProposals = async (): Promise<ProposalsMapper> => {
   }
 }
 
-export const { useQuery: useProposalsMapper, invalidate: invalidateProposals } = queryFactory({
-  queryKey: () => ['proposals'] as const,
+export const { useQuery: useProposalsMapperQuery, invalidate: invalidateProposals } = queryFactory({
+  queryKey: () => ['proposals-mapper'] as const,
   queryFn: _fetchProposals,
   validationSuite: EmptyValidationSuite,
 })

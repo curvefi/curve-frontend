@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import useStore from '@/dao/store/useStore'
 import { ProposalData, ProposalListFilter, SortByFilterProposals, SortDirection } from '@/dao/types/dao.types'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
-import { useProposalsMapper } from '../entities/proposals-mapper'
+import { useProposalsMapperQuery } from '../entities/proposals-mapper'
 
 const { WEEK } = TIME_FRAMES
 
@@ -67,7 +67,7 @@ export const useProposalsList = () => {
   const activeFilter = useStore((state) => state.proposals.activeFilter)
   const searchValue = useStore((state) => state.proposals.searchValue)
 
-  const { data: proposalsMapper, ...rest } = useProposalsMapper({})
+  const { data: proposalsMapper, ...rest } = useProposalsMapperQuery({})
 
   const processedData = useMemo(() => {
     if (!proposalsMapper) return { data: [] }

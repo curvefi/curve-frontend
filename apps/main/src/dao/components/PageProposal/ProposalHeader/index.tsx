@@ -6,7 +6,7 @@ import { ProposalData } from '@/dao/types/dao.types'
 import { t } from '@ui-kit/lib/i18n'
 
 type ProposalHeaderProps = {
-  proposal: ProposalData
+  proposal: ProposalData | null
   voteId: string
   voteType: string
 }
@@ -33,7 +33,7 @@ const ProposalHeader = ({ proposal, voteId, voteType }: ProposalHeaderProps) => 
     <TimeRemainingBox
       loading={!proposal}
       title={t`Time Remaining`}
-      data={<StyledVoteCountdown startDate={proposal?.startDate} />}
+      data={<StyledVoteCountdown startDate={proposal?.startDate ?? null} />}
     />
   </Wrapper>
 )
