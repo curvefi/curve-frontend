@@ -23,7 +23,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   const setUserGaugeVotesSortBy = useStore((state) => state.user.setUserGaugeVotesSortBy)
   const { push } = useRouter()
 
-  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr'
+  const gridTemplateColumns = '7rem 1fr 1fr 1fr'
 
   const userGaugeVotesLoading = userGaugeVotesMapper[userAddress]
     ? userGaugeVotesMapper[userAddress]?.fetchingState === 'LOADING'
