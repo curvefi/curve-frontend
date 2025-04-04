@@ -15,6 +15,7 @@ import type { DateValue } from '@internationalized/date'
 import PromisePool from '@supercharge/promise-pool/dist'
 import { log } from '@ui-kit/lib'
 import dayjs from '@ui-kit/lib/dayjs'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
@@ -50,17 +51,8 @@ export const helpers = {
       return resp
     }
   },
-  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
-  waitForTransactions: async (hashes: string[], provider: Provider) => {
-    const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash),
-    )
-    if (Array.isArray(errors) && errors.length > 0) {
-      throw errors
-    } else {
-      return results
-    }
-  },
+  waitForTransaction,
+  waitForTransactions,
   fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
     log('fetchUsdRates', tokenAddresses.length)
     const results: UsdRatesMapper = {}
