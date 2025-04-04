@@ -11,9 +11,9 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { LlamalendApi, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { scrollToTop } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -42,7 +42,7 @@ const Page = (params: MarketUrlParams) => {
   const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
-  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
+  const isLoadingApi = useApiStore((state) => state.isLoadingLlamalend)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
@@ -60,7 +60,7 @@ const Page = (params: MarketUrlParams) => {
   const userActiveKey = helpers.getUserActiveKey(api, market!)
 
   const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
+    async (api: LlamalendApi, market: LendMarketTemplate) => {
       const { signerAddress } = api
 
       if (signerAddress) {

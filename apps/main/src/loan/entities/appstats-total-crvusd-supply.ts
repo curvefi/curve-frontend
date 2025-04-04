@@ -6,7 +6,7 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function _fetchAppStatsTotalCrvusdSupply({ chainId }: ChainQuery<ChainId>) {
-  const curve = useApiStore.getState().stable!
+  const curve = useApiStore.getState().llamalend!
   return networks[chainId].api.helpers.getTotalSupply(curve)
 }
 

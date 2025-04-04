@@ -20,7 +20,7 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import {
   ChainId,
-  Api,
+  LlamalendApi,
   MarketsStatsTotalsMapper,
   MarketsStatsCapAndAvailableMapper,
   MarketsRatesMapper,
@@ -30,8 +30,8 @@ import {
 } from '@/lend/types/lend.types'
 import { sleep } from '@/lend/utils/helpers'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
-import { IDict } from '@curvefi/lending-api/lib/interfaces'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { IDict } from '@curvefi/llamalend-api/lib/interfaces'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { logQuery, logSuccess } from '@ui-kit/lib'
 import { searchByText } from '@ui-kit/utils'
 
@@ -57,15 +57,15 @@ const sliceKey = 'marketList'
 // prettier-ignore
 export type MarketListSlice = {
   [sliceKey]: SliceState & {
-    filterSmallMarkets(api: Api, markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
-    filterBySearchText(searchText: string, markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
-    filterUserList(api: Api, markets: OneWayMarketTemplate[], filterTypeKey: FilterTypeKey): OneWayMarketTemplate[]
-    filterLeverageMarkets(markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
-    sortByUserData(api: Api, sortKey: TitleKey, market: OneWayMarketTemplate): number
-    sortFn(api: Api, sortKey: TitleKey, order: Order, markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
-    sortByCollateral(api: Api, markets: OneWayMarketTemplate[], marketMapping: IDict<OneWayMarketTemplate>): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
-    sortByAll(api: Api, markets: OneWayMarketTemplate[], sortBy: TitleKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
-    setFormValues(rChainId: ChainId, api: Api | null, marketMapping?: IDict<OneWayMarketTemplate>, shouldRefetch?: boolean): Promise<void>
+    filterSmallMarkets(api: LlamalendApi, markets: LendMarketTemplate[]): LendMarketTemplate[]
+    filterBySearchText(searchText: string, markets: LendMarketTemplate[]): LendMarketTemplate[]
+    filterUserList(api: LlamalendApi, markets: LendMarketTemplate[], filterTypeKey: FilterTypeKey): LendMarketTemplate[]
+    filterLeverageMarkets(markets: LendMarketTemplate[]): LendMarketTemplate[]
+    sortByUserData(api: LlamalendApi, sortKey: TitleKey, market: LendMarketTemplate): number
+    sortFn(api: LlamalendApi, sortKey: TitleKey, order: Order, markets: LendMarketTemplate[]): LendMarketTemplate[]
+    sortByCollateral(api: LlamalendApi, markets: LendMarketTemplate[], marketMapping: IDict<LendMarketTemplate>): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
+    sortByAll(api: LlamalendApi, markets: LendMarketTemplate[], sortBy: TitleKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
+    setFormValues(rChainId: ChainId, api: LlamalendApi | null, marketMapping?: IDict<LendMarketTemplate>, shouldRefetch?: boolean): Promise<void>
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -457,7 +457,7 @@ export function _getActiveKey(chainId: ChainId, searchParams: SearchParams) {
 }
 
 function sortByRewards(
-  market: OneWayMarketTemplate,
+  market: LendMarketTemplate,
   rewardsMapper: MarketsRewardsMapper,
   ratesMapper: MarketsRatesMapper,
 ) {
@@ -473,7 +473,7 @@ function sortByRewards(
 }
 
 function sortByUtilization(
-  market: OneWayMarketTemplate,
+  market: LendMarketTemplate,
   statsCapAndAvailableMapper: MarketsStatsCapAndAvailableMapper,
   statsTotalsMapper: MarketsStatsTotalsMapper,
 ) {
