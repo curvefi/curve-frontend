@@ -24,7 +24,6 @@ export const App = ({ children }: { children: ReactNode }) => {
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateUserData = useStore((state) => state.user.updateUserData)
-  const getProposals = useStore((state) => state.proposals.getProposals)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
@@ -81,10 +80,9 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   // initiate proposals list
   useEffect(() => {
-    getProposals()
     void getGauges()
     void getGaugesData()
-  }, [getGauges, getProposals, getGaugesData])
+  }, [getGauges, getGaugesData])
 
   useEffect(() => {
     if (curve) {
@@ -97,7 +95,6 @@ export const App = ({ children }: { children: ReactNode }) => {
       if (curve) {
         void fetchAllStoredUsdRates(curve)
       }
-      getProposals()
       void getGauges()
       void getGaugesData()
     },

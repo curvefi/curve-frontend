@@ -1,6 +1,4 @@
-import Fuse from 'fuse.js'
 import produce from 'immer'
-import orderBy from 'lodash/orderBy'
 import type { GetState, SetState } from 'zustand'
 import { TOP_HOLDERS } from '@/dao/constants'
 import { helpers } from '@/dao/lib/curvejs'
@@ -9,8 +7,6 @@ import type { State } from '@/dao/store/useStore'
 import {
   FetchingState,
   PricesProposalResponse,
-  PricesProposalResponseData,
-  PricesProposalsResponse,
   ProposalData,
   ProposalListFilter,
   ProposalMapper,
@@ -22,16 +18,12 @@ import {
 } from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
-
-const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   proposalsLoadingState: FetchingState
-  filteringProposalsLoading: boolean
   proposalLoadingState: FetchingState
   voteTxMapper: {
     [voteId: string]: {
@@ -49,7 +41,6 @@ type SliceState = {
       status: TransactionState
     }
   }
-  proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
   proposalMapper: ProposalMapper
   userProposalVoteMapper: {
@@ -68,15 +59,12 @@ const sliceKey = 'proposals'
 
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
-    getProposals(): void
     getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): void
     getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
     setActiveSortDirection(direction: SortDirection): void
-    selectFilteredSortedProposals(): ProposalData[]
-    setProposals(searchValue: string): void
     castVote(voteId: number, voteType: ProposalType, support: boolean): void
     executeProposal(voteId: number, voteType: ProposalType): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -87,7 +75,6 @@ export type ProposalsSlice = {
 
 const DEFAULT_STATE: SliceState = {
   proposalsLoadingState: 'LOADING',
-  filteringProposalsLoading: true,
   proposalLoadingState: 'LOADING',
   voteTxMapper: {},
   executeTxMapper: {},
@@ -96,7 +83,6 @@ const DEFAULT_STATE: SliceState = {
   activeSortBy: 'endingSoon',
   activeSortDirection: 'desc',
   proposalMapper: {},
-  proposalsMapper: {},
   userProposalVoteMapper: {},
   proposals: [],
 }
@@ -104,75 +90,6 @@ const DEFAULT_STATE: SliceState = {
 const createProposalsSlice = (set: SetState<State>, get: GetState<State>): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    getProposals: async () => {
-      const { proposalsMapper } = get()[sliceKey]
-
-      if (Object.keys(proposalsMapper).length === 0) {
-        get()[sliceKey].setStateByKey('proposalsLoadingState', 'LOADING')
-      }
-
-      try {
-        let page = 1
-        const pagination = 500
-        let results: PricesProposalResponseData[] = []
-
-        while (true) {
-          const proposalsRes = await fetch(
-            `https://prices.curve.fi/v1/dao/proposals?pagination=${pagination}&page=${page}&status_filter=all&type_filter=all`,
-          )
-          const data: PricesProposalsResponse = await proposalsRes.json()
-          results = results.concat(data.proposals)
-          if (data.proposals.length < pagination) {
-            break
-          }
-          page++
-        }
-
-        const proposalsObject: { [voteId: string]: ProposalData } = {}
-
-        for (const proposal of results) {
-          const minAcceptQuorumPercent = (+proposal.min_accept_quorum / 1e18) * 100
-          const minSupport = (+proposal.support_required / 1e18) * 100
-          const totalVeCrv = +proposal.total_supply / 1e18
-          const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
-          const votesFor = +proposal.votes_for / 1e18
-          const votesAgainst = +proposal.votes_against / 1e18
-          const currentQuorumPercentage = (votesFor / totalVeCrv) * 100
-
-          const status = getProposalStatus(proposal.start_date, quorumVeCrv, votesFor, votesAgainst, minSupport)
-
-          proposalsObject[`${proposal.vote_id}-${proposal.vote_type.toUpperCase()}`] = {
-            voteId: proposal.vote_id,
-            voteType: proposal.vote_type.toUpperCase() as ProposalType,
-            creator: proposal.creator,
-            startDate: proposal.start_date,
-            metadata: proposal.metadata,
-            executed: proposal.executed,
-            status,
-            votesFor,
-            votesAgainst,
-            minSupport,
-            minAcceptQuorumPercent,
-            quorumVeCrv,
-            totalVeCrv,
-            totalVotes: votesFor + votesAgainst,
-            currentQuorumPercentage,
-            totalSupply: proposal.total_supply,
-            snapshotBlock: proposal.snapshot_block,
-            ipfsMetadata: proposal.ipfs_metadata,
-            voteCount: proposal.vote_count,
-            supportRequired: proposal.support_required,
-            minAcceptQuorum: proposal.min_accept_quorum,
-          }
-        }
-
-        get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
-        get()[sliceKey].setStateByKey('proposalsLoadingState', 'SUCCESS')
-      } catch (error) {
-        console.warn(error)
-        get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
-      }
-    },
     getProposal: async (voteId: number, voteType: ProposalType, silentFetch = false, txHash?: string) => {
       if (!silentFetch) {
         get()[sliceKey].setStateByKey('proposalLoadingState', 'LOADING')
@@ -283,35 +200,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           },
         })
       }
-    },
-    selectFilteredSortedProposals: () => {
-      const { proposalsMapper, activeSortBy, activeSortDirection, activeFilter } = get()[sliceKey]
-
-      const proposals = Object.values(proposalsMapper) as ProposalData[]
-
-      const filteredProposals = filterProposals(proposals, activeFilter)
-      return sortProposals(filteredProposals, activeSortBy, activeSortDirection)
-    },
-    setProposals: (searchValue: string) => {
-      const { selectFilteredSortedProposals, activeSortBy, activeSortDirection } = get()[sliceKey]
-
-      const proposals = selectFilteredSortedProposals()
-
-      if (searchValue !== '') {
-        const searchFilteredProposals = searchFn(searchValue, proposals)
-        const sortedProposals = sortProposals(searchFilteredProposals, activeSortBy, activeSortDirection)
-
-        get()[sliceKey].setStateByKeys({
-          filteringProposalsLoading: false,
-          proposals: sortedProposals,
-        })
-        return sortedProposals
-      }
-
-      get()[sliceKey].setStateByKeys({
-        filteringProposalsLoading: false,
-        proposals: proposals,
-      })
     },
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
@@ -527,87 +415,5 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
   },
 })
-
-const getProposalStatus = (
-  startDate: number,
-  quorumVeCrv: number,
-  votesFor: number,
-  votesAgainst: number,
-  minSupport: number,
-) => {
-  const totalVotes = votesFor + votesAgainst
-  const passedQuorum = votesFor >= quorumVeCrv
-  const passedMinimum = (votesFor / totalVotes) * 100 > minSupport
-
-  if (startDate + WEEK > Math.floor(Date.now() / 1000)) return 'Active'
-  if (passedQuorum && passedMinimum) return 'Passed'
-  return 'Denied'
-}
-
-const searchFn = (filterValue: string, proposals: ProposalData[]) => {
-  const fuse = new Fuse<ProposalData>(proposals, {
-    ignoreLocation: true,
-    threshold: 0.3,
-    includeScore: true,
-    keys: [
-      'voteId',
-      'creator',
-      'voteType',
-      {
-        name: 'metaData',
-        getFn: (proposal) => {
-          // Preprocess the metaData field
-          const metaData = proposal.metadata || ''
-          return metaData.toLowerCase()
-        },
-      },
-    ],
-  })
-
-  const result = fuse.search(filterValue)
-
-  return result.map((r) => r.item)
-}
-
-const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFilter) => {
-  if (activeFilter === 'all') {
-    return proposals
-  }
-  if (activeFilter === 'executable') {
-    return proposals.filter((proposal) => proposal.status === 'Passed' && !proposal.executed)
-  }
-  return proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
-}
-
-const sortProposals = (
-  proposals: ProposalData[],
-  activeSortBy: SortByFilterProposals,
-  activeSortDirection: SortDirection,
-) => {
-  if (activeSortBy === 'endingSoon') {
-    const currentTimestamp = Math.floor(Date.now() / 1000)
-    const activeProposals = proposals.filter((proposal) => proposal.startDate + WEEK > currentTimestamp)
-    const passedProposals = orderBy(
-      proposals.filter((proposal) => proposal.startDate + WEEK < currentTimestamp),
-      ['startDate'],
-      ['desc'],
-    )
-
-    if (activeSortDirection === 'asc') {
-      return [
-        ...orderBy(activeProposals, [(proposal) => proposal.startDate + WEEK - currentTimestamp], ['desc']),
-        ...passedProposals,
-      ]
-    } else {
-      return [
-        ...orderBy(activeProposals, [(proposal) => proposal.startDate + WEEK - currentTimestamp], ['asc']),
-        ...passedProposals,
-      ]
-    }
-  } else {
-    // sort by created time
-    return orderBy(proposals, [(proposal) => proposal.startDate], [activeSortDirection])
-  }
-}
 
 export default createProposalsSlice

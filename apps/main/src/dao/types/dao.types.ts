@@ -403,6 +403,10 @@ export interface UserProposalVotesRes {
   data: UserProposalVoteResData[]
 }
 
+export type ProposalsMapper = {
+  [voteId: string]: ProposalData
+}
+
 export type UserGaugeVote = {
   gauge: string
   gauge_name: string
