@@ -25,7 +25,7 @@ import {
   PoolData,
 } from '@/dex/types/main.types'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -153,7 +153,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
             [activeKey]: {
               ...resp,
               loading: false,
-              modal: getRouterWarningModal(resp, cFormValues) as RoutesAndOutputModal | null,
+              modal: getRouterWarningModal(resp, maxSlippage, cFormValues) as RoutesAndOutputModal | null,
             },
           },
         })
@@ -474,14 +474,16 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
 function getRouterWarningModal(
   {
-    isHighImpact,
     isExchangeRateLow,
     priceImpact,
     toAmount,
     fromAmount,
-  }: Pick<RoutesAndOutput, 'isHighImpact' | 'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'fromAmount'>,
+    fetchedToAmount,
+  }: Pick<RoutesAndOutput, 'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'fromAmount' | 'fetchedToAmount'>,
+  maxSlippage: string,
   { toToken }: FormValues,
 ) {
+  const { isHighImpact } = getSlippageImpact({ maxSlippage, toAmount, priceImpact, fetchedToAmount })
   const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
   const exchangeRate = (+toAmount / +fromAmount).toString()
   const exchangeValues = { toAmount, toToken }
