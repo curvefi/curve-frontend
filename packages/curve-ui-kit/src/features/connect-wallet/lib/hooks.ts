@@ -73,7 +73,10 @@ export const useWallet: UseConnectWallet = () => {
   )
 
   const disconnect = useMemo(
-    () => (shouldUseWagmi ? wagmiDisconnect : async () => wallet && (await onboardDisconnect(wallet))),
+    () =>
+      shouldUseWagmi
+        ? wagmiDisconnect
+        : async () => wallet?.label && (await onboardDisconnect({ label: wallet.label })),
     [onboardDisconnect, shouldUseWagmi, wagmiDisconnect, wallet],
   )
 

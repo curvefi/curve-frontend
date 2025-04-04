@@ -129,7 +129,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setWalletName(walletState.label)
+          setWalletName(walletState?.label ?? null)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
             const success = await setChain(parsedParams.rChainId)
@@ -211,10 +211,10 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         console.warn(`Network ${routerNetwork} is not active, redirecting to default network`)
         push(getPath({ network: 'ethereum' }, ROUTE.PAGE_MARKETS))
       } else {
-        if (walletName) {
+        if (walletName && !wallet) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parseNetworkFromUrl(params).rChainId, false])
+          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parseNetworkFromUrl(params).rChainId, true])
         }
       }
     }

@@ -1,6 +1,7 @@
 import { Eip1193Provider, FallbackProvider, JsonRpcProvider } from 'ethers'
 import { AbstractProvider } from 'ethers/lib.commonjs/providers/abstract-provider'
 import type { Chain, Client, Transport } from 'viem'
+import type { Wallet } from '@ui-kit/features/connect-wallet'
 import type { Address } from '@ui-kit/utils'
 
 /**
@@ -70,26 +71,19 @@ export const createEip1193Provider = (p: AbstractProvider): Eip1193Provider => (
   },
 })
 
-export function createWallet({
+export const createWallet = ({
   client,
   label,
   address,
   ensName,
 }: {
   client: Client<Transport, Chain>
-  label: string
+  label?: string
   address: Address
   ensName?: string | null
-}) {
-  const provider = clientToProvider(client)
-  return {
-    wallet: {
-      label,
-      account: { address, ...(ensName && { ensName }) },
-      chainId: client.chain.id,
-      provider: createEip1193Provider(provider),
-    },
-    // todo: I believe we need this provider somewhere? Otherwise, delete it.
-    provider,
-  }
-}
+}): Wallet => ({
+  label,
+  account: { address, ...(ensName && { ensName }) },
+  chainId: client.chain.id,
+  provider: client.transport,
+})

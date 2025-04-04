@@ -12,7 +12,7 @@ export const useConnectPromise = () =>
 
 export const useWagmi = () => {
   // when the modal is displayed, we save a promise to resolve later - this is for compatibility with existing code
-  const [connecting, setConnecting] = useConnectPromise()
+  const [connectPromise, setConnectPromise] = useConnectPromise()
 
   // this is the wallet type selected in the modal
   const [walletType, setWalletType] = useWalletType()
@@ -22,20 +22,21 @@ export const useWagmi = () => {
   const { disconnectAsync } = useDisconnect()
 
   const client = useClient()
+  const { address, isConnecting, isReconnecting } = useAccount()
 
   const connectWagmi = useCallback(
     async (label?: string) => {
       const walletType = label && supportedWallets.find((w) => w.label === label)
       if (!walletType) {
-        return new Promise<Wallet | null>((...args) => setConnecting(args))
+        return new Promise<Wallet | null>((...args) => setConnectPromise(args))
       }
       setWalletType(walletType)
-      const [resolve, reject] = connecting ?? []
+      const [resolve, reject] = connectPromise ?? []
       try {
         const {
           accounts: [address],
         } = await connectAsync({ connector: connectors[walletType.connector] })
-        const { wallet } = createWallet({ client, label, address })
+        const wallet = createWallet({ client, label, address })
         resolve?.(wallet)
         return wallet
       } catch (err) {
@@ -43,21 +44,22 @@ export const useWagmi = () => {
         reject?.(err)
         throw err
       } finally {
-        setConnecting(null)
+        setConnectPromise(null)
       }
     },
-    [client, connectAsync, connecting, setConnecting, setWalletType],
+    [client, connectAsync, connectPromise, setConnectPromise, setWalletType],
   )
 
-  const closeModal = useCallback(() => setConnecting(null), [setConnecting])
+  const closeModal = useCallback(() => setConnectPromise(null), [setConnectPromise])
 
-  const { address, isConnecting } = useAccount()
   const { data: ensName } = useEnsName({ address })
 
-  const { wallet } = useMemo(
-    () => walletType && address && createWallet({ client, label: walletType.label, address, ensName }),
-    [address, client, walletType, ensName],
-  ) ?? { wallet: null, provider: null }
+  const wallet =
+    useMemo(
+      () => address && createWallet({ client, label: walletType?.label, address, ensName }),
+      [address, client, walletType, ensName],
+    ) ?? null
 
-  return [{ wallet, connecting: isConnecting || !!connecting }, connectWagmi, disconnectAsync, closeModal] as const
+  const connecting = (isConnecting || !!connectPromise) && !isReconnecting && !address // note: workaround to avoid showing the modal when reconnecting
+  return [{ wallet, connecting }, connectWagmi, disconnectAsync, closeModal] as const
 }

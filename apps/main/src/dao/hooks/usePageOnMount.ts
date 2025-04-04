@@ -88,7 +88,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setWalletName(walletState.label)
+          setWalletName(walletState?.label ?? null)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
             const success = await setChain(parsedParams.rChainId)
