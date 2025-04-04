@@ -14,8 +14,6 @@ updates:
       - /tests/
     schedule:
       interval: "monthly"
-      time: "08:00"
-      timezone: "Europe/Zurich"
     ignore:
       - dependency-name: immer
         update-types: ["version-update:semver-major"]
