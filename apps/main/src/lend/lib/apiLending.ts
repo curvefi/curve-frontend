@@ -1272,6 +1272,10 @@ const loanRepay = {
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
+      if (isLeverage) {
+        await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
+      }
+
       resp.isApproved = isLeverage
         ? await market.leverage.repayIsApproved(userCollateral, userBorrowed)
         : isFullRepay
