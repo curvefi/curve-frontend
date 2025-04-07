@@ -94,12 +94,12 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
       if (Object.keys(claimableFees).length || Object.keys(vecrvInfo).length) return
 
-      sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
+      void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
 
       const { signerAddress } = curve
 
       if (signerAddress && signerAddress.toLowerCase() !== walletAddress) {
-        lockedCrv.fetchVecrvInfo(curve)
+        void lockedCrv.fetchVecrvInfo(curve)
       }
     },
     fetchVeCrvAndClaimables: async (activeKey, curve, walletAddress) => {
@@ -286,7 +286,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       }
 
       // get claimableFees, locked crv info
-      if (chainId === 1) sliceState.fetchClaimablesAndLockedDetails(curve)
+      if (chainId === 1) void sliceState.fetchClaimablesAndLockedDetails(curve)
 
       // get dashboard data
       const dashboardDataActiveKey = getDashboardDataActiveKey(chainId, walletAddress)
@@ -366,7 +366,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
       if (key === claimButtonsKey['3CRV']) {
         const storedPoolDataMapper = pools.poolsMapper[chainId]
-        sliceState.fetchDashboardData(curve, walletAddress, storedPoolDataMapper)
+        void sliceState.fetchDashboardData(curve, walletAddress, storedPoolDataMapper)
       }
 
       return resp

@@ -64,7 +64,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const updateFormValues = (updatedFormValues: FormValues) => {
     if (chainId && llamma) {
-      setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
+      void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
     }
   }
 

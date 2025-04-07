@@ -3,9 +3,17 @@ import type { ChipProps } from '@mui/material/Chip/Chip'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { Grays } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
+
+const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: DesignSystem['Badges']) => ({
+  style: {
+    backgroundColor: Badges.Fill[color],
+    color: Badges.Label[color],
+    borderColor: Badges.Border[color],
+  },
+  props: { color: color.toLowerCase() as ChipProps['color'] },
+})
 
 // note: the design system is using inverted themes for this color, there is no semantic colors for the clickable chips.
 const invertPrimary = (color: DesignSystem['Color']) => color.Neutral[50]
@@ -21,7 +29,7 @@ type ChipSizeDefinition = {
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.md, iconSize: IconSize.xs },
+  extraSmall: { font: 'bodyXsBold', height: IconSize.md, iconSize: IconSize.sm },
   small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm },
   medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md },
   large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg },
@@ -29,12 +37,12 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
 }
 
 // overrides for clickable chips
-const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
-  extraSmall: {},
-  small: { height: Sizing.md },
-  medium: { font: 'buttonS' },
-  large: { height: Sizing.lg, font: 'buttonS' },
-  extraLarge: { height: Sizing.xl },
+const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
+  extraSmall: { deleteIconSize: IconSize.xs },
+  small: { height: Sizing.md, deleteIconSize: IconSize.sm },
+  medium: { font: 'buttonS', deleteIconSize: IconSize.md },
+  large: { height: Sizing.lg, font: 'buttonS', deleteIconSize: IconSize.lg },
+  extraLarge: { height: Sizing.xl, deleteIconSize: IconSize.xl },
 }
 
 /**
@@ -45,7 +53,7 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition>> = {
  * - We do not use the "variant" prop (at the time of writing).
  */
 export const defineMuiChip = (
-  { Chips, Color, Text: { TextColors }, Layer }: DesignSystem,
+  { Chips, Color, Text: { TextColors }, Layer, Badges }: DesignSystem,
   typography: TypographyOptions,
 ): Components['MuiChip'] => ({
   styleOverrides: {
@@ -85,26 +93,12 @@ export const defineMuiChip = (
     },
 
     // 'badge' colors not in design system but defined directly in components
-    {
-      props: { color: 'alert' },
-      style: { backgroundColor: Layer.Feedback.Error, color: Grays[50] },
-    },
-    {
-      props: { color: 'default' },
-      style: { borderColor: Layer[1].Outline },
-    },
-
-    { props: { color: 'active' }, style: { backgroundColor: Color.Secondary[400], color: invertPrimary(Color) } },
-    { props: { color: 'warning' }, style: { backgroundColor: Color.Tertiary[200] } },
-    { props: { color: 'accent' }, style: { backgroundColor: Layer.Highlight.Fill, color: invertPrimary(Color) } },
-    {
-      props: { color: 'highlight' },
-      style: {
-        borderColor: Layer.Highlight.Outline,
-        color: TextColors.Highlight,
-        backgroundColor: invertPrimary(Color),
-      },
-    },
+    createColor('Default', Badges),
+    createColor('Active', Badges),
+    createColor('Alert', Badges),
+    createColor('Highlight', Badges),
+    createColor('Warning', Badges),
+    createColor('Accent', Badges),
 
     // chip colors taken from design system variables
     {
@@ -134,15 +128,20 @@ export const defineMuiChip = (
       props: { size: size as ChipSizes },
       style: {
         ...handleBreakpoints({ ...typography[font], ...rest }),
-        '& .MuiChip-deleteIcon': handleBreakpoints({ width: iconSize, height: iconSize }),
         '&:has(.MuiChip-icon)': {
           '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
         },
       },
     })),
-    ...Object.entries(chipSizeClickable).map(([size, { font, ...rest }]) => ({
-      props: { size: size as ChipSizes, clickable: true },
-      style: handleBreakpoints({ ...(font && typography[font]), ...rest }),
+    ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, ...rest }]) => ({
+      props: {
+        size: size as ChipSizes,
+        clickable: true,
+      },
+      style: {
+        ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+        '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
+      },
     })),
   ],
 })

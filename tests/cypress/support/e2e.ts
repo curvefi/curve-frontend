@@ -13,7 +13,7 @@ const IGNORE_ERROR_PATTERNS = [
 
 Cypress.on('uncaught:exception', (err) => {
   const ignore = IGNORE_ERROR_PATTERNS.find((p) => p.test(err.message))
-  console.log('Uncaught exception', ignore ? `ignored: ${ignore.source}` : err.message)
+  console.info('Uncaught exception', ignore ? `ignored: ${ignore.source}` : err.message)
   if (ignore) {
     return false // this will prevent the test from failing
   }

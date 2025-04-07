@@ -18,7 +18,7 @@ export function isHighSlippage(slippage: number, maxSlippage: string) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
-    console.log(`curve-frontend -> ${fnName}:`, ...args)
+    console.info(`curve-frontend -> ${fnName}:`, ...args)
   }
 }
 
@@ -75,11 +75,5 @@ export function curveProps(curve: Curve | null) {
       signerAddress: '',
       network: null,
     }
-  }
-}
-
-export function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 100)
   }
 }

@@ -11,6 +11,7 @@ import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
@@ -19,12 +20,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
 
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
+  const updateCurveJs = useApiStore((state) => state.updateCurve)
+  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
+  const hydrate = useStore((s) => s.hydrate)
+
   const connectState = useStore((state) => state.connectState)
   const setNetworkConfigs = useStore((state) => state.networks.setNetworkConfigs)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const updateCurveJs = useStore((state) => state.updateCurveJs)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const { rChainId } = useNetworkFromUrl()
@@ -38,25 +41,29 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevCurveApi = curve
-          updateGlobalStoreByKey('isLoadingApi', true)
-          updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
+          const prevApi = curve
+
+          setIsLoadingCurve(true)
 
           if (chainId) {
             const api = await initCurveJs(chainId, (useWallet && wallet) || undefined)
             setNetworkConfigs(api)
-            updateCurveJs(api, prevCurveApi, wallet)
+            updateCurveJs(api)
             updateConnectState('success', '')
+
+            await hydrate(api, prevApi, wallet)
           } else {
             updateConnectState('', '')
           }
         } catch (error) {
           console.error('Failed to connect to network', error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        } finally {
+          setIsLoadingCurve(false)
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, setNetworkConfigs, wallet],
+    [curve, setIsLoadingCurve, wallet, setNetworkConfigs, updateCurveJs, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(
@@ -210,13 +217,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     if (connectState.status || connectState.stage) {
       if (isSuccess(connectState)) {
       } else if (isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)) {
-        handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
+        void handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
-        handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
+        void handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.DISCONNECT_WALLET) && wallet) {
-        handleDisconnectWallet(wallet)
+        void handleDisconnectWallet(wallet)
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
-        handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
+        void handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -6,6 +6,7 @@ import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { AppPageFormTitleLinks } from '@ui/AppPage'
 import InternalLink from '@ui/Link/InternalLink'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const PageTitleBorrowSupplyLinks = ({
   params,
@@ -16,7 +17,7 @@ const PageTitleBorrowSupplyLinks = ({
   activeKey: 'borrow' | 'supply'
   market: OneWayMarketTemplate
 }) => {
-  const api = useStore((state) => state.api)
+  const api = useApiStore((state) => state.lending)
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)

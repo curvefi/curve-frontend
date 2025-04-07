@@ -12,6 +12,7 @@ import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import ProposalsFilters from './components/ProposalsFilters'
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import Proposal from './Proposal'
@@ -30,7 +31,7 @@ const Proposals = () => {
   const activeFilter = useStore((state) => state.proposals.activeFilter)
   const setProposals = useStore((state) => state.proposals.setProposals)
   const proposals = useStore((state) => state.proposals.proposals)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const { push } = useRouter()
 
   const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading

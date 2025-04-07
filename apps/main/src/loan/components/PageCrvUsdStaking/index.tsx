@@ -12,6 +12,7 @@ import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -24,9 +25,9 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const lendApi = useStore((state) => state.lendApi)
+  const lendApi = useApiStore((state) => state.lending)
   const { signerAddress, connecting, walletName } = useWallet()
-  const chainId = useStore((state) => state.curve?.chainId)
+  const chainId = useApiStore((state) => state.stable?.chainId)
 
   const {
     data: userScrvUsdBalance,
@@ -59,19 +60,19 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     const fetchData = async () => {
       if (!lendApi || !signerAddress) return
       // ensure user balances are up to date on load
-      refetchUserScrvUsdBalance()
+      void refetchUserScrvUsdBalance()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
     }
 
-    fetchData()
+    void fetchData()
   }, [lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
-      checkApproval.depositApprove(inputAmount)
+      void checkApproval.depositApprove(inputAmount)
     }
   }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
 

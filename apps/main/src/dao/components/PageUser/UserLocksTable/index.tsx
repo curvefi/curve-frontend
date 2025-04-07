@@ -17,7 +17,7 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
   const setUserLocksSortBy = useStore((state) => state.user.setUserLocksSortBy)
 
-  const gridTemplateColumns = '5.375rem 1fr 10rem 8rem'
+  const gridTemplateColumns = '7rem 1fr 10rem 8rem'
   const minWidth = 36
 
   const userLocksLoading = userLocksMapper[userAddress]
@@ -41,7 +41,7 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   // Get user locks
   useEffect(() => {
     if (!userLocksMapper[userAddress] && userLocksLoading && !userLocksError) {
-      getUserLocks(userAddress)
+      void getUserLocks(userAddress)
     }
   }, [getUserLocks, userAddress, userLocksMapper, userLocksLoading, userLocksError])
 

@@ -29,6 +29,7 @@ import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: MarketUrlParams) => {
   const { routerParams, api } = usePageOnMount()
@@ -36,7 +37,7 @@ const Page = (params: MarketUrlParams) => {
   const { rChainId, rMarket, rSubdirectory, rFormType } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
@@ -70,14 +71,14 @@ const Page = (params: MarketUrlParams) => {
       setTimeout(async () => {
         const { signerAddress } = api
 
-        fetchAllMarketDetails(api, market, true)
+        void fetchAllMarketDetails(api, market, true)
 
         if (signerAddress) {
           const loanExists = (await fetchUserLoanExists(api, market, true))?.loanExists
           if (loanExists) {
-            fetchAllUserMarketDetails(api, market, true)
+            void fetchAllUserMarketDetails(api, market, true)
           } else {
-            fetchUserMarketBalances(api, market, true)
+            void fetchUserMarketBalances(api, market, true)
           }
         }
         setInitialLoaded(true)
@@ -90,13 +91,13 @@ const Page = (params: MarketUrlParams) => {
     setLoaded(false)
 
     if (!isLoadingApi && api && market) {
-      fetchInitial(api, market)
+      void fetchInitial(api, market)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingApi])
 
   useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) fetchInitial(api, market)
+    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 

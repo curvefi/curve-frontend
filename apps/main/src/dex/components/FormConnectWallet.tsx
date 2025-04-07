@@ -4,9 +4,10 @@ import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import { isLoading } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
   const connectWallet = useStore((s) => s.updateConnectState)
   return (

@@ -33,7 +33,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
   }, [pricePerShareResp, usdRate, symbol, vaultShares])
 
   useEffect(() => {
-    if (market && +vaultShares > 0) fetchVaultPricePerShare(rChainId, market)
+    if (market && +vaultShares > 0) void fetchVaultPricePerShare(rChainId, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [market?.id, vaultShares])
 

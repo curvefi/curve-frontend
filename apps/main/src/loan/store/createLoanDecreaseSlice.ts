@@ -116,7 +116,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, loadingFormEstGas)
         get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
 
-        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
       } else {
         // validate debt
         const haveDebt = +debt > 0
@@ -153,11 +153,11 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
           clonedFormStatus.warning = isMaxPayable ? 'warning-is-payoff-amount' : ''
           get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
 
-          isMaxPayable
+          void (isMaxPayable
             ? get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
-            : get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
+            : get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues))
 
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
         } else if (!haveDebt || cFormValues.debtError) {
           get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
           get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -190,7 +190,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
           formProcessing: !resp.error,
           error: resp.error,
         })
-        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
 
         return resp
       }

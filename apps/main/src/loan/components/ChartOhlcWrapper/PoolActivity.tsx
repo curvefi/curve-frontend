@@ -17,15 +17,13 @@ interface Props {
 }
 
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
-  const {
-    activityFetchStatus,
-    llammaTradesData,
-    llammaControllerData,
-    setActivityHidden,
-    fetchPoolActivity,
-    chartExpanded,
-    activityHidden,
-  } = useStore((state) => state.ohlcCharts)
+  const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
+  const llammaTradesData = useStore((state) => state.ohlcCharts.llammaTradesData)
+  const llammaControllerData = useStore((state) => state.ohlcCharts.llammaControllerData)
+  const setActivityHidden = useStore((state) => state.ohlcCharts.setActivityHidden)
+  const fetchPoolActivity = useStore((state) => state.ohlcCharts.fetchPoolActivity)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 

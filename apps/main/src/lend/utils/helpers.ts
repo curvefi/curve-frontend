@@ -16,7 +16,7 @@ export function isHighSlippage(slippage: number, maxSlippage: string) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
-    console.log(`curve-frontend -> ${fnName}:`, ...args)
+    console.info(`curve-frontend -> ${fnName}:`, ...args)
   }
 }
 
@@ -57,12 +57,6 @@ export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 export function sleep(ms?: number) {
   const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)
   return new Promise((resolve) => setTimeout(resolve, parsedMs))
-}
-
-export function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 100)
-  }
 }
 
 export function shortenTokenName(token: string) {

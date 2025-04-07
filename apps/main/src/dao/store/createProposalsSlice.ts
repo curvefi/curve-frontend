@@ -23,6 +23,7 @@ import {
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const { WEEK } = TIME_FRAMES
 
@@ -167,10 +168,10 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         }
 
         get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
-        get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
+        void get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'SUCCESS')
       } catch (error) {
-        console.log(error)
+        console.warn(error)
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
@@ -187,7 +188,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
-          console.log(data.detail)
+          console.info('cannot find proposal', data.detail)
           return
         }
 
@@ -217,7 +218,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           }),
         )
       } catch (error) {
-        console.log(error)
+        console.warn(error)
         get()[sliceKey].setStateByKey('proposalLoadingState', 'ERROR')
       }
     },
@@ -240,7 +241,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
-          console.log(data.detail)
+          console.info('cannot find proposal', data.detail)
           return
         }
 
@@ -335,7 +336,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const { curve } = get()
+      const { curve } = useApiStore.getState()
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -358,7 +359,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       try {
         await fetchGasInfo(curve)
       } catch (error) {
-        console.log(error)
+        console.warn(error)
       }
 
       try {
@@ -426,11 +427,11 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           },
         })
 
-        console.log(error)
+        console.warn(error)
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const { curve } = get()
+      const { curve } = useApiStore.getState()
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()
@@ -454,7 +455,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       try {
         await fetchGasInfo(curve)
       } catch (error) {
-        console.log(error)
+        console.warn(error)
       }
 
       try {
@@ -521,7 +522,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           },
         })
 
-        console.log(error)
+        console.warn(error)
       }
     },
     setStateByKey: (key, value) => {

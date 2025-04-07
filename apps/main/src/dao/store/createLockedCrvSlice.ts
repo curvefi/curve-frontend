@@ -130,7 +130,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       const isValidLockDateForm = rFormType === 'adjust_date' ? isValidDays : true
 
       if (isValidCreateForm && isValidLockCrvForm && isValidLockDateForm) {
-        get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
       } else {
         get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: DEFAULT_FORM_EST_GAS })
       }
@@ -269,7 +269,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch data
-          get()[sliceKey].fetchVecrvInfo(curve)
+          void get()[sliceKey].fetchVecrvInfo(curve)
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -310,7 +310,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch data
-          get()[sliceKey].fetchVecrvInfo(curve)
+          void get()[sliceKey].fetchVecrvInfo(curve)
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)

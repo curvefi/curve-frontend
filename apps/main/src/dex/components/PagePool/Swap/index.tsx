@@ -22,6 +22,7 @@ import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/De
 import useStore from '@/dex/store/useStore'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
+import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
@@ -82,6 +83,8 @@ const Swap = ({
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
+  const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
+
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -112,7 +115,7 @@ const Swap = ({
       setConfirmedLoss(false)
       setTxInfoBar(null)
 
-      setFormValues(
+      void setFormValues(
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -263,7 +266,7 @@ const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      fetchUserPoolInfo(curve, poolId, true)
+      void fetchUserPoolInfo(curve, poolId, true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance])
@@ -272,10 +275,10 @@ const Swap = ({
   useEffect(() => {
     if (formValues.fromAddress || formValues.toAddress) {
       if (formValues.fromAddress && isUndefined(fromUsdRate)) {
-        fetchUsdRateByTokens(curve, [formValues.fromAddress])
+        void fetchUsdRateByTokens(curve, [formValues.fromAddress])
       }
       if (formValues.toAddress && isUndefined(toUsdRate)) {
-        fetchUsdRateByTokens(curve, [formValues.toAddress])
+        void fetchUsdRateByTokens(curve, [formValues.toAddress])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -527,7 +530,7 @@ const Swap = ({
         <DetailInfoPriceImpact
           loading={exchangeOutput.loading}
           priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={exchangeOutput.isHighImpact}
+          isHighImpact={slippageImpact?.isHighImpact ?? null}
         />
 
         {haveSigner && (

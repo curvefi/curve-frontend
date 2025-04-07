@@ -5,10 +5,11 @@ import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
@@ -58,7 +59,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
     const shouldCallApi = staked?.timestamp ? dayjs().diff(staked.timestamp, 'seconds') > 30 : true
 
     if (address && rpcUrl && shouldCallApi) {
-      ;(async () => {
+      void (async () => {
         const provider = walletProvider || new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
@@ -70,7 +71,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
               ? await getContract('poolTotalSupply', address, provider)
               : await getContract('lpTokenTotalSupply', lpToken, provider)
 
-          if (poolContract) getTotalSupply(poolContract, gaugeContract)
+          if (poolContract) void getTotalSupply(poolContract, gaugeContract)
         } else {
           updateTotalStakeValue({ totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' })
         }

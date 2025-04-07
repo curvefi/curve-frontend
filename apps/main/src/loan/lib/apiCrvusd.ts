@@ -1,9 +1,8 @@
-import { BrowserProvider } from 'ethers'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import type { FormValues as SwapFormValues } from '@/loan/components/PageLoanManage/LoanSwap/types'
 import networks from '@/loan/networks'
-import type { LiqRange, Provider, MaxRecvLeverage } from '@/loan/store/types'
+import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, Curve, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
 import {
@@ -14,7 +13,7 @@ import {
   reverseBands,
   sortBands,
 } from '@/loan/utils/utilsCurvejs'
-import PromisePool from '@supercharge/promise-pool'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const network = {
   1: {
@@ -92,18 +91,8 @@ const helpers = {
       return resp
     }
   },
-  waitForTransaction: async (hash: string, provider: Provider) =>
-    (provider as BrowserProvider).waitForTransaction(hash),
-  waitForTransactions: async (hashes: string[], provider: Provider) => {
-    const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await (provider as BrowserProvider).waitForTransaction(hash),
-    )
-    if (Array.isArray(errors) && errors.length > 0) {
-      throw errors
-    } else {
-      return results
-    }
-  },
+  waitForTransaction,
+  waitForTransactions,
 }
 
 const detailInfo = {
@@ -134,21 +123,21 @@ const detailInfo = {
   loanPartialInfo: async (llamma: Llamma) => {
     log('loanPartialInfo', llamma.collateralSymbol)
     const [
-      activeBandResult,
+      oraclePriceBandResult,
       parametersResult,
       totalDebtResult,
       totalCollateralResult,
       totalStablecoinResult,
       capAndAvailableResult,
     ] = await Promise.allSettled([
-      llamma.stats.activeBand(),
+      llamma.oraclePriceBand(),
       llamma.stats.parameters(),
       llamma.stats.totalDebt(),
       llamma.stats.totalCollateral(),
       llamma.stats.totalStablecoin(),
       llamma.stats.capAndAvailable(),
     ])
-    const activeBand = fulfilledValue(activeBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
     const parameters = fulfilledValue(parametersResult) ?? DEFAULT_PARAMETERS
     const totalDebt = fulfilledValue(totalDebtResult) ?? '0'
     const totalCollateral = fulfilledValue(totalCollateralResult) ?? '0'
@@ -156,7 +145,7 @@ const detailInfo = {
     const capAndAvailable = fulfilledValue(capAndAvailableResult) ?? { cap: '0', available: '0' }
 
     return {
-      activeBand,
+      oraclePriceBand,
       collateralId: llamma.id,
       parameters,
       totalDebt,
@@ -230,30 +219,34 @@ const detailInfo = {
     const loanExists = await llamma?.loanExists(address)
 
     const [
-      activeBandResult,
       healthFullResult,
       healthNotFullResult,
       userBandsResult,
       userStateResult,
       liquidatingBandResult,
+      oraclePriceBandResult,
     ] = await Promise.allSettled([
-      loanExists ? llamma.stats.activeBand() : Promise.resolve(null),
       loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
       loanExists ? llamma.userHealth(false, address) : Promise.resolve(''),
       loanExists ? llamma.userBands(address) : Promise.resolve([0, 0]),
       loanExists ? llamma.userState(address) : Promise.resolve(DEFAULT_USER_STATE),
       loanExists ? llamma.stats.liquidatingBand() : Promise.resolve(null),
+      loanExists ? llamma.oraclePriceBand() : Promise.resolve(null),
     ])
 
-    const activeBand = fulfilledValue(activeBandResult) ?? null
     const healthFull = fulfilledValue(healthFullResult) ?? ''
     const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
     const userBands = fulfilledValue(userBandsResult) ?? ([0, 0] as [number, number])
     const userState = fulfilledValue(userStateResult) ?? DEFAULT_USER_STATE
     const userLiquidationBand = fulfilledValue(liquidatingBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
 
     const reversedUserBands = reverseBands(userBands)
-    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], userLiquidationBand, activeBand)
+    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(
+      reversedUserBands[0],
+      userLiquidationBand,
+      oraclePriceBand,
+    )
 
     const fetchedUserDetails: {
       healthFull: UserLoanDetails['healthFull']
@@ -267,7 +260,7 @@ const detailInfo = {
       healthFull,
       healthNotFull,
       userBands: reversedUserBands,
-      userHealth: userIsCloseToLiquidation ? healthNotFull : healthFull,
+      userHealth: +healthNotFull < 0 ? healthNotFull : healthFull,
       userIsCloseToLiquidation,
       userState,
       userLiquidationBand,
@@ -1164,7 +1157,7 @@ const loanDeleverage = {
 
       return { activeKey, resp }
     } catch (error) {
-      console.log(error)
+      console.warn(error)
       resp.error = getErrorMessage(error, 'error-deleverage-api')
       return { activeKey, resp }
     }

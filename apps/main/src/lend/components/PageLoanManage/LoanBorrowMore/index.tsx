@@ -79,7 +79,7 @@ const LoanBorrowMore = ({
       shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      setFormValues(
+      void setFormValues(
         isLoaded ? api : null,
         market,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,

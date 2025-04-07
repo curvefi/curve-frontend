@@ -9,6 +9,7 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
@@ -30,7 +31,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const curve = useStore((state) => state.curve)
+  const curve = useApiStore((state) => state.curve)
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])

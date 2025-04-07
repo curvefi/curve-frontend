@@ -14,11 +14,12 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const curve = useStore((state) => state.curve)
-  const chainId = curve?.chainId ?? ''
+  const curve = useApiStore((state) => state.curve)
+  const chainId = curve?.chainId ?? 1
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.pageWidth)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
@@ -47,7 +48,7 @@ export const App = ({ children }: { children: ReactNode }) => {
       const { chainId } = curve
       const poolDatas = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
-      setTokensMapper(chainId, poolDatas)
+      void setTokensMapper(chainId, poolDatas)
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
@@ -61,7 +62,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
     useStore.setState(useStore.getInitialState())
-    ;(async () => {
+    void (async () => {
       const networks = await fetchNetworks()
 
       useWallet.initialize(theme, networks)
@@ -85,7 +86,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const refetchPools = useCallback(
     async (curve: CurveApi) => {
       const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
-      fetchPools(curve, poolIds, null)
+      void fetchPools(curve, poolIds, null)
     },
     [fetchPools, network],
   )
@@ -93,12 +94,12 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (curve) {
-        fetchGasInfo(curve)
-        fetchAllStoredUsdRates(curve)
-        fetchPoolsVolumeTvl(curve)
+        void fetchGasInfo(curve)
+        void fetchAllStoredUsdRates(curve)
+        void fetchPoolsVolumeTvl(curve)
 
         if (curve.signerAddress) {
-          fetchAllStoredBalances(curve)
+          void fetchAllStoredBalances(curve)
         }
       }
     },
@@ -109,7 +110,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   usePageVisibleInterval(
     () => {
       if (curve) {
-        refetchPools(curve)
+        void refetchPools(curve)
       }
     },
     REFRESH_INTERVAL['11m'],

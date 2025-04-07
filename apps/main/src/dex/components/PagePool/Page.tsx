@@ -7,6 +7,7 @@ import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: PoolUrlParams) => {
   const { push } = useRouter()
@@ -15,7 +16,7 @@ const Page = (params: PoolUrlParams) => {
 
   const parsedRPoolId = rPoolId || ''
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
@@ -34,7 +35,7 @@ const Page = (params: PoolUrlParams) => {
     if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
       push(reRoutePathname)
     } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
-      ;(async () => {
+      void (async () => {
         const foundPoolData = await fetchNewPool(curve, rPoolId)
         if (!foundPoolData) {
           push(reRoutePathname)

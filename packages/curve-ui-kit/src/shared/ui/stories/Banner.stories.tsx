@@ -73,7 +73,7 @@ export const WithButton: Story = {
     severity: 'alert',
     children: 'This is an error message with an action button',
     buttonText: 'Dismiss',
-    onClick: () => console.log('Button clicked'),
+    onClick: () => console.info('Button clicked'),
   },
 }
 

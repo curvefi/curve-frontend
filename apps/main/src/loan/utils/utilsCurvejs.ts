@@ -4,20 +4,22 @@ import networks from '@/loan/networks'
 import {
   BandBalance,
   ChainId,
-  Curve,
   HeathColorKey,
   LendApi,
   Llamma,
   UserLoanDetails,
   Wallet,
+  type Curve,
 } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
-export async function initCurveJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
+export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
   const { networkId } = networks[chainId]
   const api = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
   await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+  // Explicitly set chainId to 1 (Ethereum mainnet) to prevent default value of 0 causing issues
+  api.chainId = 1
   return api
 }
 
@@ -38,16 +40,20 @@ export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
 export function getIsUserCloseToLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
-  activeBand: number | null | undefined,
+  oraclePriceBand: number | null | undefined,
 ) {
-  if (typeof userLiquidationBand !== null && activeBand === null) {
+  if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
     return false
-  } else if (typeof activeBand !== 'undefined' && activeBand !== null) {
-    return userFirstBand <= activeBand + 2
+  } else if (typeof oraclePriceBand === 'number') {
+    return userFirstBand <= oraclePriceBand + 2
   }
   return false
 }
 
+/** healthNotFull is needed here because:
+ * User full health can be > 0
+ * But user is at risk of liquidation if not full < 0
+ */
 export function getLiquidationStatus(
   healthNotFull: string,
   userIsCloseToLiquidation: boolean,

@@ -47,7 +47,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const updateFormValues = useCallback(() => {
     setTxInfoBar(null)
     setSlippageConfirmed(false)
-    setFormValues('CLAIM', curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
+    void setFormValues('CLAIM', curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
   }, [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
@@ -107,7 +107,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
               ? getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudging)
               : t`Claim Rewards`,
           onClick: () => {
-            handleClaimClick(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging)
+            void handleClaimClick(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging)
           },
         },
       }
@@ -144,7 +144,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   // fetch claimable
   useEffect(() => {
     if (chainId && poolData && haveSigner) {
-      fetchClaimable(activeKey, chainId, poolData.pool)
+      void fetchClaimable(activeKey, chainId, poolData.pool)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress])
@@ -169,7 +169,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       cFormStatus.isClaimRewards = isClaimRewards
 
       setStateByKey('formStatus', cFormStatus)
-      handleClaimClick(activeKey, curve, poolData, formValues, cFormStatus, rewardsNeedNudging)
+      void handleClaimClick(activeKey, curve, poolData, formValues, cFormStatus, rewardsNeedNudging)
     }
   }
 

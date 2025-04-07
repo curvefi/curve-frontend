@@ -130,8 +130,8 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
 
       // fetch detail, approval, est gas, set loading
       if (haveCollateral) {
-        get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
-        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
       } else {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -163,7 +163,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         })
 
         if (!resp.error) {
-          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
         }
         return resp
       }

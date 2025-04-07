@@ -46,11 +46,11 @@ export const parseTrades = (x: Responses.GetLlammaTradesResponse['data'][number]
 
 export const parseOHLC = (x: Responses.GetLlammaOHLCResponse['data'][number]): Models.LlammaOHLC => ({
   time: toDate(x.time),
-  open: x.open,
-  close: x.close,
-  high: x.high,
-  low: x.low,
-  basePrice: x.base_price,
-  oraclePrice: x.oracle_price,
-  volume: x.volume,
+  open: x.open ?? null,
+  close: x.close ?? null,
+  high: x.high ?? null,
+  low: x.low ?? null,
+  basePrice: x.base_price ?? null,
+  oraclePrice: x.oracle_price ?? null,
+  volume: x.volume ?? null,
 })

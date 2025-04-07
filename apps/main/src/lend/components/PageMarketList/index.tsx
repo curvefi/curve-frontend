@@ -65,7 +65,7 @@ const MarketList = (pageProps: PageMarketList) => {
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
-      setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
+      void setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
     },
     [setFormValues, rChainId, isLoaded, api, marketMapping],
   )

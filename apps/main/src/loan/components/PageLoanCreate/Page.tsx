@@ -9,7 +9,7 @@ import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { type CollateralUrlParams, Curve, Llamma } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, Llamma, type Curve } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import {
@@ -31,6 +31,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
@@ -41,7 +42,7 @@ const Page = (params: CollateralUrlParams) => {
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingStable)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -80,10 +81,10 @@ const Page = (params: CollateralUrlParams) => {
       })
 
       const updatedFormValues = { ...formValues, n: formValues.n || llamma.defaultBands }
-      setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
+      void setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
 
       if (curve.signerAddress) {
-        fetchUserLoanWalletBalances(curve, llamma)
+        void fetchUserLoanWalletBalances(curve, llamma)
       }
     },
     [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
@@ -98,7 +99,7 @@ const Page = (params: CollateralUrlParams) => {
       } else {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
-        fetchLoanDetails(curve, llamma)
+        void fetchLoanDetails(curve, llamma)
         setLoaded(true)
       }
     }
@@ -124,7 +125,7 @@ const Page = (params: CollateralUrlParams) => {
   // max slippage updated
   useEffect(() => {
     if (loaded && !!curve) {
-      setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
+      void setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
@@ -132,7 +133,7 @@ const Page = (params: CollateralUrlParams) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve && llamma) {
-        fetchLoanDetails(curve, llamma)
+        void fetchLoanDetails(curve, llamma)
       }
     },
     REFRESH_INTERVAL['1m'],

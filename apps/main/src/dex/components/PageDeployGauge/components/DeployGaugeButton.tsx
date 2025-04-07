@@ -17,6 +17,7 @@ import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { shortenAddress } from '@ui-kit/utils'
 
 interface Props {
@@ -36,14 +37,12 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
     (state) => state.deployGauge,
   )
   const connectWallet = useStore((s) => s.updateConnectState)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const restFullPathname = useRestFullPathname()
 
   const handleConnectEth = () => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
-    updateGlobalStoreByKey('isLoadingApi', true)
     push(getPath({ network: 'ethereum' }, restFullPathname))
   }
 

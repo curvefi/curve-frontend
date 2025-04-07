@@ -45,6 +45,7 @@ import type {
 } from '@ui/Chart/types'
 import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { log } from '@ui-kit/lib/logging'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -271,7 +272,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         )
 
         // update cache
-        storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
+        void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
         const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
 
@@ -288,7 +289,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const partialTokens = await tokens.setTokensMapper(chainId, partialPoolDatas)
 
         if (curve.signerAddress) {
-          userBalances.fetchUserBalancesByTokens(curve, partialTokens)
+          void userBalances.fetchUserBalancesByTokens(curve, partialTokens)
         }
 
         return { poolsMapper, poolDatas: partialPoolDatas }
@@ -428,7 +429,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       if (missingRewardsPoolIds.length > 0) {
         log('fetchMissingPoolsRewardsApy', chainId, missingRewardsPoolIds.length)
-        fetchPoolsRewardsApy(chainId, missingRewardsPoolIds)
+        void fetchPoolsRewardsApy(chainId, missingRewardsPoolIds)
       }
 
       // const missingRewardsPoolIds = []
@@ -477,7 +478,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     setPoolIsWrapped: (poolData, isWrapped) => {
-      const curve = get().curve
+      const curve = useApiStore.getState().curve!
       const chainId = curve.chainId
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
@@ -493,7 +494,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
-      get().pools.fetchPoolCurrenciesReserves(curve, cPoolData)
+      void get().pools.fetchPoolCurrenciesReserves(curve, cPoolData)
       return { tokens, tokenAddresses }
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
@@ -523,7 +524,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             }),
           )
         } catch (error) {
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -554,7 +555,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             }),
           )
         } catch (error) {
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -620,7 +621,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               state.pools.pricesApiState.chartStatus = 'ERROR'
             }),
           )
-          console.log(error)
+          console.warn(error)
         }
       } else {
         try {
@@ -663,7 +664,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               state.pools.pricesApiState.chartStatus = 'ERROR'
             }),
           )
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -715,7 +716,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             )
           }
         } catch (error) {
-          console.log(error)
+          console.warn(error)
         }
       } else {
         try {
@@ -755,7 +756,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               state.pools.pricesApiState.chartStatus = 'ERROR'
             }),
           )
-          console.log(error)
+          console.warn(error)
         }
       }
     },
@@ -835,7 +836,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             state.pools.pricesApiState.activityStatus = 'ERROR'
           }),
         )
-        console.log(error)
+        console.warn(error)
       }
     },
     setChartTimeOption: (timeOption: TimeOptions) => {

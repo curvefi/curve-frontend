@@ -10,22 +10,20 @@ import { t } from '@ui-kit/lib/i18n'
 import { PoolActivityProps } from './types'
 
 const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
-  const {
-    activityFetchStatus,
-    lendTradesData,
-    lendControllerData,
-    setActivityHidden,
-    fetchPoolActivity,
-    chartExpanded,
-    activityHidden,
-  } = useStore((state) => state.ohlcCharts)
+  const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
+  const lendTradesData = useStore((state) => state.ohlcCharts.lendTradesData)
+  const lendControllerData = useStore((state) => state.ohlcCharts.lendControllerData)
+  const setActivityHidden = useStore((state) => state.ohlcCharts.setActivityHidden)
+  const fetchPoolActivity = useStore((state) => state.ohlcCharts.fetchPoolActivity)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
   const minHeight = chartExpanded ? 548 : 330
 
   useEffect(() => {
-    fetchPoolActivity(chainId, poolAddress)
+    void fetchPoolActivity(chainId, poolAddress)
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (

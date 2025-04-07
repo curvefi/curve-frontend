@@ -87,7 +87,7 @@ const ActionInfo = ({
   const [isOpen, open, close] = useSwitch(false)
 
   const copyValue = () => {
-    copyToClipboard(value)
+    void copyToClipboard(value)
     open()
   }
 

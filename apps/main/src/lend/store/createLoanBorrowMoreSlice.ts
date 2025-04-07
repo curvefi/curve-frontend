@@ -18,6 +18,7 @@ import { Api, ChainId } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -99,7 +100,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       sliceState.setStateByKey('formValues', { ...formValues, debtError })
     },
     refetchMaxRecv: async (market, isLeverage) => {
-      const { api } = get()
+      const api = useApiStore.getState().lending
       const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed } = formValues
 
@@ -232,7 +233,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       // api calls
       await sliceState.fetchMaxRecv(activeKey.activeKeyMax, api, market, isLeverage)
       await sliceState.fetchDetailInfo(activeKey.activeKey, api, market, maxSlippage, isLeverage)
-      sliceState.fetchEstGasApproval(activeKey.activeKey, api, market, maxSlippage, isLeverage)
+      void sliceState.fetchEstGasApproval(activeKey.activeKey, api, market, maxSlippage, isLeverage)
     },
 
     // steps
@@ -265,7 +266,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
+        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
         return { ...resp, error }
       }
     },
@@ -311,15 +312,15 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) user.fetchAll(api, market, true)
-          markets.fetchAll(api, market, true)
+          if (loanExists) void user.fetchAll(api, market, true)
+          void markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({
             ...DEFAULT_STATE,
             formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
           })
-          sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES, maxSlippage, isLeverage)
+          void sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES, maxSlippage, isLeverage)
           return { ...resp, error }
         }
       }

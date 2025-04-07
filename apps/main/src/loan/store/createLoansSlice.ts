@@ -101,10 +101,10 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByActiveKey('existsMapper', collateralId, loanExists)
 
       if (curve.signerAddress) {
-        get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma)
+        void get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma)
 
         if (loanExists.loanExists) {
-          get()[sliceKey].fetchUserLoanDetails(curve, llamma)
+          void get()[sliceKey].fetchUserLoanDetails(curve, llamma)
         }
       }
 

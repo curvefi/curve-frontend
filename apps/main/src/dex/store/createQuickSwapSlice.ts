@@ -15,7 +15,7 @@ import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@/dex/utils/utilsSwap'
+import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -41,19 +41,15 @@ export type QuickSwapSlice = {
     ): Promise<{ fromAmount: string; toAmount: string }>
     fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
-    fetchRoutesAndOutput(
-      curve: CurveApi,
-      searchedParams: SearchedParams,
-      maxSlippage: string | undefined,
-    ): Promise<void>
+    fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     resetFormErrors(): void
     setFormValues(
       curve: CurveApi | null,
       updatedFormValues: Partial<FormValues>,
       searchedParams: SearchedParams,
+      maxSlippage: string,
       isGetMaxFrom?: boolean,
-      maxSlippage?: string,
       isFullReset?: boolean,
       isRefetch?: boolean,
     ): Promise<void>
@@ -146,14 +142,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
             sliceState.setStateByKey('isMaxLoading', true)
             // must call routesAndOutput first before estGas
             const poolsMapper = state.pools.poolsMapper[chainId]
-            await curvejsApi.router.routesAndOutput(
-              activeKey,
-              curve,
-              poolsMapper,
-              cFormValues,
-              searchedParams,
-              maxSlippage,
-            )
+            await curvejsApi.router.routesAndOutput(activeKey, curve, poolsMapper, cFormValues, searchedParams)
 
             const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, userBalance)
 
@@ -203,7 +192,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         poolsMapper,
         cFormValues,
         searchedParams,
-        maxSlippage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -235,7 +223,13 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
                   searchedParams,
                   tokensNameMapper,
                 ),
-                modal: getRouterWarningModal(resp, searchedParams, tokensNameMapper) as RoutesAndOutputModal | null,
+                fetchedToAmount: '',
+                modal: getRouterWarningModal(
+                  resp,
+                  searchedParams,
+                  maxSlippage,
+                  tokensNameMapper,
+                ) as RoutesAndOutputModal | null,
               },
             },
           })
@@ -290,8 +284,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       curve,
       updatedFormValues,
       searchedParams,
-      isGetMaxFrom,
       maxSlippage,
+      isGetMaxFrom,
       isFullReset,
       isRefetch, // x
     ) => {
@@ -346,7 +340,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
-      sliceState.fetchEstGasApproval(curve, searchedParams)
+      void sliceState.fetchEstGasApproval(curve, searchedParams)
     },
 
     // select token list
@@ -417,7 +411,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
           // re-fetch est gas, approval, routes and output
           await sliceState.fetchRoutesAndOutput(curve, searchedParams, globalMaxSlippage)
-          sliceState.fetchEstGasApproval(curve, searchedParams)
+          void sliceState.fetchEstGasApproval(curve, searchedParams)
         }
 
         return resp
@@ -477,10 +471,10 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
           })
 
           // cache swapped tokens
-          state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
+          void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
           // fetch data
-          state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
+          void state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
         }
 
         return resp
@@ -557,29 +551,29 @@ export function getRouterSwapsExchangeRates(
 
 function getRouterWarningModal(
   {
-    isHighImpact,
-    isExpectedToAmount,
     isExchangeRateLow,
     priceImpact,
     toAmount,
     toAmountOutput,
     fromAmount,
+    fetchedToAmount,
   }: Pick<
     RoutesAndOutput,
-    | 'isHighImpact'
-    | 'isExchangeRateLow'
-    | 'isExpectedToAmount'
-    | 'priceImpact'
-    | 'toAmount'
-    | 'toAmountOutput'
-    | 'fromAmount'
+    'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'toAmountOutput' | 'fromAmount' | 'fetchedToAmount'
   >,
   { toAddress }: SearchedParams,
+  maxSlippage: string,
   storedTokensNameMapper: { [address: string]: string },
 ) {
-  const toToken = storedTokensNameMapper[toAddress] ?? ''
+  const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
+    maxSlippage,
+    toAmount,
+    priceImpact,
+    fetchedToAmount,
+  })
   const parsedToAmount = isExpectedToAmount ? toAmountOutput : toAmount
   const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
+  const toToken = storedTokensNameMapper[toAddress] ?? ''
   const exchangeRate = (+parsedToAmount / +fromAmount).toString()
   const exchangeValues = { toAmount: parsedToAmount, toToken }
   const modalTypeObj = { ...exchangeValues, title: swapModalProps.title }

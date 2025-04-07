@@ -140,7 +140,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
 
       // get gas
       if (!!signerAddress) {
-        get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       }
     },
     fetchWithdrawLpToken: async (props) => {
@@ -188,7 +188,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
 
         // get gas
         if (!!signerAddress) {
-          get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+          void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
         }
       }
     },
@@ -279,7 +279,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
 
       // get gas
       if (!!signerAddress) {
-        get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       }
     },
     fetchClaimable: async (activeKey, chainId, pool) => {
@@ -346,16 +346,16 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
           maxSlippage,
         }
         if (cFormValues.selected === 'token') {
-          get()[sliceKey].fetchWithdrawToken(props)
+          void get()[sliceKey].fetchWithdrawToken(props)
         } else if (cFormValues.selected === 'lpToken') {
-          get()[sliceKey].fetchWithdrawLpToken(props)
+          void get()[sliceKey].fetchWithdrawLpToken(props)
         } else if (cFormValues.selected === 'imbalance') {
-          get()[sliceKey].fetchWithdrawCustom(props)
+          void get()[sliceKey].fetchWithdrawCustom(props)
         }
       } else if (formType === 'UNSTAKE' && !!signerAddress && +cFormValues.stakedLpToken > 0) {
-        get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       } else if (formType === 'CLAIM') {
-        get()[sliceKey].fetchClaimable(activeKey, chainId, pool)
+        void get()[sliceKey].fetchClaimable(activeKey, chainId, pool)
       }
     },
 

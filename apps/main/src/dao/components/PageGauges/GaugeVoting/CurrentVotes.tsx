@@ -70,7 +70,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   // Get next vote time for all gauges
   useEffect(() => {
     if (userWeightReady) {
-      getAllVoteForGaugeNextTime(userAddress ?? '')
+      void getAllVoteForGaugeNextTime(userAddress ?? '')
     }
   }, [userAddress, userWeightReady, getAllVoteForGaugeNextTime])
 

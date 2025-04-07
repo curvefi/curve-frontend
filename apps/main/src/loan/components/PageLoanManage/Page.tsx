@@ -34,6 +34,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
@@ -42,7 +43,7 @@ const Page = (params: CollateralUrlParams) => {
   const { rChainId, rCollateralId, rFormType } = routerParams
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -77,11 +78,11 @@ const Page = (params: CollateralUrlParams) => {
   )
 
   useEffect(() => {
-    if (curve && !isLoadingApi) {
+    if (curve && !isLoadingStable) {
       if (!rChainId || !rCollateralId || !rFormType) {
         push(getCollateralListPathname(params))
       } else if (curve.signerAddress && llamma) {
-        ;(async () => {
+        void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
           if (!fetchedLoanDetails.loanExists.loanExists) {
             resetUserDetailsState(llamma)
@@ -94,7 +95,7 @@ const Page = (params: CollateralUrlParams) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, isLoadingApi, rFormType])
+  }, [isReady, isLoadingStable, rFormType])
 
   useEffect(() => {
     if (!loaded && loanExists && !loanExists.loanExists) {
@@ -115,8 +116,8 @@ const Page = (params: CollateralUrlParams) => {
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve && !!curve.signerAddress && llamma && loanExists) {
-        fetchLoanDetails(curve, llamma)
-        fetchUserLoanDetails(curve, llamma)
+        void fetchLoanDetails(curve, llamma)
+        void fetchUserLoanDetails(curve, llamma)
       }
     },
     REFRESH_INTERVAL['1m'],
