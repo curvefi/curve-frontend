@@ -40,7 +40,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
-  const firstRow = () => cy.get(`[data-testid^="data-table-row"]`).first()
+  const firstRow = () => cy.get(`[data-testid="data-table-row-0"]`)
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
