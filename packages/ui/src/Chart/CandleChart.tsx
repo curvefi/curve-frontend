@@ -480,6 +480,19 @@ const CandleChart = ({
         })
       }
     }
+
+    // update latest oracle price from more recent data source to ensure most recent data is displayed
+    if (
+      latestOraclePrice &&
+      oraclePriceSeriesRef.current &&
+      oraclePriceData &&
+      oraclePriceData[oraclePriceData.length - 1].value !== +latestOraclePrice
+    ) {
+      oraclePriceSeriesRef.current.update({
+        time: oraclePriceData[oraclePriceData.length - 1].time,
+        value: +latestOraclePrice,
+      })
+    }
   }, [
     colors.backgroundColor,
     colors.rangeColorA25Old,
@@ -487,22 +500,13 @@ const CandleChart = ({
     fetchMoreChartData,
     fetchingMore,
     lastTimescale,
+    latestOraclePrice,
     liquidationRange,
     ohlcData,
     oraclePriceData,
     refetchingCapped,
     volumeData,
   ])
-
-  // update the latest data point to ensure the oracle price is current in case there hasn't been recent events in the pool
-  useEffect(() => {
-    if (latestOraclePrice && oraclePriceSeriesRef.current && oraclePriceData) {
-      oraclePriceSeriesRef.current.update({
-        time: oraclePriceData[oraclePriceData.length - 1].time,
-        value: +latestOraclePrice,
-      })
-    }
-  }, [latestOraclePrice, oraclePriceData])
 
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries) => {
