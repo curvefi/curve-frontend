@@ -1,6 +1,6 @@
 import { createSvgIcon } from '@mui/material/utils'
 
-export const KeplrIcon = createSvgIcon(
+export const KeplrWalletIcon = createSvgIcon(
   <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#clip0_8225_3088)">
       <path
@@ -67,5 +67,5 @@ export const KeplrIcon = createSvgIcon(
       </clipPath>
     </defs>
   </svg>,
-  'Keplr',
+  'KeplrWallet',
 )

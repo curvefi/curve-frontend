@@ -1,6 +1,6 @@
 import { createSvgIcon } from '@mui/material/utils'
 
-export const RainbowIcon = createSvgIcon(
+export const RainbowWalletIcon = createSvgIcon(
   <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
     <rect width="40" height="40" rx="2" fill="url(#pattern0_8225_3105)" />
     <defs>
@@ -16,5 +16,5 @@ export const RainbowIcon = createSvgIcon(
       />
     </defs>
   </svg>,
-  'Rainbow',
+  'RainbowWallet',
 )

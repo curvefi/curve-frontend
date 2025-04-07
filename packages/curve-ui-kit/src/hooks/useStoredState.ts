@@ -7,7 +7,7 @@ const event = new EventTarget()
 /**
  * Hook for storage similar to useState, but allowing custom get/set functions.
  */
-export function useStorage<Type, Default = Type>({
+export function useStoredState<Type, Default = Type>({
   key,
   initialValue,
   get,

@@ -1,6 +1,6 @@
 import { createSvgIcon } from '@mui/material/utils'
 
-export const CoinbaseIcon = createSvgIcon(
+export const CoinbaseWalletIcon = createSvgIcon(
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2500 2500">
     <rect y="0" width="2500" height="2500" fill="none" />
     <path
@@ -17,5 +17,5 @@ export const CoinbaseIcon = createSvgIcon(
     />
     <path d="M1031.3,966.2h437.3c36,0,65.1,31.4,65.1,70v427.5c0,38.7-29.2,70-65.1,70h-437.3c-36,0-65.1-31.4-65.1-70   v-427.5C966.2,997.6,995.4,966.2,1031.3,966.2z" />
   </svg>,
-  'Coinbase',
+  'CoinbaseWallet',
 )

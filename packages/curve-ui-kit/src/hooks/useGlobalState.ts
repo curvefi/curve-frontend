@@ -1,4 +1,4 @@
-import { type GetAndSet, useStorage } from './useStorage'
+import { type GetAndSet, useStoredState } from './useStoredState'
 
 const storedValues = new Map<string, unknown>()
 
@@ -9,7 +9,7 @@ const storedValues = new Map<string, unknown>()
  * It is not exported, as we want to keep an overview of all the local keys used in the app.
  */
 export const useGlobalState = <Type, Default = Type>(key: string, initialValue?: Default): GetAndSet<Type, Default> =>
-  useStorage({
+  useStoredState({
     key,
     initialValue,
     get: (key: string, initialValue?: Default) =>

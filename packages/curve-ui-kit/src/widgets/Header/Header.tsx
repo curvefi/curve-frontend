@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { Theme } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { routeToPage } from '@ui-kit/shared/routes'
 import { DESKTOP_HEADER_HEIGHT, DesktopHeader } from './DesktopHeader'
@@ -23,10 +24,12 @@ export const Header = <TChainId extends number>({ routes, ...props }: HeaderProp
         .map((props) => routeToPage(props, { networkName, pathname })),
     [isBeta, networkName, pathname, routes],
   )
-  if (isDesktop) {
-    return <DesktopHeader pages={pages} {...props} />
-  }
-  return <MobileHeader pages={pages} {...props} />
+  return (
+    <>
+      {isDesktop ? <DesktopHeader pages={pages} {...props} /> : <MobileHeader pages={pages} {...props} />}
+      <WagmiConnectModal />
+    </>
+  )
 }
 
 /**

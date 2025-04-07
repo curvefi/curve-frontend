@@ -82,7 +82,7 @@ export const useWallet: UseConnectWallet = () => {
 
   return {
     wallet: wallet,
-    connecting: shouldUseWagmi ? wagmiConnecting : onboardConnecting,
+    connecting: wagmiConnecting || onboardConnecting,
     connect,
     disconnect,
     walletName,

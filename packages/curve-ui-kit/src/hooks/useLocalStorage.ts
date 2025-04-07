@@ -1,7 +1,7 @@
 import { kebabCase } from 'lodash'
 import type { Address } from '@curvefi/prices-api'
 import { isBetaDefault } from '@ui-kit/utils'
-import { useStorage } from './useStorage'
+import { useStoredState } from './useStoredState'
 
 export function getFromLocalStorage<T>(storageKey: string): T | null {
   const item = window.localStorage.getItem(storageKey)
@@ -15,7 +15,7 @@ export function getFromLocalStorage<T>(storageKey: string): T | null {
  * It is not exported, as we want to keep an overview of all the local storage keys used in the app.
  */
 const useLocalStorage = <Type, Default = Type>(key: string, initialValue?: Default) =>
-  useStorage<Type, Default>({
+  useStoredState<Type, Default>({
     key,
     initialValue,
     get: (key: string, initialValue?: Default): Type | Default => {
