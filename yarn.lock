@@ -13986,6 +13986,7 @@ __metadata:
     "@types/react-dom": "npm:*"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
+    eslint-config-turbo: "npm:2.5.0"
     husky: "npm:^9.1.7"
     lint-staged: "npm:15.5.0"
     prettier: "npm:^3.5.3"
