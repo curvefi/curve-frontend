@@ -8518,7 +8518,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-a11y@npm:^8.6.11":
+"@storybook/addon-a11y@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/addon-a11y@npm:8.6.12"
   dependencies:
@@ -8573,7 +8573,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-docs@npm:8.6.12, @storybook/addon-docs@npm:^8.6.11":
+"@storybook/addon-docs@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/addon-docs@npm:8.6.12"
   dependencies:
@@ -8590,7 +8590,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-essentials@npm:^8.6.11":
+"@storybook/addon-essentials@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/addon-essentials@npm:8.6.12"
   dependencies:
@@ -8621,7 +8621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-interactions@npm:^8.6.12":
+"@storybook/addon-interactions@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/addon-interactions@npm:8.6.12"
   dependencies:
@@ -8660,7 +8660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-themes@npm:^8.6.11":
+"@storybook/addon-themes@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/addon-themes@npm:8.6.12"
   dependencies:
@@ -8691,7 +8691,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/blocks@npm:8.6.12, @storybook/blocks@npm:^8.6.12":
+"@storybook/blocks@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/blocks@npm:8.6.12"
   dependencies:
@@ -8840,7 +8840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/nextjs@npm:^8.6.11":
+"@storybook/nextjs@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/nextjs@npm:8.6.12"
   dependencies:
@@ -8964,7 +8964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react@npm:8.6.12, @storybook/react@npm:^8.6.11":
+"@storybook/react@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/react@npm:8.6.12"
   dependencies:
@@ -8989,7 +8989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/test@npm:8.6.12, @storybook/test@npm:^8.6.12":
+"@storybook/test@npm:8.6.12":
   version: 8.6.12
   resolution: "@storybook/test@npm:8.6.12"
   dependencies:
@@ -9194,7 +9194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/eslint-plugin-query@npm:^5.71.5":
+"@tanstack/eslint-plugin-query@npm:5.71.5":
   version: 5.71.5
   resolution: "@tanstack/eslint-plugin-query@npm:5.71.5"
   dependencies:
@@ -14010,15 +14010,15 @@ __metadata:
     "@mui/utils": "npm:^6.4.8"
     "@safe-global/safe-apps-provider": "npm:^0.18.5"
     "@safe-global/safe-apps-sdk": "npm:^9.1.0"
-    "@storybook/addon-a11y": "npm:^8.6.11"
-    "@storybook/addon-docs": "npm:^8.6.11"
-    "@storybook/addon-essentials": "npm:^8.6.11"
-    "@storybook/addon-interactions": "npm:^8.6.12"
-    "@storybook/addon-themes": "npm:^8.6.11"
-    "@storybook/blocks": "npm:^8.6.12"
-    "@storybook/nextjs": "npm:^8.6.11"
-    "@storybook/react": "npm:^8.6.11"
-    "@storybook/test": "npm:^8.6.12"
+    "@storybook/addon-a11y": "npm:8.6.12"
+    "@storybook/addon-docs": "npm:8.6.12"
+    "@storybook/addon-essentials": "npm:8.6.12"
+    "@storybook/addon-interactions": "npm:8.6.12"
+    "@storybook/addon-themes": "npm:8.6.12"
+    "@storybook/blocks": "npm:8.6.12"
+    "@storybook/nextjs": "npm:8.6.12"
+    "@storybook/react": "npm:8.6.12"
+    "@storybook/test": "npm:8.6.12"
     "@tanstack/query-sync-storage-persister": "npm:5.71.10"
     "@tanstack/react-query": "npm:5.71.10"
     "@tanstack/react-query-devtools": "npm:5.71.10"
@@ -14049,9 +14049,9 @@ __metadata:
     pino-pretty: "npm:^13.0.0"
     react: "npm:*"
     react-dom: "npm:*"
-    storybook: "npm:^8.6.11"
+    storybook: "npm:8.6.12"
     tsconfig: "npm:*"
-    type-fest: "npm:^4.39.1"
+    type-fest: "npm:4.39.1"
     typescript: "npm:*"
     webpack: "npm:*"
   peerDependencies:
@@ -15415,14 +15415,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "eslint-config-custom@workspace:packages/eslint-config-custom"
   dependencies:
-    "@tanstack/eslint-plugin-query": "npm:^5.71.5"
+    "@tanstack/eslint-plugin-query": "npm:5.71.5"
     "@typescript-eslint/eslint-plugin": "npm:^8.29.0"
     "@typescript-eslint/parser": "npm:^8.29.0"
     eslint: "npm:*"
     eslint-config-next: "npm:^15.2.4"
     eslint-config-prettier: "npm:^10.1.1"
-    eslint-config-turbo: "npm:^2.5.0"
-    eslint-import-resolver-typescript: "npm:^4.3.2"
+    eslint-config-turbo: "npm:2.5.0"
+    eslint-import-resolver-typescript: "npm:4.3.2"
     eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-no-only-tests: "npm:^3.3.0"
     eslint-plugin-react: "npm:7.37.5"
@@ -15468,7 +15468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-turbo@npm:^2.5.0":
+"eslint-config-turbo@npm:2.5.0":
   version: 2.5.0
   resolution: "eslint-config-turbo@npm:2.5.0"
   dependencies:
@@ -15488,6 +15488,29 @@ __metadata:
     is-core-module: "npm:^2.13.0"
     resolve: "npm:^1.22.4"
   checksum: 10c0/0ea8a24a72328a51fd95aa8f660dcca74c1429806737cf10261ab90cfcaaf62fd1eff664b76a44270868e0a932711a81b250053942595bcd00a93b1c1575dd61
+  languageName: node
+  linkType: hard
+
+"eslint-import-resolver-typescript@npm:4.3.2":
+  version: 4.3.2
+  resolution: "eslint-import-resolver-typescript@npm:4.3.2"
+  dependencies:
+    debug: "npm:^4.4.0"
+    get-tsconfig: "npm:^4.10.0"
+    is-bun-module: "npm:^2.0.0"
+    stable-hash: "npm:^0.0.5"
+    tinyglobby: "npm:^0.2.12"
+    unrs-resolver: "npm:^1.4.1"
+  peerDependencies:
+    eslint: "*"
+    eslint-plugin-import: "*"
+    eslint-plugin-import-x: "*"
+  peerDependenciesMeta:
+    eslint-plugin-import:
+      optional: true
+    eslint-plugin-import-x:
+      optional: true
+  checksum: 10c0/76af6e18e0363a62a4b3e92c043dc2060c5e1f84973f596efe0d2f5d838d572d3714136310d2c68257f50b829ab88e79c534a22a57752195b780642fc7d5e943
   languageName: node
   linkType: hard
 
@@ -15512,29 +15535,6 @@ __metadata:
     eslint-plugin-import-x:
       optional: true
   checksum: 10c0/5abd1b2d2bd0dca1616cca88ce3ed6bd6d68aa227a5da09e291720c3477f1ff467fbdcc0e19f28b4a4c2e3e8b2e6864fe0c4dcf8ff3092b5c6df2e7095aa738e
-  languageName: node
-  linkType: hard
-
-"eslint-import-resolver-typescript@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "eslint-import-resolver-typescript@npm:4.3.2"
-  dependencies:
-    debug: "npm:^4.4.0"
-    get-tsconfig: "npm:^4.10.0"
-    is-bun-module: "npm:^2.0.0"
-    stable-hash: "npm:^0.0.5"
-    tinyglobby: "npm:^0.2.12"
-    unrs-resolver: "npm:^1.4.1"
-  peerDependencies:
-    eslint: "*"
-    eslint-plugin-import: "*"
-    eslint-plugin-import-x: "*"
-  peerDependenciesMeta:
-    eslint-plugin-import:
-      optional: true
-    eslint-plugin-import-x:
-      optional: true
-  checksum: 10c0/76af6e18e0363a62a4b3e92c043dc2060c5e1f84973f596efe0d2f5d838d572d3714136310d2c68257f50b829ab88e79c534a22a57752195b780642fc7d5e943
   languageName: node
   linkType: hard
 
@@ -19022,7 +19022,7 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@types/validator": "npm:^13.12.2"
-    bignumber.js: "npm:^9.2.0"
+    bignumber.js: "npm:^9.1.2"
     curve-ui-kit: "npm:*"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.13.5"
@@ -19037,7 +19037,7 @@ __metadata:
     pinst: "npm:^3.0.0"
     react: "npm:*"
     react-dom: "npm:*"
-    react-hook-form: "npm:^7.55.0"
+    react-hook-form: "npm:7.55.0"
     react-is: "npm:19.1.0"
     recharts: "npm:2.15.2"
     sharp: "npm:^0.34.0"
@@ -19048,7 +19048,7 @@ __metadata:
     ui: "npm:*"
     validator: "npm:^13.15.0"
     vest: "npm:^5.4.6"
-    viem: "npm:^2.26.0"
+    viem: "npm:2.26.0"
     webpack: "npm:^5.98.0"
     zustand: "npm:^4.5.6"
   languageName: unknown
@@ -21094,7 +21094,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.55.0":
+"react-hook-form@npm:7.55.0":
   version: 7.55.0
   resolution: "react-hook-form@npm:7.55.0"
   peerDependencies:
@@ -22600,7 +22600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:^8.6.11":
+"storybook@npm:8.6.12":
   version: 8.6.12
   resolution: "storybook@npm:8.6.12"
   dependencies:
@@ -23642,6 +23642,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:4.39.1":
+  version: 4.39.1
+  resolution: "type-fest@npm:4.39.1"
+  checksum: 10c0/f5bf302eb2e2f70658be1757aa578f4a09da3f65699b0b12b7ae5502ccea76e5124521a6e6b69540f442c3dc924c394202a2ab58718d0582725c7ac23c072594
+  languageName: node
+  linkType: hard
+
 "type-fest@npm:^0.20.2":
   version: 0.20.2
   resolution: "type-fest@npm:0.20.2"
@@ -23667,13 +23674,6 @@ __metadata:
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: 10c0/a5a7ecf2e654251613218c215c7493574594951c08e52ab9881c9df6a6da0aeca7528c213c622bc374b4e0cb5c443aa3ab758da4e3c959783ce884c3194e12cb
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^4.39.1":
-  version: 4.39.1
-  resolution: "type-fest@npm:4.39.1"
-  checksum: 10c0/f5bf302eb2e2f70658be1757aa578f4a09da3f65699b0b12b7ae5502ccea76e5124521a6e6b69540f442c3dc924c394202a2ab58718d0582725c7ac23c072594
   languageName: node
   linkType: hard
 
@@ -24484,6 +24484,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"viem@npm:2.26.0":
+  version: 2.26.0
+  resolution: "viem@npm:2.26.0"
+  dependencies:
+    "@noble/curves": "npm:1.8.1"
+    "@noble/hashes": "npm:1.7.1"
+    "@scure/bip32": "npm:1.6.2"
+    "@scure/bip39": "npm:1.5.4"
+    abitype: "npm:1.0.8"
+    isows: "npm:1.0.6"
+    ox: "npm:0.6.9"
+    ws: "npm:8.18.1"
+  peerDependencies:
+    typescript: ">=5.0.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/ad902e2348d42cef7723fc372f87a361ec16b114a2cf21bfc2d92cbdef1ac90142c8b3adc1ceea0438cc5b29796cbb8c23a880449499c21ce6b76f0317e8d524
+  languageName: node
+  linkType: hard
+
 "viem@npm:^2.1.1":
   version: 2.24.1
   resolution: "viem@npm:2.24.1"
@@ -24502,27 +24523,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/18e228a1abc04216261c7b0b06c4c8a250fbcfd0680046547168852dfd124b3d249513ded3086d74f60a15a6936fcd865d898be8cc3348e0e6208885343c7e24
-  languageName: node
-  linkType: hard
-
-"viem@npm:^2.26.0":
-  version: 2.26.0
-  resolution: "viem@npm:2.26.0"
-  dependencies:
-    "@noble/curves": "npm:1.8.1"
-    "@noble/hashes": "npm:1.7.1"
-    "@scure/bip32": "npm:1.6.2"
-    "@scure/bip39": "npm:1.5.4"
-    abitype: "npm:1.0.8"
-    isows: "npm:1.0.6"
-    ox: "npm:0.6.9"
-    ws: "npm:8.18.1"
-  peerDependencies:
-    typescript: ">=5.0.4"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 10c0/ad902e2348d42cef7723fc372f87a361ec16b114a2cf21bfc2d92cbdef1ac90142c8b3adc1ceea0438cc5b29796cbb8c23a880449499c21ce6b76f0317e8d524
   languageName: node
   linkType: hard
 
