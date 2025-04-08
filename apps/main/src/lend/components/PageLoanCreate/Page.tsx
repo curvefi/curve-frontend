@@ -30,7 +30,7 @@ import {
   PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
 import { isLoading } from '@ui/utils'
-import { ConnectWalletPrompt, notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -62,13 +62,11 @@ const Page = (params: MarketUrlParams) => {
   const fetchInitial = useCallback(
     async (api: Api, market: OneWayMarketTemplate) => {
       const { signerAddress } = api
-      notify('Loading market data...', 'pending', 10000)
 
       if (signerAddress) {
         await fetchUserLoanExists(api, market, true)
       }
       setLoaded(true)
-      notify('Set Loaded', 'success', 10000)
 
       // delay fetch rest after form details are fetch first
       setTimeout(() => {
@@ -78,7 +76,6 @@ const Page = (params: MarketUrlParams) => {
           void fetchUserMarketBalances(api, market, true)
         }
         setInitialLoaded(true)
-        notify('Initial loaded', 'success', 10000)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
@@ -99,7 +96,6 @@ const Page = (params: MarketUrlParams) => {
   }, [isPageVisible])
 
   useEffect(() => {
-    notify('Change chart', 'hint', 10000)
     if (!isMdUp && chartExpanded) {
       setChartExpanded(false)
     }
