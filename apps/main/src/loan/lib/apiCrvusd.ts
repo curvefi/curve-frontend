@@ -1,9 +1,8 @@
-import { BrowserProvider } from 'ethers'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import type { FormValues as SwapFormValues } from '@/loan/components/PageLoanManage/LoanSwap/types'
 import networks from '@/loan/networks'
-import type { LiqRange, Provider, MaxRecvLeverage } from '@/loan/store/types'
+import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, Curve, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
 import {
@@ -14,7 +13,7 @@ import {
   reverseBands,
   sortBands,
 } from '@/loan/utils/utilsCurvejs'
-import PromisePool from '@supercharge/promise-pool'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const network = {
   1: {
@@ -92,18 +91,8 @@ const helpers = {
       return resp
     }
   },
-  waitForTransaction: async (hash: string, provider: Provider) =>
-    (provider as BrowserProvider).waitForTransaction(hash),
-  waitForTransactions: async (hashes: string[], provider: Provider) => {
-    const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await (provider as BrowserProvider).waitForTransaction(hash),
-    )
-    if (Array.isArray(errors) && errors.length > 0) {
-      throw errors
-    } else {
-      return results
-    }
-  },
+  waitForTransaction,
+  waitForTransactions,
 }
 
 const detailInfo = {

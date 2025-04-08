@@ -8,7 +8,7 @@ import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import TextEllipsis from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { formatDate, formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
@@ -45,7 +45,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
 
   // TODO: format date by locale
   const rampUpAEndsTime = useMemo(
-    () => (future_A_time ? new Date(future_A_time).toLocaleString() : null),
+    () => (future_A_time ? formatDate(new Date(future_A_time), 'long') : null),
     [future_A_time],
   )
 

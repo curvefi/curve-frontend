@@ -6,7 +6,6 @@ export type ExchangeOutput = {
   loading: boolean
   exchangeRates: ExchangeRate[]
   isExchangeRateLow: boolean
-  isHighImpact: boolean
   priceImpact: number
   toAmount: string
   modal?: RoutesAndOutputModal | null
@@ -14,10 +13,7 @@ export type ExchangeOutput = {
 
 export type RouterSwapOutput = {
   isExchangeRateLow: boolean
-  isExpectedToAmount: boolean
-  isHighImpact: boolean
   isHighSlippage: boolean
-  maxSlippage: string
   priceImpact: number
   routes: Route[]
   toAmount: string

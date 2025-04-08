@@ -45,6 +45,7 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {
@@ -114,17 +115,8 @@ export const helpers = {
     if (!api || !signerAddress || !market) return ''
     return `${market.id}-${shortenAccount(signerAddress)}`
   },
-  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
-  waitForTransactions: async (hashes: string[], provider: Provider) => {
-    const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash),
-    )
-    if (Array.isArray(errors) && errors.length > 0) {
-      throw errors
-    } else {
-      return results
-    }
-  },
+  waitForTransaction,
+  waitForTransactions,
 }
 
 const market = {
@@ -1280,6 +1272,10 @@ const loanRepay = {
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
+      if (isLeverage) {
+        await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
+      }
+
       resp.isApproved = isLeverage
         ? await market.leverage.repayIsApproved(userCollateral, userBorrowed)
         : isFullRepay

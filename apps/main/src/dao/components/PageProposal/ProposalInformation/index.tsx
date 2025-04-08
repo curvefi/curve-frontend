@@ -5,7 +5,7 @@ import { ProposalData } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import { InternalLink } from '@ui/Link'
-import { convertToLocaleTimestamp } from '@ui/utils'
+import { convertToLocaleTimestamp, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -17,12 +17,12 @@ type ProposalInformationProps = {
 
 const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationProps) => {
   const createdDate = useMemo(
-    () => (proposal ? new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString() : '-'),
-    [proposal],
+    () => formatDate(new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000), 'long'),
+    [proposal?.startDate],
   )
   const endDate = useMemo(
-    () => (proposal ? new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString() : '-'),
-    [proposal],
+    () => formatDate(new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000), 'long'),
+    [proposal?.startDate],
   )
 
   return (

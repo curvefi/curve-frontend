@@ -22,6 +22,7 @@ import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/De
 import useStore from '@/dex/store/useStore'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
+import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
@@ -81,6 +82,8 @@ const Swap = ({
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+
+  const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
@@ -527,7 +530,7 @@ const Swap = ({
         <DetailInfoPriceImpact
           loading={exchangeOutput.loading}
           priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={exchangeOutput.isHighImpact}
+          isHighImpact={slippageImpact?.isHighImpact ?? null}
         />
 
         {haveSigner && (

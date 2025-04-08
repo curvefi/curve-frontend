@@ -5,7 +5,7 @@ import Box from '@ui/Box'
 import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
 import Tooltip from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTime, convertTimeAgo } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const TradesData = ({
@@ -65,7 +65,7 @@ const TradesData = ({
           </TradeTo>
         </Event>
         <TimestampColumn>
-          <Tooltip tooltip={`${convertTime(transaction.time)} ${convertDate(transaction.time).toLocaleDateString()}`}>
+          <Tooltip tooltip={formatDate(convertDate(transaction.time), 'long')}>
             {convertTimeAgo(transaction.time)}
           </Tooltip>
         </TimestampColumn>

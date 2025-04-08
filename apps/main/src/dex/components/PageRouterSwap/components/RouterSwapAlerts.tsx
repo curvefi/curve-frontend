@@ -3,7 +3,7 @@ import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
-import type { FormStatus, FormValues, RoutesAndOutput, SearchedParams } from '@/dex/components/PageRouterSwap/types'
+import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
@@ -11,13 +11,21 @@ import { t } from '@ui-kit/lib/i18n'
 const RouterSwapAlerts = ({
   formStatus,
   formValues,
-  routesAndOutput,
+  maxSlippage,
+  toAmountOutput,
+  isExchangeRateLow,
+  isHighImpact,
+  isExpectedToAmount,
   searchedParams,
   updateFormValues,
 }: {
   formStatus: FormStatus
   formValues: FormValues
-  routesAndOutput: RoutesAndOutput
+  maxSlippage: string
+  toAmountOutput: string
+  isExchangeRateLow: boolean
+  isHighImpact?: boolean
+  isExpectedToAmount?: boolean
   searchedParams: SearchedParams
   updateFormValues: (
     updatedFormValues: Partial<FormValues>,
@@ -30,7 +38,6 @@ const RouterSwapAlerts = ({
 
   const { error, swapError } = formStatus
   const { toAddress } = searchedParams
-  const { isExchangeRateLow, isExpectedToAmount, isHighImpact, toAmountOutput } = routesAndOutput ?? {}
 
   const toUsdRate = usdRatesMapper[toAddress]
 
@@ -48,7 +55,7 @@ const RouterSwapAlerts = ({
         <AlertBox alertType="warning">{t`The expected amount you would like to receive, ${formValues.toAmount}, will actually be ${toAmountOutput}.`}</AlertBox>
       )}
 
-      <AlertSlippage maxSlippage={routesAndOutput?.maxSlippage} usdAmount={usdToAmount} />
+      <AlertSlippage maxSlippage={maxSlippage} usdAmount={usdToAmount} />
 
       <AlertFormError errorKey={swapError || error} handleBtnClose={() => updateFormValues({})} />
     </>
