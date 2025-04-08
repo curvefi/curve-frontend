@@ -17,7 +17,7 @@ export const tac = defineChain({
   id: 2390 as const,
   name: 'tac',
   testnet: true,
-  nativeCurrency: { name: 'tac', symbol: 'TAC', decimals: 18 }, // todo: check decimals
+  nativeCurrency: { name: 'tac', symbol: 'TAC', decimals: 8 },
   rpcUrls: { default: { http: ['https://turin.rpc.tac.build'] } },
   blockExplorers: { default: { name: 'Turin Explorer', url: 'https://turin.explorer.tac.build/' } },
 })

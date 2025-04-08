@@ -1,11 +1,29 @@
 import { last } from 'lodash'
 import { useCallback, useMemo } from 'react'
+import type { Chain, Client, Transport } from 'viem'
 import { useAccount, useClient, useConnect, useDisconnect, useEnsName } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
+import type { Address } from '@ui-kit/utils'
 import type { Wallet } from '../types'
-import { createWallet } from './adapter'
 import { connectors } from './connectors'
 import { supportedWallets, type WalletType } from './wallets'
+
+export const createWallet = ({
+  client,
+  label,
+  address,
+  ensName,
+}: {
+  client: Client<Transport, Chain>
+  label?: string
+  address: Address
+  ensName?: string | null
+}): Wallet => ({
+  label,
+  account: { address, ...(ensName && { ensName }) },
+  chainId: client.chain.id,
+  provider: client.transport,
+})
 
 export const useWalletType = () => useGlobalState<WalletType, null>('wallet', null)
 export const useConnectCallbacks = () =>

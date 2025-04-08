@@ -14198,7 +14198,7 @@ __metadata:
     tsconfig: "npm:*"
     type-fest: "npm:4.39.1"
     typescript: "npm:*"
-    viem: "npm:2.x"
+    viem: "npm:2.26.2"
     wagmi: "npm:^2.14.15"
     webpack: "npm:*"
   peerDependencies:
@@ -24716,7 +24716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.x":
+"viem@npm:2.26.2":
   version: 2.26.2
   resolution: "viem@npm:2.26.2"
   dependencies:

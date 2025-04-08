@@ -47,7 +47,7 @@
     "pino-pretty": "^13.0.0",
     "react": "*",
     "react-dom": "*",
-    "viem": "2.x",
+    "viem": "2.26.2",
     "wagmi": "^2.14.15"
   },
   "peerDependencies": {

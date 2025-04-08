@@ -1,17 +1,12 @@
-import { BrowserProvider, ethers } from 'ethers'
-import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
+import { BrowserProvider } from 'ethers'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
-import { switchChain } from '@wagmi/core'
-import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
-import type { NotificationType } from '@web3-onboard/core/dist/types'
-import { useConnectWallet as useOnboardWallet, useSetChain as useOnboardSetChain } from '@web3-onboard/react'
+import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
 import type { Wallet } from './types'
 import { convertOnboardWallet, getWalletProvider } from './utils/wallet-helpers'
-import type { WagmiChainId } from './wagmi/chains'
 import { useWagmi } from './wagmi/useWagmi'
-import { config } from './wagmi/wagmi-config'
 
 type UseConnectWallet = {
   (): {
@@ -28,7 +23,6 @@ type UseConnectWallet = {
   initialize(...params: Parameters<typeof initOnboard>): void
 }
 
-let onboard: OnboardAPI | null = null
 const state: {
   provider: BrowserProvider | null
   wallet: Wallet | null
@@ -91,40 +85,5 @@ export const useWallet: UseConnectWallet = () => {
     signerAddress,
   }
 }
-useWallet.initialize = (...params) => (onboard = initOnboard(...params))
+useWallet.initialize = (...params) => initOnboard(...params)
 useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
-
-export const useSetChain = () => {
-  const [_, setOnboardChain] = useOnboardSetChain()
-  const shouldUseWagmi = useUseWagmi()
-  return useCallback(
-    async (chainId: number): Promise<boolean> => {
-      if (!shouldUseWagmi) {
-        return setOnboardChain({ chainId: ethers.toQuantity(chainId) })
-      }
-      try {
-        await switchChain(config, { chainId: chainId as WagmiChainId })
-        return true
-      } catch (error) {
-        console.error('Error switching chain:', error)
-        return false
-      }
-    },
-    [setOnboardChain, shouldUseWagmi],
-  )
-}
-
-export const notify = (
-  message: string,
-  type: NotificationType,
-  autoDismiss?: number,
-): { dismiss: () => void; update: UpdateNotification | undefined } => {
-  if (!onboard) {
-    throw new Error('Onboard not initialized')
-  }
-  return onboard.state.actions.customNotification({
-    type,
-    message,
-    ...(typeof autoDismiss !== 'undefined' && { autoDismiss }),
-  })
-}

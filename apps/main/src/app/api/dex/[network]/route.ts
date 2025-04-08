@@ -49,14 +49,9 @@ const getServerSideCache = async (network: NetworkConfig) => {
     curveJS.tricryptoFactory.fetchPools(),
     curveJS.stableNgFactory.fetchPools(),
   ])
-  try {
-    const { poolsMapper, poolsMapperCache } = await getPools(curveJS, curveJS.getPoolList(), network, {})
-    const [tvl, volume] = await Promise.all([getTvlCache(network, poolsMapper), getVolumeCache(network, poolsMapper)])
-    return { pools: poolsMapperCache, tvl, volume }
-  } catch (e) {
-    console.trace('failed', network.id, e)
-    throw e
-  }
+  const { poolsMapper, poolsMapperCache } = await getPools(curveJS, curveJS.getPoolList(), network, {})
+  const [tvl, volume] = await Promise.all([getTvlCache(network, poolsMapper), getVolumeCache(network, poolsMapper)])
+  return { pools: poolsMapperCache, tvl, volume }
 }
 
 async function refreshDex() {

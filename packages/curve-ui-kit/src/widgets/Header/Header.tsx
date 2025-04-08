@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { Theme } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { routeToPage } from '@ui-kit/shared/routes'
@@ -16,7 +17,7 @@ export const Header = <TChainId extends number>({ routes, ...props }: HeaderProp
   const isDesktop = useMediaQuery(isDesktopQuery, { noSsr: true })
   const [isBeta] = useBetaFlag()
   const pathname = usePathname()
-  const { networkName } = props
+  const { networkName, height } = props
   const pages = useMemo(
     () =>
       routes
@@ -28,6 +29,7 @@ export const Header = <TChainId extends number>({ routes, ...props }: HeaderProp
     <>
       {isDesktop ? <DesktopHeader pages={pages} {...props} /> : <MobileHeader pages={pages} {...props} />}
       <WagmiConnectModal />
+      <WalletToast headerHeight={height} />
     </>
   )
 }
