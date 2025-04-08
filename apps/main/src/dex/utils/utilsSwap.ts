@@ -91,34 +91,59 @@ export function _parseRoutesAndOutput(
   priceImpact: number,
   output: string,
   poolsMapper: { [poolId: string]: PoolData },
-  maxSlippage: string | undefined,
   toAmount: string,
   toAddress: string,
   fromAmount: string,
   fromAddress: string,
   fetchedToAmount?: string,
 ) {
-  const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
-  const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
-  const parsedMaxSlippage = maxSlippage ? maxSlippage : haveCryptoRoutes ? '0.1' : '0.03'
-
+  const { routes: parseRoutes, haveCryptoRoutes } = parseRouterRoutes(routes, poolsMapper, curve.getPool)
   const exchangeRates = getExchangeRates(toAmount, fromAmount)
 
   return {
-    exchangeRates: exchangeRates,
-    isExchangeRateLow: excludeLowExchangeRateCheck(fromAddress, toAddress, parsedRouterRoutes.routes)
+    exchangeRates,
+    isExchangeRateLow: excludeLowExchangeRateCheck(fromAddress, toAddress, parseRoutes)
       ? false
       : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount),
-    isHighImpact: priceImpact > +parsedMaxSlippage,
     isHighSlippage: haveCryptoRoutes ? false : Number(exchangeRates[0]) > 0.98,
     isStableswapRoute: !haveCryptoRoutes,
-    maxSlippage: parsedMaxSlippage,
-    priceImpact: priceImpact,
-    routes: parsedRouterRoutes.routes,
-    toAmount: toAmount,
+    priceImpact,
+    routes: parseRoutes,
+    toAmount,
     toAmountOutput: output,
-    fromAmount: fromAmount,
+    fromAmount,
+    fetchedToAmount: fetchedToAmount || '',
+  }
+}
+
+/**
+ * Parameters for calculating slippage impact
+ * @typedef {Object} GetSlippageImpactParams
+ * @property {string} maxSlippage - Maximum allowed slippage percentage
+ * @property {string} toAmount - Target amount the user wants to receive
+ * @property {number|null} priceImpact - Calculated price impact of the swap
+ * @property {string} [fetchedToAmount] - Optional actual amount that will be received after the swap
+ */
+type GetSlippageImpactParams = {
+  maxSlippage: string
+  toAmount: string
+  priceImpact: number | null
+  fetchedToAmount?: string
+}
+
+/**
+ * Calculates the slippage impact of a swap.
+ * Used to be part of the _parseRoutesAndOutput function, but was extracted out.
+ *
+ * @param {GetSlippageImpactParams} params - Parameters for slippage calculation
+ * @returns {Object} Object containing:
+ *   - isHighImpact: true if price impact exceeds max slippage
+ *   - isExpectedToAmount: true if difference between desired and actual amount exceeds max slippage
+ */
+export function getSlippageImpact({ maxSlippage, toAmount, priceImpact, fetchedToAmount }: GetSlippageImpactParams) {
+  return {
+    isHighImpact: priceImpact !== null && priceImpact > +maxSlippage,
     // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
-    ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +fetchedToAmount > +parsedMaxSlippage } : {}),
+    ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +(fetchedToAmount ?? 0) > +maxSlippage } : {}),
   }
 }

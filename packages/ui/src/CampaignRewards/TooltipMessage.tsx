@@ -2,18 +2,13 @@ import styled from 'styled-components'
 import Box from 'ui/src/Box'
 import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 import { ExternalLink } from 'ui/src/Link'
+import { formatDate } from '../utils'
 
 const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
   const { campaignName, platform, description, action, dashboardLink, campaignStart, campaignEnd } = rewardsPool
 
-  const options: Intl.DateTimeFormatOptions = {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }
-
-  const start = new Date(+campaignStart * 1000).toLocaleDateString(undefined, options)
-  const end = new Date(+campaignEnd * 1000).toLocaleDateString(undefined, options)
+  const start = formatDate(new Date(+campaignStart * 1000))
+  const end = formatDate(new Date(+campaignEnd * 1000))
 
   const title = () => {
     if (campaignName && platform) {

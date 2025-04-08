@@ -4,7 +4,7 @@ import networks from '@/dao/networks'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { formatNumber, convertToLocaleTimestamp } from '@ui/utils'
+import { formatNumber, convertToLocaleTimestamp, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -82,7 +82,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         <StatsRow>
           <StatTitle>{t`Deployment Date`}</StatTitle>
           <StatData>
-            {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
+            {formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}
           </StatData>
         </StatsRow>
         <StatsRow>

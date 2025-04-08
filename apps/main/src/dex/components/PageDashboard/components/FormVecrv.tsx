@@ -10,6 +10,7 @@ import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { toDate } from '@curvefi/prices-api/timestamp'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import { Items } from '@ui/Items'
@@ -19,10 +20,10 @@ import { getStepStatus } from '@ui/Stepper/helpers'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { Chip } from '@ui/Typography'
+import { formatDate } from '@ui/utils'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
-import dayjs from '@ui-kit/lib/dayjs'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
 // TODO uncomment locker link code once it is ready
@@ -56,7 +57,7 @@ const FormVecrv = () => {
     (lookupAddressIsSameAsSignerAddress && getIsLockExpired(lockedAmount, unlockTime)) ||
     parsedFormStatus.formTypeCompleted
   const lockedAmountDisplay = <strong>{formatNumber(lockedAmount, { defaultValue: '-' })}</strong>
-  const lockedLocalUtcDate = unlockTime ? <strong>{dayjs.utc(unlockTime).format('l')}</strong> : '-'
+  const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(toDate(unlockTime / 1000), 'long')}</strong> : '-' //
 
   const handleBtnClickWithdraw = useCallback(
     async (activeKey: string, curve: CurveApi, lockedAmount: string) => {
