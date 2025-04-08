@@ -191,7 +191,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
     fetchOhlcData(rChainId, llammaId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
   }
 
-  // set snapshot data and subscribe to new data
+  // fetch ohlc data
   useEffect(() => {
     if (llamma !== undefined) {
       fetchOhlcData(
