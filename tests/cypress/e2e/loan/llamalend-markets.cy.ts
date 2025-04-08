@@ -40,7 +40,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
-  const firstRow = () => cy.get(`[data-testid="data-table-row-0"]`)
+  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).eq(0)
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
@@ -172,10 +172,9 @@ describe(`LlamaLend Markets`, () => {
   it(`should hover and copy the market address`, RETRY_IN_CI, () => {
     const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
-    cy.wait(500) // necessary in chrome for the hover to work properly :(
     firstRow().should('not.have.css', 'background-color', hoverBackground)
     cy.scrollTo(0, 0)
-    firstRow().trigger('mouseenter', { waitForAnimations: true, force: true })
+    firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
     firstRow().should('have.css', 'background-color', hoverBackground)
     copyFirstAddress().should('have.css', 'opacity', '1')
     copyFirstAddress().click()

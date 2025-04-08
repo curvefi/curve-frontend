@@ -1,10 +1,10 @@
-import { RefObject, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 /**
  * A hook that observes whether an element has a specific class.
  * Uses MutationObserver to track class changes in real-time.
  *
- * @param ref - React ref object pointing to the element to observe
+ * @param element - The element to observe
  * @param className - The class name to check for
  * @returns Boolean indicating whether the element has the specified class
  *
@@ -22,14 +22,10 @@ import { RefObject, useEffect, useState } from 'react'
  * );
  * ```
  */
-export function useClassObserver(
-  ref: RefObject<HTMLLIElement | HTMLTableRowElement | null>,
-  className: string,
-): boolean {
+export function useClassObserver(element: HTMLLIElement | HTMLTableRowElement | null, className: string): boolean {
   const [hasClass, setHasClass] = useState(false)
 
   useEffect(() => {
-    const element = ref.current
     if (!element) return
 
     // Check initial state
@@ -49,7 +45,7 @@ export function useClassObserver(
     return () => {
       observer.disconnect()
     }
-  }, [ref, className])
+  }, [element, className])
 
   return hasClass
 }

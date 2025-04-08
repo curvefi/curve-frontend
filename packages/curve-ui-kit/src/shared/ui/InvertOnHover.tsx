@@ -1,4 +1,4 @@
-import { cloneElement, type ReactElement, type RefObject } from 'react'
+import { cloneElement, type ReactElement } from 'react'
 import type { Theme } from '@mui/material'
 import type { SystemStyleObject } from '@mui/system'
 import { useClassObserver } from '@ui-kit/hooks/useClassObserver'
@@ -31,17 +31,17 @@ type InvertOnHoverProps = {
   /**
    * A ref to the element that should trigger the hover effect. Used to handle the focus-visible state.
    */
-  hoverRef: RefObject<HTMLLIElement | HTMLTableRowElement | null>
+  hoverEl: HTMLLIElement | HTMLTableRowElement | null
 }
 
 const defaultHoverColor = (t: Theme) => t.design.Layer.TypeAction.Hover
 
-export const InvertOnHover = ({ children: child, hoverRef, hoverColor = defaultHoverColor }: InvertOnHoverProps) => {
+export const InvertOnHover = ({ children: child, hoverEl, hoverColor = defaultHoverColor }: InvertOnHoverProps) => {
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
-  const inverted = useClassObserver(hoverRef, 'Mui-focusVisible') || isHover
+  const inverted = useClassObserver(hoverEl, 'Mui-focusVisible') || isHover
   const childSx = (child.props.sx as Record<string, object>) ?? {}
 
-  useNativeEventInCypress(hoverRef.current, 'mouseenter', onMouseEnter)
+  useNativeEventInCypress(hoverEl, 'mouseenter', onMouseEnter)
 
   return (
     <InvertTheme inverted={inverted}>
