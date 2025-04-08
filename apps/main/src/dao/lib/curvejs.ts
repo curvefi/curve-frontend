@@ -1,6 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
 import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
-import networks from '@/dao/networks'
 import {
   CurveApi,
   ChainId,
@@ -19,37 +18,13 @@ import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
-    const { networkId, rpcUrl } = networks[chainId] ?? {}
-    if (!networkId) {
-      throw new Error('Unable to initialize curvejs without networkId')
-    }
-
     const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
     if (wallet) {
-      await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
-      return curveApi
+      await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+    } else {
+      await curveApi.init('NoRPC', 'NoRPC', { chainId })
     }
-    if (rpcUrl) {
-      await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
-      return curveApi
-    }
-    throw new Error('Unable to initialize curvejs without wallet or rpcUrl')
-  },
-  fetchL1GasPrice: async (curve: CurveApi) => {
-    const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
-    try {
-      if (networks[curve.chainId].gasL2) {
-        const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
-        resp.l2GasPriceWei = l2GasPriceWei
-        resp.l1GasPriceWei = l1GasPriceWei
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      // resp.error = getErrorMessage(error, 'error-get-gas')
-      // TODO: fix
-      return resp
-    }
+    return curveApi
   },
   waitForTransaction,
   waitForTransactions,
@@ -60,7 +35,7 @@ export const helpers = {
     await PromisePool.for(tokenAddresses)
       .withConcurrency(5)
       .handleError((error, tokenAddress) => {
-        console.error(`Unable to get usd rate for ${tokenAddress}`)
+        console.error(`Unable to get usd rate for ${tokenAddress}`, error)
         results[tokenAddress] = NaN
       })
       .process(async (tokenAddress) => {
