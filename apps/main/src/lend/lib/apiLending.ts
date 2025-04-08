@@ -45,8 +45,8 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
-import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { getWalletProvider } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {

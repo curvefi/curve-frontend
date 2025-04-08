@@ -4,6 +4,9 @@ import { isBetaDefault } from '@ui-kit/utils'
 import { useStoredState } from './useStoredState'
 
 export function getFromLocalStorage<T>(storageKey: string): T | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
   const item = window.localStorage.getItem(storageKey)
   return item && JSON.parse(item)
 }

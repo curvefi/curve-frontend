@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
+import type { Address } from 'viem'
 import { getFavoriteMarkets, useFavoriteMarkets } from '@ui-kit/hooks/useLocalStorage'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
-import type { Address } from 'viem'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,
