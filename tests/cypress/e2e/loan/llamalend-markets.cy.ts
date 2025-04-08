@@ -71,8 +71,8 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    cy.get('[data-testid="line-graph-lend"] path').first().should('have.attr', 'stroke', green)
-    cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
+    checkLineGraphColor('lend', green)
+    checkLineGraphColor('borrow', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
@@ -218,6 +218,12 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 })
+
+function checkLineGraphColor(type: 'lend' | 'borrow', color: string) {
+  // the graphs are lazy loaded, so we need to scroll to them first before checking the color
+  cy.get(`[data-testid="line-graph-${type}"]`).first().scrollIntoView()
+  cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
+}
 
 function selectChain(chain: string) {
   cy.get('[data-testid="multi-select-filter-chain"]').click()
