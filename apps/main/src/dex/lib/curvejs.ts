@@ -43,8 +43,8 @@ import type { DateValue } from '@internationalized/date'
 import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
-import { log } from '@ui-kit/lib/logging'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { log } from '@ui-kit/lib/logging'
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
