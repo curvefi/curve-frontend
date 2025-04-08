@@ -36,7 +36,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     id: 'optimism',
     chainId: Chain.Optimism,
     gasL2: true,
-    rpcUrl: 'https://optimism.llamarpc.com',
+    rpcUrl: 'https://mainnet.optimism.io',
     nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://optimistic.etherscan.io/',
   },
