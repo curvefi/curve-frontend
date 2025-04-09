@@ -15,7 +15,7 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
-import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const curve = useApiStore((state) => state.curve)

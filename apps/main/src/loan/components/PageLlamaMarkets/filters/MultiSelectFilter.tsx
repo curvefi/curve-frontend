@@ -120,7 +120,7 @@ export const MultiSelectFilter = <T extends unknown>({
             <Button color="ghost" size="extraSmall" onClick={onClear}>{t`Clear Selection`}</Button>
           </Box>
           {options.map((optionId) => (
-            <InvertOnHover hoverRef={menuRef} key={optionId}>
+            <InvertOnHover hoverEl={menuRef.current} key={optionId}>
               <MenuItem
                 ref={menuRef}
                 value={optionId}
