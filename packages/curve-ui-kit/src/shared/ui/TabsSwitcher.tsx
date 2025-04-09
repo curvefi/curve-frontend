@@ -4,7 +4,7 @@ import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { TABS_HEIGHT_CLASSES, TABS_VARIANT_CLASSES, TabSwitcherVariants } from '../../themes/tabs'
+import { TABS_HEIGHT_CLASSES, TABS_VARIANT_CLASSES, TabSwitcherVariants } from '../../themes/components/tabs'
 
 const defaultTextVariants = {
   small: 'buttonS',

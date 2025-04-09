@@ -4,7 +4,7 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { DocsContainer } from '@storybook/blocks'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react'
 import { chadTheme, darkTheme, lightTheme } from '../src/themes'
-import { minecraft, monaSans } from '../src/themes/typography/fonts'
+import { minecraft, monaSans } from '../src/themes/fonts'
 
 const themes = {
   light: lightTheme(),
