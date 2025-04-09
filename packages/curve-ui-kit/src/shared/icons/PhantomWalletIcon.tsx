@@ -1,6 +1,6 @@
 import { createSvgIcon } from '@mui/material/utils'
 
-export const PhantomWalletIcon = createSvgIcon(
+export const svg = (
   <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <mask
       id="mask0_8225_3072"
@@ -22,6 +22,7 @@ export const PhantomWalletIcon = createSvgIcon(
         fill="#FFFDF8"
       />
     </g>
-  </svg>,
-  'PhantomWallet',
+  </svg>
 )
+
+export const PhantomWalletIcon = createSvgIcon(svg, 'PhantomWallet')

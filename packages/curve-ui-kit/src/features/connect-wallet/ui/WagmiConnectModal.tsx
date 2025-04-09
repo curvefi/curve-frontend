@@ -17,8 +17,8 @@ const { IconSize } = SizesAndSpaces
 
 const IconImg = styled('img')({
   ...handleBreakpoints({
-    width: IconSize.lg,
-    height: IconSize.lg,
+    width: IconSize.xl,
+    height: IconSize.xl,
   }),
   alt: '',
 })
@@ -39,12 +39,13 @@ const WalletListItem = ({
 }) => {
   const { label, icon: Icon } = wallet
   const onConnect = useCallback(() => connect(wallet), [connect, wallet])
-  const icon = typeof Icon === 'string' ? <IconImg src={Icon} /> : <Icon />
+
   return (
     <MenuItem
       key={label}
       label={label}
-      icon={icon}
+      labelVariant="bodyMBold"
+      icon={<Icon sx={handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })} />}
       value={label}
       onSelected={onConnect}
       isLoading={isLoading}
