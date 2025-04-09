@@ -1,3 +1,4 @@
+/// <reference types="./mui-checkbox.d.ts" />
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import type { Components } from '@mui/material/styles'

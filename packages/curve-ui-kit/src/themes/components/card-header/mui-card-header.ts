@@ -1,3 +1,4 @@
+/// <reference types="./mui-card-header.d.ts" />
 import type { Components } from '@mui/material/styles'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { DesignSystem } from '@ui-kit/themes/design'

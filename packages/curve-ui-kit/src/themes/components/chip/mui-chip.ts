@@ -1,3 +1,4 @@
+/// <reference types="./mui-chip.d.ts" />
 import type { Components } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip/Chip'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
