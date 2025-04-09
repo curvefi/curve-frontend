@@ -30,7 +30,7 @@ function ChainListItem<TChainId extends number>({
 }) {
   const ref = useRef<HTMLLIElement | null>(null)
   return (
-    <InvertOnHover hoverRef={ref}>
+    <InvertOnHover hoverEl={ref.current}>
       <MenuItem
         onClick={() => onChange(chain.chainId)}
         data-testid={`menu-item-chain-${chain.chainId}`}
