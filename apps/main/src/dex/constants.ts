@@ -1,4 +1,5 @@
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { SMALL_POOL_VOLUME } from '@ui-kit/features/user-profile/store'
 export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
 
 export const LARGE_APY = 5000
@@ -27,7 +28,7 @@ export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
   excludeTokensBalancesMapper: {}, // tokens that cause issues when getting wallet balances
   excludePoolsMapper: {}, // remove pool from pool list and pool page
-  hideSmallPoolsTvl: 10000,
+  hideSmallPoolsTvl: SMALL_POOL_VOLUME,
   isLite: false,
   isActiveNetwork: true,
   missingPools: [],
