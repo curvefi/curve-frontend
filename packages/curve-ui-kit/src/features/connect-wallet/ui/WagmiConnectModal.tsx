@@ -3,7 +3,6 @@ import { BaseError } from 'viem/errors/base'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MenuList from '@mui/material/MenuList'
-import { styled } from '@mui/material/styles'
 import { useWagmi } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmi'
 import { t } from '@ui-kit/lib/i18n'
 import { WalletIcon } from '@ui-kit/shared/icons/WalletIcon'
@@ -14,14 +13,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { supportedWallets, type WalletType } from '../lib/wagmi/wallets'
 
 const { IconSize } = SizesAndSpaces
-
-const IconImg = styled('img')({
-  ...handleBreakpoints({
-    width: IconSize.xl,
-    height: IconSize.xl,
-  }),
-  alt: '',
-})
 
 /**
  * Menu item for each wallet type. Only needed so we can useCallback
