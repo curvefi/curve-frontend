@@ -1,1 +1,1 @@
-export * from './generate-themes'
+export * from './themes'
