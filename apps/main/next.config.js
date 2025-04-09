@@ -51,6 +51,11 @@ const nextConfiguration = {
     source: '/dao/:network',
     destination: '/dao/:network/proposals',
     permanent: false
+  }, {
+    // DAO doesn't have an integrations page, but the link is in the footer. Redirect to dex.
+    source: '/dao/:network/integrations',
+    destination: '/dex/:network/integrations',
+    permanent: false
   }],
 }
 
