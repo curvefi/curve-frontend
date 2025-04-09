@@ -8,7 +8,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const ClientWrapper = ({ children, loading }: { children: ReactNode; loading: boolean }) => {
   const theme = useUserProfileStore((state) => state.theme)
