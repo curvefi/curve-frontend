@@ -59,7 +59,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
       ...(pricesApiAvailable ? [
         { titleKey: TITLE.profitAndLoss, content: <UserInfoPnl userActiveKey={userActiveKey} /> },
-        { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} /> },
+        { titleKey: TITLE.positionCurrentLeverage, content: <UserInfoLeverage userActiveKey={userActiveKey} />, show: isAdvancedMode },
       ] : []),
     ],
     [
