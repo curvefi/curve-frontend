@@ -32,7 +32,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
   const menuItem = useRef<HTMLLIElement>(null)
 
   return (
-    <InvertOnHover hoverRef={menuItem}>
+    <InvertOnHover hoverEl={menuItem.current}>
       <MenuItem
         ref={menuItem}
         // disabled={disabled} breaks `cursor: 'not-allowed'`
