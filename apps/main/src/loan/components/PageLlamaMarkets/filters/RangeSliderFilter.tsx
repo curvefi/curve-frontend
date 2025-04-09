@@ -43,9 +43,9 @@ export const RangeSliderFilter = <T extends unknown>({
   const id = cleanColumnId(field)
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
-  const defaultValue = useMemo(() => {
+  const defaultValue = useMemo((): Range => {
     const [min, max] = (columnFilters[id] as Range) ?? []
-    return [min ?? defaultMinimum, max ?? maxValue] as Range
+    return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
 
   const [range, setRange] = useUniqueDebounce(

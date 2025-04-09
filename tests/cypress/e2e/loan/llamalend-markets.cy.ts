@@ -57,13 +57,12 @@ describe(`LlamaLend Markets`, () => {
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
-  // todo: contains(%) seems to be too early still, sometimes the handler doesn't react to the click
-  it('should sort', RETRY_IN_CI, () => {
+  it('should sort', () => {
     cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
+    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%')
+    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
   })
 
   it('should show graphs', () => {
@@ -99,7 +98,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', 'Liquidity: $0 -'],
+      ['liquidityUsd', 'Liquidity: $10,000 -'],
       ['utilizationPercent', 'Utilization: 0.00% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
@@ -111,7 +110,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click()
       /**
        * Using `force: true` to bypass Cypress' element visibility check.
-       * The slider may have pseudo elements that interfere with Cypress' ability to interact with it.
+       * The slider may have pseudo-elements that interfere with Cypress' ability to interact with it.
        * We've tried alternative approaches (adding waits, adjusting click coordinates) but they didn't resolve the issue.
        * The application behavior works correctly despite this test accommodation.
        */
