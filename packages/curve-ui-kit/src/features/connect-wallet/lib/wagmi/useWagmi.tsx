@@ -1,4 +1,3 @@
-import { last } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { Chain, Client, Transport } from 'viem'
 import { useAccount, useClient, useConnect, useDisconnect, useEnsName } from 'wagmi'
@@ -52,8 +51,8 @@ export const useWagmi = () => {
         return new Promise<Wallet | null>((...args) => setConnectCallbacks(args))
       }
 
-      // take the last (injected) as default, we also show a dynamic detected wallet. This is temporary until we get rid of onboard
-      const walletType = supportedWallets.find((w) => w.label === label) ?? last(supportedWallets)!
+      // take the first (injected) as default. This is temporary until we get rid of onboard
+      const walletType = supportedWallets.find((w) => w.label === label) ?? supportedWallets[0]!
       setWalletType(walletType)
       const [resolve, reject] = connectCallbacks ?? []
       try {
