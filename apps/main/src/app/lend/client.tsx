@@ -2,13 +2,13 @@
 import '@/global-extensions'
 import delay from 'lodash/delay'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/lend/layout'
 import networks from '@/lend/networks'
 import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { ClientWrapper } from '../ClientWrapper'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const pageWidth = useStore((state) => state.layout.pageWidth)

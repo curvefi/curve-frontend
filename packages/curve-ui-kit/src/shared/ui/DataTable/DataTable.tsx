@@ -1,3 +1,4 @@
+/// <reference types="./DataTable.d.ts" />
 import { ReactNode } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'

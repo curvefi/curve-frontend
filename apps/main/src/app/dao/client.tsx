@@ -2,6 +2,7 @@
 import '@/global-extensions'
 import delay from 'lodash/delay'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/dao/layout'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
@@ -11,7 +12,6 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
-import { ClientWrapper } from '../ClientWrapper'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const connectState = useStore((state) => state.connectState)

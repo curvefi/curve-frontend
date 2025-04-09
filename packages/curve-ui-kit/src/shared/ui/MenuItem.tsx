@@ -31,7 +31,7 @@ export function MenuItem<T>({
 }: MenuItemProps<T>) {
   const ref = useRef<HTMLLIElement | null>(null)
   return (
-    <InvertOnHover hoverRef={ref}>
+    <InvertOnHover hoverEl={ref.current}>
       <MuiMenuItem selected={isSelected} tabIndex={0} {...props} onClick={() => onSelected(value)}>
         {icon}
         <Typography sx={{ flexGrow: 1 }} variant={labelVariant ?? 'headingXsBold'}>
