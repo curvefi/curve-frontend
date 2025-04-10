@@ -1,5 +1,5 @@
 import type { SearchTermMapper, SearchTermKey } from '@/lend/components/PageMarketList/types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { t } from '@ui-kit/lib/i18n'
 
 export enum SEARCH_TERM {
@@ -15,7 +15,7 @@ export enum SEARCH_TERM {
 }
 
 export function parseSearchTermMapper(
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   searchedByAddresses: { [key: string]: { value: string } },
   searchTermMapper: SearchTermMapper,
 ) {

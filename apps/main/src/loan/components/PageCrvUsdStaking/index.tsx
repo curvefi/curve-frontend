@@ -25,9 +25,9 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const lendApi = useApiStore((state) => state.lending)
+  const llamalend = useApiStore((state) => state.llamalend)
   const { signerAddress, connecting, walletName } = useWallet()
-  const chainId = useApiStore((state) => state.stable?.chainId)
+  const chainId = llamalend?.chainId
 
   const {
     data: userScrvUsdBalance,
@@ -58,7 +58,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!lendApi || !signerAddress) return
+      if (!llamalend || !signerAddress) return
       // ensure user balances are up to date on load
       void refetchUserScrvUsdBalance()
       fetchExchangeRate()
@@ -66,15 +66,15 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     }
 
     void fetchData()
-  }, [lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
+  }, [llamalend, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
 
   useEffect(() => {
-    if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
+    if (!llamalend || !chainId || !signerAddress || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
       void checkApproval.depositApprove(inputAmount)
     }
-  }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
+  }, [checkApproval, llamalend, chainId, signerAddress, inputAmount, stakingModule])
 
   // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
   useEffect(() => {
