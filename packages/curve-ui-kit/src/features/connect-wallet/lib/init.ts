@@ -24,7 +24,7 @@ export const initOnboard = (
     wallets: [
       injected,
       trezor,
-      ledger,
+      ledger(),
       gnosis,
       coinbaseWalletSdk,
       fortmatic,

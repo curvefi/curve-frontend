@@ -12,8 +12,15 @@ import trezorModule from '@web3-onboard/trezor'
 import trustModule from '@web3-onboard/trust'
 import walletConnectModule from '@web3-onboard/walletconnect'
 
-// project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
-const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
+function getWalletConnectProjectId() {
+  // old project ID, not sure who's the admin
+  const OLD_WALLET_CONNECT_PROJECT_ID = 'c685334a8b28bf7c733632a5c49de23f'
+  // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
+  const NEW_WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
+
+  return window.location.origin.includes('curve.fi') ? OLD_WALLET_CONNECT_PROJECT_ID : NEW_WALLET_CONNECT_PROJECT_ID
+}
+
 export const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
 
 // only works on curve-dapp-git-chore-wallet-connect-curvefi.vercel.app
@@ -25,10 +32,11 @@ export const trezor = trezorModule({
   email: 'info@curve.fi',
   appUrl: 'https://curve.fi',
 })
-export const ledger = ledgerModule({
-  walletConnectVersion: 2,
-  projectId: WALLET_CONNECT_PROJECT_ID,
-})
+export const ledger = () =>
+  ledgerModule({
+    walletConnectVersion: 2,
+    projectId: getWalletConnectProjectId(),
+  })
 export const gnosis = gnosisModule({
   whitelistedDomains: [
     /^https:\/\/gnosis-safe\.io$/,
@@ -41,11 +49,11 @@ export const gnosis = gnosisModule({
 export const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 export const fortmatic = fortmaticModule({ apiKey: 'pk_live_190B10CE18F47DCD' })
 
-export const walletConnect = () => walletConnectModule({
-  projectId: WALLET_CONNECT_PROJECT_ID,
-  dappUrl: window.location.origin,
-  handleUri: (url: string) => console.log(`WalletConnect URI: ${url}`),
-})
+export const walletConnect = () =>
+  walletConnectModule({
+    projectId: getWalletConnectProjectId(),
+    dappUrl: window.location.origin,
+  })
 
 export const torus = torusModule()
 export const phantom = phantomModule()
