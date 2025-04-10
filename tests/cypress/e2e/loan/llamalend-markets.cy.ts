@@ -50,7 +50,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [274, 234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
+    const filterHeight = { mobile: [274, 266, 234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
@@ -232,9 +232,11 @@ function selectChain(chain: string) {
 
 const selectCoin = (symbol: string, type: TokenType) => {
   const columnId = `assets_${type}_symbol`
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
+  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
   cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
-  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
+  cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
+  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
+  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
 }
