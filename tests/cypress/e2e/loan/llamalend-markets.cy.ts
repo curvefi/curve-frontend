@@ -243,7 +243,7 @@ const selectCoin = (symbol: string, type: TokenType) => {
 }
 
 function showHiddenColumn({ element, toggle }: { element: string; toggle: string }) {
-  cy.get(`[data-testid="${element}"]`).should('not.be.visible')
+  cy.get(`[data-testid="${element}"]`).should('not.exist')
   cy.get(`[data-testid="btn-visibility-settings"]`).click()
   cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
   cy.get(`[data-testid="${element}"]`).should('be.visible')
