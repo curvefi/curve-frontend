@@ -28,7 +28,7 @@ export const initOnboard = (
       gnosis,
       coinbaseWalletSdk,
       fortmatic,
-      walletConnect,
+      walletConnect(),
       torus,
       phantom,
       frontier,
