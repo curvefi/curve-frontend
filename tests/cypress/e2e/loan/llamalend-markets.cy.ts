@@ -71,8 +71,10 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    checkLineGraphColor('lend', green)
     checkLineGraphColor('borrow', red)
+
+    showHiddenColumn({ element: 'line-graph-lend', toggle: 'lendChart' })
+    checkLineGraphColor('lend', green)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
@@ -202,14 +204,11 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
 
-  it('should toggle columns', () => {
+  it('should hide columns', () => {
     const { toggle, element } = oneOf(
-      // hide the whole column:
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
       { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
-      // hide the graph inside the cell:
       { toggle: 'borrowChart', element: 'line-graph-borrow' },
-      { toggle: 'lendChart', element: 'line-graph-lend' },
     )
     cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
@@ -241,4 +240,11 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+}
+
+function showHiddenColumn({ element, toggle }: { element: string; toggle: string }) {
+  cy.get(`[data-testid="${element}"]`).should('not.be.visible')
+  cy.get(`[data-testid="btn-visibility-settings"]`).click()
+  cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
+  cy.get(`[data-testid="${element}"]`).should('be.visible')
 }
