@@ -15,7 +15,9 @@ import walletConnectModule from '@web3-onboard/walletconnect'
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 export const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
-export const VERCEL_DOMAIN_VERIFICATION = '19899721198daa656a825a9e0fab8717e8f3ff9545f0150162a38b961e211ddb'
+
+// only works on curve-dapp-git-chore-wallet-connect-curvefi.vercel.app
+export const VERCEL_DOMAIN_VERIFICATION = '84ba44da9bf094485e9a78634683c0cbbe56795f765e65ae0152a9dda7242eac'
 export const CURVE_DOMAIN_VERIFICATION = '3d76b3cd8cd754f34ac1c18ff25dc23ee9b80fc7f75800041335263b11f20b19'
 
 export const injected = injectedModule()
