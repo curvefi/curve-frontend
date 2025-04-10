@@ -233,10 +233,7 @@ function selectChain(chain: string) {
 const selectCoin = (symbol: string, type: TokenType) => {
   const columnId = `assets_${type}_symbol`
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
-
-  // deselect previously selected tokens (actually we could now use the clear button)
-  cy.forEach(`[data-testid="${columnId}"] [aria-selected="true"]`, (el) => el.click())
-
+  cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
