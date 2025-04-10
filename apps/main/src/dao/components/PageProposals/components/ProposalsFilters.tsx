@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import useStore from '@/dao/store/useStore'
 import { ProposalListFilter, ProposalListFilterItem } from '@/dao/types/dao.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
@@ -9,34 +8,38 @@ type Props = {
   filters: ProposalListFilterItem[]
   activeFilter: ProposalListFilter
   listLength: number
+  proposalsLoading: boolean
   setActiveFilter: (filter: ProposalListFilter) => void
 }
 
-const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter, className }: Props) => {
-  const filteringProposalsLoading = useStore((state) => state.proposals.filteringProposalsLoading)
-
-  return (
-    <Container className={className}>
-      {filters.map((filter: ProposalListFilterItem) => (
-        <Filter
-          onClick={() => setActiveFilter(filter.key)}
-          className={activeFilter === filter.key ? 'active' : ''}
-          variant="select"
-          key={filter.key}
-        >
-          {filter.label}
-          {filteringProposalsLoading && activeFilter === filter.key ? (
-            <Spinner size={12} />
-          ) : activeFilter === filter.key ? (
-            ` ${listLength}`
-          ) : (
-            ''
-          )}
-        </Filter>
-      ))}
-    </Container>
-  )
-}
+const ProposalsFilters = ({
+  filters,
+  activeFilter,
+  listLength,
+  setActiveFilter,
+  className,
+  proposalsLoading,
+}: Props) => (
+  <Container className={className}>
+    {filters.map((filter: ProposalListFilterItem) => (
+      <Filter
+        onClick={() => setActiveFilter(filter.key)}
+        className={activeFilter === filter.key ? 'active' : ''}
+        variant="select"
+        key={filter.key}
+      >
+        {filter.label}
+        {proposalsLoading && activeFilter === filter.key ? (
+          <Spinner size={12} />
+        ) : activeFilter === filter.key ? (
+          ` ${listLength}`
+        ) : (
+          ''
+        )}
+      </Filter>
+    ))}
+  </Container>
+)
 
 const Container = styled.div`
   display: flex;

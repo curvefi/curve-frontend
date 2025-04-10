@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
+import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -16,19 +17,26 @@ type GaugeWeightDistributionProps = {
 }
 
 const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
+  const {
+    userGaugeWeightVotes,
+    isSuccess: userGaugeWeightsSuccess,
+    isLoading: userGaugeWeightsLoading,
+    isError: userGaugeWeightsError,
+  } = useUserGaugeWeightVotes({
+    chainId: 1, // DAO is only used on mainnet
+    userAddress: userAddress ?? '',
+  })
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
-  const { userGaugeVoteWeightsMapper } = useStore((state) => state.user)
-  const userData = userAddress ? userGaugeVoteWeightsMapper[userAddress] : null
 
-  const loading = isUserVotes ? userData?.fetchingState === 'LOADING' : gaugesLoading === 'LOADING'
-  const error = isUserVotes ? userData?.fetchingState === 'ERROR' : gaugesLoading === 'ERROR'
-  const success = isUserVotes ? userData?.fetchingState === 'SUCCESS' : gaugesLoading === 'SUCCESS'
+  const loading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
+  const error = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
+  const success = isUserVotes ? userGaugeWeightsSuccess : gaugesLoading === 'SUCCESS'
 
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
     if (isUserVotes) {
       return (
-        userData?.data?.gauges.map((gauge) => ({
+        userGaugeWeightVotes?.gauges.map((gauge) => ({
           ...gauge,
           title: gaugeMapper[gauge.gaugeAddress]?.title ?? '',
         })) ?? []
@@ -38,7 +46,7 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     return Object.values(gaugeMapper)
       .filter((gauge) => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-  }, [gaugeMapper, isUserVotes, userData])
+  }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])
 
   if (!userAddress && isUserVotes) {
     return (

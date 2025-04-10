@@ -403,6 +403,10 @@ export interface UserProposalVotesRes {
   data: UserProposalVoteResData[]
 }
 
+export type ProposalsMapper = {
+  [voteId: string]: ProposalData
+}
+
 export type UserGaugeVote = {
   gauge: string
   gauge_name: string
@@ -416,7 +420,7 @@ export type UserGaugeVotesRes = {
 }
 
 export type UserGaugeVoteWeight = {
-  title: string
+  title?: string
   userPower: number
   userVeCrv: number
   userFutureVeCrv: number
@@ -431,11 +435,6 @@ export type UserGaugeVoteWeight = {
   poolUrl: string
   relativeWeight: number
   totalVeCrv: number
-  nextVoteTime: {
-    fetchingState: FetchingState | null
-    timestamp: number | null
-  }
-  canVote: boolean
 }
 
 export type UserGaugeVoteWeightsMapper = {

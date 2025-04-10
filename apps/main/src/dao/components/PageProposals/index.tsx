@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { Key, useCallback, useEffect } from 'react'
+import { Key, useCallback } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
@@ -12,15 +12,13 @@ import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { invalidateProposals } from '../../entities/proposals-mapper'
+import { useProposalsList } from '../../hooks/useProposalsList'
 import ProposalsFilters from './components/ProposalsFilters'
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import Proposal from './Proposal'
 
 const Proposals = () => {
-  const getProposals = useStore((state) => state.proposals.getProposals)
-  const proposalsLoadingState = useStore((state) => state.proposals.proposalsLoadingState)
-  const filteringProposalsLoading = useStore((state) => state.proposals.filteringProposalsLoading)
   const activeSortBy = useStore((state) => state.proposals.activeSortBy)
   const activeSortDirection = useStore((state) => state.proposals.activeSortDirection)
   const setActiveSortBy = useStore((state) => state.proposals.setActiveSortBy)
@@ -29,14 +27,9 @@ const Proposals = () => {
   const setSearchValue = useStore((state) => state.proposals.setSearchValue)
   const searchValue = useStore((state) => state.proposals.searchValue)
   const activeFilter = useStore((state) => state.proposals.activeFilter)
-  const setProposals = useStore((state) => state.proposals.setProposals)
-  const proposals = useStore((state) => state.proposals.proposals)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const { push } = useRouter()
 
-  const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
-  const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
-  const isError = proposalsLoadingState === 'ERROR'
+  const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
 
   const handleSortingMethodChange = useCallback(
     (key: Key) => {
@@ -55,20 +48,6 @@ const Proposals = () => {
     },
     [push],
   )
-
-  useEffect(() => {
-    if (!isLoadingCurve && proposalsLoadingState === 'SUCCESS') {
-      setProposals(searchValue)
-    }
-  }, [
-    activeFilter,
-    activeSortBy,
-    activeSortDirection,
-    searchValue,
-    setProposals,
-    isLoadingCurve,
-    proposalsLoadingState,
-  ])
 
   return (
     <Wrapper>
@@ -96,7 +75,8 @@ const Proposals = () => {
               filters={PROPOSAL_FILTERS}
               activeFilter={activeFilter}
               setActiveFilter={setActiveFilter}
-              listLength={proposals.length}
+              listLength={proposalsList.length}
+              proposalsLoading={isLoading}
             />
           </ListManagerContainer>
           <SortingMethodContainer>
@@ -117,7 +97,7 @@ const Proposals = () => {
         <Box flex flexColumn>
           {searchValue !== '' && (
             <SearchMessage>
-              Showing results ({proposals.length}) for &quot;<strong>{searchValue}</strong>&quot;:
+              Showing results ({proposalsList.length}) for &quot;<strong>{searchValue}</strong>&quot;:
             </SearchMessage>
           )}
           <ProposalsWrapper>
@@ -128,11 +108,11 @@ const Proposals = () => {
             )}
             {isError && (
               <ErrorMessageWrapper>
-                <ErrorMessage message={t`Error fetching proposals`} onClick={() => getProposals()} />
+                <ErrorMessage message={t`Error fetching proposals`} onClick={() => invalidateProposals({})} />
               </ErrorMessageWrapper>
             )}
             {isSuccess &&
-              proposals.map((proposal, index) => (
+              proposalsList.map((proposal, index) => (
                 <Proposal
                   proposalData={proposal}
                   handleClick={handleProposalClick}

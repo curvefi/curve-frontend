@@ -12,7 +12,6 @@ import {
   UserGaugeVote,
   UserGaugeVotesRes,
   UserGaugeVotesSortBy,
-  UserGaugeVoteWeightsMapper,
   UserGaugeVoteWeightSortBy,
   UserLock,
   UserLockRes,
@@ -25,7 +24,6 @@ import {
 } from '@/dao/types/dao.types'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import type { WalletState } from '@web3-onboard/core'
 
 const { WEEK } = TIME_FRAMES
@@ -63,7 +61,6 @@ type SliceState = {
       votes: UserGaugeVote[]
     }
   }
-  userGaugeVoteWeightsMapper: UserGaugeVoteWeightsMapper
   userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
@@ -92,15 +89,12 @@ export type UserSlice = {
     getUserEns(userAddress: string): Promise<void>
     getUserProposalVotes(userAddress: string): Promise<void>
     getUserGaugeVotes(userAddress: string): Promise<void>
-    getUserGaugeVoteWeights(userAddress: string, silentFetch?: boolean): Promise<void>
     getUserLocks(userAddress: string): Promise<void>
-    getVoteForGaugeNextTime(userAddress: string, gaugeAddress: string): Promise<void>
-    getAllVoteForGaugeNextTime(userAddress: string): Promise<void>
 
     setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => void
-    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightSortBy) => void
+    setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -124,7 +118,6 @@ const DEFAULT_STATE: SliceState = {
   userVotesMapper: {},
   userProposalVotesMapper: {},
   userGaugeVotesMapper: {},
-  userGaugeVoteWeightsMapper: {},
   userLocksMapper: {},
   userLocksSortBy: {
     key: 'date',
@@ -359,145 +352,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       }
     },
-    getUserGaugeVoteWeights: async (userAddress: string, silentFetch = false) => {
-      const address = userAddress.toLowerCase()
-      const { curve } = useApiStore.getState()
-
-      if (!curve) return
-
-      if (!silentFetch) {
-        set(
-          produce((state) => {
-            state[sliceKey].userGaugeVoteWeightsMapper[address] = {
-              fetchingState: 'LOADING',
-              data: {
-                powerUsed: 0,
-                veCrvUsed: 0,
-                gauges: [],
-              },
-            }
-          }),
-        )
-      }
-
-      try {
-        const gaugeVoteWeightsRes = await curve.dao.userGaugeVotes(userAddress)
-
-        const data = {
-          powerUsed: Number(gaugeVoteWeightsRes.powerUsed),
-          veCrvUsed: Number(gaugeVoteWeightsRes.veCrvUsed),
-          gauges: gaugeVoteWeightsRes.gauges
-            .map((gauge) => ({
-              userPower: Number(gauge.userPower),
-              userVeCrv: Number(gauge.userVeCrv),
-              userFutureVeCrv: Number(gauge.userFutureVeCrv),
-              expired: gauge.expired,
-              ...gauge.gaugeData,
-              rootGaugeAddress: '',
-              relativeWeight: Number(gauge.gaugeData.relativeWeight),
-              totalVeCrv: Number(gauge.gaugeData.totalVeCrv),
-              nextVoteTime: {
-                fetchingState: null,
-                timestamp: null,
-              },
-              canVote: true,
-            }))
-            .sort((a, b) => b.userPower - a.userPower),
-        }
-
-        set(
-          produce((state) => {
-            state[sliceKey].userGaugeVoteWeightsMapper[address] = {
-              fetchingState: 'SUCCESS',
-              data,
-            }
-          }),
-        )
-      } catch (error) {
-        console.error(error)
-        set(
-          produce((state) => {
-            state[sliceKey].userGaugeVoteWeightsMapper[address] = {
-              fetchingState: 'ERROR',
-              data: {
-                powerUsed: 0,
-                veCrvUsed: 0,
-                gauges: [],
-              },
-            }
-          }),
-        )
-      }
-    },
-    getVoteForGaugeNextTime: async (userAddress: string, gaugeAddress: string) => {
-      const { curve } = useApiStore.getState()
-      if (!curve) return
-
-      const address = userAddress.toLowerCase()
-      const userGaugeVoteWeights = get()[sliceKey].userGaugeVoteWeightsMapper[address]
-
-      if (!userGaugeVoteWeights) return
-
-      // Get current state before updating
-      const currentGauges = [...userGaugeVoteWeights.data.gauges]
-      const gaugeIndex = currentGauges.findIndex((g) => g.gaugeAddress === gaugeAddress)
-      if (gaugeIndex === -1) return
-
-      set(
-        produce((state) => {
-          const gauges = [...state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges]
-          gauges[gaugeIndex] = {
-            ...gauges[gaugeIndex],
-            nextVoteTime: {
-              fetchingState: 'LOADING',
-              timestamp: null,
-            },
-          }
-          state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = gauges
-        }),
-      )
-
-      try {
-        const nextVoteTime = await curve.dao.voteForGaugeNextTime(gaugeAddress)
-
-        set(
-          produce((state) => {
-            const gauges = [...state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges]
-            gauges[gaugeIndex] = {
-              ...gauges[gaugeIndex],
-              nextVoteTime: {
-                fetchingState: 'SUCCESS',
-                timestamp: nextVoteTime,
-              },
-              canVote: nextVoteTime && Date.now() > nextVoteTime,
-            }
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = gauges
-          }),
-        )
-      } catch (error) {
-        console.error(error)
-        set(
-          produce((state) => {
-            const gauges = [...state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges]
-            gauges[gaugeIndex] = {
-              ...gauges[gaugeIndex],
-              nextVoteTime: {
-                fetchingState: 'ERROR',
-                timestamp: null,
-              },
-            }
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = gauges
-          }),
-        )
-      }
-    },
-    getAllVoteForGaugeNextTime: async (userAddress: string) => {
-      const { getVoteForGaugeNextTime } = get()[sliceKey]
-      const gauges = get()[sliceKey].userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? '']?.data.gauges
-      if (!gauges) return
-
-      void Promise.all(gauges.map((gauge) => getVoteForGaugeNextTime(userAddress, gauge.gaugeAddress)))
-    },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
       const address = userAddress.toLowerCase()
 
@@ -607,34 +461,25 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       }
     },
-    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightSortBy) => {
-      const address = userAddress.toLowerCase()
-
-      const {
-        userGaugeVoteWeightsMapper: {
-          [address]: { data },
-        },
-        userGaugeVoteWeightsSortBy,
-      } = get()[sliceKey]
+    setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => {
+      const { userGaugeVoteWeightsSortBy } = get()[sliceKey]
 
       let order = userGaugeVoteWeightsSortBy.order
+      // if sortBy is the same as the current sortBy, flip the order
       if (sortBy === userGaugeVoteWeightsSortBy.key) {
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
           produce((state) => {
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = [...data.gauges].reverse()
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
+        // if sortBy is different, set the sortBy to the new sortBy and set the order to desc
       } else {
-        const sortedEntries = [...data.gauges].sort((a, b) => b[sortBy] - a[sortBy])
-
         set(
           produce((state) => {
             state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
             state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = sortedEntries
           }),
         )
       }
