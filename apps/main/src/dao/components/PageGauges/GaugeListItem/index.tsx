@@ -100,7 +100,7 @@ const GaugeListItem = ({
               <VoteGaugeFieldWrapper>
                 <VoteGaugeField
                   powerUsed={powerUsed}
-                  userVeCrv={+userVeCrv}
+                  userVeCrv={+userVeCrv.veCrv}
                   userGaugeVoteData={userGaugeWeightVoteData}
                 />
               </VoteGaugeFieldWrapper>
