@@ -5,6 +5,7 @@ import { useOverlayTriggerState } from 'react-stately'
 import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
+import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
@@ -28,15 +29,21 @@ const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const { userAddress, userGaugeVoteWeightsMapper } = useStore((state) => state.user)
-  const { selectedGauge, setSelectedGauge, setStateByKey, gaugeMapper } = useStore((state) => state.gauges)
+  const userAddress = useStore((state) => state.user.userAddress)
+  const selectedGauge = useStore((state) => state.gauges.selectedGauge)
+  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
+  const setStateByKey = useStore((state) => state.gauges.setStateByKey)
+  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
 
-  const userGaugeVoteWeights = userGaugeVoteWeightsMapper[userAddress ?? '']
+  const { userGaugeWeightVotes } = useUserGaugeWeightVotes({
+    chainId: 1, // DAO is only used on mainnet
+    userAddress: userAddress ?? '',
+  })
   const gauges = Object.values(gaugeMapper)
     .filter(
       (gauge) =>
-        !userGaugeVoteWeights?.data.gauges.some(
+        !userGaugeWeightVotes?.gauges.some(
           (userGauge) =>
             userGauge.gaugeAddress.toLowerCase() ===
             (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),

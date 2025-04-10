@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import useStore from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -18,22 +19,24 @@ type VoteGaugeFieldProps = {
 }
 
 const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
-  const { canVote, nextVoteTime, userPower, gaugeAddress } = userGaugeVoteData
+  const userAddress = useStore((state) => state.user.userAddress)
+  const castVote = useStore((state) => state.gauges.castVote)
+  const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
+  const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
+    chainId: 1,
+    gaugeAddress: userGaugeVoteData?.gaugeAddress ?? '',
+    userAddress: userAddress ?? '',
+  })
+  const { userPower, gaugeAddress } = userGaugeVoteData
+  const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * (availablePower / 100)
 
-  const userAddress = useStore((state) => state.user.userAddress)
-  const castVote = useStore((state) => state.gauges.castVote)
-  const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
-
   const address = userAddress?.toLowerCase()
 
-  const loading =
-    nextVoteTime.fetchingState === 'LOADING' ||
-    txCastVoteState?.state === 'LOADING' ||
-    txCastVoteState?.state === 'CONFIRMING'
+  const loading = nextVoteTimeLoading || txCastVoteState?.state === 'LOADING' || txCastVoteState?.state === 'CONFIRMING'
 
   const handleChangePower = (value: number) => {
     if (value > maxPower) {
@@ -144,12 +147,12 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
           veCRV
         </NewVoteAbsoluteData>
       )}
-      {!canVote && !loading && nextVoteTime.timestamp && (
+      {!canVote && !loading && userGaugeVoteNextTime && (
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
             {t`Updating vote available on:`} <br />
             <strong>
-              {formatDate(new Date(convertToLocaleTimestamp(new Date(nextVoteTime.timestamp).getTime())), 'long')}
+              {formatDate(new Date(convertToLocaleTimestamp(new Date(userGaugeVoteNextTime).getTime())), 'long')}
             </strong>
             <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
           </VoteOnCooldown>

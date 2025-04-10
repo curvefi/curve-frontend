@@ -9,6 +9,7 @@ import GaugeListColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeLis
 import GaugeWeightVotesColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
 import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import VoteGaugeField from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
+import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -26,6 +27,7 @@ type Props = {
   powerUsed?: number
   userGaugeVote?: boolean
   addUserVote?: boolean
+  userAddress: string
 }
 
 const GaugeListItem = ({
@@ -35,7 +37,13 @@ const GaugeListItem = ({
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
+  userAddress,
 }: Props) => {
+  const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
+    chainId: 1,
+    gaugeAddress: userGaugeWeightVoteData?.gaugeAddress ?? '',
+    userAddress: userAddress,
+  })
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
   const gaugeCurveApiData = useStore(
@@ -46,6 +54,7 @@ const GaugeListItem = ({
   )
   const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
+  const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
 
   const gaugeHistoryLoading =
     gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
@@ -72,7 +81,7 @@ const GaugeListItem = ({
           <GaugeListColumns gaugeData={gaugeData} />
         )}
         <Box flex flexJustifyContent="flex-end" flexAlignItems="center" margin="0 0 0 auto">
-          {userGaugeWeightVoteData?.canVote && (
+          {userGaugeWeightVoteData && canVote && (
             <UpdateGaugeIndicator variant="select-flat">{t`Update`}</UpdateGaugeIndicator>
           )}
           <StyledIconButton size="small">
