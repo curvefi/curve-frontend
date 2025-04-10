@@ -138,7 +138,7 @@ export const useDefaultMarketColumnsVisibility: (address?: Address) => Visibilit
       {
         label: t`Lend`,
         options: [
-          { label: t`Chart`, columns: [LlamaMarketColumnId.LendChart], active: true, visible: true },
+          { label: t`Chart`, columns: [LlamaMarketColumnId.LendChart], active: true, visible: false },
           {
             label: t`Lend Details`,
             columns: [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited],

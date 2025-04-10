@@ -1,3 +1,4 @@
+import inRange from 'lodash/inRange'
 import { CampaignRewardsItem, type CampaignRewardsPool, RewardsAction, RewardsTags } from '@ui/CampaignRewards/types'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -9,6 +10,7 @@ export type PoolRewards = {
   tags: RewardsTags[]
   description: string | null
   platformImageId: string
+  period?: readonly [Date, Date]
 }
 
 const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
@@ -17,7 +19,7 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
     ...pools.reduce(
       (
         result: Record<string, PoolRewards[]>,
-        { address, multiplier, tags, action, description }: CampaignRewardsPool,
+        { address, multiplier, tags, action, description, campaignStart, campaignEnd }: CampaignRewardsPool,
       ) => ({
         ...result,
         [address.toLowerCase()]: [
@@ -28,6 +30,10 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
             action,
             description: description === 'null' ? null : description,
             platformImageId,
+            ...(+campaignStart &&
+              +campaignEnd && {
+                period: [new Date(1000 * +campaignStart), new Date(1000 * +campaignEnd)] as const,
+              }),
           },
         ],
       }),
@@ -39,6 +45,19 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
 
 export const { getQueryOptions: getCampaignsOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,
-  queryFn: async () => REWARDS,
+  queryFn: async (): Promise<Record<string, PoolRewards[]>> => {
+    const now = Date.now() // refresh is handled by refetchInterval
+    return Object.fromEntries(
+      Object.entries(REWARDS).map(([address, rewards]) => [
+        address,
+        rewards.filter(({ period }) => {
+          if (!period) return true
+          const [start, end] = period
+          return inRange(now, start.getTime(), end.getTime())
+        }),
+      ]),
+    )
+  },
   validationSuite: EmptyValidationSuite,
+  refetchInterval: '10m',
 })

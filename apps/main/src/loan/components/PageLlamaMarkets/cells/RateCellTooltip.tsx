@@ -38,7 +38,7 @@ const learnMoreLinks = {
 
 const Item = ({ icon, title, children }: { icon?: ReactNode; title: string; children: string }) => (
   <Typography component={Stack} color="textSecondary" direction="row" justifyContent="space-between">
-    <Stack direction="row" flexShrink={1}>
+    <Stack direction="row" flexShrink={1} gap={1}>
       {icon}
       {title}
     </Stack>
@@ -74,7 +74,7 @@ export const RateTooltipContent = ({
       {averageRate != null && <Item title={`${period} ${rateName[type]}`}>{formatPercent(averageRate)}</Item>}
       {rate != null && <Item title={`${t`Current`} ${rateName[type]}`}>{formatPercent(rate)}</Item>}
       {rewards.map((r, i) => (
-        <Item key={i} title={getRewardsDescription(r)} icon={<RewardIcon imageId={r.platformImageId} />}>
+        <Item key={i} title={getRewardsDescription(r)} icon={<RewardIcon size="md" imageId={r.platformImageId} />}>
           {r.multiplier}
         </Item>
       ))}

@@ -87,7 +87,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         textTransform: 'uppercase',
         transition: Transition,
       },
-      sizeExtraSmall: buttonSize({ height: 'xs', fontSize: 'sm', lineHeight: 'md' }),
+      sizeExtraSmall: { ...buttonSize({ height: 'xs', fontSize: 'sm', lineHeight: 'md' }), textTransform: 'none' },
       sizeSmall: buttonSize({ height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
       sizeMedium: buttonSize({ height: 'md', fontSize: 'md', lineHeight: 'xl' }),
       sizeLarge: buttonSize({ height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
