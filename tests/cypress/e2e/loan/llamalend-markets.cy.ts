@@ -40,7 +40,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
-  const firstRow = () => cy.get(`[data-testid^="data-table-row"]`).first()
+  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).eq(0)
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
@@ -71,8 +71,8 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    cy.get('[data-testid="line-graph-lend"] path').first().should('have.attr', 'stroke', green)
-    cy.get('[data-testid="line-graph-borrow"] path').first().should('have.attr', 'stroke', red)
+    checkLineGraphColor('lend', green)
+    checkLineGraphColor('borrow', red)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
@@ -172,10 +172,9 @@ describe(`LlamaLend Markets`, () => {
   it(`should hover and copy the market address`, RETRY_IN_CI, () => {
     const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
     cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
-    cy.wait(500) // necessary in chrome for the hover to work properly :(
     firstRow().should('not.have.css', 'background-color', hoverBackground)
     cy.scrollTo(0, 0)
-    firstRow().trigger('mouseenter', { waitForAnimations: true, force: true })
+    firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
     firstRow().should('have.css', 'background-color', hoverBackground)
     copyFirstAddress().should('have.css', 'opacity', '1')
     copyFirstAddress().click()
@@ -219,6 +218,12 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 })
+
+function checkLineGraphColor(type: 'lend' | 'borrow', color: string) {
+  // the graphs are lazy loaded, so we need to scroll to them first before checking the color
+  cy.get(`[data-testid="line-graph-${type}"]`).first().scrollIntoView()
+  cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
+}
 
 function selectChain(chain: string) {
   cy.get('[data-testid="multi-select-filter-chain"]').click()

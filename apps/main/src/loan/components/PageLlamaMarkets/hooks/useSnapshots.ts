@@ -19,25 +19,27 @@ type UseSnapshotsResult<T> = {
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: RateType,
+  enabled: boolean,
 ): UseSnapshotsResult<T> {
-  const isPool = marketType == LlamaMarketType.Lend
-  const showMintGraph = !isPool && type === 'borrow'
+  const isLend = marketType == LlamaMarketType.Lend
+  const showLendGraph = isLend && enabled
+  const showMintGraph = !isLend && type === 'borrow' && enabled
   const contractAddress = controllerAddress
   const params = { blockchainId: chain, contractAddress }
-  const { data: poolSnapshots, isLoading: poolIsLoading, error: poolError } = useLendingSnapshots(params, isPool)
+  const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
   const currentValue = rates[type] ?? null
-  const { snapshots, isLoading, snapshotKey, error } = isPool
+  const { snapshots, isLoading, snapshotKey, error } = isLend
     ? {
-        snapshots: poolSnapshots ?? null,
-        isLoading: poolIsLoading,
+        snapshots: (showLendGraph && poolSnapshots) || null,
+        isLoading: !enabled || lendIsLoading,
         snapshotKey: `${type}Apy` as const,
         error: poolError,
       }
     : {
         snapshots: (showMintGraph && mintSnapshots) || null,
-        isLoading: mintIsLoading,
+        isLoading: !enabled || mintIsLoading,
         snapshotKey: 'rate' as const,
         error: mintError,
       }

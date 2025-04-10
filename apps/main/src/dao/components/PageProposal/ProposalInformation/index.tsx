@@ -17,11 +17,15 @@ type ProposalInformationProps = {
 
 const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationProps) => {
   const createdDate = useMemo(
-    () => formatDate(new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000), 'long'),
+    () =>
+      proposal?.startDate ? formatDate(new Date(convertToLocaleTimestamp(proposal.startDate) * 1000), 'long') : '-',
     [proposal?.startDate],
   )
   const endDate = useMemo(
-    () => formatDate(new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000), 'long'),
+    () =>
+      proposal?.startDate
+        ? formatDate(new Date(convertToLocaleTimestamp(proposal.startDate + 604800) * 1000), 'long')
+        : '-',
     [proposal?.startDate],
   )
 
