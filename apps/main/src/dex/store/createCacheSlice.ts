@@ -3,6 +3,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
 import { logSuccess } from '@ui-kit/lib'
+import { SMALL_POOL_VOLUME } from '@ui-kit/features/user-profile/store'
 
 export type SwapFormValuesCache = {
   fromAddress: string
@@ -60,7 +61,7 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
       const isSmallPoolList = Object.keys(mapper).length < 30
 
       Object.entries(mapper).forEach(([k, { value }]) => {
-        if ((isSmallPoolList && +value > 0) || +value >= 10000) {
+        if ((isSmallPoolList && +value > 0) || +value >= SMALL_POOL_VOLUME) {
           parsedMapper[k] = { value }
         }
       })

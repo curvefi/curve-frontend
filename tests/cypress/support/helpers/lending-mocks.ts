@@ -70,10 +70,11 @@ function oneLendingVaultResponse(chain: Chain) {
             vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
           },
           {
-            // 0 liquidity to test the slider filter
+            // 99.99 utilization and 10k liquidity to test the sorting and slider filter
+            // (100% would result in 0 liquidity and be hidden)
             ...oneLendingPool(chain, oneFloat()),
-            total_assets_usd: 100,
-            total_debt_usd: 100,
+            total_assets_usd: 100_000_000,
+            total_debt_usd: 99_990_000,
           },
           {
             // 0 utilization to test the slider filter

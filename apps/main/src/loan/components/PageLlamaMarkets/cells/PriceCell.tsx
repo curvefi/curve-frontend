@@ -27,7 +27,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', showAllFractionDigits: true })
   return (
     <Stack direction="column" spacing={1} alignItems="end">
-      <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
+      <Tooltip title={`${formatNumber(value)} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
           <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-md" />

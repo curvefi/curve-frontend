@@ -16,7 +16,7 @@ import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettin
 const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
 
-type Range = [number, number]
+type Range<T = number> = [T, T]
 
 type OnSliderChange = NonNullable<SliderProps['onChange']>
 
@@ -30,6 +30,7 @@ export const RangeSliderFilter = <T extends unknown>({
   title,
   format,
   field,
+  defaultMinimum = 0,
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
@@ -37,11 +38,15 @@ export const RangeSliderFilter = <T extends unknown>({
   title: string
   field: DeepKeys<T>
   format: (value: number) => string
+  defaultMinimum?: number
 }) => {
   const id = cleanColumnId(field)
-  const max = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
-  const step = useMemo(() => Math.ceil(+max.toPrecision(2) / 100), [max])
-  const defaultValue = useMemo(() => (columnFilters[id] ?? [0, max]) as Range, [columnFilters, id, max])
+  const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
+  const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
+  const defaultValue = useMemo((): Range => {
+    const [min, max] = (columnFilters[id] as Range) ?? []
+    return [min ?? defaultMinimum, max ?? maxValue]
+  }, [columnFilters, id, maxValue, defaultMinimum])
 
   const [range, setRange] = useUniqueDebounce(
     defaultValue,
@@ -81,10 +86,10 @@ export const RangeSliderFilter = <T extends unknown>({
           value={range}
           onChange={onChange}
           min={0}
-          max={max}
+          max={maxValue}
           step={step}
         />
-        <Typography>{format(max)}</Typography>
+        <Typography>{format(maxValue)}</Typography>
       </Stack>
     </Select>
   )

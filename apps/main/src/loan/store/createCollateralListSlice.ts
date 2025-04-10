@@ -27,7 +27,6 @@ type SliceState = {
   searchedByTokens: SearchTermsResult
   searchedByAddresses: SearchTermsResult
   result: { [activeKey: string]: string[] }
-  showHideSmallPools: boolean
 }
 
 const sliceKey = 'collateralList'
@@ -54,7 +53,6 @@ const DEFAULT_STATE: SliceState = {
   searchedByTokens: {},
   searchedByAddresses: {},
   result: {},
-  showHideSmallPools: false,
 }
 
 const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): CollateralListSlice => ({

@@ -40,11 +40,13 @@ const formatPercent = (value: number) => value.toFixed(2) + '%'
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
 export const LendingMarketsFilters = ({
+  minLiquidity,
   ...props
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
   data: LlamaMarket[]
+  minLiquidity: number
 }) => (
   <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
@@ -82,7 +84,13 @@ export const LendingMarketsFilters = ({
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
-      <RangeSliderFilter field={LlamaMarketColumnId.LiquidityUsd} title={t`Liquidity`} format={formatUsd} {...props} />
+      <RangeSliderFilter
+        field={LlamaMarketColumnId.LiquidityUsd}
+        defaultMinimum={minLiquidity}
+        title={t`Liquidity`}
+        format={formatUsd}
+        {...props}
+      />
     </Grid>
 
     <Grid size={{ mobile: 12, tablet: 6 }}>

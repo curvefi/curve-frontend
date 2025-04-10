@@ -49,7 +49,6 @@ type SliceState = {
   searchedByTokens: SearchTermResult
   searchedByAddresses: SearchTermResult
   result: { [activeKey: string]: MarketListItemResult[] }
-  showHideSmallPools: boolean
 }
 
 const sliceKey = 'marketList'
@@ -93,7 +92,6 @@ const DEFAULT_STATE: SliceState = {
   searchedByTokens: {},
   searchedByAddresses: {},
   result: {},
-  showHideSmallPools: false,
 }
 
 const createMarketListSlice = (set: SetState<State>, get: GetState<State>): MarketListSlice => ({
