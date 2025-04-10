@@ -54,10 +54,9 @@ const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationPro
 }
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+  grid-template-rows: 1fr 1fr;
   gap: var(--spacing-3);
   font-variant-numeric: tabular-nums;
 `

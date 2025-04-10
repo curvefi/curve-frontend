@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import PendingTx from '@/dao/components/UserBox/PendingTx'
+import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import useStore from '@/dao/store/useStore'
 import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import AlertBox from '@ui/AlertBox'
@@ -19,13 +20,14 @@ type Props = {
 }
 
 const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId }: Props) => {
+  const { data: proposalsMapper } = useProposalsMapperQuery({})
+  const proposal = proposalsMapper?.[proposalId ?? ''] ?? null
   const castVote = useStore((state) => state.proposals.castVote)
   const voteTxMapper = useStore((state) => state.proposals.voteTxMapper)
   const executeProposal = useStore((state) => state.proposals.executeProposal)
   const executeTxMapper = useStore((state) => state.proposals.executeTxMapper)
   const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
-  const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
   const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
 
   const voteTx = voteTxMapper[proposalId ?? ''] ?? null
@@ -78,12 +80,12 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
 
   // Voting has ended - no vote
   if (!activeProposal?.active && proposalId && !voted) {
-    if (proposal.status !== 'Passed' && !proposal.executed) {
+    if (proposal?.status !== 'Passed' && !proposal?.executed) {
       return null
     }
 
     return (
-      proposal.status === 'Passed' &&
+      proposal?.status === 'Passed' &&
       !pricesProposal?.executed && <Wrapper className={className}>{executeProposalComponent()}</Wrapper>
     )
   }
@@ -130,7 +132,7 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
               )}
             </VotedMessage>
           </VotedMessageWrapper>
-          {proposal.status === 'Passed' && !pricesProposal?.executed && executeProposalComponent()}
+          {proposal?.status === 'Passed' && !pricesProposal?.executed && executeProposalComponent()}
         </Box>
       </Wrapper>
     )
