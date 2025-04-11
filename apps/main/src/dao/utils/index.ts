@@ -1,5 +1,6 @@
 import upperFirst from 'lodash/upperFirst'
 import { AlertFormErrorKey, GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
+import { todayInMilliseconds } from '@/dex/utils/utilsDates'
 import { Chain } from '@ui-kit/utils'
 
 export * from './utilsRouter'
@@ -46,4 +47,8 @@ export const findRootGauge = (gaugeAddress: string, gaugeMapper: GaugeMapper) =>
     }
   }
   return ''
+}
+
+export function getIsLockExpired(lockedAmount: string, unlockTime: number) {
+  return unlockTime && unlockTime < todayInMilliseconds() && +lockedAmount > 0
 }
