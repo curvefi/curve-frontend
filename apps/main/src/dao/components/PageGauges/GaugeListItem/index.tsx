@@ -27,7 +27,7 @@ type Props = {
   powerUsed?: number
   userGaugeVote?: boolean
   addUserVote?: boolean
-  userAddress: string
+  userAddress?: string
 }
 
 const GaugeListItem = ({
@@ -37,7 +37,7 @@ const GaugeListItem = ({
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
-  userAddress,
+  userAddress = '',
 }: Props) => {
   const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
     chainId: 1,
@@ -54,6 +54,8 @@ const GaugeListItem = ({
   )
   const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
+  // userGaugeWeightVoteData is only passed to component in CurrentVotes.tsx
+  const isUserCurrentVotes = userGaugeWeightVoteData
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
 
   const gaugeHistoryLoading =
@@ -75,13 +77,13 @@ const GaugeListItem = ({
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
       <DataComp gridTemplateColumns={gridTemplateColumns}>
         <TitleComp gaugeData={gaugeData} />
-        {userGaugeWeightVoteData ? (
+        {isUserCurrentVotes ? (
           <GaugeWeightVotesColumns userGaugeWeightVoteData={userGaugeWeightVoteData} />
         ) : (
           <GaugeListColumns gaugeData={gaugeData} />
         )}
         <Box flex flexJustifyContent="flex-end" flexAlignItems="center" margin="0 0 0 auto">
-          {userGaugeWeightVoteData && canVote && (
+          {isUserCurrentVotes && canVote && (
             <UpdateGaugeIndicator variant="select-flat">{t`Update`}</UpdateGaugeIndicator>
           )}
           <StyledIconButton size="small">

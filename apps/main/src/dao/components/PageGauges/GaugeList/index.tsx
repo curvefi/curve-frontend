@@ -90,12 +90,7 @@ const GaugesList = () => {
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>
-                  <GaugeListItem
-                    key={index}
-                    gaugeData={gauge}
-                    gridTemplateColumns={gridTemplateColumns}
-                    userAddress={''}
-                  />
+                  <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
                 </GaugeListItemWrapper>
                 <SmallScreenCardWrapper>
                   <SmallScreenCard gaugeData={gauge} />

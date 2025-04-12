@@ -5,7 +5,7 @@ export const useUserGaugeWeightVotes = ({ chainId, userAddress }: { chainId: Cha
   const { data: userGaugeWeightVotes, ...rest } = useUserGaugeWeightVotesQuery({ chainId, userAddress })
 
   return {
-    userGaugeWeightVotes: userGaugeWeightVotes,
+    userGaugeWeightVotes,
     ...rest,
   }
 }

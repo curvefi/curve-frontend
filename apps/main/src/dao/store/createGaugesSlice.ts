@@ -413,12 +413,12 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         invalidateUserGaugeWeightVotesQuery({
           chainId: 1,
-          userAddress: userAddress,
+          userAddress,
         })
         invalidateUserGaugeVoteNextTimeQuery({
           chainId: 1,
-          gaugeAddress: gaugeAddress,
-          userAddress: userAddress,
+          gaugeAddress,
+          userAddress,
         })
 
         set(
