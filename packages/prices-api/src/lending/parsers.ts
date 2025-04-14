@@ -12,7 +12,7 @@ export const parseOracle = (x: Responses.GetOracleResponse): Models.Oracle => ({
   chain: x.chain,
   controller: x.controller,
   oracle: x.oracle,
-  pools: x.oracle_pools.map((pool) => ({
+  pools: x.price_source_pools.map((pool) => ({
     address: pool.address,
     borrowedIndex: pool.borrowed_ix,
     borrowedSymbol: pool.borrowed_symbol,
