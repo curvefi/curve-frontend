@@ -50,7 +50,16 @@ export const useWallet: UseConnectWallet = () => {
 
   const { wallet, provider } = useMemo(() => {
     state.wallet = shouldUseWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
-    state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
+
+    // Wrapped in a try catch. Not sure why, but sometimes wagmi returns a non EIP-11193 compatible provider?
+    // After a short while it seems the wallet is 'properly' connected and it give a new, correct provider.
+    // That will cause this memo to rerun, the website to update and to run properly.
+    try {
+      state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
+    } catch (err) {
+      state.provider = null
+      console.error(err)
+    }
     return state
   }, [onboardWallet, wagmiWallet, shouldUseWagmi])
 
