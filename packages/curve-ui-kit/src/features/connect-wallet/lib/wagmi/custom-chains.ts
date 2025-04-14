@@ -2,6 +2,22 @@ import { chainConfig } from 'viem/op-stack'
 import { defineChain } from 'viem/utils'
 import { mainnet } from '@wagmi/core/chains'
 
+/**
+ * WalletConnect ignores the configured HTTP transport URLs from Wagmi config
+ * and instead creates a provider using only the first URL from chain.rpcUrls.default.http.
+ *
+ * This is why we need to define custom chains with specific RPC URLs that will work
+ * properly when WalletConnect initializes its provider with:
+ * `new WalletConnectProvider({ rpc: chain.rpcUrls.default.http[0] })`
+ */
+export const ethereum = defineChain({
+  ...mainnet,
+  rpcUrls: {
+    default: { http: ['https://eth.drpc.org'] },
+    public: { http: ['https://eth.drpc.org'] },
+  },
+})
+
 export const hyperliquid = defineChain({
   ...chainConfig,
   id: 999 as const,

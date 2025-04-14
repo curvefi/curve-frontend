@@ -12,7 +12,6 @@ import {
   gnosis,
   ink,
   kava,
-  mainnet,
   mantle,
   moonbeam,
   neonMainnet,
@@ -24,7 +23,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
+import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
 
 export const chains = [
   mainnet,
