@@ -1,3 +1,4 @@
+import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 import { zeroAddress } from 'viem'
@@ -38,21 +39,20 @@ import {
   UserLoanState,
   UserLoss,
   UserMarketBalances,
-  Wallet,
 } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
-import { getWalletProvider } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, wallet: Wallet) => {
+  initApi: async (chainId: ChainId, provider: Eip1193Provider) => {
     const { networkId } = networks[chainId]
     const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-    await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+    await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
+
     return api
   },
   getIsUserCloseToLiquidation: (

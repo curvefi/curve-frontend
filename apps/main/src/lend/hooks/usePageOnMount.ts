@@ -38,8 +38,8 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingLending(true)
 
-          if (useWallet && wallet) {
-            const api = await helpers.initApi(chainId, wallet)
+          if (useWallet && wallet?.provider) {
+            const api = await helpers.initApi(chainId, wallet.provider)
             updateLending(api)
             updateConnectState('success', '')
 

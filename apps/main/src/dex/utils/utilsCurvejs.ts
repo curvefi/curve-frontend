@@ -1,12 +1,12 @@
+import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
-import { CurveApi, ChainId, RewardsApy, Wallet } from '@/dex/types/main.types'
+import { CurveApi, ChainId, RewardsApy } from '@/dex/types/main.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { getWalletProvider } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 
-export async function initCurveJs(chainId: ChainId, wallet?: Wallet) {
+export async function initCurveJs(chainId: ChainId, provider?: Eip1193Provider) {
   const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-  if (wallet) {
-    await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+  if (provider) {
+    await curveApi.init('Web3', { network: { chainId }, externalProvider: provider }, { chainId })
   } else {
     await curveApi.init('NoRPC', 'NoRPC', { chainId })
   }

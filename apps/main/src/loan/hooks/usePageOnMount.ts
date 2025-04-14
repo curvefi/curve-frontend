@@ -46,8 +46,8 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingStable(true)
 
-          if (useWallet && wallet) {
-            const api = await initStableJs(chainId, wallet)
+          if (useWallet && wallet?.provider) {
+            const api = await initStableJs(chainId, wallet.provider)
             updateConnectState('success', '')
             await hydrate(api, prevApi, wallet)
             updateStable(api)
@@ -74,7 +74,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingLending(true)
 
-          const api = await initLendApi(chainId, useWallet ? wallet : null)
+          const api = await initLendApi(chainId, (useWallet && wallet?.provider) ?? undefined)
           if (api) {
             updateLending(api)
             updateConnectState('success', '')

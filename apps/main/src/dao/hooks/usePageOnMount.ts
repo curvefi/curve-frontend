@@ -37,7 +37,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingCurve(true)
 
-          const api = await helpers.initCurveJs(chainId, useWallet ? wallet : null)
+          const api = await helpers.initCurveJs(chainId, (useWallet && wallet?.provider) ?? undefined)
           updateCurveJs(api)
           updateConnectState('success', '')
 
