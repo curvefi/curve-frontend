@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
 import useStore from '@/dao/store/useStore'
 import { getEthPath } from '@/dao/utils'
 import AlertBox from '@ui/AlertBox'
@@ -13,19 +14,24 @@ import { shortenAddress } from '@ui-kit/utils'
 import { calculateUserPowerStale } from './utils'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
+  const { userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotes({
+    chainId: 1, // DAO is only used on mainnet
+    userAddress: userAddress ?? '',
+  })
   const userEns = useStore((state) => state.user.userEns)
   const userVeCrv = useStore((state) => state.user.userVeCrv)
-  const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
 
-  const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
-
-  const isUserPowerStale = calculateUserPowerStale(+userVeCrv.veCrv, userData?.data.powerUsed, userData?.data.veCrvUsed)
+  const isUserPowerStale = calculateUserPowerStale(
+    +userVeCrv.veCrv,
+    userGaugeWeightVotes?.powerUsed ?? 0,
+    userGaugeWeightVotes?.veCrvUsed ?? 0,
+  )
 
   return (
     <UserDataWrapper>
       <Box flex flexWrap="wrap" flexGap="var(--spacing-3)" flexJustifyContent="space-between">
         <MetricsComp
-          loading={userWeightsLoading}
+          loading={userGaugeWeightsLoading}
           title="User"
           data={
             <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${userAddress}`)}>
@@ -34,12 +40,12 @@ const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
           }
         />
         <MetricsComp
-          loading={userWeightsLoading}
+          loading={userGaugeWeightsLoading}
           title="Power used"
-          data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
+          data={<MetricsColumnData>{userGaugeWeightVotes?.powerUsed}%</MetricsColumnData>}
         />
         <MetricsComp
-          loading={userWeightsLoading}
+          loading={userGaugeWeightsLoading}
           title="veCRV"
           data={
             <MetricsColumnData>
@@ -48,11 +54,11 @@ const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
           }
         />
         <MetricsComp
-          loading={userWeightsLoading}
+          loading={userGaugeWeightsLoading}
           title="veCRV used"
           data={
             <MetricsColumnData>
-              {formatNumber(userData?.data.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
+              {formatNumber(userGaugeWeightVotes?.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
             </MetricsColumnData>
           }
         />

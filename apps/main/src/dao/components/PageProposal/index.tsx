@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
+import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import useProposalMapper from '@/dao/hooks/useProposalMapper'
-import useProposalsMapper from '@/dao/hooks/useProposalsMapper'
 import useStore from '@/dao/store/useStore'
 import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
@@ -33,7 +33,6 @@ type ProposalProps = {
 const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
-  const proposalsLoadingState = useStore((state) => state.proposals.proposalsLoadingState)
   const getProposal = useStore((state) => state.proposals.getProposal)
   const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
   const getUserProposalVote = useStore((state) => state.proposals.getUserProposalVote)
@@ -43,16 +42,19 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
   const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { proposalMapper } = useProposalMapper()
-  const { proposalsMapper } = useProposalsMapper()
+  const {
+    data: proposalsMapper,
+    isLoading: proposalsListLoading,
+    isError: proposalsListError,
+    isSuccess: proposalsListSuccess,
+  } = useProposalsMapperQuery({})
   const pricesProposal = proposalMapper[rProposalId] ?? null
-  const proposal = proposalsMapper[rProposalId] ?? null
+  const proposal = proposalsMapper?.[rProposalId] ?? null
 
   const isLoading =
-    proposalLoadingState === 'LOADING' ||
-    proposalsLoadingState === 'LOADING' ||
-    (!pricesProposal && proposalsLoadingState !== 'ERROR')
+    proposalLoadingState === 'LOADING' || proposalsListLoading || (!pricesProposal && proposalsListError)
   const isError = proposalLoadingState === 'ERROR'
-  const isFetched = proposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal
+  const isFetched = proposalLoadingState === 'SUCCESS' && proposalsListSuccess && pricesProposal
 
   const activeProposal = useMemo(
     () =>
@@ -123,7 +125,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.ipfsMetadata)}>
+                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.ipfsMetadata ?? '')}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />
                       </StyledCopyButton>

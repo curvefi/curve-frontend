@@ -1,12 +1,19 @@
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import styled from 'styled-components'
 import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import GaugeVotingStats from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
 import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
 import PaginatedTable from '@/dao/components/PaginatedTable'
+import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
+import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
 import useStore from '@/dao/store/useStore'
-import { GaugeFormattedData, UserGaugeVoteWeight, UserGaugeVoteWeightSortBy } from '@/dao/types/dao.types'
+import {
+  GaugeFormattedData,
+  UserGaugeVoteWeight,
+  UserGaugeVoteWeightSortBy,
+  SortDirection,
+} from '@/dao/types/dao.types'
 import { findRootGauge } from '@/dao/utils'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,19 +23,33 @@ type CurrentVotesProps = {
   userAddress: string | undefined
 }
 
+const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
+  [...gauges].sort((a, b) => {
+    if (order === 'asc') {
+      return a[sortBy] - b[sortBy]
+    }
+    return b[sortBy] - a[sortBy]
+  })
+
 const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
-  const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
-  const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
-  const getAllVoteForGaugeNextTime = useStore((state) => state.user.getAllVoteForGaugeNextTime)
   const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
   const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
 
-  const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
+  const {
+    userGaugeWeightVotes,
+    isSuccess: userGaugeWeightsSuccess,
+    isLoading: userGaugeWeightsLoading,
+  } = useUserGaugeWeightVotes({
+    chainId: 1, // DAO is only used on mainnet
+    userAddress: userAddress ?? '',
+  })
+
+  const userWeightsLoading = userGaugeWeightsLoading
   const gaugeMapperLoading = gaugesLoading === 'LOADING'
-  const userWeightReady = userData?.fetchingState === 'SUCCESS'
+  const userWeightReady = userGaugeWeightsSuccess
   const tableLoading = userWeightsLoading || gaugeMapperLoading
 
   const tableMinWidth = 0
@@ -37,11 +58,11 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
 
   const userGauges = useMemo(
     () =>
-      userData?.data.gauges.map((gauge) => ({
+      userGaugeWeightVotes?.gauges.map((gauge) => ({
         ...gauge,
         rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper),
       })) ?? [],
-    [userData, gaugeMapper],
+    [userGaugeWeightVotes, gaugeMapper],
   )
 
   const formattedSelectedGauge: UserGaugeVoteWeight = {
@@ -60,19 +81,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
     relativeWeight: selectedGauge?.gauge_relative_weight ?? 0,
     totalVeCrv: 0,
     userFutureVeCrv: 0,
-    nextVoteTime: {
-      fetchingState: null,
-      timestamp: null,
-    },
-    canVote: true,
   }
-
-  // Get next vote time for all gauges
-  useEffect(() => {
-    if (userWeightReady) {
-      void getAllVoteForGaugeNextTime(userAddress ?? '')
-    }
-  }, [userAddress, userWeightReady, getAllVoteForGaugeNextTime])
 
   return (
     <Wrapper>
@@ -84,20 +93,20 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
         <VoteGauge
           gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
           userGaugeVoteData={formattedSelectedGauge}
-          powerUsed={userData?.data.powerUsed}
+          powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
         />
       )}
       {userAddress && (
         <PaginatedTable<UserGaugeVoteWeight>
-          data={userGauges}
+          data={sortGauges(userGauges, userGaugeVoteWeightsSortBy.order, userGaugeVoteWeightsSortBy.key)}
           minWidth={tableMinWidth}
-          fetchingState={tableLoading ? 'LOADING' : userData.fetchingState}
+          fetchingState={tableLoading ? 'LOADING' : userWeightReady ? 'SUCCESS' : 'ERROR'}
           columns={USER_VOTES_TABLE_LABELS}
           sortBy={userGaugeVoteWeightsSortBy}
           errorMessage={t`An error occurred while fetching user gauge weight votes.`}
           noDataMessage={t`No gauge votes found`}
-          setSortBy={(key) => setUserGaugeVoteWeightsSortBy(userAddress ?? '', key as UserGaugeVoteWeightSortBy)}
-          getData={() => getUserGaugeVoteWeights(userAddress ?? '')}
+          setSortBy={(key) => setUserGaugeVoteWeightsSortBy(key as UserGaugeVoteWeightSortBy)}
+          getData={() => invalidateUserGaugeWeightVotesQuery({ chainId: 1, userAddress: userAddress ?? '' })}
           renderRow={(gauge, index) => (
             <Fragment key={index}>
               <GaugeListItemWrapper>
@@ -105,15 +114,16 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
                   gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
                   userGaugeWeightVoteData={gauge}
                   gridTemplateColumns={gridTemplateColumns}
-                  powerUsed={userData?.data.powerUsed}
+                  powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
                   userGaugeVote={true}
+                  userAddress={userAddress ?? ''}
                 />
               </GaugeListItemWrapper>
               <SmallScreenCardWrapper>
                 <SmallScreenCard
                   gaugeData={gaugeMapper[gauge.gaugeAddress.toLowerCase()]}
                   userGaugeWeightVoteData={gauge}
-                  powerUsed={userData?.data.powerUsed}
+                  powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
                   userGaugeVote={true}
                 />
               </SmallScreenCardWrapper>
