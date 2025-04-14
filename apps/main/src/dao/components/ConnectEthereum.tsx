@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation'
 import { getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import Button from '@ui/Button'
-import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const ConnectEthereum = () => {

@@ -4,7 +4,7 @@ import useStore from '@/dao/store/useStore'
 import { type CurveApi, PageProps, type UrlParams } from '@/dao/types/dao.types'
 import { parseParams } from '@/dao/utils/utilsRouter'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { isSuccess, useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { isSuccess, useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 

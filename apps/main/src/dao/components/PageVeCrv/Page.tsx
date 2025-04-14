@@ -13,9 +13,9 @@ import { getPath } from '@/dao/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { WrongNetwork } from './WrongNetwork'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 
 const Page = (params: VeCrvUrlParams) => {
   const [rFormType] = params.formType

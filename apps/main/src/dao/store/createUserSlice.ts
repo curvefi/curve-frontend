@@ -24,9 +24,9 @@ import {
   UserVoteData,
 } from '@/dao/types/dao.types'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import type { WalletState } from '@web3-onboard/core'
-import { getLib } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 
 const { WEEK } = TIME_FRAMES
 

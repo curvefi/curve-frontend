@@ -2,8 +2,8 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
-import { logSuccess } from '@ui-kit/lib'
 import { SMALL_POOL_VOLUME } from '@ui-kit/features/user-profile/store'
+import { logSuccess } from '@ui-kit/lib'
 
 export type SwapFormValuesCache = {
   fromAddress: string

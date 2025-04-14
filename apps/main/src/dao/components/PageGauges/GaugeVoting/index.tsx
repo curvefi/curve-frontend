@@ -5,7 +5,7 @@ import useStore from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {

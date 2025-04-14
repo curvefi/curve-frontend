@@ -32,6 +32,7 @@ export const isLoading = (connectState: ConnectState, stage?: string | string[])
 
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
+  // todo: support multiple libs so we can share them between different apps
   lib: TLib | null
 }
 

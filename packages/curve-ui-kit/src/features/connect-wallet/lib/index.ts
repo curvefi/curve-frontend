@@ -9,4 +9,6 @@ export {
   isLoading,
   isFailure,
   isSuccess,
+  getLib,
+  requireLib,
 } from './ConnectionContext'
