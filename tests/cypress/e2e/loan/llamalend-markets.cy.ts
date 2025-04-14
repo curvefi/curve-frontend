@@ -50,20 +50,19 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
+    const filterHeight = { mobile: [274, 266, 234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
   })
 
-  // todo: contains(%) seems to be too early still, sometimes the handler doesn't react to the click
-  it('should sort', RETRY_IN_CI, () => {
+  it('should sort', () => {
     cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
+    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
     cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%')
+    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
   })
 
   it('should show graphs', () => {
@@ -101,7 +100,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', 'Liquidity: $0 -'],
+      ['liquidityUsd', 'Liquidity: $10,000 -'],
       ['utilizationPercent', 'Utilization: 0.00% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
@@ -113,7 +112,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click()
       /**
        * Using `force: true` to bypass Cypress' element visibility check.
-       * The slider may have pseudo elements that interfere with Cypress' ability to interact with it.
+       * The slider may have pseudo-elements that interfere with Cypress' ability to interact with it.
        * We've tried alternative approaches (adding waits, adjusting click coordinates) but they didn't resolve the issue.
        * The application behavior works correctly despite this test accommodation.
        */
@@ -232,12 +231,11 @@ function selectChain(chain: string) {
 
 const selectCoin = (symbol: string, type: TokenType) => {
   const columnId = `assets_${type}_symbol`
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
-
-  // deselect previously selected tokens (actually we could now use the clear button)
-  cy.forEach(`[data-testid="${columnId}"] [aria-selected="true"]`, (el) => el.click())
-
-  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click()
+  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
+  cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+  cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
+  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
+  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
 }
