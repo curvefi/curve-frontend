@@ -15,6 +15,7 @@ import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { WrongNetwork } from './WrongNetwork'
 
 const Page = (params: VeCrvUrlParams) => {
   const [rFormType] = params.formType
@@ -70,21 +71,25 @@ const Page = (params: VeCrvUrlParams) => {
           <IconButton hidden />
         </BoxHeader>
 
-        <Content grid gridRowGap={3} padding>
-          {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
-            <FormCrvLocker
-              curve={curve}
-              rChainId={rChainId}
-              rFormType={rFormType as FormType}
-              vecrvInfo={vecrvInfo}
-              toggleForm={toggleForm}
-            />
-          ) : (
-            <SpinnerWrapper>
-              <Spinner />
-            </SpinnerWrapper>
-          )}
-        </Content>
+        {rChainId === 1 ? (
+          <Content grid gridRowGap={3} padding>
+            {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
+              <FormCrvLocker
+                curve={curve}
+                rChainId={rChainId}
+                rFormType={rFormType as FormType}
+                vecrvInfo={vecrvInfo}
+                toggleForm={toggleForm}
+              />
+            ) : (
+              <SpinnerWrapper>
+                <Spinner />
+              </SpinnerWrapper>
+            )}
+          </Content>
+        ) : (
+          <WrongNetwork />
+        )}
       </Container>
       <Settings showScrollButton />
     </>
