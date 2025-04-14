@@ -7,6 +7,7 @@ import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
+  type CurveApi,
   FetchingState,
   PricesProposalResponse,
   PricesProposalResponseData,
@@ -21,9 +22,9 @@ import {
   UserProposalVoteResData,
 } from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const { WEEK } = TIME_FRAMES
 
@@ -336,7 +337,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -431,7 +432,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()

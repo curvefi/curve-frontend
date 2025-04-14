@@ -25,7 +25,10 @@ export const isSuccess = (connectState: ConnectState) => connectState.status ===
 export const isFailure = ({ stage: connectionStage, status }: ConnectState, stage?: string) =>
   stage ? status === 'failure' && connectionStage.startsWith(stage) : status === 'failure'
 
-export const isLoading = (connectState: ConnectState, stage?: string | string[]) => connectState.status === 'loading'
+export const isLoading = (connectState: ConnectState, stage?: string | string[]) =>
+  connectState.status === 'loading' &&
+  (!stage ||
+    (Array.isArray(stage) ? stage.some((s) => connectState.stage.startsWith(s)) : connectState.stage.startsWith(stage)))
 
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
@@ -58,7 +61,6 @@ export const ConnectionProvider = <
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: 'loading', stage: '' })
-  const lib = useRef<TLib | null>(null)
   const { wallet, connect } = useWallet()
   const [_, setChain] = useSetChain()
 
@@ -70,12 +72,13 @@ export const ConnectionProvider = <
   const walletLabel = wallet?.label
 
   useEffect(() => {
+    const abortController = new AbortController()
     const walletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: we might not need the walletName at all in useWallet
 
     const connectWalletStage = async () => {
       let wallet = walletRef.current
       if (walletLabel != walletName) {
-        console.log('wallet name different', walletLabel, walletName)
+        // console.log('wallet name different', walletLabel, walletName)
         const connectPromise = connect({
           ...(walletName && {
             autoSelect: {
@@ -94,6 +97,8 @@ export const ConnectionProvider = <
       try {
         setConnectState({ status: 'loading', stage: CONNECT_STAGE.CONNECT_WALLET })
         const wallet = await connectWalletStage()
+        if (abortController.signal.aborted) return
+        // console.log({wallet})
 
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: 'loading', stage: CONNECT_STAGE.SWITCH_NETWORK })
@@ -103,22 +108,30 @@ export const ConnectionProvider = <
           }
         }
 
-        const prevLib = lib.current
-        if (!lib.current || walletSignerAddress != prevLib?.signerAddress) {
+        const prevLib = libRef.get<TLib>()
+        if (!libRef.get() || walletSignerAddress != prevLib?.signerAddress) {
+          if (abortController.signal.aborted) return
           setConnectState({ status: 'loading', stage: CONNECT_STAGE.CONNECT_API })
-          lib.current = await initLib(chainId, wallet)
+          const newLib = await initLib(chainId, wallet)
+          if (abortController.signal.aborted) return
+          libRef.set(newLib)
+          // console.log('lib.current', lib.get())
         }
 
+        if (abortController.signal.aborted) return
         setConnectState({ status: 'success', stage: CONNECT_STAGE.HYDRATE })
-        await hydrate(lib.current, prevLib, wallet)
+        await hydrate(libRef.require<TLib>(), prevLib, wallet)
 
+        if (abortController.signal.aborted) return
         setConnectState({ status: 'success', stage: '' })
       } catch (error) {
         console.error(error)
+        if (abortController.signal.aborted) return
         setConnectState(({ stage }) => ({ status: 'failure', stage }))
       }
     }
-    initApp().catch(console.error)
+    void initApp()
+    return () => abortController.abort()
   }, [
     chainId,
     connect,
@@ -132,13 +145,34 @@ export const ConnectionProvider = <
   ])
 
   useEffect(() => {
-    console.log('connectState', connectState)
+    // console.log('connectState', connectState)
   }, [connectState])
   useEffect(() => {
-    console.log({ wallet })
+    // console.log({ wallet })
   }, [wallet])
 
-  return <ConnectionContext.Provider value={{ connectState, lib }}>{children}</ConnectionContext.Provider>
+  return (
+    <ConnectionContext.Provider value={{ connectState, lib: libRef.get<TLib>() }}>
+      {children}
+    </ConnectionContext.Provider>
+  )
 }
 
 export const useConnection = <TLib extends unknown>() => useContext(ConnectionContext) as ConnectionContextValue<TLib>
+
+/**
+ * Lib is a singleton that holds the current instance of the library.
+ * It would be better to use only the context, but we need to be able to access it in the store and query functions.
+ */
+const libRef = {
+  current: null as unknown,
+  get: <T = unknown,>() => libRef.current as T | null,
+  require: <T = unknown,>() => {
+    if (!libRef.current) throw new Error('Lib not initialized')
+    return libRef.current as T
+  },
+  set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
+}
+
+export const getLib = <TLib extends unknown>() => libRef.get<TLib>()
+export const requireLib = <TLib extends unknown>() => libRef.require<TLib>()

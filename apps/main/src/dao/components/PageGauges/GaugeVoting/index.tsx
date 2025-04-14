@@ -2,19 +2,19 @@ import { useEffect } from 'react'
 import styled from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
 import useStore from '@/dao/store/useStore'
+import type { CurveApi } from '@/dao/types/dao.types'
 import { isLoading } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
   const userGaugeVoteWeightsMapper = useStore((state) => state.user.userGaugeVoteWeightsMapper)
-  const curve = useApiStore((state) => state.curve)
+  const { lib: curve } = useConnection<CurveApi>()
   const chainId = curve?.chainId
-  const { provider } = useWallet()
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
+  const { provider, connect } = useWallet()
+  const { connectState } = useConnection()
 
   useEffect(() => {
     if (userAddress && chainId === 1 && curve && userGaugeVoteWeightsMapper[userAddress.toLowerCase()] === undefined) {
@@ -29,7 +29,7 @@ const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
           description="Connect your wallet to view your current votes and vote on gauges"
           connectText="Connect Wallet"
           loadingText="Connecting"
-          connectWallet={() => connectWallet()}
+          connectWallet={() => connect()}
           isLoading={isLoading(connectState)}
         />
       </ConnectWrapper>

@@ -7,7 +7,7 @@ import useStore from '@/dao/store/useStore'
 import { ChainId } from '@/dao/types/dao.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
@@ -24,10 +24,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
-  const connectState = useStore((state) => state.connectState)
+  const { connectState } = useConnection()
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
-  const updateConnectState = useStore((state) => state.updateConnectState)
-
   return (
     <NewHeader<ChainId>
       networkName={rNetwork}
@@ -43,21 +41,12 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
               push(getPath({ network }, `/${getRestFullPathname()}`))
-              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, push, updateConnectState],
+          [rChainId, push],
         ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
-          [updateConnectState],
-        ),
-        onDisconnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
-          [updateConnectState],
-        ),
         walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,

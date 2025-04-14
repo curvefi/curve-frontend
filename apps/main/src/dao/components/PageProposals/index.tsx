@@ -3,16 +3,16 @@ import { Key, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
-import { SortByFilterProposals } from '@/dao/types/dao.types'
+import { type CurveApi, SortByFilterProposals } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import SearchInput from '@ui/SearchInput'
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import ProposalsFilters from './components/ProposalsFilters'
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import Proposal from './Proposal'
@@ -31,10 +31,11 @@ const Proposals = () => {
   const activeFilter = useStore((state) => state.proposals.activeFilter)
   const setProposals = useStore((state) => state.proposals.setProposals)
   const proposals = useStore((state) => state.proposals.proposals)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
+  const { connectState } = useConnection<CurveApi>()
+  const isLoadingCurve = isLoading(connectState)
   const { push } = useRouter()
 
-  const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
+  const isLoadingProposals = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
   const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
   const isError = proposalsLoadingState === 'ERROR'
 
@@ -121,7 +122,7 @@ const Proposals = () => {
             </SearchMessage>
           )}
           <ProposalsWrapper>
-            {isLoading && !isError && (
+            {isLoadingProposals && !isError && (
               <StyledSpinnerWrapper>
                 <Spinner />
               </StyledSpinnerWrapper>

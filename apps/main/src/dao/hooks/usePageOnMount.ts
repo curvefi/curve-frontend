@@ -4,15 +4,9 @@ import useStore from '@/dao/store/useStore'
 import { type CurveApi, PageProps, type UrlParams } from '@/dao/types/dao.types'
 import { parseParams } from '@/dao/utils/utilsRouter'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import {
-  CONNECT_STAGE,
-  isLoading,
-  isSuccess,
-  useConnection,
-} from '@ui-kit/features/connect-wallet/lib/connection.context'
+import { isSuccess, useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
@@ -27,18 +21,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
 
-  const updateConnectState = useStore((state) => state.updateConnectState)
-  const updateCurve = useApiStore((state) => state.updateCurve)
-  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
-
-  useEffect(() => {
-    curve && updateCurve(curve)
-  }, [curve, updateCurve])
-  useEffect(() => {
-    updateConnectState(connectState.status, connectState.stage)
-    setIsLoadingCurve(isLoading(connectState, CONNECT_STAGE.CONNECT_API))
-  }, [connectState, setIsLoadingCurve, updateConnectState])
-
+  // todo: fetches below can be moved to hydrate probably?
   useEffect(() => {
     if (isSuccess(connectState) && curve && wallet) {
       updateUserData(curve, wallet)
