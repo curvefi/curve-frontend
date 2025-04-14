@@ -128,8 +128,8 @@ export const TableFilters = ({
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
  */
-export function useColumnFilters() {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+export function useColumnFilters(defaultFilters: ColumnFiltersState = []) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(defaultFilters)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>
       setColumnFilters((filters) => [
@@ -157,7 +157,7 @@ export function useColumnFilters() {
     [columnFilters],
   )
 
-  const resetFilters = useCallback(() => setColumnFilters([]), [setColumnFilters])
+  const resetFilters = useCallback(() => setColumnFilters(defaultFilters), [defaultFilters])
 
   return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
 }
