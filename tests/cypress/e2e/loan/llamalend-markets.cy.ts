@@ -10,6 +10,7 @@ import {
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@/support/helpers/tokens'
 import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
   let isDarkMode: boolean
@@ -139,8 +140,12 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by token`, () => {
     const type = oneTokenType()
+    const tokenField = (type + '_token') as `${typeof type}_token`
+
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    const coins = vaultData.ethereum.data.map((d) => d[(type + '_token') as `${typeof type}_token`].symbol)
+    const coins = vaultData.ethereum.data
+      .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
+      .map((d) => d[tokenField].symbol)
     const coin1 = oneOf(...coins)
     const coin2 = oneOf(...coins.filter((c) => c !== coin1))
     selectCoin(coin1, type)
