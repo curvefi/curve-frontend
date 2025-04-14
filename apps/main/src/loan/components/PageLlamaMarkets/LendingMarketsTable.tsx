@@ -26,14 +26,18 @@ export const LendingMarketsTable = ({
   result,
   headerHeight,
   isError,
+  minLiquidity,
 }: {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   headerHeight: string
   isError: boolean
+  minLiquidity: number
 }) => {
   const { signerAddress } = useWallet()
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters()
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
+    { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
+  ])
   const defaultVisibility = useDefaultMarketColumnsVisibility(signerAddress)
   const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(defaultVisibility)
 
@@ -76,7 +80,12 @@ export const LendingMarketsTable = ({
             [setColumnFilter],
           )}
           collapsible={
-            <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+            <LendingMarketsFilters
+              columnFilters={columnFiltersById}
+              setColumnFilter={setColumnFilter}
+              data={data}
+              minLiquidity={minLiquidity}
+            />
           }
         >
           <MarketsFilterChips
