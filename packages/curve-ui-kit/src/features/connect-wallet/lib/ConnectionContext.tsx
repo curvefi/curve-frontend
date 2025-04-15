@@ -6,7 +6,7 @@ import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-he
 import { getFromLocalStorage, setLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import type { WalletState as Wallet } from '@web3-onboard/core'
 
-export const CONNECT_STATUS = {
+const CONNECT_STATUS = {
   LOADING: 'loading',
   SUCCESS: 'success',
   FAILURE: 'failure',
@@ -20,12 +20,9 @@ export const CONNECT_STAGE = {
   SWITCH_NETWORK: 'switch-network',
 } as const
 
-export type ConnectStage = (typeof CONNECT_STAGE)[keyof typeof CONNECT_STAGE]
-export type ConnectStatus = (typeof CONNECT_STATUS)[keyof typeof CONNECT_STATUS]
-
-export type ConnectState = {
-  status: ConnectStatus
-  stage?: ConnectStage
+type ConnectState = {
+  status: (typeof CONNECT_STATUS)[keyof typeof CONNECT_STATUS]
+  stage?: (typeof CONNECT_STAGE)[keyof typeof CONNECT_STAGE]
 }
 
 const { FAILURE, LOADING, SUCCESS } = CONNECT_STATUS
@@ -105,9 +102,8 @@ export const ConnectionProvider = <
      */
     const initApp = async () => {
       try {
-        const prevLib = libRef.get<TLib>()
         if (!isWalletInitialized.current) {
-          const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: we might not need the walletName at all in useWallet
+          const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: get rid of walletName with wagmi
           if (storedWalletName && (await tryToReconnect(storedWalletName))) {
             return // wallet updated, callback is restarted
           }
@@ -123,6 +119,7 @@ export const ConnectionProvider = <
           }
         }
 
+        const prevLib = libRef.get<TLib>()
         if (!libRef.get() || getWalletSignerAddress(wallet) != prevLib?.signerAddress) {
           if (abortController.signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })

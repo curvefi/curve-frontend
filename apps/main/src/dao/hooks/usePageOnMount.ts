@@ -3,14 +3,14 @@ import { useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
 import { type CurveApi, PageProps, type UrlParams } from '@/dao/types/dao.types'
 import { parseParams } from '@/dao/utils/utilsRouter'
-import { CONNECT_STATUS, isSuccess, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, isSuccess, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-function usePageOnMount(chainIdNotRequired?: boolean) {
+function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
   const params = useParams() as UrlParams
-  const parsedParams = parseParams(params, chainIdNotRequired)
-  const { lib: curve, connectState } = useConnection<CurveApi>()
+  const routerParams = parseParams(params, chainIdNotRequired)
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
   const { wallet } = useWallet()
 
   const updateUserData = useStore((state) => state.user.updateUserData)
@@ -53,11 +53,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     void getGaugesData()
   }, [getGauges, getProposals, getGaugesData])
 
-  return {
-    pageLoaded: connectState.status !== CONNECT_STATUS.LOADING,
-    routerParams: parsedParams,
-    curve,
-  } as PageProps
+  return { pageLoaded: !isLoading(connectState), routerParams, curve }
 }
 
 export default usePageOnMount
