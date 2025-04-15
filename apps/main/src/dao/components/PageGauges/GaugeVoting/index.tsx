@@ -9,10 +9,9 @@ import CurrentVotes from './CurrentVotes'
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
   const userGaugeVoteWeightsMapper = useStore((state) => state.user.userGaugeVoteWeightsMapper)
-  const { lib: curve } = useConnection<CurveApi>()
+  const { connectState, lib: curve } = useConnection<CurveApi>()
   const chainId = curve?.chainId
   const { provider, connect } = useWallet()
-  const { connectState } = useConnection()
 
   useEffect(() => {
     if (userAddress && chainId === 1 && curve && userGaugeVoteWeightsMapper[userAddress.toLowerCase()] === undefined) {

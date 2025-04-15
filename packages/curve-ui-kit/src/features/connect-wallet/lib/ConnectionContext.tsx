@@ -6,7 +6,7 @@ import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-he
 import { getFromLocalStorage, setLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import type { WalletState as Wallet } from '@web3-onboard/core'
 
-export const CONNECT_STATUS = {
+const CONNECT_STATUS = {
   LOADING: 'loading',
   SUCCESS: 'success',
   FAILURE: 'failure',
@@ -20,12 +20,9 @@ export const CONNECT_STAGE = {
   SWITCH_NETWORK: 'switch-network',
 } as const
 
-export type ConnectStage = (typeof CONNECT_STAGE)[keyof typeof CONNECT_STAGE]
-export type ConnectStatus = (typeof CONNECT_STATUS)[keyof typeof CONNECT_STATUS]
-
-export type ConnectState = {
-  status: ConnectStatus
-  stage?: ConnectStage
+type ConnectState = {
+  status: (typeof CONNECT_STATUS)[keyof typeof CONNECT_STATUS]
+  stage?: (typeof CONNECT_STAGE)[keyof typeof CONNECT_STAGE]
 }
 
 const { FAILURE, LOADING, SUCCESS } = CONNECT_STATUS
@@ -47,13 +44,12 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
 
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
-  lib: TLib | null
+  lib?: TLib
   error?: unknown
 }
 
 const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
   connectState: { status: LOADING },
-  lib: null,
 })
 
 /**
@@ -78,37 +74,44 @@ export const ConnectionProvider = <
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
+  const isWalletInitialized = useRef(false)
   const { wallet, connect } = useWallet()
   const [_, setChain] = useSetChain()
 
-  const walletRef = useRef(wallet) // use ref to avoid re-rendering on wallet change
-  walletRef.current = wallet
-
-  const walletChainId = getWalletChainId(wallet)
-  const walletSignerAddress = getWalletSignerAddress(wallet)
-  const walletLabel = wallet?.label
+  useEffect(() => {
+    if (isWalletInitialized.current) {
+      setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
+    }
+  }, [wallet])
 
   useEffect(() => {
     const abort = new AbortController()
     const signal = abort.signal
-    const walletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: we might not need the walletName at all in useWallet
 
-    const connectWalletStage = async () => {
-      let wallet = walletRef.current
-      if (walletLabel != walletName) {
-        const connectOptions = { ...(walletName && { autoSelect: { label: walletName, disableModals: true } }) }
-        ;[wallet] = await withTimeout(connect(connectOptions))
-        if (!abort.signal.aborted) setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
-      }
-      return wallet
+    /**
+     * Try to reconnect to the wallet if it was previously connected, based on the stored wallet name.
+     */
+    const tryToReconnect = async (label: string) => {
+      setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
+      isWalletInitialized.current = true
+      return withTimeout(connect({ autoSelect: { label, disableModals: true } }))
+        .then((wallets) => wallets.length > 0)
+        .catch(() => false)
     }
 
+    /**
+     * Initialize the app by connecting to the wallet and setting up the library.
+     */
     const initApp = async () => {
       try {
-        setConnectState({ status: LOADING, stage: CONNECT_WALLET })
-        const wallet = await connectWalletStage()
-        if (signal.aborted) return
+        if (!isWalletInitialized.current) {
+          const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: get rid of walletName with wagmi
+          if (storedWalletName && (await tryToReconnect(storedWalletName))) {
+            return // wallet updated, callback is restarted
+          }
+        }
 
+        const walletChainId = getWalletChainId(wallet)
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
@@ -120,18 +123,18 @@ export const ConnectionProvider = <
 
         const prevLib = libRef.get<TLib>()
         let newLib = prevLib
-        if (!libRef.get() || walletSignerAddress != prevLib?.signerAddress) {
+        if (!libRef.get() || getWalletSignerAddress(wallet) != prevLib?.signerAddress) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
           newLib = (await initLib(chainId, wallet)) ?? null
+
           if (signal.aborted) return
           libRef.set(newLib)
         }
 
-        setConnectState({ status: LOADING, stage: HYDRATE })
-        await hydrate(newLib, prevLib, wallet)
         if (signal.aborted) return
-
+        setConnectState({ status: SUCCESS, stage: HYDRATE })
+        await hydrate(newLib, prevLib, wallet)
         setConnectState({ status: SUCCESS })
       } catch (error) {
         if (signal.aborted) {
@@ -144,20 +147,13 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [
-    chainId,
-    connect,
-    hydrate,
-    initLib,
-    onChainUnavailable,
-    walletChainId,
-    walletLabel,
-    walletSignerAddress,
-    setChain,
-  ])
+  }, [isWalletInitialized, chainId, connect, hydrate, initLib, onChainUnavailable, setChain, wallet])
 
+  const lib = libRef.get<TLib>()
+  // the wallet is first connected, then the callback runs. So the ref is not updated yet
+  const isLibUpdated = lib?.chainId === chainId && lib?.signerAddress == getWalletSignerAddress(wallet)
   return (
-    <ConnectionContext.Provider value={{ connectState, lib: libRef.get<TLib>() }}>
+    <ConnectionContext.Provider value={{ connectState, ...(isLibUpdated && { lib }) }}>
       {children}
     </ConnectionContext.Provider>
   )

@@ -4,10 +4,7 @@ export { getWalletSignerAddress, getWalletChainId, getWalletSignerEns } from './
 export {
   ConnectionProvider,
   useConnection,
-  type ConnectState,
-  type ConnectStatus,
   CONNECT_STAGE,
-  CONNECT_STATUS,
   isLoading,
   isFailure,
   isSuccess,
