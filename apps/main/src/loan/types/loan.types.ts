@@ -41,7 +41,7 @@ export type PageProps = {
   curve: Curve | null
 }
 
-export interface NetworkConfig extends BaseConfig {
+export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean

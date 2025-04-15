@@ -5,19 +5,17 @@ import styled from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { ROUTE } from '@/lend/constants'
-import usePageOnMount from '@/lend/hooks/usePageOnMount'
+import { usePageOnMount } from '@/lend/hooks/usePageOnMount'
 import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import Settings from '@/lend/layout/Settings'
 import useStore from '@/lend/store/useStore'
-import type { NetworkUrlParams } from '@/lend/types/lend.types'
+import type { Api, NetworkUrlParams } from '@/lend/types/lend.types'
 import { getPath } from '@/lend/utils/utilsRouter'
 import { AppPageContainer } from '@ui/AppPage'
 import Box from '@ui/Box'
-import { isLoading } from '@ui/utils'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 enum SEARCH {
   filter = 'filter',
@@ -36,11 +34,10 @@ const Page = (params: NetworkUrlParams) => {
   const titleMapper = useTitleMapper()
   const { rChainId } = routerParams
 
-  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
+  const { connectState } = useConnection<Api>()
+  const isLoadingApi = isLoading(connectState)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
-  const { provider } = useWallet()
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
+  const { provider, connect } = useWallet()
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 
@@ -136,7 +133,7 @@ const Page = (params: NetworkUrlParams) => {
               description="Connect wallet to view markets list"
               connectText="Connect Wallet"
               loadingText="Connecting"
-              connectWallet={() => connectWallet()}
+              connectWallet={() => connect()}
               isLoading={isLoading(connectState)}
             />
           </ConnectWalletWrapper>

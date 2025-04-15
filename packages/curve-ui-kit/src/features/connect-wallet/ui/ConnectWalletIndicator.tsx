@@ -22,6 +22,6 @@ export const ConnectWalletIndicator = ({
       {...props}
     />
   ) : (
-    <ConnectWalletButton label={label} onConnectWallet={onConnectWallet ?? connect} {...props} />
+    <ConnectWalletButton label={label} onConnectWallet={() => (onConnectWallet ?? connect)()} {...props} />
   )
 }

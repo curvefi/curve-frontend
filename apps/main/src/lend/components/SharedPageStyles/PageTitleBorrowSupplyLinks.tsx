@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import type { UrlParams } from '@/lend/types/lend.types'
+import type { Api, UrlParams } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { AppPageFormTitleLinks } from '@ui/AppPage'
 import InternalLink from '@ui/Link/InternalLink'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 
 const PageTitleBorrowSupplyLinks = ({
   params,
@@ -17,7 +17,7 @@ const PageTitleBorrowSupplyLinks = ({
   activeKey: 'borrow' | 'supply'
   market: OneWayMarketTemplate
 }) => {
-  const api = useApiStore((state) => state.lending)
+  const { lib: api } = useConnection<Api>()
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)

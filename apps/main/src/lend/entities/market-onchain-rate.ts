@@ -1,19 +1,17 @@
 import { lendingJsValidationSuite } from '@/lend/entities/validation/lending-js-validation'
-import { ChainId } from '@/lend/types/lend.types'
+import { type Api, ChainId } from '@/lend/types/lend.types'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import { FieldsOf } from '@ui-kit/lib'
 import type { ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
 
-const _fetchOnChainMarketRate = async ({ chainId, marketId }: MarketQuery) => {
-  const api = useApiStore.getState().lending
-  const market = api!.getOneWayMarket(marketId)
-
+const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => {
+  const api = requireLib<Api>()
+  const market = api.getOneWayMarket(marketId)
   const ratesRes = await market.stats.rates(false, false)
-
   return { rates: ratesRes }
 }
 
