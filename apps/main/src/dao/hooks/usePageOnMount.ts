@@ -3,8 +3,7 @@ import { useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
 import { type CurveApi, PageProps, type UrlParams } from '@/dao/types/dao.types'
 import { parseParams } from '@/dao/utils/utilsRouter'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { isSuccess, useConnection } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STATUS, isSuccess, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
@@ -21,7 +20,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
 
-  // todo: fetches below can be moved to hydrate probably?
+  // todo: fetches below could be moved to hydrate probably? Check with @JustJousting
   useEffect(() => {
     if (isSuccess(connectState) && curve && wallet) {
       updateUserData(curve, wallet)
@@ -39,7 +38,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (curve) {
         void fetchAllStoredUsdRates(curve)
       }
-      getProposals()
+      void getProposals()
       void getGauges()
       void getGaugesData()
     },
@@ -49,13 +48,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
   // initiate proposals list
   useEffect(() => {
-    getProposals()
+    void getProposals()
     void getGauges()
     void getGaugesData()
   }, [getGauges, getProposals, getGaugesData])
 
   return {
-    pageLoaded: connectState.status === 'success',
+    pageLoaded: connectState.status !== CONNECT_STATUS.LOADING,
     routerParams: parsedParams,
     curve,
   } as PageProps

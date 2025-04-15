@@ -69,17 +69,17 @@ const sliceKey = 'proposals'
 
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
-    getProposals(): void
-    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): void
-    getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
+    getProposals(): Promise<void>
+    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): Promise<void>
+    getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): Promise<void>
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
     setActiveSortDirection(direction: SortDirection): void
     selectFilteredSortedProposals(): ProposalData[]
     setProposals(searchValue: string): void
-    castVote(voteId: number, voteType: ProposalType, support: boolean): void
-    executeProposal(voteId: number, voteType: ProposalType): void
+    castVote(voteId: number, voteType: ProposalType, support: boolean): Promise<void>
+    executeProposal(voteId: number, voteType: ProposalType): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -410,7 +410,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const userAddress = get().user.userAddress
 
           if (userAddress) {
-            get()[sliceKey].getUserProposalVote(userAddress, voteId.toString(), voteType, voteResponseHash)
+            void get()[sliceKey].getUserProposalVote(userAddress, voteId.toString(), voteType, voteResponseHash)
           }
         }
       } catch (error) {

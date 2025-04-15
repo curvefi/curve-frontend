@@ -2,14 +2,14 @@ import { ethers } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
 import { WalletNameStorageKey } from '@ui-kit/features/connect-wallet/lib/hooks'
+import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { getFromLocalStorage, setLocalStorage } from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import type { WalletState as Wallet } from '@web3-onboard/core'
 
-export type ConnectState = {
-  status: 'loading' | 'success' | 'failure' | ''
-  stage: 'api' | 'connect-wallet' | 'switch-network' | 'disconnect-wallet' | 'hydrate' | ''
+export const CONNECT_STATUS = {
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  FAILURE: 'failure',
 }
 
 export const CONNECT_STAGE = {
@@ -20,31 +20,46 @@ export const CONNECT_STAGE = {
   SWITCH_NETWORK: 'switch-network',
 } as const
 
-export const isSuccess = (connectState: ConnectState) => connectState.status === 'success'
+export type ConnectStage = (typeof CONNECT_STAGE)[keyof typeof CONNECT_STAGE]
+export type ConnectStatus = (typeof CONNECT_STATUS)[keyof typeof CONNECT_STATUS]
 
-export const isFailure = ({ stage: connectionStage, status }: ConnectState, stage?: string) =>
-  stage ? status === 'failure' && connectionStage.startsWith(stage) : status === 'failure'
+export type ConnectState = {
+  status: ConnectStatus
+  stage?: ConnectStage
+}
 
-export const isLoading = (connectState: ConnectState, stage?: string | string[]) =>
-  connectState.status === 'loading' &&
-  (!stage ||
-    (Array.isArray(stage) ? stage.some((s) => connectState.stage.startsWith(s)) : connectState.stage.startsWith(stage)))
+const { FAILURE, LOADING, SUCCESS } = CONNECT_STATUS
+const { HYDRATE, SWITCH_NETWORK, CONNECT_WALLET, CONNECT_API } = CONNECT_STAGE
+
+export const isSuccess = (connectState: ConnectState) => connectState.status === SUCCESS
+
+export const isFailure = ({ status, stage: connectionStage }: ConnectState, expectedStage?: string) =>
+  status === FAILURE && Boolean(!expectedStage || connectionStage?.startsWith(expectedStage))
+
+export const isLoading = ({ status, stage: connectionStage }: ConnectState, expectedStage?: string | string[]) =>
+  status === LOADING &&
+  Boolean(
+    !expectedStage ||
+      (Array.isArray(expectedStage)
+        ? expectedStage.some((s) => connectionStage?.startsWith(s))
+        : connectionStage?.startsWith(expectedStage)),
+  )
 
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
-  // todo: support multiple libs so we can share them between different apps
   lib: TLib | null
 }
 
 const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
-  connectState: { status: '', stage: '' },
+  connectState: { status: LOADING },
   lib: null,
 })
 
-const timeout = (message: string = t`Timeout connecting wallet`) =>
-  new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), REFRESH_INTERVAL['3s']))
-
-// todo: this should be merged with apiStore and/or useWallet
+/**
+ * ConnectionProvider is a React context provider that manages the connection state of a wallet.
+ * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
+ * todo: Merged with useWallet after wagmi migration. Get rid of apiStore after this is used everywhere.
+ */
 export const ConnectionProvider = <
   TChainId extends number,
   TLib extends { chainId: TChainId; signerAddress?: string },
@@ -61,7 +76,7 @@ export const ConnectionProvider = <
   onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
   children: ReactNode
 }) => {
-  const [connectState, setConnectState] = useState<ConnectState>({ status: 'loading', stage: '' })
+  const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
   const { wallet, connect } = useWallet()
   const [_, setChain] = useSetChain()
 
@@ -79,16 +94,8 @@ export const ConnectionProvider = <
     const connectWalletStage = async () => {
       let wallet = walletRef.current
       if (walletLabel != walletName) {
-        // console.log('wallet name different', walletLabel, walletName)
-        const connectPromise = connect({
-          ...(walletName && {
-            autoSelect: {
-              label: walletName,
-              disableModals: true,
-            },
-          }),
-        })
-        ;[wallet] = await Promise.race([connectPromise, timeout()])
+        const connectOptions = { ...(walletName && { autoSelect: { label: walletName, disableModals: true } }) }
+        ;[wallet] = await withTimeout(connect(connectOptions))
         setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
       }
       return wallet
@@ -96,15 +103,15 @@ export const ConnectionProvider = <
 
     const initApp = async () => {
       try {
-        setConnectState({ status: 'loading', stage: CONNECT_STAGE.CONNECT_WALLET })
+        setConnectState({ status: LOADING, stage: CONNECT_WALLET })
         const wallet = await connectWalletStage()
         if (abortController.signal.aborted) return
-        // console.log({wallet})
 
         if (walletChainId && walletChainId !== chainId) {
-          setConnectState({ status: 'loading', stage: CONNECT_STAGE.SWITCH_NETWORK })
+          setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
-            setConnectState({ status: 'failure', stage: CONNECT_STAGE.SWITCH_NETWORK })
+            if (abortController.signal.aborted) return
+            setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])
           }
         }
@@ -112,23 +119,22 @@ export const ConnectionProvider = <
         const prevLib = libRef.get<TLib>()
         if (!libRef.get() || walletSignerAddress != prevLib?.signerAddress) {
           if (abortController.signal.aborted) return
-          setConnectState({ status: 'loading', stage: CONNECT_STAGE.CONNECT_API })
+          setConnectState({ status: LOADING, stage: CONNECT_API })
           const newLib = await initLib(chainId, wallet)
           if (abortController.signal.aborted) return
           libRef.set(newLib)
-          // console.log('lib.current', lib.get())
         }
 
         if (abortController.signal.aborted) return
-        setConnectState({ status: 'success', stage: CONNECT_STAGE.HYDRATE })
+        setConnectState({ status: SUCCESS, stage: HYDRATE })
         await hydrate(libRef.require<TLib>(), prevLib, wallet)
 
         if (abortController.signal.aborted) return
-        setConnectState({ status: 'success', stage: '' })
+        setConnectState({ status: SUCCESS })
       } catch (error) {
         console.error(error)
         if (abortController.signal.aborted) return
-        setConnectState(({ stage }) => ({ status: 'failure', stage }))
+        setConnectState(({ stage }) => ({ status: FAILURE, stage }))
       }
     }
     void initApp()
@@ -144,13 +150,6 @@ export const ConnectionProvider = <
     walletSignerAddress,
     setChain,
   ])
-
-  useEffect(() => {
-    // console.log('connectState', connectState)
-  }, [connectState])
-  useEffect(() => {
-    // console.log({ wallet })
-  }, [wallet])
 
   return (
     <ConnectionContext.Provider value={{ connectState, lib: libRef.get<TLib>() }}>
