@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
 import networks from '@/lend/networks'
-import { ChainId } from '@/lend/types/lend.types'
+import { type Api, ChainId } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { ChainParams } from '@ui-kit/lib/model/query'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { useOneWayMarketNames } from './chain-query'
 
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params
   const { data: marketNames, ...rest } = useOneWayMarketNames(params)
-  const api = useApiStore((state) => state.lending)
-  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
+  const { lib: api, connectState } = useConnection<Api>()
+  const isLoadingApi = isLoading(connectState)
   const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
     () =>

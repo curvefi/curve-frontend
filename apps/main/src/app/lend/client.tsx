@@ -1,14 +1,18 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
+import { useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/lend/layout'
+import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
+import type { ChainId } from '@/lend/types/lend.types'
+import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { OverlayProvider } from '@react-aria/overlays'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
@@ -19,6 +23,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const theme = useUserProfileStore((state) => state.theme)
+  const hydrate = useStore((s) => s.hydrate)
+  const { push } = useRouter()
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -64,6 +70,17 @@ export const App = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const onChainUnavailable = useCallback(
+    ([walletChainId]: [ChainId, ChainId]) => {
+      const foundNetwork = networks[walletChainId]?.id
+      if (foundNetwork) {
+        console.warn(`Network switched to ${foundNetwork}, redirecting...`, location.href)
+        push(getPath({ network: foundNetwork }, `/${getRestFullPathname()}`))
+      }
+    },
+    [push],
+  )
+
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
@@ -71,7 +88,14 @@ export const App = ({ children }: { children: ReactNode }) => {
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <Page>{children}</Page>
+              <ConnectionProvider
+                hydrate={hydrate}
+                initLib={helpers.initApi}
+                chainId={getNetworkFromUrl().rChainId}
+                onChainUnavailable={onChainUnavailable}
+              >
+                <Page>{children}</Page>
+              </ConnectionProvider>
             </QueryProvider>
           </OverlayProvider>
         )}

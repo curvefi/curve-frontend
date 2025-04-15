@@ -70,8 +70,8 @@ export const ConnectionProvider = <
   onChainUnavailable,
   children,
 }: {
-  hydrate: (newLib: TLib, prevLib: TLib | null, wallet: Wallet | null) => Promise<void>
-  initLib: (chainId: TChainId, wallet: Wallet | null) => Promise<TLib>
+  hydrate: (newLib: TLib | null, prevLib: TLib | null, wallet: Wallet | null) => Promise<void>
+  initLib: (chainId: TChainId, wallet: Wallet | null) => Promise<TLib | undefined>
   chainId: TChainId
   onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
   children: ReactNode
@@ -127,7 +127,7 @@ export const ConnectionProvider = <
 
         if (abortController.signal.aborted) return
         setConnectState({ status: SUCCESS, stage: HYDRATE })
-        await hydrate(libRef.require<TLib>(), prevLib, wallet)
+        await hydrate(libRef.get<TLib>(), prevLib, wallet)
 
         if (abortController.signal.aborted) return
         setConnectState({ status: SUCCESS })

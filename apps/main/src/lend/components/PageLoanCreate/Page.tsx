@@ -6,7 +6,7 @@ import DetailsMarket from '@/lend/components/DetailsMarket'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import usePageOnMount from '@/lend/hooks/usePageOnMount'
+import { usePageOnMount } from '@/lend/hooks/usePageOnMount'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
@@ -29,12 +29,10 @@ import {
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
-import { isLoading } from '@ui/utils'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: MarketUrlParams) => {
   const { pageLoaded, routerParams, api } = usePageOnMount()
@@ -42,16 +40,15 @@ const Page = (params: MarketUrlParams) => {
   const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
-  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
+  const { connectState } = useConnection<Api>()
+  const isLoadingApi = isLoading(connectState)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
-  const { provider } = useWallet()
+  const { provider, connect } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
@@ -133,7 +130,7 @@ const Page = (params: MarketUrlParams) => {
           description={t`Connect your wallet to view market`}
           connectText={t`Connect`}
           loadingText={t`Connecting`}
-          connectWallet={() => connectWallet()}
+          connectWallet={() => connect()}
           isLoading={isLoading(connectState)}
         />
       </Box>

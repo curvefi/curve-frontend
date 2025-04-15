@@ -25,7 +25,7 @@ export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type VeCrvUrlParams = NetworkUrlParams & { formType: [FormType] }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
-export interface NetworkConfig extends BaseConfig {
+export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
