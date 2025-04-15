@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useEffect, useRef, useState } from 'react'
+import { Fragment, ReactNode } from 'react'
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 import { FilterType } from '@/lend/components/PageMarketList/utils'
 import CellBorrowRate from '@/lend/components/SharedCellData/CellBorrowRate'
@@ -15,8 +15,7 @@ import { TITLE } from '@/lend/constants'
 import useStore from '@/lend/store/useStore'
 import { TitleKey } from '@/lend/types/lend.types'
 import { _showContent } from '@/lend/utils/helpers'
-import { Tr, Td, CellInPool } from '@ui/Table'
-import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
+import { CellInPool, Td, Tr } from '@ui/Table'
 import { t } from '@ui-kit/lib/i18n'
 
 type Content = {
@@ -25,8 +24,6 @@ type Content = {
   show?: boolean
   title?: TitleKey
 }
-
-const MIN_ROW_HEIGHT = 53
 
 const TableRowContent = ({
   rChainId,
@@ -103,29 +100,10 @@ const TableRowContent = ({
   })
 }
 
-const TableRow = (props: TableRowProps) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref)
-
-  const [height, setHeight] = useState(0)
-
-  const isVisible = !!entry?.isIntersecting
-
-  useEffect(() => {
-    if (!isVisible || !ref.current || height !== 0) return
-    const refHeight = ref.current.getBoundingClientRect().height
-    setHeight(Math.max(refHeight, MIN_ROW_HEIGHT))
-  }, [height, isVisible])
-
-  return (
-    <Tr
-      ref={ref}
-      onClick={(evt) => props.handleCellClick(evt.target)}
-      {...(!isVisible ? (height > MIN_ROW_HEIGHT ? { height: `${height}px` } : { className: 'pending' }) : {})}
-    >
-      {isVisible && <TableRowContent {...props} />}
-    </Tr>
-  )
-}
+const TableRow = (props: TableRowProps) => (
+  <Tr onClick={(evt) => props.handleCellClick(evt.target)}>
+    <TableRowContent {...props} />
+  </Tr>
+)
 
 export default TableRow
