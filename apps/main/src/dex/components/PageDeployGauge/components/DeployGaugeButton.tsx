@@ -33,10 +33,13 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const { push } = useRouter()
   const { rChainId } = useNetworkFromUrl()
 
-  const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
-    (state) => state.deployGauge,
-  )
-  const connectWallet = useStore((s) => s.updateConnectState)
+  const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
+  const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
+  const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)
+  const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
+  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
+  const deployGauge = useStore((state) => state.deployGauge.deployGauge)
+  const connectWallet = useStore((state) => state.updateConnectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const restFullPathname = useRestFullPathname()
