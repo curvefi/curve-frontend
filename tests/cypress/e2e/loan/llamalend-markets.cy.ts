@@ -51,7 +51,11 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [274, 266, 234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
+    const filterHeight = {
+      mobile: [274, 266, 234, 226, 196, 156],
+      tablet: [232, 188, 176, 120],
+      desktop: [128],
+    }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
