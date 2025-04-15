@@ -6,6 +6,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { shortenString } from '@ui-kit/utils'
 
 type NetworkWithFactory = {
   chainId: ChainId
@@ -181,7 +182,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       const chainId = curve.chainId
       const fetchGasInfo = get().gas.fetchGasInfo
       const tokenAddress = sidechainGauge ? lpTokenAddress.toLowerCase() : poolAddress.toLowerCase()
-      const shortAddress = `${tokenAddress.slice(0, 4 + 2)}...${tokenAddress.slice(-4)}`
+      const shortAddress = shortenString(tokenAddress)
 
       let dismissNotificationHandler
 
