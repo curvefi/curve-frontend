@@ -72,7 +72,10 @@ const DeploySidechain = ({ chainId }: Props) => {
   const networksList = useMemo(
     () =>
       Object.keys(curveNetworks)
-        .filter((key) => key !== '1' && !curveNetworks[+key].isTestnet)
+        .filter(
+          (key) =>
+            key !== '1' && key !== '' && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
+        )
         .map((key) => curveNetworks[+key].name)
         .sort(),
     [curveNetworks],

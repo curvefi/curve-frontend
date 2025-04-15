@@ -13,6 +13,7 @@ type NetworkWithFactory = {
   name: string
   poolTypes: PoolTypes
   isTestnet: boolean
+  isCrvRewardsEnabled: boolean
 }
 
 type NetworksWithFactory = {
@@ -112,6 +113,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               threeCrypto: chain.tricryptoFactory,
             },
             isTestnet: chain.isTestnet,
+            isCrvRewardsEnabled: chain.isCrvRewardsEnabled,
           }
         }
       })
