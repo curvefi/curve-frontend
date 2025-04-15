@@ -43,7 +43,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
 
   const handleConnectEth = () => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
-    push(getPath({ network: 'ethereum' }, restFullPathname))
+    push(getPath({ network: 'ethereum' }, `/${restFullPathname}`))
   }
 
   const handleClick = async () => {

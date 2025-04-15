@@ -93,7 +93,7 @@ export function useNetworkFromUrl() {
 export function useRestFullPathname() {
   const restPathnames = window.location.pathname.substring(1).split('/') ?? []
   const { rNetworkIdx } = useNetworkFromUrl()
-  return '/' + restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
+  return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
 }
 
 export function useRestPartialPathname() {
