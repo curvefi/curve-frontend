@@ -1,3 +1,4 @@
+import { Chain } from 'curve-ui-kit/src/utils/network'
 import { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'
@@ -30,7 +31,6 @@ const DeploySidechain = ({ chainId }: Props) => {
   const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
 
   const currentChainId = sidechainNav === 0 ? chainId : (currentSidechain ?? 1)
-  const ethereumChainId = 1
 
   // keep unavailable pool types out of state
   useEffect(() => {
@@ -74,8 +74,7 @@ const DeploySidechain = ({ chainId }: Props) => {
     () =>
       Object.keys(curveNetworks)
         .filter(
-          (key) =>
-            +key !== ethereumChainId && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
+          (key) => +key !== Chain.Ethereum && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
         )
         .map((key) => curveNetworks[+key].name)
         .sort(),
