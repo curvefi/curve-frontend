@@ -4,7 +4,6 @@ import type { GetState, SetState } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
-import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import { log } from '@ui-kit/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -12,14 +11,12 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  connectState: ConnectState
   isPageVisible: boolean
   scrollY: number
 }
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
@@ -32,17 +29,12 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  connectState: { status: '', stage: '' },
   isPageVisible: true,
   scrollY: 0,
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
-
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
-    set({ connectState: { status, stage, ...(options && { options }) } })
-  },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
       produce((state) => {

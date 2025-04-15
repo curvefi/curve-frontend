@@ -1,16 +1,16 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/lend/layout'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import networks, { networksIdMapper } from '@/lend/networks'
 import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
-import type { ChainId } from '@/lend/types/lend.types'
-import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
+import type { ChainId, UrlParams } from '@/lend/types/lend.types'
+import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { OverlayProvider } from '@react-aria/overlays'
 import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -19,6 +19,8 @@ import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
+  const { network: networkName } = useParams() as UrlParams // todo: move layout to [network] and pass the params properly
+  const chainId = networksIdMapper[networkName]
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -91,7 +93,7 @@ export const App = ({ children }: { children: ReactNode }) => {
               <ConnectionProvider
                 hydrate={hydrate}
                 initLib={helpers.initApi}
-                chainId={getNetworkFromUrl().rChainId}
+                chainId={chainId}
                 onChainUnavailable={onChainUnavailable}
               >
                 <Page>{children}</Page>

@@ -48,6 +48,7 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
   lib: TLib | null
+  error?: unknown
 }
 
 const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
@@ -88,7 +89,8 @@ export const ConnectionProvider = <
   const walletLabel = wallet?.label
 
   useEffect(() => {
-    const abortController = new AbortController()
+    const abort = new AbortController()
+    const signal = abort.signal
     const walletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: we might not need the walletName at all in useWallet
 
     const connectWalletStage = async () => {
@@ -96,7 +98,7 @@ export const ConnectionProvider = <
       if (walletLabel != walletName) {
         const connectOptions = { ...(walletName && { autoSelect: { label: walletName, disableModals: true } }) }
         ;[wallet] = await withTimeout(connect(connectOptions))
-        setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
+        if (!abort.signal.aborted) setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
       }
       return wallet
     }
@@ -105,40 +107,43 @@ export const ConnectionProvider = <
       try {
         setConnectState({ status: LOADING, stage: CONNECT_WALLET })
         const wallet = await connectWalletStage()
-        if (abortController.signal.aborted) return
+        if (signal.aborted) return
 
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
-            if (abortController.signal.aborted) return
+            if (signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])
           }
         }
 
         const prevLib = libRef.get<TLib>()
+        let newLib = prevLib
         if (!libRef.get() || walletSignerAddress != prevLib?.signerAddress) {
-          if (abortController.signal.aborted) return
+          if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
-          const newLib = await initLib(chainId, wallet)
-          if (abortController.signal.aborted) return
+          newLib = (await initLib(chainId, wallet)) ?? null
+          if (signal.aborted) return
           libRef.set(newLib)
         }
 
-        if (abortController.signal.aborted) return
-        setConnectState({ status: SUCCESS, stage: HYDRATE })
-        await hydrate(libRef.get<TLib>(), prevLib, wallet)
+        setConnectState({ status: LOADING, stage: HYDRATE })
+        await hydrate(newLib, prevLib, wallet)
+        if (signal.aborted) return
 
-        if (abortController.signal.aborted) return
         setConnectState({ status: SUCCESS })
       } catch (error) {
+        if (signal.aborted) {
+          console.info(error)
+          return
+        }
         console.error(error)
-        if (abortController.signal.aborted) return
-        setConnectState(({ stage }) => ({ status: FAILURE, stage }))
+        setConnectState(({ stage }) => ({ status: FAILURE, stage, error }))
       }
     }
     void initApp()
-    return () => abortController.abort()
+    return () => abort.abort()
   }, [
     chainId,
     connect,

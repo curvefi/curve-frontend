@@ -4,10 +4,10 @@ import { CONNECT_STAGE } from '@/lend/constants'
 import { useTvl } from '@/lend/entities/chain'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { ChainId, type NetworkEnum } from '@/lend/types/lend.types'
+import { type Api, ChainId } from '@/lend/types/lend.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
-import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { getWalletSignerAddress, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
@@ -22,8 +22,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const { rNetwork } = getNetworkFromUrl()
-  const connectState = useStore((state) => state.connectState)
-  const updateConnectState = useStore((state) => state.updateConnectState)
+  const { connectState } = useConnection<Api>()
   const { data: tvl } = useTvl(chainId)
 
   return (
@@ -35,27 +34,17 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        chainId: chainId,
+        chainId,
         onChange: useCallback(
           (selectedChainId: ChainId) => {
             if (chainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id as NetworkEnum
-              push(getPath({ network }, `/${getRestFullPathname()}`))
-              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
+              push(getPath({ network: networks[selectedChainId].id }, `/${getRestFullPathname()}`))
             }
           },
-          [chainId, updateConnectState, push],
+          [chainId, push],
         ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
-          [updateConnectState],
-        ),
-        onDisconnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
-          [updateConnectState],
-        ),
         walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
