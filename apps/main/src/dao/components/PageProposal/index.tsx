@@ -28,9 +28,11 @@ import Voters from './Voters'
 
 type ProposalProps = {
   routerParams: ProposalUrlParams
+  rChainId: number
 }
 
-const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
+const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
+  const { proposalId: rProposalId } = routerParams
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const { provider } = useWallet()
   const proposalsLoadingState = useStore((state) => state.proposals.proposalsLoadingState)
@@ -67,7 +69,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
   )
 
   useEffect(() => {
-    if (snapshotVeCrv === undefined && provider && userAddress && proposal?.snapshotBlock) {
+    if (snapshotVeCrv === undefined && rChainId === 1 && provider && userAddress && proposal?.snapshotBlock) {
       const getVeCrv = async () => {
         const signer = await provider.getSigner()
         setSnapshotVeCrv(signer, userAddress, proposal.snapshotBlock, rProposalId)
@@ -75,7 +77,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
 
       void getVeCrv()
     }
-  }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
+  }, [provider, rChainId, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 
   useEffect(() => {
     if (pricesProposal) return
@@ -151,7 +153,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
             </ProposalInformationWrapper>
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
-            <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
+            <UserBox chainId={rChainId} votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
               {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
                   userAddress={userAddress ?? ''}
@@ -168,6 +170,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
         <SecondColumnBox display="flex" flexColumn flexGap={'var(--spacing-1)'} margin="0 0 auto var(--spacing-1)">
           <Box variant="secondary">
             <UserBox
+              chainId={rChainId}
               votingPower={snapshotVeCrv}
               snapshotVotingPower
               activeProposal={

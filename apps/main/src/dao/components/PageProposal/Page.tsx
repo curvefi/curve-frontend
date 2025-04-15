@@ -6,11 +6,13 @@ import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
 
 const Page = (props: ProposalUrlParams) => {
-  usePageOnMount()
+  const { routerParams } = usePageOnMount()
+  const { rChainId } = routerParams
+
   return (
     <>
       <Container>
-        <Proposal routerParams={props} />
+        <Proposal routerParams={props} rChainId={rChainId} />
       </Container>
     </>
   )

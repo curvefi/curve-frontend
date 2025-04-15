@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components'
+import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -8,6 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import UserInformation from './UserInformation'
 
 type Props = {
+  chainId: number
   children?: ReactNode
   className?: string
   votingPower?: SnapshotVotingPower
@@ -15,11 +17,12 @@ type Props = {
   snapshotVotingPower: boolean
 }
 
-const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
+const UserBox = ({ chainId, className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
   const { wallet, connect } = useWallet()
+
   return (
     <Wrapper className={className}>
-      {wallet ? (
+      {wallet && chainId === 1 ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
           <UserInformation
             votingPower={votingPower}
@@ -28,13 +31,18 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower, active
           />
           {children}
         </Box>
-      ) : (
-        <ConnectMessage>
+      ) : chainId === 1 ? (
+        <Box flex flexColumn flexGap="var(--spacing-2)">
           <p>{t`Please connect a wallet to see user information.`}</p>
           <StyledButton variant="outlined" onClick={() => connect()}>
             {t`Connect Wallet`}
           </StyledButton>
-        </ConnectMessage>
+        </Box>
+      ) : (
+        <Box flex flexColumn flexGap="var(--spacing-2)">
+          <p>{t`Please connect to Ethereum Mainnet to see user information.`}</p>
+          <ConnectEthereum />
+        </Box>
       )}
     </Wrapper>
   )
@@ -49,14 +57,9 @@ const Wrapper = styled(Box)`
   padding: var(--spacing-3);
 `
 
-const ConnectMessage = styled.div`
-  p {
-  }
-`
-
 const StyledButton = styled(Button)`
   display: flex;
-  margin: var(--spacing-2) auto 0 0;
+  margin: 0 auto 0 0;
   justify-content: center;
   &.success {
     color: var(--success-400);

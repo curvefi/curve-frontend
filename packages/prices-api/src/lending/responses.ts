@@ -15,7 +15,7 @@ export type GetOracleResponse = {
   chain: Chain
   controller: Address
   oracle: Address
-  oracle_pools: [
+  price_source_pools: [
     {
       address: Address
       borrowed_ix: number
