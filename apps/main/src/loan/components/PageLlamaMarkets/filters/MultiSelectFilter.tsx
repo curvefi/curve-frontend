@@ -117,7 +117,12 @@ export const MultiSelectFilter = <T extends unknown>({
           MenuListProps={{ sx: { minWidth: Math.round(selectWidth || 100) + 'px' } }}
         >
           <Box sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[3].Outline}` }} component="li">
-            <Button color="ghost" size="extraSmall" onClick={onClear}>{t`Clear Selection`}</Button>
+            <Button
+              color="ghost"
+              size="extraSmall"
+              onClick={onClear}
+              data-testid="multi-select-clear"
+            >{t`Clear Selection`}</Button>
           </Box>
           {options.map((optionId) => (
             <InvertOnHover hoverEl={menuRef.current} key={optionId}>

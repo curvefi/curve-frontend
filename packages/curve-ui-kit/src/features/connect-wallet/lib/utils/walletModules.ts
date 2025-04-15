@@ -12,17 +12,30 @@ import trezorModule from '@web3-onboard/trezor'
 import trustModule from '@web3-onboard/trust'
 import walletConnectModule from '@web3-onboard/walletconnect'
 
-const WALLET_CONNECT_PROJECT_ID = 'c685334a8b28bf7c733632a5c49de23f'
+// project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
+const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
+const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
+
+// for curve-dapp-git-chore-wallet-connect-curvefi.vercel.app, other domains can be added the dashboard
+const VERCEL_DOMAIN_VERIFICATION = '84ba44da9bf094485e9a78634683c0cbbe56795f765e65ae0152a9dda7242eac'
+// for curve.fi and staging.curve.fi
+const CURVE_DOMAIN_VERIFICATION = '3d76b3cd8cd754f34ac1c18ff25dc23ee9b80fc7f75800041335263b11f20b19'
+
+export const getVercelDomainVerification = (host: string) =>
+  [WALLET_CONNECT_ACCOUNT, host.endsWith('vercel.app') ? VERCEL_DOMAIN_VERIFICATION : CURVE_DOMAIN_VERIFICATION].join(
+    '=',
+  )
 
 export const injected = injectedModule()
 export const trezor = trezorModule({
   email: 'info@curve.fi',
   appUrl: 'https://curve.fi',
 })
-export const ledger = ledgerModule({
-  walletConnectVersion: 2,
-  projectId: WALLET_CONNECT_PROJECT_ID,
-})
+export const ledger = () =>
+  ledgerModule({
+    walletConnectVersion: 2,
+    projectId: WALLET_CONNECT_PROJECT_ID,
+  })
 export const gnosis = gnosisModule({
   whitelistedDomains: [
     /^https:\/\/gnosis-safe\.io$/,
@@ -35,10 +48,11 @@ export const gnosis = gnosisModule({
 export const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 export const fortmatic = fortmaticModule({ apiKey: 'pk_live_190B10CE18F47DCD' })
 
-export const walletConnect = walletConnectModule({
-  projectId: WALLET_CONNECT_PROJECT_ID,
-  dappUrl: 'https://curve.fi',
-})
+export const walletConnect = () =>
+  walletConnectModule({
+    projectId: WALLET_CONNECT_PROJECT_ID,
+    dappUrl: window.location.origin,
+  })
 
 export const torus = torusModule()
 export const phantom = phantomModule()

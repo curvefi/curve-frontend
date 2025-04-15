@@ -283,6 +283,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc.volumeData = volumeArray
             state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartLlammaOhlc.baselinePriceData = baselinePriceArray
+            state[sliceKey].chartLlammaOhlc.dataDisabled = false
           }),
         )
       } catch (error) {
@@ -475,6 +476,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
             state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'READY'
+            state[sliceKey].chartOraclePoolOhlc.dataDisabled = false
           }),
         )
       } catch (error) {
