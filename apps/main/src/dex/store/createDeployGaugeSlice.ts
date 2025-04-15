@@ -12,6 +12,7 @@ type NetworkWithFactory = {
   chainId: ChainId
   name: string
   poolTypes: PoolTypes
+  isTestnet: boolean
 }
 
 type NetworksWithFactory = {
@@ -97,6 +98,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       const {
         networks: { networks },
       } = get()
+
       Object.entries(networks).forEach(([key, chain]) => {
         if (chain.hasFactory) {
           networksWithFactory[key] = {
@@ -109,6 +111,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               twoCryptoNg: chain.twocryptoFactory,
               threeCrypto: chain.tricryptoFactory,
             },
+            isTestnet: chain.isTestnet,
           }
         }
       })
