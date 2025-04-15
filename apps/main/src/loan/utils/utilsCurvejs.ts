@@ -1,3 +1,4 @@
+import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 import networks from '@/loan/networks'
@@ -8,30 +9,27 @@ import {
   LendApi,
   Llamma,
   UserLoanDetails,
-  Wallet,
   type Curve,
 } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
-export async function initStableJs(chainId: ChainId, wallet: Wallet): Promise<Curve> {
+export async function initStableJs(chainId: ChainId, provider: Eip1193Provider): Promise<Curve> {
   const { networkId } = networks[chainId]
   const api = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
-  await api.init('Web3', { network: networkId, externalProvider: wallet.provider }, { chainId })
+  await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
   // Explicitly set chainId to 1 (Ethereum mainnet) to prevent default value of 0 causing issues
   api.chainId = 1
   return api
 }
 
-export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
+export async function initLendApi(chainId: ChainId, provider: Eip1193Provider) {
   try {
     const { networkId } = networks[chainId]
     const api = cloneDeep((await import('@curvefi/lending-api')).default) as LendApi
 
-    if (wallet) {
-      await api.init('Web3', { network: networkId, externalProvider: wallet.provider }, { chainId })
-      return api
-    }
+    await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
+    return api
   } catch (error) {
     console.error(error)
   }

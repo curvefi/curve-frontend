@@ -5,7 +5,7 @@ import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import { Address } from '@ui-kit/utils'
 import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
 import type { Wallet } from './types'
-import { convertOnboardWallet, getWalletProvider } from './utils/wallet-helpers'
+import { convertOnboardWallet } from './utils/wallet-helpers'
 import { useWagmi } from './wagmi/useWagmi'
 
 type UseConnectWallet = {
@@ -50,15 +50,24 @@ export const useWallet: UseConnectWallet = () => {
 
   const { wallet, provider } = useMemo(() => {
     state.wallet = shouldUseWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
-    state.provider = state.wallet && new BrowserProvider(getWalletProvider(state.wallet))
+
+    // Wrapped in a try catch. Not sure why, but sometimes wagmi returns a non EIP-11193 compatible provider?
+    // After a short while it seems the wallet is 'properly' connected and it give a new, correct provider.
+    // That will cause this memo to rerun, the website to update and to run properly.
+    try {
+      state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
+    } catch (err) {
+      state.provider = null
+      console.error(err)
+    }
     return state
   }, [onboardWallet, wagmiWallet, shouldUseWagmi])
 
-  const signerAddress = onboardWallet?.accounts[0]?.address
+  const signerAddress = onboardWallet?.accounts[0]?.address ?? wagmiWallet?.account?.address
   const connect = useMemo(
     (): ((label?: string) => Promise<Wallet | null>) =>
       shouldUseWagmi
-        ? async (label?: string) => await wagmiConnect(label)
+        ? wagmiConnect
         : async (label?: string) => {
             const [wallet] = await onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) })
             return convertOnboardWallet(wallet)

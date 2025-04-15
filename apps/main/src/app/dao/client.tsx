@@ -77,14 +77,16 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   return (
     <ClientWrapper loading={!appLoaded}>
-      <ConnectionProvider
-        hydrate={hydrate}
-        initLib={helpers.initCurveJs}
-        chainId={getNetworkFromUrl().rChainId}
-        onChainUnavailable={onChainUnavailable}
-      >
-        <Page>{children}</Page>
-      </ConnectionProvider>
+      {appLoaded && (
+        <ConnectionProvider
+          hydrate={hydrate}
+          initLib={helpers.initCurveJs}
+          chainId={getNetworkFromUrl().rChainId}
+          onChainUnavailable={onChainUnavailable}
+        >
+          <Page>{children}</Page>
+        </ConnectionProvider>
+      )}
     </ClientWrapper>
   )
 }

@@ -1,3 +1,4 @@
+import type { Eip1193Provider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import {
   getWalletChainId,
@@ -74,7 +75,7 @@ export const ConnectionProvider = <
   children,
 }: {
   hydrate: (newLib: TLib, prevLib: TLib | null, wallet: Wallet | null) => Promise<void>
-  initLib: (chainId: TChainId, wallet: Wallet | null) => Promise<TLib>
+  initLib: (chainId: TChainId, provider?: Eip1193Provider) => Promise<TLib>
   chainId: TChainId
   onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
   children: ReactNode
@@ -122,7 +123,7 @@ export const ConnectionProvider = <
         if (!libRef.get() || walletSignerAddress != prevLib?.signerAddress) {
           if (abortController.signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
-          const newLib = await initLib(chainId, wallet)
+          const newLib = await initLib(chainId, wallet?.provider)
           if (abortController.signal.aborted) return
           libRef.set(newLib)
         }

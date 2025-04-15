@@ -45,7 +45,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           setIsLoadingCurve(true)
 
           if (chainId) {
-            const api = await initCurveJs(chainId, (useWallet && wallet) || undefined)
+            const api = await initCurveJs(chainId, (useWallet && wallet?.provider) ?? undefined)
             setNetworkConfigs(api)
             updateCurveJs(api)
             updateConnectState('success', '')
@@ -221,6 +221,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectState.status, connectState.stage])
+
+  // Reconnect api on new wallet provider
+  useEffect(() => {
+    if (wallet?.provider) {
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallet?.provider])
 
   // wallet state changed not from app
   useEffect(() => {

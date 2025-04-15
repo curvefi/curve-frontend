@@ -12,16 +12,6 @@ export const getWalletSignerAddress = (wallet: Wallet | undefined | null): Addre
 
 export const getWalletSignerEns = (wallet: Wallet | undefined | null): string | undefined => wallet?.account?.ensName
 
-export function getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider && window.ethereum) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
-}
-
 const timeout = (message: string, timeoutMs: number) =>
   new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs))
 

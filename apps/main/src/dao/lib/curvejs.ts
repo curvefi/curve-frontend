@@ -1,27 +1,19 @@
+import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
-import {
-  CurveApi,
-  ChainId,
-  Provider,
-  Wallet,
-  EstimatedGas,
-  UsdRatesMapper,
-  ClaimButtonsKey,
-} from '@/dao/types/dao.types'
+import { CurveApi, ChainId, Provider, EstimatedGas, UsdRatesMapper, ClaimButtonsKey } from '@/dao/types/dao.types'
 import { getErrorMessage } from '@/dao/utils'
 import type { DateValue } from '@internationalized/date'
 import PromisePool from '@supercharge/promise-pool/dist'
-import { getWalletProvider } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { log } from '@ui-kit/lib'
 import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
+  initCurveJs: async (chainId: ChainId, provider?: Eip1193Provider) => {
     const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-    if (wallet) {
-      await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+    if (provider) {
+      await curveApi.init('Web3', { network: { chainId }, externalProvider: provider }, { chainId })
     } else {
       await curveApi.init('NoRPC', 'NoRPC', { chainId })
     }

@@ -38,8 +38,8 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingLending(true)
 
-          if (useWallet && wallet) {
-            const api = await helpers.initApi(chainId, wallet)
+          if (useWallet && wallet?.provider) {
+            const api = await helpers.initApi(chainId, wallet.provider)
             updateLending(api)
             updateConnectState('success', '')
 
@@ -200,6 +200,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectState.status, connectState.stage])
+
+  // Reconnect api on new wallet provider
+  useEffect(() => {
+    if (wallet?.provider) {
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallet?.provider])
 
   // wallet state changed not from app
   useEffect(() => {
