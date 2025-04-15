@@ -1,5 +1,4 @@
-export { useSetChain } from '@web3-onboard/react'
-export { useWallet, notify } from './hooks'
+export type { Wallet } from './types'
 export { getWalletSignerAddress, getWalletChainId, getWalletSignerEns } from './utils/wallet-helpers'
 export {
   ConnectionProvider,
@@ -14,3 +13,6 @@ export {
   getLib,
   requireLib,
 } from './ConnectionContext'
+export { useWallet } from './useWallet'
+export { useSetChain } from './useSetChain'
+export { notify } from './notify'

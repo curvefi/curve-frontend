@@ -13,7 +13,7 @@ import trustModule from '@web3-onboard/trust'
 import walletConnectModule from '@web3-onboard/walletconnect'
 
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
-const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
+export const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
 
 // for curve-dapp-git-chore-wallet-connect-curvefi.vercel.app, other domains can be added the dashboard

@@ -14,11 +14,11 @@ export const ConnectWalletIndicator = ({
   onDisconnectWallet,
   ...props
 }: ConnectWalletIndicatorProps) => {
-  const { signerAddress, connect, disconnect, wallet } = useWallet()
-  return wallet && signerAddress ? (
+  const { signerAddress, connect, disconnect } = useWallet()
+  return signerAddress ? (
     <ConnectedWalletLabel
       walletAddress={walletAddress ?? signerAddress}
-      onDisconnectWallet={() => (onDisconnectWallet ? onDisconnectWallet() : disconnect({ label: wallet.label }))}
+      onDisconnectWallet={onDisconnectWallet ?? disconnect}
       {...props}
     />
   ) : (

@@ -45,13 +45,14 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
+import { getWalletProvider } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet) => {
     const { networkId } = networks[chainId]
     const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-    await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
+    await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
     return api
   },
   getIsUserCloseToLiquidation: (
@@ -1993,16 +1994,6 @@ const apiLending = {
 }
 
 export default apiLending
-
-function _getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
-}
 
 /** healthNotFull is needed here because:
  * User full health can be > 0

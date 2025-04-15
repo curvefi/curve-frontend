@@ -1,14 +1,11 @@
 import groupBy from 'lodash/groupBy'
-import { Fragment, useMemo, useRef, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
-import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
-import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
-import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
+import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { ChainOption } from './ChainSwitcher'
@@ -17,34 +14,6 @@ import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 enum ChainType {
   test = 'test',
   main = 'main',
-}
-
-function ChainListItem<TChainId extends number>({
-  chain,
-  onChange,
-  isSelected,
-}: {
-  chain: ChainOption<TChainId>
-  onChange: (chainId: TChainId) => void
-  isSelected: boolean
-}) {
-  const ref = useRef<HTMLLIElement | null>(null)
-  return (
-    <InvertOnHover hoverEl={ref.current}>
-      <MenuItem
-        onClick={() => onChange(chain.chainId)}
-        data-testid={`menu-item-chain-${chain.chainId}`}
-        selected={isSelected}
-        tabIndex={0}
-      >
-        <ChainSwitcherIcon chain={chain} size={36} />
-        <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-          {chain.label}
-        </Typography>
-        {isSelected && <CheckedIcon />}
-      </MenuItem>
-    </InvertOnHover>
-  )
 }
 
 export function ChainList<TChainId extends number>({
@@ -91,11 +60,14 @@ export function ChainList<TChainId extends number>({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {chains.map((chain) => (
-                    <ChainListItem
+                    <MenuItem
+                      data-testid={`menu-item-chain-${chain.chainId}`}
                       key={chain.chainId}
-                      chain={chain}
-                      onChange={onChange}
+                      value={chain.chainId}
+                      onSelected={onChange}
                       isSelected={chain.chainId == selectedNetwork?.chainId}
+                      icon={<ChainSwitcherIcon chain={chain} size={36} />}
+                      label={chain.label}
                     />
                   ))}
                 </MenuList>

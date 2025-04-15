@@ -1,10 +1,13 @@
-import { ethers } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
-import { WalletNameStorageKey } from '@ui-kit/features/connect-wallet/lib/hooks'
+import {
+  getWalletChainId,
+  getWalletSignerAddress,
+  useSetChain,
+  useWallet,
+  type Wallet,
+} from '@ui-kit/features/connect-wallet'
 import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
-import { getFromLocalStorage, setLocalStorage } from '@ui-kit/hooks/useLocalStorage'
-import type { WalletState as Wallet } from '@web3-onboard/core'
+import { getFromLocalStorage, setLocalStorage, WalletNameStorageKey } from '@ui-kit/hooks/useLocalStorage'
 
 export const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -78,7 +81,7 @@ export const ConnectionProvider = <
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
   const { wallet, connect } = useWallet()
-  const [_, setChain] = useSetChain()
+  const setChain = useSetChain()
 
   const walletRef = useRef(wallet) // use ref to avoid re-rendering on wallet change
   walletRef.current = wallet
@@ -94,8 +97,7 @@ export const ConnectionProvider = <
     const connectWalletStage = async () => {
       let wallet = walletRef.current
       if (walletLabel != walletName) {
-        const connectOptions = { ...(walletName && { autoSelect: { label: walletName, disableModals: true } }) }
-        ;[wallet] = await withTimeout(connect(connectOptions))
+        ;[wallet] = await withTimeout(connect(walletName ?? undefined))
         setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
       }
       return wallet
@@ -109,7 +111,7 @@ export const ConnectionProvider = <
 
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
-          if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
+          if (!(await setChain(chainId))) {
             if (abortController.signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])

@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import Header from '@/dao/layout/Header'
@@ -15,7 +14,7 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
-  const [, setWalletChain] = useSetChain()
+  const setWalletChain = useSetChain()
 
   const { connectState } = useConnection()
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -50,7 +49,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
           showSwitchNetworkMessage,
           maintenanceMessage,
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
+          handleNetworkChange: () => setWalletChain(rChainId),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>

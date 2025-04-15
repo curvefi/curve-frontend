@@ -78,7 +78,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
 
     log('Hydrating DAO', api?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
+      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
     })
 
