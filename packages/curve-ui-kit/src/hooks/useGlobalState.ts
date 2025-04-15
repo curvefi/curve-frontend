@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { type GetAndSet, useStoredState } from './useStoredState'
 
 const storedValues = new Map<string, unknown>()
@@ -12,8 +13,13 @@ export const useGlobalState = <Type, Default = Type>(key: string, initialValue?:
   useStoredState({
     key,
     initialValue,
-    get: (key: string, initialValue?: Default) =>
-      storedValues.has(key) ? (storedValues.get(key) as Type) : (initialValue as Default),
-    set: (key: string, value: Type | Default) =>
-      value == null ? storedValues.delete(key) : storedValues.set(key, value),
+    get: useCallback(
+      (key: string, initialValue?: Default) =>
+        storedValues.has(key) ? (storedValues.get(key) as Type) : (initialValue as Default),
+      [],
+    ),
+    set: useCallback(
+      (key: string, value: Type | Default) => (value == null ? storedValues.delete(key) : storedValues.set(key, value)),
+      [],
+    ),
   })
