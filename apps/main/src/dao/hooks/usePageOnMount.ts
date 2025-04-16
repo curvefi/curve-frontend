@@ -1,249 +1,57 @@
-import { ethers } from 'ethers'
-import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useEffect } from 'react'
-import { CONNECT_STAGE } from '@/dao/constants'
-import { helpers } from '@/dao/lib/curvejs'
-import networks from '@/dao/networks'
+import { useParams } from 'next/navigation'
+import { useEffect } from 'react'
 import useStore from '@/dao/store/useStore'
-import { ChainId, PageProps, type UrlParams, Wallet } from '@/dao/types/dao.types'
-import { getNetworkFromUrl, getPath, parseParams } from '@/dao/utils/utilsRouter'
-import { isFailure, isLoading, isSuccess } from '@ui/utils'
-import type { ConnectState } from '@ui/utils'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
+import { type CurveApi, PageProps, type UrlParams } from '@/dao/types/dao.types'
+import { parseParams } from '@/dao/utils/utilsRouter'
+import { isLoading, isSuccess, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
-function usePageOnMount(chainIdNotRequired?: boolean) {
+export function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
   const params = useParams() as UrlParams
-  const { push } = useRouter()
-  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
-  const [_, setChain] = useSetChain()
-  const curve = useApiStore((state) => state.curve)
-  const updateCurveJs = useApiStore((state) => state.updateCurve)
-  const setIsLoadingCurve = useApiStore((state) => state.setIsLoadingCurve)
-  const hydrate = useStore((s) => s.hydrate)
-  const connectState = useStore((s) => s.connectState)
-  const updateConnectState = useStore((state) => state.updateConnectState)
+  const routerParams = parseParams(params, chainIdNotRequired)
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { wallet } = useWallet()
 
-  const walletChainId = getWalletChainId(wallet)
-  const walletSignerAddress = getWalletSignerAddress(wallet)
-  const parsedParams = parseParams(params, chainIdNotRequired)
+  const updateUserData = useStore((state) => state.user.updateUserData)
+  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
+  const isPageVisible = useStore((state) => state.isPageVisible)
+  const getProposals = useStore((state) => state.proposals.getProposals)
+  const getGauges = useStore((state) => state.gauges.getGauges)
+  const getGaugesData = useStore((state) => state.gauges.getGaugesData)
 
-  const handleConnectCurveApi = useCallback(
-    async (options: ConnectState['options']) => {
-      if (options) {
-        try {
-          const [chainId, useWallet] = options
-          const prevCurveApi = curve
-
-          setIsLoadingCurve(true)
-
-          const api = await helpers.initCurveJs(chainId, useWallet ? wallet : null)
-          updateCurveJs(api)
-          updateConnectState('success', '')
-
-          hydrate(api, prevCurveApi, wallet)
-        } catch (error) {
-          console.error(error)
-          updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
-        } finally {
-          setIsLoadingCurve(false)
-        }
-      }
-    },
-    [curve, hydrate, setIsLoadingCurve, updateConnectState, updateCurveJs, wallet],
-  )
-
-  const handleConnectWallet = useCallback(
-    async (options: ConnectState['options']) => {
-      if (options) {
-        const [walletName] = options
-        let walletState: Wallet | null
-
-        if (walletName) {
-          // If found label in localstorage, after 30s if not connected, reconnect with modal
-          const walletStatesPromise = new Promise<Wallet[] | null>(async (resolve, reject) => {
-            try {
-              const walletStates = await Promise.race([
-                connect({ autoSelect: { label: walletName, disableModals: true } }),
-                new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
-                ),
-              ])
-              resolve(walletStates)
-            } catch (error) {
-              reject(error)
-            }
-          })
-
-          try {
-            const walletStates = await walletStatesPromise
-            if (!walletStates || (Array.isArray(walletStates) && walletStates.length === 0))
-              throw new Error('unable to connect')
-            walletState = walletStates[0]
-          } catch (error) {
-            // if failed to get walletState due to timeout, show connect modal.
-            setWalletName(null)
-            ;[walletState] = await connect()
-          }
-        } else {
-          ;[walletState] = await connect()
-        }
-
-        try {
-          if (!walletState) throw new Error('unable to connect')
-          setWalletName(walletState.label)
-          const walletChainId = getWalletChainId(walletState)
-          if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
-            if (success) {
-              updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
-            } else {
-              const foundNetwork = networks[walletChainId as ChainId]?.id
-              if (foundNetwork) {
-                console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-                push(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
-                updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
-              } else {
-                updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
-              }
-            }
-          } else {
-            updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
-          }
-        } catch (error) {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-          setWalletName(null)
-        }
-      }
-    },
-    [connect, push, parsedParams, setChain, updateConnectState, setWalletName],
-  )
-
-  const handleDisconnectWallet = useCallback(
-    async (wallet: Wallet) => {
-      try {
-        await disconnect(wallet)
-        setWalletName(null)
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    [disconnect, parsedParams.rChainId, setWalletName, updateConnectState],
-  )
-
-  const handleNetworkSwitch = useCallback(
-    async (options: ConnectState['options']) => {
-      if (options) {
-        const [currChainId, newChainId] = options
-        if (wallet) {
-          try {
-            const success = await setChain({ chainId: ethers.toQuantity(newChainId) })
-            if (!success) throw new Error('reject network switch')
-            updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
-          } catch (error) {
-            console.error(error)
-            updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
-            const foundNetwork = networks[+currChainId as ChainId]?.id
-            if (foundNetwork) {
-              console.warn(
-                `Could not switch network to ${newChainId}, redirecting to ${foundNetwork}`,
-                parsedParams,
-                error,
-              )
-              push(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
-              updateConnectState('success', '')
-            } else {
-              updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
-            }
-          }
-        } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, false])
-        }
-      }
-    },
-    [push, parsedParams, setChain, updateConnectState, wallet],
-  )
-
-  // onMount
+  // todo: fetches below could be moved to hydrate probably? Check with @JustJousting
   useEffect(() => {
-    if (connectState.status === '' && connectState.stage === '') {
-      if (walletName) {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
-      } else {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [getNetworkFromUrl().rChainId, false])
-      }
+    if (isSuccess(connectState) && curve && wallet) {
+      updateUserData(curve, wallet)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [push])
+  }, [curve, connectState, updateUserData, wallet])
 
   useEffect(() => {
-    if (connectState.status || connectState.stage) {
-      if (isSuccess(connectState)) {
-      } else if (isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)) {
-        void handleNetworkSwitch(getOptions(CONNECT_STAGE.SWITCH_NETWORK, connectState.options))
-      } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
-        void handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
-      } else if (isLoading(connectState, CONNECT_STAGE.DISCONNECT_WALLET) && wallet) {
-        void handleDisconnectWallet(wallet)
-      } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
-        void handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
-      }
+    if (curve) {
+      void fetchAllStoredUsdRates(curve)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectState.status, connectState.stage])
+  }, [curve, fetchAllStoredUsdRates])
 
-  // wallet state changed not from app
+  usePageVisibleInterval(
+    () => {
+      if (curve) {
+        void fetchAllStoredUsdRates(curve)
+      }
+      void getProposals()
+      void getGauges()
+      void getGaugesData()
+    },
+    REFRESH_INTERVAL['5m'],
+    isPageVisible,
+  )
+
+  // initiate proposals list
   useEffect(() => {
-    if (
-      (isSuccess(connectState) || isFailure(connectState)) &&
-      !!curve &&
-      !!walletChainId &&
-      (curve.chainId !== walletChainId || curve.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
-    ) {
-      if (curve.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
-      } else if (curve?.chainId !== walletChainId) {
-        const foundNetwork = networks[walletChainId as ChainId]?.id
-        if (foundNetwork) {
-          updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
-          console.warn(`Network switched to ${foundNetwork}, redirecting...`, parsedParams)
-          push(getPath({ network: foundNetwork }, `/${parsedParams.restFullPathname}`))
-        } else {
-          updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletChainId, walletSignerAddress])
+    void getProposals()
+    void getGauges()
+    void getGaugesData()
+  }, [getGauges, getProposals, getGaugesData])
 
-  // locale switched
-  useEffect(() => {
-    if (isSuccess(connectState)) {
-      if (walletChainId && curve && curve.chainId === walletChainId && parsedParams.rChainId !== walletChainId) {
-        // switch network if url network is not same as wallet
-        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
-      } else if (curve && curve.chainId !== parsedParams.rChainId) {
-        // switch network if url network is not same as api
-        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [curve.chainId, parsedParams.rChainId])
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  return {
-    pageLoaded: connectState.status === 'success',
-    routerParams: parsedParams,
-    curve,
-  } as PageProps
-}
-
-export default usePageOnMount
-
-function getOptions(key: ConnectState['stage'], options: ConnectState['options']) {
-  if (!options) {
-    console.warn(`missing options for key ${key}`)
-  }
-  return options
+  return { pageLoaded: !isLoading(connectState), routerParams, curve }
 }

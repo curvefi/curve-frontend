@@ -81,7 +81,7 @@ const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
 
   useEffect(() => {
     if (pricesProposal) return
-    getProposal(+voteId, voteType)
+    void getProposal(+voteId, voteType)
   }, [getProposal, pricesProposal, voteId, voteType])
 
   // check to see if a user has voted and it has not yet been updated by the API
@@ -96,7 +96,7 @@ const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
       return
     }
 
-    getUserProposalVote(userAddress, voteId, voteType)
+    void getUserProposalVote(userAddress, voteId, voteType)
   }, [getUserProposalVote, rProposalId, userAddress, userProposalVote, userProposalVotesMapper, voteId, voteType])
 
   return (

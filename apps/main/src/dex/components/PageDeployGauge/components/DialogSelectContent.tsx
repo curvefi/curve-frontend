@@ -38,6 +38,8 @@ const Wrapper = styled.div`
   margin: var(--spacing-2) auto 0 0;
   border-top: 1px solid var(--border-600);
   width: 100%;
+  max-height: 25rem;
+  overflow-y: scroll;
 `
 
 const StyledSelectButton = styled(Button)`

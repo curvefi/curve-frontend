@@ -3,7 +3,6 @@ import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
-import { CONNECT_STAGE, ConnectState } from '@ui/utils'
 import { log } from '@ui-kit/lib'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -17,7 +16,6 @@ export type LayoutHeight = {
 }
 
 type SliceState = {
-  connectState: ConnectState
   isPageVisible: boolean
   layoutHeight: LayoutHeight
   showScrollButton: boolean
@@ -25,13 +23,12 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateConnectState(status?: ConnectState['status'], stage?: ConnectState['stage'], options?: ConnectState['options']): void
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: CurveApi, prevApi: CurveApi | null, wallet: Wallet | null): void
+  hydrate(api: CurveApi, prevApi: CurveApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
@@ -48,14 +45,10 @@ const DEFAULT_STATE = {
     footer: 0,
   },
   showScrollButton: false,
-  connectState: { status: '', stage: '' },
 } satisfies SliceState
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
-    set({ connectState: { status, stage, ...(options && { options }) } })
-  },
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => {
     set(
       produce((state: State) => {

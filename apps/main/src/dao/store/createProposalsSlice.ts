@@ -7,6 +7,7 @@ import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
+  type CurveApi,
   FetchingState,
   PricesProposalResponse,
   PricesProposalResponseData,
@@ -21,9 +22,9 @@ import {
   UserProposalVoteResData,
 } from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const { WEEK } = TIME_FRAMES
 
@@ -68,17 +69,17 @@ const sliceKey = 'proposals'
 
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
-    getProposals(): void
-    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): void
-    getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
+    getProposals(): Promise<void>
+    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): Promise<void>
+    getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): Promise<void>
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
     setActiveSortDirection(direction: SortDirection): void
     selectFilteredSortedProposals(): ProposalData[]
     setProposals(searchValue: string): void
-    castVote(voteId: number, voteType: ProposalType, support: boolean): void
-    executeProposal(voteId: number, voteType: ProposalType): void
+    castVote(voteId: number, voteType: ProposalType, support: boolean): Promise<void>
+    executeProposal(voteId: number, voteType: ProposalType): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -336,7 +337,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -409,7 +410,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const userAddress = get().user.userAddress
 
           if (userAddress) {
-            get()[sliceKey].getUserProposalVote(userAddress, voteId.toString(), voteType, voteResponseHash)
+            void get()[sliceKey].getUserProposalVote(userAddress, voteId.toString(), voteType, voteResponseHash)
           }
         }
       } catch (error) {
@@ -431,7 +432,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()

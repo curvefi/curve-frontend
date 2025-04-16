@@ -2,16 +2,16 @@ import { useEffect } from 'react'
 import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import useStore from '@/dao/store/useStore'
+import type { CurveApi } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'
 import { formatNumber } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const CrvStats = () => {
   const { provider } = useWallet()
-  const curve = useApiStore((state) => state.curve)
+  const { lib: curve } = useConnection<CurveApi>()
   const chainId = curve?.chainId
   const veCrvData = useStore((state) => state.analytics.veCrvData)
   const getVeCrvData = useStore((state) => state.analytics.getVeCrvData)
