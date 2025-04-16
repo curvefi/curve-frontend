@@ -98,7 +98,6 @@ export const ConnectionProvider = <
      */
     const tryToReconnect = async (label: string) => {
       setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      isWalletInitialized.current = true
       return withTimeout(connect({ autoSelect: { label, disableModals: true } }))
         .then((wallets) => wallets.length > 0)
         .catch(() => false)
@@ -110,6 +109,7 @@ export const ConnectionProvider = <
     const initApp = async () => {
       try {
         if (!isWalletInitialized.current) {
+          isWalletInitialized.current = true
           const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: get rid of walletName with wagmi
           if (storedWalletName && (await tryToReconnect(storedWalletName))) {
             return // wallet updated, callback is restarted

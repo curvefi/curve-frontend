@@ -14,17 +14,16 @@ import walletConnectModule from '@web3-onboard/walletconnect'
 
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
-const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
 
 // for curve-dapp-git-chore-wallet-connect-curvefi.vercel.app, other domains can be added the dashboard
-const VERCEL_DOMAIN_VERIFICATION = '84ba44da9bf094485e9a78634683c0cbbe56795f765e65ae0152a9dda7242eac'
+const VERCEL_DOMAIN_VERIFICATION =
+  'c3fe8dd8-93df-44af-803f-83798aa1d440=d4a683b1f972da96c0b24dfc26e1507404c6a1298ca54395d8bc96984a849864'
 // for curve.fi and staging.curve.fi
-const CURVE_DOMAIN_VERIFICATION = '3d76b3cd8cd754f34ac1c18ff25dc23ee9b80fc7f75800041335263b11f20b19'
+const CURVE_DOMAIN_VERIFICATION =
+  'c3fe8dd8-93df-44af-803f-83798aa1d440=3d76b3cd8cd754f34ac1c18ff25dc23ee9b80fc7f75800041335263b11f20b19'
 
 export const getVercelDomainVerification = (host: string) =>
-  [WALLET_CONNECT_ACCOUNT, host.endsWith('vercel.app') ? VERCEL_DOMAIN_VERIFICATION : CURVE_DOMAIN_VERIFICATION].join(
-    '=',
-  )
+  host.endsWith('vercel.app') ? VERCEL_DOMAIN_VERIFICATION : CURVE_DOMAIN_VERIFICATION
 
 export const injected = injectedModule()
 export const trezor = trezorModule({

@@ -1,14 +1,18 @@
 'use client'
 import styled from 'styled-components'
 import Gauge from '@/dao/components/PageGauge/index'
+import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
 
-const Page = (params: GaugeUrlParams) => (
-  <Container>
-    <Gauge routerParams={params} />
-  </Container>
-)
+const Page = (params: GaugeUrlParams) => {
+  usePageOnMount()
+  return (
+    <Container>
+      <Gauge routerParams={params} />
+    </Container>
+  )
+}
 
 const Container = styled.div`
   height: 100%;
