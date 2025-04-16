@@ -42,6 +42,9 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
         : connectionStage?.startsWith(expectedStage)),
   )
 
+/** During hydration the status is success and the stage is set to hydrate. */
+export const isHydrated = ({ status, stage }: ConnectState) => status === SUCCESS && stage !== HYDRATE
+
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
   lib?: TLib
@@ -98,7 +101,6 @@ export const ConnectionProvider = <
      */
     const tryToReconnect = async (label: string) => {
       setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      isWalletInitialized.current = true
       return withTimeout(connect({ autoSelect: { label, disableModals: true } }))
         .then((wallets) => wallets.length > 0)
         .catch(() => false)
@@ -110,6 +112,7 @@ export const ConnectionProvider = <
     const initApp = async () => {
       try {
         if (!isWalletInitialized.current) {
+          isWalletInitialized.current = true
           const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: get rid of walletName with wagmi
           if (storedWalletName && (await tryToReconnect(storedWalletName))) {
             return // wallet updated, callback is restarted

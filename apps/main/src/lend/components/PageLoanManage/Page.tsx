@@ -9,10 +9,9 @@ import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { usePageProps } from '@/lend/hooks/usePageProps'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams } from '@/lend/types/lend.types'
 import { scrollToTop } from '@/lend/utils/helpers'
@@ -39,13 +38,17 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const { pageLoaded, api, routerParams } = usePageProps()
+  const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()
-  const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
+  const {
+    network: rNetwork,
+    market: rMarket,
+    formType: [rFormType = null],
+  } = params
+  const rChainId = networksIdMapper[rNetwork]
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const { connectState } = useConnection<Api>()
   const isLoadingApi = isLoading(connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -95,11 +98,11 @@ const Page = (params: MarketUrlParams) => {
   // onMount
   useEffect(() => {
     setLoaded(false)
-    if (pageLoaded && !isLoadingApi && api && market) {
+    if (!isLoadingApi && api && market) {
       void fetchInitial(api, market)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi])
+  }, [isLoadingApi])
 
   useEffect(() => {
     if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
@@ -130,7 +133,6 @@ const Page = (params: MarketUrlParams) => {
     rChainId,
     rOwmId,
     rFormType,
-    rSubdirectory,
     isLoaded,
     api,
     market,

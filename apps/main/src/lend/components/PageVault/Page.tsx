@@ -8,9 +8,9 @@ import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import Vault from '@/lend/components/PageVault/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { usePageProps } from '@/lend/hooks/usePageProps'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
+import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
@@ -30,14 +30,18 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const { routerParams, api } = usePageProps()
+  const {
+    network: rNetwork,
+    market: rMarket,
+    formType: [rFormType = null],
+  } = params
+  const rChainId = networksIdMapper[rNetwork]
+
+  const { connect, provider } = useWallet()
+  const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()
-  const { rChainId, rMarket, rSubdirectory, rFormType } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data
-  const rOwmId = market?.id ?? ''
-  const { connectState } = useConnection<Api>()
-  const isLoadingApi = isLoading(connectState)
-  const { connect } = useWallet()
+
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
@@ -46,10 +50,11 @@ const Page = (params: MarketUrlParams) => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
+  const rOwmId = market?.id ?? ''
+  const isLoadingApi = isLoading(connectState)
   const { signerAddress } = api ?? {}
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
@@ -111,7 +116,6 @@ const Page = (params: MarketUrlParams) => {
     rChainId,
     rOwmId,
     rFormType,
-    rSubdirectory,
     isLoaded,
     api,
     market,

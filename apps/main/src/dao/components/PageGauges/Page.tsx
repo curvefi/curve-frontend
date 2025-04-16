@@ -1,17 +1,21 @@
 'use client'
 import styled from 'styled-components'
 import Gauges from '@/dao/components/PageGauges/index'
+import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import Settings from '@/dao/layout/Settings'
 import { breakpoints } from '@ui/utils'
 
-const Page = () => (
-  <>
-    <Container>
-      <Gauges />
-    </Container>
-    <Settings showScrollButton />
-  </>
-)
+const Page = () => {
+  usePageOnMount()
+  return (
+    <>
+      <Container>
+        <Gauges />
+      </Container>
+      <Settings showScrollButton />
+    </>
+  )
+}
 
 const Container = styled.div`
   height: 100%;
