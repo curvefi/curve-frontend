@@ -7,7 +7,7 @@ import { isLoading, isSuccess, useConnection, useWallet } from '@ui-kit/features
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
+export function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
   const params = useParams() as UrlParams
   const routerParams = parseParams(params, chainIdNotRequired)
   const { lib: curve = null, connectState } = useConnection<CurveApi>()
@@ -55,5 +55,3 @@ function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
 
   return { pageLoaded: !isLoading(connectState), routerParams, curve }
 }
-
-export default usePageOnMount

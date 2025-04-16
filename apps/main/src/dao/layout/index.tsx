@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import Header from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
+import type { CurveApi } from '@/dao/types/dao.types'
 import { getEthPath, getNetworkFromUrl } from '@/dao/utils/utilsRouter'
 import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
@@ -17,7 +18,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
   const [, setWalletChain] = useSetChain()
 
-  const { connectState } = useConnection()
+  const { connectState } = useConnection<CurveApi>()
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
@@ -31,8 +32,6 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
-
-  const showSwitchNetworkMessage = isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
 
   const minHeight = useMemo(
     () => Object.values(layoutHeight).reduce((acc, height) => acc + height, 0) - layoutHeight.footer + 24,
@@ -48,7 +47,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           ref: globalAlertRef,
           networkName: rNetwork,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage,
+          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
           maintenanceMessage,
           handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
         }}
