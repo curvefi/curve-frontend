@@ -1,5 +1,5 @@
 import type { Eip1193Provider } from 'ethers'
-import { useCallback, useMemo, useEffect } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useAccount, useConnect, useConnectorClient, useDisconnect, useEnsName } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Address } from '@ui-kit/utils'
@@ -42,10 +42,6 @@ export const useWagmi = () => {
 
   const { data: client } = useConnectorClient()
   const provider = useMemo(() => client?.transport.request && { request: client.transport.request }, [client])
-
-  useEffect(() => {
-    console.info(`Found new client for address: ${client?.account?.address}`)
-  }, [client])
 
   // important: use the async functions so we can properly handle the promise failures
   const { connectAsync } = useConnect()
