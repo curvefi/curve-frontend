@@ -7,7 +7,6 @@ import Page from '@/dex/layout/default'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -60,8 +59,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     useStore.setState(useStore.getInitialState())
     void (async () => {
       const networks = await fetchNetworks()
-
-      useWallet.initialize(theme, networks)
 
       const handleVisibilityChange = () => {
         updateGlobalStoreByKey('isPageVisible', !document.hidden)

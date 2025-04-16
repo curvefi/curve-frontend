@@ -1,5 +1,6 @@
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
+import { useSwitchChain } from 'wagmi'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PageProps, type UrlParams, Wallet } from '@/dex/types/main.types'
@@ -8,7 +9,8 @@ import { getPath, useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRo
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
@@ -17,7 +19,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const pathname = usePathname()
   const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
-  const setChain = useSetChain()
+  const { switchChainAsync } = useSwitchChain()
 
   const curve = useApiStore((state) => state.curve)
   const updateCurveJs = useApiStore((state) => state.updateCurve)
@@ -103,7 +105,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           setWalletName(walletState?.label ?? null)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain(parsedParams.rChainId)
+            const success = await switchChainAsync({ chainId: parsedParams.rChainId as WagmiChainId })
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
@@ -131,13 +133,13 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     },
     [
       connect,
-      push,
-      networks,
+      setWalletName,
       parsedParams.rChainId,
       parsedParams.restFullPathname,
-      setChain,
+      switchChainAsync,
       updateConnectState,
-      setWalletName,
+      networks,
+      push,
     ],
   )
 
@@ -157,7 +159,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         const [currChainId, newChainId] = options
         if (wallet) {
           try {
-            const success = await setChain(newChainId)
+            const success = await switchChainAsync({ chainId: newChainId })
             if (!success) throw new Error('reject network switch')
             updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
           } catch (error) {
@@ -182,7 +184,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         }
       }
     },
-    [push, networks, parsedParams.restFullPathname, setChain, updateConnectState, wallet],
+    [wallet, switchChainAsync, updateConnectState, networks, parsedParams.restFullPathname, push],
   )
 
   // onMount

@@ -1,14 +1,10 @@
 import { type Eip1193Provider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
-import {
-  getWalletChainId,
-  getWalletSignerAddress,
-  useSetChain,
-  useWallet,
-  type Wallet,
-} from '@ui-kit/features/connect-wallet'
+import { useSwitchChain } from 'wagmi'
+import { getWalletChainId, getWalletSignerAddress, useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
 import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { useWalletName } from '@ui-kit/hooks/useLocalStorage'
+import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -89,7 +85,7 @@ export const ConnectionProvider = <
   const isWalletInitialized = useRef(false)
   const { wallet, connect } = useWallet()
   const [walletName, setWalletName] = useWalletName()
-  const setChain = useSetChain()
+  const { switchChainAsync } = useSwitchChain()
 
   useEffect(() => {
     if (isWalletInitialized.current) {
@@ -126,7 +122,7 @@ export const ConnectionProvider = <
         const walletChainId = getWalletChainId(wallet)
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
-          if (!(await setChain(chainId))) {
+          if (!(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
             if (signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])
@@ -158,7 +154,7 @@ export const ConnectionProvider = <
     return () => abort.abort()
     // Adding connect to the list of deps somehow causes an infinite loop, not sure why
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet])
+  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
