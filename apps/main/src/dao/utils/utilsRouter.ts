@@ -10,5 +10,5 @@ export const getRestFullPathname = () =>
   window.location.pathname
     .substring(1)
     .split('/')
-    .slice(1, window.location.pathname.substring(1).split('/').length)
+    .slice(1)
     .join('/')
