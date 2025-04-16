@@ -9,7 +9,7 @@ import InternalLinkButton from '@ui/InternalLinkButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenString } from '@ui-kit/utils'
 
 type Props = {
   chainId: ChainId
@@ -17,7 +17,9 @@ type Props = {
 }
 
 const ProcessSummary = ({ chainId, isLite }: Props) => {
-  const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
+  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
+  const linkPoolAddress = useStore((state) => state.deployGauge.linkPoolAddress)
+  const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
   const networks = useStore((state) => state.networks.networks)
 
   const { push } = useRouter()
@@ -52,7 +54,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                     href={networks[sidechain].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
-                    {shortenAddress(deploymentStatus.sidechain.transaction.hash)}
+                    {shortenString(deploymentStatus.sidechain.transaction.hash)}
                     <StyledIcon name={'Launch'} size={16} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
@@ -84,7 +86,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                     href={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
-                    {shortenAddress(deploymentStatus.mirror.transaction.hash)}
+                    {shortenString(deploymentStatus.mirror.transaction.hash)}
                     <StyledIcon name={'Launch'} size={16} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
