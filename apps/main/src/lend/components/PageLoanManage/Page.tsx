@@ -9,7 +9,7 @@ import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { usePageOnMount } from '@/lend/hooks/usePageOnMount'
+import { usePageProps } from '@/lend/hooks/usePageProps'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
@@ -39,7 +39,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const { pageLoaded, api, routerParams } = usePageOnMount()
+  const { pageLoaded, api, routerParams } = usePageProps()
   const titleMapper = useTitleMapper()
   const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
   const market = useOneWayMarket(rChainId, rMarket).data

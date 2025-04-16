@@ -28,8 +28,6 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const layoutHeight = useStore((state) => state.layout.height)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-  const showSwitchNetworkMessage = isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
-
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   useEffect(() => {
@@ -52,7 +50,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           ref: globalAlertRef,
           networkName,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage,
+          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
           handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(networksIdMapper[networkName]) }),
         }}
       />

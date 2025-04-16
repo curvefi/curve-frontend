@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { ROUTE } from '@/lend/constants'
-import { usePageOnMount } from '@/lend/hooks/usePageOnMount'
+import { usePageProps } from '@/lend/hooks/usePageProps'
 import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import Settings from '@/lend/layout/Settings'
@@ -29,7 +29,7 @@ enum SEARCH {
 const Page = (params: NetworkUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { pageLoaded, routerParams, api } = usePageOnMount()
+  const { pageLoaded, routerParams, api } = usePageProps()
   const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()
   const { rChainId } = routerParams

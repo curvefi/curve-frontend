@@ -3,7 +3,7 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
-import { usePageOnMount } from '@/lend/hooks/usePageOnMount'
+import { usePageProps } from '@/lend/hooks/usePageProps'
 import useStore from '@/lend/store/useStore'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { ExternalLink } from '@ui/Link'
@@ -13,7 +13,7 @@ import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
   const searchParams = useSearchParams()
-  const { routerParams } = usePageOnMount(true)
+  const { routerParams } = usePageProps(true)
   const { rChainId } = routerParams
 
   const init = useStore((state) => state.integrations.init)

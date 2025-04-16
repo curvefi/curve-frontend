@@ -17,7 +17,7 @@ const PageTitleBorrowSupplyLinks = ({
   activeKey: 'borrow' | 'supply'
   market: OneWayMarketTemplate
 }) => {
-  const { lib: api } = useConnection<Api>()
+  const { lib: api = null } = useConnection<Api>()
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
