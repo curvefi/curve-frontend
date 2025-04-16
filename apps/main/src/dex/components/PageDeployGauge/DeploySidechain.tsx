@@ -1,3 +1,4 @@
+import { Chain } from 'curve-ui-kit/src/utils/network'
 import { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'
@@ -72,7 +73,9 @@ const DeploySidechain = ({ chainId }: Props) => {
   const networksList = useMemo(
     () =>
       Object.keys(curveNetworks)
-        .filter((key) => key !== '1')
+        .filter(
+          (key) => +key !== Chain.Ethereum && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
+        )
         .map((key) => curveNetworks[+key].name)
         .sort(),
     [curveNetworks],
