@@ -6,9 +6,4 @@ export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl
 
 export const getEthPath = (route: string) => getPath({ network: 'ethereum' }, route)
 
-export const getRestFullPathname = () =>
-  window.location.pathname
-    .substring(1)
-    .split('/')
-    .slice(1)
-    .join('/')
+export const getRestFullPathname = () => window.location.pathname.substring(1).split('/').slice(1).join('/')
