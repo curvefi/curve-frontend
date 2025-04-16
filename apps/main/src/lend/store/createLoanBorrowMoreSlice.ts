@@ -14,9 +14,9 @@ import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManag
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId } from '@/lend/types/lend.types'
+import { LlamalendApi, ChainId } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
@@ -38,15 +38,15 @@ const sliceKey = 'loanBorrowMore'
 // prettier-ignore
 export type LoanBorrowMoreSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxRecv(activeKeyMax: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
-    refetchMaxRecv(market: OneWayMarketTemplate | undefined, isLeverage: boolean): Promise<string>
-    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
-    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
+    fetchMaxRecv(activeKeyMax: string, api: LlamalendApi, market: LendMarketTemplate, isLeverage: boolean): Promise<void>
+    refetchMaxRecv(market: LendMarketTemplate | undefined, isLeverage: boolean): Promise<string>
+    fetchDetailInfo(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
+    setFormValues(api: LlamalendApi | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepIncrease(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean): Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepIncrease(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -100,7 +100,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       sliceState.setStateByKey('formValues', { ...formValues, debtError })
     },
     refetchMaxRecv: async (market, isLeverage) => {
-      const api = useApiStore.getState().lending
+      const { llamalend: api } = useApiStore.getState()
       const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed } = formValues
 
@@ -345,8 +345,8 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
 export default createLoanBorrowMore
 
 export function _getActiveKeys(
-  api: Api | null,
-  market: OneWayMarketTemplate | undefined,
+  api: LlamalendApi | null,
+  market: LendMarketTemplate | undefined,
   { userCollateral, userBorrowed, debt }: FormValues,
   isLeverage: boolean,
   maxSlippage: string,

@@ -43,7 +43,7 @@ const Page = (params: CollateralUrlParams) => {
   const { rChainId, rCollateralId, rFormType } = routerParams
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
-  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
+  const isLoadingLlamalend = useApiStore((state) => state.isLoadingLlamalend)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -78,7 +78,7 @@ const Page = (params: CollateralUrlParams) => {
   )
 
   useEffect(() => {
-    if (curve && !isLoadingStable) {
+    if (curve && !isLoadingLlamalend) {
       if (!rChainId || !rCollateralId || !rFormType) {
         push(getCollateralListPathname(params))
       } else if (curve.signerAddress && llamma) {
@@ -95,7 +95,7 @@ const Page = (params: CollateralUrlParams) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, isLoadingStable, rFormType])
+  }, [isReady, isLoadingLlamalend, rFormType])
 
   useEffect(() => {
     if (!loaded && loanExists && !loanExists.loanExists) {

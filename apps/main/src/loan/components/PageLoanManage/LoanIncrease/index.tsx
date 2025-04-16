@@ -18,7 +18,7 @@ import {
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import useStore from '@/loan/store/useStore'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { LlamalendApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import AlertBox from '@ui/AlertBox'
@@ -104,7 +104,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   }
 
   const handleBtnClickBorrow = useCallback(
-    async (payloadActiveKey: string, curve: Curve, formValues: FormValues, llamma: Llamma) => {
+    async (payloadActiveKey: string, curve: LlamalendApi, formValues: FormValues, llamma: Llamma) => {
       const chainId = curve.chainId
       const { collateral, debt } = formValues
       const haveCollateral = +collateral > 0
@@ -138,7 +138,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      curve: Curve,
+      curve: LlamalendApi,
       llamma: Llamma,
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,

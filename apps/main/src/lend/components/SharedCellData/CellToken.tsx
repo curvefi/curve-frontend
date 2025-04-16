@@ -2,7 +2,7 @@ import CampaignRewardsRow from '@/lend/components/CampaignRewardsRow'
 import TokenLabel from '@/lend/components/TokenLabel'
 import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
 import { ChainId } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
 
@@ -18,7 +18,7 @@ const CellToken = ({
   hideIcon?: boolean
   rChainId: ChainId
   isVisible?: boolean
-  market?: OneWayMarketTemplate
+  market?: LendMarketTemplate
   showLeverageIcon?: boolean
   type: 'collateral' | 'borrowed'
   module: 'borrow' | 'supply'
