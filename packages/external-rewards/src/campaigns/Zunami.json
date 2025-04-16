@@ -1,0 +1,45 @@
+{
+  "campaignName": "ZUN",
+  "platform": "Zunami",
+  "description": "External token rewards for providing liquidity.",
+  "platformImageId": "zun.png",
+  "dashboardLink": "https://app.zunami.io/earn",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Deposit your Curve LP tokens on Zunami protocol and earn ZUN rewards. For more information please visit Zunami protocol.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x17D964DA2bD337CfEaEd30a27c9Ab6580676E730",
+      "network": "ethereum",
+      "multiplier": "ZUN",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Deposit your Curve LP tokens on Zunami protocol and earn ZUN rewards. For more information please visit Zunami protocol.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x13eA95Ce68185e334d3747539845A3b7643a8cab",
+      "network": "ethereum",
+      "multiplier": "ZUN",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Deposit your Curve LP tokens on Zunami protocol and earn ZUN rewards. For more information please visit Zunami protocol.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x6fBc5Ddc181240Cb1d9bcEc6Fdea429036818035",
+      "network": "ethereum",
+      "multiplier": "ZUN",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
