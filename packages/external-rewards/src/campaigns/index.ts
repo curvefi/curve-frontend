@@ -16,7 +16,6 @@ import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
 import Mellow from './Mellow.json'
 import Pumpbtc from './Pumpbtc.json'
-import Renzo from './Renzo.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
 import StableLabs from './StableLabs.json'
@@ -36,7 +35,6 @@ export {
   Etherfi,
   Kelpdao,
   Mellow,
-  Renzo,
   Symbiotic,
   Usual,
   YieldNest,

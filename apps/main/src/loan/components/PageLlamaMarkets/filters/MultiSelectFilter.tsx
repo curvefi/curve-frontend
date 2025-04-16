@@ -114,14 +114,15 @@ export const MultiSelectFilter = <T extends unknown>({
           onClose={close}
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          MenuListProps={{ sx: { minWidth: Math.round(selectWidth || 100) + 'px' } }}
+          slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[3].Outline}` }} component="li">
+          <Box borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
             <Button
               color="ghost"
               size="extraSmall"
               onClick={onClear}
               data-testid="multi-select-clear"
+              sx={{ paddingInline: 0 }}
             >{t`Clear Selection`}</Button>
           </Box>
           {options.map((optionId) => (

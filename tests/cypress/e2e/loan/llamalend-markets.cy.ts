@@ -10,6 +10,7 @@ import {
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@/support/helpers/tokens'
 import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
   let isDarkMode: boolean
@@ -50,7 +51,11 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
-    const filterHeight = { mobile: [274, 266, 234, 226, 196, 156], tablet: [188, 176, 120], desktop: [128] }[breakpoint]
+    const filterHeight = {
+      mobile: [274, 266, 234, 226, 196, 156],
+      tablet: [232, 188, 176, 120],
+      desktop: [128],
+    }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
     const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
@@ -70,8 +75,10 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    checkLineGraphColor('lend', green)
     checkLineGraphColor('borrow', red)
+
+    showHiddenColumn({ element: 'line-graph-lend', toggle: 'lendChart' })
+    checkLineGraphColor('lend', green)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
@@ -137,8 +144,12 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by token`, () => {
     const type = oneTokenType()
+    const tokenField = (type + '_token') as `${typeof type}_token`
+
     cy.get(`[data-testid="btn-expand-filters"]`).click()
-    const coins = vaultData.ethereum.data.map((d) => d[(type + '_token') as `${typeof type}_token`].symbol)
+    const coins = vaultData.ethereum.data
+      .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
+      .map((d) => d[tokenField].symbol)
     const coin1 = oneOf(...coins)
     const coin2 = oneOf(...coins.filter((c) => c !== coin1))
     selectCoin(coin1, type)
@@ -201,14 +212,11 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
 
-  it('should toggle columns', () => {
+  it('should hide columns', () => {
     const { toggle, element } = oneOf(
-      // hide the whole column:
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
       { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
-      // hide the graph inside the cell:
       { toggle: 'borrowChart', element: 'line-graph-borrow' },
-      { toggle: 'lendChart', element: 'line-graph-lend' },
     )
     cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
@@ -239,4 +247,11 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+}
+
+function showHiddenColumn({ element, toggle }: { element: string; toggle: string }) {
+  cy.get(`[data-testid="${element}"]`).should('not.exist')
+  cy.get(`[data-testid="btn-visibility-settings"]`).click()
+  cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
+  cy.get(`[data-testid="${element}"]`).should('be.visible')
 }
