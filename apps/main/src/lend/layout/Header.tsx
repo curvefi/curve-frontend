@@ -1,13 +1,18 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef } from 'react'
-import { CONNECT_STAGE } from '@/lend/constants'
 import { useTvl } from '@/lend/entities/chain'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type Api, ChainId } from '@/lend/types/lend.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { getWalletSignerAddress, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import {
+  CONNECT_STAGE,
+  getWalletSignerAddress,
+  isLoading,
+  useConnection,
+  useWallet,
+} from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'

@@ -1,5 +1,4 @@
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-export { CONNECT_STAGE } from '@ui-kit/features/connect-wallet'
 
 export const ETHEREUM_CHAIN_ID = 1
 
