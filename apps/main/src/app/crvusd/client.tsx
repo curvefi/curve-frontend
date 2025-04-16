@@ -1,23 +1,29 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { getNetworkFromUrl } from '@/dao/utils'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/loan/layout'
 import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { type TempApi, useStablecoinConnection } from '@/loan/temp-lib'
+import type { ChainId, UrlParams } from '@/loan/types/loan.types'
+import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
+import { getPath, getRestFullPathname } from '@/loan/utils/utilsRouter'
+import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
+import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const curve = useApiStore((state) => state.stable)
+  const { lib: curve = null } = useStablecoinConnection()
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
@@ -25,6 +31,9 @@ export const App = ({ children }: { children: ReactNode }) => {
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const theme = useUserProfileStore((state) => state.theme)
+  const hydrate = useStore((s) => s.hydrate)
+  const { push } = useRouter()
+  const params = useParams() as UrlParams
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -77,13 +86,37 @@ export const App = ({ children }: { children: ReactNode }) => {
     isPageVisible,
   )
 
+  const initLib = useCallback(async (chainId: ChainId, wallet: Wallet | null): Promise<TempApi | undefined> => {
+    if (!wallet) return
+    const [stablecoin, lend] = await Promise.all([initStableJs(chainId, wallet), initLendApi(chainId, wallet)])
+    return { stablecoin, lend, chainId }
+  }, [])
+
+  const onChainUnavailable = useCallback(
+    ([walletChainId]: [ChainId, ChainId]) => {
+      const foundNetwork = networks[walletChainId]?.id
+      if (foundNetwork) {
+        console.warn(`Network switched to ${foundNetwork}, redirecting...`, location.href)
+        push(getPath({ network: foundNetwork }, `/${getRestFullPathname(params)}`))
+      }
+    },
+    [push, params],
+  )
+
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         {appLoaded && (
           <QueryProvider persister={persister} queryClient={queryClient}>
-            <Page>{children}</Page>
+            <ConnectionProvider<ChainId, TempApi>
+              hydrate={hydrate}
+              initLib={initLib}
+              chainId={getNetworkFromUrl().rChainId as ChainId}
+              onChainUnavailable={onChainUnavailable}
+            >
+              <Page>{children}</Page>
+            </ConnectionProvider>
           </QueryProvider>
         )}
       </ThemeProvider>

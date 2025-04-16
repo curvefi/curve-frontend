@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import IntegrationsComp from '@/loan/components/PageIntegrations/index'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { ExternalLink } from '@ui/Link'

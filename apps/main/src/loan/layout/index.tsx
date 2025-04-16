@@ -1,41 +1,31 @@
+import { ethers } from 'ethers'
 import { useParams } from 'next/navigation'
-import { ReactNode, useMemo, useRef, useState } from 'react'
+import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import Header from '@/loan/layout/Header'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
+import { useLendConnection } from '@/loan/temp-lib'
 import type { NetworkUrlParams, UrlParams } from '@/loan/types/loan.types'
 import { getPath, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
-import { isFailure, isLoading } from '@ui/utils'
-import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
+import { isFailure, useSetChain } from '@ui-kit/features/connect-wallet'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
-  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
+  const { connectState } = useLendConnection()
+  const [, setWalletChain] = useSetChain()
 
-  const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layout.height)
-  const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-  const [networkSwitch, setNetworkSwitch] = useState('')
   const params = useParams() as UrlParams
   const { rChainId, rNetwork } = parseNetworkFromUrl(params)
-
-  const showSwitchNetworkMessage =
-    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
-
-  const handleNetworkChange = () => {
-    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
-    setNetworkSwitch(connectStage)
-    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
-  }
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
@@ -48,8 +38,8 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           ref: globalAlertRef,
           networkName: rNetwork,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage,
-          handleNetworkChange,
+          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
+          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>

@@ -6,8 +6,7 @@ import networks, { visibleNetworksList } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { ChainId, type CurveApi } from '@/dao/types/dao.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
-import { getWalletSignerAddress, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -16,7 +15,6 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
@@ -44,11 +42,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           },
           [rChainId, push],
         ),
-      }}
-      WalletProps={{
-        walletAddress: getWalletSignerAddress(wallet),
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`,
       }}
       BannerProps={BannerProps}
       height={useHeaderHeight(bannerHeight)}

@@ -139,6 +139,7 @@ const Page = (params: NetworkUrlParams) => {
       <Box grid gridRowGap={3} padding>
         {rChainId && (
           <QuickSwap
+            curve={curve}
             pageLoaded={loaded}
             params={params}
             searchedParams={{

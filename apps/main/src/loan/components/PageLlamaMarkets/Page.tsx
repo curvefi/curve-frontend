@@ -12,7 +12,7 @@ import {
 } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'

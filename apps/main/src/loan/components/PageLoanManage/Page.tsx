@@ -8,9 +8,10 @@ import LoanInfoUser from '@/loan/components/LoanInfoUser'
 import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
+import { useLendConnection } from '@/loan/temp-lib'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname, getLoanCreatePathname } from '@/loan/utils/utilsRouter'
@@ -27,23 +28,20 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
-import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
-  const { curve, routerParams } = usePageOnMount()
+  const { curve, routerParams, pageLoaded } = usePageOnMount()
   const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
-  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -52,8 +50,8 @@ const Page = (params: CollateralUrlParams) => {
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
+  const { connectState } = useLendConnection()
+  const { connect: connectWallet } = useWallet()
   const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -78,7 +76,7 @@ const Page = (params: CollateralUrlParams) => {
   )
 
   useEffect(() => {
-    if (curve && !isLoadingStable) {
+    if (curve && pageLoaded) {
       if (!rChainId || !rCollateralId || !rFormType) {
         push(getCollateralListPathname(params))
       } else if (curve.signerAddress && llamma) {
@@ -95,7 +93,7 @@ const Page = (params: CollateralUrlParams) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, isLoadingStable, rFormType])
+  }, [isReady, pageLoaded, rFormType])
 
   useEffect(() => {
     if (!loaded && loanExists && !loanExists.loanExists) {
