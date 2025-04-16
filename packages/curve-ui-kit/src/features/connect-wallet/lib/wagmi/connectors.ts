@@ -1,6 +1,8 @@
-import { WALLET_CONNECT_PROJECT_ID } from '@ui-kit/features/connect-wallet/lib/utils/walletModules'
 import { coinbaseWallet, injected, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
+
+// project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
+const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
 export type ConnectorType =
   | typeof injected.type
@@ -18,7 +20,6 @@ export const connectors: Record<ConnectorType, CreateConnectorFn> = {
     qrModalOptions: {
       themeVariables: {
         // Should be enough to pop over our connection modal
-        // Same variable also gets set in packages\ui\src\styles\layout.css for Onboard
         '--wcm-z-index': '1301',
       },
     },

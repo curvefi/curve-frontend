@@ -47,9 +47,6 @@
   --footer-create-pool-height: 58px;
 
   /* z-index */
-  --account-center-z-index: 1999; /* blocknative notify */
-  --onboard-modal-z-index: 1188; /* blocknative connect wallet modal */
-  --onboard-account-select-modal-z-index: 1188;
   --z-index-select-dropdown: 1999;
   --z-index-modal: 1101;
   --z-index-chip: 1189;
@@ -64,8 +61,4 @@
   --z-index-stepper: 1;
   --z-index-tab: 1;
   --z-index-tooltip: 1;
-}
-
-body {
-  --wcm-z-index: 1301; /* Wallet Connect has an option to override its theme, but this object is not exposed in Onboard, so the override is handled in the UI library. See https://docs.reown.com/advanced/walletconnectmodal/theming for more overrides*/
 }
