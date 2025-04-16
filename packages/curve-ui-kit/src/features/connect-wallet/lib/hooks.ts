@@ -37,9 +37,11 @@ const state: {
   wallet: null,
 }
 
+export const WalletNameStorageKey = 'walletName'
+
 export const useWallet: UseConnectWallet = () => {
   const [{ wallet, connecting }, connect, disconnect] = useOnboardWallet()
-  const [walletName, setWalletName] = useLocalStorage<string | null>('walletName')
+  const [walletName, setWalletName] = useLocalStorage<string | null>(WalletNameStorageKey)
 
   useEffect(() => {
     state.wallet = wallet
