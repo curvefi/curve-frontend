@@ -9,7 +9,7 @@ import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
+export function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
   const params = useParams() as UrlParams
   const routerParams = parseParams(params, chainIdNotRequired)
   const { lib: curve = null, connectState } = useConnection<CurveApi>()
@@ -62,5 +62,3 @@ function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
     curve,
   }
 }
-
-export default usePageOnMount

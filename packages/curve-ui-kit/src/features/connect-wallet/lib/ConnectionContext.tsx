@@ -101,7 +101,6 @@ export const ConnectionProvider = <
      */
     const tryToReconnect = async (label: string) => {
       setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      isWalletInitialized.current = true
       return withTimeout(connect(label))
         .then((wallet) => !!wallet)
         .catch(() => false)
@@ -113,10 +112,10 @@ export const ConnectionProvider = <
     const initApp = async () => {
       try {
         if (!isWalletInitialized.current) {
+          isWalletInitialized.current = true
           if (walletName && (await tryToReconnect(walletName))) {
             return // wallet updated, callback is restarted
           }
-          isWalletInitialized.current = true
         }
 
         const walletChainId = getWalletChainId(wallet)

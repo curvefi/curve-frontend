@@ -16,7 +16,7 @@ import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettin
 const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
 
-type Range<T = number> = [T, T]
+type NumberRange = [number, number]
 
 type OnSliderChange = NonNullable<SliderProps['onChange']>
 
@@ -43,21 +43,24 @@ export const RangeSliderFilter = <T extends unknown>({
   const id = cleanColumnId(field)
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
-  const defaultValue = useMemo((): Range => {
-    const [min, max] = (columnFilters[id] as Range) ?? []
+  const defaultValue = useMemo((): NumberRange => {
+    const [min, max] = (columnFilters[id] as NumberRange) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
 
   const [range, setRange] = useUniqueDebounce(
     defaultValue,
     useCallback(
-      (newRange: Range) =>
-        setColumnFilter(id, newRange.every((value, i) => value === defaultValue[i]) ? undefined : (newRange as Range)),
+      (newRange: NumberRange) =>
+        setColumnFilter(
+          id,
+          newRange.every((value, i) => value === defaultValue[i]) ? undefined : (newRange as NumberRange),
+        ),
       [defaultValue, id, setColumnFilter],
     ),
   )
 
-  const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as Range), [setRange])
+  const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as NumberRange), [setRange])
 
   return (
     // this is not a real select, but we reuse the component so the design is correct
