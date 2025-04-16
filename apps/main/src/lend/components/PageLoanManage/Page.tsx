@@ -49,7 +49,6 @@ const Page = (params: MarketUrlParams) => {
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isLoadingApi = isLoading(connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
@@ -98,16 +97,14 @@ const Page = (params: MarketUrlParams) => {
   // onMount
   useEffect(() => {
     setLoaded(false)
-    if (!isLoadingApi && api && market) {
+    if (api && market) {
       void fetchInitial(api, market)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, market])
+  }, [api, fetchInitial, market])
 
   useEffect(() => {
     if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
+  }, [api, fetchInitial, initialLoaded, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {

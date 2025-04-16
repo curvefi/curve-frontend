@@ -92,16 +92,13 @@ const Page = (params: MarketUrlParams) => {
 
   useEffect(() => {
     setLoaded(false)
-
-    if (!isLoadingApi && api && market) {
+    if (api && market) {
       void fetchInitial(api, market)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, market])
+  }, [api, fetchInitial, market])
 
   useEffect(() => {
     if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
   const TitleComp = () =>

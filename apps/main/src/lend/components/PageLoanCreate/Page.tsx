@@ -55,7 +55,6 @@ const Page = (params: MarketUrlParams) => {
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const rOwmId = market?.id ?? ''
-  const isLoadingApi = isLoading(connectState)
 
   const fetchInitial = useCallback(
     async (api: Api, market: OneWayMarketTemplate) => {
@@ -81,17 +80,14 @@ const Page = (params: MarketUrlParams) => {
 
   useEffect(() => {
     setLoaded(false)
-
-    if (!isLoadingApi && api && market) {
+    if (api && market) {
       void fetchInitial(api, market)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, market])
+  }, [api, fetchInitial, market])
 
   useEffect(() => {
     if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
+  }, [api, fetchInitial, initialLoaded, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
