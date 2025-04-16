@@ -10,12 +10,12 @@ import { TITLE } from '@/loan/constants'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import { getActiveKey } from '@/loan/store/createCollateralListSlice'
 import useStore from '@/loan/store/useStore'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody, Tr } from '@ui/Table'
 import { breakpoints } from '@ui/utils'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const CollateralList = (pageProps: PageCollateralList) => {
   const { pageLoaded, rChainId, searchParams, updatePath } = pageProps
@@ -23,13 +23,12 @@ const CollateralList = (pageProps: PageCollateralList) => {
   const titleMapper = useTitleMapper()
 
   const activeKey = getActiveKey(rChainId, searchParams)
-  const curve = useApiStore((state) => state.stable)
+  const { lib: curve = null } = useStablecoinConnection()
   const prevActiveKey = useStore((state) => state.collateralList.activeKey)
   const formStatus = useStore((state) => state.collateralList.formStatus)
   const initialLoaded = useStore((state) => state.collateralList.initialLoaded)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
   const collateralDatas = useStore((state) => state.collaterals.collateralDatas[rChainId])
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const results = useStore((state) => state.collateralList.result)
@@ -59,7 +58,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
 
     let loansExists = false
 
-    if (parsedResult?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && !isLoadingStable) {
+    if (parsedResult?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && pageLoaded) {
       parsedResult.map((collateralId) => {
         const collateralData = collateralDatasMapper?.[collateralId]
 
@@ -74,7 +73,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
     }
     return loansExists
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve, collateralDatasMapper, isLoadingStable, loanExistsMapper, parsedResult])
+  }, [curve, collateralDatasMapper, pageLoaded, loanExistsMapper, parsedResult])
 
   useEffect(() => {
     if (pageLoaded && isPageVisible && initialLoaded) updateFormValues()

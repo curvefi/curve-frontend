@@ -75,10 +75,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           [rChainId, networks, push, restPartialPathname],
         ),
       }}
-      WalletProps={{
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`,
-      }}
       appStats={[
         {
           label: t`Total Deposits`,

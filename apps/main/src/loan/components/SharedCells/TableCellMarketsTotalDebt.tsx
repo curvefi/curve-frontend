@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import TextCaption from '@ui/TextCaption'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const TableCellMarketsTotalDebt = () => {
-  const chainId = useApiStore((state) => state.stable?.chainId)
+  const chainId = useStablecoinConnection().lib?.chainId
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}

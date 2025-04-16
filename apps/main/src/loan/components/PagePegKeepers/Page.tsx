@@ -1,24 +1,22 @@
 'use client'
 import styled from 'styled-components'
 import PagePegKeepers from '@/loan/components/PagePegKeepers'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import Settings from '@/loan/layout/Settings'
-import useStore from '@/loan/store/useStore'
+import { useLendConnection } from '@/loan/temp-lib'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const Page = (_: NetworkUrlParams) => {
   const { routerParams } = usePageOnMount()
   const { rChainId } = routerParams
-
   const { provider } = useWallet()
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
+  const { connectState } = useLendConnection()
+  const { connect: connectWallet } = useWallet()
 
   return (
     <>

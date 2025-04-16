@@ -41,7 +41,6 @@ export const MobileHeader = <TChainId extends number>({
   height,
   isLite = false,
   networkName,
-  WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: HeaderImplementationProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
@@ -53,8 +52,8 @@ export const MobileHeader = <TChainId extends number>({
 
   const onConnect = useCallback(() => {
     closeSidebar()
-    return startWalletConnection ? startWalletConnection() : connect()
-  }, [closeSidebar, startWalletConnection, connect])
+    return connect()
+  }, [closeSidebar, connect])
 
   const otherAppSections = useMemo(
     () =>
@@ -116,7 +115,7 @@ export const MobileHeader = <TChainId extends number>({
               <SocialSidebarSection title={t`Community`} />
             </Box>
 
-            <SideBarFooter WalletProps={{ ...WalletProps, onConnectWallet: onConnect }} />
+            <SideBarFooter />
           </Drawer>
         </Toolbar>
       </AppBar>

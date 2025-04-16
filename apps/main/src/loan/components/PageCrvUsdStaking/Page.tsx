@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
+import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import Settings from '@/loan/layout/Settings'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
