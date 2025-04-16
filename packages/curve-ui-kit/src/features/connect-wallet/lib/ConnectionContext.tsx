@@ -116,6 +116,7 @@ export const ConnectionProvider = <
           if (walletName && (await tryToReconnect(walletName))) {
             return // wallet updated, callback is restarted
           }
+          isWalletInitialized.current = true
         }
 
         const walletChainId = getWalletChainId(wallet)
