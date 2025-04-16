@@ -236,7 +236,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "LP tokens staked in gauge excluded from Ethena campaign",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xF16f226Baa419d9DC9D92C040CCBC8c0E25F36D7",
