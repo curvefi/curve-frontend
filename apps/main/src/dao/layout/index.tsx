@@ -1,10 +1,9 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import Header from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
 import { getEthPath, getNetworkFromUrl } from '@/dao/utils/utilsRouter'
-import { CONNECT_STAGE, isFailure, isLoading } from '@ui/utils'
-import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -13,13 +12,12 @@ import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
-  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
+  const setChain = useSetChain()
 
-  const connectState = useStore((state) => state.connectState)
+  const { connectState } = useConnection()
   const layoutHeight = useStore((state) => state.layoutHeight)
-  const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
@@ -31,28 +29,14 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
-  const [networkSwitch, setNetworkSwitch] = useState('')
-
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
-  const showSwitchNetworkMessage =
-    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
+  const showSwitchNetworkMessage = isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
 
-  const handleNetworkChange = () => {
-    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
-    setNetworkSwitch(connectStage)
-    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
-  }
-
-  const minHeight = useMemo(() => {
-    let total = 0
-
-    Object.entries(layoutHeight).forEach(([_, height]) => {
-      total += height
-    })
-
-    return total - layoutHeight.footer + 24
-  }, [layoutHeight])
+  const minHeight = useMemo(
+    () => Object.values(layoutHeight).reduce((acc, height) => acc + height, 0) - layoutHeight.footer + 24,
+    [layoutHeight],
+  )
 
   const sections = useMemo(() => getSections(), [])
   return (
@@ -65,7 +49,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
           showSwitchNetworkMessage,
           maintenanceMessage,
-          handleNetworkChange,
+          handleNetworkChange: () => setChain(rChainId),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>

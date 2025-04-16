@@ -13,7 +13,7 @@ type UseConnectWallet = {
     wallet: Wallet | null
     connecting: boolean
     connect: (label?: string) => Promise<Wallet | null>
-    disconnect: () => Promise<unknown>
+    disconnect: (label?: string) => Promise<unknown>
     walletName: string | null
     setWalletName: Dispatch<SetStateAction<string | null>>
     provider: BrowserProvider | null

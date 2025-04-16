@@ -3,3 +3,13 @@ export { getWalletSignerAddress, getWalletChainId, getWalletSignerEns } from './
 export { useWallet } from './useWallet'
 export { useSetChain } from './useSetChain'
 export { notify } from './notify'
+export {
+  ConnectionProvider,
+  useConnection,
+  CONNECT_STAGE,
+  isLoading,
+  isFailure,
+  isSuccess,
+  getLib,
+  requireLib,
+} from './ConnectionContext'
