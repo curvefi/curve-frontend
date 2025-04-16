@@ -41,7 +41,7 @@ export const useWagmi = () => {
   const [walletType, setWalletType] = useWalletType()
 
   const { data: client } = useConnectorClient()
-  const provider = useMemo(() => (client ? { request: client.transport.request } : undefined), [client])
+  const provider = useMemo(() => client?.transport.request && { request: client.transport.request }, [client])
 
   useEffect(() => {
     console.info(`Found new client for address: ${client?.account?.address}`)
