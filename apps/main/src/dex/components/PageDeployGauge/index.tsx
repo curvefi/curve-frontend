@@ -24,19 +24,17 @@ const DeployGauge = () => {
   const { chainId } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const isLite = networks[chainId]?.isLite ?? false
 
-  const {
-    curveNetworks,
-    setCurveNetworks,
-    sidechainGauge,
-    setSidechainGauge,
-    poolAddress,
-    lpTokenAddress,
-    currentSidechain,
-    currentPoolType,
-    sidechainNav,
-    setSidechainNav,
-    deploymentStatus,
-  } = useStore((state) => state.deployGauge)
+  const curveNetworks = useStore((state) => state.deployGauge.curveNetworks)
+  const setCurveNetworks = useStore((state) => state.deployGauge.setCurveNetworks)
+  const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)
+  const setSidechainGauge = useStore((state) => state.deployGauge.setSidechainGauge)
+  const poolAddress = useStore((state) => state.deployGauge.poolAddress)
+  const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
+  const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
+  const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
+  const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
+  const setSidechainNav = useStore((state) => state.deployGauge.setSidechainNav)
+  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
 
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
