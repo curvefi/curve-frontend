@@ -8,12 +8,7 @@ export const ConnectWalletIndicator = ({ sx }: { sx?: SxProps<Theme> }) => {
   const { connectState } = useConnection()
   const loading = isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)
   return wallet && signerAddress ? (
-    <ConnectedWalletLabel
-      walletAddress={signerAddress}
-      onClick={() => disconnect(wallet.label)}
-      loading={loading}
-      sx={sx}
-    />
+    <ConnectedWalletLabel walletAddress={signerAddress} onClick={() => disconnect()} loading={loading} sx={sx} />
   ) : (
     <ConnectWalletButton onClick={() => connect()} loading={loading} sx={sx} />
   )
