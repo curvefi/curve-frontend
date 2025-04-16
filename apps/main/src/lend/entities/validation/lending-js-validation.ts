@@ -14,8 +14,7 @@ export const chainValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
 export const lendingJsValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
-      const api = getLib<Api>()
-      enforce(api?.chainId).message('Chain ID should be loaded').equals(chainId)
+      enforce(getLib<Api>()?.chainId).message('Chain ID should be loaded').equals(chainId)
     })
   })
 
