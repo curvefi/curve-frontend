@@ -42,6 +42,9 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
         : connectionStage?.startsWith(expectedStage)),
   )
 
+/** During hydration the status is success and the stage is set to hydrate. */
+export const isHydrated = ({ status, stage }: ConnectState) => status === SUCCESS && stage !== HYDRATE
+
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
   lib?: TLib
