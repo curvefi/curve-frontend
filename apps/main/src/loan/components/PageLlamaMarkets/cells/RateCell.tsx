@@ -58,7 +58,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
               icon={<RewardIcons rewards={poolRewards} />}
               size="extraSmall"
               color="highlight"
-              label={rewards.map((r) => r.multiplier).join(', ')}
+              label={poolRewards.map((r) => r.multiplier).join(', ')}
             />
           )}
         </Stack>
