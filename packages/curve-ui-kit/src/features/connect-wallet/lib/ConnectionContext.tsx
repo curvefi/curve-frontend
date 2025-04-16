@@ -52,6 +52,11 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
   connectState: { status: LOADING },
 })
 
+const compareSignerAddress = <TChainId extends any>(
+  wallet: Wallet | null,
+  lib: { chainId: TChainId; signerAddress?: string } | null,
+) => getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
@@ -123,7 +128,7 @@ export const ConnectionProvider = <
 
         const prevLib = libRef.get<TLib>()
         let newLib = prevLib
-        if (!libRef.get() || getWalletSignerAddress(wallet) != prevLib?.signerAddress) {
+        if (!libRef.get() || !compareSignerAddress(wallet, prevLib)) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
           newLib = (await initLib(chainId, wallet)) ?? null
@@ -151,9 +156,9 @@ export const ConnectionProvider = <
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
-  const isLibUpdated = lib?.chainId === chainId && lib?.signerAddress == getWalletSignerAddress(wallet)
+  const isLibOk = lib?.chainId === chainId && compareSignerAddress(wallet, lib)
   return (
-    <ConnectionContext.Provider value={{ connectState, ...(isLibUpdated && { lib }) }}>
+    <ConnectionContext.Provider value={{ connectState, ...(isLibOk && { lib }) }}>
       {children}
     </ConnectionContext.Provider>
   )
