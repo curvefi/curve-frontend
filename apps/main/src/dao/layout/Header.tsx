@@ -4,7 +4,7 @@ import { CONNECT_STAGE } from '@/dao/constants'
 import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
 import networks, { visibleNetworksList } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { ChainId } from '@/dao/types/dao.types'
+import { ChainId, type CurveApi } from '@/dao/types/dao.types'
 import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import { getWalletSignerAddress, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +23,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const { rChainId, rNetwork } = getNetworkFromUrl()
 
-  const { connectState } = useConnection()
+  const { connectState } = useConnection<CurveApi>()
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   return (
     <NewHeader<ChainId>
