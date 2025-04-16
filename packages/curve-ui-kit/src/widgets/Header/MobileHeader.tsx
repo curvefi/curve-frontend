@@ -6,6 +6,7 @@ import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import { type Theme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -46,13 +47,14 @@ export const MobileHeader = <TChainId extends number>({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
+  const { connect } = useWallet()
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
   const onConnect = useCallback(() => {
     closeSidebar()
-    startWalletConnection()
-  }, [startWalletConnection, closeSidebar])
+    return startWalletConnection ? startWalletConnection() : connect()
+  }, [closeSidebar, startWalletConnection, connect])
 
   const otherAppSections = useMemo(
     () =>
@@ -82,11 +84,13 @@ export const MobileHeader = <TChainId extends number>({
             anchor="left"
             onClose={closeSidebar}
             open={isSidebarOpen}
-            PaperProps={{
-              sx: {
-                top: height,
-                ...MOBILE_SIDEBAR_WIDTH,
-                ...HIDE_SCROLLBAR,
+            slotProps={{
+              paper: {
+                sx: {
+                  top: height,
+                  ...MOBILE_SIDEBAR_WIDTH,
+                  ...HIDE_SCROLLBAR,
+                },
               },
             }}
             sx={{ top: height }}

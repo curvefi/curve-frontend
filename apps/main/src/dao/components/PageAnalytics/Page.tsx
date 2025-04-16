@@ -1,7 +1,7 @@
 'use client'
 import styled from 'styled-components'
 import Analytics from '@/dao/components/PageAnalytics/index'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
+import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import { breakpoints } from '@ui/utils'
 
 const Page = () => {

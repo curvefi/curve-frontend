@@ -3,6 +3,7 @@ import produce from 'immer'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import {
+  type CurveApi,
   CurveGaugeResponse,
   FetchingState,
   GaugeCurveApiDataMapper,
@@ -19,8 +20,8 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -362,7 +363,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const { provider } = useWallet.getState()
       const { getUserGaugeVoteWeights } = get().user
       const address = get().gauges.gaugeMapper[gaugeAddress].address

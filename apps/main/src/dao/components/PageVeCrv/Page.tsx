@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { ROUTE } from '@/dao/constants'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
+import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import Settings from '@/dao/layout/Settings'
 import useStore from '@/dao/store/useStore'
 import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
@@ -13,8 +13,8 @@ import { getPath } from '@/dao/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { WrongNetwork } from './WrongNetwork'
 
 const Page = (params: VeCrvUrlParams) => {
@@ -24,7 +24,9 @@ const Page = (params: VeCrvUrlParams) => {
   const { rChainId } = routerParams
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
+  const { connectState } = useConnection<CurveApi>()
+  const isLoadingCurve = isLoading(connectState)
+
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
   const resetState = useStore((state) => state.lockedCrv.resetState)

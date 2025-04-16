@@ -1,6 +1,6 @@
 export type ConnectState = {
   status: 'loading' | 'success' | 'failure' | ''
-  stage: 'api' | 'connect-wallet' | 'switch-network' | 'disconnect-wallet' | ''
+  stage: 'api' | 'connect-wallet' | 'switch-network' | 'disconnect-wallet' | 'hydrate' | ''
   options?: any[] | undefined
 }
 
