@@ -43,7 +43,6 @@ const Page = (params: MarketUrlParams) => {
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
   const [isLoaded, setLoaded] = useState(false)
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -72,22 +71,14 @@ const Page = (params: MarketUrlParams) => {
         if (signerAddress) {
           void fetchUserMarketBalances(api, market, true)
         }
-        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
   )
 
   useEffect(() => {
-    setLoaded(false)
-    if (api && market) {
-      void fetchInitial(api, market)
-    }
-  }, [api, fetchInitial, market])
-
-  useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-  }, [api, fetchInitial, initialLoaded, isPageVisible, market])
+    if (api && market && isPageVisible) void fetchInitial(api, market)
+  }, [api, fetchInitial, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {

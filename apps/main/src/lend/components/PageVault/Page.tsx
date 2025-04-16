@@ -54,10 +54,8 @@ const Page = (params: MarketUrlParams) => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const rOwmId = market?.id ?? ''
-  const isLoadingApi = isLoading(connectState)
   const { signerAddress } = api ?? {}
   const [isLoaded, setLoaded] = useState(false)
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Lend Details`, key: 'market' }]
@@ -84,22 +82,14 @@ const Page = (params: MarketUrlParams) => {
             void fetchUserMarketBalances(api, market, true)
           }
         }
-        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances],
   )
 
   useEffect(() => {
-    setLoaded(false)
-    if (api && market) {
-      void fetchInitial(api, market)
-    }
-  }, [api, fetchInitial, market])
-
-  useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-  }, [isPageVisible])
+    if (api && market && isPageVisible) void fetchInitial(api, market)
+  }, [api, fetchInitial, isPageVisible, market])
 
   const TitleComp = () =>
     market && (

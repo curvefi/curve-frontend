@@ -64,7 +64,6 @@ const Page = (params: MarketUrlParams) => {
   const { signerAddress } = api ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
@@ -88,23 +87,14 @@ const Page = (params: MarketUrlParams) => {
         if (signerAddress && loanExists) {
           void fetchAllUserMarketDetails(api, market, true)
         }
-        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey],
   )
 
-  // onMount
   useEffect(() => {
-    setLoaded(false)
-    if (api && market) {
-      void fetchInitial(api, market)
-    }
-  }, [api, fetchInitial, market])
-
-  useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-  }, [api, fetchInitial, initialLoaded, isPageVisible, market])
+    if (api && market && isPageVisible) void fetchInitial(api, market)
+  }, [api, fetchInitial, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
