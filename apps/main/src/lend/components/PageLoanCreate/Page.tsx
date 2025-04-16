@@ -86,7 +86,7 @@ const Page = (params: MarketUrlParams) => {
       void fetchInitial(api, market)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi])
+  }, [isLoadingApi, market])
 
   useEffect(() => {
     if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
