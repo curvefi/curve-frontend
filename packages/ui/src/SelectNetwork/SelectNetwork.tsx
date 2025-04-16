@@ -2,7 +2,6 @@ import { Item } from 'react-stately'
 import Select from 'ui/src/Select'
 import type { SelectProps } from 'ui/src/Select/Select'
 import SelectNetworkItem from 'ui/src/SelectNetwork/SelectNetworkItem'
-import type { ConnectState } from 'ui/src/utils'
 
 export type SelectNetworkItem = {
   label: string
@@ -12,7 +11,6 @@ export type SelectNetworkItem = {
 }
 
 type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'> & {
-  connectState: ConnectState
   hideIcon?: boolean
   isDarkTheme?: boolean
 }
@@ -22,7 +20,7 @@ type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'> & {
  * https://github.com/curvefi/curve-assets/tree/main/chains.
  */
 export const SelectNetwork = (
-  { className = '', connectState, hideIcon, isDarkTheme, items, ...props }: SelectNetworkProps, // TODO: add darkTheme icon or make sure icon work for both dark and light theme
+  { className = '', hideIcon, isDarkTheme, items, ...props }: SelectNetworkProps, // TODO: add darkTheme icon or make sure icon work for both dark and light theme
 ) => (
   <Select {...props} className={className} items={items} aria-label="Select network" label="">
     {({ chainId, src, label }: SelectNetworkItem) => (

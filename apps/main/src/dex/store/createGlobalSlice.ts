@@ -3,8 +3,8 @@ import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { CurveApi, ChainId, NetworkConfigFromApi, PageWidthClassName, Wallet } from '@/dex/types/main.types'
-import { CONNECT_STAGE, ConnectState, getPageWidthClassName } from '@ui/utils'
+import { ChainId, CurveApi, NetworkConfigFromApi, PageWidthClassName, Wallet } from '@/dex/types/main.types'
+import { getPageWidthClassName } from '@ui/utils'
 import { log } from '@ui-kit/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -20,7 +20,6 @@ export type LayoutHeight = {
 export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
 
 type GlobalState = {
-  connectState: ConnectState
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
   isPageVisible: boolean
@@ -41,11 +40,6 @@ export interface GlobalSlice extends GlobalState {
   getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
   setNetworkConfigFromApi(curve: CurveApi): void
   setPageWidth: (pageWidth: number) => void
-  updateConnectState(
-    status?: ConnectState['status'],
-    stage?: ConnectState['stage'],
-    options?: ConnectState['options'],
-  ): void
 
   /** Hydrate resets states and refreshes store data from the API */
   hydrate(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
@@ -61,7 +55,6 @@ export interface GlobalSlice extends GlobalState {
 }
 
 const DEFAULT_STATE = {
-  connectState: { status: '' as const, stage: '' },
   hasDepositAndStake: {},
   hasRouter: {},
   pageWidthPx: null,
@@ -130,9 +123,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
         state.isXXSm = isXXSm
       }),
     )
-  },
-  updateConnectState: (status = 'loading', stage = CONNECT_STAGE.CONNECT_WALLET, options = ['']) => {
-    set({ connectState: { status, stage, ...(options && { options }) } })
   },
   hydrate: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
     const state = get()

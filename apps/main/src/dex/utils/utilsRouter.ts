@@ -1,3 +1,4 @@
+import { useParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { MAIN_ROUTE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
@@ -7,7 +8,8 @@ import { getInternalUrl } from '@ui-kit/shared/routes'
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('dex', network, route)
 
-export function useParsedParams(params: UrlParams, chainIdNotRequired?: boolean) {
+export function useParsedParams(chainIdNotRequired?: boolean) {
+  const params = useParams() as UrlParams
   const { pool, formType } = params
   const paths = window.location.pathname.substring(1).split('/')
 

@@ -1,45 +1,33 @@
-import { ReactNode, useMemo, useRef, useState } from 'react'
+import { ethers } from 'ethers'
+import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
+import { ROUTE } from '@/dex/constants'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import Header from '@/dex/layout/default/Header'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import useStore from '@/dex/store/useStore'
+import type { CurveApi } from '@/dex/types/main.types'
 import { getPath, useNetworkFromUrl } from '@/dex/utils/utilsRouter'
-import { isFailure, isLoading } from '@ui/utils'
-import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
-  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
-
-  const connectState = useStore((state) => state.connectState)
+  const { connectState } = useConnection<CurveApi>()
   const layoutHeight = useStore((state) => state.layoutHeight)
-  const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
+  const [, setWalletChain] = useSetChain()
   const { rChainId, rNetwork } = useNetworkFromUrl()
 
   const sections = useMemo(() => getSections(rNetwork), [rNetwork])
 
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
-
-  const [networkSwitch, setNetworkSwitch] = useState('')
-
-  const showSwitchNetworkMessage =
-    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
-
-  const handleNetworkChange = () => {
-    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
-    setNetworkSwitch(connectStage)
-    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
-  }
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
@@ -51,9 +39,9 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           ref: globalAlertRef,
           networkName: rNetwork,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage,
+          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
           maintenanceMessage,
-          handleNetworkChange,
+          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>

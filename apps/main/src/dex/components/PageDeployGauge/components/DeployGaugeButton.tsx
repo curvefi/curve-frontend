@@ -8,45 +8,40 @@ import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
-import { CONNECT_STAGE } from '@/dex/constants'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
-import { getPath, useNetworkFromUrl, useRestFullPathname } from '@/dex/utils/utilsRouter'
+import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { shortenAddress } from '@ui-kit/utils'
 
 interface Props {
   disabled: boolean
   chainId: ChainId
-  curve: CurveApi
+  curve: CurveApi | null
+  pageLoaded: boolean
 }
 
-const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
+const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
   const { push } = useRouter()
-  const { rChainId } = useNetworkFromUrl()
-
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
     (state) => state.deployGauge,
   )
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const updateConnectState = useStore((state) => state.updateConnectState)
-  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
+  const { connect: connectWallet } = useWallet()
+  const isLoadingApi = !pageLoaded
   const restFullPathname = useRestFullPathname()
 
-  const handleConnectEth = () => {
-    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
-    push(getPath({ network: 'ethereum' }, `/${restFullPathname}`))
-  }
+  const handleConnectEth = () => push(getPath({ network: 'ethereum' }, `/${restFullPathname}`))
 
   const handleClick = async () => {
+    if (!curve) throw new Error('No current curve')
     if (sidechainGauge) {
       if (sidechainNav === 0) {
         if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE', isLite)

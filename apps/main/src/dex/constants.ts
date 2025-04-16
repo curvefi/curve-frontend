@@ -1,6 +1,6 @@
 import { SMALL_POOL_VOLUME } from '@ui-kit/features/user-profile/store'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
-export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
+export { CONNECT_STAGE } from '@ui-kit/features/connect-wallet'
 
 export const LARGE_APY = 5000
 

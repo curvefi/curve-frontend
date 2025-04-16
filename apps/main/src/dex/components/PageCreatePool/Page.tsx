@@ -1,21 +1,18 @@
 'use client'
 import styled from 'styled-components'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
-import useStore from '@/dex/store/useStore'
+import { usePageProps } from '@/dex/hooks/usePageProps'
 import { CurveApi } from '@/dex/types/main.types'
 import Box from '@ui/Box'
-import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
 const Page = () => {
-  const { curve } = usePageOnMount()
-  const { provider } = useWallet()
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
+  const { curve } = usePageProps()
+  const { connect: connectWallet, signerAddress } = useWallet()
+  const { connectState } = useConnection<CurveApi>()
 
-  if (provider) {
+  if (signerAddress) {
     return (
       <Container>
         <PoolCreation curve={curve as CurveApi} />

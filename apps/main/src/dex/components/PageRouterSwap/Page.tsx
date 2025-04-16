@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import { usePageProps } from '@/dex/hooks/usePageProps'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
@@ -12,30 +12,27 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import TuneIcon from '@mui/icons-material/Tune'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
-import { breakpoints, isLoading } from '@ui/utils'
+import { breakpoints } from '@ui/utils'
 import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: NetworkUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { pageLoaded, routerParams } = usePageOnMount()
+  const { pageLoaded, routerParams, curve } = usePageProps()
+  const { connect: connectWallet } = useWallet()
   const { rChainId } = routerParams
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const { provider } = useWallet()
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
   const theme = useUserProfileStore((state) => state.theme)
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
@@ -64,7 +61,7 @@ const Page = (params: NetworkUrlParams) => {
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
     setLoaded(false)
-    if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
+    if (pageLoaded && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
         push(getPath(params, `${ROUTE.PAGE_POOLS}`))
         return
@@ -96,7 +93,6 @@ const Page = (params: NetworkUrlParams) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     pageLoaded,
-    isLoadingCurve,
     hasRouter,
     paramsFromAddress,
     paramsToAddress,
@@ -116,7 +112,7 @@ const Page = (params: NetworkUrlParams) => {
             connectText="Connect Wallet"
             loadingText="Connecting"
             connectWallet={() => connectWallet()}
-            isLoading={isLoading(connectState)}
+            isLoading={!pageLoaded}
           />
         </ConnectWalletWrapper>
       </Box>

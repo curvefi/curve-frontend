@@ -44,8 +44,8 @@ import type {
   TimeOptions,
 } from '@ui/Chart/types'
 import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -478,7 +478,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     setPoolIsWrapped: (poolData, isWrapped) => {
-      const curve = useApiStore.getState().curve!
+      const curve = requireLib<CurveApi>()
       const chainId = curve.chainId
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)

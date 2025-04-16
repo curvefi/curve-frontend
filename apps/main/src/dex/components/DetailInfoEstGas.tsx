@@ -4,12 +4,12 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import { ethAddress } from 'viem'
 import useStore from '@/dex/store/useStore'
-import { ChainId, EstimatedGas } from '@/dex/types/main.types'
+import { ChainId, CurveApi, EstimatedGas } from '@/dex/types/main.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
@@ -31,7 +31,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const curve = useApiStore((state) => state.curve)
+  const { lib: curve } = useConnection<CurveApi>()
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])

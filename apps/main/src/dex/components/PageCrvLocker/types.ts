@@ -1,4 +1,4 @@
-import { CurveApi, ChainId, EstimatedGas } from '@/dex/types/main.types'
+import { ChainId, CurveApi, EstimatedGas } from '@/dex/types/main.types'
 import { DateValue } from '@react-types/calendar'
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date'
@@ -17,6 +17,7 @@ export type PageVecrv = {
   rFormType: FormType
   vecrvInfo: VecrvInfo
   toggleForm: (formType: FormType) => void
+  pageLoaded: boolean
 }
 
 export type FormStatus = {

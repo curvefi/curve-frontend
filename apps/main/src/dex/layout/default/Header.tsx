@@ -6,14 +6,13 @@ import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, type CurveApi } from '@/dex/types/main.types'
 import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import { getWalletSignerAddress, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -26,10 +25,10 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const chainId = useApiStore((state) => state.curve?.chainId)
-  const connectState = useStore((state) => state.connectState)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const updateConnectState = useStore((state) => state.updateConnectState)
+  const { connect: connectWallet } = useWallet()
+  const { connectState, lib: curve } = useConnection<CurveApi>()
+  const chainId = curve?.chainId
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)

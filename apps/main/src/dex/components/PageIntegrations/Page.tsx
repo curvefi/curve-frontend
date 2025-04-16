@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import IntegrationsComp from '@/dex/components/PageIntegrations/index'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import { usePageProps } from '@/dex/hooks/usePageProps'
 import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { ExternalLink } from '@ui/Link'
@@ -11,7 +11,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
-  const { routerParams } = usePageOnMount(true)
+  const { routerParams } = usePageProps(true)
   const { rNetworkIdx } = routerParams
   const rChainId = rNetworkIdx === -1 ? '' : routerParams.rChainId
 

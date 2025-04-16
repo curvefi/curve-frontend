@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import { usePageProps } from '@/dex/hooks/usePageProps'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
@@ -26,15 +26,13 @@ type PageProps = NetworkUrlParams
 const Page = (params: PageProps) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { routerParams, curve } = usePageOnMount()
+  const { routerParams, curve } = usePageProps()
   const searchTermMapper = useSearchTermMapper()
+  const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const { rChainId } = routerParams
 
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-
-  const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
-
   const network = useStore((state) => state.networks.networks[rChainId])
   const { isLite } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length

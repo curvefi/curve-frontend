@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
 import type { FormType } from '@/dex/components/PageCrvLocker/types'
 import { ROUTE } from '@/dex/constants'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
+import { usePageProps } from '@/dex/hooks/usePageProps'
 import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
 import { type CrvLockerUrlParams, CurveApi } from '@/dex/types/main.types'
@@ -14,15 +14,12 @@ import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: CrvLockerUrlParams) => {
   const { push } = useRouter()
-  const { routerParams, curve } = usePageOnMount()
+  const { routerParams, curve, pageLoaded } = usePageProps()
   const { rChainId, rFormType } = routerParams
-
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
   const resetState = useStore((state) => state.lockedCrv.resetState)
@@ -58,9 +55,9 @@ const Page = (params: CrvLockerUrlParams) => {
 
   // get initial data
   useEffect(() => {
-    void fetchData(curve, isLoadingCurve)
+    void fetchData(curve, !pageLoaded)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.chainId, curve?.signerAddress, isLoadingCurve])
+  }, [curve?.chainId, curve?.signerAddress, pageLoaded])
 
   return (
     <>
@@ -72,13 +69,14 @@ const Page = (params: CrvLockerUrlParams) => {
         </BoxHeader>
 
         <Content grid gridRowGap={3} padding>
-          {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
+          {rChainId && rFormType && vecrvInfo && pageLoaded ? (
             <FormCrvLocker
               curve={curve}
               rChainId={rChainId}
               rFormType={rFormType as FormType}
               vecrvInfo={vecrvInfo}
               toggleForm={toggleForm}
+              pageLoaded={pageLoaded}
             />
           ) : (
             <SpinnerWrapper>

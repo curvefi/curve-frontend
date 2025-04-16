@@ -1,15 +1,14 @@
 import { ReactNode } from 'react'
-import useStore from '@/dex/store/useStore'
+import type { CurveApi } from '@/dex/types/main.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { isLoading } from '@ui/utils'
+import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
-  const curve = useApiStore((state) => state.curve)
-  const connectState = useStore((state) => state.connectState)
-  const connectWallet = useStore((s) => s.updateConnectState)
+  const { lib: curve } = useConnection<CurveApi>()
+  const { connectState } = useConnection<CurveApi>()
+  const { connect: connectWallet } = useWallet()
   return (
     <>
       {!isLoading(connectState) && !loading && !curve?.signerAddress ? (
