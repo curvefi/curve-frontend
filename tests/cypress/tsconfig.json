@@ -5,6 +5,7 @@
     "paths": {
       "@/*": ["*"],
       "@curvefi/prices-api": ["../../packages/prices-api/src"],
+      "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"]
     }
   },
   "include": ["./**/*.ts", "types/**/*.d.ts", "../cypress.config.ts"]
