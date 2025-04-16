@@ -8,8 +8,8 @@ import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
 import { ChainId, type CurveApi } from '@/dex/types/main.types'
 import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
-import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
@@ -20,14 +20,12 @@ type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerPro
 
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
+  const { connectState, lib: curve } = useConnection<CurveApi>()
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const { connect: connectWallet } = useWallet()
-  const { connectState, lib: curve } = useConnection<CurveApi>()
   const chainId = curve?.chainId
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
@@ -71,24 +69,13 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
         onChange: useCallback(
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              push(getPath({ network }, `/${restPartialPathname}`))
-              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
+              push(getPath({ network: networks[selectedChainId as ChainId].id }, `/${restPartialPathname}`))
             }
           },
-          [rChainId, networks, push, restPartialPathname, updateConnectState],
+          [rChainId, networks, push, restPartialPathname],
         ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
-          [updateConnectState],
-        ),
-        onDisconnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
-          [updateConnectState],
-        ),
-        walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
       }}
