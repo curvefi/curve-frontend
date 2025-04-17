@@ -5,10 +5,10 @@ import styled from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { ROUTE } from '@/lend/constants'
-import { usePageProps } from '@/lend/hooks/usePageProps'
 import useSearchTermMapper from '@/lend/hooks/useSearchTermMapper'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import Settings from '@/lend/layout/Settings'
+import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import type { Api, NetworkUrlParams } from '@/lend/types/lend.types'
 import { getPath } from '@/lend/utils/utilsRouter'
@@ -27,21 +27,20 @@ enum SEARCH {
 }
 
 const Page = (params: NetworkUrlParams) => {
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
-  const { pageLoaded, routerParams, api } = usePageProps()
-  const searchTermMapper = useSearchTermMapper()
-  const titleMapper = useTitleMapper()
-  const { rChainId } = routerParams
-
-  const { connectState } = useConnection<Api>()
-  const isLoadingApi = isLoading(connectState)
-  const setStateByKey = useStore((state) => state.marketList.setStateByKey)
   const { provider, connect } = useWallet()
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
+  const { push } = useRouter()
+  const searchParams = useSearchParams()
+  const { lib: api = null, connectState } = useConnection<Api>()
+  const searchTermMapper = useSearchTermMapper()
+  const titleMapper = useTitleMapper()
 
+  const isLoadingApi = isLoading(connectState)
+  const rChainId = networksIdMapper[params.network]
   const { signerAddress } = api ?? {}
+
+  const setStateByKey = useStore((state) => state.marketList.setStateByKey)
 
   const SIGNER_FILTER_MAPPER: FilterListProps[] = [
     { id: 'all', displayName: t`All` },
@@ -89,7 +88,7 @@ const Page = (params: NetworkUrlParams) => {
   useEffect(() => {
     setLoaded(false)
 
-    if (!pageLoaded || isLoadingApi) return
+    if (isLoadingApi) return
 
     const hideSmallMarkets = searchParams?.get(SEARCH.hideSmallMarkets) || 'true'
 
@@ -106,7 +105,7 @@ const Page = (params: NetworkUrlParams) => {
     setParsedSearchParams(parsedSearchParams)
     setLoaded(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi, searchParams])
+  }, [isLoadingApi, searchParams])
 
   return (
     <>

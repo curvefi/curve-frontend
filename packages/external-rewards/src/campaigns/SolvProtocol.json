@@ -3,7 +3,7 @@
   "platform": "SolvProtocol",
   "description": "Points for providing liquidity.",
   "platformImageId": "solv.png",
-  "dashboardLink": "https://app.solv.finance/liquidity/",
+  "dashboardLink": "https://app.solv.finance/defi/",
   "pools": [
     {
       "id": "null",

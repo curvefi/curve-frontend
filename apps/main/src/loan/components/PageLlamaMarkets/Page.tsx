@@ -18,7 +18,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { SMALL_POOL_VOLUME } from '@ui-kit/features/user-profile/store'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { logSuccess } from '@ui-kit/lib'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
@@ -63,7 +63,7 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   useInjectServerData(props)
   const { signerAddress } = useWallet()
   const { data, isError, isLoading } = useLlamaMarkets(signerAddress)
-  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_VOLUME : 0
+  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)

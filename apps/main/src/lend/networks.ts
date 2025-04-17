@@ -3,11 +3,11 @@ import sortBy from 'lodash/sortBy'
 import { ChainId, NetworkEnum, NetworkConfig } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
-import { SMALL_POOL_VOLUME } from '@ui-kit/features/user-profile/store'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},
-  smallMarketAmount: SMALL_POOL_VOLUME,
+  smallMarketAmount: SMALL_POOL_TVL,
   marketListFilter: ['all', 'leverage', 'user'],
   marketListFilterType: ['borrow', 'lend'],
   marketListShowOnlyInSmallMarkets: {},
