@@ -5,13 +5,13 @@ import styled from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
-import { usePageProps } from '@/dex/hooks/usePageProps'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
+import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import { breakpoints } from '@ui/utils/responsive'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
@@ -23,18 +23,18 @@ enum SEARCH {
 
 type PageProps = NetworkUrlParams
 
-const Page = (params: PageProps) => {
+export const PagePoolList = (params: PageProps) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { routerParams, curve } = usePageProps()
+  const { lib: curve = null } = useConnection<CurveApi>()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
-  const { rChainId } = routerParams
+  const rChainId = useChainId(params.network)
 
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
-  const { isLite } = network
+  const { isLite, poolFilters } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'
 
@@ -84,7 +84,7 @@ const Page = (params: PageProps) => {
       const searchText = decodeURIComponent(searchParams?.get(SEARCH.search) || '')
 
       // validate filter key
-      const foundFilterKey = network.poolFilters.find((f) => f === paramFilterKey)
+      const foundFilterKey = poolFilters.find((f) => f === paramFilterKey)
       if ((paramFilterKey === 'user' && !!curve && !curve?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
@@ -102,7 +102,7 @@ const Page = (params: PageProps) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, network])
+  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
 
   return (
     <>
@@ -136,5 +136,3 @@ const Container = styled.div<{ $isLite: boolean }>`
     margin: 1.5rem auto;
   }
 `
-
-export default Page

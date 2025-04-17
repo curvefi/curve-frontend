@@ -5,20 +5,24 @@ import styled from 'styled-components'
 import FormCrvLocker from '@/dex/components/PageCrvLocker/index'
 import type { FormType } from '@/dex/components/PageCrvLocker/types'
 import { ROUTE } from '@/dex/constants'
-import { usePageProps } from '@/dex/hooks/usePageProps'
 import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
 import { type CrvLockerUrlParams, CurveApi } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
+import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const Page = (params: CrvLockerUrlParams) => {
+export const PageCrvLocker = (params: CrvLockerUrlParams) => {
   const { push } = useRouter()
-  const { routerParams, curve, pageLoaded } = usePageProps()
-  const { rChainId, rFormType } = routerParams
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const pageLoaded = !isLoading(connectState)
+  const rChainId = useChainId(params.network)
+  const {
+    formType: [rFormType],
+  } = params
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
@@ -100,5 +104,3 @@ const Content = styled(Box)`
   align-content: flex-start;
   min-height: 14.8125rem; //237px
 `
-
-export default Page

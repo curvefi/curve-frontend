@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { useParams } from 'next/navigation'
 import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
@@ -6,8 +7,8 @@ import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import Header from '@/dex/layout/default/Header'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi } from '@/dex/types/main.types'
-import { getPath, useNetworkFromUrl } from '@/dex/utils/utilsRouter'
+import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -17,18 +18,16 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
+
   const { connectState } = useConnection<CurveApi>()
+  const { network: rNetwork } = useParams() as NetworkUrlParams // todo: move layout to [network] folder and pass params as prop
+  const rChainId = useChainId(rNetwork)
+  const [, setWalletChain] = useSetChain()
+
   const layoutHeight = useStore((state) => state.layoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const [, setWalletChain] = useSetChain()
-  const { rChainId, rNetwork } = useNetworkFromUrl()
-
   const sections = useMemo(() => getSections(rNetwork), [rNetwork])
-
-  // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
-  const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
-
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   return (
@@ -40,7 +39,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           networkName: rNetwork,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
           showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          maintenanceMessage,
+          maintenanceMessage: process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE,
           handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
         }}
       />

@@ -1,16 +1,14 @@
 'use client'
 import styled from 'styled-components'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
-import { usePageProps } from '@/dex/hooks/usePageProps'
-import { CurveApi } from '@/dex/types/main.types'
+import { CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
-const Page = () => {
-  const { curve } = usePageProps()
+export const PageCreatePool = (_: NetworkUrlParams) => {
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
   const { connect: connectWallet, signerAddress } = useWallet()
-  const { connectState } = useConnection<CurveApi>()
 
   if (signerAddress) {
     return (
@@ -55,5 +53,3 @@ const ConnectWalletWrapper = styled.div`
   justify-content: center;
   margin: var(--spacing-3) auto;
 `
-
-export default Page
