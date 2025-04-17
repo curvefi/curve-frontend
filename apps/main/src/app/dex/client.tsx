@@ -1,14 +1,17 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
+import { useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import Page from '@/dex/layout/default'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import { CurveApi } from '@/dex/types/main.types'
+import { type ChainId, CurveApi } from '@/dex/types/main.types'
+import { initCurveJs } from '@/dex/utils/utilsCurvejs'
+import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
-import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
@@ -18,6 +21,10 @@ import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { lib: curve } = useConnection<CurveApi>()
+  const { push } = useRouter()
+  const restFullPathname = useRestFullPathname()
+  const [appLoaded, setAppLoaded] = useState(false)
+
   const chainId = curve?.chainId ?? 1
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.pageWidth)
@@ -33,10 +40,11 @@ export const App = ({ children }: { children: ReactNode }) => {
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const networks = useStore((state) => state.networks.networks)
   const theme = useUserProfileStore((state) => state.theme)
+  const hydrate = useStore((s) => s.hydrate)
 
-  const [appLoaded, setAppLoaded] = useState(false)
+  const network = networks[chainId]
 
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setPageWidth(window.innerWidth)
@@ -62,7 +70,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
     useStore.setState(useStore.getInitialState())
     void (async () => {
-      const networks = await fetchNetworks()
+      const networks = await fetchNetworks() // todo: this can be probably done in the server + hydrate
 
       useWallet.initialize(theme, networks)
 
@@ -116,6 +124,17 @@ export const App = ({ children }: { children: ReactNode }) => {
     isPageVisible,
   )
 
+  const onChainUnavailable = useCallback(
+    ([walletChainId]: [ChainId, ChainId]) => {
+      const network = networks[walletChainId]?.id
+      if (network) {
+        console.warn(`Network switched to ${network}, redirecting...`, location.href)
+        push(getPath({ network }, `/${restFullPathname}`))
+      }
+    },
+    [networks, push],
+  )
+
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
@@ -123,7 +142,14 @@ export const App = ({ children }: { children: ReactNode }) => {
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <Page>{children}</Page>
+              <ConnectionProvider
+                hydrate={hydrate}
+                initLib={initCurveJs}
+                chainId={chainId}
+                onChainUnavailable={onChainUnavailable}
+              >
+                <Page>{children}</Page>
+              </ConnectionProvider>
             </QueryProvider>
           </OverlayProvider>
         )}

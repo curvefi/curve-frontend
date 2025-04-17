@@ -42,7 +42,7 @@ export interface GlobalSlice extends GlobalState {
   setPageWidth: (pageWidth: number) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(curveApi: CurveApi | null, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
 
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateShowScrollButton(scrollY: number): void
@@ -124,7 +124,9 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       }),
     )
   },
-  hydrate: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
+  hydrate: async (curveApi, prevCurveApi, wallet) => {
+    if (!curveApi) return
+
     const state = get()
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
