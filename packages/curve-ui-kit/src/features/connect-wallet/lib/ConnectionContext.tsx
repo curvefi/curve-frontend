@@ -131,7 +131,7 @@ export const ConnectionProvider = <
 
         const prevLib = libRef.get<TLib>()
         let newLib = prevLib
-        if (!libRef.get() || !compareSignerAddress(wallet, prevLib)) {
+        if (!libRef.get() || !compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
           newLib = (await initLib(chainId, wallet)) ?? null
