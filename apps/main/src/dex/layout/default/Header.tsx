@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useRef } from 'react'
+import { type RefObject, useCallback, useMemo, useRef } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
@@ -12,17 +12,20 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
+type HeaderProps = {
+  sections: NavigationSection[]
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkName: string
+}
 
 const QuickSwap = () => t`Quickswap`
-export const Header = ({ sections, BannerProps }: HeaderProps) => {
+export const Header = ({ sections, globalAlertRef, networkName }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { connectState, lib: curve = {} } = useConnection<CurveApi>()
-  const rChainId = useChainId(BannerProps.networkName)
+  const rChainId = useChainId(networkName)
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
@@ -40,7 +43,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   return (
     <NewHeader<ChainId>
-      networkName={BannerProps.networkName}
+      networkName={networkName}
       mainNavRef={mainNavRef}
       currentMenu="dex"
       isLite={network?.isLite}
@@ -93,7 +96,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       ]}
       sections={sections}
       height={useHeaderHeight(bannerHeight)}
-      BannerProps={BannerProps}
+      globalAlertRef={globalAlertRef}
     />
   )
 }

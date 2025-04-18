@@ -27,7 +27,7 @@ export const DesktopHeader = <TChainId extends number>({
   currentMenu,
   ChainProps,
   WalletProps,
-  BannerProps,
+  globalAlertRef,
   height, // height above + banner height
   pages,
   appStats,
@@ -44,7 +44,7 @@ export const DesktopHeader = <TChainId extends number>({
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef}>
-        <GlobalBanner {...BannerProps} />
+        <GlobalBanner networkName={networkName} ref={globalAlertRef} chainId={ChainProps.chainId} />
 
         <Toolbar
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}

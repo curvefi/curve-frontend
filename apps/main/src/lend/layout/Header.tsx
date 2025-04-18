@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { useCallback, useRef } from 'react'
+import { type RefObject, useCallback, useRef } from 'react'
 import { useTvl } from '@/lend/entities/chain'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -15,18 +15,19 @@ import {
 } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 export const Header = ({
   chainId,
   sections,
-  BannerProps,
+  globalAlertRef,
+  networkName,
 }: {
   chainId: ChainId
   sections: NavigationSection[]
-  BannerProps: GlobalBannerProps
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkName: string
 }) => {
   const { wallet } = useWallet()
   const { push } = useRouter()
@@ -37,7 +38,7 @@ export const Header = ({
 
   return (
     <NewHeader<ChainId>
-      networkName={BannerProps.networkName}
+      networkName={networkName}
       mainNavRef={mainNavRef}
       currentMenu="lend"
       routes={APP_LINK.lend.routes}
@@ -66,7 +67,7 @@ export const Header = ({
         },
       ]}
       height={useHeaderHeight(bannerHeight)}
-      BannerProps={BannerProps}
+      globalAlertRef={globalAlertRef}
       sections={sections}
     />
   )
