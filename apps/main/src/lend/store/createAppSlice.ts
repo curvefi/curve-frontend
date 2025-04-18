@@ -51,8 +51,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     log('Hydrating Lend', api?.chainId, {
       wallet: wallet?.chains[0]?.id ?? '',
-      isNetworkSwitched,
-      isUserSwitched,
+      chainId: [prevApi?.chainId, api.chainId],
+      signerAddress: [prevApi?.signerAddress, api.signerAddress],
     })
 
     // reset store
