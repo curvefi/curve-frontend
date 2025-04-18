@@ -1,5 +1,5 @@
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
-export { CONNECT_STAGE } from '@ui/utils/utilsConnectState'
+export { CONNECT_STAGE } from '@ui-kit/features/connect-wallet'
 
 export const ROUTE = {
   ...LEND_ROUTES,

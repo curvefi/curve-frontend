@@ -3,23 +3,22 @@ import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import Page from '@/dao/layout'
+import { BaseLayout } from '@/dao/layout'
 import { helpers } from '@/dao/lib/curvejs'
-import networks from '@/dao/networks'
+import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { ChainId } from '@/dao/types/dao.types'
-import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils'
+import { ChainId, type NetworkUrlParams } from '@/dao/types/dao.types'
+import { getPath, getRestFullPathname } from '@/dao/utils'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
 import { getPageWidthClassName } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
-export const App = ({ children }: { children: ReactNode }) => {
+export const App = ({ network, children }: NetworkUrlParams & { children: ReactNode }) => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
@@ -80,6 +79,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     [push],
   )
 
+  const chainId = networksIdMapper[network]
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
@@ -90,10 +90,12 @@ export const App = ({ children }: { children: ReactNode }) => {
               <ConnectionProvider
                 hydrate={hydrate}
                 initLib={helpers.initCurveJs}
-                chainId={getNetworkFromUrl().rChainId}
+                chainId={chainId}
                 onChainUnavailable={onChainUnavailable}
               >
-                <Page>{children}</Page>
+                <BaseLayout networkName={network} chainId={chainId}>
+                  {children}
+                </BaseLayout>
               </ConnectionProvider>
             </QueryProvider>
           </OverlayProvider>

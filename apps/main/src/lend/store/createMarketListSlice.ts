@@ -19,12 +19,12 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import {
-  ChainId,
   Api,
-  MarketsStatsTotalsMapper,
-  MarketsStatsCapAndAvailableMapper,
+  ChainId,
   MarketsRatesMapper,
   MarketsRewardsMapper,
+  MarketsStatsCapAndAvailableMapper,
+  MarketsStatsTotalsMapper,
   Order,
   TitleKey,
 } from '@/lend/types/lend.types'
@@ -253,7 +253,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         tableRowsSettings: { all: { isNotSortable: false, sortBy, sortByOrder } },
       }
     },
-    setFormValues: async (rChainId, api, marketMapping, shouldRefetch) => {
+    setFormValues: async (rChainId, api, marketMapping, shouldRefetch = true) => {
       const { markets, user } = get()
       const {
         activeKey: prevActiveKey,
@@ -419,7 +419,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       await Promise.all(fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? allMarkets : cMarkets, shouldRefetch)))
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
-      logSuccess(['market-list-slice', 'setFormValues'], sorted.result.length)
+      logSuccess(['market-list-slice', 'setFormValues'], { results: sorted.result.length, shouldRefetch })
     },
 
     // slice helpers

@@ -20,7 +20,7 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig extends BaseConfig {
+export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
@@ -75,22 +75,6 @@ export type ExpectedBorrowed = {
   avgPrice: string
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
-export type RouterParams = {
-  rChainId: ChainId
-  rNetwork: NetworkEnum
-  rNetworkIdx: number
-  rSubdirectory: string
-  rSubdirectoryUseDefault: boolean
-  rMarket: string
-  rFormType: RFormType
-  redirectPathname: string
-  restFullPathname: string
-}
-export type PageProps = {
-  pageLoaded: boolean
-  routerParams: RouterParams
-  api: Api | null
-}
 export type PageWidthClassName =
   | 'page-wide'
   | 'page-large'
@@ -103,7 +87,6 @@ export type PageContentProps = {
   rChainId: ChainId
   rOwmId: string
   rFormType: string | null
-  rSubdirectory: string
   userActiveKey: string
   isLoaded: boolean
   api: Api | null

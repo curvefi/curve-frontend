@@ -1,5 +1,5 @@
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
-import { ChainId, NetworkConfig } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
@@ -328,7 +328,7 @@ export const defaultNetworks = Object.entries({
     const chainId = Number(key) as ChainId
 
     prev[chainId] = {
-      ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
+      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,
@@ -344,7 +344,7 @@ export async function getNetworks() {
   const liteNetworks = Object.values(resp).reduce(
     (prev, { chainId, ...config }) => {
       prev[chainId] = {
-        ...getBaseNetworksConfig(Number(chainId), config),
+        ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
         chainId,
         hasFactory: true,

@@ -25,30 +25,12 @@ export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type VeCrvUrlParams = NetworkUrlParams & { formType: [FormType] }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
-export interface NetworkConfig extends BaseConfig {
+export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
 }
 
-export type RouterParams = {
-  rChainId: ChainId
-  rNetwork: NetworkEnum
-  rNetworkIdx: number
-  rSubdirectory: string
-  rSubdirectoryUseDefault: boolean
-  rProposalId: string
-  rUserAddress: string
-  rGaugeAddress: string
-  rFormType: FormType
-  redirectPathname: string
-  restFullPathname: string
-}
-export type PageProps = {
-  curve: CurveApi | null
-  pageLoaded: boolean
-  routerParams: RouterParams
-}
 export type Provider = ethers.BrowserProvider
 export type Wallet = WalletState
 export type EstimatedGas = number | number[] | null

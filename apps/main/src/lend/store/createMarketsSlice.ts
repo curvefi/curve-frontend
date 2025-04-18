@@ -20,7 +20,7 @@ import {
 } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { getLib } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -161,7 +161,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       }
     },
     fetchTotalCollateralValue: async (chainId, market, shouldRefetch) => {
-      const api = useApiStore.getState().lending
+      const api = getLib<Api>()
       const { totalCollateralValuesMapper, ...sliceState } = get()[sliceKey]
 
       const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[market.id]

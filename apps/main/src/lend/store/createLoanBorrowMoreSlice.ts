@@ -17,8 +17,7 @@ import type { State } from '@/lend/store/useStore'
 import { Api, ChainId } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { getLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -100,7 +99,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       sliceState.setStateByKey('formValues', { ...formValues, debtError })
     },
     refetchMaxRecv: async (market, isLeverage) => {
-      const api = useApiStore.getState().lending
+      const api = getLib<Api>()
       const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed } = formValues
 
