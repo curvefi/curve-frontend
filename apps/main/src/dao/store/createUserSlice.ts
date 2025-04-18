@@ -6,27 +6,16 @@ import { contractVeCRV } from '@/dao/store/contracts'
 import type { State } from '@/dao/store/useStore'
 import {
   CurveApi,
-  FetchingState,
   SnapshotVotingPower,
   SortDirection,
-  UserGaugeVote,
-  UserGaugeVotesRes,
   UserGaugeVotesSortBy,
   UserGaugeVoteWeightSortBy,
-  UserLock,
-  UserLockRes,
   UserLocksSortBy,
   UserMapper,
-  UserProposalVoteData,
-  UserProposalVotesRes,
   UserProposalVotesSortBy,
-  UserVoteData,
 } from '@/dao/types/dao.types'
 import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
 import type { WalletState } from '@web3-onboard/core'
-
-const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -42,25 +31,6 @@ type SliceState = {
   }
   userAddress: string | null
   userEns: string | null
-  userVotesMapper: { [userAddress: string]: UserVoteData[] }
-  userProposalVotesMapper: {
-    [userAddress: string]: {
-      fetchingState: FetchingState
-      votes: { [proposalId: string]: UserProposalVoteData }
-    }
-  }
-  userLocksMapper: {
-    [userAddress: string]: {
-      fetchingState: FetchingState
-      locks: UserLock[]
-    }
-  }
-  userGaugeVotesMapper: {
-    [userAddress: string]: {
-      fetchingState: FetchingState
-      votes: UserGaugeVote[]
-    }
-  }
   userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
@@ -87,13 +57,10 @@ export type UserSlice = {
   [sliceKey]: SliceState & {
     updateUserData(curve: CurveApi, wallet: WalletState): void
     getUserEns(userAddress: string): Promise<void>
-    getUserProposalVotes(userAddress: string): Promise<void>
-    getUserGaugeVotes(userAddress: string): Promise<void>
-    getUserLocks(userAddress: string): Promise<void>
 
-    setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
-    setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
-    setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => void
+    setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
+    setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
+    setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => void
     setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
@@ -115,16 +82,12 @@ const DEFAULT_STATE: SliceState = {
   userAddress: null,
   userEns: null,
   userMapper: {},
-  userVotesMapper: {},
-  userProposalVotesMapper: {},
-  userGaugeVotesMapper: {},
-  userLocksMapper: {},
   userLocksSortBy: {
-    key: 'date',
+    key: 'timestamp',
     order: 'desc',
   },
   userProposalVotesSortBy: {
-    key: 'vote_id',
+    key: 'voteId',
     order: 'desc',
   },
   userGaugeVotesSortBy: {
@@ -143,7 +106,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: WalletState) => {
-      const getUserProposalVotes = get()[sliceKey].getUserProposalVotes
       const userAddress = getWalletSignerAddress(wallet)!
 
       try {
@@ -153,8 +115,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       } catch (error) {
         console.error(error)
       }
-
-      void getUserProposalVotes(userAddress)
 
       get()[sliceKey].setStateByKeys({
         userAddress: userAddress.toLowerCase(),
@@ -191,216 +151,29 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       }
     },
-    getUserProposalVotes: async (userAddress: string) => {
-      const address = userAddress.toLowerCase()
-
-      set(
-        produce((state) => {
-          state[sliceKey].userProposalVotesMapper[address] = {
-            fetchingState: 'LOADING',
-            votes: {},
-          }
-        }),
-      )
-
-      try {
-        const pagination = 1000
-        let page = 1
-        const results: { [proposalId: string]: UserProposalVoteData } = {}
-
-        while (true) {
-          const ownershipVotesRes = await fetch(
-            `https://prices.curve.fi/v1/dao/proposals/votes/user/${address}?pagination=${pagination}&page=${page}`,
-          )
-          const ownershipVotes: UserProposalVotesRes = await ownershipVotesRes.json()
-
-          if (!ownershipVotes.data) {
-            break
-          }
-
-          ownershipVotes.data.forEach((data) => {
-            results[`${data.proposal.vote_id}-${data.proposal.vote_type.toUpperCase()}`] = {
-              vote_id: data.proposal.vote_id,
-              vote_type: data.proposal.vote_type,
-              vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
-              vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
-              vote_open: data.proposal.start_date,
-              vote_close: data.proposal.start_date + WEEK,
-              vote_total_supply: +data.proposal.total_supply / 1e18,
-            }
-          })
-
-          if (ownershipVotes.data.length < pagination) {
-            break
-          }
-          page++
-        }
-
-        set(
-          produce((state) => {
-            state[sliceKey].userProposalVotesMapper[address] = {
-              fetchingState: 'SUCCESS',
-              votes: results,
-            }
-          }),
-        )
-      } catch (error) {
-        set(
-          produce((state) => {
-            state[sliceKey].userProposalVotesMapper[address] = {
-              fetchingState: 'ERROR',
-              votes: {},
-            }
-          }),
-        )
-      }
-    },
-    getUserLocks: async (userAddress: string) => {
-      const address = userAddress.toLowerCase()
-
-      set(
-        produce((state) => {
-          state[sliceKey].userLocksMapper[address] = {
-            fetchingState: 'LOADING',
-            locks: [],
-          }
-        }),
-      )
-
-      try {
-        const locksRes = await fetch(`https://prices.curve.fi/v1/dao/locks/${address}`)
-        const locks: UserLockRes = await locksRes.json()
-
-        const formattedData = locks.locks.map((lock) => ({
-          amount: +lock.amount / 1e18,
-          unlock_time: lock.unlock_time,
-          lock_type: lock.lock_type,
-          locked_balance: +lock.locked_balance / 1e18,
-          block_number: lock.block_number,
-          date: lock.dt,
-          transaction_hash: lock.transaction_hash,
-        }))
-
-        set(
-          produce((state) => {
-            state[sliceKey].userLocksMapper[address] = {
-              fetchingState: 'SUCCESS',
-              locks: formattedData,
-            }
-          }),
-        )
-      } catch (error) {
-        console.warn(error)
-
-        set(
-          produce((state) => {
-            state[sliceKey].userLocksMapper[address] = {
-              fetchingState: 'ERROR',
-              locks: [],
-            }
-          }),
-        )
-      }
-    },
-    getUserGaugeVotes: async (userAddress: string) => {
-      const address = userAddress.toLowerCase()
-
-      set(
-        produce((state) => {
-          state[sliceKey].userGaugeVotesMapper[address] = {
-            fetchingState: 'LOADING',
-            votes: [],
-          }
-        }),
-      )
-
-      try {
-        const gaugeVotesRes = await fetch(`https://prices.curve.fi/v1/dao/gauges/votes/user/${address}`)
-        const gaugeVotes: UserGaugeVotesRes = await gaugeVotesRes.json()
-
-        const formattedVotes = gaugeVotes.votes.map((vote) => {
-          const gaugeName = vote.gauge_name
-            ? vote.gauge_name.replace(/(Curve\.fi |Gauge Deposit)/g, '').trim()
-            : vote.gauge_name
-
-          return {
-            ...vote,
-            gauge_name: gaugeName,
-            timestamp: new Date(vote.timestamp).getTime(),
-          }
-        })
-
-        const sortedVotes = formattedVotes.sort((a, b) => b.weight - a.weight).sort((a, b) => b.timestamp - a.timestamp)
-
-        set(
-          produce((state) => {
-            state[sliceKey].userGaugeVotesMapper[address] = {
-              fetchingState: 'SUCCESS',
-              votes: sortedVotes,
-            }
-          }),
-        )
-      } catch (error) {
-        console.error(error)
-        set(
-          produce((state) => {
-            state[sliceKey].userGaugeVotesMapper[address] = {
-              fetchingState: 'ERROR',
-              votes: [],
-            }
-          }),
-        )
-      }
-    },
-    setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
-      const address = userAddress.toLowerCase()
-
-      const {
-        userLocksMapper: {
-          [address]: { locks },
-        },
-        userLocksSortBy,
-      } = get()[sliceKey]
-
+    setUserLocksSortBy: (sortBy: UserLocksSortBy) => {
+      const { userLocksSortBy } = get()[sliceKey]
       let order = userLocksSortBy.order
+
       if (sortBy === userLocksSortBy.key) {
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
           produce((state) => {
-            state[sliceKey].userLocksMapper[address].locks = [...locks].reverse()
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
       } else {
-        const sortedEntries = [...locks].sort((a, b) => {
-          if (sortBy === 'date') {
-            const aValue = new Date(a.date).getTime()
-            const bValue = new Date(b.date).getTime()
-            return bValue - aValue
-          }
-          return b[sortBy] - a[sortBy]
-        })
-
         set(
           produce((state) => {
             state[sliceKey].userLocksSortBy.key = sortBy
             state[sliceKey].userLocksSortBy.order = 'desc'
-            state[sliceKey].userLocksMapper[address].locks = sortedEntries
           }),
         )
       }
     },
-    setUserProposalVotesSortBy: (userAddress: string, sortBy: UserProposalVotesSortBy) => {
-      const address = userAddress.toLowerCase()
-
-      const {
-        userProposalVotesMapper: {
-          [address]: { votes },
-        },
-        userProposalVotesSortBy,
-      } = get()[sliceKey]
-
+    setUserProposalVotesSortBy: (sortBy: UserProposalVotesSortBy) => {
+      const { userProposalVotesSortBy } = get()[sliceKey]
       let order = userProposalVotesSortBy.order
 
       if (sortBy === userProposalVotesSortBy.key) {
@@ -409,63 +182,38 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         order = 'desc'
       }
 
-      const sortedEntries = Object.entries(votes).sort(([, a], [, b]) => {
-        if (sortBy === 'vote_close') return b.vote_close - a.vote_close
-        if (sortBy === 'vote_open') return b.vote_open - a.vote_open
-        if (sortBy === 'vote_for') return b.vote_for - a.vote_for
-        if (sortBy === 'vote_against') return b.vote_against - a.vote_against
-        return b[sortBy] - a[sortBy]
-      })
-
-      if (order === 'asc') sortedEntries.reverse()
-
-      const sortedVotes = Object.fromEntries(sortedEntries)
-
       set(
         produce((state) => {
           state[sliceKey].userProposalVotesSortBy.key = sortBy
           state[sliceKey].userProposalVotesSortBy.order = order
-          state[sliceKey].userProposalVotesMapper[address].votes = sortedVotes
         }),
       )
     },
-    setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => {
-      const address = userAddress.toLowerCase()
-
-      const {
-        userGaugeVotesMapper: {
-          [address]: { votes },
-        },
-        userGaugeVotesSortBy,
-      } = get()[sliceKey]
-
+    setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => {
+      const { userGaugeVotesSortBy } = get()[sliceKey]
       let order = userGaugeVotesSortBy.order
+
       if (sortBy === userGaugeVotesSortBy.key) {
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
           produce((state) => {
-            state[sliceKey].userGaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
       } else {
-        const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
-
         set(
           produce((state) => {
             state[sliceKey].userGaugeVotesSortBy.key = sortBy
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
-            state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
           }),
         )
       }
     },
     setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => {
       const { userGaugeVoteWeightsSortBy } = get()[sliceKey]
-
       let order = userGaugeVoteWeightsSortBy.order
-      // if sortBy is the same as the current sortBy, flip the order
+
       if (sortBy === userGaugeVoteWeightsSortBy.key) {
         order = order === 'asc' ? 'desc' : 'asc'
 
@@ -474,7 +222,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
-        // if sortBy is different, set the sortBy to the new sortBy and set the order to desc
       } else {
         set(
           produce((state) => {

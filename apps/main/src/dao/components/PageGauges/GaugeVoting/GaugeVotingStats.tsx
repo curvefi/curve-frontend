@@ -11,11 +11,12 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils/network'
 import { calculateUserPowerStale } from './utils'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
   const { userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotes({
-    chainId: 1, // DAO is only used on mainnet
+    chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
   const userEns = useStore((state) => state.user.userEns)

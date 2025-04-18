@@ -1,18 +1,25 @@
-import {
-  PricesProposalResponseData,
-  PricesProposalsResponse,
-  ProposalData,
-  ProposalType,
-  ProposalsMapper,
-} from '@/dao/types/dao.types'
+import { paginate } from '@curvefi/prices-api/paginate'
+import { getProposals } from '@curvefi/prices-api/proposal/api'
+import { Proposal } from '@curvefi/prices-api/proposal/models'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { queryFactory } from '@ui-kit/lib/model/query'
 
 const { WEEK } = TIME_FRAMES
 
+export type ProposalData = Omit<Proposal, 'timestamp'> & {
+  status: 'Active' | 'Passed' | 'Denied'
+  quorumVeCrv: number
+  currentQuorumPercentage: number
+  timestamp: number
+}
+
+export type ProposalsMapper = {
+  [voteId: string]: ProposalData
+}
+
 const getProposalStatus = (
-  startDate: number,
+  timestamp: number,
   quorumVeCrv: number,
   votesFor: number,
   votesAgainst: number,
@@ -20,80 +27,44 @@ const getProposalStatus = (
 ): 'Active' | 'Passed' | 'Denied' => {
   const totalVotes = votesFor + votesAgainst
   const passedQuorum = votesFor >= quorumVeCrv
-  const passedMinimum = (votesFor / totalVotes) * 100 > minSupport
+  const passedMinimum = votesFor / totalVotes > minSupport
 
-  if (startDate + WEEK > Math.floor(Date.now() / 1000)) return 'Active'
+  if (timestamp + WEEK > Date.now() / 1000) return 'Active'
   if (passedQuorum && passedMinimum) return 'Passed'
   return 'Denied'
 }
 
-const parseProposalData = (proposal: PricesProposalResponseData) => {
-  const minAcceptQuorumPercent = (+proposal.min_accept_quorum / 1e18) * 100
-  const minSupport = (+proposal.support_required / 1e18) * 100
-  const totalVeCrv = +proposal.total_supply / 1e18
-  const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
-  const votesFor = +proposal.votes_for / 1e18
-  const votesAgainst = +proposal.votes_against / 1e18
-  const currentQuorumPercentage = (votesFor / totalVeCrv) * 100
+const parseProposalData = (proposal: Proposal) => {
+  const quorumVeCrv = proposal.quorum * proposal.totalSupply
+  const currentQuorumPercentage = (proposal.votesFor / proposal.totalSupply) * 100
+  const timestamp = proposal.timestamp.getTime() / 1000
 
-  const status = getProposalStatus(proposal.start_date, quorumVeCrv, votesFor, votesAgainst, minSupport)
+  const status = getProposalStatus(timestamp, quorumVeCrv, proposal.votesFor, proposal.votesAgainst, proposal.support)
 
   return {
-    voteId: proposal.vote_id,
-    voteType: proposal.vote_type.toUpperCase() as ProposalType,
-    creator: proposal.creator,
-    startDate: proposal.start_date,
-    metadata: proposal.metadata,
-    executed: proposal.executed,
+    ...proposal,
     status,
-    votesFor,
-    votesAgainst,
-    minSupport,
-    minAcceptQuorumPercent,
     quorumVeCrv,
-    totalVeCrv,
-    totalVotes: votesFor + votesAgainst,
     currentQuorumPercentage,
-    totalSupply: proposal.total_supply,
-    snapshotBlock: proposal.snapshot_block,
-    ipfsMetadata: proposal.ipfs_metadata,
-    voteCount: proposal.vote_count,
-    supportRequired: proposal.support_required,
-    minAcceptQuorum: proposal.min_accept_quorum,
+    timestamp,
   }
 }
 
 const _fetchProposals = async (): Promise<ProposalsMapper> => {
-  try {
-    let page = 1
-    const pagination = 500
-    let results: PricesProposalResponseData[] = []
+  const pagination = 500
+  const results: Proposal[] = await paginate(
+    (page, offset) => getProposals(page, offset, '', 'all', 'all'),
+    1,
+    pagination,
+    (response) => response.proposals,
+  )
 
-    while (true) {
-      const proposalsRes = await fetch(
-        `https://prices.curve.fi/v1/dao/proposals?pagination=${pagination}&page=${page}&status_filter=all&type_filter=all`,
-      )
-      const data: PricesProposalsResponse = await proposalsRes.json()
-      results = results.concat(data.proposals)
-      if (data.proposals.length < pagination) {
-        break
-      }
-      page++
-    }
+  const proposalsMapper = results.reduce((mapper, proposal) => {
+    mapper[`${proposal.id}-${proposal.type.toLowerCase()}`] = parseProposalData(proposal)
+    return mapper
+  }, {} as ProposalsMapper)
 
-    const proposalsMapper = results.reduce(
-      (mapper, proposal) => {
-        mapper[`${proposal.vote_id}-${proposal.vote_type.toUpperCase()}`] = parseProposalData(proposal)
-        return mapper
-      },
-      {} as { [voteId: string]: ProposalData },
-    )
-
-    return proposalsMapper
-  } catch (error: unknown) {
-    console.error('Failed to fetch proposals:', error)
-    return {}
-  }
+  return proposalsMapper
 }
 
 export const { useQuery: useProposalsMapperQuery, invalidate: invalidateProposals } = queryFactory({

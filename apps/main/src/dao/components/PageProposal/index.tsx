@@ -2,11 +2,12 @@ import { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
+import { useProposalPricesApiQuery, invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
-import useProposalMapper from '@/dao/hooks/useProposalMapper'
 import useStore from '@/dao/store/useStore'
-import { ProposalType, type ProposalUrlParams } from '@/dao/types/dao.types'
+import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
+import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
@@ -32,72 +33,50 @@ type ProposalProps = {
 
 const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
+  const proposalType = voteType.toLowerCase() as ProposalType
   const { provider } = useWallet()
-  const getProposal = useStore((state) => state.proposals.getProposal)
-  const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
-  const getUserProposalVote = useStore((state) => state.proposals.getUserProposalVote)
-  const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[`${voteId}-${voteType}`]) ?? null
   const setSnapshotVeCrv = useStore((state) => state.user.setSnapshotVeCrv)
   const userAddress = useStore((state) => state.user.userAddress)
-  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
-  const { proposalMapper } = useProposalMapper()
+
   const {
     data: proposalsMapper,
     isLoading: proposalsListLoading,
-    isError: proposalsListError,
     isSuccess: proposalsListSuccess,
   } = useProposalsMapperQuery({})
-  const pricesProposal = proposalMapper[rProposalId] ?? null
+  const {
+    data: pricesProposal,
+    isLoading: pricesProposalLoading,
+    isError: pricesProposalError,
+    isSuccess: pricesProposalSuccess,
+  } = useProposalPricesApiQuery({ proposalId: +voteId, proposalType: proposalType })
   const proposal = proposalsMapper?.[rProposalId] ?? null
 
-  const isLoading =
-    proposalLoadingState === 'LOADING' || proposalsListLoading || (!pricesProposal && proposalsListError)
-  const isError = proposalLoadingState === 'ERROR'
-  const isFetched = proposalLoadingState === 'SUCCESS' && proposalsListSuccess && pricesProposal
+  const isLoading = pricesProposalLoading || proposalsListLoading
+  const isFetched = pricesProposalSuccess && proposalsListSuccess
 
   const activeProposal = useMemo(
     () =>
       proposal?.status === 'Active'
         ? {
             active: true,
-            startTimestamp: proposal?.startDate,
-            endTimestamp: proposal?.startDate + 604800,
+            startTimestamp: proposal?.timestamp,
+            endTimestamp: proposal?.timestamp + 604800,
           }
         : undefined,
-    [proposal?.status, proposal?.startDate],
+    [proposal?.status, proposal?.timestamp],
   )
 
   useEffect(() => {
-    if (snapshotVeCrv === undefined && provider && userAddress && proposal?.snapshotBlock) {
+    if (snapshotVeCrv === undefined && provider && userAddress && proposal?.block) {
       const getVeCrv = async () => {
         const signer = await provider.getSigner()
-        setSnapshotVeCrv(signer, userAddress, proposal.snapshotBlock, rProposalId)
+        setSnapshotVeCrv(signer, userAddress, proposal.block, rProposalId)
       }
 
       void getVeCrv()
     }
-  }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
-
-  useEffect(() => {
-    if (pricesProposal) return
-    getProposal(+voteId, voteType)
-  }, [getProposal, pricesProposal, voteId, voteType])
-
-  // check to see if a user has voted and it has not yet been updated by the API
-  useEffect(() => {
-    if (!userAddress || (userProposalVote && userProposalVote.fetchingState !== null)) {
-      return
-    }
-
-    const userVotes = userProposalVotesMapper[userAddress]
-
-    if (userVotes.votes[rProposalId]) {
-      return
-    }
-
-    getUserProposalVote(userAddress, voteId, voteType)
-  }, [getUserProposalVote, rProposalId, userAddress, userProposalVote, userProposalVotesMapper, voteId, voteType])
+  }, [provider, rProposalId, setSnapshotVeCrv, proposal?.block, snapshotVeCrv, userAddress])
 
   return (
     <Wrapper>
@@ -105,12 +84,17 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
           <ProposalContainer variant="secondary">
-            <ProposalHeader proposal={proposal} voteId={voteId} voteType={voteType} />
-            {isError && !isLoading && (
+            <ProposalHeader
+              proposal={proposal}
+              loading={proposalsListLoading}
+              voteId={voteId}
+              proposalType={proposalType}
+            />
+            {pricesProposalError && !isLoading && (
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  onClick={() => getProposal(+voteId, voteType as ProposalType)}
+                  onClick={() => invalidateProposalPricesApi({ proposalId: +voteId, proposalType: proposalType })}
                 />
               </ErrorWrapper>
             )}
@@ -125,7 +109,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.ipfsMetadata ?? '')}>
+                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.metadata ?? '')}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />
                       </StyledCopyButton>
@@ -146,10 +130,14 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
               </>
             )}
             {proposal && !isLoading && proposal?.voteCount !== 0 && (
-              <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
+              <Voters
+                voteId={voteId}
+                totalVotes={proposal?.votesFor + proposal?.votesAgainst}
+                proposalType={proposalType}
+              />
             )}
             <ProposalInformationWrapper>
-              <ProposalInformation proposal={proposal} snapshotBlock={proposal?.snapshotBlock ?? 0} />
+              <ProposalInformation proposal={proposal} />
             </ProposalInformationWrapper>
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
@@ -160,7 +148,8 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
                   snapshotVotingPower
                   activeProposal={activeProposal}
                   votingPower={snapshotVeCrv}
-                  proposalId={rProposalId}
+                  proposalId={+voteId}
+                  proposalType={proposalType}
                 />
               )}
             </UserBox>
@@ -174,7 +163,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
               snapshotVotingPower
               activeProposal={
                 proposal?.status === 'Active'
-                  ? { active: true, startTimestamp: proposal?.startDate, endTimestamp: proposal?.startDate + 604800 }
+                  ? { active: true, startTimestamp: proposal?.timestamp, endTimestamp: proposal?.timestamp + 604800 }
                   : undefined
               }
             >
@@ -184,7 +173,8 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
                   snapshotVotingPower
                   activeProposal={activeProposal}
                   votingPower={snapshotVeCrv}
-                  proposalId={rProposalId}
+                  proposalId={+voteId}
+                  proposalType={proposalType}
                 />
               )}
             </UserBox>
@@ -195,7 +185,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
                 <ProposalVoteStatusBox proposalData={proposal} />
               </VotesWrapper>
               <Box variant="secondary" padding="var(--spacing-3)">
-                <ProposalInformation proposal={proposal} snapshotBlock={proposal?.snapshotBlock ?? 0} />
+                <ProposalInformation proposal={proposal} />
               </Box>
             </>
           )}

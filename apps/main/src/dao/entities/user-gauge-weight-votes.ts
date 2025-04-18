@@ -7,37 +7,28 @@ import { useApiStore } from '@ui-kit/shared/useApiStore'
 const _fetchUserGaugeWeightVotes = async ({ chainId, userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
   const curve = useApiStore.getState().curve
 
-  try {
-    const gaugeVoteWeightsRes = await curve!.dao.userGaugeVotes(userAddress)
+  const gaugeVoteWeightsRes = await curve!.dao.userGaugeVotes(userAddress)
 
-    const data = {
-      powerUsed: Number(gaugeVoteWeightsRes.powerUsed),
-      veCrvUsed: Number(gaugeVoteWeightsRes.veCrvUsed),
-      gauges: gaugeVoteWeightsRes.gauges
-        .map((gauge) => ({
-          userPower: Number(gauge.userPower),
-          userVeCrv: Number(gauge.userVeCrv),
-          userFutureVeCrv: Number(gauge.userFutureVeCrv),
-          expired: gauge.expired,
-          ...gauge.gaugeData,
-          rootGaugeAddress: '',
-          relativeWeight: Number(gauge.gaugeData.relativeWeight),
-          totalVeCrv: Number(gauge.gaugeData.totalVeCrv),
-          nextVoteTime: null,
-          canVote: true,
-        }))
-        .sort((a, b) => b.userPower - a.userPower),
-    }
-
-    return data
-  } catch (error) {
-    console.error(error)
-    return {
-      powerUsed: 0,
-      veCrvUsed: 0,
-      gauges: [],
-    }
+  const data = {
+    powerUsed: Number(gaugeVoteWeightsRes.powerUsed),
+    veCrvUsed: Number(gaugeVoteWeightsRes.veCrvUsed),
+    gauges: gaugeVoteWeightsRes.gauges
+      .map((gauge) => ({
+        userPower: Number(gauge.userPower),
+        userVeCrv: Number(gauge.userVeCrv),
+        userFutureVeCrv: Number(gauge.userFutureVeCrv),
+        expired: gauge.expired,
+        ...gauge.gaugeData,
+        rootGaugeAddress: '',
+        relativeWeight: Number(gauge.gaugeData.relativeWeight),
+        totalVeCrv: Number(gauge.gaugeData.totalVeCrv),
+        nextVoteTime: null,
+        canVote: true,
+      }))
+      .sort((a, b) => b.userPower - a.userPower),
   }
+
+  return data
 }
 
 export const {

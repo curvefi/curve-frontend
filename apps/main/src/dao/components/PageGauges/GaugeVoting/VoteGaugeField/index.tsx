@@ -9,6 +9,7 @@ import Button from '@ui/Button'
 import { TooltipIcon } from '@ui/Tooltip'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 import NumberField from './NumberField'
 
 type VoteGaugeFieldProps = {
@@ -23,7 +24,7 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
   const castVote = useStore((state) => state.gauges.castVote)
   const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
-    chainId: 1,
+    chainId: Chain.Ethereum,
     gaugeAddress: userGaugeVoteData?.gaugeAddress ?? '',
     userAddress: userAddress ?? '',
   })

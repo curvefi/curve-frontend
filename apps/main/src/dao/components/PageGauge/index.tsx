@@ -21,16 +21,17 @@ const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) =>
 
   const tableMinWidth = 21.875
   const gaugeData = gaugeMapper[gaugeAddress]
-  const loading = gaugesLoading === 'LOADING'
+  const isLoading = gaugesLoading === 'LOADING'
+  const isSuccess = gaugesLoading === 'SUCCESS'
 
   return (
     <Wrapper>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label="Back to gauges" />
       <GaugePageContainer variant="secondary">
-        <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
-        <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />
-        <Content>{!loading && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />}</Content>
-        {!loading && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
+        <GaugeHeader gaugeData={gaugeData} dataLoading={isLoading} />
+        <GaugeMetrics gaugeData={gaugeData} dataLoading={isLoading} />
+        <Content>{isSuccess && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />}</Content>
+        {isSuccess && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
       </GaugePageContainer>
     </Wrapper>
   )

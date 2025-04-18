@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
-import { ProposalData } from '@/dao/types/dao.types'
+import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import { InternalLink } from '@ui/Link'
@@ -12,29 +12,28 @@ import { shortenAddress } from '@ui-kit/utils'
 
 type ProposalInformationProps = {
   proposal: ProposalData | null
-  snapshotBlock: number
 }
 
-const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationProps) => {
+const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
   const createdDate = useMemo(
     () =>
-      proposal?.startDate ? formatDate(new Date(convertToLocaleTimestamp(proposal.startDate) * 1000), 'long') : '-',
-    [proposal?.startDate],
+      proposal?.timestamp ? formatDate(new Date(convertToLocaleTimestamp(proposal.timestamp) * 1000), 'long') : '-',
+    [proposal?.timestamp],
   )
   const endDate = useMemo(
     () =>
-      proposal?.startDate
-        ? formatDate(new Date(convertToLocaleTimestamp(proposal.startDate + 604800) * 1000), 'long')
+      proposal?.timestamp
+        ? formatDate(new Date(convertToLocaleTimestamp(proposal.timestamp + 604800) * 1000), 'long')
         : '-',
-    [proposal?.startDate],
+    [proposal?.timestamp],
   )
 
   return (
     <Wrapper>
       <Box>
         <MetricsTitle>{t`Proposer`}</MetricsTitle>
-        <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.creator}`)}>
-          {shortenAddress(proposal?.creator)}
+        <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${proposal?.proposer}`)}>
+          {shortenAddress(proposal?.proposer)}
         </StyledInternalLink>
       </Box>
       <Box>
@@ -43,7 +42,7 @@ const ProposalInformation = ({ proposal, snapshotBlock }: ProposalInformationPro
       </Box>
       <Box>
         <MetricsTitle>{t`Snapshot Block`}</MetricsTitle>
-        <VoteInformationData>{snapshotBlock}</VoteInformationData>
+        <VoteInformationData>{proposal?.block}</VoteInformationData>
       </Box>
       <Box>
         <MetricsTitle>{t`Ends`}</MetricsTitle>

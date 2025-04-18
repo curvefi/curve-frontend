@@ -19,6 +19,7 @@ import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { Chain } from '@ui-kit/utils/network'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -40,7 +41,7 @@ const GaugeListItem = ({
   userAddress = '',
 }: Props) => {
   const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
-    chainId: 1,
+    chainId: Chain.Ethereum,
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress ?? '',
     userAddress: userAddress,
   })

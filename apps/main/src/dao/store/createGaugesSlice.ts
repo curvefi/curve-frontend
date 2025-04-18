@@ -24,6 +24,7 @@ import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { shortenAddress } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils/network'
 import { helpers } from '../lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -412,11 +413,11 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         notify(successNotificationMessage, 'success', 15000)
 
         invalidateUserGaugeWeightVotesQuery({
-          chainId: 1,
+          chainId: Chain.Ethereum,
           userAddress,
         })
         invalidateUserGaugeVoteNextTimeQuery({
-          chainId: 1,
+          chainId: Chain.Ethereum,
           gaugeAddress,
           userAddress,
         })

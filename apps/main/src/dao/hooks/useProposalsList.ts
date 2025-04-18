@@ -1,8 +1,9 @@
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import { useMemo } from 'react'
+import { ProposalData } from '@/dao/entities/proposals-mapper'
 import useStore from '@/dao/store/useStore'
-import { ProposalData, ProposalListFilter, SortByFilterProposals, SortDirection } from '@/dao/types/dao.types'
+import { ProposalListFilter, SortByFilterProposals, SortDirection } from '@/dao/types/dao.types'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { useProposalsMapperQuery } from '../entities/proposals-mapper'
 
@@ -23,26 +24,26 @@ const sortProposals = (
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
-    const activeProposals = proposals.filter((proposal) => proposal.startDate + WEEK > currentTimestamp)
+    const activeProposals = proposals.filter((proposal) => proposal.timestamp + WEEK > currentTimestamp)
     const passedProposals = orderBy(
-      proposals.filter((proposal) => proposal.startDate + WEEK < currentTimestamp),
-      ['startDate'],
+      proposals.filter((proposal) => proposal.timestamp + WEEK < currentTimestamp),
+      ['timestamp'],
       ['desc'],
     )
 
     return activeSortDirection === 'asc'
       ? [
-          ...orderBy(activeProposals, [(proposal) => proposal.startDate + WEEK - currentTimestamp], ['desc']),
+          ...orderBy(activeProposals, [(proposal) => proposal.timestamp + WEEK - currentTimestamp], ['desc']),
           ...passedProposals,
         ]
       : [
-          ...orderBy(activeProposals, [(proposal) => proposal.startDate + WEEK - currentTimestamp], ['asc']),
+          ...orderBy(activeProposals, [(proposal) => proposal.timestamp + WEEK - currentTimestamp], ['asc']),
           ...passedProposals,
         ]
   }
 
-  // sort by created time
-  return orderBy(proposals, ['startDate'], [activeSortDirection])
+  // sort by time created
+  return orderBy(proposals, ['timestamp'], [activeSortDirection])
 }
 
 const createFuseInstance = (proposals: ProposalData[]) =>
@@ -51,9 +52,9 @@ const createFuseInstance = (proposals: ProposalData[]) =>
     threshold: 0.3,
     includeScore: true,
     keys: [
-      'voteId',
-      'creator',
-      'voteType',
+      'id',
+      'proposer',
+      'type',
       {
         name: 'metaData',
         getFn: (proposal) => (proposal.metadata || '').toLowerCase(),

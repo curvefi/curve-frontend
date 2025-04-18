@@ -17,6 +17,7 @@ import {
 import { findRootGauge } from '@/dao/utils'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
 type CurrentVotesProps = {
@@ -42,15 +43,14 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
     userGaugeWeightVotes,
     isSuccess: userGaugeWeightsSuccess,
     isLoading: userGaugeWeightsLoading,
+    isError: userGaugeWeightsError,
   } = useUserGaugeWeightVotes({
-    chainId: 1, // DAO is only used on mainnet
+    chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
 
-  const userWeightsLoading = userGaugeWeightsLoading
   const gaugeMapperLoading = gaugesLoading === 'LOADING'
-  const userWeightReady = userGaugeWeightsSuccess
-  const tableLoading = userWeightsLoading || gaugeMapperLoading
+  const tableLoading = userGaugeWeightsLoading || gaugeMapperLoading
 
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
@@ -100,13 +100,17 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
         <PaginatedTable<UserGaugeVoteWeight>
           data={sortGauges(userGauges, userGaugeVoteWeightsSortBy.order, userGaugeVoteWeightsSortBy.key)}
           minWidth={tableMinWidth}
-          fetchingState={tableLoading ? 'LOADING' : userWeightReady ? 'SUCCESS' : 'ERROR'}
+          isLoading={tableLoading}
+          isSuccess={userGaugeWeightsSuccess}
+          isError={userGaugeWeightsError}
           columns={USER_VOTES_TABLE_LABELS}
           sortBy={userGaugeVoteWeightsSortBy}
           errorMessage={t`An error occurred while fetching user gauge weight votes.`}
           noDataMessage={t`No gauge votes found`}
           setSortBy={(key) => setUserGaugeVoteWeightsSortBy(key as UserGaugeVoteWeightSortBy)}
-          getData={() => invalidateUserGaugeWeightVotesQuery({ chainId: 1, userAddress: userAddress ?? '' })}
+          getData={() =>
+            invalidateUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress: userAddress ?? '' })
+          }
           renderRow={(gauge, index) => (
             <Fragment key={index}>
               <GaugeListItemWrapper>
@@ -116,7 +120,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
                   gridTemplateColumns={gridTemplateColumns}
                   powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
                   userGaugeVote={true}
-                  userAddress={userAddress ?? ''}
+                  userAddress={userAddress}
                 />
               </GaugeListItemWrapper>
               <SmallScreenCardWrapper>

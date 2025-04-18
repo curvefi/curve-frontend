@@ -11,14 +11,7 @@ const _fetchUserGaugeVoteNextTime = async ({
 }: ChainQuery<ChainId> & { gaugeAddress: string; userAddress: string }) => {
   const curve = useApiStore.getState().curve
 
-  try {
-    const nextVoteTime = await curve!.dao.voteForGaugeNextTime(gaugeAddress)
-
-    return nextVoteTime
-  } catch (error) {
-    console.error(error)
-    return null
-  }
+  return await curve!.dao.voteForGaugeNextTime(gaugeAddress)
 }
 
 export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUserGaugeVoteNextTimeQuery } =

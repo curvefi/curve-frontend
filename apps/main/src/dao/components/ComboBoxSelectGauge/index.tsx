@@ -12,6 +12,7 @@ import { delayAction } from '@/dao/utils'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import ModalDialog from '@ui/Dialog'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 
 const ComboBoxGauges = ({
   disabled,
@@ -37,7 +38,7 @@ const ComboBoxGauges = ({
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
 
   const { userGaugeWeightVotes } = useUserGaugeWeightVotes({
-    chainId: 1, // DAO is only used on mainnet
+    chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
   const gauges = Object.values(gaugeMapper)

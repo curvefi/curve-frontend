@@ -113,11 +113,7 @@ const Proposals = () => {
             )}
             {isSuccess &&
               proposalsList.map((proposal, index) => (
-                <Proposal
-                  proposalData={proposal}
-                  handleClick={handleProposalClick}
-                  key={`${proposal.voteId}-${index}`}
-                />
+                <Proposal proposalData={proposal} handleClick={handleProposalClick} key={`${proposal.id}-${index}`} />
               ))}
           </ProposalsWrapper>
         </Box>
