@@ -19,7 +19,7 @@ import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const { network: networkName } = useParams() as UrlParams // todo: move layout to [network] and pass the params properly
+  const { network: networkName = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkName]
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)

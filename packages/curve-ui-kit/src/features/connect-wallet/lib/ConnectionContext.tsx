@@ -58,7 +58,7 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
@@ -120,7 +120,7 @@ export const ConnectionProvider = <
         }
 
         const walletChainId = getWalletChainId(wallet)
-        if (walletChainId && walletChainId !== chainId) {
+        if (walletChainId && walletChainId !== chainId && !document.hidden) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
             if (signal.aborted) return
@@ -157,6 +157,7 @@ export const ConnectionProvider = <
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
   const isLibOk = lib?.chainId === chainId && compareSignerAddress(wallet, lib)
+
   return (
     <ConnectionContext.Provider value={{ connectState, ...(isLibOk && { lib }) }}>
       {children}

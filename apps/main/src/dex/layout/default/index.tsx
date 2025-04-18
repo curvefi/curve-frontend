@@ -1,33 +1,92 @@
 import { ethers } from 'ethers'
-import { useParams } from 'next/navigation'
-import { ReactNode, useMemo, useRef } from 'react'
+import { ReactNode, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import Header from '@/dex/layout/default/Header'
+import curvejsApi from '@/dex/lib/curvejs'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath, useChainId } from '@/dex/utils/utilsRouter'
+import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { isChinese, t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-const BaseLayout = ({ children }: { children: ReactNode }) => {
+const useAutoRefresh = (network: NetworkConfig) => {
+  const { lib: curve } = useConnection<CurveApi>()
+
+  const isPageVisible = useStore((state) => state.isPageVisible)
+  const fetchPools = useStore((state) => state.pools.fetchPools)
+  const poolDataMapper = useStore((state) => state.pools.poolsMapper[network.chainId])
+  const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
+  const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
+  const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
+  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
+  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
+  const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
+
+  const fetchPoolsVolumeTvl = useCallback(
+    async (curve: CurveApi) => {
+      const { chainId } = curve
+      const poolDatas = Object.values(poolDataMapper)
+      await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
+      void setTokensMapper(chainId, poolDatas)
+    },
+    [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
+  )
+
+  const refetchPools = useCallback(
+    async (curve: CurveApi) => {
+      const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
+      void fetchPools(curve, poolIds, null)
+    },
+    [fetchPools, network],
+  )
+
+  usePageVisibleInterval(
+    () => {
+      if (curve) {
+        void fetchGasInfo(curve)
+        void fetchAllStoredUsdRates(curve)
+        void fetchPoolsVolumeTvl(curve)
+
+        if (curve.signerAddress) {
+          void fetchAllStoredBalances(curve)
+        }
+      }
+    },
+    REFRESH_INTERVAL['5m'],
+    isPageVisible,
+  )
+
+  usePageVisibleInterval(
+    () => {
+      if (curve) {
+        void refetchPools(curve)
+      }
+    },
+    REFRESH_INTERVAL['11m'],
+    isPageVisible,
+  )
+}
+
+const BaseLayout = ({ children, network }: { children: ReactNode } & { network: NetworkConfig }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
+  useAutoRefresh(network)
 
   const { connectState } = useConnection<CurveApi>()
-  const { network: rNetwork } = useParams() as NetworkUrlParams // todo: move layout to [network] folder and pass params as prop
-  const rChainId = useChainId(rNetwork)
   const [, setWalletChain] = useSetChain()
 
   const layoutHeight = useStore((state) => state.layoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const sections = useMemo(() => getSections(rNetwork), [rNetwork])
+  const sections = useMemo(() => getSections(network.id), [network.id])
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   return (
@@ -36,15 +95,15 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
         sections={sections}
         BannerProps={{
           ref: globalAlertRef,
-          networkName: rNetwork,
+          networkName: network.id,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
           showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
           maintenanceMessage: process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE,
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
+          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(network.chainId) }),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dex" networkName={rNetwork} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="dex" networkName={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }
