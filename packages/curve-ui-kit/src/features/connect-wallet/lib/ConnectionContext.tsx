@@ -131,7 +131,7 @@ export const ConnectionProvider = <
 
         const prevLib = libRef.get<TLib>()
         let newLib = prevLib
-        if (!libRef.get() || !compareSignerAddress(wallet, prevLib)) {
+        if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
           newLib = (await initLib(chainId, wallet)) ?? null
@@ -145,11 +145,8 @@ export const ConnectionProvider = <
         await hydrate(newLib, prevLib, wallet)
         setConnectState({ status: SUCCESS })
       } catch (error) {
-        if (signal.aborted) {
-          console.info(error)
-          return
-        }
-        console.error(error)
+        if (signal.aborted) return console.info('Error during init ignored', error)
+        console.error('Error during init', error)
         setConnectState(({ stage }) => ({ status: FAILURE, stage, error }))
       }
     }

@@ -6,8 +6,8 @@ import { apiValidationGroup, chainValidationGroup } from './validation'
 
 export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
-  queryFn: async (chainId: ChainQuery<ChainId>): Promise<string[]> => {
-    const useAPI = chainId.chainId !== 146 // disable API for sonic
+  queryFn: async ({ chainId }: ChainQuery<ChainId>): Promise<string[]> => {
+    const useAPI = chainId !== 146 // disable API for sonic
     const api = requireLib<Api>()
     await api.oneWayfactory.fetchMarkets(useAPI)
     return api.oneWayfactory.getMarketList()
