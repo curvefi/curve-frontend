@@ -77,20 +77,23 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   hydrate: async (api, prevApi, wallet) => {
     if (!api) return
 
-    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
+    const isNetworkSwitched = prevApi?.chainId != api.chainId
 
     log('Hydrating DAO', api?.chainId, {
       wallet: wallet?.chains[0]?.id ?? '',
       isNetworkSwitched,
     })
 
-    if (isNetworkSwitched) {
-      get().gas.resetState()
-    }
-
-    if (!prevApi || isNetworkSwitched) {
-      void get().gas.fetchGasInfo(api)
-    }
+    const { usdRates, user, gas, proposals, gauges } = get()
+    if (isNetworkSwitched) gas.resetState()
+    await Promise.all([
+      api && isNetworkSwitched && gas.fetchGasInfo(api),
+      api && wallet && user.updateUserData(api, wallet),
+      api && usdRates.fetchAllStoredUsdRates(api),
+      proposals.getProposals(),
+      gauges.getGauges(),
+      gauges.getGaugesData(),
+    ])
 
     log('Hydrating DAO - Complete')
   },
