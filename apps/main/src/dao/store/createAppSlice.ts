@@ -28,7 +28,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: CurveApi, prevApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(api: CurveApi | null, prevApi: CurveApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
@@ -75,6 +75,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   },
 
   hydrate: async (api, prevApi, wallet) => {
+    if (!api) return
+
     const isNetworkSwitched = prevApi?.chainId != api.chainId
 
     log('Hydrating DAO', api?.chainId, {

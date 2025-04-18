@@ -172,8 +172,8 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
   },
 }
 
-export type BaseConfig = {
-  id: string
+export type BaseConfig<TId = string> = {
+  id: TId
   name: string
   chainId: number
   symbol: string
@@ -196,7 +196,7 @@ export type BaseConfig = {
   orgUIPath: string
 }
 
-export function getBaseNetworksConfig(chainId: number, networkConfig: any): BaseConfig {
+export function getBaseNetworksConfig<T>(chainId: number, networkConfig: any): BaseConfig<T> {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
 

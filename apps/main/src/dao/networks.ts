@@ -11,7 +11,7 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.values(C
   (mapper, chainId) => {
     if (typeof chainId === 'number') {
       const networkConfig = {
-        ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
+        ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId]),
         ...DEFAULT_NETWORK_CONFIG,
         showInSelectNetwork: chainId === 1,
       }
