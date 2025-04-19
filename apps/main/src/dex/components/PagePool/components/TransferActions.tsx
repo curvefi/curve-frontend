@@ -5,8 +5,10 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useSignerAddress } from '@/dex/entities/signer'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
+import type { CurveApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import AlertBox from '@ui/AlertBox'
+import { isLoading as isConnectLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const TransferActions = ({
@@ -23,7 +25,7 @@ const TransferActions = ({
   const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const connectState = useStore((state) => state.connectState)
+  const { connectState } = useConnection<CurveApi>()
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
 
@@ -31,7 +33,7 @@ const TransferActions = ({
     loading ||
     typeof poolData === 'undefined' ||
     typeof currencyReserves === 'undefined' ||
-    connectState.status === 'loading' ||
+    isConnectLoading(connectState) ||
     !seed.loaded
 
   return (

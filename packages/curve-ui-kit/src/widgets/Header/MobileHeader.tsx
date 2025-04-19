@@ -37,7 +37,7 @@ export const MobileHeader = <TChainId extends number>({
   appStats,
   sections,
   ChainProps,
-  BannerProps,
+  globalAlertRef,
   height,
   isLite = false,
   networkName,
@@ -70,7 +70,7 @@ export const MobileHeader = <TChainId extends number>({
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <GlobalBanner {...BannerProps} />
+        <GlobalBanner networkName={networkName} ref={globalAlertRef} chainId={ChainProps.chainId} />
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}

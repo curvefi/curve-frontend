@@ -4,9 +4,9 @@ import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/Deplo
 import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
 import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
 import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
-import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { type CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
+import { useChainId } from '@/dex/utils/utilsRouter'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box, { BoxHeader } from '@ui/Box'
@@ -15,19 +15,14 @@ import Icon from '@ui/Icon/Icon'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Switch from '@ui/Switch/Switch'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
-type Props = {
-  curve: CurveApi
-}
+export const DeployGauge = (props: NetworkUrlParams) => {
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const chainId = useChainId(props.network)
+  const isLite = useStore((state) => state.networks.networks[chainId]?.isLite ?? false)
 
-const DeployGauge = ({ curve }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
-  const { chainId } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
-  const isLite = networks[chainId]?.isLite ?? false
-
-  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const curveNetworks = useStore((state) => state.deployGauge.curveNetworks)
   const setCurveNetworks = useStore((state) => state.deployGauge.setCurveNetworks)
   const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)
@@ -121,10 +116,15 @@ const DeployGauge = ({ curve }: Props) => {
               {sidechainGauge && <DeploySidechain chainId={chainId} />}
             </Content>
             <ButtonWrapper>
-              <DeployGaugeButton disabled={!validateDeployButton} chainId={chainId} curve={curve} />
+              <DeployGaugeButton
+                disabled={!validateDeployButton}
+                chainId={chainId}
+                curve={curve}
+                pageLoaded={!isLoading(connectState)}
+              />
             </ButtonWrapper>
           </>
-        ) : isLoadingApi || curveNetworks[chainId] !== undefined ? (
+        ) : isLoading(connectState) || curveNetworks[chainId] !== undefined ? (
           <SpinnerWrapper>
             <Spinner />
           </SpinnerWrapper>

@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-import CreatePool from '@/dex/components/PageCreatePool/Page'
+import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 
-export const metadata: Metadata = { title: 'Create Pool - Curve' } // todo: get rid of one metadata
+export const metadata: Metadata = { title: 'Create Pool - Curve' }
 
-const CreatePoolPage = () => <CreatePool />
+const CreatePoolPage = async ({ params }: { params: Promise<NetworkUrlParams> }) => <PageCreatePool {...await params} />
 
 export default CreatePoolPage

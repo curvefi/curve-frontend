@@ -1,34 +1,21 @@
 import { type Address, zeroAddress } from 'viem'
 import { DepositRewardApproveQuery } from '@/dex/entities/gauge/types'
+import type { CurveApi } from '@/dex/types/main.types'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import { GaugeQuery } from '@ui-kit/lib/model/query'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { BD } from '@ui-kit/utils'
 
 export const queryGaugeManager = async ({ poolId }: GaugeQuery): Promise<Address | null> => {
-  const curve = useApiStore.getState().curve!
-  const pool = curve.getPool(poolId)
-  const gaugeManager = (await pool.gauge.gaugeManager()) as Address | null
-  if (!gaugeManager || gaugeManager === zeroAddress) {
-    return null
-  }
-  return gaugeManager
+  const gaugeManager = (await getGauge(poolId).gaugeManager()) as Address | null
+  return gaugeManager === zeroAddress ? null : gaugeManager
 }
 
-export const queryGaugeDistributors = async ({ poolId }: GaugeQuery) => {
-  const curve = useApiStore.getState().curve!
-  const pool = curve.getPool(poolId)
-  return pool.gauge.gaugeDistributors()
-}
+export const getGauge = (poolId: string) => requireLib<CurveApi>().getPool(poolId).gauge
 
-export const queryIsDepositRewardAvailable = async ({ poolId }: GaugeQuery) => {
-  const curve = useApiStore.getState().curve!
-  const pool = curve.getPool(poolId)
-  return pool.gauge.isDepositRewardAvailable()
-}
+export const queryGaugeDistributors = async ({ poolId }: GaugeQuery) => getGauge(poolId).gaugeDistributors()
 
-export const queryDepositRewardIsApproved = async ({ poolId, amount, rewardTokenId }: DepositRewardApproveQuery) => {
-  const curve = useApiStore.getState().curve!
-  const pool = curve.getPool(poolId)
-  const strAmount = BD.from(amount).toString()
-  return pool.gauge.depositRewardIsApproved(rewardTokenId, strAmount)
-}
+export const queryIsDepositRewardAvailable = async ({ poolId }: GaugeQuery) =>
+  getGauge(poolId).isDepositRewardAvailable()
+
+export const queryDepositRewardIsApproved = async ({ poolId, amount, rewardTokenId }: DepositRewardApproveQuery) =>
+  getGauge(poolId).depositRewardIsApproved(rewardTokenId, BD.from(amount).toString())

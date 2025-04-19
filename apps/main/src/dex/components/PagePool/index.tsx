@@ -162,11 +162,10 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // fetch user pool info
   useEffect(() => {
-    if (curve && poolId && !!signerAddress) {
+    if (curve && poolId && signerAddress) {
       void fetchUserPoolInfo(curve, poolId)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rChainId, poolId, signerAddress])
+  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
 
   const isAvailableManageGauge = useMemo(
     () =>

@@ -1,13 +1,13 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { BaseLayout } from '@/dao/layout'
 import { helpers } from '@/dao/lib/curvejs'
 import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { ChainId, type NetworkUrlParams } from '@/dao/types/dao.types'
+import { ChainId, type UrlParams } from '@/dao/types/dao.types'
 import { getPath, getRestFullPathname } from '@/dao/utils'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -18,7 +18,8 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
-export const App = ({ network, children }: NetworkUrlParams & { children: ReactNode }) => {
+export const App = ({ children }: { children: ReactNode }) => {
+  const { network = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)

@@ -21,13 +21,11 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
-const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo, pageLoaded }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
@@ -63,9 +61,9 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const updateFormValues = useCallback(
     async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      setFormValues(curve, !pageLoaded, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
+    [curve, pageLoaded, vecrvInfo, rFormType, setFormValues],
   )
 
   const handleInpEstUnlockedDays = useCallback(
@@ -166,7 +164,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey, curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
+  }, [activeKey, curve?.chainId, curve?.signerAddress, !pageLoaded, formEstGas, formValues, formStatus])
 
   // interval
   usePageVisibleInterval(() => updateFormValues({}, false), REFRESH_INTERVAL['5m'], isPageVisible)
