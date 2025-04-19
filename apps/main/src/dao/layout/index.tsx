@@ -1,10 +1,12 @@
 import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
+import { useSwitchChain } from 'wagmi'
 import { Header } from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
 import type { ChainId, CurveApi, NetworkEnum } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils/utilsRouter'
-import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
+import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -38,7 +40,7 @@ export const BaseLayout = ({
 }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
-  const setChain = useSetChain()
+  const { switchChain } = useSwitchChain()
 
   const { connectState, lib } = useConnection<CurveApi>()
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -71,7 +73,7 @@ export const BaseLayout = ({
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
           showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
           maintenanceMessage,
-          handleNetworkChange: () => setChain(chainId),
+          handleNetworkChange: () => switchChain({ chainId: chainId as WagmiChainId }),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>

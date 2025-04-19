@@ -1,27 +1,11 @@
-import { BrowserProvider } from 'ethers'
-import { Dispatch, SetStateAction, useMemo } from 'react'
-import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
-import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
-import { Address } from '@ui-kit/utils'
-import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
+import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { useCallback, useMemo } from 'react'
+import type { Address } from 'viem'
+import { useAccount, useConnect, useConnectorClient, useDisconnect, useEnsName } from 'wagmi'
+import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Wallet } from './types'
-import { convertOnboardWallet } from './utils/wallet-helpers'
-import { useWagmi } from './wagmi/useWagmi'
-
-type UseConnectWallet = {
-  (): {
-    wallet: Wallet | null
-    connecting: boolean
-    connect: (label?: string) => Promise<Wallet | null>
-    disconnect: (label?: string) => Promise<unknown>
-    walletName: string | null
-    setWalletName: Dispatch<SetStateAction<string | null>>
-    provider: BrowserProvider | null
-    signerAddress: Address | undefined
-  }
-  getState: () => typeof state
-  initialize(...params: Parameters<typeof initOnboard>): void
-}
+import { connectors } from './wagmi/connectors'
+import { supportedWallets } from './wagmi/wallets'
 
 const state: {
   provider: BrowserProvider | null
@@ -31,59 +15,128 @@ const state: {
   wallet: null,
 }
 
-/**
- * Hook to determine if the Wagmi wallet should be used.
- * @returns {boolean} - True if Wagmi wallet should be used, false if Onboard wallet should be used.
- **/
-export const useUseWagmi = (): boolean => {
-  const [isBeta] = useBetaFlag()
-  const [{ wallet, connecting }] = useOnboardWallet()
-  return isBeta && !wallet && !connecting
-}
+export const useConnectCallbacks = () =>
+  useGlobalState<[resolve: (wallet: Wallet | null) => void, reject: (err: unknown) => void], null>(
+    'wagmiConnectCallbacks',
+    null,
+  )
 
-export const useWallet: UseConnectWallet = () => {
-  const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
-    useOnboardWallet()
-  const [{ wallet: wagmiWallet, connecting: wagmiConnecting }, wagmiConnect, wagmiDisconnect] = useWagmi()
-  const [walletName, setWalletName] = useWalletName()
-  const shouldUseWagmi = useUseWagmi()
+export const createWallet = ({
+  chainId,
+  provider,
+  address,
+  ensName,
+}: {
+  chainId: number
+  provider?: Eip1193Provider
+  address: Address
+  ensName?: string | null
+}): Wallet => ({
+  provider,
+  account: { address, ...(ensName && { ensName }) },
+  chainId,
+})
 
-  const { wallet, provider } = useMemo(() => {
-    state.wallet = shouldUseWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
+const useWallet = () => {
+  // when the modal is displayed, we save a promise to resolve later - this is for compatibility with existing code
+  const [connectCallbacks, setConnectCallbacks] = useConnectCallbacks()
+
+  const { data: client } = useConnectorClient()
+  const provider = useMemo(() => client?.transport.request && { request: client.transport.request }, [client])
+
+  // important: use the async functions so we can properly handle the promise failures
+  const { connectAsync } = useConnect()
+  const { disconnectAsync } = useDisconnect()
+
+  /**
+   * Disconnects the wallet from the application.
+   *
+   * This function performs the following steps:
+   * 1. Marks the wallet as manually disconnecting to prevent reconnection attempts
+   * 2. Calls disconnectAsync twice to ensure the useAccount hooks properly reset
+   *    Bro I don't even know why, but if you call it once the useAccount states won't update...
+   */
+  const disconnect = async () => {
+    await disconnectAsync()
+    await disconnectAsync()
+  }
+
+  const { address } = useAccount()
+
+  const connectWagmi = useCallback(
+    async (label?: string) => {
+      if (!label) {
+        return new Promise<Wallet | null>((...args) => setConnectCallbacks(args))
+      }
+
+      // take the first (injected) as default. This is temporary until we get rid of onboard
+      const walletType = supportedWallets.find((w) => w.label === label) ?? supportedWallets[0]!
+      const [resolve, reject] = connectCallbacks ?? []
+      try {
+        const res = await connectAsync({ connector: connectors[walletType.connector] })
+
+        const {
+          accounts: [address],
+          chainId,
+        } = res
+
+        const wallet = createWallet({
+          chainId,
+          provider,
+          address,
+        })
+        resolve?.(wallet)
+        return wallet
+      } catch (err) {
+        console.error('Error connecting wallet:', err)
+        reject?.(err)
+        throw err
+      }
+    },
+    [connectCallbacks, setConnectCallbacks, connectAsync, provider],
+  )
+
+  const { data: ensName } = useEnsName({ address })
+
+  const wallet =
+    useMemo(
+      () =>
+        client &&
+        address &&
+        createWallet({
+          chainId: client.chain.id,
+          provider,
+          address,
+          ensName,
+        }),
+      [address, client, provider, ensName],
+    ) ?? null
+
+  const showModal = !!connectCallbacks
+  const closeModal = useCallback(
+    () =>
+      setConnectCallbacks((callbacks) => {
+        callbacks?.[0]?.(null)
+        return null
+      }),
+    [setConnectCallbacks],
+  )
+
+  const { provider: browserProvider } = useMemo(() => {
+    state.wallet = wallet
     state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
     return state
-  }, [onboardWallet, wagmiWallet, shouldUseWagmi])
-
-  const signerAddress = onboardWallet?.accounts[0]?.address ?? wagmiWallet?.account?.address
-  const connect = useMemo(
-    (): ((label?: string) => Promise<Wallet | null>) =>
-      shouldUseWagmi
-        ? wagmiConnect
-        : async (label?: string) => {
-            const [wallet] = await onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) })
-            return convertOnboardWallet(wallet)
-          },
-    [onboardConnect, shouldUseWagmi, wagmiConnect],
-  )
-
-  const disconnect = useMemo(
-    () =>
-      shouldUseWagmi
-        ? wagmiDisconnect
-        : async () => wallet?.label && (await onboardDisconnect({ label: wallet.label })),
-    [onboardDisconnect, shouldUseWagmi, wagmiDisconnect, wallet],
-  )
+  }, [wallet])
 
   return {
-    wallet: wallet,
-    connecting: wagmiConnecting || onboardConnecting,
-    connect,
+    wallet,
+    connect: connectWagmi,
     disconnect,
-    walletName,
-    setWalletName,
-    provider,
-    signerAddress,
+    provider: browserProvider,
+    showModal,
+    closeModal,
   }
 }
-useWallet.initialize = (...params) => initOnboard(...params)
 useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
+
+export { useWallet }

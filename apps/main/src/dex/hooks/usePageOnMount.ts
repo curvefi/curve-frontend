@@ -1,5 +1,6 @@
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
+import { useSwitchChain } from 'wagmi'
 import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PageProps, type UrlParams, Wallet } from '@/dex/types/main.types'
@@ -8,16 +9,16 @@ import { getPath, useNetworkFromUrl, useParsedParams } from '@/dex/utils/utilsRo
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { getWalletChainId, getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
   const pathname = usePathname()
   const { push } = useRouter()
-  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
-  const setChain = useSetChain()
+  const { wallet, connect, disconnect } = useWallet()
+  const { switchChainAsync } = useSwitchChain()
 
   const curve = useApiStore((state) => state.curve)
   const updateCurveJs = useApiStore((state) => state.updateCurve)
@@ -68,42 +69,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const handleConnectWallet = useCallback(
     async (options: ConnectState['options']) => {
       if (options) {
-        const [walletName] = options
         let walletState: Wallet | null
-
-        if (walletName) {
-          // If found label in localstorage, after 30s if not connected, reconnect with modal
-          const walletStatesPromise = new Promise<Wallet | null>(async (resolve, reject) => {
-            try {
-              const walletStates = await Promise.race([
-                connect(walletName),
-                new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
-                ),
-              ])
-              resolve(walletStates)
-            } catch (error) {
-              reject(error)
-            }
-          })
-
-          try {
-            walletState = await walletStatesPromise
-          } catch (error) {
-            // if failed to get walletState due to timeout, show connect modal.
-            setWalletName(null)
-            walletState = await connect()
-          }
-        } else {
-          walletState = await connect()
-        }
+        walletState = await connect()
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setWalletName(walletState?.label ?? null)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain(parsedParams.rChainId)
+            const success = await switchChainAsync({ chainId: parsedParams.rChainId as WagmiChainId })
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
@@ -125,31 +98,28 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           }
         } catch (error) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-          setWalletName(null)
         }
       }
     },
     [
       connect,
-      push,
-      networks,
       parsedParams.rChainId,
       parsedParams.restFullPathname,
-      setChain,
+      switchChainAsync,
       updateConnectState,
-      setWalletName,
+      networks,
+      push,
     ],
   )
 
   const handleDisconnectWallet = useCallback(async () => {
     try {
       await disconnect()
-      setWalletName(null)
       updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
     } catch (error) {
       console.error(error)
     }
-  }, [disconnect, parsedParams.rChainId, updateConnectState, setWalletName])
+  }, [disconnect, parsedParams.rChainId, updateConnectState])
 
   const handleNetworkSwitch = useCallback(
     async (options: ConnectState['options']) => {
@@ -157,7 +127,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         const [currChainId, newChainId] = options
         if (wallet) {
           try {
-            const success = await setChain(newChainId)
+            const success = await switchChainAsync({ chainId: newChainId })
             if (!success) throw new Error('reject network switch')
             updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
           } catch (error) {
@@ -182,7 +152,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         }
       }
     },
-    [push, networks, parsedParams.restFullPathname, setChain, updateConnectState, wallet],
+    [wallet, switchChainAsync, updateConnectState, networks, parsedParams.restFullPathname, push],
   )
 
   // onMount
@@ -196,11 +166,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         console.warn(`network in router (${JSON.stringify(params)}) is not active, redirecting to default network`)
         push(getPath({ network: 'ethereum' }, ROUTE.PAGE_SWAP))
       } else {
-        if (walletName) {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
-        } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [rChainId, false])
-        }
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [rChainId, false])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

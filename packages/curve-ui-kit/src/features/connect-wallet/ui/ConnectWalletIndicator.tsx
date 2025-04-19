@@ -1,4 +1,5 @@
 import type { SetOptional } from 'type-fest'
+import { useAccount } from 'wagmi'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
 import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletButton'
@@ -14,11 +15,12 @@ export const ConnectWalletIndicator = ({
   onDisconnectWallet,
   ...props
 }: ConnectWalletIndicatorProps) => {
-  const { signerAddress, connect, disconnect, wallet } = useWallet()
-  return wallet && signerAddress ? (
+  const { address } = useAccount()
+  const { connect, disconnect, wallet } = useWallet()
+  return wallet && address ? (
     <ConnectedWalletLabel
-      walletAddress={walletAddress ?? signerAddress}
-      onDisconnectWallet={() => (onDisconnectWallet ? onDisconnectWallet() : disconnect(label))}
+      walletAddress={walletAddress ?? address}
+      onDisconnectWallet={() => (onDisconnectWallet ? onDisconnectWallet() : disconnect())}
       {...props}
     />
   ) : (

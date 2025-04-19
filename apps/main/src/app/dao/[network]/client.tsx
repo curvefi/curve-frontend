@@ -12,7 +12,7 @@ import { ChainId } from '@/dao/types/dao.types'
 import { type NetworkUrlParams } from '@/dao/types/dao.types'
 import { getPath, getRestFullPathname } from '@/dao/utils'
 import { getPageWidthClassName } from '@ui/utils'
-import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const App = ({ network, children }: NetworkUrlParams & { children: ReactNode }) => {
@@ -44,8 +44,6 @@ export const App = ({ network, children }: NetworkUrlParams & { children: ReactN
     const handleScrollListener = () => {
       updateShowScrollButton(window.scrollY)
     }
-
-    useWallet.initialize(theme, networks)
 
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 

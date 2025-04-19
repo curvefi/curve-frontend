@@ -1,13 +1,15 @@
 import { useParams } from 'next/navigation'
 import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
+import { useSwitchChain } from 'wagmi'
 import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
 import { Header } from '@/lend/layout/Header'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import type { Api, UrlParams } from '@/lend/types/lend.types'
 import { getPath } from '@/lend/utils/utilsRouter'
-import { isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
+import { isFailure, useConnection } from '@ui-kit/features/connect-wallet'
+import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -16,7 +18,7 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { networksIdMapper } from '../networks'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
-  const setChain = useSetChain()
+  const { switchChain } = useSwitchChain()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, elHeight] = useResizeObserver(globalAlertRef) ?? []
   const footerRef = useRef<HTMLDivElement>(null)
@@ -52,7 +54,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
           networkName,
           showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
           showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          handleNetworkChange: () => setChain(chainId),
+          handleNetworkChange: () => switchChain({ chainId: chainId as WagmiChainId }),
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>

@@ -4,10 +4,8 @@ import delay from 'lodash/delay'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/loan/layout'
-import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -44,7 +42,6 @@ export const App = ({ children }: { children: ReactNode }) => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    useWallet.initialize(theme, networks)
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)

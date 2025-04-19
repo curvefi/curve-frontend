@@ -1,4 +1,4 @@
-import type { Eip1193Provider } from '@web3-onboard/core'
+import type { Eip1193Provider } from 'ethers'
 
 declare global {
   type Eip6963ProviderInfo = {
