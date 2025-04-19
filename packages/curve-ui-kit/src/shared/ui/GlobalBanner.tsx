@@ -1,4 +1,4 @@
-import { ethers } from 'ethers/lib.esm'
+import { ethers } from 'ethers'
 import { forwardRef, Ref } from 'react'
 import Box from '@mui/material/Box'
 import {

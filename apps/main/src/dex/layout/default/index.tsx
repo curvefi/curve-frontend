@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { ReactNode, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
@@ -9,7 +8,7 @@ import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import useStore from '@/dex/store/useStore'
 import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -80,9 +79,6 @@ const BaseLayout = ({ children, network }: { children: ReactNode } & { network: 
   useLayoutHeight(globalAlertRef, 'globalAlert')
   useAutoRefresh(network)
 
-  const { connectState } = useConnection<CurveApi>()
-  const [, setWalletChain] = useSetChain()
-
   const layoutHeight = useStore((state) => state.layoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
@@ -91,17 +87,7 @@ const BaseLayout = ({ children, network }: { children: ReactNode } & { network: 
 
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header
-        sections={sections}
-        BannerProps={{
-          ref: globalAlertRef,
-          networkName: network.id,
-          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          maintenanceMessage: process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE,
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(network.chainId) }),
-        }}
-      />
+      <Header sections={sections} globalAlertRef={globalAlertRef} networkName={network.name} />
       <Main minHeight={minHeight}>{children}</Main>
       <Footer appName="dex" networkName={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>

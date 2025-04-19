@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { useParams } from 'next/navigation'
 import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
@@ -6,9 +5,8 @@ import { ROUTE } from '@/lend/constants'
 import { Header } from '@/lend/layout/Header'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
-import type { Api, UrlParams } from '@/lend/types/lend.types'
+import type { UrlParams } from '@/lend/types/lend.types'
 import { getPath } from '@/lend/utils/utilsRouter'
-import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -17,14 +15,12 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { networksIdMapper } from '../networks'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
-  const [, setWalletChain] = useSetChain()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, elHeight] = useResizeObserver(globalAlertRef) ?? []
   const footerRef = useRef<HTMLDivElement>(null)
   const [, footerHeight] = useResizeObserver(footerRef) ?? []
   const params = useParams() as UrlParams
   const { network: networkName } = params
-  const { connectState } = useConnection<Api>()
   const layoutHeight = useStore((state) => state.layout.height)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
@@ -46,13 +42,8 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
       <Header
         chainId={networksIdMapper[networkName]}
         sections={sections}
-        BannerProps={{
-          ref: globalAlertRef,
-          networkName,
-          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(networksIdMapper[networkName]) }),
-        }}
+        globalAlertRef={globalAlertRef}
+        networkName={networkName}
       />
       <Main minHeight={minHeight}>{children}</Main>
       <Footer appName="lend" networkName={networkName} headerHeight={useHeaderHeight(bannerHeight)} />
