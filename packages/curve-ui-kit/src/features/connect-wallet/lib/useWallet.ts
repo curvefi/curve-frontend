@@ -41,7 +41,7 @@ const useWallet = () => {
   // when the modal is displayed, we save a promise to resolve later - this is for compatibility with existing code
   const [connectCallbacks, setConnectCallbacks] = useConnectCallbacks()
 
-  const { address, isConnecting, isReconnecting } = useAccount()
+  const { address } = useAccount()
   const { data: ensName } = useEnsName({ address })
   const { data: client } = useConnectorClient()
 
@@ -119,8 +119,6 @@ const useWallet = () => {
     [setConnectCallbacks],
   )
 
-  const connecting = (isConnecting || showModal) && !isReconnecting && !address // note: workaround to avoid showing the modal when reconnecting
-
   const { provider: browserProvider } = useMemo(() => {
     state.wallet = wallet
     state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
@@ -129,7 +127,6 @@ const useWallet = () => {
 
   return {
     wallet,
-    connecting,
     connect: connectWagmi,
     disconnect,
     provider: browserProvider,
