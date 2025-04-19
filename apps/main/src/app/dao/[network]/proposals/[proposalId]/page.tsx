@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import PageProposal from '@/dao/components/PageProposal/Page'
+import { PageProposal } from '@/dao/components/PageProposal/Page'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { t } from '@ui-kit/lib/i18n'
 

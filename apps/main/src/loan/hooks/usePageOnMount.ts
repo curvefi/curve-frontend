@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
@@ -18,7 +17,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
   const { push } = useRouter()
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
-  const [_, setChain] = useSetChain()
+  const setChain = useSetChain()
 
   const curve = useApiStore((state) => state.stable)
   const lending = useApiStore((state) => state.lending)
@@ -47,8 +46,8 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingStable(true)
 
-          if (useWallet && wallet) {
-            const api = await initStableJs(chainId, wallet)
+          if (useWallet && wallet?.provider) {
+            const api = await initStableJs(chainId, wallet.provider)
             updateConnectState('success', '')
             await hydrate(api, prevApi, wallet)
             updateStable(api)
@@ -56,7 +55,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateConnectState('', '')
           }
         } catch (error) {
-          console.error(error)
+          console.error('failed initStableJs', error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
           setIsLoadingStable(false)
@@ -75,7 +74,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
           setIsLoadingLending(true)
 
-          const api = await initLendApi(chainId, useWallet ? wallet : null)
+          const api = await initLendApi(chainId, (useWallet && wallet?.provider) ?? undefined)
           if (api) {
             updateLending(api)
             updateConnectState('success', '')
@@ -85,7 +84,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
             updateConnectState('', '')
           }
         } catch (error) {
-          console.error(error)
+          console.error('failed initLendApi', error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
           setIsLoadingLending(false)
@@ -103,10 +102,10 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
         if (walletName) {
           // If found label in localstorage, after 30s if not connected, reconnect with modal
-          const walletStatesPromise = new Promise<Wallet[] | null>(async (resolve, reject) => {
+          const walletStatesPromise = new Promise<Wallet | null>(async (resolve, reject) => {
             try {
               const walletStates = await Promise.race([
-                connect({ autoSelect: { label: walletName, disableModals: true } }),
+                connect(walletName),
                 new Promise<never>((_, reject) =>
                   setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
                 ),
@@ -118,25 +117,22 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           })
 
           try {
-            const walletStates = await walletStatesPromise
-            if (!walletStates || (Array.isArray(walletStates) && walletStates.length === 0))
-              throw new Error('unable to connect')
-            walletState = walletStates[0]
+            walletState = await walletStatesPromise
           } catch (error) {
             // if failed to get walletState due to timeout, show connect modal.
             setWalletName(null)
-            ;[walletState] = await connect()
+            walletState = await connect()
           }
         } else {
-          ;[walletState] = await connect()
+          walletState = await connect()
         }
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setWalletName(walletState.label)
+          setWalletName(walletState?.label ?? null)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
+            const success = await setChain(parsedParams.rChainId)
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
@@ -161,18 +157,15 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     [connect, push, parsedParams, setChain, updateConnectState, setWalletName],
   )
 
-  const handleDisconnectWallet = useCallback(
-    async (wallet: Wallet) => {
-      try {
-        await disconnect(wallet)
-        setWalletName(null)
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    [disconnect, parsedParams.rChainId, updateConnectState, setWalletName],
-  )
+  const handleDisconnectWallet = useCallback(async () => {
+    try {
+      await disconnect()
+      setWalletName(null)
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
+    } catch (error) {
+      console.error(error)
+    }
+  }, [disconnect, parsedParams.rChainId, updateConnectState, setWalletName])
 
   const handleNetworkSwitch = useCallback(
     async (options: ConnectState['options']) => {
@@ -180,7 +173,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         const [currChainId, newChainId] = options
         if (wallet) {
           try {
-            const success = await setChain({ chainId: ethers.toQuantity(newChainId) })
+            const success = await setChain(newChainId)
             if (!success) throw new Error('reject network switch')
             updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
           } catch (error) {
@@ -218,10 +211,10 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         console.warn(`Network ${routerNetwork} is not active, redirecting to default network`)
         push(getPath({ network: 'ethereum' }, ROUTE.PAGE_MARKETS))
       } else {
-        if (walletName) {
+        if (walletName && !wallet) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parseNetworkFromUrl(params).rChainId, false])
+          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parseNetworkFromUrl(params).rChainId, true])
         }
       }
     }
@@ -236,7 +229,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)) {
         void handleConnectWallet(getOptions(CONNECT_STAGE.CONNECT_WALLET, connectState.options))
       } else if (isLoading(connectState, CONNECT_STAGE.DISCONNECT_WALLET) && wallet) {
-        void handleDisconnectWallet(wallet)
+        void handleDisconnectWallet()
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
         void handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
         void handleConnectLendApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
@@ -244,6 +237,14 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectState.status, connectState.stage])
+
+  // Reconnect api on new wallet provider
+  useEffect(() => {
+    if (wallet?.provider) {
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallet?.provider])
 
   // wallet state changed not from app
   useEffect(() => {
@@ -298,7 +299,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   }, [initCampaignRewards, curve, initiated])
 
   return {
-    pageLoaded: connectState.status === 'success',
+    pageLoaded: ['success', 'failure'].includes(connectState.status),
     routerParams: parsedParams,
     curve,
   } as PageProps

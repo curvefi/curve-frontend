@@ -1,5 +1,6 @@
-import { TokenParams } from '@/lend/entities/token'
-import { queryTokenUsdRate } from '@/lend/entities/token/api'
+import { TokenParams, TokenQuery } from '@/lend/entities/token'
+import type { Api } from '@/lend/types/lend.types'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { tokenValidationSuite } from './validation'
 
@@ -8,7 +9,7 @@ const root = ({ chainId, tokenAddress }: TokenParams) =>
 
 export const tokenUsdRate = queryFactory({
   queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,
-  queryFn: queryTokenUsdRate,
+  queryFn: ({ tokenAddress }: TokenQuery): Promise<number> => requireLib<Api>().getUsdRate(tokenAddress),
   staleTime: '5m',
   refetchInterval: '1m',
   validationSuite: tokenValidationSuite,

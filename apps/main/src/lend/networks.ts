@@ -64,7 +64,7 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
     const chainId = Number(key) as ChainId
 
     const networkConfig = {
-      ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
+      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
     }

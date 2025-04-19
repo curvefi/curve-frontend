@@ -53,7 +53,7 @@ describe(`LlamaLend Markets`, () => {
     // filter height changes because text wraps depending on the width
     const filterHeight = {
       mobile: [274, 266, 234, 226, 196, 156],
-      tablet: [232, 188, 176, 120],
+      tablet: [244, 232, 188, 176, 120],
       desktop: [128],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)

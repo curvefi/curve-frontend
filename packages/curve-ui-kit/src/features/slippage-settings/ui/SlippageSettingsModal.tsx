@@ -196,8 +196,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
       onTransitionExited={() => setFormValues(initFormValues(maxSlippage))}
       title={t`Slippage Settings`}
       footer={footer}
-      // Compact modal
-      sx={{ '& .MuiPaper-root': { height: 'auto', minHeight: 'auto' } }}
+      compact
     >
       <Stack gap={Spacing.md}>
         <FormControl fullWidth>

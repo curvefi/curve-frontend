@@ -1,9 +1,8 @@
 import { ReactNode } from 'react'
-import { CONNECT_STAGE } from '@/lend/constants'
-import useStore from '@/lend/store/useStore'
+import type { Api } from '@/lend/types/lend.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { isLoading } from '@ui/utils'
+import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const LoanFormConnect = ({
@@ -15,17 +14,12 @@ const LoanFormConnect = ({
   loading?: boolean
   children: ReactNode
 }) => {
-  const connectState = useStore((state) => state.connectState)
-  const updateConnectState = useStore((state) => state.updateConnectState)
-
-  const handleConnectClick = () => {
-    updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
-  }
-
+  const { connectState } = useConnection<Api>()
+  const { connect } = useWallet()
   return (
     <>
       {!isLoading(connectState) && !loading && !haveSigner ? (
-        <Button fillWidth size="large" variant="filled" onClick={handleConnectClick}>
+        <Button fillWidth size="large" variant="filled" onClick={() => connect()}>
           {t`Connect Wallet`}
         </Button>
       ) : isLoading(connectState) || loading ? (

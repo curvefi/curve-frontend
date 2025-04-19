@@ -2,20 +2,16 @@
 import '@/global-extensions'
 import delay from 'lodash/delay'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/dex/layout/default'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import GlobalStyle from '@/globalStyle'
-import { OverlayProvider } from '@react-aria/overlays'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const curve = useApiStore((state) => state.curve)
@@ -118,17 +114,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <OverlayProvider>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <Page>{children}</Page>
-            </QueryProvider>
-          </OverlayProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <Page>{children}</Page>
+    </ClientWrapper>
   )
 }

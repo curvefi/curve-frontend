@@ -6,7 +6,8 @@ import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { WalletState } from '@web3-onboard/core'
+
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
@@ -20,7 +21,7 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig extends BaseConfig {
+export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
@@ -75,22 +76,6 @@ export type ExpectedBorrowed = {
   avgPrice: string
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
-export type RouterParams = {
-  rChainId: ChainId
-  rNetwork: NetworkEnum
-  rNetworkIdx: number
-  rSubdirectory: string
-  rSubdirectoryUseDefault: boolean
-  rMarket: string
-  rFormType: RFormType
-  redirectPathname: string
-  restFullPathname: string
-}
-export type PageProps = {
-  pageLoaded: boolean
-  routerParams: RouterParams
-  api: Api | null
-}
 export type PageWidthClassName =
   | 'page-wide'
   | 'page-large'
@@ -103,7 +88,6 @@ export type PageContentProps = {
   rChainId: ChainId
   rOwmId: string
   rFormType: string | null
-  rSubdirectory: string
   userActiveKey: string
   isLoaded: boolean
   api: Api | null
@@ -275,7 +259,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type Order = 'asc' | 'desc'
-export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>

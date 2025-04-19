@@ -10,8 +10,9 @@ export * from './number'
 export * from './searchText'
 
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: boolean }).Cypress)
-export const enableLogging =
+export const isBetaDefault =
   process.env.NODE_ENV === 'development' || (typeof window !== 'undefined' && window.location.hostname !== 'curve.fi')
+export const enableLogging = isBetaDefault
 
 /**
  * Copies text to clipboard with Ethereum address checksumming

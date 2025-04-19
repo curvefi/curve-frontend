@@ -73,7 +73,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     log('Hydrate crvUSD (Curve API)', curveApi?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
+      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
       isUserSwitched,
     })
