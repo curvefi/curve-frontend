@@ -27,7 +27,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const { lib: lendApi = null } = useLendConnection()
   const chainId = useStablecoinConnection().lib?.chainId
-  const { signerAddress, connecting, walletName } = useWallet()
+  const { signerAddress, connecting } = useWallet()
 
   const {
     data: userScrvUsdBalance,
@@ -39,16 +39,11 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const isUserScrvUsdBalanceZero =
     !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
-  const connectedUserNoScrvUsdBalance = [
-    signerAddress,
-    walletName,
-    isUserScrvUsdBalanceFetched,
-    isUserScrvUsdBalanceZero,
-  ].every(Boolean)
+  const connectedUserNoScrvUsdBalance = [signerAddress, isUserScrvUsdBalanceFetched, isUserScrvUsdBalanceZero].every(
+    Boolean,
+  )
 
-  // walletName indicates the wallet is cached and will begin connecting
   const showStatsBanner =
-    !walletName ||
     connectedUserNoScrvUsdBalance ||
     !signerAddress ||
     (!connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)

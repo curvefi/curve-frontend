@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react'
 import type { Address } from 'viem'
 import { useAccount, useConnect, useConnectorClient, useDisconnect, useEnsName } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
-import { useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import type { Wallet } from './types'
 import { connectors } from './wagmi/connectors'
 import { supportedWallets, type WalletType } from './wagmi/wallets'
@@ -132,8 +131,6 @@ const useWallet = () => {
 
   const connecting = (isConnecting || showModal) && !isReconnecting && !address // note: workaround to avoid showing the modal when reconnecting
 
-  const [walletName, setWalletName] = useWalletName()
-
   const { provider: browserProvider } = useMemo(() => {
     state.wallet = wallet
     state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
@@ -145,8 +142,6 @@ const useWallet = () => {
     connecting,
     connect: connectWagmi,
     disconnect,
-    walletName,
-    setWalletName,
     provider: browserProvider,
     signerAddress: wallet?.account?.address,
     showModal,
