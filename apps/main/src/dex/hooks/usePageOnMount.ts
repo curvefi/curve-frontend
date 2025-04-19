@@ -11,14 +11,13 @@ import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 function usePageOnMount(chainIdNotRequired?: boolean) {
   const params = useParams() as UrlParams
   const pathname = usePathname()
   const { push } = useRouter()
-  const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
+  const { wallet, connect, disconnect } = useWallet()
   const { switchChainAsync } = useSwitchChain()
 
   const curve = useApiStore((state) => state.curve)
@@ -70,39 +69,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const handleConnectWallet = useCallback(
     async (options: ConnectState['options']) => {
       if (options) {
-        const [walletName] = options
         let walletState: Wallet | null
-
-        if (walletName) {
-          // If found label in localstorage, after 30s if not connected, reconnect with modal
-          const walletStatesPromise = new Promise<Wallet | null>(async (resolve, reject) => {
-            try {
-              const walletStates = await Promise.race([
-                connect(walletName),
-                new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
-                ),
-              ])
-              resolve(walletStates)
-            } catch (error) {
-              reject(error)
-            }
-          })
-
-          try {
-            walletState = await walletStatesPromise
-          } catch (error) {
-            // if failed to get walletState due to timeout, show connect modal.
-            setWalletName(null)
-            walletState = await connect()
-          }
-        } else {
-          walletState = await connect()
-        }
+        walletState = await connect()
 
         try {
           if (!walletState) throw new Error('unable to connect')
-          setWalletName(walletState?.label ?? null)
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
             const success = await switchChainAsync({ chainId: parsedParams.rChainId as WagmiChainId })
@@ -127,13 +98,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           }
         } catch (error) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
-          setWalletName(null)
         }
       }
     },
     [
       connect,
-      setWalletName,
       parsedParams.rChainId,
       parsedParams.restFullPathname,
       switchChainAsync,
@@ -146,12 +115,11 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const handleDisconnectWallet = useCallback(async () => {
     try {
       await disconnect()
-      setWalletName(null)
       updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, false])
     } catch (error) {
       console.error(error)
     }
-  }, [disconnect, parsedParams.rChainId, updateConnectState, setWalletName])
+  }, [disconnect, parsedParams.rChainId, updateConnectState])
 
   const handleNetworkSwitch = useCallback(
     async (options: ConnectState['options']) => {
@@ -198,11 +166,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         console.warn(`network in router (${JSON.stringify(params)}) is not active, redirecting to default network`)
         push(getPath({ network: 'ethereum' }, ROUTE.PAGE_SWAP))
       } else {
-        if (walletName) {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
-        } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [rChainId, false])
-        }
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [rChainId, false])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

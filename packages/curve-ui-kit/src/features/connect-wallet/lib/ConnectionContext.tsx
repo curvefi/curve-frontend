@@ -1,9 +1,7 @@
 import { type Eip1193Provider } from 'ethers'
-import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
 import { getWalletChainId, getWalletSignerAddress, useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
-import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
-import { useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
@@ -26,7 +24,7 @@ type ConnectState = {
 }
 
 const { FAILURE, LOADING, SUCCESS } = CONNECT_STATUS
-const { HYDRATE, SWITCH_NETWORK, CONNECT_WALLET, CONNECT_API } = CONNECT_STAGE
+const { HYDRATE, SWITCH_NETWORK, CONNECT_API } = CONNECT_STAGE
 
 export const isSuccess = (connectState: ConnectState) => connectState.status === SUCCESS
 
@@ -82,43 +80,18 @@ export const ConnectionProvider = <
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
-  const isWalletInitialized = useRef(false)
-  const { wallet, connect } = useWallet()
-  const [walletName, setWalletName] = useWalletName()
+  const { wallet } = useWallet()
   const { switchChainAsync } = useSwitchChain()
-
-  useEffect(() => {
-    if (isWalletInitialized.current) {
-      setWalletName(wallet?.label ?? null)
-    }
-  }, [setWalletName, wallet])
 
   useEffect(() => {
     const abort = new AbortController()
     const signal = abort.signal
 
     /**
-     * Try to reconnect to the wallet if it was previously connected, based on the stored wallet name.
-     */
-    const tryToReconnect = async (label: string) => {
-      setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      return withTimeout(connect(label))
-        .then((wallet) => !!wallet)
-        .catch(() => false)
-    }
-
-    /**
      * Initialize the app by connecting to the wallet and setting up the library.
      */
     const initApp = async () => {
       try {
-        if (!isWalletInitialized.current) {
-          isWalletInitialized.current = true
-          if (walletName && (await tryToReconnect(walletName))) {
-            return // wallet updated, callback is restarted
-          }
-        }
-
         const walletChainId = getWalletChainId(wallet)
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
@@ -152,9 +125,7 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-    // Adding connect to the list of deps somehow causes an infinite loop, not sure why
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet])
+  }, [chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
