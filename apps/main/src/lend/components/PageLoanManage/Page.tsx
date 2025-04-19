@@ -9,10 +9,9 @@ import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import usePageOnMount from '@/lend/hooks/usePageOnMount'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams } from '@/lend/types/lend.types'
 import { scrollToTop } from '@/lend/utils/helpers'
@@ -33,21 +32,23 @@ import {
   PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
 import Tabs, { Tab } from '@ui/Tab'
-import { isLoading } from '@ui/utils'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: MarketUrlParams) => {
-  const { pageLoaded, api, routerParams } = usePageOnMount()
+  const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()
-  const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
+  const {
+    network: rNetwork,
+    market: rMarket,
+    formType: [rFormType = null],
+  } = params
+  const rChainId = networksIdMapper[rNetwork]
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isLoadingApi = useApiStore((state) => state.isLoadingLending)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
@@ -55,17 +56,14 @@ const Page = (params: MarketUrlParams) => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const { provider } = useWallet()
+  const { provider, connect } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
@@ -89,25 +87,14 @@ const Page = (params: MarketUrlParams) => {
         if (signerAddress && loanExists) {
           void fetchAllUserMarketDetails(api, market, true)
         }
-        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey],
   )
 
-  // onMount
   useEffect(() => {
-    setLoaded(false)
-    if (pageLoaded && !isLoadingApi && api && market) {
-      void fetchInitial(api, market)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi])
-
-  useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
+    if (api && market && isPageVisible) void fetchInitial(api, market)
+  }, [api, fetchInitial, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
@@ -133,7 +120,6 @@ const Page = (params: MarketUrlParams) => {
     rChainId,
     rOwmId,
     rFormType,
-    rSubdirectory,
     isLoaded,
     api,
     market,
@@ -211,7 +197,7 @@ const Page = (params: MarketUrlParams) => {
             description={t`Connect your wallet to view market`}
             connectText={t`Connect`}
             loadingText={t`Connecting`}
-            connectWallet={() => connectWallet()}
+            connectWallet={() => connect()}
             isLoading={isLoading(connectState)}
           />
         </Box>

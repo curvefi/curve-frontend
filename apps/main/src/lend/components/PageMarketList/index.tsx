@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import MarketListItemContent from '@/lend/components/PageMarketList/components/MarketListItemContent'
 import MarketListNoResult from '@/lend/components/PageMarketList/components/MarketListNoResult'
@@ -63,24 +63,11 @@ const MarketList = (pageProps: PageMarketList) => {
 
   const parsedResult = results[activeKey] ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
-  const updateFormValues = useCallback(
-    (shouldRefetch?: boolean) => {
-      void setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
-    },
-    [setFormValues, rChainId, isLoaded, api, marketMapping],
-  )
-
   useEffect(() => {
-    if (isLoaded && isPageVisible && initialLoaded) updateFormValues()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
-
-  useEffect(() => {
-    if (isLoaded && isPageVisible && !initialLoaded) {
-      updateFormValues(true)
+    if (isLoaded && isPageVisible) {
+      void setFormValues(rChainId, api, marketMapping, !initialLoaded)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, isPageVisible])
+  }, [api, initialLoaded, isLoaded, isPageVisible, marketMapping, rChainId, setFormValues])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -89,7 +76,11 @@ const MarketList = (pageProps: PageMarketList) => {
     }
   }, [initCampaignRewards, rChainId, initiated])
 
-  usePageVisibleInterval(() => updateFormValues(true), REFRESH_INTERVAL['5m'], isPageVisible && isLoaded)
+  usePageVisibleInterval(
+    () => void setFormValues(rChainId, api, marketMapping),
+    REFRESH_INTERVAL['5m'],
+    isPageVisible && isLoaded,
+  )
 
   const tableLabels = TABLE_LABELS[searchParams.filterTypeKey]
 

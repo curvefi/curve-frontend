@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Gauge from '@/dao/components/PageGauge/Page'
+import { PageGauge } from '@/dao/components/PageGauge/Page'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -10,6 +10,6 @@ export async function generateMetadata({ params }: GaugePageProps): Promise<Meta
   return { title: [t`Gauge`, gaugeAddress, 'Curve'].join(' - ') }
 }
 
-const GaugePage = async ({ params }: GaugePageProps) => <Gauge {...await params} />
+const GaugePage = async ({ params }: GaugePageProps) => <PageGauge {...await params} />
 
 export default GaugePage

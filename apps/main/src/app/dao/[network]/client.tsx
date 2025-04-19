@@ -4,18 +4,18 @@ import delay from 'lodash/delay'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
-import Page from '@/dao/layout'
+import { BaseLayout } from '@/dao/layout'
 import { helpers } from '@/dao/lib/curvejs'
-import networks from '@/dao/networks'
+import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { ChainId } from '@/dao/types/dao.types'
-import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils'
+import { type NetworkUrlParams } from '@/dao/types/dao.types'
+import { getPath, getRestFullPathname } from '@/dao/utils'
 import { getPageWidthClassName } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
-export const App = ({ children }: { children: ReactNode }) => {
+export const App = ({ network, children }: NetworkUrlParams & { children: ReactNode }) => {
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
@@ -76,15 +76,19 @@ export const App = ({ children }: { children: ReactNode }) => {
     [push],
   )
 
+  const chainId = networksIdMapper[network]
+
   return (
     <ClientWrapper loading={!appLoaded}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={helpers.initCurveJs}
-        chainId={getNetworkFromUrl().rChainId}
+        chainId={chainId}
         onChainUnavailable={onChainUnavailable}
       >
-        <Page>{children}</Page>
+        <BaseLayout networkName={network} chainId={chainId}>
+          {children}
+        </BaseLayout>
       </ConnectionProvider>
     </ClientWrapper>
   )

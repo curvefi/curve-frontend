@@ -48,8 +48,12 @@ import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, provider: Eip1193Provider) => {
+  initApi: async (chainId: ChainId, provider?: Eip1193Provider) => {
+    if (!(chainId in networks)) {
+      throw new Error(`ChainId ${chainId} not supported`)
+    }
     const { networkId } = networks[chainId]
+    if (!provider) return
     const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
     await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
 
