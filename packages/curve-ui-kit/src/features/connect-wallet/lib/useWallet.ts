@@ -5,7 +5,7 @@ import { useAccount, useConnect, useConnectorClient, useDisconnect, useEnsName }
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Wallet } from './types'
 import { connectors } from './wagmi/connectors'
-import { supportedWallets, type WalletType } from './wagmi/wallets'
+import { supportedWallets } from './wagmi/wallets'
 
 const state: {
   provider: BrowserProvider | null
@@ -15,7 +15,6 @@ const state: {
   wallet: null,
 }
 
-export const useWalletType = () => useGlobalState<WalletType, null>('wallet', null)
 export const useConnectCallbacks = () =>
   useGlobalState<[resolve: (wallet: Wallet | null) => void, reject: (err: unknown) => void], null>(
     'wagmiConnectCallbacks',
@@ -25,17 +24,14 @@ export const useConnectCallbacks = () =>
 export const createWallet = ({
   chainId,
   provider,
-  label,
   address,
   ensName,
 }: {
   chainId: number
   provider?: Eip1193Provider
-  label?: string
   address: Address
   ensName?: string | null
 }): Wallet => ({
-  label,
   provider,
   account: { address, ...(ensName && { ensName }) },
   chainId,
@@ -44,9 +40,6 @@ export const createWallet = ({
 const useWallet = () => {
   // when the modal is displayed, we save a promise to resolve later - this is for compatibility with existing code
   const [connectCallbacks, setConnectCallbacks] = useConnectCallbacks()
-
-  // this is the wallet type selected in the modal
-  const [walletType, setWalletType] = useWalletType()
 
   const { address, isConnecting, isReconnecting } = useAccount()
   const { data: ensName } = useEnsName({ address })
@@ -59,11 +52,10 @@ const useWallet = () => {
         createWallet({
           chainId: client.chain.id,
           provider: { request: client.transport.request },
-          label: walletType?.label,
           address: client.account.address,
           ensName,
         }),
-      [client, walletType?.label, ensName],
+      [client, ensName],
     ) ?? null
 
   // important: use the async functions so we can properly handle the promise failures
@@ -92,7 +84,6 @@ const useWallet = () => {
 
       // take the first (injected) as default. This is temporary until we get rid of onboard
       const walletType = supportedWallets.find((w) => w.label === label) ?? supportedWallets[0]!
-      setWalletType(walletType)
       const [resolve, reject] = connectCallbacks ?? []
       try {
         const res = await connectAsync({ connector: connectors[walletType.connector] })
@@ -105,7 +96,6 @@ const useWallet = () => {
         const wallet = createWallet({
           chainId,
           provider: (request && { request }) || undefined,
-          label,
           address,
         })
         resolve?.(wallet)
@@ -116,7 +106,7 @@ const useWallet = () => {
         throw err
       }
     },
-    [setWalletType, connectCallbacks, setConnectCallbacks, connectAsync, request],
+    [connectCallbacks, setConnectCallbacks, connectAsync, request],
   )
 
   const showModal = !!connectCallbacks
