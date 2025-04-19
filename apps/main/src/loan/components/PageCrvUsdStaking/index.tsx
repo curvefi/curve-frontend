@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
+import { useAccount } from 'wagmi'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
@@ -10,7 +11,6 @@ import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
@@ -26,7 +26,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const lendApi = useApiStore((state) => state.lending)
-  const { signerAddress, connecting } = useWallet()
+  const { address, isConnecting } = useAccount()
   const chainId = useApiStore((state) => state.stable?.chainId)
 
   const {
@@ -34,26 +34,23 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     isFetching: isUserScrvUsdBalanceFetching,
     isFetched: isUserScrvUsdBalanceFetched,
     refetch: refetchUserScrvUsdBalance,
-  } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+  } = useScrvUsdUserBalances({ userAddress: address ?? '' })
 
-  const isUserScrvUsdBalanceZero =
-    !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
+  const isUserScrvUsdBalanceZero = !address || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
-  const connectedUserNoScrvUsdBalance = [signerAddress, isUserScrvUsdBalanceFetched, isUserScrvUsdBalanceZero].every(
-    Boolean,
-  )
+  const connectedUserNoScrvUsdBalance = [address, isUserScrvUsdBalanceFetched, isUserScrvUsdBalanceZero].every(Boolean)
 
   const showStatsBanner =
     connectedUserNoScrvUsdBalance ||
-    !signerAddress ||
-    (!connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
+    !address ||
+    (!isConnecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!lendApi || !signerAddress) return
+      if (!lendApi || !address) return
       // ensure user balances are up to date on load
       void refetchUserScrvUsdBalance()
       fetchExchangeRate()
@@ -61,15 +58,15 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     }
 
     void fetchData()
-  }, [lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
+  }, [lendApi, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance, address])
 
   useEffect(() => {
-    if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
+    if (!lendApi || !chainId || !address || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
       void checkApproval.depositApprove(inputAmount)
     }
-  }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
+  }, [checkApproval, lendApi, chainId, inputAmount, stakingModule, address])
 
   // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
   useEffect(() => {
