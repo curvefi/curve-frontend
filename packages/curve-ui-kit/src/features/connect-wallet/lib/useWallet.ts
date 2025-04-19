@@ -61,7 +61,7 @@ const useWallet = () => {
     await disconnectAsync()
   }
 
-  const { address, isConnecting, isReconnecting } = useAccount()
+  const { address } = useAccount()
 
   const connectWagmi = useCallback(
     async (label?: string) => {
@@ -122,8 +122,6 @@ const useWallet = () => {
     [setConnectCallbacks],
   )
 
-  const connecting = (isConnecting || showModal) && !isReconnecting && !address // note: workaround to avoid showing the modal when reconnecting
-
   const { provider: browserProvider } = useMemo(() => {
     state.wallet = wallet
     state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
@@ -132,7 +130,6 @@ const useWallet = () => {
 
   return {
     wallet,
-    connecting,
     connect: connectWagmi,
     disconnect,
     provider: browserProvider,
