@@ -1,17 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 type DeployButtonProps = { className?: string }
 
 const DeployButton = ({ className }: DeployButtonProps) => {
-  const { signerAddress } = useWallet()
-  const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+  const { address } = useAccount()
+  const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address ?? '' })
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
   const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
   const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)

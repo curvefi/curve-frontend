@@ -130,7 +130,6 @@ const useWallet = () => {
     connect: connectWagmi,
     disconnect,
     provider: browserProvider,
-    signerAddress: wallet?.account?.address,
     showModal,
     closeModal,
   }
