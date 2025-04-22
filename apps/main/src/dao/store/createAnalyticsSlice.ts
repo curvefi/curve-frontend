@@ -113,7 +113,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
       })
 
       try {
-        const distributions = await getDistributions()
+        const distributions = (await getDistributions()) as Distribution[]
         const totalFees = distributions.reduce((acc, item) => acc + item.feesUsd, 0)
 
         get()[sliceKey].setStateByKey('veCrvFees', {
@@ -164,7 +164,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
       })
 
       try {
-        const lockers = await getLockers()
+        const lockers = (await getLockers()) as Locker[]
         const allHolders = Object.fromEntries(lockers.map((holder) => [holder.user.toLowerCase(), holder]))
 
         const totalHolders = Object.keys(allHolders).length

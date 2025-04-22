@@ -17,9 +17,6 @@ import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
-
-const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
