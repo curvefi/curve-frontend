@@ -5,8 +5,6 @@ import { Wallet } from '../types'
 // todo: inline the following functions
 export const getWalletChainId = (wallet: Wallet | undefined | null) => wallet?.chainId
 
-export const getWalletSignerEns = (wallet: Wallet | undefined | null): string | undefined => wallet?.account?.ensName
-
 const timeout = (message: string, timeoutMs: number) =>
   new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs))
 

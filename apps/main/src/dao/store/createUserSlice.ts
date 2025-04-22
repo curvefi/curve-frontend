@@ -15,7 +15,7 @@ import {
   UserProposalVotesSortBy,
   type Wallet,
 } from '@/dao/types/dao.types'
-import { getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -118,7 +118,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       get()[sliceKey].setStateByKeys({
         userAddress: userAddress.toLowerCase(),
-        userEns: getWalletSignerEns(wallet),
+        userEns: wallet.account?.ensName,
         snapshotVeCrvMapper: {},
       })
     },
