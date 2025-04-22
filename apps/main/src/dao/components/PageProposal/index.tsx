@@ -70,7 +70,7 @@ const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
   )
 
   useEffect(() => {
-    if (snapshotVeCrv === undefined && rChainId === 1 && provider && userAddress && proposal?.snapshotBlock) {
+    if (snapshotVeCrv === undefined && rChainId === 1 && provider && userAddress && proposal?.block) {
       const getVeCrv = async () => {
         const signer = await provider.getSigner()
         setSnapshotVeCrv(signer, userAddress, proposal.block, rProposalId)
@@ -78,7 +78,7 @@ const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
 
       void getVeCrv()
     }
-  }, [provider, rChainId, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
+  }, [provider, rChainId, rProposalId, setSnapshotVeCrv, proposal?.block, snapshotVeCrv, userAddress])
 
   return (
     <Wrapper>
