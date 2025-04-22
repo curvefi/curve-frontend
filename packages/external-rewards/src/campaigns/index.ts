@@ -16,7 +16,6 @@ import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
 import Mellow from './Mellow.json'
 import Pumpbtc from './Pumpbtc.json'
-import Renzo from './Renzo.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
 import StableLabs from './StableLabs.json'
@@ -28,6 +27,7 @@ import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import YieldNest from './YieldNest.json'
+import Zunami from './Zunami.json'
 
 export {
   DLCLink,
@@ -36,7 +36,6 @@ export {
   Etherfi,
   Kelpdao,
   Mellow,
-  Renzo,
   Symbiotic,
   Usual,
   YieldNest,
@@ -60,4 +59,5 @@ export {
   Bills,
   StableLabs,
   Taiko,
+  Zunami,
 }

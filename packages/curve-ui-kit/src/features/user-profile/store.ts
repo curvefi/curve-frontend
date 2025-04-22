@@ -5,6 +5,8 @@ import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
+export const SMALL_POOL_TVL = 10000
+
 type State = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */

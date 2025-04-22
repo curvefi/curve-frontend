@@ -2,14 +2,17 @@ import { useEffect } from 'react'
 import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import useStore from '@/dao/store/useStore'
+import type { CurveApi } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'
 import { formatNumber } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const CrvStats = () => {
   const { provider } = useWallet()
+  const { lib: curve } = useConnection<CurveApi>()
+  const chainId = curve?.chainId
   const veCrvData = useStore((state) => state.analytics.veCrvData)
   const getVeCrvData = useStore((state) => state.analytics.getVeCrvData)
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
@@ -18,18 +21,21 @@ const CrvStats = () => {
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const crv = usdRatesMapper.crv
 
-  const noProvider = !provider
+  // protect against trying to load data on non-mainnet networks
+  const notMainnet = chainId !== 1
+  const noProvider = !provider || notMainnet
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
   const aprLoading = veCrvLoading || veCrvFeesLoading || usdRatesLoading || !crv
 
   useEffect(() => {
-    if (provider && veCrvData.totalCrv === 0n && veCrvData.fetchStatus !== 'ERROR') {
+    if (provider && notMainnet && veCrvData.totalCrv === 0n && veCrvData.fetchStatus !== 'ERROR') {
       void getVeCrvData(provider)
     }
-  }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
+  }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider, notMainnet])
 
-  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
+  const veCrvApr =
+    aprLoading || notMainnet ? 0 : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
 
   const loading = Boolean(provider && veCrvLoading)
   return (

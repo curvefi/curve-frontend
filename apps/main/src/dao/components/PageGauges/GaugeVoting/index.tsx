@@ -1,25 +1,39 @@
 import styled from 'styled-components'
+import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
 import useStore from '@/dao/store/useStore'
-import { isLoading } from '@ui/utils'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import type { CurveApi } from '@/dao/types/dao.types'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
-  const { provider } = useWallet()
-  const connectWallet = useStore((state) => state.updateConnectState)
-  const connectState = useStore((state) => state.connectState)
+  const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
+  const userGaugeVoteWeightsMapper = useStore((state) => state.user.userGaugeVoteWeightsMapper)
+  const { connectState, lib: curve } = useConnection<CurveApi>()
+  const chainId = curve?.chainId
+  const { provider, connect } = useWallet()
 
-  return !provider ? (
-    <ConnectWrapper>
-      <ConnectWalletPrompt
-        description="Connect your wallet to view your current votes and vote on gauges"
-        connectText="Connect Wallet"
-        loadingText="Connecting"
-        connectWallet={() => connectWallet()}
-        isLoading={isLoading(connectState)}
-      />
-    </ConnectWrapper>
-  ) : (
+  useEffect(() => {
+    if (userAddress && chainId === 1 && curve && userGaugeVoteWeightsMapper[userAddress.toLowerCase()] === undefined) {
+      void getUserGaugeVoteWeights(userAddress)
+    }
+  }, [getUserGaugeVoteWeights, userAddress, curve, userGaugeVoteWeightsMapper, chainId])
+
+  if (!provider)
+    return (
+      <ConnectWrapper>
+        <ConnectWalletPrompt
+          description="Connect your wallet to view your current votes and vote on gauges"
+          connectText="Connect Wallet"
+          loadingText="Connecting"
+          connectWallet={() => connect()}
+          isLoading={isLoading(connectState)}
+        />
+      </ConnectWrapper>
+    )
+
+  if (chainId !== 1) return <WrongNetwork />
+
+  return (
     <Wrapper>
       <CurrentVotes userAddress={userAddress} />
     </Wrapper>

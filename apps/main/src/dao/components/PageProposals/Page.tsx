@@ -1,7 +1,7 @@
 'use client'
 import styled from 'styled-components'
 import Proposals from '@/dao/components/PageProposals/index'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
+import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import Settings from '@/dao/layout/Settings'
 import { breakpoints } from '@ui/utils'
 

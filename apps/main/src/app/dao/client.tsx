@@ -1,36 +1,33 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
+import { useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import Page from '@/dao/layout'
+import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
+import { ChainId } from '@/dao/types/dao.types'
+import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
-import { getPageWidthClassName, isSuccess } from '@ui/utils'
+import { getPageWidthClassName } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const connectState = useStore((state) => state.connectState)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateUserData = useStore((state) => state.user.updateUserData)
-  const getGauges = useStore((state) => state.gauges.getGauges)
-  const getGaugesData = useStore((state) => state.gauges.getGaugesData)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const curve = useApiStore((state) => state.curve)
-  const isPageVisible = useStore((state) => state.isPageVisible)
   const theme = useUserProfileStore((state) => state.theme)
-  const { wallet } = useWallet.getState() // note: avoid the hook because we first need to initialize the wallet
+  const hydrate = useStore((s) => s.hydrate)
+
+  const { push } = useRouter()
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -72,34 +69,15 @@ export const App = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (isSuccess(connectState) && curve && wallet) {
-      updateUserData(curve, wallet)
-    }
-  }, [curve, connectState, updateUserData, wallet])
-
-  // initiate proposals list
-  useEffect(() => {
-    void getGauges()
-    void getGaugesData()
-  }, [getGauges, getGaugesData])
-
-  useEffect(() => {
-    if (curve) {
-      void fetchAllStoredUsdRates(curve)
-    }
-  }, [curve, fetchAllStoredUsdRates])
-
-  usePageVisibleInterval(
-    () => {
-      if (curve) {
-        void fetchAllStoredUsdRates(curve)
+  const onChainUnavailable = useCallback(
+    ([walletChainId]: [ChainId, ChainId]) => {
+      const foundNetwork = networks[walletChainId]?.id
+      if (foundNetwork) {
+        console.warn(`Network switched to ${foundNetwork}, redirecting...`, location.href)
+        push(getPath({ network: foundNetwork }, `/${getRestFullPathname()}`))
       }
-      void getGauges()
-      void getGaugesData()
     },
-    REFRESH_INTERVAL['5m'],
-    isPageVisible,
+    [push],
   )
 
   return (
@@ -109,7 +87,14 @@ export const App = ({ children }: { children: ReactNode }) => {
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <Page>{children}</Page>
+              <ConnectionProvider
+                hydrate={hydrate}
+                initLib={helpers.initCurveJs}
+                chainId={getNetworkFromUrl().rChainId}
+                onChainUnavailable={onChainUnavailable}
+              >
+                <Page>{children}</Page>
+              </ConnectionProvider>
             </QueryProvider>
           </OverlayProvider>
         )}

@@ -1,7 +1,7 @@
 'use client'
 import styled from 'styled-components'
 import UserPage from '@/dao/components/PageUser/index'
-import usePageOnMount from '@/dao/hooks/usePageOnMount'
+import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
 

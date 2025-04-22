@@ -101,7 +101,7 @@ const Proposals = () => {
             </SearchMessage>
           )}
           <ProposalsWrapper>
-            {isLoading && !isError && (
+            {isLoading && (
               <StyledSpinnerWrapper>
                 <Spinner />
               </StyledSpinnerWrapper>

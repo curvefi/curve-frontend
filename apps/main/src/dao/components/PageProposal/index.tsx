@@ -29,9 +29,11 @@ import Voters from './Voters'
 
 type ProposalProps = {
   routerParams: ProposalUrlParams
+  rChainId: number
 }
 
-const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) => {
+const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
+  const { proposalId: rProposalId } = routerParams
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const proposalType = voteType.toLowerCase() as ProposalType
   const { provider } = useWallet()
@@ -68,7 +70,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
   )
 
   useEffect(() => {
-    if (snapshotVeCrv === undefined && provider && userAddress && proposal?.block) {
+    if (snapshotVeCrv === undefined && rChainId === 1 && provider && userAddress && proposal?.snapshotBlock) {
       const getVeCrv = async () => {
         const signer = await provider.getSigner()
         setSnapshotVeCrv(signer, userAddress, proposal.block, rProposalId)
@@ -76,7 +78,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
 
       void getVeCrv()
     }
-  }, [provider, rProposalId, setSnapshotVeCrv, proposal?.block, snapshotVeCrv, userAddress])
+  }, [provider, rChainId, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 
   return (
     <Wrapper>
@@ -141,7 +143,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
             </ProposalInformationWrapper>
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
-            <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
+            <UserBox chainId={rChainId} votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
               {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
                   userAddress={userAddress ?? ''}
@@ -159,6 +161,7 @@ const Proposal = ({ routerParams: { proposalId: rProposalId } }: ProposalProps) 
         <SecondColumnBox display="flex" flexColumn flexGap={'var(--spacing-1)'} margin="0 0 auto var(--spacing-1)">
           <Box variant="secondary">
             <UserBox
+              chainId={rChainId}
               votingPower={snapshotVeCrv}
               snapshotVotingPower
               activeProposal={

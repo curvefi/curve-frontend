@@ -22,7 +22,9 @@ const TABS = [
 
 export type DisclaimerTabId = (typeof TABS)[number]['value']
 
-export const Disclaimer = ({ tab, network }: { tab: DisclaimerTabId; network: string }) => (
+export type DisclaimerProps = { tab: DisclaimerTabId; network: string }
+
+export const Disclaimer = ({ tab, network }: DisclaimerProps) => (
   <Stack
     alignItems="center"
     gap={Spacing.xl}

@@ -6,6 +6,7 @@ import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
+  type CurveApi,
   ProposalListFilter,
   CurveJsProposalType,
   SortByFilterProposals,
@@ -14,8 +15,11 @@ import {
 } from '@/dao/types/dao.types'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
+
+const { WEEK } = TIME_FRAMES
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -50,8 +54,8 @@ export type ProposalsSlice = {
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
     setActiveSortDirection(direction: SortDirection): void
-    castVote(voteId: number, voteType: ProposalType, support: boolean): void
-    executeProposal(voteId: number, voteType: ProposalType): void
+    castVote(voteId: number, voteType: ProposalType, support: boolean): Promise<void>
+    executeProposal(voteId: number, voteType: ProposalType): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -84,7 +88,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -188,7 +192,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()

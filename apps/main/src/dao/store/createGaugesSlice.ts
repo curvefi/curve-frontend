@@ -5,6 +5,7 @@ import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-
 import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import type { State } from '@/dao/store/useStore'
 import {
+  type CurveApi,
   CurveGaugeResponse,
   FetchingState,
   GaugeCurveApiDataMapper,
@@ -21,8 +22,8 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { shortenAddress } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { helpers } from '../lib/curvejs'
@@ -362,7 +363,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
 
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       const { provider } = useWallet.getState()
       const address = get().gauges.gaugeMapper[gaugeAddress].address
 
