@@ -1,27 +1,33 @@
 import { useRouter } from 'next/navigation'
-import { useCallback, useRef } from 'react'
-import { CONNECT_STAGE } from '@/lend/constants'
+import { type RefObject, useCallback, useRef } from 'react'
 import { useTvl } from '@/lend/entities/chain'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { type Api, ChainId } from '@/lend/types/lend.types'
+import { type Api, ChainId, type NetworkEnum } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { getWalletSignerAddress, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import {
+  CONNECT_STAGE,
+  getWalletSignerAddress,
+  isLoading,
+  useConnection,
+  useWallet,
+} from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 export const Header = ({
   chainId,
   sections,
-  BannerProps,
+  globalAlertRef,
+  networkId,
 }: {
   chainId: ChainId
   sections: NavigationSection[]
-  BannerProps: GlobalBannerProps
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkId: NetworkEnum
 }) => {
   const { wallet } = useWallet()
   const { push } = useRouter()
@@ -32,7 +38,7 @@ export const Header = ({
 
   return (
     <NewHeader<ChainId>
-      networkName={BannerProps.networkName}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="lend"
       routes={APP_LINK.lend.routes}
@@ -61,7 +67,7 @@ export const Header = ({
         },
       ]}
       height={useHeaderHeight(bannerHeight)}
-      BannerProps={BannerProps}
+      globalAlertRef={globalAlertRef}
       sections={sections}
     />
   )

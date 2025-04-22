@@ -1,5 +1,13 @@
 import { forwardRef, Ref } from 'react'
 import Box from '@mui/material/Box'
+import {
+  CONNECT_STAGE,
+  getWalletChainId,
+  isFailure,
+  useConnection,
+  useWallet,
+  useSetChain,
+} from '@ui-kit/features/connect-wallet'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -8,23 +16,28 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isCypress } from '@ui-kit/utils'
 
 export type GlobalBannerProps = {
-  networkName: string
-  showConnectApiErrorMessage: boolean
-  showSwitchNetworkMessage: boolean
-  maintenanceMessage?: string
-  handleNetworkChange(): void
+  networkId: string
+  chainId: number
   ref: Ref<HTMLDivElement>
 }
 
 const { IconSize } = SizesAndSpaces
 
+// Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
+const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
+
 export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
-  (
-    { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
-    ref,
-  ) => {
+  ({ networkId, chainId }, ref) => {
     const [isBeta, setIsBeta] = useBetaFlag()
     const showBetaBanner = isBeta && !isCypress
+
+    const { wallet } = useWallet()
+    const setChain = useSetChain()
+    const { connectState } = useConnection()
+    const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
+    const showSwitchNetworkMessage =
+      (wallet && getWalletChainId(wallet) != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
+
     return (
       (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || showBetaBanner) && (
         <Box ref={ref}>
@@ -35,9 +48,9 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
           )}
           {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
           {showSwitchNetworkMessage && (
-            <Banner severity="warning" buttonText={t`Change network`} onClick={handleNetworkChange}>
-              {t`Please switch your wallet's network to`} <strong>{networkName}</strong> {t`to use Curve on`}{' '}
-              <strong>{networkName}</strong>.{' '}
+            <Banner severity="warning" buttonText={t`Change network`} onClick={() => setChain(chainId)}>
+              {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
+              <strong>{networkId}</strong>.{' '}
             </Banner>
           )}
           {showConnectApiErrorMessage && (

@@ -1,19 +1,14 @@
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import type { ChainId } from '@/dex/types/main.types'
+import type { ChainId, CurveApi } from '@/dex/types/main.types'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { curvejsValidationSuite } from './validation/curvejs-validation'
 
 async function _fetchAppStatsVolume({ chainId }: ChainQuery<ChainId>) {
-  const curve = useApiStore.getState().curve!
-  const networks = useStore.getState().networks.networks
-  const { isLite } = networks[chainId]
-  if (isLite) return null
-
-  const { getVolume } = curvejsApi.network
-  return getVolume(curve)
+  const { isLite } = useStore.getState().networks.networks[chainId]
+  return isLite ? null : curvejsApi.network.getVolume(requireLib<CurveApi>())
 }
 
 export const { useQuery: useAppStatsVolume } = queryFactory({

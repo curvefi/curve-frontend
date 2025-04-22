@@ -9,23 +9,23 @@ const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as cons
 
 export const getAllNetworks = memoizee(getNetworks, options)
 
-export async function getNetworkConfig(networkName: string) {
+export async function getNetworkConfig(networkId: string) {
   const networks = await getAllNetworks()
-  return Object.values(networks).find((n) => n.id === networkName)
+  return Object.values(networks).find((n) => n.id === networkId)
 }
 
 export const getPoolName = async (
-  { network: networkName, pool: poolFromUrl }: PoolUrlParams,
+  { network: networkId, pool: poolFromUrl }: PoolUrlParams,
   httpHeaders: ReadonlyHeaders,
 ) => {
   try {
-    const { pools } = (await getServerData<DexServerSideNetworkCache>(`dex/${networkName}`, httpHeaders)) ?? {}
+    const { pools } = (await getServerData<DexServerSideNetworkCache>(`dex/${networkId}`, httpHeaders)) ?? {}
     if (pools) {
       const poolCache = poolFromUrl.startsWith('0x')
         ? Object.values(pools).find(({ pool }) => pool.address === poolFromUrl)
         : pools[poolFromUrl]
       if (poolCache) return poolCache.pool.name
-      console.warn(`Cannot find pool ${poolFromUrl} in ${networkName}. Pools: ${JSON.stringify(poolCache, null, 2)}`)
+      console.warn(`Cannot find pool ${poolFromUrl} in ${networkId}. Pools: ${JSON.stringify(poolCache, null, 2)}`)
     }
   } catch (e) {
     console.error(`Cannot retrieve pool name`, e)

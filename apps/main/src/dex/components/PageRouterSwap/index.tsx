@@ -39,7 +39,6 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const QuickSwap = ({
   pageLoaded,
@@ -49,6 +48,7 @@ const QuickSwap = ({
   tokensMapper,
   tokensMapperStr,
   redirect,
+  curve,
 }: {
   pageLoaded: boolean
   params: NetworkUrlParams
@@ -57,10 +57,9 @@ const QuickSwap = ({
   tokensMapper: TokensMapper
   tokensMapperStr: string
   redirect: (toAddress: string, fromAddress: string) => void
+  curve: CurveApi | null
 }) => {
   const isSubscribed = useRef(false)
-
-  const curve = useApiStore((state) => state.curve)
   const { chainId, signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(rChainId)
   const tokenList = useStore((state) => state.quickSwap.tokenList[rChainId])
@@ -68,7 +67,6 @@ const QuickSwap = ({
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
-  const isLoadingApi = useApiStore((state) => state.isLoadingCurve)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
@@ -96,7 +94,7 @@ const QuickSwap = ({
 
   const { fromAddress, toAddress } = searchedParams
 
-  const isReady = pageLoaded && !isLoadingApi && isPageVisible
+  const isReady = pageLoaded && isPageVisible
   const haveSigner = !!signerAddress
 
   const userFromBalance = userBalancesMapper[fromAddress]
@@ -130,7 +128,7 @@ const QuickSwap = ({
       setConfirmedLoss(false)
 
       void setFormValues(
-        pageLoaded && !isLoadingApi ? curve : null,
+        pageLoaded ? curve : null,
         updatedFormValues,
         searchedParams,
         maxSlippage || storeMaxSlippage,
@@ -139,7 +137,7 @@ const QuickSwap = ({
         isRefetch,
       )
     },
-    [curve, storeMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
+    [curve, storeMaxSlippage, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -328,8 +326,7 @@ const QuickSwap = ({
   // full reset
   useEffect(() => {
     if (isReady) updateFormValues({})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi])
+  }, [isReady, updateFormValues])
 
   // updateForm
   // eslint-disable-next-line react-hooks/exhaustive-deps

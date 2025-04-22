@@ -17,13 +17,13 @@ export const Header = <TChainId extends number>({ routes, ...props }: HeaderProp
   const isDesktop = useMediaQuery(isDesktopQuery, { noSsr: true })
   const [isBeta] = useBetaFlag()
   const pathname = usePathname()
-  const { networkName, height } = props
+  const { networkId, height } = props
   const pages = useMemo(
     () =>
       routes
         .filter((props) => !props.betaFeature || isBeta)
-        .map((props) => routeToPage(props, { networkName, pathname })),
-    [isBeta, networkName, pathname, routes],
+        .map((props) => routeToPage(props, { networkId, pathname })),
+    [isBeta, networkId, pathname, routes],
   )
   return (
     <>

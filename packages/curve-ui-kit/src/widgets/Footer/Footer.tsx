@@ -19,12 +19,12 @@ const Llama = styled('img')({
 })
 
 type FooterProps = {
-  networkName: string
+  networkId: string
   headerHeight: string
   appName: AppName
 }
 
-export const Footer = ({ appName, networkName, headerHeight }: FooterProps) => {
+export const Footer = ({ appName, networkId, headerHeight }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
   const [isBeta, setIsBeta] = useBetaFlag()
@@ -68,7 +68,7 @@ export const Footer = ({ appName, networkName, headerHeight }: FooterProps) => {
               desktop: 3,
             }}
           >
-            <Section {...section} networkName={networkName} appName={appName} />
+            <Section {...section} networkId={networkId} appName={appName} />
           </Grid>
         ))}
 

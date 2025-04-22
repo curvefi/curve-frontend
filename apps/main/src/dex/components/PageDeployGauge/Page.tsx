@@ -1,18 +1,14 @@
 'use client'
 import styled from 'styled-components'
-import DeployGauge from '@/dex/components/PageDeployGauge/index'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
-import { CurveApi } from '@/dex/types/main.types'
+import { DeployGauge } from '@/dex/components/PageDeployGauge/index'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { breakpoints } from '@ui/utils/responsive'
 
-const Page = () => {
-  const { curve } = usePageOnMount()
-  return (
-    <Container>
-      <DeployGauge curve={curve as CurveApi} />
-    </Container>
-  )
-}
+export const PageDeployGauge = (props: NetworkUrlParams) => (
+  <Container>
+    <DeployGauge {...props} />
+  </Container>
+)
 
 const Container = styled.div`
   margin: 0 auto;
@@ -27,5 +23,3 @@ const Container = styled.div`
     margin: 1.5rem;
   }
 `
-
-export default Page

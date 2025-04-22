@@ -4,38 +4,34 @@ import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
+import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import TuneIcon from '@mui/icons-material/Tune'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
-import { breakpoints, isLoading } from '@ui/utils'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { breakpoints } from '@ui/utils'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
-const Page = (params: NetworkUrlParams) => {
+export const PageRouterSwap = (props: NetworkUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { pageLoaded, routerParams } = usePageOnMount()
-  const { rChainId } = routerParams
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { connect: connectWallet } = useWallet()
+  const rChainId = useChainId(props.network)
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const isLoadingCurve = useApiStore((state) => state.isLoadingCurve)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const { provider } = useWallet()
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
   const theme = useUserProfileStore((state) => state.theme)
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
@@ -55,18 +51,18 @@ const Page = (params: NetworkUrlParams) => {
     (to: string, from: string) => {
       const search = from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''
       if (search !== searchParams?.toString()) {
-        push(getPath(params, `${ROUTE.PAGE_SWAP}${search}`))
+        push(getPath(props, `${ROUTE.PAGE_SWAP}${search}`))
       }
     },
-    [searchParams, push, params],
+    [searchParams, push, props],
   )
 
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
     setLoaded(false)
-    if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
+    if (!isLoading(connectState) && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
-        push(getPath(params, `${ROUTE.PAGE_POOLS}`))
+        push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
       }
       if (paramsMaxSlippage) {
@@ -95,8 +91,7 @@ const Page = (params: NetworkUrlParams) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    pageLoaded,
-    isLoadingCurve,
+    connectState,
     hasRouter,
     paramsFromAddress,
     paramsToAddress,
@@ -143,8 +138,9 @@ const Page = (params: NetworkUrlParams) => {
       <Box grid gridRowGap={3} padding>
         {rChainId && (
           <QuickSwap
+            curve={curve}
             pageLoaded={loaded}
-            params={params}
+            params={props}
             searchedParams={{
               fromAddress: paramsFromAddress,
               toAddress: paramsToAddress,
@@ -174,5 +170,3 @@ const ConnectWalletWrapper = styled.div`
   display: flex;
   margin: var(--spacing-3) auto;
 `
-
-export default Page
