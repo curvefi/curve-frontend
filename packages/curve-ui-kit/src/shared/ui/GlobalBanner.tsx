@@ -1,7 +1,8 @@
 import { forwardRef, Ref } from 'react'
 import { useChainId, useSwitchChain } from 'wagmi'
+import { useAccount } from 'wagmi'
 import Box from '@mui/material/Box'
-import { CONNECT_STAGE, isFailure, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -26,13 +27,13 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const [isBeta, setIsBeta] = useBetaFlag()
     const showBetaBanner = isBeta && !isCypress
 
-    const { wallet } = useWallet()
+    const { isConnected } = useAccount()
     const { switchChain } = useSwitchChain()
     const { connectState } = useConnection()
     const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
     const walletChainId = useChainId()
     const showSwitchNetworkMessage =
-      (wallet && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
+      (isConnected && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
 
     return (
       (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || showBetaBanner) && (

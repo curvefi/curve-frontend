@@ -97,7 +97,6 @@ const useWallet = () => {
   }, [wallet])
 
   return {
-    wallet,
     connect: connectWagmi,
     disconnect,
     provider: browserProvider,

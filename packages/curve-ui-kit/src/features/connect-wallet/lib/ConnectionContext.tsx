@@ -126,9 +126,11 @@ export const ConnectionProvider = <
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
-  const { wallet } = useWallet()
   const { switchChainAsync } = useSwitchChain()
   const walletChainId = useChainId()
+
+  // todo: replace with actual hooks like useAccount and the provider from useWallet
+  const { wallet } = useWallet.getState()
 
   useEffect(() => {
     const abort = new AbortController()
