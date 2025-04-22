@@ -2,26 +2,22 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import IntegrationsComp from '@/dex/components/PageIntegrations/index'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { useChainId } from '@/dex/utils/utilsRouter'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { Trans } from '@ui-kit/lib/i18n'
 
-const Page = (params: NetworkUrlParams) => {
-  const { routerParams } = usePageOnMount(true)
-  const { rNetworkIdx } = routerParams
-  const rChainId = rNetworkIdx === -1 ? '' : routerParams.rChainId
-
+const Page = (props: NetworkUrlParams) => {
+  const rChainId = useChainId(props.network)
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
     void init(rChainId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [init, rChainId])
 
   return (
     <Container>
@@ -44,7 +40,7 @@ const Page = (params: NetworkUrlParams) => {
             <Spinner />
           </SpinnerWrapper>
         ) : (
-          <IntegrationsComp rChainId={rChainId} params={params} integrationsTags={integrationsTags} />
+          <IntegrationsComp rChainId={rChainId} params={props} integrationsTags={integrationsTags} />
         )}
       </ContainerContent>
     </Container>

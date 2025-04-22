@@ -1,11 +1,10 @@
-import { ethers } from 'ethers'
 import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { Header } from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
 import type { ChainId, CurveApi, NetworkEnum } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils/utilsRouter'
-import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -15,7 +14,8 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-const useAutoRefresh = (curve?: CurveApi) => {
+const useAutoRefresh = () => {
+  const { lib: curve } = useConnection<CurveApi>()
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const getProposals = useStore((state) => state.proposals.getProposals)
@@ -30,30 +30,25 @@ const useAutoRefresh = (curve?: CurveApi) => {
 
 export const BaseLayout = ({
   children,
-  networkName,
+  networkId,
   chainId,
 }: {
   children: ReactNode
-  networkName: NetworkEnum
+  networkId: NetworkEnum
   chainId: ChainId
 }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
-  const [, setWalletChain] = useSetChain()
 
-  const { connectState, lib } = useConnection<CurveApi>()
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
-  useAutoRefresh(lib)
+  useAutoRefresh()
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight ?? null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalAlertHeight])
-
-  // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
-  const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
   const minHeight = useMemo(
     () => Object.values(layoutHeight).reduce((acc, height) => acc + height, 0) - layoutHeight.footer + 24,
@@ -63,20 +58,9 @@ export const BaseLayout = ({
   const sections = useMemo(() => getSections(), [])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header
-        chainId={chainId}
-        sections={sections}
-        BannerProps={{
-          ref: globalAlertRef,
-          networkName,
-          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          maintenanceMessage,
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(chainId) }),
-        }}
-      />
+      <Header chainId={chainId} sections={sections} globalAlertRef={globalAlertRef} networkId={networkId} />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dao" networkName={networkName} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="dao" networkId={networkId} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

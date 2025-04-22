@@ -1,22 +1,18 @@
 'use client'
 import styled from 'styled-components'
 import Dashboard from '@/dex/components/PageDashboard/index'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Settings from '@/dex/layout/default/Settings'
-import useStore from '@/dex/store/useStore'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
+import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import { useChainId } from '@/dex/utils/utilsRouter'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
-const Page = (params: NetworkUrlParams) => {
-  const { curve, routerParams } = usePageOnMount()
-  const { rChainId } = routerParams
-  const { provider } = useWallet()
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
+export const PageDashboard = (props: NetworkUrlParams) => {
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const rChainId = useChainId(props.network)
+  const { provider, connect: connectWallet } = useWallet()
   return (
     <>
       {!provider ? (
@@ -34,7 +30,7 @@ const Page = (params: NetworkUrlParams) => {
       ) : (
         <Container>
           {rChainId ? (
-            <Dashboard curve={curve} rChainId={rChainId} params={params} />
+            <Dashboard curve={curve} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
           ) : (
             <SpinnerWrapper minHeight="50vh">
               <Spinner />
@@ -60,5 +56,3 @@ const ConnectWalletWrapper = styled.div`
   display: flex;
   margin: var(--spacing-3) auto;
 `
-
-export default Page
