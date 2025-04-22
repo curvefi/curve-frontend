@@ -15,12 +15,6 @@ const state: {
   wallet: null,
 }
 
-export const useConnectCallbacks = () =>
-  useGlobalState<[resolve: (wallet: Wallet | null) => void, reject: (err: unknown) => void], null>(
-    'wagmiConnectCallbacks',
-    null,
-  )
-
 export const createWallet = ({
   chainId,
   provider,
@@ -38,8 +32,9 @@ export const createWallet = ({
 })
 
 const useWallet = () => {
-  // when the modal is displayed, we save a promise to resolve later - this is for compatibility with existing code
-  const [connectCallbacks, setConnectCallbacks] = useConnectCallbacks()
+  // Dunno why but it was a global and needs to be a global. Can this be a ref?
+  const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
+  const closeModal = useCallback(() => setShowModal(false), [setShowModal])
 
   const { address } = useAccount()
   const { data: ensName } = useEnsName({ address })
@@ -75,48 +70,24 @@ const useWallet = () => {
     await disconnectAsync()
   }
 
-  const request = useMemo(() => client?.transport?.request, [client])
   const connectWagmi = useCallback(
-    async (label?: string) => {
-      if (!label) {
-        return new Promise<Wallet | null>((...args) => setConnectCallbacks(args))
+    async (connector?: (typeof supportedWallets)[number]['connector']) => {
+      if (!connector) {
+        setShowModal(true)
+        return
       }
 
       // take the first (injected) as default. This is temporary until we get rid of onboard
-      const walletType = supportedWallets.find((w) => w.label === label) ?? supportedWallets[0]!
-      const [resolve, reject] = connectCallbacks ?? []
+      const walletType = supportedWallets.find((w) => w.connector === connector) ?? supportedWallets[0]!
       try {
-        const res = await connectAsync({ connector: connectors[walletType.connector] })
-
-        const {
-          accounts: [address],
-          chainId,
-        } = res
-
-        const wallet = createWallet({
-          chainId,
-          provider: (request && { request }) || undefined,
-          address,
-        })
-        resolve?.(wallet)
-        return wallet
+        await connectAsync({ connector: connectors[walletType.connector] })
+        setShowModal(false)
       } catch (err) {
         console.error('Error connecting wallet:', err)
-        reject?.(err)
         throw err
       }
     },
-    [connectCallbacks, setConnectCallbacks, connectAsync, request],
-  )
-
-  const showModal = !!connectCallbacks
-  const closeModal = useCallback(
-    () =>
-      setConnectCallbacks((callbacks) => {
-        callbacks?.[0]?.(null)
-        return null
-      }),
-    [setConnectCallbacks],
+    [connectAsync, setShowModal],
   )
 
   const { provider: browserProvider } = useMemo(() => {
