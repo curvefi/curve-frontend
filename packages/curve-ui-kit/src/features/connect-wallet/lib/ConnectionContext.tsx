@@ -1,7 +1,7 @@
 import { type Eip1193Provider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
-import { getWalletChainId, getWalletSignerAddress, useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
+import { getWalletChainId, useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
@@ -59,7 +59,7 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => !wallet || wallet.account?.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
 /** Module-level variables to track initialization state across multiple calls */
 let mutexPromise: Promise<unknown> | null = null

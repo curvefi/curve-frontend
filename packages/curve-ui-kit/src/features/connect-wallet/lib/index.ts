@@ -1,5 +1,5 @@
 export type { Wallet } from './types'
-export { getWalletSignerAddress, getWalletChainId, getWalletSignerEns } from './utils/wallet-helpers'
+export { getWalletChainId, getWalletSignerEns } from './utils/wallet-helpers'
 export { useWallet } from './useWallet'
 export { notify } from './notify'
 export {
