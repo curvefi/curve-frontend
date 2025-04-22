@@ -25,9 +25,9 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const sections = useMemo(() => getSections(params), [params])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header sections={sections} globalAlertRef={globalAlertRef} networkName={params.network} />
+      <Header sections={sections} globalAlertRef={globalAlertRef} networkId={params.network} />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="crvusd" networkName={params.network} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="crvusd" networkId={params.network} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

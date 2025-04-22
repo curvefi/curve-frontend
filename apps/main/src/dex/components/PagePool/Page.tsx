@@ -14,9 +14,9 @@ export const PagePool = (props: PoolUrlParams) => {
   const {
     pool: rPoolId,
     formType: [rFormType],
-    network: networkName,
+    network: networkId,
   } = props
-  const rChainId = useChainId(networkName)
+  const rChainId = useChainId(networkId)
 
   const hasDepositAndStake = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])

@@ -20,7 +20,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const [, footerHeight] = useResizeObserver(footerRef) ?? []
   const params = useParams() as UrlParams
-  const { network: networkName } = params
+  const { network: networkId } = params
   const layoutHeight = useStore((state) => state.layout.height)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
@@ -40,13 +40,13 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
-        chainId={networksIdMapper[networkName]}
+        chainId={networksIdMapper[networkId]}
         sections={sections}
         globalAlertRef={globalAlertRef}
-        networkName={networkName}
+        networkId={networkId}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="lend" networkName={networkName} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="lend" networkId={networkId} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

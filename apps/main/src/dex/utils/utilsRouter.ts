@@ -6,8 +6,8 @@ import { getInternalUrl } from '@ui-kit/shared/routes'
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('dex', network, route)
 
-export const useChainId = (networkName: NetworkEnum): ChainId =>
-  useStore((state) => state.networks.networksIdMapper[networkName])
+export const useChainId = (networkId: NetworkEnum): ChainId =>
+  useStore((state) => state.networks.networksIdMapper[networkId])
 
 /**
  * Get the part of a path after the network, removing the leading slash and the first two parts.

@@ -87,9 +87,9 @@ const BaseLayout = ({ children, network }: { children: ReactNode } & { network: 
 
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header sections={sections} globalAlertRef={globalAlertRef} networkName={network.name} />
+      <Header sections={sections} globalAlertRef={globalAlertRef} networkId={network.id} />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dex" networkName={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="dex" networkId={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

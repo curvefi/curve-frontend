@@ -35,7 +35,7 @@ export type HeaderBaseProps<TChainId> = {
   ChainProps: Omit<ChainSwitcherProps<TChainId>, 'headerHeight'>
   WalletProps: ConnectWalletIndicatorProps
   globalAlertRef: RefObject<HTMLDivElement | null>
-  networkName: string
+  networkId: string
   height: string
   sections: NavigationSection[]
   appStats?: { label: string; value: string }[]

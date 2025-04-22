@@ -30,11 +30,11 @@ const useAutoRefresh = () => {
 
 export const BaseLayout = ({
   children,
-  networkName,
+  networkId,
   chainId,
 }: {
   children: ReactNode
-  networkName: NetworkEnum
+  networkId: NetworkEnum
   chainId: ChainId
 }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
@@ -58,9 +58,9 @@ export const BaseLayout = ({
   const sections = useMemo(() => getSections(), [])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header chainId={chainId} sections={sections} globalAlertRef={globalAlertRef} networkName={networkName} />
+      <Header chainId={chainId} sections={sections} globalAlertRef={globalAlertRef} networkId={networkId} />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dao" networkName={networkName} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="dao" networkId={networkId} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

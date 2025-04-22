@@ -18,14 +18,14 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 type HeaderProps = {
   sections: NavigationSection[]
   globalAlertRef: RefObject<HTMLDivElement | null>
-  networkName: string
+  networkId: string
 }
 
 const QuickSwap = () => t`Quickswap`
-export const Header = ({ sections, globalAlertRef, networkName }: HeaderProps) => {
+export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { connectState, lib: curve = {} } = useConnection<CurveApi>()
-  const rChainId = useChainId(networkName)
+  const rChainId = useChainId(networkId)
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
@@ -43,7 +43,7 @@ export const Header = ({ sections, globalAlertRef, networkName }: HeaderProps) =
 
   return (
     <NewHeader<ChainId>
-      networkName={networkName}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="dex"
       isLite={network?.isLite}

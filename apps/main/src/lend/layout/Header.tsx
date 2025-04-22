@@ -3,7 +3,7 @@ import { type RefObject, useCallback, useRef } from 'react'
 import { useTvl } from '@/lend/entities/chain'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { type Api, ChainId } from '@/lend/types/lend.types'
+import { type Api, ChainId, type NetworkEnum } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import {
@@ -22,12 +22,12 @@ export const Header = ({
   chainId,
   sections,
   globalAlertRef,
-  networkName,
+  networkId,
 }: {
   chainId: ChainId
   sections: NavigationSection[]
   globalAlertRef: RefObject<HTMLDivElement | null>
-  networkName: string
+  networkId: NetworkEnum
 }) => {
   const { wallet } = useWallet()
   const { push } = useRouter()
@@ -38,7 +38,7 @@ export const Header = ({
 
   return (
     <NewHeader<ChainId>
-      networkName={networkName}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="lend"
       routes={APP_LINK.lend.routes}

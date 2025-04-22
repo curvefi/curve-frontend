@@ -19,10 +19,10 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 type HeaderProps = {
   sections: NavigationSection[]
   globalAlertRef: RefObject<HTMLDivElement | null>
-  networkName: string
+  networkId: string
 }
 
-export const Header = ({ sections, globalAlertRef, networkName }: HeaderProps) => {
+export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const params = useParams() as UrlParams
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
@@ -45,7 +45,7 @@ export const Header = ({ sections, globalAlertRef, networkName }: HeaderProps) =
 
   return (
     <NewHeader<ChainId>
-      networkName={rNetwork}
+      networkId={rNetwork}
       mainNavRef={mainNavRef}
       currentMenu="crvusd"
       routes={APP_LINK.crvusd.routes}

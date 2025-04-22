@@ -93,7 +93,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
   }
   if (isCypress || typeof window === 'undefined') {
     // disable formatting when on cypress or server side. Electron prints logs to the output, but formatting breaks.
-    return logMethod(status)(status, JSON.stringify({ keyArray, args }).slice(0, 300))
+    return logMethod(status)(JSON.stringify({ status, keyArray, args }).slice(0, 300))
   }
 
   const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)

@@ -16,7 +16,7 @@ import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 export type GlobalBannerProps = {
-  networkName: string
+  networkId: string
   chainId: number
   ref: Ref<HTMLDivElement>
 }
@@ -27,7 +27,7 @@ const { IconSize } = SizesAndSpaces
 const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
 export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
-  ({ networkName, chainId }, ref) => {
+  ({ networkId, chainId }, ref) => {
     const { wallet } = useWallet()
     const [, setWalletChain] = useSetChain()
     const { connectState } = useConnection()
@@ -50,8 +50,8 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
               buttonText={t`Change network`}
               onClick={() => setWalletChain({ chainId: ethers.toQuantity(chainId) })}
             >
-              {t`Please switch your wallet's network to`} <strong>{networkName}</strong> {t`to use Curve on`}{' '}
-              <strong>{networkName}</strong>.{' '}
+              {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
+              <strong>{networkId}</strong>.{' '}
             </Banner>
           )}
           {showConnectApiErrorMessage && (

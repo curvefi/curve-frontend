@@ -94,7 +94,7 @@ export const App = ({ children }: { children: ReactNode }) => {
                 chainId={chainId}
                 onChainUnavailable={onChainUnavailable}
               >
-                <BaseLayout networkName={network} chainId={chainId}>
+                <BaseLayout networkId={network} chainId={chainId}>
                   {children}
                 </BaseLayout>
               </ConnectionProvider>

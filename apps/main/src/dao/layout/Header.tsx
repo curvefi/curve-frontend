@@ -21,11 +21,11 @@ export const Header = ({
   sections,
   chainId,
   globalAlertRef,
-  networkName,
+  networkId,
 }: {
   sections: NavigationSection[]
   globalAlertRef: RefObject<HTMLDivElement | null>
-  networkName: string
+  networkId: string
   chainId: ChainId
 }) => {
   const { wallet } = useWallet()
@@ -36,7 +36,7 @@ export const Header = ({
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   return (
     <NewHeader<ChainId>
-      networkName={networkName}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="dao"
       routes={APP_LINK.dao.routes}

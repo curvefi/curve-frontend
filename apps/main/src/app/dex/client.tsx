@@ -17,7 +17,7 @@ import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const { network: networkName = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const { push } = useRouter()
   const restFullPathname = useRestFullPathname()
   const [appLoaded, setAppLoaded] = useState(false)
@@ -33,7 +33,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const hydrate = useStore((s) => s.hydrate)
   const themeRef = useRef(theme)
 
-  const chainId = networksIdMapper[networkName]
+  const chainId = networksIdMapper[networkId]
   const network = networks[chainId]
 
   const handleResizeListener = useCallback(() => {
