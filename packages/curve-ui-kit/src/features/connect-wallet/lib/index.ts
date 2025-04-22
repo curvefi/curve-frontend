@@ -1,5 +1,4 @@
 export type { Wallet } from './types'
-export { getWalletChainId } from './utils/wallet-helpers'
 export { useWallet } from './useWallet'
 export { notify } from './notify'
 export {

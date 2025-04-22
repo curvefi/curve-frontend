@@ -1,9 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { Wallet } from '../types'
-
-// todo: inline the following functions
-export const getWalletChainId = (wallet: Wallet | undefined | null) => wallet?.chainId
 
 const timeout = (message: string, timeoutMs: number) =>
   new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs))

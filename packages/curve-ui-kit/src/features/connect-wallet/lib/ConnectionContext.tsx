@@ -1,7 +1,7 @@
 import { type Eip1193Provider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
-import { useSwitchChain } from 'wagmi'
-import { getWalletChainId, useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
+import { useSwitchChain, useChainId } from 'wagmi'
+import { useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
@@ -128,6 +128,7 @@ export const ConnectionProvider = <
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
   const { wallet } = useWallet()
   const { switchChainAsync } = useSwitchChain()
+  const walletChainId = useChainId()
 
   useEffect(() => {
     const abort = new AbortController()
@@ -138,7 +139,6 @@ export const ConnectionProvider = <
      */
     const initApp = async () => {
       try {
-        const walletChainId = getWalletChainId(wallet)
         const isFocused = document.hasFocus() // only change chains on focused tab, so they don't fight each other
         if (walletChainId && walletChainId !== chainId && isFocused) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
@@ -176,7 +176,7 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet])
+  }, [chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet, walletChainId])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
