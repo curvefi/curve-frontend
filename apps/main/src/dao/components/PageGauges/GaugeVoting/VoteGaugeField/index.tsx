@@ -27,6 +27,7 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
     chainId: Chain.Ethereum,
     gaugeAddress: userGaugeVoteData?.gaugeAddress ?? '',
     userAddress: userAddress ?? '',
+    enabled: true,
   })
   const { userPower, gaugeAddress } = userGaugeVoteData
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true

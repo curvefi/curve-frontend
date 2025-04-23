@@ -18,6 +18,19 @@ const sortUserLocks = (locks: UserLockFormatted[], sortBy: { key: UserLocksSortB
   return orderBy(locks, [key], [order])
 }
 
+const lockTypeLabel = (lockType: LockType) => {
+  switch (lockType) {
+    case 'CREATE_LOCK':
+      return 'Create Lock'
+    case 'WITHDRAW':
+      return 'Withdraw'
+    case 'INCREASE_LOCK_AMOUNT':
+      return 'Increase Lock Amount'
+    case 'INCREASE_UNLOCK_TIME':
+      return 'Increase Unlock Time'
+  }
+}
+
 const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const { data: userLocks, isLoading, isError, isSuccess } = useUserLocksQuery({ userAddress })
   const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
@@ -25,19 +38,6 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
 
   const gridTemplateColumns = '2fr 1fr 1fr 1fr'
   const minWidth = 36
-
-  const lockTypeLabel = (lockType: LockType) => {
-    switch (lockType) {
-      case 'CREATE_LOCK':
-        return 'Create Lock'
-      case 'WITHDRAW':
-        return 'Withdraw'
-      case 'INCREASE_LOCK_AMOUNT':
-        return 'Increase Lock Amount'
-      case 'INCREASE_UNLOCK_TIME':
-        return 'Increase Unlock Time'
-    }
-  }
 
   return (
     <PaginatedTable<UserLockFormatted>
