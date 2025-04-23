@@ -1,15 +1,16 @@
 import { curvejsValidationSuite } from '@/dao/entities/validation/curvejs-validation'
 import type { ChainId } from '@/dao/types/dao.types'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { CurveApi } from '@ui-kit/shared/useApiStore'
 
 const _fetchUserGaugeVoteNextTime = async ({
   chainId,
   gaugeAddress,
   userAddress,
 }: ChainQuery<ChainId> & { gaugeAddress: string; userAddress: string }) => {
-  const curve = useApiStore.getState().curve
+  const curve = getLib<CurveApi>()
 
   return await curve!.dao.voteForGaugeNextTime(gaugeAddress)
 }

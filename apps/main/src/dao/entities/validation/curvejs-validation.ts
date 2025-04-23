@@ -1,8 +1,9 @@
 import { enforce, group, test } from 'vest'
 import type { ChainId } from '@/dao/types/dao.types'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import type { CurveApi } from '@ui-kit/shared/useApiStore'
 
 export const chainValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
   group('chainValidation', () => {
@@ -14,7 +15,7 @@ export const chainValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
 export const curvejsValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
-      const { curve } = useApiStore.getState()
+      const curve = getLib<CurveApi>()
       enforce(curve?.chainId).message('Chain ID should be loaded').equals(chainId).message('Incorrect chain ID')
     })
   })
