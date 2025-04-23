@@ -421,6 +421,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           chainId: Chain.Ethereum,
           gaugeAddress,
           userAddress,
+          enabled: true,
         })
 
         set(

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
-import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
+import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -18,19 +18,19 @@ type GaugeWeightDistributionProps = {
 
 const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
   const {
-    userGaugeWeightVotes,
+    data: userGaugeWeightVotes,
     isSuccess: userGaugeWeightsSuccess,
     isLoading: userGaugeWeightsLoading,
     isError: userGaugeWeightsError,
-  } = useUserGaugeWeightVotes({
+  } = useUserGaugeWeightVotesQuery({
     chainId: 1, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
 
-  const loading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
-  const error = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
-  const success = isUserVotes ? userGaugeWeightsSuccess : gaugesLoading === 'SUCCESS'
+  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
+  const isError = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
+  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesLoading === 'SUCCESS'
 
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
@@ -63,24 +63,24 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     <Wrapper variant="secondary">
       <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
         <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
-        {loading && (
+        {isLoading && (
           <StyledSpinnerWrapper>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {error && (
+        {isError && (
           <ErrorMessageWrapper>
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
           </ErrorMessageWrapper>
         )}
-        {success && formattedData.length > 0 && (
+        {isSuccess && formattedData.length > 0 && (
           <BarChartComponent
             data={formattedData}
             dataKey={dataKey as keyof (typeof formattedData)[0]}
             CustomTooltip={isUserVotes ? GaugeVotingCustomTooltip : GaugesCustomTooltip}
           />
         )}
-        {success && formattedData.length === 0 && (
+        {!isLoading && !isError && formattedData.length === 0 && (
           <ErrorMessageWrapper>
             <ErrorMessage
               message={isUserVotes ? t`No gauge votes found` : t`No gauges with with >0.5% relative gauge weight found`}

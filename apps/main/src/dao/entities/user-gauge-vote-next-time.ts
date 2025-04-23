@@ -9,7 +9,9 @@ const _fetchUserGaugeVoteNextTime = async ({
   chainId,
   gaugeAddress,
   userAddress,
-}: ChainQuery<ChainId> & { gaugeAddress: string; userAddress: string }) => {
+  enabled,
+}: ChainQuery<ChainId> & { gaugeAddress: string; userAddress: string; enabled: boolean }) => {
+  if (!enabled) return null
   const curve = getLib<CurveApi>()
 
   return await curve!.dao.voteForGaugeNextTime(gaugeAddress)
@@ -17,12 +19,13 @@ const _fetchUserGaugeVoteNextTime = async ({
 
 export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUserGaugeVoteNextTimeQuery } =
   queryFactory({
-    queryKey: (params: ChainParams<ChainId> & { gaugeAddress: string; userAddress: string }) =>
+    queryKey: (params: ChainParams<ChainId> & { gaugeAddress: string; userAddress: string; enabled: boolean }) =>
       [
         'user-gauge-vote-next-time',
         { chainId: params.chainId },
         { gaugeAddress: params.gaugeAddress },
         { userAddress: params.userAddress },
+        { enabled: params.enabled },
       ] as const,
     queryFn: _fetchUserGaugeVoteNextTime,
     validationSuite: curvejsValidationSuite,

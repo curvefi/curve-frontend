@@ -1,7 +1,7 @@
 import produce from 'immer'
 import type { GetState, SetState } from 'zustand'
 import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
-import { invalidateUserProposalVoteQuery } from '@/dao/entities/user-proposal-vote'
+import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
@@ -162,11 +162,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const userAddress = get().user.userAddress
 
           if (userAddress) {
-            invalidateUserProposalVoteQuery({
+            invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
+            invalidateUserProposalVotesQuery({
               userAddress,
-              proposalId: voteId,
-              proposalType: voteType,
-              txHash: voteResponseHash,
             })
           }
         }

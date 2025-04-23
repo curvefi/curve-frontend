@@ -5,7 +5,7 @@ import { useOverlayTriggerState } from 'react-stately'
 import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
-import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
+import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
@@ -37,7 +37,7 @@ const ComboBoxGauges = ({
   const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
 
-  const { userGaugeWeightVotes } = useUserGaugeWeightVotes({
+  const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })

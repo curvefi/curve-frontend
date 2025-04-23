@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
-import { useUserGaugeWeightVotes } from '@/dao/hooks/useUserGaugeWeightVotes'
+import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import useStore from '@/dao/store/useStore'
 import { getEthPath } from '@/dao/utils'
 import AlertBox from '@ui/AlertBox'
@@ -15,7 +15,7 @@ import { Chain } from '@ui-kit/utils/network'
 import { calculateUserPowerStale } from './utils'
 
 const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
-  const { userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotes({
+  const { data: userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })

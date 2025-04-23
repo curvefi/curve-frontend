@@ -8,6 +8,7 @@ import Tooltip from '@ui/Tooltip'
 import { formatNumber } from '@ui/utils'
 import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 
 const CrvStats = () => {
   const { provider } = useWallet()
@@ -22,7 +23,7 @@ const CrvStats = () => {
   const crv = usdRatesMapper.crv
 
   // protect against trying to load data on non-mainnet networks
-  const notMainnet = chainId !== 1
+  const notMainnet = chainId !== Chain.Ethereum
   const noProvider = !provider || notMainnet
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'

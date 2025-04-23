@@ -40,10 +40,13 @@ const GaugeListItem = ({
   addUserVote = false,
   userAddress = '',
 }: Props) => {
+  // userGaugeWeightVoteData is only passed to component in CurrentVotes.tsx
+  const isUserCurrentVotes = !!userGaugeWeightVoteData
   const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
     chainId: Chain.Ethereum,
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress ?? '',
     userAddress: userAddress,
+    enabled: isUserCurrentVotes, // only fetch if userGaugeWeightVoteData is available
   })
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
@@ -55,8 +58,6 @@ const GaugeListItem = ({
   )
   const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
-  // userGaugeWeightVoteData is only passed to component in CurrentVotes.tsx
-  const isUserCurrentVotes = userGaugeWeightVoteData
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
 
   const gaugeHistoryLoading =
