@@ -1,4 +1,4 @@
-export const abiVeCrv = [
+export const ABI_VECRV = [
   {
     name: 'balanceOfAt',
     outputs: [{ type: 'uint256', name: '' }],

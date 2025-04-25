@@ -1,8 +1,8 @@
 import { Contract } from 'ethers'
 import produce from 'immer'
 import type { GetState, SetState } from 'zustand'
-import { abiVeCrv } from '@/dao/store/abis'
-import { contractVeCRV } from '@/dao/store/contracts'
+import { ABI_VECRV } from '@/dao/abis/vecrv'
+import { CONTRACT_VECRV } from '@/dao/constants'
 import type { State } from '@/dao/store/useStore'
 import {
   CurveApi,
@@ -242,7 +242,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         }),
       )
 
-      const contract = new Contract(contractVeCRV, abiVeCrv, signer)
+      const contract = new Contract(CONTRACT_VECRV, ABI_VECRV, signer)
       const snapshotValue = await contract.balanceOfAt(userAddress, snapshot)
 
       set(

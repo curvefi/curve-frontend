@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
 import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -11,11 +11,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 
 const CrvStats = () => {
+  const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
   const { lib: curve } = useConnection<CurveApi>()
   const chainId = curve?.chainId
-  const veCrvData = useStore((state) => state.analytics.veCrvData)
-  const getVeCrvData = useStore((state) => state.analytics.getVeCrvData)
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const usdRatesLoading = useStore((state) => state.usdRates.loading)
@@ -25,20 +24,16 @@ const CrvStats = () => {
   // protect against trying to load data on non-mainnet networks
   const notMainnet = chainId !== Chain.Ethereum
   const noProvider = !provider || notMainnet
-  const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const aprLoading = veCrvLoading || veCrvFeesLoading || usdRatesLoading || !crv
-
-  useEffect(() => {
-    if (provider && notMainnet && veCrvData.totalCrv === 0n && veCrvData.fetchStatus !== 'ERROR') {
-      void getVeCrvData(provider)
-    }
-  }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider, notMainnet])
+  const aprLoading = statsLoading || veCrvFeesLoading || usdRatesLoading || !crv
 
   const veCrvApr =
-    aprLoading || notMainnet ? 0 : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
+    aprLoading || notMainnet || !statsSuccess
+      ? 0
+      : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
 
-  const loading = Boolean(provider && veCrvLoading)
+  const loading = Boolean(provider && statsLoading)
+
   return (
     <Wrapper>
       <Container>
@@ -49,7 +44,9 @@ const CrvStats = () => {
             title={t`Total CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalCrv.fromWei(), { notation: 'compact' })}
+                {noProvider || !statsSuccess
+                  ? '-'
+                  : formatNumber(veCrvData.totalCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -58,7 +55,9 @@ const CrvStats = () => {
             title={t`Locked CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv.fromWei(), { notation: 'compact' })}
+                {noProvider || !statsSuccess
+                  ? '-'
+                  : formatNumber(veCrvData.totalLockedCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -67,7 +66,9 @@ const CrvStats = () => {
             title={t`veCRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv.fromWei(), { notation: 'compact' })}
+                {noProvider || !statsSuccess
+                  ? '-'
+                  : formatNumber(veCrvData.totalVeCrv.fromWei(), { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -89,7 +90,7 @@ const CrvStats = () => {
             title={t`CRV Supply Locked`}
             data={
               <MetricsColumnData>
-                {noProvider
+                {noProvider || !statsSuccess
                   ? '-'
                   : `${formatNumber(veCrvData.lockedPercentage, {
                       notation: 'compact',
@@ -98,12 +99,12 @@ const CrvStats = () => {
             }
           />
           <MetricsComp
-            loading={Boolean(provider && (veCrvLoading || veCrvFeesLoading || aprLoading))}
+            loading={Boolean(provider && (statsLoading || veCrvFeesLoading || aprLoading))}
             title={t`veCRV APR`}
             data={
               <AprRow>
                 <MetricsColumnData noMargin>
-                  {noProvider ? '-' : `~${formatNumber(veCrvApr, { notation: 'compact' })}%`}
+                  {noProvider || !statsSuccess ? '-' : `~${formatNumber(veCrvApr, { notation: 'compact' })}%`}
                 </MetricsColumnData>
               </AprRow>
             }
