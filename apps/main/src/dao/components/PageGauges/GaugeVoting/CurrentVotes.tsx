@@ -27,12 +27,7 @@ type CurrentVotesProps = {
 }
 
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
-  [...gauges].sort((a, b) => {
-    if (order === 'asc') {
-      return a[sortBy] - b[sortBy]
-    }
-    return b[sortBy] - a[sortBy]
-  })
+  [...gauges].sort((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
 const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)

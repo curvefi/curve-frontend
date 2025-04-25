@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import PendingTx from '@/dao/components/UserBox/PendingTx'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import useStore from '@/dao/store/useStore'
-import { SnapshotVotingPower, ActiveProposal, TransactionState } from '@/dao/types/dao.types'
+import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -12,6 +12,7 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+
 type Props = {
   userAddress: string
   activeProposal?: ActiveProposal
@@ -30,18 +31,18 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
   const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
     userAddress,
   })
-  const proposalKey = `${proposalId}-${proposalType.toLowerCase()}`
-  const proposal = proposalsMapper?.[proposalKey ?? ''] ?? null
+  const proposalKey = createProposalKey(proposalId, proposalType)
+  const proposal = proposalsMapper?.[proposalKey] ?? null
   const castVote = useStore((state) => state.proposals.castVote)
   const voteTxMapper = useStore((state) => state.proposals.voteTxMapper)
   const executeProposal = useStore((state) => state.proposals.executeProposal)
   const executeTxMapper = useStore((state) => state.proposals.executeTxMapper)
 
-  const voteTx = voteTxMapper[proposalKey ?? ''] ?? null
-  const executeTx = executeTxMapper[proposalKey ?? ''] ?? null
+  const voteTx = voteTxMapper[proposalKey] ?? null
+  const executeTx = executeTxMapper[proposalKey] ?? null
 
-  const votedFor = userProposalVotes?.[proposalKey ?? ''] ? userProposalVotes[proposalKey].voteFor > 0 : false
-  const votedAgainst = userProposalVotes?.[proposalKey ?? ''] ? userProposalVotes[proposalKey].voteAgainst > 0 : false
+  const votedFor = userProposalVotes?.[proposalKey] ? userProposalVotes[proposalKey].voteFor > 0 : false
+  const votedAgainst = userProposalVotes?.[proposalKey] ? userProposalVotes[proposalKey].voteAgainst > 0 : false
   const voted = votedFor || votedAgainst
 
   const executeProposalComponent = () => (
@@ -153,21 +154,11 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
             isFor
             variant="icon-filled"
             onClick={() => castVote(proposalId, proposalType, true)}
-            loading={
-              (voteTx?.status as TransactionState) === 'CONFIRMING' ||
-              (voteTx?.status as TransactionState) === 'LOADING'
-            }
+            loading={false}
           >
             {t`Vote For`}
           </VoteButton>
-          <VoteButton
-            variant="icon-filled"
-            onClick={() => castVote(proposalId, proposalType, false)}
-            loading={
-              (voteTx?.status as TransactionState) === 'CONFIRMING' ||
-              (voteTx?.status as TransactionState) === 'LOADING'
-            }
-          >
+          <VoteButton variant="icon-filled" onClick={() => castVote(proposalId, proposalType, false)} loading={false}>
             {t`Vote Against`}
           </VoteButton>
         </Box>

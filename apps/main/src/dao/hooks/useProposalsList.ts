@@ -31,15 +31,10 @@ const sortProposals = (
       ['desc'],
     )
 
-    return activeSortDirection === 'asc'
-      ? [
-          ...orderBy(activeProposals, [(proposal) => proposal.timestamp + WEEK - currentTimestamp], ['desc']),
-          ...passedProposals,
-        ]
-      : [
-          ...orderBy(activeProposals, [(proposal) => proposal.timestamp + WEEK - currentTimestamp], ['asc']),
-          ...passedProposals,
-        ]
+    return [
+      ...orderBy(activeProposals, [(proposal) => proposal.timestamp + WEEK - currentTimestamp], [activeSortDirection]),
+      ...passedProposals,
+    ]
   }
 
   // sort by time created

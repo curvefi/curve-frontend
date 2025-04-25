@@ -7,6 +7,7 @@ import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 import BarChartComponent from '../../Charts/BarChartComponent'
 import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
 import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
@@ -23,7 +24,7 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     isLoading: userGaugeWeightsLoading,
     isError: userGaugeWeightsError,
   } = useUserGaugeWeightVotesQuery({
-    chainId: 1, // DAO is only used on mainnet
+    chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)

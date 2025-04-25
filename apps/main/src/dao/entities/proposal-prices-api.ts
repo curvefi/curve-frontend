@@ -14,9 +14,7 @@ const _fetchProposalPricesApi = async ({
   // txHash is passed to force the API to update after fe. casting a vote or a proposal execution
   txHash?: string
 }) => {
-  const proposal = txHash
-    ? await getProposal(proposalId, proposalType, txHash)
-    : await getProposal(proposalId, proposalType)
+  const proposal = await getProposal(proposalId, proposalType, txHash)
 
   const parsedProposal = {
     ...proposal,

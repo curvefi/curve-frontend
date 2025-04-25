@@ -1,6 +1,6 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getProposals } from '@curvefi/prices-api/proposal/api'
-import { Proposal } from '@curvefi/prices-api/proposal/models'
+import type { Proposal, ProposalType } from '@curvefi/prices-api/proposal/models'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -17,6 +17,9 @@ export type ProposalData = Omit<Proposal, 'timestamp'> & {
 export type ProposalsMapper = {
   [voteId: string]: ProposalData
 }
+
+export const createProposalKey = (proposalId: number, proposalType: ProposalType) =>
+  `${proposalId}-${proposalType.toLowerCase()}`
 
 const getProposalStatus = (
   timestamp: number,
@@ -53,14 +56,16 @@ const parseProposalData = (proposal: Proposal) => {
 const _fetchProposals = async (): Promise<ProposalsMapper> => {
   const pagination = 500
   const results: Proposal[] = await paginate(
-    (page, offset) => getProposals(page, offset, '', 'all', 'all'),
+    async (page, offset) => {
+      const result = await getProposals(page, offset, '', 'all', 'all')
+      return result.proposals
+    },
     1,
     pagination,
-    (response) => response.proposals,
   )
 
   const proposalsMapper = results.reduce((mapper, proposal) => {
-    mapper[`${proposal.id}-${proposal.type.toLowerCase()}`] = parseProposalData(proposal)
+    mapper[createProposalKey(proposal.id, proposal.type)] = parseProposalData(proposal)
     return mapper
   }, {} as ProposalsMapper)
 

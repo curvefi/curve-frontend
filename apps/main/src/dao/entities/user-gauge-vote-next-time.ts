@@ -1,25 +1,28 @@
-import { curvejsValidationSuite } from '@/dao/entities/validation/curvejs-validation'
+import { enforce, group, test } from 'vest'
+import { chainValidationGroup, curvejsValidationGroup } from '@/dao/entities/validation/curvejs-validation'
 import type { ChainId } from '@/dao/types/dao.types'
-import { getLib } from '@ui-kit/features/connect-wallet'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 import { CurveApi } from '@ui-kit/shared/useApiStore'
 
-const _fetchUserGaugeVoteNextTime = async ({
-  chainId,
-  gaugeAddress,
-  userAddress,
-  enabled,
-}: ChainQuery<ChainId> & { gaugeAddress: string; userAddress: string; enabled: boolean }) => {
-  if (!enabled) return null
-  const curve = getLib<CurveApi>()
+export const userGaugeVoteNextTimeValidationGroup = ({ enabled }: { enabled: boolean }) =>
+  group('userGaugeVoteNextTimeEnabled', () => {
+    test('enabled', () => {
+      enforce(enabled).message('Enabled should be true')
+    })
+  })
 
-  return await curve!.dao.voteForGaugeNextTime(gaugeAddress)
-}
+type QueryParams = ChainQuery<ChainId> & { gaugeAddress: string; userAddress: string; enabled: boolean }
+type QueryKeyParams = ChainParams<ChainId> & { gaugeAddress: string; userAddress: string; enabled: boolean }
+
+const _fetchUserGaugeVoteNextTime = ({ gaugeAddress, enabled }: QueryParams) =>
+  requireLib<CurveApi>().dao.voteForGaugeNextTime(gaugeAddress)
 
 export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUserGaugeVoteNextTimeQuery } =
   queryFactory({
-    queryKey: (params: ChainParams<ChainId> & { gaugeAddress: string; userAddress: string; enabled: boolean }) =>
+    queryKey: (params: QueryKeyParams) =>
       [
         'user-gauge-vote-next-time',
         { chainId: params.chainId },
@@ -28,5 +31,9 @@ export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUs
         { enabled: params.enabled },
       ] as const,
     queryFn: _fetchUserGaugeVoteNextTime,
-    validationSuite: curvejsValidationSuite,
+    validationSuite: createValidationSuite((params: QueryKeyParams) => {
+      chainValidationGroup(params)
+      curvejsValidationGroup(params)
+      userGaugeVoteNextTimeValidationGroup(params)
+    }),
   })

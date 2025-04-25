@@ -22,11 +22,10 @@ type UserProposalVotesMapper = {
 }
 
 const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string }) => {
-  const pagination = 1000
   const results: UserProposalVote[] = await paginate(
     (page, offset) => getUserProposalVotes(userAddress, page, offset),
     1,
-    pagination,
+    1000,
   )
 
   const userProposalVotesMapper = results.reduce((mapper: UserProposalVotesMapper, vote: UserProposalVote) => {
