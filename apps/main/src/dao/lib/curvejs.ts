@@ -46,10 +46,9 @@ export const helpers = {
 }
 
 const lockCrv = {
-  vecrvInfo: async (activeKey: string, curve: CurveApi, walletAddress: string) => {
+  vecrvInfo: async (curve: CurveApi, walletAddress: string) => {
     log('vecrvInfo', curve.chainId, walletAddress)
     const resp = {
-      activeKey,
       resp: {
         crv: '',
         lockedAmountAndUnlockTime: { lockedAmount: '', unlockTime: 0 },

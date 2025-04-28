@@ -1,12 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-import {
-  DEFAULT_FORM_EST_GAS,
-  DEFAULT_FORM_STATUS,
-  DEFAULT_FORM_VALUES,
-  DEFAULT_USER_LOCKED_CRV_INFO,
-} from '@/dao/components/PageVeCrv/utils'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
+import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
@@ -16,9 +12,9 @@ import {
   FnStepEstGasApprovalResponse,
   FnStepResponse,
 } from '@/dao/types/dao.types'
-import { formatNumber, shortenAccount } from '@ui/utils'
+import { Address } from '@curvefi/prices-api'
+import { shortenAccount } from '@ui/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import dayjs from '@ui-kit/lib/dayjs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -28,7 +24,6 @@ type SliceState = {
   formEstGas: { [activeKey: string]: FormEstGas }
   formValues: FormValues
   formStatus: FormStatus
-  vecrvInfo: { [vecrvInfoActiveKey: string]: VecrvInfo }
 }
 
 const sliceKey = 'lockedCrv'
@@ -36,7 +31,6 @@ const sliceKey = 'lockedCrv'
 // prettier-ignore
 export type LockedCrvSlice = {
   [sliceKey]: SliceState & {
-    fetchVecrvInfo: (curve: CurveApi) => Promise<VecrvInfo>
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 
     // steps
@@ -59,41 +53,11 @@ export const DEFAULT_STATE: SliceState = {
   formEstGas: {},
   formValues: DEFAULT_FORM_VALUES,
   formStatus: DEFAULT_FORM_STATUS,
-  vecrvInfo: {},
 }
 
 const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-
-    fetchVecrvInfo: async (curve) => {
-      let resp = cloneDeep(DEFAULT_USER_LOCKED_CRV_INFO)
-      const activeKey = getActiveKeyVecrvInfo(curve, curve.signerAddress)
-
-      if (curve.signerAddress) {
-        get()[sliceKey].setStateByKey('activeKeyVecrvInfo', activeKey)
-        const fn = networks[curve.chainId].api.lockCrv.vecrvInfo
-        const fetchedResp = await fn(activeKey, curve, curve.signerAddress)
-
-        if (fetchedResp.error) {
-          const storedFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          storedFormStatus.error = fetchedResp.error
-          get()[sliceKey].setStateByKey('formStatus', cloneDeep(storedFormStatus))
-        }
-
-        get()[sliceKey].setStateByKeys({
-          activeKeyVecrvInfo: fetchedResp.activeKey,
-          vecrvInfo: { [fetchedResp.activeKey]: fetchedResp.resp },
-        })
-        resp = fetchedResp.resp
-      } else {
-        get()[sliceKey].setStateByKeys({
-          activeKeyVecrvInfo: activeKey,
-          vecrvInfo: { [activeKey]: resp },
-        })
-      }
-      return resp
-    },
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
       // stored state
       const storedFormValues = get()[sliceKey].formValues
@@ -225,15 +189,10 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           }
 
           // re-fetch data
-          const fetchedVecrvInfo = await get()[sliceKey].fetchVecrvInfo(curve)
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
-          }
-          if (fetchedVecrvInfo) {
-            const lockedAmt = formatNumber(fetchedVecrvInfo.lockedAmountAndUnlockTime.lockedAmount)
-            const lockedDate = dayjs.utc(fetchedVecrvInfo.lockedAmountAndUnlockTime.unlockTime).format('l')
-            return { ...resp, lockedAmt, lockedDate }
           }
         }
       }
@@ -269,7 +228,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch data
-          void get()[sliceKey].fetchVecrvInfo(curve)
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -310,7 +269,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch data
-          void get()[sliceKey].fetchVecrvInfo(curve)
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
