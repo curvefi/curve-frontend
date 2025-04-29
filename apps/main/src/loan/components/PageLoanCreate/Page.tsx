@@ -42,10 +42,7 @@ const Page = (params: CollateralUrlParams) => {
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
-  const {
-    collateralId: rCollateralId,
-    formType: [rFormType],
-  } = params
+  const { collateralId: rCollateralId, formType: [rFormType] = [] } = params
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 

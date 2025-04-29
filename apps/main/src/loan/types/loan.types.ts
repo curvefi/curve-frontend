@@ -11,7 +11,7 @@ import type { BaseConfig } from '@ui/utils'
 import type { WalletState } from '@web3-onboard/core'
 
 export type NetworkUrlParams = { network: INetworkName }
-type CollateralExtraParams = { collateralId: string; formType: string[] }
+type CollateralExtraParams = { collateralId: string; formType?: string[] }
 export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
