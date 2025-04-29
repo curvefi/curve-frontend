@@ -6,7 +6,6 @@ import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import { type Theme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -36,7 +35,8 @@ export const MobileHeader = <TChainId extends number>({
   pages,
   appStats,
   sections,
-  ChainProps,
+  chainId,
+  chains,
   globalAlertRef,
   height,
   isLite = false,
@@ -46,14 +46,8 @@ export const MobileHeader = <TChainId extends number>({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
-  const { connect } = useWallet()
 
-  useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
-
-  const onConnect = useCallback(() => {
-    closeSidebar()
-    return connect()
-  }, [closeSidebar, connect])
+  useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
   const otherAppSections = useMemo(
     () =>
@@ -69,11 +63,11 @@ export const MobileHeader = <TChainId extends number>({
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={ChainProps.chainId} />
+        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={chainId} />
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
-            ChainProps={{ ...ChainProps, headerHeight: height }}
+            ChainProps={{ chainId, options: chains, headerHeight: height }}
             currentMenu={currentMenu}
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
@@ -115,7 +109,7 @@ export const MobileHeader = <TChainId extends number>({
               <SocialSidebarSection title={t`Community`} />
             </Box>
 
-            <SideBarFooter />
+            <SideBarFooter onConnect={closeSidebar} />
           </Drawer>
         </Toolbar>
       </AppBar>

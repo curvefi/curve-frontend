@@ -78,6 +78,7 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
         .map((networkConfig) => ({
           label: networkConfig.name,
           chainId: networkConfig.chainId,
+          networkId: networkConfig.networkId,
           src: networkConfig.logoSrc,
           srcDark: networkConfig.logoSrcDark,
           isTestnet: networkConfig.isTestnet,

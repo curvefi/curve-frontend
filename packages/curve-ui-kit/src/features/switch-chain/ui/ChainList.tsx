@@ -1,4 +1,6 @@
 import groupBy from 'lodash/groupBy'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment, useMemo, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -21,25 +23,31 @@ enum ChainType {
 
 function ChainListItem<TChainId extends number>({
   chain,
-  onChange,
   isSelected,
 }: {
   chain: ChainOption<TChainId>
-  onChange: (chainId: TChainId) => void
   isSelected: boolean
 }) {
   const ref = useRef<HTMLLIElement | null>(null)
+  const pathname = usePathname() ?? ''
+  const { networkId, label, chainId } = chain
+  const href = useMemo(() => {
+    const [_, appName, _currentNetwork, ...rest] = pathname.split('/')
+    return `/${appName}/${networkId}/${rest.join('/')}`
+  }, [networkId, pathname])
+
   return (
     <InvertOnHover hoverEl={ref.current}>
       <MenuItem
-        onClick={() => onChange(chain.chainId)}
-        data-testid={`menu-item-chain-${chain.chainId}`}
+        component={Link}
+        href={href}
+        data-testid={`menu-item-chain-${chainId}`}
         selected={isSelected}
         tabIndex={0}
       >
         <ChainSwitcherIcon chain={chain} size={36} />
         <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-          {chain.label}
+          {label}
         </Typography>
         {isSelected && <CheckedIcon />}
       </MenuItem>
@@ -49,11 +57,9 @@ function ChainListItem<TChainId extends number>({
 
 export function ChainList<TChainId extends number>({
   options,
-  onChange,
   showTestnets,
   selectedNetwork,
 }: {
-  onChange: (chainId: TChainId) => void
   options: ChainOption<TChainId>[]
   showTestnets: boolean
   selectedNetwork: ChainOption<TChainId>
@@ -94,7 +100,6 @@ export function ChainList<TChainId extends number>({
                     <ChainListItem
                       key={chain.chainId}
                       chain={chain}
-                      onChange={onChange}
                       isSelected={chain.chainId == selectedNetwork?.chainId}
                     />
                   ))}
