@@ -8,7 +8,7 @@ import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { useStablecoinConnection } from '@/loan/temp-lib'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
-import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
+import { getPath, getRestFullPathname, useChainId } from '@/loan/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
 import { isLoading } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -28,7 +28,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId, rNetwork } = parseNetworkFromUrl(params)
+  const rChainId = useChainId(params)
   const { lib, connectState } = useStablecoinConnection()
 
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
@@ -42,7 +42,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
 
   return (
     <NewHeader<ChainId>
-      networkId={rNetwork}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="crvusd"
       routes={APP_LINK.crvusd.routes}
@@ -51,8 +51,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
         onChange: useCallback(
-          (selectedChainId: ChainId) =>
-            rChainId !== selectedChainId && push(getPath(params, getRestFullPathname(params))),
+          (selectedChainId: ChainId) => rChainId !== selectedChainId && push(getPath(params, getRestFullPathname())),
           [rChainId, push, params],
         ),
       }}

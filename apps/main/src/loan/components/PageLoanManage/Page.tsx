@@ -8,13 +8,12 @@ import LoanInfoUser from '@/loan/components/LoanInfoUser'
 import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
-import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection } from '@/loan/temp-lib'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import { getCollateralListPathname, getLoanCreatePathname } from '@/loan/utils/utilsRouter'
+import { getCollateralListPathname, getLoanCreatePathname, useChainId } from '@/loan/utils/utilsRouter'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -37,9 +36,14 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
-  const { curve, routerParams, pageLoaded } = usePageOnMount()
+  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
-  const { rChainId, rCollateralId, rFormType } = routerParams
+  const rChainId = useChainId(params)
+  const {
+    collateralId: rCollateralId,
+    formType: [rFormType],
+  } = params
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -50,9 +54,7 @@ const Page = (params: CollateralUrlParams) => {
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const { connectState } = useLendConnection()
-  const { connect: connectWallet } = useWallet()
-  const { provider } = useWallet()
+  const { provider, connect: connectWallet } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 

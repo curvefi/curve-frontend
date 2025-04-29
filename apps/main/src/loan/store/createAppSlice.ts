@@ -2,7 +2,7 @@ import { Contract, ContractRunner, ethers } from 'ethers'
 import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/loan/store/useStore'
+import { type State } from '@/loan/store/useStore'
 import type { TempApi } from '@/loan/temp-lib'
 import { Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
@@ -63,7 +63,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   hydrate: async (tempApi: TempApi, prevTempApi: TempApi | null, wallet: Wallet | null) => {
     if (!tempApi) return
 
-    const { loans, usdRates } = get()
+    const { loans, usdRates, campaigns, collaterals } = get()
     const curveApi = tempApi.stablecoin
     const prevCurveApi = prevTempApi?.stablecoin
 
@@ -82,10 +82,11 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     }
 
     // Check if curveApi is actually a Curve instance and not a LendingApi
-    const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
+    const { collateralDatas } = await collaterals.fetchCollaterals(curveApi)
     await loans.fetchLoansDetails(curveApi, collateralDatas)
 
     if (!prevCurveApi || isNetworkSwitched) {
+      campaigns.initCampaignRewards(curveApi.chainId)
       void usdRates.fetchAllStoredUsdRates(curveApi)
     }
 

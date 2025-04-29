@@ -6,13 +6,17 @@ import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
-import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection } from '@/loan/temp-lib'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import { type CollateralUrlParams, type Curve, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import {
+  getCollateralListPathname,
+  getLoanCreatePathname,
+  getLoanManagePathname,
+  useChainId,
+} from '@/loan/utils/utilsRouter'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -34,10 +38,14 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
-  const { routerParams, curve, pageLoaded } = usePageOnMount()
+  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const pageLoaded = !isLoading(connectState)
+  const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
-  const { rChainId, rCollateralId, rFormType } = routerParams
-  const { connectState } = useLendConnection()
+  const {
+    collateralId: rCollateralId,
+    formType: [rFormType],
+  } = params
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 

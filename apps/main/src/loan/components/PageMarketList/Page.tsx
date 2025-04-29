@@ -7,14 +7,13 @@ import CollateralList from '@/loan/components/PageMarketList/index'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
 import { ROUTE, TITLE } from '@/loan/constants'
-import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import Settings from '@/loan/layout/Settings'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection } from '@/loan/temp-lib'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
-import { getPath } from '@/loan/utils/utilsRouter'
+import { getPath, useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
@@ -28,15 +27,13 @@ enum SEARCH {
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { pageLoaded, routerParams, curve } = usePageOnMount()
+  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
-  const { rChainId } = routerParams
-  const { provider } = useWallet()
-
+  const rChainId = useChainId(params)
+  const { connect: connectWallet, provider } = useWallet()
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
-  const { connectState } = useLendConnection()
-  const { connect: connectWallet } = useWallet()
 
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)

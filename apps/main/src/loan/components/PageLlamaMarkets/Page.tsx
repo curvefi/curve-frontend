@@ -12,7 +12,6 @@ import {
 } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
-import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
@@ -67,7 +66,6 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
 
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
-  usePageOnMount() // required for connecting wallet
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>

@@ -2,25 +2,22 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import IntegrationsComp from '@/loan/components/PageIntegrations/index'
-import { usePageOnMount } from '@/loan/hooks/usePageOnMount'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import { useChainId } from '@/loan/utils/utilsRouter'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
-  const {
-    routerParams: { rChainId },
-  } = usePageOnMount(true)
+  const rChainId = useChainId(params)
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
     void init(rChainId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [init, rChainId])
 
   return (
     <Container>
