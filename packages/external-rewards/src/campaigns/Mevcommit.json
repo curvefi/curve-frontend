@@ -1,0 +1,21 @@
+{
+  "campaignName": "Mev-commit Points",
+  "platform": "null",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "mev-commit.png",
+  "dashboardLink": "null",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x5Fc50C99E175DFeB8Faa7613e050645583Ac1501",
+      "network": "ethereum",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
