@@ -1,6 +1,6 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
@@ -46,6 +46,13 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams?.get('slippage')
+  const searchedParams = useMemo(
+    () => ({
+      fromAddress: paramsFromAddress,
+      toAddress: paramsToAddress,
+    }),
+    [paramsFromAddress, paramsToAddress],
+  )
 
   const redirect = useCallback(
     (to: string, from: string) => {
@@ -141,10 +148,7 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
             curve={curve}
             pageLoaded={loaded}
             params={props}
-            searchedParams={{
-              fromAddress: paramsFromAddress,
-              toAddress: paramsToAddress,
-            }}
+            searchedParams={searchedParams}
             rChainId={rChainId}
             tokensMapper={tokensMapper}
             tokensMapperStr={tokensMapperStr}
