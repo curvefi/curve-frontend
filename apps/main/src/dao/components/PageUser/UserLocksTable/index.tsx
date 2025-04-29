@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
+import { orderBy } from 'lodash'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/TableRow'
+import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '@/dao/entities/user-locks'
 import useStore from '@/dao/store/useStore'
-import { UserLock, UserLocksSortBy, veCrvLockType } from '@/dao/types/dao.types'
+import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
+import { LockType } from '@curvefi/prices-api/dao/models'
 import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LOCKS_LABELS } from '../constants'
@@ -11,65 +13,57 @@ interface UserLocksTableProps {
   userAddress: string
 }
 
+const sortUserLocks = (locks: UserLockFormatted[], sortBy: { key: UserLocksSortBy; order: SortDirection }) => {
+  const { key, order } = sortBy
+  return orderBy(locks, [key], [order])
+}
+
+const lockTypeLabel = (lockType: LockType) => {
+  switch (lockType) {
+    case 'CREATE_LOCK':
+      return 'Create Lock'
+    case 'WITHDRAW':
+      return 'Withdraw'
+    case 'INCREASE_LOCK_AMOUNT':
+      return 'Increase Lock Amount'
+    case 'INCREASE_UNLOCK_TIME':
+      return 'Increase Unlock Time'
+  }
+}
+
 const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
-  const getUserLocks = useStore((state) => state.user.getUserLocks)
-  const userLocksMapper = useStore((state) => state.user.userLocksMapper)
+  const { data: userLocks, isLoading, isError, isSuccess } = useUserLocksQuery({ userAddress })
   const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
   const setUserLocksSortBy = useStore((state) => state.user.setUserLocksSortBy)
 
-  const gridTemplateColumns = '7rem 1fr 10rem 8rem'
+  const gridTemplateColumns = '2fr 1fr 1fr 1fr'
   const minWidth = 36
 
-  const userLocksLoading = userLocksMapper[userAddress]
-    ? userLocksMapper[userAddress]?.fetchingState === 'LOADING'
-    : true
-  const userLocksError = userLocksMapper[userAddress] ? userLocksMapper[userAddress]?.fetchingState === 'ERROR' : false
-
-  const lockTypeLabel = (lockType: veCrvLockType) => {
-    switch (lockType) {
-      case 'CREATE_LOCK':
-        return 'Create Lock'
-      case 'WITHDRAW':
-        return 'Withdraw'
-      case 'INCREASE_LOCK_AMOUNT':
-        return 'Increase Lock Amount'
-      case 'INCREASE_UNLOCK_TIME':
-        return 'Increase Unlock Time'
-    }
-  }
-
-  // Get user locks
-  useEffect(() => {
-    if (!userLocksMapper[userAddress] && userLocksLoading && !userLocksError) {
-      void getUserLocks(userAddress)
-    }
-  }, [getUserLocks, userAddress, userLocksMapper, userLocksLoading, userLocksError])
-
   return (
-    <PaginatedTable<UserLock>
-      data={userLocksMapper[userAddress]?.locks ?? []}
+    <PaginatedTable<UserLockFormatted>
+      data={sortUserLocks(userLocks ?? [], userLocksSortBy)}
       minWidth={minWidth}
-      fetchingState={userLocksMapper[userAddress]?.fetchingState ?? 'LOADING'}
+      isLoading={isLoading}
+      isError={isError}
+      isSuccess={isSuccess}
       columns={LOCKS_LABELS}
       sortBy={userLocksSortBy}
       errorMessage={t`An error occurred while fetching user locking activity.`}
-      setSortBy={(key) => setUserLocksSortBy(userAddress, key as UserLocksSortBy)}
-      getData={() => getUserLocks(userAddress.toLowerCase())}
+      setSortBy={(key) => setUserLocksSortBy(key as UserLocksSortBy)}
+      getData={() => invalidateUserLocks({ userAddress })}
       noDataMessage={t`No locking activity found for this user.`}
       gridTemplateColumns={gridTemplateColumns}
       renderRow={(lock, index) => (
         <TableRowWrapper key={index} columns={LOCKS_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
-          <TableData className={userLocksSortBy.key === 'date' ? 'sortby-active align-left' : 'align-left'}>
-            {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.date).getTime() / 1000))}
-          </TableData>
-          <TableData className="right-padding">{lockTypeLabel(lock.lock_type)}</TableData>
+          <TableData className="align-left">{lockTypeLabel(lock.lockType)}</TableData>
           <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatNumber(lock.amount, { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(Number(lock.amount), { showDecimalIfSmallNumberOnly: true })}
           </TableData>
-          <TableData
-            className={userLocksSortBy.key === 'unlock_time' ? 'sortby-active right-padding' : 'right-padding'}
-          >
-            {lock.unlock_time ? formatDateFromTimestamp(convertToLocaleTimestamp(lock.unlock_time)) : '-'}
+          <TableData className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}>
+            {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.timestamp).getTime() / 1000))}
+          </TableData>
+          <TableData className={userLocksSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}>
+            {lock.unlockTime ? formatDateFromTimestamp(convertToLocaleTimestamp(lock.unlockTime)) : '-'}
           </TableData>
         </TableRowWrapper>
       )}

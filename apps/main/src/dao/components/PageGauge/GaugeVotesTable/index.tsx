@@ -35,6 +35,9 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   const gaugeVotesError = gaugeVotesMapper[gaugeAddress]
     ? gaugeVotesMapper[gaugeAddress].fetchingState === 'ERROR'
     : false
+  const gaugeVotesSuccess = gaugeVotesMapper[gaugeAddress]
+    ? gaugeVotesMapper[gaugeAddress].fetchingState === 'SUCCESS'
+    : false
 
   // Get user proposal votes
   useEffect(() => {
@@ -48,7 +51,9 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       title={t`GAUGE VOTES`}
       data={gaugeVotes}
       minWidth={tableMinWidth}
-      fetchingState={gaugeVotesMapper[gaugeAddress]?.fetchingState ?? 'LOADING'}
+      isLoading={gaugeVotesLoading}
+      isError={gaugeVotesError}
+      isSuccess={gaugeVotesSuccess}
       columns={GAUGE_VOTES_TABLE_LABELS}
       sortBy={gaugeVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}

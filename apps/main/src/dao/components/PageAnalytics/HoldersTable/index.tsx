@@ -35,7 +35,9 @@ const TopHoldersTable = () => {
       <PaginatedTable
         data={holdersArray}
         minWidth={tableMinWidth}
-        fetchingState={veCrvHolders.fetchStatus ?? 'LOADING'}
+        isLoading={veCrvHolders.fetchStatus === 'LOADING'}
+        isError={veCrvHolders.fetchStatus === 'ERROR'}
+        isSuccess={veCrvHolders.fetchStatus === 'SUCCESS'}
         columns={HOLDERS_LABELS}
         sortBy={allHoldersSortBy}
         errorMessage={t`An error occurred while veCRV holders data.`}
