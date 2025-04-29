@@ -141,12 +141,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = useApiStore.getState().llamalend
-        const curve = useApiStore.getState().llamalend
         const fetchGasInfo = get().gas.fetchGasInfo
 
-        if (!curve) return
+        if (!lendApi) return
 
-        await fetchGasInfo(curve)
+        await fetchGasInfo(lendApi)
 
         try {
           // only returns number[] on base or optimism
@@ -162,12 +161,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = useApiStore.getState().llamalend
-        const curve = useApiStore.getState().llamalend
         const fetchGasInfo = get().gas.fetchGasInfo
 
-        if (!curve) return
+        if (!lendApi) return
 
-        await fetchGasInfo(curve)
+        await fetchGasInfo(lendApi)
 
         try {
           // only returns number[] on base or optimism
@@ -183,12 +181,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = useApiStore.getState().llamalend
-        const curve = useApiStore.getState().llamalend
         const fetchGasInfo = get().gas.fetchGasInfo
 
-        if (!curve) return
+        if (!lendApi) return
 
-        await fetchGasInfo(curve)
+        await fetchGasInfo(lendApi)
 
         try {
           // only returns number[] on base or optimism
@@ -204,18 +201,17 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     deploy: {
       depositApprove: async (amount: string) => {
         const lendApi = useApiStore.getState().llamalend
-        const curve = useApiStore.getState().llamalend
         const { provider } = useWallet.getState()
         const approveInfinite = get()[sliceKey].approveInfinite
 
         // TODO: check so curve always is set when approving
-        if (!lendApi || !curve || !provider) return
+        if (!lendApi || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = lendApi.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to approve ${amount} crvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfo(lendApi)
 
         get()[sliceKey].setStateByKey('approveDepositTransaction', {
           transactionStatus: 'confirming',
@@ -262,17 +258,16 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
       deposit: async (amount: string) => {
         const lendApi = useApiStore.getState().llamalend
-        const curve = useApiStore.getState().llamalend
         const { provider } = useWallet.getState()
 
-        if (!lendApi || !curve || !provider) return
+        if (!lendApi || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = lendApi.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
 
         let dismissNotificationHandler = notify(t`Please confirm to deposit ${amount} crvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfo(lendApi)
 
         get()[sliceKey].setStateByKey('depositTransaction', {
           transactionStatus: 'confirming',
@@ -321,16 +316,15 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
       withdraw: async (amount: string) => {
         const lendApi = useApiStore.getState().llamalend
-        const curve = useApiStore.getState().llamalend
         const { provider } = useWallet.getState()
 
-        if (!lendApi || !curve || !provider) return
+        if (!lendApi || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = lendApi.chainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfo(lendApi)
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
           transactionStatus: 'confirming',
