@@ -6,11 +6,14 @@ import { apiValidationGroup, chainValidationGroup } from './validation'
 
 export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
-  queryFn: async (chainId: ChainQuery<ChainId>): Promise<string[]> => {
+  queryFn: async (chainId: ChainQuery<ChainId>) => {
     const useAPI = chainId.chainId !== 146 // disable API for sonic
     const api = useApiStore.getState().lending!
     await api.oneWayfactory.fetchMarkets(useAPI)
-    return api.oneWayfactory.getMarketList()
+    const updatedAt = new Date() //
+    // Add date to the result so it is not cached by tanstack. Names may not have changed, but individual markets might
+    // The right thing to do is to return the markets data instead of the names, but that leaves curveJS in invalid state
+    return { updatedAt, markets: api.oneWayfactory.getMarketList() }
   },
   staleTime: '5m',
   refetchInterval: '1m',
