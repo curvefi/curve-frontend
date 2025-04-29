@@ -5,7 +5,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const TableCellMarketsTotalDebt = () => {
-  const chainId = useApiStore((state) => state.llamalend?.chainId)
+  const chainId = useApiStore((state) => state.stable?.chainId)
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}

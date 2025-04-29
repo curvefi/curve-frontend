@@ -9,7 +9,7 @@ async function _fetchSavingsUserBalances({
 }: {
   userAddress: string
 }): Promise<ScrvUsdUserBalances | null> {
-  const lendApi = useApiStore.getState().llamalend
+  const lendApi = useApiStore.getState().lending
 
   if (!lendApi) return null
 

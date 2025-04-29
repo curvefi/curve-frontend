@@ -9,7 +9,7 @@ import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { type CollateralUrlParams, Llamma, type LlamalendApi } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, Llamma, type Curve } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import {
@@ -42,7 +42,7 @@ const Page = (params: CollateralUrlParams) => {
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
-  const isLoadingApi = useApiStore((state) => state.isLoadingLlamalend)
+  const isLoadingApi = useApiStore((state) => state.isLoadingStable)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -68,7 +68,7 @@ const Page = (params: CollateralUrlParams) => {
   const isLeverage = rFormType === 'leverage'
 
   const fetchInitial = useCallback(
-    (curve: LlamalendApi, isLeverage: boolean, llamma: Llamma) => {
+    (curve: Curve, isLeverage: boolean, llamma: Llamma) => {
       // reset createLoan estGas, detailInfo state
       setStateByKeys({
         formEstGas: {},

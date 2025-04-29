@@ -27,8 +27,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const { rChainId, rNetwork } = parseNetworkFromUrl(params)
-  const llamalend = useApiStore((state) => state.llamalend)
-  const chainId = llamalend?.chainId
+  const curve = useApiStore((state) => state.stable)
+  const chainId = curve?.chainId
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])

@@ -4,7 +4,7 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
   CollateralData,
-  LlamalendApi,
+  Curve,
   Llamma,
   LoanDetails,
   LoanExists,
@@ -30,11 +30,11 @@ const sliceKey = 'loans'
 
 export type LoansSlice = {
   [sliceKey]: SliceState & {
-    fetchLoansDetails(curve: LlamalendApi, collateralDatas: CollateralData[]): Promise<void>
-    fetchLoanDetails(curve: LlamalendApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: LoanExists }>
-    fetchUserLoanWalletBalances(curve: LlamalendApi, llamma: Llamma): Promise<UserWalletBalances>
-    fetchUserLoanDetails(curve: LlamalendApi, llamma: Llamma): Promise<UserLoanDetails>
-    fetchUserLoanPartialDetails(curve: LlamalendApi, llamma: Llamma): Promise<Partial<UserLoanDetails>>
+    fetchLoansDetails(curve: Curve, collateralDatas: CollateralData[]): Promise<void>
+    fetchLoanDetails(curve: Curve, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: LoanExists }>
+    fetchUserLoanWalletBalances(curve: Curve, llamma: Llamma): Promise<UserWalletBalances>
+    fetchUserLoanDetails(curve: Curve, llamma: Llamma): Promise<UserLoanDetails>
+    fetchUserLoanPartialDetails(curve: Curve, llamma: Llamma): Promise<Partial<UserLoanDetails>>
     resetUserDetailsState(llamma: Llamma): void
 
     // steps helper
@@ -58,7 +58,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchLoansDetails: async (curve: LlamalendApi, collateralDatas: CollateralData[]) => {
+    fetchLoansDetails: async (curve: Curve, collateralDatas: CollateralData[]) => {
       const chainId = curve.chainId
       log('fetchLoansDetails', chainId, collateralDatas.map(({ llamma }) => llamma.id).join(','))
 
@@ -87,7 +87,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('detailsMapper', loansDetailsMapper)
       get()[sliceKey].setStateByKey('existsMapper', loansExistsMapper)
     },
-    fetchLoanDetails: async (curve: LlamalendApi, llamma: Llamma) => {
+    fetchLoanDetails: async (curve: Curve, llamma: Llamma) => {
       const chainId = curve.chainId
       const [{ collateralId, ...loanDetails }, priceInfo, loanExists] = await Promise.all([
         networks[chainId].api.detailInfo.loanInfo(llamma),
@@ -110,7 +110,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       return { loanDetails: fetchedLoanDetails, loanExists }
     },
-    fetchUserLoanWalletBalances: async (curve: LlamalendApi, llamma: Llamma) => {
+    fetchUserLoanWalletBalances: async (curve: Curve, llamma: Llamma) => {
       const chainId = curve.chainId
       const resp = await networks[chainId].api.detailInfo.userBalances(llamma)
 
@@ -119,7 +119,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('userWalletBalancesLoading', false)
       return resp
     },
-    fetchUserLoanDetails: async (curve: LlamalendApi, llamma: Llamma) => {
+    fetchUserLoanDetails: async (curve: Curve, llamma: Llamma) => {
       const chainId = curve.chainId
       const userLoanDetailsFn = networks[chainId].api.detailInfo.userLoanInfo
       const resp = await userLoanDetailsFn(llamma, curve.signerAddress)
@@ -127,7 +127,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, resp)
       return resp
     },
-    fetchUserLoanPartialDetails: async (curve: LlamalendApi, llamma: Llamma) => {
+    fetchUserLoanPartialDetails: async (curve: Curve, llamma: Llamma) => {
       const chainId = curve.chainId
       const userLoanPartialInfoFn = networks[chainId].api.detailInfo.userLoanPartialInfo
       const resp = await userLoanPartialInfoFn(llamma, curve.signerAddress)

@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import useStore from '@/lend/store/useStore'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'
 import { formatNumber } from '@ui/utils'
 
-const CellLlammaBalances = ({ userActiveKey, market }: { userActiveKey: string; market: LendMarketTemplate }) => {
+const CellLlammaBalances = ({ userActiveKey, market }: { userActiveKey: string; market: OneWayMarketTemplate }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   const { borrowed_token, collateral_token } = market ?? {}

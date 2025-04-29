@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import Icon from '@ui/Icon'
@@ -20,7 +20,7 @@ const TokenLabel = ({
   ...boxProps
 }: BoxProps & {
   rChainId: ChainId
-  token: LendMarketTemplate['borrowed_token'] | LendMarketTemplate['collateral_token'] | undefined
+  token: OneWayMarketTemplate['borrowed_token'] | OneWayMarketTemplate['collateral_token'] | undefined
   isDisplayOnly?: boolean
   isVisible?: boolean
   showLeverageIcon?: boolean

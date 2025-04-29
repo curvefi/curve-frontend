@@ -8,10 +8,13 @@ import { useApiStore } from '@ui-kit/shared/useApiStore'
 type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
 
-const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => {
-  const { llamalend } = useApiStore.getState()
-  const market = llamalend!.getLendMarket(marketId)
-  return await market.stats.rates(false, false)
+const _fetchOnChainMarketRate = async ({ chainId, marketId }: MarketQuery) => {
+  const api = useApiStore.getState().lending
+  const market = api!.getOneWayMarket(marketId)
+
+  const ratesRes = await market.stats.rates(false, false)
+
+  return { rates: ratesRes }
 }
 
 /**

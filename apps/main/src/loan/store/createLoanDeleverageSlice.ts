@@ -10,7 +10,7 @@ import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, LlamalendApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { ChainId, Curve, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -28,10 +28,10 @@ const sliceKey = 'loanDeleverage'
 // prettier-ignore
 export type LoanDeleverageSlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, curve: LlamalendApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
-    setFormValues(llammaId: string, curve: LlamalendApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
+    fetchDetailInfo(activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
+    setFormValues(llammaId: string, curve: Curve | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
     fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchStepRepay(activeKey: string, curve: LlamalendApi, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepRepay(activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void

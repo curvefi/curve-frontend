@@ -12,7 +12,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/loan/store/createLoanSwap'
 import useStore from '@/loan/store/useStore'
-import { LlamalendApi, Llamma } from '@/loan/types/loan.types'
+import { Curve, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
@@ -107,13 +107,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   }
 
   const handleBtnClickSwap = useCallback(
-    async (
-      payloadActiveKey: string,
-      curve: LlamalendApi,
-      llamma: Llamma,
-      formValues: FormValues,
-      maxSlippage: string,
-    ) => {
+    async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues, maxSlippage: string) => {
       const { item1Name } = getItemsName(llamma, formValues)
       const swapAmount = formValues.item1 === '' ? detailInfo.amount : formValues.item1
       const notifyMessage = t`Please confirm swapping ${swapAmount} ${item1Name} at max ${maxSlippage} slippage.`
@@ -144,7 +138,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const getSteps = useCallback(
     (
       activeKey: string,
-      curve: LlamalendApi,
+      curve: Curve,
       llamma: Llamma,
       formEstGas: FormEstGas,
       formStatus: FormStatus,

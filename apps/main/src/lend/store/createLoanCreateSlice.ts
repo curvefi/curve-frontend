@@ -12,9 +12,9 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
-import { LlamalendApi, ChainId } from '@/lend/types/lend.types'
+import { Api, ChainId } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -40,17 +40,17 @@ type SliceState = {
 // prettier-ignore
 export type LoanCreateSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxLeverage(market: LendMarketTemplate): Promise<void>
-    fetchMaxRecv(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, isLeverage: boolean): Promise<void>
-    refetchMaxRecv(market: LendMarketTemplate | undefined, isLeverage: boolean): Promise<string>
-    fetchDetailInfo(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
-    fetchLiqRanges(activeKeyLiqRange: string, api: LlamalendApi, market: LendMarketTemplate, isLeverage: boolean): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
-    setFormValues(api: LlamalendApi | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
+    fetchMaxLeverage(market: OneWayMarketTemplate): Promise<void>
+    fetchMaxRecv(activeKey: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
+    refetchMaxRecv(market: OneWayMarketTemplate | undefined, isLeverage: boolean): Promise<string>
+    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
+    fetchLiqRanges(activeKeyLiqRange: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
+    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepCreate(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepCreate(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -365,8 +365,8 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 })
 
 export function _getActiveKey(
-  api: LlamalendApi | null,
-  market: LendMarketTemplate | undefined,
+  api: Api | null,
+  market: OneWayMarketTemplate | undefined,
   { userCollateral, userBorrowed, debt, n }: FormValues,
   maxSlippage: string,
 ) {

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -11,7 +11,7 @@ type Props = {
   isMobile?: boolean
   rChainId: ChainId
   rOwmId: string
-  market: LendMarketTemplate
+  market: OneWayMarketTemplate
 }
 
 const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, market }: Props) => {

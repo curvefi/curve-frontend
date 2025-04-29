@@ -1,7 +1,7 @@
 import { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanBorrowMore/types'
 import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import { _parseStepTokensList } from '@/lend/utils/helpers'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
@@ -19,7 +19,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function _getStepTokensStr(
   { userCollateral, userCollateralError, userBorrowed, userBorrowedError }: FormValues,
-  { collateral_token, borrowed_token }: LendMarketTemplate,
+  { collateral_token, borrowed_token }: OneWayMarketTemplate,
 ) {
   const list = []
   const haveUserCollateral = +userCollateral > 0
