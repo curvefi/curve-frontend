@@ -1,17 +1,16 @@
 import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type lendingApi from '@curvefi/lending-api'
+import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
+import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { LlamalendChainId, LlamalendApi } from '@ui-kit/shared/useApiStore'
 import type { WalletState } from '@web3-onboard/core'
 
-export type { LlamalendApi } from '@ui-kit/shared/useApiStore'
-
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
-export type ChainId = LlamalendChainId
+export type ChainId = IChainId
+export type Api = typeof lendingApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
@@ -90,7 +89,7 @@ export type RouterParams = {
 export type PageProps = {
   pageLoaded: boolean
   routerParams: RouterParams
-  api: LlamalendApi | null
+  api: Api | null
 }
 export type PageWidthClassName =
   | 'page-wide'
@@ -107,8 +106,8 @@ export type PageContentProps = {
   rSubdirectory: string
   userActiveKey: string
   isLoaded: boolean
-  api: LlamalendApi | null
-  market: LendMarketTemplate | undefined
+  api: Api | null
+  market: OneWayMarketTemplate | undefined
   titleMapper: TitleMapper
 }
 export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''

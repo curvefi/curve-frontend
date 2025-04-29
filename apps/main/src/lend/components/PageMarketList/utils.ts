@@ -1,7 +1,7 @@
 import { FuseResult } from 'fuse.js'
 import sortBy from 'lodash/sortBy'
 import type { FormStatus, MarketListMapper, SearchTermResult } from '@/lend/components/PageMarketList/types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export enum Filter {
   all = 'all',
@@ -20,7 +20,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   noResult: false,
 }
 
-export function _getMarketList(markets: LendMarketTemplate[]) {
+export function _getMarketList(markets: OneWayMarketTemplate[]) {
   const marketListMapper: MarketListMapper = {}
   const marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
 
@@ -51,7 +51,7 @@ export function _getMarketList(markets: LendMarketTemplate[]) {
   return { marketListMapper, sortedMarketListMapperCache }
 }
 
-export function parseSearchTermResults(searchedTermsResults: FuseResult<LendMarketTemplate>[]) {
+export function parseSearchTermResults(searchedTermsResults: FuseResult<OneWayMarketTemplate>[]) {
   return searchedTermsResults.reduce((prev, r) => {
     if (!r.matches) return prev
     prev[r.item.id] = r.matches.reduce(

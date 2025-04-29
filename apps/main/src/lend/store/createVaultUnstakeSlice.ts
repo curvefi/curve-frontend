@@ -7,8 +7,8 @@ import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultUn
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultUnstake/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import { LlamalendApi, ChainId } from '@/lend/types/lend.types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { Api, ChainId } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -26,11 +26,11 @@ type SliceState = {
 // prettier-ignore
 export type VaultUnstakeSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGas(activeKey: string, formType: FormType, api: LlamalendApi, market: LendMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: LlamalendApi | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepUnstake(activeKey: string, formType: FormType, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepUnstake(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -150,7 +150,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
 export function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
-  market: LendMarketTemplate | undefined,
+  market: OneWayMarketTemplate | undefined,
   { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`

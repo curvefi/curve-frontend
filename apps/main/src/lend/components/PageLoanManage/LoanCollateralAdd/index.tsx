@@ -16,9 +16,9 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import useStore from '@/lend/store/useStore'
-import { LlamalendApi, PageContentProps } from '@/lend/types/lend.types'
+import { Api, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import AlertBox from '@ui/AlertBox'
 import Stepper from '@ui/Stepper'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -61,7 +61,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   )
 
   const handleBtnClickAdd = useCallback(
-    async (payloadActiveKey: string, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues) => {
+    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
       const { chainId } = api
 
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
@@ -81,8 +81,8 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      api: LlamalendApi,
-      market: LendMarketTemplate,
+      api: Api,
+      market: OneWayMarketTemplate,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,

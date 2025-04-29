@@ -3,9 +3,9 @@ import type { GetState, SetState } from 'zustand'
 import type { DetailsMapper, FormStatus } from '@/loan/components/PagePegKeepers/types'
 import { DEFAULT_FORM_STATUS } from '@/loan/components/PagePegKeepers/utils'
 import { PEG_KEEPERS_ADDRESSES } from '@/loan/constants'
-import { crvUsdJsApi } from '@/loan/lib/apiCrvusd'
+import crvusdjsApi from '@/loan/lib/apiCrvusd'
 import type { State } from '@/loan/store/useStore'
-import { LlamalendApi, Provider } from '@/loan/types/loan.types'
+import { Curve, Provider } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
@@ -22,7 +22,7 @@ export type PegKeepersSlice = {
   [sliceKey]: SliceState & {
     fetchDetails(provider: Provider): Promise<void>
     fetchEstCallerProfit(provider: Provider, pegKeeperAddress: string): Promise<void>
-    fetchUpdate(curve: LlamalendApi, pegKeeperAddress: string): Promise<{ hash: string; error: string }>
+    fetchUpdate(curve: Curve, pegKeeperAddress: string): Promise<{ hash: string; error: string }>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -121,7 +121,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       try {
         await gas.fetchGasInfo(curve)
         const hash = (await contract.update())?.hash
-        if (hash) await crvUsdJsApi.helpers.waitForTransaction(hash, provider)
+        if (hash) await crvusdjsApi.helpers.waitForTransaction(hash, provider)
         sliceState.setStateByKey('formStatus', { [pegKeeperAddress]: { ...DEFAULT_FORM_STATUS, isComplete: true } })
 
         // re-fetch data

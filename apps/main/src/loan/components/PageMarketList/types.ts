@@ -1,7 +1,7 @@
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import {
   ChainId,
-  LlamalendApi,
+  Curve,
   CollateralDataCacheOrApi,
   LoanDetails,
   TitleKey,
@@ -30,7 +30,7 @@ export type SearchParams = {
 export type PageCollateralList = {
   rChainId: ChainId
   params: CollateralUrlParams
-  curve: LlamalendApi | null
+  curve: Curve | null
   pageLoaded: boolean
   searchParams: SearchParams
   searchTermMapper: SearchTermMapper

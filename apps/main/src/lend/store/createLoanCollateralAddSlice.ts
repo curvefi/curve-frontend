@@ -5,9 +5,9 @@ import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManag
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import { LlamalendApi } from '@/lend/types/lend.types'
+import { Api } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -25,13 +25,13 @@ const sliceKey = 'loanCollateralAdd'
 // prettier-ignore
 export type LoanCollateralAddSlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: LlamalendApi, market: LendMarketTemplate): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: LlamalendApi, market: LendMarketTemplate): Promise<void>
-    setFormValues(api: LlamalendApi | null, market: LendMarketTemplate | undefined, formValues: Partial<FormValues>): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, formValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepIncrease(activeKey: string, api: LlamalendApi, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepIncrease(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -211,6 +211,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
 export default createLoanCollateralAdd
 
-export function _getActiveKey(api: LlamalendApi | null, market: LendMarketTemplate | undefined, collateral: string) {
+export function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
   return `${_parseActiveKey(api, market)}-${collateral}`
 }

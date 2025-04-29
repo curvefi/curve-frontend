@@ -4,7 +4,7 @@ import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
 import type { GasInfo } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, LlamalendApi } from '@/loan/types/loan.types'
+import { ChainId, Curve } from '@/loan/types/loan.types'
 import { httpFetcher } from '@/loan/utils/helpers'
 import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { log } from '@ui-kit/lib/logging'
@@ -22,7 +22,7 @@ const sliceKey = 'gas'
 
 export interface GasSlice {
   [sliceKey]: SliceState & {
-    fetchGasInfo(curve: LlamalendApi): Promise<void>
+    fetchGasInfo(curve: Curve): Promise<void>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -42,7 +42,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchGasInfo: async (curve: LlamalendApi) => {
+    fetchGasInfo: async (curve: Curve) => {
       const chainId = curve.chainId
       const rpcUrl = networks[chainId].rpcUrl
       log('fetchGasInfo', chainId)

@@ -3,15 +3,15 @@ import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 
 export function useMarketRates(rChainId: ChainId, rOwmId: string) {
-  const { data: onChainRates, isLoading: isOnChainLoading } = useMarketOnChainRates({
+  const { data: onChainData, isLoading: isOnChainLoading } = useMarketOnChainRates({
     chainId: rChainId,
     marketId: rOwmId,
   })
   const ratesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
 
-  if (onChainRates) {
+  if (onChainData) {
     return {
-      rates: onChainRates,
+      rates: onChainData.rates,
       loading: isOnChainLoading,
       error: '',
     }

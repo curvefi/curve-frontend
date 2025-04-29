@@ -6,8 +6,8 @@ import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number) => {
-  const llamalend = useApiStore((state) => state.llamalend)
-  const chainId = llamalend?.chainId
+  const curve = useApiStore((state) => state.stable)
+  const chainId = curve?.chainId
   const chainTokenUsdRate = useStore().usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   const basePlusPriorities = useStore().gas.gasInfo?.basePlusPriority
@@ -16,7 +16,7 @@ const useEstimateGasConversion = (gas: number) => {
     const basePlusPriority =
       basePlusPriorities && typeof gasPricesDefault !== 'undefined' && basePlusPriorities[gasPricesDefault]
 
-    if (!llamalend || !chainId) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
+    if (!curve || !chainId) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
 
     if (!basePlusPriority) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
 
@@ -30,7 +30,7 @@ const useEstimateGasConversion = (gas: number) => {
       const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
       return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }
     }
-  }, [gas, llamalend, chainId, chainTokenUsdRate, gasPricesDefault, basePlusPriorities])
+  }, [gas, curve, chainId, chainTokenUsdRate, gasPricesDefault, basePlusPriorities])
 }
 
 export default useEstimateGasConversion

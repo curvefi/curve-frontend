@@ -5,7 +5,7 @@ import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, LlamalendApi, Llamma } from '@/loan/types/loan.types'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -46,14 +46,14 @@ export type LoanSwapSlice = {
     //steps
     fetchStepApprove(
       activeKey: string,
-      curve: LlamalendApi,
+      curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
       maxSlippage: string,
     ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepSwap(
       activeKey: string,
-      curve: LlamalendApi,
+      curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
       maxSlippage: string,
@@ -232,7 +232,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
     // steps
     fetchStepApprove: async (
       activeKey: string,
-      curve: LlamalendApi,
+      curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
       maxSlippage: string,
@@ -265,7 +265,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
     },
     fetchStepSwap: async (
       activeKey: string,
-      curve: LlamalendApi,
+      curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
       maxSlippage: string,

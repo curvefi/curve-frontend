@@ -1,7 +1,7 @@
 import { Filter, FilterType } from '@/lend/components/PageMarketList/utils'
 import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
-import { ChainId, LlamalendApi, Order, TitleKey, TitleMapper } from '@/lend/types/lend.types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { ChainId, Api, Order, TitleKey, TitleMapper } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export type FormStatus = {
   error: string
@@ -19,7 +19,7 @@ export interface FilterTypeMapper extends Record<FilterType, FilterListProps> {}
 
 export type PageMarketList = {
   rChainId: ChainId
-  api: LlamalendApi | null
+  api: Api | null
   isLoaded: boolean
   searchParams: SearchParams
   filterList: FilterListProps[]
@@ -80,7 +80,7 @@ export type TableLabel = {
 
 export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchTermMapper' | 'titleMapper'> & {
   owmId: string
-  market: LendMarketTemplate
+  market: OneWayMarketTemplate
   filterTypeKey: FilterTypeKey
   loanExists: boolean
   searchParams: SearchParams
@@ -93,7 +93,7 @@ export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchTer
 export type TableCellProps = {
   rChainId: ChainId
   owmId: string
-  market: LendMarketTemplate
+  market: OneWayMarketTemplate
   userActiveKey: string
   filterTypeKey: FilterTypeKey
   rOwmId: string

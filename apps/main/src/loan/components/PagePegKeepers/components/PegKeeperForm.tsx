@@ -4,7 +4,7 @@ import AlertFormError from '@/loan/components/AlertFormError'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { ChainId, LlamalendApi } from '@/loan/types/loan.types'
+import { ChainId, Curve } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
@@ -23,17 +23,17 @@ type Props = {
 const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const isSubscribed = useRef(false)
 
-  const llamalend = useApiStore((state) => state.llamalend)
+  const curve = useApiStore((state) => state.stable)
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
 
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
-  const { signerAddress } = llamalend || {}
+  const { signerAddress } = curve || {}
 
   const handleClick = useCallback(
-    async (curve: LlamalendApi, pegKeeperAddress: string) => {
+    async (curve: Curve, pegKeeperAddress: string) => {
       setTxInfoBar(null)
 
       const notifyMessage = t`Please confirm update ${poolName} pool`
@@ -78,17 +78,17 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
         <strong>{formatNumber(detailsMapper[pegKeeperAddress]?.estCallerProfit)}</strong>
       </DetailInfo>
 
-      <LoanFormConnect haveSigner={!!signerAddress} loading={!llamalend}>
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!curve}>
         {txInfoBar}
         <AlertFormError limitHeight errorKey={formStatus[pegKeeperAddress]?.error} />
-        {llamalend && (
+        {!!curve && (
           <Button
             fillWidth
             loading={formStatus[pegKeeperAddress]?.isInProgress}
             disabled={estCallerProfit === undefined || Number(estCallerProfit) === 0}
             size="large"
             variant="filled"
-            onClick={() => handleClick(llamalend, pegKeeperAddress)}
+            onClick={() => handleClick(curve, pegKeeperAddress)}
           >
             Update
           </Button>

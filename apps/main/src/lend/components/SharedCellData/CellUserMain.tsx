@@ -3,7 +3,7 @@ import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import useVaultShares from '@/lend/hooks/useVaultShares'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import ListInfoItem from '@ui/ListInfo'
 import Chip from '@ui/Typography/Chip'
 import { formatNumber } from '@ui/utils'
@@ -19,7 +19,7 @@ const CellUserMain = ({
   rChainId: ChainId
   rOwmId: string
   userActiveKey: string
-  market: LendMarketTemplate
+  market: OneWayMarketTemplate
   type: 'borrow' | 'supply'
 }) => {
   const { borrowed_token } = market ?? {}

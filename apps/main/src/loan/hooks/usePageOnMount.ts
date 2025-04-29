@@ -5,9 +5,9 @@ import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
 import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, type NetworkEnum, PageProps, type UrlParams, Wallet } from '@/loan/types/loan.types'
-import { initStableJs } from '@/loan/utils/utilsCurvejs'
+import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
 import { getPath, parseNetworkFromUrl, parseParams } from '@/loan/utils/utilsRouter'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { ConnectState } from '@ui/utils'
 import { isFailure, isLoading, isSuccess } from '@ui/utils'
 import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
@@ -20,9 +20,12 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   const { wallet, connect, disconnect, walletName, setWalletName } = useWallet()
   const [_, setChain] = useSetChain()
 
-  const llamalend = useApiStore((state) => state.llamalend)
-  const updateLlamalend = useApiStore((state) => state.updateLlamalend)
-  const setIsLoadingLlamalend = useApiStore((state) => state.setIsLoadingLlamalend)
+  const curve = useApiStore((state) => state.stable)
+  const lending = useApiStore((state) => state.lending)
+  const updateStable = useApiStore((state) => state.updateStable)
+  const updateLending = useApiStore((state) => state.updateLending)
+  const setIsLoadingStable = useApiStore((state) => state.setIsLoadingStable)
+  const setIsLoadingLending = useApiStore((state) => state.setIsLoadingLending)
   const hydrate = useStore((s) => s.hydrate)
 
   const connectState = useStore((state) => state.connectState)
@@ -40,15 +43,15 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
       if (options) {
         try {
           const [chainId, useWallet] = options
-          const prevApi = llamalend ?? null
+          const prevApi = curve ?? null
 
-          setIsLoadingLlamalend(true)
+          setIsLoadingStable(true)
 
           if (useWallet && wallet) {
             const api = await initStableJs(chainId, wallet)
             updateConnectState('success', '')
             await hydrate(api, prevApi, wallet)
-            updateLlamalend(api)
+            updateStable(api)
           } else {
             updateConnectState('', '')
           }
@@ -56,11 +59,40 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         } finally {
-          setIsLoadingLlamalend(false)
+          setIsLoadingStable(false)
         }
       }
     },
-    [llamalend, setIsLoadingLlamalend, wallet, updateLlamalend, updateConnectState, hydrate],
+    [curve, setIsLoadingStable, wallet, updateStable, updateConnectState, hydrate],
+  )
+
+  const handleConnectLendApi = useCallback(
+    async (options: ConnectState['options']) => {
+      if (options) {
+        try {
+          const [chainId, useWallet] = options
+          const prevApi = lending ?? null
+
+          setIsLoadingLending(true)
+
+          const api = await initLendApi(chainId, useWallet ? wallet : null)
+          if (api) {
+            updateLending(api)
+            updateConnectState('success', '')
+
+            await hydrate(api, prevApi, wallet)
+          } else {
+            updateConnectState('', '')
+          }
+        } catch (error) {
+          console.error(error)
+          updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        } finally {
+          setIsLoadingLending(false)
+        }
+      }
+    },
+    [lending, setIsLoadingLending, wallet, updateLending, updateConnectState, hydrate],
   )
 
   const handleConnectWallet = useCallback(
@@ -207,6 +239,7 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
         void handleDisconnectWallet(wallet)
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
         void handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
+        void handleConnectLendApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -216,13 +249,12 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      (!!walletChainId || !!walletSignerAddress || !!llamalend) &&
-      (llamalend?.chainId !== walletChainId ||
-        llamalend?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      (!!walletChainId || !!walletSignerAddress || !!curve) &&
+      (curve?.chainId !== walletChainId || curve?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (walletSignerAddress && llamalend?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (walletSignerAddress && curve?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
-      } else if (llamalend?.chainId !== walletChainId) {
+      } else if (curve?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
@@ -241,16 +273,16 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
     if (isSuccess(connectState)) {
       if (
         walletChainId &&
-        llamalend &&
-        llamalend.chainId === walletChainId &&
+        curve &&
+        curve.chainId === walletChainId &&
         parsedParams.rChainId !== walletChainId &&
         pathname !== ROUTE.PAGE_INTEGRATIONS
       ) {
         // switch network if url network is not same as wallet
         updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
-      } else if (llamalend && llamalend.chainId !== parsedParams.rChainId) {
+      } else if (curve && curve.chainId !== parsedParams.rChainId) {
         // switch network if url network is not same as api
-        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [llamalend.chainId, parsedParams.rChainId])
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [curve.chainId, parsedParams.rChainId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -258,17 +290,17 @@ function usePageOnMount(chainIdNotRequired?: boolean) {
 
   // init campaignRewardsMapper
   useEffect(() => {
-    if (!llamalend) return
+    if (!curve) return
 
     if (!initiated) {
-      initCampaignRewards(llamalend.chainId)
+      initCampaignRewards(curve.chainId)
     }
-  }, [initCampaignRewards, llamalend, initiated])
+  }, [initCampaignRewards, curve, initiated])
 
   return {
     pageLoaded: connectState.status === 'success',
     routerParams: parsedParams,
-    curve: llamalend,
+    curve,
   } as PageProps
 }
 

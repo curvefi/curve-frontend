@@ -9,7 +9,7 @@ import {
 } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, LlamalendApi, Llamma } from '@/loan/types/loan.types'
+import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
@@ -38,7 +38,7 @@ export type LoanCollateralDecreaseSlice = {
     // step
     fetchStepDecrease(
       activeKey: string,
-      curve: LlamalendApi,
+      curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
     ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
@@ -149,7 +149,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
     },
 
     // steps
-    fetchStepDecrease: async (activeKey: string, curve: LlamalendApi, llamma: Llamma, formValues: FormValues) => {
+    fetchStepDecrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 

@@ -17,9 +17,9 @@ import useMarketAlert from '@/lend/hooks/useMarketAlert'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { LlamalendApi, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { Api, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -96,9 +96,9 @@ const LoanCreate = ({
   const handleClickCreate = useCallback(
     async (
       payloadActiveKey: string,
-      api: LlamalendApi,
+      api: Api,
       formValues: FormValues,
-      market: LendMarketTemplate,
+      market: OneWayMarketTemplate,
       maxSlippage: string,
       isLeverage: boolean,
     ) => {
@@ -118,8 +118,8 @@ const LoanCreate = ({
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      api: LlamalendApi,
-      market: LendMarketTemplate,
+      api: Api,
+      market: OneWayMarketTemplate,
       healthMode: HealthMode,
       confirmedWarning: boolean,
       formEstGas: FormEstGas,

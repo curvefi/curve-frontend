@@ -4,7 +4,7 @@ import lendingApi from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { GasInfo } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
-import { LlamalendApi, Provider } from '@/lend/types/lend.types'
+import { Api, Provider } from '@/lend/types/lend.types'
 import { httpFetcher, log } from '@/lend/utils/helpers'
 import { getEthereumCustomFeeDataValues } from '@ui/utils/utilsGas'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -23,7 +23,7 @@ const sliceKey = 'gas'
 // prettier-ignore
 export type GasSlice = {
   [sliceKey]: SliceState & {
-    fetchGasInfo(api: LlamalendApi): Promise<void>
+    fetchGasInfo(api: Api): Promise<void>
 
     // helpers
     setStateByKey<T>(key: StateKey, value: T): void
@@ -187,7 +187,7 @@ function parsePolygonGasInfo(gasInfo: {
   }
 }
 
-async function parseGasInfo(api: LlamalendApi, provider: Provider) {
+async function parseGasInfo(api: Api, provider: Provider) {
   if (provider) {
     // Returns the current recommended FeeData to use in a transaction.
     // For an EIP-1559 transaction, the maxFeePerGas and maxPriorityFeePerGas should be used.
@@ -212,7 +212,7 @@ async function parseGasInfo(api: LlamalendApi, provider: Provider) {
 }
 
 async function calcBasePlusPriority(
-  api: LlamalendApi,
+  api: Api,
   gasFeeDataWei: {
     gasPrice: number | null
     max: number[] | null

@@ -6,8 +6,8 @@ import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultCl
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { LlamalendApi, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { Api, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -52,8 +52,8 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
     async (
       payloadActiveKey: string,
       claimable: MarketClaimable,
-      api: LlamalendApi,
-      market: LendMarketTemplate,
+      api: Api,
+      market: OneWayMarketTemplate,
       type: RewardType,
     ) => {
       const { chainId } = api
@@ -85,8 +85,8 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      api: LlamalendApi,
-      market: LendMarketTemplate,
+      api: Api,
+      market: OneWayMarketTemplate,
       claimable: MarketClaimable,
       formStatus: FormStatus,
     ) => {

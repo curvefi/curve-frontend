@@ -1,15 +1,14 @@
 import { BrowserProvider } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/loan/constants'
-import { crvUsdJsApi } from '@/loan/lib/apiCrvusd'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import curvejsApi from '@/loan/lib/apiCrvusd'
+import type lendingApi from '@curvefi/lending-api'
+import type stablecoinApi from '@curvefi/stablecoin-api'
+import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
+import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { LlamalendChainId, LlamalendApi } from '@ui-kit/shared/useApiStore'
 import type { WalletState } from '@web3-onboard/core'
-
-export type { LlamalendApi } from '@ui-kit/shared/useApiStore'
 
 export type NetworkUrlParams = { network: INetworkName }
 type CollateralExtraParams = { collateralId: string; formType?: string[] }
@@ -17,8 +16,10 @@ export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
-export type ChainId = LlamalendChainId
+export type ChainId = 1
 /** Actually the stablecoin api, but not renaming to avoid a huge rename PR */
+export type Curve = typeof stablecoinApi & { chainId: ChainId }
+export type LendApi = typeof lendingApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
 export type Provider = BrowserProvider
 export type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
@@ -36,11 +37,11 @@ export type RouterParams = {
 export type PageProps = {
   pageLoaded: boolean
   routerParams: RouterParams
-  curve: LlamalendApi | null
+  curve: Curve | null
 }
 
 export interface NetworkConfig extends BaseConfig {
-  api: typeof crvUsdJsApi
+  api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
 }
@@ -52,7 +53,7 @@ export type PageWidthClassName =
   | 'page-small'
   | 'page-small-x'
   | 'page-small-xx'
-export type Llamma = MintMarketTemplate
+export type Llamma = LlammaTemplate
 
 export interface CollateralData {
   llamma: Llamma
