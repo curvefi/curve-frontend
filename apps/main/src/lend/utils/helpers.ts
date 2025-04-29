@@ -1,5 +1,5 @@
-import { Api } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LlamalendApi } from '@/lend/types/lend.types'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { t } from '@ui-kit/lib/i18n'
 
 export * from './utilsRouter'
@@ -79,7 +79,7 @@ export function _parseStepTokensList(list: { value: string | number; symbol: str
   }
 }
 
-export function _parseActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined) {
+export function _parseActiveKey(api: LlamalendApi | null, market: LendMarketTemplate | undefined) {
   const { chainId = '', signerAddress = '' } = api ?? {}
   const parsedSignerAddress = signerAddress.slice(0, 10)
   return `${chainId}-${parsedSignerAddress}${market?.id}`

@@ -3,7 +3,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { AppPageFormTitleLinks } from '@ui/AppPage'
 import InternalLink from '@ui/Link/InternalLink'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
@@ -15,10 +15,10 @@ const PageTitleBorrowSupplyLinks = ({
 }: {
   params: UrlParams
   activeKey: 'borrow' | 'supply'
-  market: OneWayMarketTemplate
+  market: LendMarketTemplate
 }) => {
-  const api = useApiStore((state) => state.lending)
-  const userActiveKey = helpers.getUserActiveKey(api, market)
+  const llamalend = useApiStore((state) => state.llamalend)
+  const userActiveKey = helpers.getUserActiveKey(llamalend, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
 

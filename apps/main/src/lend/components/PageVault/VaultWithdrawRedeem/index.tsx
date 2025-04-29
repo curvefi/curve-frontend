@@ -10,8 +10,8 @@ import networks from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { _isWithdraw } from '@/lend/store/createVaultWithdrawRedeemSlice'
 import useStore from '@/lend/store/useStore'
-import { Api, PageContentProps } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LlamalendApi, PageContentProps } from '@/lend/types/lend.types'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
@@ -84,8 +84,8 @@ const VaultWithdrawRedeem = ({
     async (
       payloadActiveKey: string,
       rFormType: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       formValues: FormValues,
     ) => {
       const { chainId } = api
@@ -123,8 +123,8 @@ const VaultWithdrawRedeem = ({
     (
       payloadActiveKey: string,
       rFormType: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[],

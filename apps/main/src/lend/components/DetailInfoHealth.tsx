@@ -6,7 +6,7 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps, HeathColorKey, HealthMode } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
@@ -152,7 +152,7 @@ export default DetailInfoHealth
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  market: OneWayMarketTemplate | undefined,
+  market: LendMarketTemplate | undefined,
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],

@@ -35,7 +35,7 @@ const Page = (params: CollateralUrlParams) => {
   const { rChainId } = routerParams
   const { provider } = useWallet()
 
-  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
+  const isLoadingLlamalend = useApiStore((state) => state.isLoadingLlamalend)
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
   const connectWallet = useStore((s) => s.updateConnectState)
   const connectState = useStore((s) => s.connectState)
@@ -68,7 +68,7 @@ const Page = (params: CollateralUrlParams) => {
   useEffect(() => {
     setLoaded(false)
 
-    if (!pageLoaded || isLoadingStable) return
+    if (!pageLoaded || isLoadingLlamalend) return
 
     const parsedSearchParams = {
       sortBy: searchParams?.get(SEARCH.sortBy) || TITLE.totalBorrowed,
@@ -80,7 +80,7 @@ const Page = (params: CollateralUrlParams) => {
     setParsedSearchParams(parsedSearchParams)
     setLoaded(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingStable, searchParams])
+  }, [pageLoaded, isLoadingLlamalend, searchParams])
 
   return (
     <>

@@ -26,7 +26,7 @@ const CellBorrowRate = ({
     return <>?</>
   }
 
-  return formatNumber(onchainData?.rates?.borrowApy ?? rates?.borrowApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue })
+  return formatNumber(onchainData?.borrowApy ?? rates?.borrowApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue })
 }
 
 export default CellBorrowRate

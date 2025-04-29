@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import CellUtilizationTooltip from '@/lend/components/SharedCellData/CellUtilizationTooltip'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import ProgressBar from '@ui/ProgressBar'
 import Chip from '@ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
@@ -12,7 +12,7 @@ type Props = {
   isMobile?: boolean
   rChainId: ChainId
   rOwmId: string
-  market: OneWayMarketTemplate
+  market: LendMarketTemplate
 }
 const CellUtilization = ({ isMobile, rChainId, rOwmId, market }: Props) => {
   const resp = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])

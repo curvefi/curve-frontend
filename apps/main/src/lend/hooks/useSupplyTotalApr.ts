@@ -12,7 +12,7 @@ function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
   const {
-    data: onChainData,
+    data: onChainRates,
     isError: onChainError,
     isSuccess: onChainSuccess,
   } = useMarketOnChainRates({ chainId: rChainId, marketId: rOwmId })
@@ -21,7 +21,7 @@ function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const { error: rewardsError } = marketRewardsResp ?? {}
   const { error: ratesError } = marketRatesResp ?? {}
   const onChainRatesObj: MarketRates = {
-    rates: onChainData?.rates ?? null,
+    rates: onChainRates ?? null,
     error: onChainError ? 'Error fetching on chain data' : '',
   }
 

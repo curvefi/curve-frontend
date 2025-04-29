@@ -17,10 +17,10 @@ import { NOFITY_MESSAGE } from '@/lend/constants'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { LlamalendApi, HealthMode, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
@@ -99,8 +99,8 @@ const LoanRepay = ({
   const handleBtnClickPay = useCallback(
     async (
       payloadActiveKey: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       formValues: FormValues,
       maxSlippage: string,
     ) => {
@@ -133,8 +133,8 @@ const LoanRepay = ({
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       healthMode: HealthMode,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
