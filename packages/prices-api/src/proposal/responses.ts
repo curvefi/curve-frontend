@@ -32,19 +32,22 @@ export type GetProposalDetailsResponse = Proposal & {
     voter: Address
     supports: boolean
     voting_power: string
+    transaction_hash: Address
   }[]
 }
 
 export type GetUserProposalVotes = {
   page: number
   count: number
-  data: {
-    proposal: Proposal
-    votes: {
-      voter: Address
-      supports: boolean
-      voting_power: string
-      transaction_hash: Address
-    }[]
+  data: GetUserProposalVote[]
+}
+
+export type GetUserProposalVote = {
+  proposal: Proposal
+  votes: {
+    voter: Address
+    supports: boolean
+    voting_power: string
+    transaction_hash: Address
   }[]
 }

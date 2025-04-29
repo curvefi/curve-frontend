@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 interface VoteCountdownProps {
-  startDate: number
+  startDate: number | null
   className?: string
 }
 
@@ -11,6 +11,7 @@ const VoteCountdown = ({ startDate, className }: VoteCountdownProps) => {
 
   useEffect(() => {
     const updateTimeRemaining = () => {
+      if (!startDate) return
       const now = Math.floor(Date.now() / 1000)
       const endDate = startDate + 604800 // 7 days in seconds
       const remainingSeconds = endDate - now
@@ -37,7 +38,7 @@ const VoteCountdown = ({ startDate, className }: VoteCountdownProps) => {
 
   return (
     <VoteCountdownContainer className={className}>
-      <p>{timeRemaining}</p>
+      <p>{startDate ? timeRemaining : '-'}</p>
     </VoteCountdownContainer>
   )
 }

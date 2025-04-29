@@ -1,6 +1,8 @@
 import Fuse from 'fuse.js'
 import produce from 'immer'
 import type { GetState, SetState } from 'zustand'
+import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
+import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import type { State } from '@/dao/store/useStore'
 import {
   type CurveApi,
@@ -23,6 +25,8 @@ import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils/network'
+import { helpers } from '../lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -142,7 +146,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         })
 
         get().setAppStateByKey(sliceKey, 'gaugeMapper', newGaugeMapper)
-        void get().storeCache.setStateByKey('cacheGaugeMapper', newGaugeMapper)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'SUCCESS')
       } catch (error) {
         console.error('Error fetching gauges:', error)
@@ -254,7 +257,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
               loadingState: 'SUCCESS',
               data: formattedWeightsData,
             }
-            state.storeCache.cacheGaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
           }),
         )
       } catch (error) {
@@ -269,9 +271,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
     selectFilteredSortedGauges: () => {
       const { gaugeMapper, gaugeListSortBy } = get()[sliceKey]
-      const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
-      const gaugeData = gaugeMapper ?? cacheGaugeMapper
-      return sortGauges(gaugeData, gaugeListSortBy)
+      return sortGauges(gaugeMapper, gaugeListSortBy)
     },
     setGauges: (searchValue: string) => {
       const { selectFilteredSortedGauges } = get()[sliceKey]
@@ -365,7 +365,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
       const curve = getLib<CurveApi>()
       const { provider } = useWallet.getState()
-      const { getUserGaugeVoteWeights } = get().user
       const address = get().gauges.gaugeMapper[gaugeAddress].address
 
       if (!curve) return
@@ -399,7 +398,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const loadingNotificationMessage = t`Casting vote...`
         const { dismiss: dismissLoading } = notify(loadingNotificationMessage, 'pending')
 
-        await provider!.waitForTransaction(res)
+        await helpers.waitForTransaction(res, provider!)
 
         set(
           produce(get(), (state) => {
@@ -414,7 +413,16 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const successNotificationMessage = t`Succesfully cast vote!`
         notify(successNotificationMessage, 'success', 15000)
 
-        await getUserGaugeVoteWeights(userAddress, true)
+        invalidateUserGaugeWeightVotesQuery({
+          chainId: Chain.Ethereum,
+          userAddress,
+        })
+        invalidateUserGaugeVoteNextTimeQuery({
+          chainId: Chain.Ethereum,
+          gaugeAddress,
+          userAddress,
+          enabled: true,
+        })
 
         set(
           produce(get(), (state) => {

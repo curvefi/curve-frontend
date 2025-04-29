@@ -1,5 +1,7 @@
 import type { Address } from '..'
 
+export type LockType = 'CREATE_LOCK' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME' | 'WITHDRAW'
+
 export type VotesOverview = {
   proposals: number
   votesProposals: number
@@ -17,7 +19,7 @@ export type UserLock = {
   timestamp: Date
   amount: bigint
   unlockTime: Date
-  lockType: 'CREATE_LOCK' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
+  lockType: LockType
   lockedBalance: bigint
   txHash: string
 }

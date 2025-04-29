@@ -1,9 +1,14 @@
+import { orderBy } from 'lodash'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
+import {
+  type UserProposalVoteFormatted,
+  useUserProposalVotesQuery,
+  invalidateUserProposalVotesQuery,
+} from '@/dao/entities/user-proposal-votes'
 import useStore from '@/dao/store/useStore'
-import { UserProposalVoteData, UserProposalVotesSortBy } from '@/dao/types/dao.types'
+import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,42 +20,43 @@ interface UserProposalVotesTableProps {
   tableMinWidth: number
 }
 
+const sortUserProposalVotes = (
+  userProposalVotes: UserProposalVoteFormatted[],
+  sortBy: { key: UserProposalVotesSortBy; order: SortDirection },
+) => {
+  const { key, order } = sortBy
+  return orderBy(userProposalVotes, [key], [order])
+}
+
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
-  const getUserProposalVotes = useStore((state) => state.user.getUserProposalVotes)
-  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
+  const {
+    data: userProposalVotes,
+    isLoading: userProposalVotesLoading,
+    isError: userProposalVotesError,
+    isSuccess: userProposalVotesSuccess,
+  } = useUserProposalVotesQuery({
+    userAddress,
+  })
   const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
   const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
   const { push } = useRouter()
 
-  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 7rem 7rem'
+  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'
 
-  const userProposalVotes = userProposalVotesMapper[userAddress]?.votes ?? {}
-  const userProposalVotesArray = Object.values(userProposalVotes)
-
-  const userProposalVotesLoading = userProposalVotesMapper[userAddress]
-    ? userProposalVotesMapper[userAddress].fetchingState === 'LOADING'
-    : true
-  const userProposalVotesError = userProposalVotesMapper[userAddress]
-    ? userProposalVotesMapper[userAddress].fetchingState === 'ERROR'
-    : false
-
-  // Get user proposal votes
-  useEffect(() => {
-    if (!userProposalVotesMapper[userAddress] && userProposalVotesLoading && !userProposalVotesError) {
-      void getUserProposalVotes(userAddress)
-    }
-  }, [getUserProposalVotes, userAddress, userProposalVotesLoading, userProposalVotesError, userProposalVotesMapper])
+  const userProposalVotesArray = Object.values(userProposalVotes ?? {})
 
   return (
-    <PaginatedTable<UserProposalVoteData>
-      data={userProposalVotesArray}
+    <PaginatedTable<UserProposalVoteFormatted>
+      data={sortUserProposalVotes(userProposalVotesArray, userProposalVotesSortBy)}
       minWidth={tableMinWidth}
-      fetchingState={userProposalVotesMapper[userAddress]?.fetchingState ?? 'LOADING'}
+      isLoading={userProposalVotesLoading}
+      isError={userProposalVotesError}
+      isSuccess={userProposalVotesSuccess}
       columns={VOTES_LABELS}
       sortBy={userProposalVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={(key) => setUserProposalVotesSortBy(userAddress, key as UserProposalVotesSortBy)}
-      getData={() => getUserProposalVotes(userAddress)}
+      setSortBy={(key) => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
+      getData={() => invalidateUserProposalVotesQuery({ userAddress })}
       gridTemplateColumns={gridTemplateColumns}
       noDataMessage={t`No proposal votes found for this user.`}
       renderRow={(proposalVote, index) => (
@@ -60,38 +66,38 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
               e.preventDefault()
               push(
                 getEthPath(
-                  `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.vote_id}-${proposalVote.vote_type.toUpperCase()}`,
+                  `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
                 ),
               )
             }}
-            className={userProposalVotesSortBy.key === 'vote_id' ? 'sortby-active  align-left' : ' align-left'}
+            className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}
           >
-            #{proposalVote.vote_id}
+            #{proposalVote.voteId}
           </TableDataLink>
-          <TableData className="right-padding capitalize">{proposalVote.vote_type}</TableData>
+          <TableData className="right-padding capitalize">{proposalVote.voteType}</TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_for' ? 'sortby-active right-padding' : 'right-padding'}
+            className={userProposalVotesSortBy.key === 'voteFor' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatNumber(proposalVote.vote_for, {
+            {formatNumber(proposalVote.voteFor, {
               showDecimalIfSmallNumberOnly: true,
             })}
           </TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_against' ? 'sortby-active right-padding' : 'right-padding'}
+            className={userProposalVotesSortBy.key === 'voteAgainst' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatNumber(proposalVote.vote_against, {
+            {formatNumber(proposalVote.voteAgainst, {
               showDecimalIfSmallNumberOnly: true,
             })}
           </TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_open' ? 'sortby-active right-padding' : 'right-padding'}
+            className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.vote_open))}
+            {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.voteOpen))}
           </TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_close' ? 'sortby-active right-padding' : 'right-padding'}
+            className={userProposalVotesSortBy.key === 'voteClose' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.vote_close))}
+            {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.voteClose))}
           </TableData>
         </TableRowWrapper>
       )}
