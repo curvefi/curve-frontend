@@ -1,6 +1,7 @@
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
 import Carrot from './Carrot.json'
+import Ditto from './Ditto.json'
 import DLCLink from './DLCLink.json'
 import DTrinity from './DTrinity.json'
 import Elixir from './Elixir.json'
@@ -15,6 +16,7 @@ import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
 import Mellow from './Mellow.json'
+import Mevcommit from './Mevcommit.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
@@ -60,4 +62,6 @@ export {
   StableLabs,
   Taiko,
   Zunami,
+  Ditto,
+  Mevcommit,
 }
