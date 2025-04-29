@@ -33,6 +33,7 @@ export const parseProposalDetails = (
     voter: vote.voter,
     supports: vote.supports,
     votingPower: Number(BigInt(vote.voting_power)) / 10 ** 18,
+    txHash: vote.transaction_hash,
   })),
 })
 

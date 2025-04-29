@@ -11,7 +11,6 @@ import useStore from '@/loan/store/useStore'
 import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/loan/types/loan.types'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const UserInfos = ({
@@ -91,7 +90,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column-reverse;
 
-  @media (min-width: ${breakpoints.sm}rem) {
+  @media (min-width: 840px) {
     position: relative;
     flex-direction: row;
     justify-content: space-between;
