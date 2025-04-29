@@ -6,10 +6,9 @@ import DetailsMarket from '@/lend/components/DetailsMarket'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { usePageProps } from '@/lend/hooks/usePageProps'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { scrollToTop } from '@/lend/utils/helpers'
@@ -35,26 +34,26 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const { pageLoaded, routerParams, api } = usePageProps()
-  const titleMapper = useTitleMapper()
-  const { rChainId, rMarket, rFormType, rSubdirectory } = routerParams
+  const { network: rNetwork, market: rMarket } = params
+  const rChainId = networksIdMapper[rNetwork]
+  const rFormType = params.formType?.[0] ?? ''
+
   const market = useOneWayMarket(rChainId, rMarket).data
-  const rOwmId = market?.id ?? ''
-  const { connectState } = useConnection<Api>()
-  const isLoadingApi = isLoading(connectState)
+  const { lib: api = null, connectState } = useConnection<Api>()
+  const titleMapper = useTitleMapper()
+  const { provider, connect } = useWallet()
+  const [isLoaded, setLoaded] = useState(false)
+
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const { provider, connect } = useWallet()
-
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
-  const [isLoaded, setLoaded] = useState(false)
-  const [initialLoaded, setInitialLoaded] = useState(false)
   const userActiveKey = helpers.getUserActiveKey(api, market!)
+  const rOwmId = market?.id ?? ''
 
   const fetchInitial = useCallback(
     async (api: Api, market: OneWayMarketTemplate) => {
@@ -72,25 +71,14 @@ const Page = (params: MarketUrlParams) => {
         if (signerAddress) {
           void fetchUserMarketBalances(api, market, true)
         }
-        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
   )
 
   useEffect(() => {
-    setLoaded(false)
-
-    if (pageLoaded && !isLoadingApi && api && market) {
-      void fetchInitial(api, market)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi])
-
-  useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) void fetchInitial(api, market)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
+    if (api && market && isPageVisible) void fetchInitial(api, market)
+  }, [api, fetchInitial, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
@@ -115,7 +103,6 @@ const Page = (params: MarketUrlParams) => {
     rChainId,
     rOwmId,
     rFormType,
-    rSubdirectory,
     isLoaded,
     api,
     market,

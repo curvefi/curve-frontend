@@ -4,12 +4,10 @@ import UserPage from '@/dao/components/PageUser/index'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
 
-const Page = (props: UserUrlParams) => (
-  <>
-    <Container>
-      <UserPage routerParams={props} />
-    </Container>
-  </>
+export const PageUser = (props: UserUrlParams) => (
+  <Container>
+    <UserPage routerParams={props} />
+  </Container>
 )
 
 const Container = styled.div`
@@ -21,5 +19,3 @@ const Container = styled.div`
     margin: 1.5rem 1.5rem 0 1.5rem;
   }
 `
-
-export default Page

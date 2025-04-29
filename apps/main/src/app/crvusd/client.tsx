@@ -3,7 +3,6 @@ import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import { getNetworkFromUrl } from '@/dao/utils'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/loan/layout'
 import networks from '@/loan/networks'
@@ -20,6 +19,7 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
+import { Chain } from '@ui-kit/utils'
 import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
 
 export const App = ({ children }: { children: ReactNode }) => {
@@ -112,7 +112,7 @@ export const App = ({ children }: { children: ReactNode }) => {
             <ConnectionProvider<ChainId, TempApi>
               hydrate={hydrate}
               initLib={initLib}
-              chainId={getNetworkFromUrl().rChainId as ChainId}
+              chainId={Chain.Ethereum}
               onChainUnavailable={onChainUnavailable}
             >
               <Page>{children}</Page>

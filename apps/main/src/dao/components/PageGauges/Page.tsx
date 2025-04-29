@@ -4,7 +4,7 @@ import Gauges from '@/dao/components/PageGauges/index'
 import Settings from '@/dao/layout/Settings'
 import { breakpoints } from '@ui/utils'
 
-const Page = () => (
+export const PageGauges = () => (
   <>
     <Container>
       <Gauges />
@@ -22,5 +22,3 @@ const Container = styled.div`
     margin: 1.5rem 1.5rem 0 1.5rem;
   }
 `
-
-export default Page

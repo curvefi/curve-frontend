@@ -509,10 +509,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         networks: { networks },
       } = get()
       if (networks[chainId].pricesApi) {
-        const networkName = networks[chainId]?.id
+        const networkId = networks[chainId].id
 
         try {
-          const response = await fetch(`https://prices.curve.fi/v1/chains/${networkName}`)
+          const response = await fetch(`https://prices.curve.fi/v1/chains/${networkId}`)
           const data: PricesApiPoolResponse = await response.json()
 
           const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}

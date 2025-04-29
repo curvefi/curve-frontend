@@ -19,8 +19,8 @@ import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const { network: networkName } = useParams() as UrlParams // todo: move layout to [network] and pass the params properly
-  const chainId = networksIdMapper[networkName]
+  const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const chainId = networksIdMapper[networkId]
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -74,10 +74,10 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
-      const foundNetwork = networks[walletChainId]?.id
-      if (foundNetwork) {
-        console.warn(`Network switched to ${foundNetwork}, redirecting...`, location.href)
-        push(getPath({ network: foundNetwork }, `/${getRestFullPathname()}`))
+      const network = networks[walletChainId]?.id
+      if (network) {
+        console.warn(`Network switched to ${network}, redirecting...`, location.href)
+        push(getPath({ network }, `/${getRestFullPathname()}`))
       }
     },
     [push],

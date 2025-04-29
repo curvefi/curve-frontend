@@ -124,8 +124,9 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       }),
     )
   },
-  hydrate: async (curveApi: CurveApi | null, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
+  hydrate: async (curveApi, prevCurveApi, wallet) => {
     if (!curveApi) return
+
     const state = get()
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress

@@ -8,12 +8,9 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
 
-const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => {
-  const api = requireLib<Api>()
-  const market = api.getOneWayMarket(marketId)
-  const ratesRes = await market.stats.rates(false, false)
-  return { rates: ratesRes }
-}
+const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
+  rates: await requireLib<Api>().getOneWayMarket(marketId).stats.rates(false, false),
+})
 
 /**
  * The purpose of this query is to allow fetching market parameters on chain

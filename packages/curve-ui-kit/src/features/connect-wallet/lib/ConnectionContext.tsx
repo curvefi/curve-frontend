@@ -42,6 +42,9 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
         : connectionStage?.startsWith(expectedStage)),
   )
 
+/** During hydration the status is success and the stage is set to hydrate. */
+export const isHydrated = ({ status, stage }: ConnectState) => status === SUCCESS && stage !== HYDRATE
+
 type ConnectionContextValue<TLib> = {
   connectState: ConnectState
   lib?: TLib
@@ -55,7 +58,7 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
@@ -98,7 +101,6 @@ export const ConnectionProvider = <
      */
     const tryToReconnect = async (label: string) => {
       setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      isWalletInitialized.current = true
       return withTimeout(connect({ autoSelect: { label, disableModals: true } }))
         .then((wallets) => wallets.length > 0)
         .catch(() => false)
@@ -110,6 +112,7 @@ export const ConnectionProvider = <
     const initApp = async () => {
       try {
         if (!isWalletInitialized.current) {
+          isWalletInitialized.current = true
           const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: get rid of walletName with wagmi
           if (storedWalletName && (await tryToReconnect(storedWalletName))) {
             return // wallet updated, callback is restarted
@@ -117,7 +120,7 @@ export const ConnectionProvider = <
         }
 
         const walletChainId = getWalletChainId(wallet)
-        if (walletChainId && walletChainId !== chainId) {
+        if (walletChainId && walletChainId !== chainId && !document.hidden) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
             if (signal.aborted) return
@@ -128,7 +131,7 @@ export const ConnectionProvider = <
 
         const prevLib = libRef.get<TLib>()
         let newLib = prevLib
-        if (!libRef.get() || !compareSignerAddress(wallet, prevLib)) {
+        if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
           newLib = (await initLib(chainId, wallet)) ?? null
@@ -142,11 +145,8 @@ export const ConnectionProvider = <
         await hydrate(newLib, prevLib, wallet)
         setConnectState({ status: SUCCESS })
       } catch (error) {
-        if (signal.aborted) {
-          console.info(error)
-          return
-        }
-        console.error(error)
+        if (signal.aborted) return console.info('Error during init ignored', error)
+        console.error('Error during init', error)
         setConnectState(({ stage }) => ({ status: FAILURE, stage, error }))
       }
     }
@@ -157,6 +157,7 @@ export const ConnectionProvider = <
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
   const isLibOk = lib?.chainId === chainId && compareSignerAddress(wallet, lib)
+
   return (
     <ConnectionContext.Provider value={{ connectState, ...(isLibOk && { lib }) }}>
       {children}

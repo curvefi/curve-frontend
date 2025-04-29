@@ -1,16 +1,13 @@
-import { ethers } from 'ethers'
 import { useParams } from 'next/navigation'
 import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { CONNECT_STAGE, ROUTE } from '@/loan/constants'
+import { ROUTE } from '@/loan/constants'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import Header from '@/loan/layout/Header'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection } from '@/loan/temp-lib'
 import type { NetworkUrlParams, UrlParams } from '@/loan/types/loan.types'
-import { getPath, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
-import { isFailure, useSetChain } from '@ui-kit/features/connect-wallet'
+import { getPath } from '@/loan/utils/utilsRouter'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -19,31 +16,19 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
-  const { connectState } = useLendConnection()
-  const [, setWalletChain] = useSetChain()
 
   const layoutHeight = useStore((state) => state.layout.height)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const params = useParams() as UrlParams
-  const { rChainId, rNetwork } = parseNetworkFromUrl(params)
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   const sections = useMemo(() => getSections(params), [params])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header
-        sections={sections}
-        BannerProps={{
-          ref: globalAlertRef,
-          networkName: rNetwork,
-          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
-        }}
-      />
+      <Header sections={sections} globalAlertRef={globalAlertRef} networkId={params.network} />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="crvusd" networkName={rNetwork} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="crvusd" networkId={params.network} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

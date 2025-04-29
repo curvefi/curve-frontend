@@ -1,49 +1,49 @@
 import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useRef } from 'react'
-import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
+import { type RefObject, useCallback, useMemo, useRef } from 'react'
+import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
 import { ChainId, type CurveApi } from '@/dex/types/main.types'
-import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
+import { getPath, useChainId, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
+type HeaderProps = {
+  sections: NavigationSection[]
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkId: string
+}
 
 const QuickSwap = () => t`Quickswap`
-export const Header = ({ sections, BannerProps }: HeaderProps) => {
+export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
+  const { connectState, lib: curve = {} } = useConnection<CurveApi>()
+  const rChainId = useChainId(networkId)
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
-  const { connectState, lib: curve } = useConnection<CurveApi>()
 
-  const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const chainId = curve?.chainId
+  const hasRouter = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasRouter)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
-
-  const { data: tvlTotal } = useAppStatsTvl({ chainId })
-  const { data: volumeTotal } = useAppStatsVolume({ chainId })
-
-  const { rChainId, rNetwork } = useNetworkFromUrl()
-  const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
+  const { data: tvlTotal } = useAppStatsTvl(curve)
+  const { data: volumeTotal } = useAppStatsVolume(curve)
+
   const network = networks[rChainId]
-  const restPartialPathname = useRestPartialPathname()
+  const restPartialPathname = useRestFullPathname()
 
   return (
     <NewHeader<ChainId>
-      networkName={rNetwork}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="dex"
       isLite={network?.isLite}
@@ -92,7 +92,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       ]}
       sections={sections}
       height={useHeaderHeight(bannerHeight)}
-      BannerProps={BannerProps}
+      globalAlertRef={globalAlertRef}
     />
   )
 }

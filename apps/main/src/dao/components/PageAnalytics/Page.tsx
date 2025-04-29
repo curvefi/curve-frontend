@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Analytics from '@/dao/components/PageAnalytics/index'
 import { breakpoints } from '@ui/utils'
 
-const Page = () => (
+export const PageAnalytics = () => (
   <Container>
     <Analytics />
   </Container>
@@ -18,5 +18,3 @@ const Container = styled.div`
     margin: 1.5rem 1.5rem 0 1.5rem;
   }
 `
-
-export default Page

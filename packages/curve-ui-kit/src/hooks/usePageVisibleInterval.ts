@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-type CallbackFunction = () => void
+type CallbackFunction = () => unknown
 
 /**
  * A hook that runs a callback function at specified intervals, but only when the page is visible.

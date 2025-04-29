@@ -1,11 +1,12 @@
 'use client'
 import styled from 'styled-components'
-import DeployGauge from '@/dex/components/PageDeployGauge/index'
+import { DeployGauge } from '@/dex/components/PageDeployGauge/index'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { breakpoints } from '@ui/utils/responsive'
 
-const Page = () => (
+export const PageDeployGauge = (props: NetworkUrlParams) => (
   <Container>
-    <DeployGauge />
+    <DeployGauge {...props} />
   </Container>
 )
 
@@ -22,5 +23,3 @@ const Container = styled.div`
     margin: 1.5rem;
   }
 `
-
-export default Page
