@@ -1,9 +1,9 @@
 {
   "campaignName": "Mev-commit Points",
-  "platform": "null",
+  "platform": "",
   "description": "Points for providing liquidity.",
   "platformImageId": "mev-commit.png",
-  "dashboardLink": "null",
+  "dashboardLink": "",
   "pools": [
     {
       "id": "null",
