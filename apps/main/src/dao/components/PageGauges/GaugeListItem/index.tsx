@@ -41,12 +41,10 @@ const GaugeListItem = ({
   userAddress = '',
 }: Props) => {
   // userGaugeWeightVoteData is only passed to component in CurrentVotes.tsx
-  const isUserCurrentVotes = !!userGaugeWeightVoteData
   const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
     chainId: Chain.Ethereum,
-    gaugeAddress: userGaugeWeightVoteData?.gaugeAddress ?? '',
-    userAddress: userAddress,
-    enabled: isUserCurrentVotes, // only fetch if userGaugeWeightVoteData is available
+    gaugeAddress: userGaugeWeightVoteData?.gaugeAddress,
+    userAddress,
   })
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
@@ -79,13 +77,13 @@ const GaugeListItem = ({
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
       <DataComp gridTemplateColumns={gridTemplateColumns}>
         <TitleComp gaugeData={gaugeData} />
-        {isUserCurrentVotes ? (
+        {userGaugeWeightVoteData ? (
           <GaugeWeightVotesColumns userGaugeWeightVoteData={userGaugeWeightVoteData} />
         ) : (
           <GaugeListColumns gaugeData={gaugeData} />
         )}
         <Box flex flexJustifyContent="flex-end" flexAlignItems="center" margin="0 0 0 auto">
-          {isUserCurrentVotes && canVote && (
+          {userGaugeWeightVoteData && canVote && (
             <UpdateGaugeIndicator variant="select-flat">{t`Update`}</UpdateGaugeIndicator>
           )}
           <StyledIconButton size="small">

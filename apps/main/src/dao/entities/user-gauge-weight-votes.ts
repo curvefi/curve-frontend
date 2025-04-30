@@ -1,19 +1,16 @@
 import { curvejsValidationSuite } from '@/dao/entities/validation/curvejs-validation'
-import type { ChainId } from '@/dao/types/dao.types'
-import { getLib } from '@ui-kit/features/connect-wallet'
+import type { ChainId, CurveApi } from '@/dao/types/dao.types'
+import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { CurveApi } from '@ui-kit/shared/useApiStore'
 
-const _fetchUserGaugeWeightVotes = async ({ chainId, userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
-  const curve = getLib<CurveApi>()
-
-  const gaugeVoteWeightsRes = await curve!.dao.userGaugeVotes(userAddress)
-
-  const data = {
-    powerUsed: Number(gaugeVoteWeightsRes.powerUsed),
-    veCrvUsed: Number(gaugeVoteWeightsRes.veCrvUsed),
-    gauges: gaugeVoteWeightsRes.gauges
+const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
+  const curve = requireLib<CurveApi>()
+  const { gauges, powerUsed, veCrvUsed } = await curve.dao.userGaugeVotes(userAddress)
+  return {
+    powerUsed: Number(powerUsed),
+    veCrvUsed: Number(veCrvUsed),
+    gauges: gauges
       .map((gauge) => ({
         userPower: Number(gauge.userPower),
         userVeCrv: Number(gauge.userVeCrv),
@@ -28,17 +25,13 @@ const _fetchUserGaugeWeightVotes = async ({ chainId, userAddress }: ChainQuery<C
       }))
       .sort((a, b) => b.userPower - a.userPower),
   }
-
-  return data
 }
 
-export const {
-  useQuery: useUserGaugeWeightVotesQuery,
-  invalidate: invalidateUserGaugeWeightVotesQuery,
-  getQueryData: getUserGaugeWeightVotesQueryData,
-} = queryFactory({
-  queryKey: (params: ChainParams<ChainId> & { userAddress: string }) =>
-    ['user-gauge-weight-votes', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
-  queryFn: _fetchUserGaugeWeightVotes,
-  validationSuite: curvejsValidationSuite,
-})
+export const { useQuery: useUserGaugeWeightVotesQuery, invalidate: invalidateUserGaugeWeightVotesQuery } = queryFactory(
+  {
+    queryKey: (params: ChainParams<ChainId> & { userAddress: string }) =>
+      ['user-gauge-weight-votes', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
+    queryFn: _fetchUserGaugeWeightVotes,
+    validationSuite: curvejsValidationSuite,
+  },
+)
