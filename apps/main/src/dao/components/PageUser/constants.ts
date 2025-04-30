@@ -1,25 +1,27 @@
-import { UserLock, UserProposalVoteData, UserGaugeVote } from '@/dao/types/dao.types'
-import { Column } from '../PaginatedTable'
+import type { Column } from '@/dao/components/PaginatedTable'
+import type { UserGaugeVoteFormatted } from '@/dao/entities/user-gauge-votes'
+import type { UserLockFormatted } from '@/dao/entities/user-locks'
+import type { UserProposalVoteFormatted } from '@/dao/entities/user-proposal-votes'
 
-export const LOCKS_LABELS: Column<UserLock>[] = [
-  { key: 'date', label: 'Date' },
-  { key: 'lock_type', label: 'Lock Type', disabled: true },
+export const LOCKS_LABELS: Column<UserLockFormatted>[] = [
+  { key: 'lockType', label: 'Lock Type', disabled: true },
   { key: 'amount', label: 'Amount' },
-  { key: 'unlock_time', label: 'Unlock Time' },
-]
-
-export const VOTES_LABELS: Column<UserProposalVoteData>[] = [
-  { key: 'vote_id', label: 'Vote ID' },
-  { key: 'vote_type', label: 'Vote Type', disabled: true },
-  { key: 'vote_for', label: 'For Weight' },
-  { key: 'vote_against', label: 'Against Weight' },
-  { key: 'vote_open', label: 'Start' },
-  { key: 'vote_close', label: 'End' },
-]
-
-export const GAUGE_VOTES_LABELS: Column<UserGaugeVote>[] = [
   { key: 'timestamp', label: 'Date' },
-  { key: 'gauge_name', label: 'Gauge Name', disabled: true },
+  { key: 'unlockTime', label: 'Unlock Time' },
+]
+
+export const VOTES_LABELS: Column<UserProposalVoteFormatted>[] = [
+  { key: 'voteId', label: 'Vote ID' },
+  { key: 'voteType', label: 'Vote Type', disabled: true },
+  { key: 'voteFor', label: 'For Weight' },
+  { key: 'voteAgainst', label: 'Against Weight' },
+  { key: 'voteOpen', label: 'Start' },
+  { key: 'voteClose', label: 'End' },
+]
+
+export const GAUGE_VOTES_LABELS: Column<UserGaugeVoteFormatted>[] = [
+  { key: 'gaugeName', label: 'Gauge Name', disabled: true },
+  { key: 'timestamp', label: 'Date' },
   { key: 'weight', label: 'Weight' },
   { key: 'gauge', label: 'Gauge', disabled: true },
 ]

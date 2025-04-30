@@ -2,16 +2,17 @@ import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import SmallLabel from '@/dao/components/SmallLabel'
 import VoteCountdown from '@/dao/components/VoteCountdown'
-import { ProposalData } from '@/dao/types/dao.types'
+import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { t } from '@ui-kit/lib/i18n'
 
 type ProposalHeaderProps = {
-  proposal: ProposalData
+  proposal: ProposalData | null
+  loading: boolean
   voteId: string
-  voteType: string
+  proposalType: string
 }
 
-const ProposalHeader = ({ proposal, voteId, voteType }: ProposalHeaderProps) => (
+const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHeaderProps) => (
   <Wrapper>
     <SmallLabel
       className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
@@ -29,11 +30,15 @@ const ProposalHeader = ({ proposal, voteId, voteType }: ProposalHeaderProps) => 
       />
     )}
     <MetricsComp loading={false} title={t`Proposal ID`} data={<MetricsColumnData>#{voteId}</MetricsColumnData>} />
-    <MetricsComp loading={false} title={t`Proposal Type`} data={<MetricsColumnData>{voteType}</MetricsColumnData>} />
+    <MetricsComp
+      loading={false}
+      title={t`Proposal Type`}
+      data={<MetricsColumnData>{proposalType}</MetricsColumnData>}
+    />
     <TimeRemainingBox
-      loading={!proposal}
+      loading={loading}
       title={t`Time Remaining`}
-      data={<StyledVoteCountdown startDate={proposal?.startDate} />}
+      data={<StyledVoteCountdown startDate={proposal?.timestamp ?? null} />}
     />
   </Wrapper>
 )

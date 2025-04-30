@@ -44,120 +44,8 @@ export type GasInfo = {
   l2GasPriceWei?: number
 }
 export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
-export type ProposalType = 'PARAMETER' | 'OWNERSHIP'
-export type ProposalResponseData = {
-  voteId: number
-  voteType: ProposalType
-  creator: string
-  startDate: number
-  snapshotBlock: number
-  ipfsMetadata: string
-  metadata: string
-  votesFor: string
-  votesAgainst: string
-  voteCount: number
-  supportRequired: string
-  minAcceptQuorum: string
-  totalSupply: string
-  executed: boolean
-}
-export type PricesProposalResponseData = {
-  creator: string
-  dt: string
-  executed: boolean
-  ipfs_metadata: string
-  metadata: string
-  min_accept_quorum: string
-  snapshot_block: number
-  start_date: number
-  support_required: string
-  total_supply: string
-  transaction_hash: string
-  vote_count: number
-  vote_id: number
-  vote_type: string
-  votes_against: string
-  votes_for: string
-}
+export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
-export interface ProposalData extends Omit<ProposalResponseData, 'votesFor' | 'votesAgainst'> {
-  status: 'Active' | 'Passed' | 'Denied'
-  votesFor: number
-  votesAgainst: number
-  totalVotes: number
-  minSupport: number
-  minAcceptQuorumPercent: number
-  quorumVeCrv: number
-  totalVeCrv: number
-  currentQuorumPercentage: number
-}
-
-export type PricesProposalsResponse = {
-  proposals: PricesProposalResponseData[]
-}
-export type PricesProposalResponse =
-  | {
-      vote_id: number
-      vote_type: ProposalType
-      creator: string
-      start_date: number
-      snapshot_block: number
-      ipfs_metadata: string
-      metadata: string
-      votes_for: string
-      votes_against: string
-      vote_count: number
-      support_required: string
-      min_accept_quorum: string
-      total_supply: string
-      executed: boolean
-      transaction_hash: string
-      dt: string
-      creator_voting_power: string
-      execution_tx: string
-      script: string
-      votes: Array<{
-        voter: string
-        supports: boolean
-        voting_power: string
-        transaction_hash: string
-      }>
-    }
-  | {
-      detail: string
-    }
-export type PricesProposalData = {
-  vote_id: number
-  vote_type: ProposalType
-  creator: string
-  start_date: number
-  snapshot_block: number
-  ipfs_metadata: string
-  metadata: string
-  votes_for: number
-  votes_against: number
-  vote_count: number
-  support_required: number
-  min_accept_quorum: number
-  total_supply: number
-  executed: boolean
-  transaction_hash: string
-  dt: string
-  creator_voting_power: number
-  execution_tx: string
-  script: string
-  votes: Array<{
-    voter: string
-    topHolder: string | null
-    stake: number
-    relativePower: number
-    supports: boolean
-    transaction_hash: string
-  }>
-}
-export type ProposalMapper = {
-  [proposalId: string]: PricesProposalData
-}
 export type PricesGaugeOverviewData = {
   address: string
   effective_address?: string
@@ -301,12 +189,6 @@ export interface UserMapper {
   }
 }
 
-export interface UserVoteData {
-  voteId: number
-  voteType: 'PARAMETER' | 'OWNERSHIP'
-  userVote: 'no' | 'yes' | 'even'
-}
-
 export type SnapshotVotingPower = {
   loading: boolean
   value: number
@@ -318,87 +200,8 @@ export type ActiveProposal = {
   endTimestamp: number
 }
 
-export interface UserLockApi {
-  amount: string
-  unlock_time: number
-  lock_type: veCrvLockType
-  locked_balance: string
-  block_number: number
-  dt: string
-  transaction_hash: string
-}
-
-export interface UserLockRes {
-  locks: UserLockApi[]
-}
-
-export interface UserLock {
-  amount: number
-  unlock_time: number
-  lock_type: veCrvLockType
-  locked_balance: number
-  block_number: number
-  date: string
-  transaction_hash: string
-}
-
-export interface UserProposalVoteResData {
-  proposal: {
-    vote_id: number
-    vote_type: string
-    creator: string
-    start_date: number
-    snapshot_block: number
-    ipfs_metadata: string
-    metadata: string
-    votes_for: string
-    votes_against: string
-    vote_count: number
-    support_required: string
-    min_accept_quorum: string
-    total_supply: string
-    executed: boolean
-    transaction_hash: string
-    dt: string
-  }
-  votes: {
-    voter: string
-    supports: boolean
-    voting_power: string
-    transaction_hash: string
-  }[]
-}
-
-export interface UserProposalVoteData {
-  vote_id: number
-  vote_type: string
-  vote_for: number
-  vote_against: number
-  vote_open: number
-  vote_close: number
-  vote_total_supply: number
-}
-
-export interface UserProposalVotesRes {
-  page: number
-  count: number
-  data: UserProposalVoteResData[]
-}
-
-export type UserGaugeVote = {
-  gauge: string
-  gauge_name: string
-  weight: number
-  block_number: number
-  timestamp: number
-  transaction: string
-}
-export type UserGaugeVotesRes = {
-  votes: UserGaugeVote[]
-}
-
 export type UserGaugeVoteWeight = {
-  title: string
+  title?: string
   userPower: number
   userVeCrv: number
   userFutureVeCrv: number
@@ -413,11 +216,6 @@ export type UserGaugeVoteWeight = {
   poolUrl: string
   relativeWeight: number
   totalVeCrv: number
-  nextVoteTime: {
-    fetchingState: FetchingState | null
-    timestamp: number | null
-  }
-  canVote: boolean
 }
 
 export type UserGaugeVoteWeightsMapper = {
@@ -466,12 +264,11 @@ export type SortByFilterGauges = {
 export type SortDirection = 'asc' | 'desc'
 export type TopHoldersSortBy = 'weight' | 'locked' | 'weightRatio'
 export type AllHoldersSortBy = 'weight' | 'locked' | 'weightRatio' | 'unlockTime'
-export type UserLocksSortBy = 'date' | 'amount' | 'unlock_time'
+export type UserLocksSortBy = 'timestamp' | 'amount' | 'unlockTime'
 export type UserGaugeVotesSortBy = 'weight' | 'timestamp'
-export type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
+export type UserProposalVotesSortBy = 'voteId' | 'voteFor' | 'voteAgainst' | 'voteOpen' | 'voteClose'
 export type GaugeVotesSortBy = 'weight' | 'timestamp'
 export type UserGaugeVoteWeightSortBy = 'userPower' | 'userVeCrv'
-export type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
 
 export enum ClaimButtonsKey {
   '3CRV' = '3CRV',
