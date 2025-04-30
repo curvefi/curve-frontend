@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { useAccount, useConnect, useConnectorClient, useDisconnect, useEnsName } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Address } from '@ui-kit/utils'
+import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import type { Wallet } from '../types'
 import { connectors } from './connectors'
 import { supportedWallets, type WalletType } from './wallets'
@@ -41,7 +42,9 @@ export const useWagmi = () => {
   const [walletType, setWalletType] = useWalletType()
 
   const { data: client } = useConnectorClient()
-  const provider = useMemo(() => client?.transport.request && { request: client.transport.request }, [client])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const request = useMemo(() => client && client.transport.request, [!client])
 
   // important: use the async functions so we can properly handle the promise failures
   const { connectAsync } = useConnect()
@@ -64,6 +67,7 @@ export const useWagmi = () => {
 
   const connectWagmi = useCallback(
     async (label?: string) => {
+      if (!request) throw new Error('No provider found')
       if (!label) {
         return new Promise<Wallet | null>((...args) => setConnectCallbacks(args))
       }
@@ -82,7 +86,7 @@ export const useWagmi = () => {
 
         const wallet = createWallet({
           chainId,
-          provider,
+          provider: { request },
           label,
           address,
         })
@@ -94,7 +98,7 @@ export const useWagmi = () => {
         throw err
       }
     },
-    [setWalletType, connectCallbacks, setConnectCallbacks, connectAsync, provider],
+    [setWalletType, connectCallbacks, setConnectCallbacks, connectAsync, request],
   )
 
   const closeModal = useCallback(
@@ -108,20 +112,24 @@ export const useWagmi = () => {
 
   const { data: ensName } = useEnsName({ address })
 
+  const chainId = client?.chain.id
   const wallet =
     useMemo(
       () =>
-        client &&
+        request &&
+        chainId &&
         address &&
         createWallet({
-          chainId: client.chain.id,
-          provider,
+          chainId,
+          provider: { request },
           label: walletType?.label,
           address,
           ensName,
         }),
-      [address, client, provider, walletType?.label, ensName],
+      [address, chainId, request, walletType?.label, ensName],
     ) ?? null
+
+  useTraceProps('useWagmi.wallet', { wallet, address, chainId, request, walletType: walletType?.label, ensName })
 
   const showModal = !!connectCallbacks
   const connecting = (isConnecting || showModal) && !isReconnecting && !address // note: workaround to avoid showing the modal when reconnecting

@@ -9,6 +9,7 @@ import {
 } from '@ui-kit/features/connect-wallet'
 import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
 import { useWalletName } from '@ui-kit/hooks/useLocalStorage'
+import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 
 const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -108,6 +109,7 @@ export const ConnectionProvider = <
      * Try to reconnect to the wallet if it was previously connected, based on the stored wallet name.
      */
     const tryToReconnect = async (label: string) => {
+      console.log('trying to reconnect', label)
       setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
       return withTimeout(connect(label))
         .then((wallet) => !!wallet)
@@ -142,6 +144,7 @@ export const ConnectionProvider = <
         if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
+          console.log(new Date().toISOString(), 'Initializing lib', getWalletSignerAddress(wallet))
           newLib = (await initLib(chainId, wallet?.provider)) ?? null
 
           if (signal.aborted) return
@@ -160,8 +163,19 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-    // Adding connect to the list of deps somehow causes an infinite loop, not sure why
   }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, connect, walletName])
+
+  useTraceProps('CC init', {
+    isWalletInitialized,
+    chainId,
+    hydrate,
+    initLib,
+    onChainUnavailable,
+    setChain,
+    wallet,
+    connect,
+    walletName,
+  })
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet

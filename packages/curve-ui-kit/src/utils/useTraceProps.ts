@@ -28,6 +28,6 @@ const toString = (value: unknown) => {
   try {
     return JSON.stringify(value, null, 2)
   } catch {
-    return value?.toString() // circular objects cannot be converted to JSON
+    return value?.toString() ?? typeof value // circular objects cannot be converted to JSON
   }
 }
