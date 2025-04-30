@@ -6,12 +6,17 @@ import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { type CollateralUrlParams, Llamma, type Curve } from '@/loan/types/loan.types'
+import { useStablecoinConnection } from '@/loan/temp-lib'
+import { type CollateralUrlParams, type Curve, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import {
+  getCollateralListPathname,
+  getLoanCreatePathname,
+  getLoanManagePathname,
+  useChainId,
+} from '@/loan/utils/utilsRouter'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -24,25 +29,26 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
-import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
-  const { routerParams, curve } = usePageOnMount()
+  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const pageLoaded = !isLoading(connectState)
+  const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
-  const { rChainId, rCollateralId, rFormType } = routerParams
+  const { collateralId: rCollateralId, formType: [rFormType] = [] } = params
+  const { connect: connectWallet, provider } = useWallet()
+  const [loaded, setLoaded] = useState(false)
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
-  const isLoadingApi = useApiStore((state) => state.isLoadingStable)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -52,14 +58,9 @@ const Page = (params: CollateralUrlParams) => {
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
-  const { provider } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
-
-  const [loaded, setLoaded] = useState(false)
 
   const llamma = collateralData?.llamma
   const llammaId = llamma?.id ?? ''
@@ -91,20 +92,22 @@ const Page = (params: CollateralUrlParams) => {
   )
 
   useEffect(() => {
-    if (isLoadingApi) {
-      setLoaded(false)
-    } else if (curve) {
-      if (!llamma) {
-        push(getCollateralListPathname(params))
-      } else {
-        resetUserDetailsState(llamma)
-        fetchInitial(curve, isLeverage, llamma)
-        void fetchLoanDetails(curve, llamma)
-        setLoaded(true)
+    if (pageLoaded) {
+      if (curve) {
+        if (llamma) {
+          resetUserDetailsState(llamma)
+          fetchInitial(curve, isLeverage, llamma)
+          void fetchLoanDetails(curve, llamma)
+          setLoaded(true)
+        } else {
+          push(getCollateralListPathname(params))
+        }
       }
+    } else {
+      setLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi])
+  }, [pageLoaded])
 
   // redirect if loan exists
   useEffect(() => {

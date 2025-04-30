@@ -17,7 +17,9 @@ interface PaginatedTableProps<T> {
   sortBy: { key: keyof T; order: 'asc' | 'desc' }
   columns: Column<T>[]
   data: T[]
-  fetchingState: 'LOADING' | 'SUCCESS' | 'ERROR'
+  isLoading: boolean
+  isError: boolean
+  isSuccess: boolean
   title?: string
   errorMessage: string
   setSortBy: (key: keyof T) => void
@@ -34,7 +36,9 @@ const PaginatedTable = <T,>({
   sortBy,
   columns,
   data,
-  fetchingState,
+  isLoading,
+  isError,
+  isSuccess,
   errorMessage,
   getData,
   title,
@@ -72,21 +76,20 @@ const PaginatedTable = <T,>({
             smallScreenBreakpoint={smallScreenBreakpoint}
           />
           <TableBody noPagination={noPagination}>
-            {fetchingState === 'LOADING' && <Spinner height={FETCH_FEEDBACK_HEIGHT} />}
-            {fetchingState === 'SUCCESS' &&
-              currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
-            {fetchingState === 'ERROR' && (
+            {isLoading && <Spinner height={FETCH_FEEDBACK_HEIGHT} />}
+            {isSuccess && currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
+            {isError && (
               <ErrorMessageWrapper height={FETCH_FEEDBACK_HEIGHT}>
                 <ErrorMessage message={errorMessage} onClick={getData} />
               </ErrorMessageWrapper>
             )}
-            {fetchingState === 'SUCCESS' && currentItems.length === 0 && (
+            {isSuccess && currentItems.length === 0 && (
               <NoTableData height={FETCH_FEEDBACK_HEIGHT} noDataMessage={noDataMessage} refetchData={getData} />
             )}
           </TableBody>
         </TableContent>
       </Container>
-      {fetchingState === 'SUCCESS' && currentItems.length > 0 && !noPagination && (
+      {isSuccess && currentItems.length > 0 && !noPagination && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       )}
     </Wrapper>

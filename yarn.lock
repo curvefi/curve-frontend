@@ -1561,15 +1561,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.66.15":
-  version: 2.66.15
-  resolution: "@curvefi/api@npm:2.66.15"
+"@curvefi/api@npm:2.66.16":
+  version: 2.66.16
+  resolution: "@curvefi/api@npm:2.66.16"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.12"
     bignumber.js: "npm:^9.1.2"
     ethers: "npm:^6.13.4"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/312f3588fb2c4fc2568061066023befc226dab0aa2163f6de4c0d330ee89f26493eeb237e2c2bc7b272bd484bedb28491a6d9d43b78ea8723699c71cadbc12d5
+  checksum: 10c0/5c116853d9dd381052907494d1dc5b4d69e62281338651b4cdcebe04f30ef9ce48cc19f996e383777cc0c09a48d0e09f6b7de9eb13d2ab5a57a1893cdf84c98d
   languageName: node
   linkType: hard
 
@@ -1597,16 +1597,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:2.5.8":
-  version: 2.5.8
-  resolution: "@curvefi/lending-api@npm:2.5.8"
+"@curvefi/lending-api@npm:2.5.9":
+  version: 2.5.9
+  resolution: "@curvefi/lending-api@npm:2.5.9"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.13"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.10.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/069c8ff4f000b1c58dd22b6fe21e291ec19b092456ceaa7a16da07f946a9886c5ccc9bb246c36ad1224db9619f586c667fbbd95d3284ac7c8353fddc926ca689
+  checksum: 10c0/25be33be6a5320200b94cd3f3b8b9b4178ff08cd508073a4fadba4b7d987a1580fe9062b3a83f083c478317087bd81dc5c67f3a6933cb9fecd89cb2701eedbd2
   languageName: node
   linkType: hard
 
@@ -19208,8 +19208,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:2.66.15"
-    "@curvefi/lending-api": "npm:2.5.8"
+    "@curvefi/api": "npm:2.66.16"
+    "@curvefi/lending-api": "npm:2.5.9"
     "@curvefi/stablecoin-api": "npm:1.5.19"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^5.0.1"
@@ -19232,7 +19232,7 @@ __metadata:
     lightweight-charts: "npm:^4.2.3"
     lodash: "npm:4.17.21"
     memoizee: "npm:^0.4.17"
-    next: "npm:^15.3.0"
+    next: "npm:^15.3.1"
     next-images: "npm:^1.8.5"
     pinst: "npm:^3.0.0"
     react: "npm:*"

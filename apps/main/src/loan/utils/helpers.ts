@@ -18,7 +18,7 @@ export function isHighSlippage(slippage: number, maxSlippage: string) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
-    console.info(`curve-frontend -> ${fnName}:`, ...args)
+    console.info(`curve-frontend -> ${fnName}${args.length ? ':' : ''}`, ...args)
   }
 }
 

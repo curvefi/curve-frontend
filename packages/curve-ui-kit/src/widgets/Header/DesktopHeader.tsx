@@ -26,7 +26,6 @@ export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
   currentMenu,
   ChainProps,
-  WalletProps,
   globalAlertRef,
   height, // height above + banner height
   pages,
@@ -67,7 +66,7 @@ export const DesktopHeader = <TChainId extends number>({
               )}
 
               <ChainSwitcher {...ChainProps} headerHeight={height} />
-              <ConnectWalletIndicator {...WalletProps} />
+              <ConnectWalletIndicator />
             </Box>
           </Container>
         </Toolbar>

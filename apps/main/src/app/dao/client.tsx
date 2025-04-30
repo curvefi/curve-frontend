@@ -67,16 +67,23 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
-      const foundNetwork = networks[walletChainId]?.id
-      if (foundNetwork) {
-        console.warn(`Network switched to ${foundNetwork}, redirecting...`, location.href)
-        push(getPath({ network: foundNetwork }, `/${getRestFullPathname()}`))
+      const network = networks[walletChainId]?.id
+      if (network) {
+        console.warn(`Network switched to ${network}, redirecting...`, location.href)
+        push(getPath({ network }, `/${getRestFullPathname()}`))
       }
     },
     [push],
   )
 
   const chainId = networksIdMapper[network]
+
+  useEffect(() => {
+    if (!networks[chainId]?.showInSelectNetwork) {
+      console.warn(`Network ${network} not supported, redirecting...`, chainId)
+      push(getPath({ network: 'ethereum' }, `/${getRestFullPathname()}`))
+    }
+  }, [network, chainId, push])
 
   return (
     <ClientWrapper loading={!appLoaded}>

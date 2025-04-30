@@ -4,15 +4,15 @@ import AlertFormError from '@/loan/components/AlertFormError'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import { ChainId, Curve } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TxInfoBar from '@ui/TxInfoBar'
 import { breakpoints, formatNumber } from '@ui/utils'
-import { notify } from '@ui-kit/features/connect-wallet'
+import { isLoading, notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 type Props = {
   rChainId: ChainId
@@ -23,7 +23,7 @@ type Props = {
 const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const isSubscribed = useRef(false)
 
-  const curve = useApiStore((state) => state.stable)
+  const { lib: curve, connectState } = useStablecoinConnection()
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
@@ -78,7 +78,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
         <strong>{formatNumber(detailsMapper[pegKeeperAddress]?.estCallerProfit)}</strong>
       </DetailInfo>
 
-      <LoanFormConnect haveSigner={!!signerAddress} loading={!curve}>
+      <LoanFormConnect haveSigner={!!signerAddress} loading={isLoading(connectState)}>
         {txInfoBar}
         <AlertFormError limitHeight errorKey={formStatus[pegKeeperAddress]?.error} />
         {!!curve && (

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import styled from 'styled-components'
 import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
 import SmallLabel from '@/dao/components/SmallLabel'
-import { ProposalData } from '@/dao/types/dao.types'
+import { ProposalData } from '@/dao/entities/proposals-mapper'
 import LazyItem from '@ui/LazyItem'
 import { t } from '@ui-kit/lib/i18n'
 import VoteCountdown from '../../VoteCountdown'
@@ -13,7 +13,7 @@ type Props = {
 }
 
 const Proposal = ({ proposalData, handleClick }: Props) => {
-  const { voteId, voteType, startDate, metadata, status, executed } = proposalData
+  const { id, type, timestamp, metadata, status, executed } = proposalData
 
   const truncateMetadata = useCallback((metadata: string | null, maxLength: number) => {
     if (!metadata) {
@@ -27,7 +27,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
 
   return (
     <LazyItem defaultHeight="241px">
-      <ProposalContainer onClick={() => handleClick(`${voteId}-${voteType}`)}>
+      <ProposalContainer onClick={() => handleClick(`${id}-${type}`)}>
         <InformationWrapper>
           <ProposalDetailsRow>
             <SmallLabel
@@ -45,9 +45,9 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
                 }
               />
             )}
-            <ProposalId>#{voteId}</ProposalId>
-            <ProposalType>{voteType}</ProposalType>
-            <StyledVoteCountdown startDate={startDate} />
+            <ProposalId>#{id}</ProposalId>
+            <ProposalType>{type}</ProposalType>
+            <StyledVoteCountdown startDate={timestamp} />
           </ProposalDetailsRow>
           <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>
         </InformationWrapper>

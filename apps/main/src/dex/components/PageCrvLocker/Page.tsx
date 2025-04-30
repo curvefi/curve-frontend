@@ -20,9 +20,7 @@ export const PageCrvLocker = (params: CrvLockerUrlParams) => {
   const { lib: curve = null, connectState } = useConnection<CurveApi>()
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params.network)
-  const {
-    formType: [rFormType],
-  } = params
+  const { formType: [rFormType] = [] } = params
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)

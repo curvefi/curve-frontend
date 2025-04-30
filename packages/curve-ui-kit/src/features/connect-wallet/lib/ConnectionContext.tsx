@@ -59,6 +59,9 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
   connectState: { status: LOADING },
 })
 
+/**
+ * Compare the signer address of the wallet with the one in the library. Without wallet, returns true.
+ */
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
@@ -124,7 +127,8 @@ export const ConnectionProvider = <
         }
 
         const walletChainId = getWalletChainId(wallet)
-        if (walletChainId && walletChainId !== chainId && !document.hidden) {
+        const isFocused = document.hasFocus() // only change chains on focused tab, so they don't fight each other
+        if (walletChainId && walletChainId !== chainId && isFocused) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain(chainId))) {
             if (signal.aborted) return

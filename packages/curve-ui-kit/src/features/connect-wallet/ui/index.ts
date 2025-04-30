@@ -1,4 +1,4 @@
-export { ConnectWalletIndicator, type ConnectWalletIndicatorProps } from './ConnectWalletIndicator'
+export { ConnectWalletIndicator } from './ConnectWalletIndicator'
 export { ConnectWalletPrompt, setMissingProvider } from './ConnectWalletPrompt'
 export { ConnectedWalletLabel, type ConnectedWalletLabelProps } from './ConnectedWalletLabel'
 export { WagmiConnectModal } from './WagmiConnectModal'

@@ -1,5 +1,4 @@
 import type { RefObject } from 'react'
-import type { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
 import type { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
@@ -33,7 +32,6 @@ export type HeaderBaseProps<TChainId> = {
   currentMenu: AppMenuOption
   isLite?: boolean
   ChainProps: Omit<ChainSwitcherProps<TChainId>, 'headerHeight'>
-  WalletProps: ConnectWalletIndicatorProps
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: string
   height: string
