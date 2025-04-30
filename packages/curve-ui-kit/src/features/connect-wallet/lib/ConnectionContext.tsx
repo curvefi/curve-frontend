@@ -120,7 +120,7 @@ export const ConnectionProvider = <
         }
 
         const walletChainId = getWalletChainId(wallet)
-        if (walletChainId && walletChainId !== chainId && !document.hidden) {
+        if (walletChainId && walletChainId !== chainId && document.hasFocus()) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
           if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
             if (signal.aborted) return
