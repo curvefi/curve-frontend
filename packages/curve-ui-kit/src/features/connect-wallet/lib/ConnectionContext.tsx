@@ -161,8 +161,7 @@ export const ConnectionProvider = <
     void initApp()
     return () => abort.abort()
     // Adding connect to the list of deps somehow causes an infinite loop, not sure why
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet])
+  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, connect, walletName])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
