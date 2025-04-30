@@ -46,8 +46,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
     () =>
       results[activeKey] ??
       resultCached ??
-      (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey]) ??
-      [],
+      ((activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey]) || []),
     [activeKey, prevActiveKey, resultCached, results],
   )
 
