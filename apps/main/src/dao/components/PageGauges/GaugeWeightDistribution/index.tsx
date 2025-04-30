@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
+import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 import BarChartComponent from '../../Charts/BarChartComponent'
 import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
 import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
@@ -16,19 +18,26 @@ type GaugeWeightDistributionProps = {
 }
 
 const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
+  const {
+    data: userGaugeWeightVotes,
+    isSuccess: userGaugeWeightsSuccess,
+    isLoading: userGaugeWeightsLoading,
+    isError: userGaugeWeightsError,
+  } = useUserGaugeWeightVotesQuery({
+    chainId: Chain.Ethereum, // DAO is only used on mainnet
+    userAddress: userAddress ?? '',
+  })
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
-  const { userGaugeVoteWeightsMapper } = useStore((state) => state.user)
-  const userData = userAddress ? userGaugeVoteWeightsMapper[userAddress] : null
 
-  const loading = isUserVotes ? userData?.fetchingState === 'LOADING' : gaugesLoading === 'LOADING'
-  const error = isUserVotes ? userData?.fetchingState === 'ERROR' : gaugesLoading === 'ERROR'
-  const success = isUserVotes ? userData?.fetchingState === 'SUCCESS' : gaugesLoading === 'SUCCESS'
+  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
+  const isError = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
+  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesLoading === 'SUCCESS'
 
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
     if (isUserVotes) {
       return (
-        userData?.data?.gauges.map((gauge) => ({
+        userGaugeWeightVotes?.gauges.map((gauge) => ({
           ...gauge,
           title: gaugeMapper[gauge.gaugeAddress]?.title ?? '',
         })) ?? []
@@ -38,7 +47,7 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     return Object.values(gaugeMapper)
       .filter((gauge) => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-  }, [gaugeMapper, isUserVotes, userData])
+  }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])
 
   if (!userAddress && isUserVotes) {
     return (
@@ -55,24 +64,24 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     <Wrapper variant="secondary">
       <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
         <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
-        {loading && (
+        {isLoading && (
           <StyledSpinnerWrapper>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {error && (
+        {isError && (
           <ErrorMessageWrapper>
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
           </ErrorMessageWrapper>
         )}
-        {success && formattedData.length > 0 && (
+        {isSuccess && formattedData.length > 0 && (
           <BarChartComponent
             data={formattedData}
             dataKey={dataKey as keyof (typeof formattedData)[0]}
             CustomTooltip={isUserVotes ? GaugeVotingCustomTooltip : GaugesCustomTooltip}
           />
         )}
-        {success && formattedData.length === 0 && (
+        {!isLoading && !isError && formattedData.length === 0 && (
           <ErrorMessageWrapper>
             <ErrorMessage
               message={isUserVotes ? t`No gauge votes found` : t`No gauges with with >0.5% relative gauge weight found`}

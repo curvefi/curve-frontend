@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
-import { ProposalData } from '@/dao/types/dao.types'
+import { ProposalData } from '@/dao/entities/proposals-mapper'
 import Box from '@ui/Box'
 import Tooltip, { TooltipIcon } from '@ui/Tooltip'
 import { breakpoints, formatNumber } from '@ui/utils'
@@ -12,11 +12,13 @@ type ProposalVoteStatusBoxProps = {
 }
 
 const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
-  const { votesFor, votesAgainst, minAcceptQuorumPercent, minSupport, currentQuorumPercentage } = proposalData
+  const { votesFor, votesAgainst, quorum, support, currentQuorumPercentage } = proposalData
+  const minAcceptQuorumPercent = quorum * 100
+  const minSupport = support * 100
 
   const totalVotes = votesFor + votesAgainst
-  const support = totalVotes > 0 ? (votesFor / totalVotes) * 100 : 0
-  const against = totalVotes > 0 ? (votesAgainst / totalVotes) * 100 : 0
+  const currentSupport = totalVotes > 0 ? votesFor / totalVotes : 0
+  const against = totalVotes > 0 ? votesAgainst / totalVotes : 0
 
   return (
     <Wrapper className={className}>
@@ -49,26 +51,26 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>
-              {formatNumber(support, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              {formatNumber(currentSupport, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </HighlightedData>
             <Data>{t`of ${minSupport}%`}</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
         </Box>
-        <ProgressBar active={totalVotes > 0} support={support} minSupport={minSupport} />
+        <ProgressBar active={totalVotes > 0} support={currentSupport * 100} minSupport={minSupport} />
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData className="for">{t`For`}</HighlightedData>{' '}
             <Tooltip noWrap tooltip={`${formatNumber(votesFor, { notation: 'compact' })} veCRV`}>
               <HighlightedData>
-                {formatNumber(support, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                {formatNumber(currentSupport * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
               </HighlightedData>
             </Tooltip>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <Tooltip noWrap tooltip={`${formatNumber(votesAgainst, { notation: 'compact' })} veCRV`}>
               <HighlightedData>
-                {formatNumber(against, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                {formatNumber(against * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
               </HighlightedData>
             </Tooltip>
             <HighlightedData className="against">{t`Against`}</HighlightedData>

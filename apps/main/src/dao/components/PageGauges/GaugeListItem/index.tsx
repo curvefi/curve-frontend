@@ -9,6 +9,7 @@ import GaugeListColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeLis
 import GaugeWeightVotesColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
 import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import VoteGaugeField from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
+import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -18,6 +19,7 @@ import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { Chain } from '@ui-kit/utils/network'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -26,6 +28,7 @@ type Props = {
   powerUsed?: number
   userGaugeVote?: boolean
   addUserVote?: boolean
+  userAddress?: string
 }
 
 const GaugeListItem = ({
@@ -35,7 +38,16 @@ const GaugeListItem = ({
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
+  userAddress = '',
 }: Props) => {
+  // userGaugeWeightVoteData is only passed to component in CurrentVotes.tsx
+  const isUserCurrentVotes = !!userGaugeWeightVoteData
+  const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
+    chainId: Chain.Ethereum,
+    gaugeAddress: userGaugeWeightVoteData?.gaugeAddress ?? '',
+    userAddress: userAddress,
+    enabled: isUserCurrentVotes, // only fetch if userGaugeWeightVoteData is available
+  })
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
   const gaugeCurveApiData = useStore(
@@ -46,6 +58,7 @@ const GaugeListItem = ({
   )
   const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
+  const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
 
   const gaugeHistoryLoading =
     gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
@@ -66,13 +79,13 @@ const GaugeListItem = ({
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
       <DataComp gridTemplateColumns={gridTemplateColumns}>
         <TitleComp gaugeData={gaugeData} />
-        {userGaugeWeightVoteData ? (
+        {isUserCurrentVotes ? (
           <GaugeWeightVotesColumns userGaugeWeightVoteData={userGaugeWeightVoteData} />
         ) : (
           <GaugeListColumns gaugeData={gaugeData} />
         )}
         <Box flex flexJustifyContent="flex-end" flexAlignItems="center" margin="0 0 0 auto">
-          {userGaugeWeightVoteData?.canVote && (
+          {isUserCurrentVotes && canVote && (
             <UpdateGaugeIndicator variant="select-flat">{t`Update`}</UpdateGaugeIndicator>
           )}
           <StyledIconButton size="small">
@@ -91,7 +104,7 @@ const GaugeListItem = ({
               <VoteGaugeFieldWrapper>
                 <VoteGaugeField
                   powerUsed={powerUsed}
-                  userVeCrv={+userVeCrv}
+                  userVeCrv={+userVeCrv.veCrv}
                   userGaugeVoteData={userGaugeWeightVoteData}
                 />
               </VoteGaugeFieldWrapper>

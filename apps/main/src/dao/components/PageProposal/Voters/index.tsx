@@ -1,8 +1,9 @@
 import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
+import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import networks from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
 import { getEthPath } from '@/dao/utils'
+import type { ProposalType } from '@curvefi/prices-api/proposal/models'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
@@ -13,13 +14,16 @@ import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   totalVotes: number
-  rProposalId: string
+  voteId: string
+  proposalType: ProposalType
   className?: string
 }
 
-const Voters = ({ totalVotes, rProposalId, className }: Props) => {
-  const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
-  const currentProposal = useStore((state) => state.proposals.proposalMapper[rProposalId])
+const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
+  const { data: pricesProposal, isSuccess: pricesProposalSuccess } = useProposalPricesApiQuery({
+    proposalId: +voteId,
+    proposalType: proposalType,
+  })
   const { push } = useRouter()
 
   return (
@@ -34,19 +38,19 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
         <Box>
           <SubTitle>{t`Voters`}</SubTitle>
           <Box>
-            <Data className="align-right">{formatNumber(currentProposal?.vote_count, { notation: 'compact' })}</Data>
+            <Data className="align-right">{formatNumber(pricesProposal?.voteCount, { notation: 'compact' })}</Data>
           </Box>
         </Box>
       </TotalWrapper>
-      {currentProposal && proposalLoadingState === 'SUCCESS' && currentProposal.votes.length !== 0 && (
+      {pricesProposal && pricesProposalSuccess && pricesProposal.votes.length !== 0 && (
         <VotesWrapper>
           <Box flex flexJustifyContent="space-between">
             <SubTitle>{t`Voter`}</SubTitle>
             <SubTitle>{t`Power`}</SubTitle>
           </Box>
           <VotesContainer>
-            {currentProposal.votes.map((vote) => (
-              <DataRow key={`${vote.transaction_hash}-${vote.supports}`}>
+            {pricesProposal.votes.map((vote) => (
+              <DataRow key={`${vote.txHash}-${vote.supports}`}>
                 <Box flex>
                   {vote.supports ? (
                     <ForIcon name="CheckmarkFilled" size={16} />
@@ -62,7 +66,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                     {vote.topHolder ? vote.topHolder : shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
+                <StyledExternalLink href={networks[1].scanTxPath(vote.txHash)}>
                   <Data>
                     {formatNumber(+vote.stake, { notation: 'compact' })} (
                     {formatNumber(vote.relativePower, { notation: 'compact' })}%)
