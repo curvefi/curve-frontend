@@ -92,17 +92,19 @@ const Page = (params: CollateralUrlParams) => {
   )
 
   useEffect(() => {
-    if (!pageLoaded) {
-      setLoaded(false)
-    } else if (curve) {
-      if (!llamma) {
-        push(getCollateralListPathname(params))
-      } else {
-        resetUserDetailsState(llamma)
-        fetchInitial(curve, isLeverage, llamma)
-        void fetchLoanDetails(curve, llamma)
-        setLoaded(true)
+    if (pageLoaded) {
+      if (curve) {
+        if (llamma) {
+          resetUserDetailsState(llamma)
+          fetchInitial(curve, isLeverage, llamma)
+          void fetchLoanDetails(curve, llamma)
+          setLoaded(true)
+        } else {
+          push(getCollateralListPathname(params))
+        }
       }
+    } else {
+      setLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageLoaded])

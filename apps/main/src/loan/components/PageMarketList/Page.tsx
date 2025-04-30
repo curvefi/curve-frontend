@@ -40,8 +40,7 @@ const Page = (params: CollateralUrlParams) => {
 
   useEffect(() => {
     setStateByKey('initialLoaded', false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [setStateByKey])
 
   const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
     const { searchText, sortBy, sortByOrder } = {
@@ -61,7 +60,6 @@ const Page = (params: CollateralUrlParams) => {
   }
 
   useEffect(() => {
-    setLoaded(false) // todo: this should cause an endless render loop??
     if (!pageLoaded) return
 
     const parsedSearchParams = {
@@ -73,8 +71,7 @@ const Page = (params: CollateralUrlParams) => {
     setStateByKey('searchParams', parsedSearchParams)
     setParsedSearchParams(parsedSearchParams)
     setLoaded(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, searchParams])
+  }, [pageLoaded, searchParams, setStateByKey])
 
   return (
     <>
