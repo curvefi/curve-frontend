@@ -1,7 +1,7 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/loan/layout'
@@ -9,10 +9,10 @@ import networks from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
 import { type TempApi, useStablecoinConnection } from '@/loan/temp-lib'
-import type { ChainId, UrlParams } from '@/loan/types/loan.types'
+import type { ChainId } from '@/loan/types/loan.types'
 import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
 import { getPath, getRestFullPathname } from '@/loan/utils/utilsRouter'
-import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
@@ -33,7 +33,6 @@ export const App = ({ children }: { children: ReactNode }) => {
   const theme = useUserProfileStore((state) => state.theme)
   const hydrate = useStore((s) => s.hydrate)
   const { push } = useRouter()
-  const params = useParams() as UrlParams
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -89,7 +88,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const initLib = useCallback(async (chainId: ChainId, wallet: Wallet | null): Promise<TempApi | undefined> => {
     if (!wallet) return
     const [stablecoin, lend] = await Promise.all([initStableJs(chainId, wallet), initLendApi(chainId, wallet)])
-    return { stablecoin, lend, chainId }
+    return { stablecoin, lend, chainId, signerAddress: getWalletSignerAddress(wallet) }
   }, [])
 
   const onChainUnavailable = useCallback(

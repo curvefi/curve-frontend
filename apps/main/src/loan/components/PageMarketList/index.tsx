@@ -54,46 +54,34 @@ const CollateralList = (pageProps: PageCollateralList) => {
 
   // fetch partial user loan details
   const someLoanExists = useMemo(() => {
-    if (!signerAddress) return false
-
-    let loansExists = false
-
-    if (parsedResult?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && pageLoaded) {
-      parsedResult.map((collateralId) => {
-        const collateralData = collateralDatasMapper?.[collateralId]
-
-        if (collateralData) {
-          const loanExists = loanExistsMapper[collateralId]?.loanExists
-          if (loanExists) {
-            loansExists = true
+    if (signerAddress && parsedResult?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && pageLoaded) {
+      return parsedResult
+        .map((collateralId) => {
+          const collateralData = collateralDatasMapper?.[collateralId]
+          if (collateralData && loanExistsMapper[collateralId]?.loanExists) {
             void fetchUserLoanPartialDetails(curve, collateralData.llamma)
+            return true
           }
-        }
-      })
+        })
+        .some(Boolean)
     }
-    return loansExists
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve, collateralDatasMapper, pageLoaded, loanExistsMapper, parsedResult])
+    return false
+  }, [
+    curve,
+    collateralDatasMapper,
+    pageLoaded,
+    loanExistsMapper,
+    parsedResult,
+    signerAddress,
+    fetchUserLoanPartialDetails,
+  ])
 
   useEffect(() => {
-    if (pageLoaded && isPageVisible && initialLoaded) updateFormValues()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
-
-  useEffect(() => {
-    if (pageLoaded && isPageVisible && !initialLoaded) {
-      updateFormValues(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isPageVisible])
+    if (pageLoaded && isPageVisible) updateFormValues(!initialLoaded)
+  }, [pageLoaded, isPageVisible, initialLoaded, updateFormValues])
 
   usePageVisibleInterval(
-    () => {
-      //  re-fetch data
-      if (curve && collateralDatas) {
-        void fetchLoansDetails(curve, collateralDatas)
-      }
-    },
+    () => curve && collateralDatas && void fetchLoansDetails(curve, collateralDatas),
     REFRESH_INTERVAL['5m'],
     isPageVisible,
   )
