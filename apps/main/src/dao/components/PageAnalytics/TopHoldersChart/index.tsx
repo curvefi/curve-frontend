@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
+import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'
@@ -11,18 +12,18 @@ import { t } from '@ui-kit/lib/i18n'
 import Spinner from '../../Spinner'
 
 const TopLockers = () => {
+  const { data: veCrvData, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const topHoldersSortBy = useStore((state) => state.analytics.topHoldersSortBy)
   const setTopHoldersSortBy = useStore((state) => state.analytics.setTopHoldersSortBy)
-  const veCrvData = useStore((state) => state.analytics.veCrvData)
 
   const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'
   const lockersFetchError = veCrvHolders.fetchStatus === 'ERROR'
   const lockersFetchLoading = veCrvHolders.fetchStatus === 'LOADING'
 
   const othersData: Locker = useMemo(() => {
-    if (!lockersFetchSuccess || veCrvData.fetchStatus !== 'SUCCESS')
+    if (!lockersFetchSuccess || !statsSuccess)
       return {
         user: 'Others(<0.5%)' as `Others(${string})`,
         weight: 0n,
@@ -44,9 +45,9 @@ const TopLockers = () => {
     }
   }, [
     lockersFetchSuccess,
-    veCrvData.fetchStatus,
-    veCrvData.totalLockedCrv,
-    veCrvData.totalVeCrv,
+    statsSuccess,
+    veCrvData?.totalLockedCrv,
+    veCrvData?.totalVeCrv,
     veCrvHolders.totalValues.locked,
     veCrvHolders.totalValues.weight,
     veCrvHolders.totalValues.weightRatio,

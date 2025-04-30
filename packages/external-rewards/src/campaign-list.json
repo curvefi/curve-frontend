@@ -88,5 +88,11 @@
   },
   {
     "campaign": "Zunami.json"
+  },
+  {
+    "campaign": "Ditto.json"
+  },
+  {
+    "campaign": "Mevcommit.json"
   }
 ]

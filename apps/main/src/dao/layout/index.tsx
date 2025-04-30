@@ -18,11 +18,10 @@ const useAutoRefresh = () => {
   const { lib: curve } = useConnection<CurveApi>()
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const getProposals = useStore((state) => state.proposals.getProposals)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   usePageVisibleInterval(
-    () => Promise.all([curve && fetchAllStoredUsdRates(curve), getProposals(), getGauges(), getGaugesData()]),
+    () => Promise.all([curve && fetchAllStoredUsdRates(curve), getGauges(), getGaugesData()]),
     REFRESH_INTERVAL['5m'],
     isPageVisible,
   )

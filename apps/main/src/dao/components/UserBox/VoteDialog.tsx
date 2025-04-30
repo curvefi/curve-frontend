@@ -1,7 +1,11 @@
 import styled from 'styled-components'
 import PendingTx from '@/dao/components/UserBox/PendingTx'
+import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
+import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
+import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import useStore from '@/dao/store/useStore'
-import { ProposalType, SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -12,33 +16,34 @@ import { t } from '@ui-kit/lib/i18n'
 type Props = {
   userAddress: string
   activeProposal?: ActiveProposal
-  proposalId?: string
+  proposalId: number
+  proposalType: ProposalType
   votingPower: SnapshotVotingPower
   snapshotVotingPower: boolean
   className?: string
 }
 
-const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId }: Props) => {
+const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
+
+const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId, proposalType }: Props) => {
+  const { data: proposalsMapper } = useProposalsMapperQuery({})
+  const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId: proposalId, proposalType: proposalType })
+  const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
+    userAddress,
+  })
+  const proposalKey = createProposalKey(proposalId, proposalType)
+  const proposal = proposalsMapper?.[proposalKey] ?? null
   const castVote = useStore((state) => state.proposals.castVote)
   const voteTxMapper = useStore((state) => state.proposals.voteTxMapper)
   const executeProposal = useStore((state) => state.proposals.executeProposal)
   const executeTxMapper = useStore((state) => state.proposals.executeTxMapper)
-  const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
-  const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
-  const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
-  const userProposalVotesMapper = useStore((state) => state.user.userProposalVotesMapper)
 
-  const voteTx = voteTxMapper[proposalId ?? ''] ?? null
-  const executeTx = executeTxMapper[proposalId ?? ''] ?? null
+  const voteTx = voteTxMapper[proposalKey] ?? null
+  const executeTx = executeTxMapper[proposalKey] ?? null
 
-  const voted = userProposalVotesMapper[userAddress].votes[proposalId ?? '']
-  const votedFor = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_for ?? 0) > 0
-  const votedAgainst = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_against ?? 0) > 0
-
-  const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
-
-  const id = pricesProposal?.vote_id
-  const type: ProposalType = pricesProposal?.vote_type
+  const votedFor = userProposalVotes?.[proposalKey] ? userProposalVotes[proposalKey].voteFor > 0 : false
+  const votedAgainst = userProposalVotes?.[proposalKey] ? userProposalVotes[proposalKey].voteAgainst > 0 : false
+  const voted = votedFor || votedAgainst
 
   const executeProposalComponent = () => (
     <>
@@ -58,7 +63,7 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
       {executeTx?.status !== 'SUCCESS' && (
         <ExecuteButton
           variant="icon-filled"
-          onClick={() => executeProposal(id, type)}
+          onClick={() => executeProposal(proposalId, proposalType)}
           loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
         >
           {t`Execute`}
@@ -78,12 +83,12 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
 
   // Voting has ended - no vote
   if (!activeProposal?.active && proposalId && !voted) {
-    if (proposal.status !== 'Passed' && !proposal.executed) {
+    if (proposal?.status !== 'Passed' && !proposal?.executed) {
       return null
     }
 
     return (
-      proposal.status === 'Passed' &&
+      proposal?.status === 'Passed' &&
       !pricesProposal?.executed && <Wrapper className={className}>{executeProposalComponent()}</Wrapper>
     )
   }
@@ -96,55 +101,51 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
           <VotedMessageWrapper>
             <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
             <VotedMessage>
-              {votedFor && (
+              {userProposalVotes?.[proposalKey] && votedFor && (
                 <VotedRow>
                   <VotedRowItem>
                     <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
                   </VotedRowItem>
                   <VotedRowItem>
-                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_for, {
+                    {formatNumber(userProposalVotes?.[proposalKey].voteFor, {
                       showDecimalIfSmallNumberOnly: true,
                     })}{' '}
                     {votePercentage(
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply,
+                      userProposalVotes[proposalKey].voteFor,
+                      userProposalVotes[proposalKey].voteTotalSupply,
                     )}
                   </VotedRowItem>
                 </VotedRow>
               )}
-              {votedAgainst && (
+              {userProposalVotes?.[proposalKey] && votedAgainst && (
                 <VotedRow>
                   <VotedRowItem>
                     <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
                   </VotedRowItem>
                   <VotedRowItem>
-                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_against, {
+                    {formatNumber(userProposalVotes?.[proposalKey].voteAgainst, {
                       showDecimalIfSmallNumberOnly: true,
                     })}{' '}
                     {votePercentage(
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply,
+                      userProposalVotes[proposalKey].voteAgainst,
+                      userProposalVotes[proposalKey].voteTotalSupply,
                     )}
                   </VotedRowItem>
                 </VotedRow>
               )}
             </VotedMessage>
           </VotedMessageWrapper>
-          {proposal.status === 'Passed' && !pricesProposal?.executed && executeProposalComponent()}
+          {proposal?.status === 'Passed' && !pricesProposal?.executed && executeProposalComponent()}
         </Box>
       </Wrapper>
     )
   }
 
-  if (
-    ((voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING') &&
-      userProposalVote?.fetchingState === 'LOADING') ||
-    (voteTx?.status === 'SUCCESS' && userProposalVote?.fetchingState === 'LOADING')
-  ) {
+  if (voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING') {
     return <PendingTx pendingMessage={t`Casting vote...`} />
   }
 
-  if (userProposalVotesMapper[userAddress].fetchingState === 'SUCCESS') {
+  if (userProposalVotesSuccess) {
     return (
       <Wrapper className={className}>
         {/* Vote */}
@@ -152,16 +153,12 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
           <VoteButton
             isFor
             variant="icon-filled"
-            onClick={() => castVote(id, type, true)}
-            loading={voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING'}
+            onClick={() => castVote(proposalId, proposalType, true)}
+            loading={false}
           >
             {t`Vote For`}
           </VoteButton>
-          <VoteButton
-            variant="icon-filled"
-            onClick={() => castVote(id, type, false)}
-            loading={voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING'}
-          >
+          <VoteButton variant="icon-filled" onClick={() => castVote(proposalId, proposalType, false)} loading={false}>
             {t`Vote Against`}
           </VoteButton>
         </Box>

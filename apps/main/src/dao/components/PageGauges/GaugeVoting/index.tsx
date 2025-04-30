@@ -1,23 +1,13 @@
-import { useEffect } from 'react'
 import styled from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
-import useStore from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
-  const getUserGaugeVoteWeights = useStore((state) => state.user.getUserGaugeVoteWeights)
-  const userGaugeVoteWeightsMapper = useStore((state) => state.user.userGaugeVoteWeightsMapper)
   const { connectState, lib: curve } = useConnection<CurveApi>()
   const chainId = curve?.chainId
   const { provider, connect } = useWallet()
-
-  useEffect(() => {
-    if (userAddress && chainId === 1 && curve && userGaugeVoteWeightsMapper[userAddress.toLowerCase()] === undefined) {
-      void getUserGaugeVoteWeights(userAddress)
-    }
-  }, [getUserGaugeVoteWeights, userAddress, curve, userGaugeVoteWeightsMapper, chainId])
 
   if (!provider)
     return (
