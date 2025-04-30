@@ -1,9 +1,5 @@
-import { Contract } from 'ethers'
-import type { ContractRunner } from 'ethers/lib.commonjs/providers'
 import produce from 'immer'
 import type { GetState, SetState } from 'zustand'
-import { abiVeCrv } from '@/dao/store/abis'
-import { contractVeCRV, contractCrv } from '@/dao/store/contracts'
 import type { State } from '@/dao/store/useStore'
 import { FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
 import { type Locker, type LocksDaily, getLocksDaily, getLockers } from '@curvefi/prices-api/dao'
@@ -38,13 +34,6 @@ type SliceState = {
     key: AllHoldersSortBy
     order: 'asc' | 'desc'
   }
-  veCrvData: {
-    totalVeCrv: bigint
-    totalLockedCrv: bigint
-    totalCrv: bigint
-    lockedPercentage: number
-    fetchStatus: FetchingState
-  }
 }
 
 const sliceKey = 'analytics'
@@ -57,7 +46,6 @@ export type AnalyticsSlice = {
     getVeCrvHolders(): Promise<void>
     setTopHoldersSortBy(sortBy: TopHoldersSortBy): void
     setAllHoldersSortBy(sortBy: AllHoldersSortBy): void
-    getVeCrvData(provider: ContractRunner): Promise<void>
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -92,13 +80,6 @@ const DEFAULT_STATE: SliceState = {
   allHoldersSortBy: {
     key: 'weightRatio',
     order: 'desc',
-  },
-  veCrvData: {
-    totalVeCrv: 0n,
-    totalLockedCrv: 0n,
-    totalCrv: 0n,
-    lockedPercentage: 0,
-    fetchStatus: 'LOADING',
   },
 }
 
@@ -247,45 +228,6 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(sortedEntries)
           }),
         )
-      }
-    },
-    getVeCrvData: async (provider) => {
-      get()[sliceKey].setStateByKey('veCrvData', {
-        totalVeCrv: 0n,
-        totalLockedCrv: 0n,
-        totalCrv: 0n,
-        lockedPercentage: 0,
-        fetchStatus: 'LOADING',
-      })
-
-      try {
-        const veCrvContract = new Contract(contractVeCRV, abiVeCrv, provider)
-        const crvContract = new Contract(contractCrv, abiVeCrv, provider)
-
-        const [totalLockedCrv, totalCrv, totalVeCrv] = await Promise.all([
-          veCrvContract.supply(),
-          crvContract.totalSupply(),
-          veCrvContract.totalSupply(),
-        ])
-
-        const lockedPercentage = (Number(totalLockedCrv) / Number(totalCrv)) * 100
-
-        get()[sliceKey].setStateByKey('veCrvData', {
-          totalVeCrv: BigInt(totalVeCrv),
-          totalLockedCrv: BigInt(totalLockedCrv),
-          totalCrv: BigInt(totalCrv),
-          lockedPercentage: lockedPercentage,
-          fetchStatus: 'SUCCESS',
-        })
-      } catch (error) {
-        console.warn(error)
-        get()[sliceKey].setStateByKey('veCrvData', {
-          totalVeCrv: 0,
-          totalLockedCrv: 0,
-          totalCrv: 0,
-          lockedPercentage: 0,
-          fetchStatus: 'ERROR',
-        })
       }
     },
     // slice helpers

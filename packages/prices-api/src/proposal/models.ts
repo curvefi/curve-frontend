@@ -1,6 +1,6 @@
 import type { Address } from '..'
 
-export const proposalTypes = ['all', 'ownership', 'parameter', 'other'] as const
+export const proposalTypes = ['ownership', 'parameter'] as const
 export type ProposalType = (typeof proposalTypes)[number]
 
 export const proposalStatusses = ['all', 'active', 'denied', 'passed', 'executed'] as const
@@ -32,6 +32,7 @@ export type ProposalDetails = {
     voter: Address
     supports: boolean
     votingPower: number
+    txHash: Address
   }[]
 }
 

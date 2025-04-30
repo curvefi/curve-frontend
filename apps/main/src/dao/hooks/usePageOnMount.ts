@@ -16,7 +16,6 @@ export function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
   const updateUserData = useStore((state) => state.user.updateUserData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const getProposals = useStore((state) => state.proposals.getProposals)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
 
@@ -38,7 +37,6 @@ export function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
       if (curve) {
         void fetchAllStoredUsdRates(curve)
       }
-      void getProposals()
       void getGauges()
       void getGaugesData()
     },
@@ -46,12 +44,11 @@ export function usePageOnMount(chainIdNotRequired?: boolean): PageProps {
     isPageVisible,
   )
 
-  // initiate proposals list
+  // initiate gauges data
   useEffect(() => {
-    void getProposals()
     void getGauges()
     void getGaugesData()
-  }, [getGauges, getProposals, getGaugesData])
+  }, [getGauges, getGaugesData])
 
   return { pageLoaded: !isLoading(connectState), routerParams, curve }
 }
