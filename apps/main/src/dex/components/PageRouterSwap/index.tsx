@@ -323,11 +323,6 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId])
 
-  // full reset
-  useEffect(() => {
-    if (isReady) updateFormValues({})
-  }, [isReady, updateFormValues])
-
   // updateForm
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
