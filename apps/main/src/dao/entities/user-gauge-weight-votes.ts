@@ -1,9 +1,8 @@
 import { curvejsValidationSuite } from '@/dao/entities/validation/curvejs-validation'
-import type { ChainId } from '@/dao/types/dao.types'
+import type { ChainId, CurveApi } from '@/dao/types/dao.types'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { CurveApi } from '@ui-kit/shared/useApiStore'
 
 const _fetchUserGaugeWeightVotes = async ({ chainId, userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
   const curve = getLib<CurveApi>()

@@ -1,11 +1,10 @@
 import { enforce, group, test } from 'vest'
 import { chainValidationGroup, curvejsValidationGroup } from '@/dao/entities/validation/curvejs-validation'
-import type { ChainId } from '@/dao/types/dao.types'
+import type { ChainId, CurveApi } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { CurveApi } from '@ui-kit/shared/useApiStore'
 
 export const userGaugeVoteNextTimeValidationGroup = ({ enabled }: { enabled: boolean }) =>
   group('userGaugeVoteNextTimeEnabled', () => {
