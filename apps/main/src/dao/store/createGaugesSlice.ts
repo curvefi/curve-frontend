@@ -21,8 +21,7 @@ import {
   SortDirection,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { notify, useWallet } from '@ui-kit/features/connect-wallet'
-import { getLib } from '@ui-kit/features/connect-wallet'
+import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
@@ -421,7 +420,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           chainId: Chain.Ethereum,
           gaugeAddress,
           userAddress,
-          enabled: true,
         })
 
         set(
