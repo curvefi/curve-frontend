@@ -53,28 +53,27 @@ const CollateralList = (pageProps: PageCollateralList) => {
   )
 
   // fetch partial user loan details
-  const someLoanExists = useMemo(() => {
-    if (signerAddress && parsedResult?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && pageLoaded) {
-      return parsedResult
-        .map((collateralId) => {
-          const collateralData = collateralDatasMapper?.[collateralId]
-          if (collateralData && loanExistsMapper[collateralId]?.loanExists) {
-            void fetchUserLoanPartialDetails(curve, collateralData.llamma)
-            return true
-          }
-        })
-        .some(Boolean)
-    }
-    return false
-  }, [
-    curve,
-    collateralDatasMapper,
-    pageLoaded,
-    loanExistsMapper,
-    parsedResult,
-    signerAddress,
-    fetchUserLoanPartialDetails,
-  ])
+  const someLoanExists = !!useMemo(
+    () =>
+      pageLoaded &&
+      signerAddress &&
+      curve &&
+      loanExistsMapper &&
+      collateralDatasMapper &&
+      parsedResult
+        .filter((collateralId) => collateralId in collateralDatasMapper && loanExistsMapper[collateralId]?.loanExists)
+        .map((collateralId) => void fetchUserLoanPartialDetails(curve, collateralDatasMapper[collateralId].llamma))
+        .length,
+    [
+      collateralDatasMapper,
+      curve,
+      fetchUserLoanPartialDetails,
+      loanExistsMapper,
+      pageLoaded,
+      parsedResult,
+      signerAddress,
+    ],
+  )
 
   useEffect(() => {
     if (pageLoaded && isPageVisible) updateFormValues(!initialLoaded)
