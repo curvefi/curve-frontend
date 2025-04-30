@@ -8,8 +8,8 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVaul
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, PageContentProps } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LlamalendApi, PageContentProps } from '@/lend/types/lend.types'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
@@ -61,8 +61,8 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
     async (
       payloadActiveKey: string,
       rFormType: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       formValues: FormValues,
     ) => {
       const { chainId } = api
@@ -89,8 +89,8 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
     (
       payloadActiveKey: string,
       rFormType: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[],

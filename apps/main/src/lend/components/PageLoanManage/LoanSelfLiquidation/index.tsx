@@ -14,10 +14,10 @@ import { NOFITY_MESSAGE } from '@/lend/constants'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
+import { LlamalendApi, type MarketUrlParams, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import AlertBox from '@ui/AlertBox'
 import InputReadOnly from '@ui/InputReadOnly'
 import InternalLink from '@ui/Link/InternalLink'
@@ -70,8 +70,8 @@ const LoanSelfLiquidation = ({
 
   const getSteps = useCallback(
     (
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       liquidationAmt: string,

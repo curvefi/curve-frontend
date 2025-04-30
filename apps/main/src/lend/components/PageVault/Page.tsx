@@ -12,8 +12,8 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LlamalendApi, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -38,7 +38,7 @@ const Page = (params: MarketUrlParams) => {
   const rChainId = networksIdMapper[rNetwork]
 
   const { connect, provider } = useWallet()
-  const { lib: api = null, connectState } = useConnection<Api>()
+  const { lib: api = null, connectState } = useConnection<LlamalendApi>()
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
 
@@ -65,7 +65,7 @@ const Page = (params: MarketUrlParams) => {
   const selectedTab = _getSelectedTab(marketDetailsView, signerAddress)
 
   const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
+    async (api: LlamalendApi, market: LendMarketTemplate) => {
       setLoaded(true)
 
       // delay fetch rest after form details are fetch first

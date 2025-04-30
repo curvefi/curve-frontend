@@ -18,9 +18,9 @@ import { NOFITY_MESSAGE } from '@/lend/constants'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, HealthMode, PageContentProps } from '@/lend/types/lend.types'
+import { LlamalendApi, HealthMode, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import AlertBox from '@ui/AlertBox'
 import Stepper from '@ui/Stepper'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -96,9 +96,9 @@ const LoanBorrowMore = ({
   const handleBtnClickBorrow = useCallback(
     async (
       payloadActiveKey: string,
-      api: Api,
+      api: LlamalendApi,
       formValues: FormValues,
-      market: OneWayMarketTemplate,
+      market: LendMarketTemplate,
       maxSlippage: string,
       isLeverage: boolean,
     ) => {
@@ -126,8 +126,8 @@ const LoanBorrowMore = ({
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      api: Api,
-      market: OneWayMarketTemplate,
+      api: LlamalendApi,
+      market: LendMarketTemplate,
       healthMode: HealthMode,
       confirmedWarning: boolean,
       formEstGas: FormEstGas,

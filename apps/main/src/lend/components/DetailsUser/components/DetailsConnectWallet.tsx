@@ -1,11 +1,11 @@
-import type { Api } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import type { LlamalendApi } from '@ui-kit/shared/useApiStore'
 
 const DetailsConnectWallet = () => {
-  const { connectState } = useConnection<Api>()
+  const { connectState } = useConnection<LlamalendApi>()
   const { connect } = useWallet()
   return (
     <Box flex flexJustifyContent="center" padding="var(--spacing-5)">

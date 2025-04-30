@@ -3,7 +3,7 @@ import { type RefObject, useCallback, useRef } from 'react'
 import { useTvl } from '@/lend/entities/chain'
 import networks, { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { type Api, ChainId, type NetworkEnum } from '@/lend/types/lend.types'
+import { ChainId, type LlamalendApi, type NetworkEnum } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import {
@@ -33,7 +33,7 @@ export const Header = ({
   const { push } = useRouter()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-  const { connectState } = useConnection<Api>()
+  const { connectState } = useConnection<LlamalendApi>()
   const { data: tvl } = useTvl(chainId)
 
   return (

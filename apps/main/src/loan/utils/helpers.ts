@@ -1,5 +1,5 @@
 import networks from '@/loan/networks'
-import { Curve } from '@/loan/types/loan.types'
+import { LlamalendApi } from '@/loan/types/loan.types'
 import { t } from '@ui-kit/lib/i18n'
 
 interface CustomError extends Error {
@@ -58,7 +58,7 @@ export function sleep(ms?: number) {
   return new Promise((resolve) => setTimeout(resolve, parsedMs))
 }
 
-export function curveProps(curve: Curve | null) {
+export function curveProps(curve: LlamalendApi | null) {
   if (curve) {
     const chainId = curve.chainId
     const signerAddress = curve.signerAddress

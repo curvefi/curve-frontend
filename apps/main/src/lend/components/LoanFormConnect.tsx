@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
-import type { Api } from '@/lend/types/lend.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import type { LlamalendApi } from '@ui-kit/shared/useApiStore'
 
 const LoanFormConnect = ({
   haveSigner,
@@ -14,7 +14,7 @@ const LoanFormConnect = ({
   loading?: boolean
   children: ReactNode
 }) => {
-  const { connectState } = useConnection<Api>()
+  const { connectState } = useConnection<LlamalendApi>()
   const { connect } = useWallet()
   return (
     <>

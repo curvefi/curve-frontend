@@ -5,7 +5,7 @@ import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, Curve, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { ChainId, LlamalendApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -31,12 +31,12 @@ export type LoanLiquidateSlice = {
 
     // step
     fetchStepApprove(
-      curve: Curve,
+      curve: LlamalendApi,
       llamma: Llamma,
       maxSlippage: string,
     ): Promise<{ hashes: string[]; error: string } | undefined>
     fetchStepLiquidate(
-      curve: Curve,
+      curve: LlamalendApi,
       llamma: Llamma,
       liquidationAmt: string,
       maxSlippage: string,
@@ -101,7 +101,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
     },
 
     // step
-    fetchStepApprove: async (curve: Curve, llamma: Llamma, maxSlippage: string) => {
+    fetchStepApprove: async (curve: LlamalendApi, llamma: Llamma, maxSlippage: string) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -124,7 +124,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
       return resp
     },
-    fetchStepLiquidate: async (curve: Curve, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
+    fetchStepLiquidate: async (curve: LlamalendApi, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 

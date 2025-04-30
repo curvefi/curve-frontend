@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import type { Api, UrlParams } from '@/lend/types/lend.types'
+import type { LlamalendApi, UrlParams } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { AppPageFormTitleLinks } from '@ui/AppPage'
 import InternalLink from '@ui/Link/InternalLink'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -15,9 +15,9 @@ const PageTitleBorrowSupplyLinks = ({
 }: {
   params: UrlParams
   activeKey: 'borrow' | 'supply'
-  market: OneWayMarketTemplate
+  market: LendMarketTemplate
 }) => {
-  const { lib: api = null } = useConnection<Api>()
+  const { lib: api = null } = useConnection<LlamalendApi>()
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)

@@ -33,8 +33,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
-  const lending = useApiStore((state) => state.lending)
-  const curve = useApiStore((state) => state.stable)
+  const llamalend = useApiStore((state) => state.llamalend)
 
   const setNavChange = (key: SubNavItem['key']) => {
     setStakingModule(key as DepositWithdrawModule)
@@ -58,7 +57,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (lending && curve && inputAmount !== '0') {
+      if (llamalend && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
             void estimateGasDeposit(inputAmount)
@@ -79,9 +78,8 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
     return () => clearTimeout(timer)
   }, [
-    lending,
     estimateGasDepositApprove,
-    curve,
+    llamalend,
     inputAmount,
     stakingModule,
     previewAction,

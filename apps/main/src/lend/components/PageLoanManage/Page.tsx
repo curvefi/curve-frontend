@@ -13,9 +13,9 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams } from '@/lend/types/lend.types'
+import { LlamalendApi, type MarketUrlParams } from '@/lend/types/lend.types'
 import { scrollToTop } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -38,7 +38,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const { lib: api = null, connectState } = useConnection<Api>()
+  const { lib: api = null, connectState } = useConnection<LlamalendApi>()
   const titleMapper = useTitleMapper()
   const {
     network: rNetwork,
@@ -73,7 +73,7 @@ const Page = (params: MarketUrlParams) => {
   const selectedTab = _getSelectedTab(marketDetailsView, signerAddress)
 
   const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
+    async (api: LlamalendApi, market: LendMarketTemplate) => {
       const { signerAddress } = api
       // check for an existing loan
       const loanExists = signerAddress ? (await fetchUserLoanExists(api, market, true))?.loanExists : false

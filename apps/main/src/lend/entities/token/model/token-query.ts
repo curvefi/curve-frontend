@@ -1,7 +1,7 @@
 import { TokenParams, TokenQuery } from '@/lend/entities/token'
-import type { Api } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import type { LlamalendApi } from '@ui-kit/shared/useApiStore'
 import { tokenValidationSuite } from './validation'
 
 const root = ({ chainId, tokenAddress }: TokenParams) =>
@@ -9,7 +9,7 @@ const root = ({ chainId, tokenAddress }: TokenParams) =>
 
 export const tokenUsdRate = queryFactory({
   queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,
-  queryFn: ({ tokenAddress }: TokenQuery): Promise<number> => requireLib<Api>().getUsdRate(tokenAddress),
+  queryFn: ({ tokenAddress }: TokenQuery): Promise<number> => requireLib<LlamalendApi>().getUsdRate(tokenAddress),
   staleTime: '5m',
   refetchInterval: '1m',
   validationSuite: tokenValidationSuite,

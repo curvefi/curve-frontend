@@ -10,7 +10,7 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import Settings from '@/lend/layout/Settings'
 import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import type { Api, NetworkUrlParams } from '@/lend/types/lend.types'
+import type { LlamalendApi, NetworkUrlParams } from '@/lend/types/lend.types'
 import { getPath } from '@/lend/utils/utilsRouter'
 import { AppPageContainer } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -32,7 +32,7 @@ const Page = (params: NetworkUrlParams) => {
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { lib: api = null, connectState } = useConnection<Api>()
+  const { lib: api = null, connectState } = useConnection<LlamalendApi>()
   const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()
 

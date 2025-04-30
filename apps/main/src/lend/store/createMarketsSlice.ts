@@ -4,22 +4,22 @@ import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
   ChainId,
-  Api,
-  MarketsStatsParametersMapper,
-  MarketsStatsBandsMapper,
-  MarketsStatsTotalsMapper,
-  MarketsStatsAMMBalancesMapper,
-  MarketsStatsCapAndAvailableMapper,
+  LlamalendApi,
+  MarketDetailsView,
   MarketsMaxLeverageMapper,
   MarketsPricesMapper,
   MarketsRatesMapper,
-  MarketsTotalLiquidityMapper,
-  MarketsTotalCollateralValueMapper,
   MarketsRewardsMapper,
-  MarketDetailsView,
+  MarketsStatsAMMBalancesMapper,
+  MarketsStatsBandsMapper,
+  MarketsStatsCapAndAvailableMapper,
+  MarketsStatsParametersMapper,
+  MarketsStatsTotalsMapper,
+  MarketsTotalCollateralValueMapper,
+  MarketsTotalLiquidityMapper,
 } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { getLib } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -47,12 +47,12 @@ const sliceKey = 'markets'
 export type MarketsSlice = {
   [sliceKey]: SliceState & {
     // grouped
-    fetchDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas(key: string, api: LlamalendApi, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchAll(api: Api, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
-    fetchVaultPricePerShare(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
-    fetchTotalCollateralValue(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchAll(api: LlamalendApi, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchVaultPricePerShare(chainId: ChainId, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchTotalCollateralValue(chainId: ChainId, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -118,10 +118,10 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       sliceState.setStateByActiveKey(k, chainId.toString(), cMapper)
     },
 
-    fetchAll: async (api, OneWayMarketTemplate, shouldRefetch) => {
+    fetchAll: async (api, market, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
       const chainId = api.chainId
-      const marketId = OneWayMarketTemplate.id
+      const marketId = market.id
 
       const keys = [
         'statsParametersMapper',
@@ -137,7 +137,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 
       // invalidate and refetch onchain data
       invalidateMarketOnChainRates({ chainId, marketId })
-      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
+      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [market], shouldRefetch)))
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
       const sliceState = get()[sliceKey]
@@ -161,7 +161,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       }
     },
     fetchTotalCollateralValue: async (chainId, market, shouldRefetch) => {
-      const api = getLib<Api>()
+      const api = getLib<LlamalendApi>()
       const { totalCollateralValuesMapper, ...sliceState } = get()[sliceKey]
 
       const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[market.id]

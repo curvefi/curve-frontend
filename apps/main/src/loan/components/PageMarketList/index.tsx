@@ -23,13 +23,13 @@ const CollateralList = (pageProps: PageCollateralList) => {
   const titleMapper = useTitleMapper()
 
   const activeKey = getActiveKey(rChainId, searchParams)
-  const curve = useApiStore((state) => state.stable)
+  const llamalend = useApiStore((state) => state.llamalend)
   const prevActiveKey = useStore((state) => state.collateralList.activeKey)
   const formStatus = useStore((state) => state.collateralList.formStatus)
   const initialLoaded = useStore((state) => state.collateralList.initialLoaded)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
+  const isLoadingLlamalend = useApiStore((state) => state.isLoadingLlamalend)
   const collateralDatas = useStore((state) => state.collaterals.collateralDatas[rChainId])
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const results = useStore((state) => state.collateralList.result)
@@ -41,16 +41,16 @@ const CollateralList = (pageProps: PageCollateralList) => {
 
   const [showDetail, setShowDetail] = useState<string>('')
 
-  const { signerAddress } = curve || {}
+  const { signerAddress } = llamalend || {}
 
   const parsedResult =
     results[activeKey] ?? resultCached ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
-      void setFormValues(rChainId, pageLoaded ? curve : null, shouldRefetch)
+      void setFormValues(rChainId, pageLoaded ? llamalend : null, shouldRefetch)
     },
-    [setFormValues, rChainId, pageLoaded, curve],
+    [setFormValues, rChainId, pageLoaded, llamalend],
   )
 
   // fetch partial user loan details
@@ -59,7 +59,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
 
     let loansExists = false
 
-    if (parsedResult?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && !isLoadingStable) {
+    if (parsedResult?.length > 0 && llamalend && loanExistsMapper && collateralDatasMapper && !isLoadingLlamalend) {
       parsedResult.map((collateralId) => {
         const collateralData = collateralDatasMapper?.[collateralId]
 
@@ -67,14 +67,14 @@ const CollateralList = (pageProps: PageCollateralList) => {
           const loanExists = loanExistsMapper[collateralId]?.loanExists
           if (loanExists) {
             loansExists = true
-            void fetchUserLoanPartialDetails(curve, collateralData.llamma)
+            void fetchUserLoanPartialDetails(llamalend, collateralData.llamma)
           }
         }
       })
     }
     return loansExists
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve, collateralDatasMapper, isLoadingStable, loanExistsMapper, parsedResult])
+  }, [llamalend, collateralDatasMapper, isLoadingLlamalend, loanExistsMapper, parsedResult])
 
   useEffect(() => {
     if (pageLoaded && isPageVisible && initialLoaded) updateFormValues()
@@ -91,8 +91,8 @@ const CollateralList = (pageProps: PageCollateralList) => {
   usePageVisibleInterval(
     () => {
       //  re-fetch data
-      if (curve && collateralDatas) {
-        void fetchLoansDetails(curve, collateralDatas)
+      if (llamalend && collateralDatas) {
+        void fetchLoansDetails(llamalend, collateralDatas)
       }
     },
     REFRESH_INTERVAL['5m'],

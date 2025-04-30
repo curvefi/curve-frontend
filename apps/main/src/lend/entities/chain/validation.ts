@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { type Api, ChainId } from '@/lend/types/lend.types'
+import { ChainId, type LlamalendApi } from '@/lend/types/lend.types'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { ChainParams } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
@@ -16,7 +16,7 @@ export const chainValidationSuite = createValidationSuite(chainValidationGroup)
 export const apiValidationGroup = (data: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
-      const api = getLib<Api>()
+      const api = getLib<LlamalendApi>()
       enforce(api?.chainId).message('Chain ID should be loaded').equals(data.chainId)
     })
   })
