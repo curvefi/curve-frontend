@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { ROUTE } from '@/dao/constants'
-import { usePageOnMount } from '@/dao/hooks/usePageOnMount'
 import Settings from '@/dao/layout/Settings'
+import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
 import { getPath } from '@/dao/utils/utilsRouter'
@@ -17,15 +17,14 @@ import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { WrongNetwork } from './WrongNetwork'
 
-const Page = (params: VeCrvUrlParams) => {
+export const PageVeCrv = (params: VeCrvUrlParams) => {
   const [rFormType] = params.formType
   const { push } = useRouter()
-  const { routerParams, curve } = usePageOnMount()
-  const { rChainId } = routerParams
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const rChainId = networksIdMapper[params.network]
+  const isLoadingCurve = isLoading(connectState)
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
-  const { connectState } = useConnection<CurveApi>()
-  const isLoadingCurve = isLoading(connectState)
 
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
@@ -108,5 +107,3 @@ const Content = styled(Box)`
   align-content: flex-start;
   min-height: 14.8125rem; //237px
 `
-
-export default Page

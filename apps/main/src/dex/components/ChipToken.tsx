@@ -3,10 +3,11 @@ import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
 import useStore from '@/dex/store/useStore'
+import { CurveApi } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { formatNumberUsdRate } from '@ui/utils'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { copyToClipboard } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
@@ -46,7 +47,7 @@ interface ChipTokenProps extends AriaButtonProps {
 }
 
 const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
-  const curve = useApiStore((state) => state.curve)
+  const { lib: curve } = useConnection<CurveApi>()
   const usdRate = useStore((state) => state.usdRates.usdRatesMapper[tokenAddress])
   const fetchUsdRateByToken = useStore((state) => state.usdRates.fetchUsdRateByToken)
   const parsedUsdRate = formatNumberUsdRate(usdRate)

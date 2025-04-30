@@ -74,15 +74,14 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
 }
 
 /** Returns the full pathname for a given app and network */
-export const getInternalUrl = (app: AppName, networkName: string, route: string = '/') =>
-  `/${app}/${networkName}${route}`
+export const getInternalUrl = (app: AppName, networkId: string, route: string = '/') => `/${app}/${networkId}${route}`
 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
   { route, target, label, app }: AppRoute,
-  { networkName, pathname }: { networkName: string; pathname: string | null },
+  { networkId, pathname }: { networkId: string; pathname: string | null },
 ): AppPage => {
-  const href = route.startsWith('http') ? route : getInternalUrl(app, networkName, route)
+  const href = route.startsWith('http') ? route : getInternalUrl(app, networkId, route)
   return {
     href,
     target,

@@ -1,57 +1,44 @@
 'use client'
 import '@/global-extensions'
 import delay from 'lodash/delay'
-import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import Page from '@/dex/layout/default'
-import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import { CurveApi } from '@/dex/types/main.types'
+import { type ChainId, type UrlParams } from '@/dex/types/main.types'
+import { initCurveJs } from '@/dex/utils/utilsCurvejs'
+import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import GlobalStyle from '@/globalStyle'
 import { OverlayProvider } from '@react-aria/overlays'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
-  const curve = useApiStore((state) => state.curve)
-  const chainId = curve?.chainId ?? 1
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const { push } = useRouter()
+  const restFullPathname = useRestFullPathname()
+  const [appLoaded, setAppLoaded] = useState(false)
+
   const pageWidth = useStore((state) => state.pageWidth)
-  const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
   const setPageWidth = useStore((state) => state.setPageWidth)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
-  const fetchPools = useStore((state) => state.pools.fetchPools)
-  const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
-  const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
-  const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const networks = useStore((state) => state.networks.networks)
+  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const theme = useUserProfileStore((state) => state.theme)
+  const hydrate = useStore((s) => s.hydrate)
+  const themeRef = useRef(theme)
 
-  const [appLoaded, setAppLoaded] = useState(false)
+  const chainId = networksIdMapper[networkId]
+  const network = networks[chainId]
 
   const handleResizeListener = useCallback(() => {
     if (window.innerWidth) setPageWidth(window.innerWidth)
   }, [setPageWidth])
-
-  const fetchPoolsVolumeTvl = useCallback(
-    async (curve: CurveApi) => {
-      const { chainId } = curve
-      const poolDatas = Object.values(poolDataMapper)
-      await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
-      void setTokensMapper(chainId, poolDatas)
-    },
-    [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
-  )
 
   useEffect(() => {
     if (!pageWidth) return
@@ -65,7 +52,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     void (async () => {
       const networks = await fetchNetworks()
 
-      useWallet.initialize(theme, networks)
+      useWallet.initialize(themeRef.current, networks)
 
       const handleVisibilityChange = () => {
         updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -80,41 +67,17 @@ export const App = ({ children }: { children: ReactNode }) => {
       window.addEventListener('resize', () => handleResizeListener())
       window.addEventListener('scroll', () => delay(() => updateShowScrollButton(window.scrollY), 200))
     })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchNetworks, handleResizeListener, updateGlobalStoreByKey, updateShowScrollButton])
 
-  const refetchPools = useCallback(
-    async (curve: CurveApi) => {
-      const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
-      void fetchPools(curve, poolIds, null)
-    },
-    [fetchPools, network],
-  )
-
-  usePageVisibleInterval(
-    () => {
-      if (curve) {
-        void fetchGasInfo(curve)
-        void fetchAllStoredUsdRates(curve)
-        void fetchPoolsVolumeTvl(curve)
-
-        if (curve.signerAddress) {
-          void fetchAllStoredBalances(curve)
-        }
+  const onChainUnavailable = useCallback(
+    ([walletChainId]: [ChainId, ChainId]) => {
+      const network = networks[walletChainId]?.id
+      if (network) {
+        console.warn(`Network switched to ${network}, redirecting...`, location.href)
+        push(getPath({ network }, `/${restFullPathname}`))
       }
     },
-    REFRESH_INTERVAL['5m'],
-    isPageVisible,
-  )
-
-  usePageVisibleInterval(
-    () => {
-      if (curve) {
-        void refetchPools(curve)
-      }
-    },
-    REFRESH_INTERVAL['11m'],
-    isPageVisible,
+    [networks, push, restFullPathname],
   )
 
   return (
@@ -124,7 +87,14 @@ export const App = ({ children }: { children: ReactNode }) => {
         {appLoaded && (
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <Page>{children}</Page>
+              <ConnectionProvider
+                hydrate={hydrate}
+                initLib={initCurveJs}
+                chainId={chainId}
+                onChainUnavailable={onChainUnavailable}
+              >
+                <Page network={network}>{children}</Page>
+              </ConnectionProvider>
             </QueryProvider>
           </OverlayProvider>
         )}

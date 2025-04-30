@@ -1,37 +1,53 @@
-import { ethers } from 'ethers'
 import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import Header from '@/dao/layout/Header'
+import { Header } from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
-import type { CurveApi } from '@/dao/types/dao.types'
-import { getEthPath, getNetworkFromUrl } from '@/dao/utils/utilsRouter'
-import { CONNECT_STAGE, isFailure, useConnection, useSetChain } from '@ui-kit/features/connect-wallet'
+import type { ChainId, CurveApi, NetworkEnum } from '@/dao/types/dao.types'
+import { getEthPath } from '@/dao/utils/utilsRouter'
+import { useConnection } from '@ui-kit/features/connect-wallet'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-const BaseLayout = ({ children }: { children: ReactNode }) => {
+const useAutoRefresh = () => {
+  const { lib: curve } = useConnection<CurveApi>()
+  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
+  const isPageVisible = useStore((state) => state.isPageVisible)
+  const getGauges = useStore((state) => state.gauges.getGauges)
+  const getGaugesData = useStore((state) => state.gauges.getGaugesData)
+  usePageVisibleInterval(
+    () => Promise.all([curve && fetchAllStoredUsdRates(curve), getGauges(), getGaugesData()]),
+    REFRESH_INTERVAL['5m'],
+    isPageVisible,
+  )
+}
+
+export const BaseLayout = ({
+  children,
+  networkId,
+  chainId,
+}: {
+  children: ReactNode
+  networkId: NetworkEnum
+  chainId: ChainId
+}) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
-  const [, setWalletChain] = useSetChain()
 
-  const { connectState } = useConnection<CurveApi>()
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+  useAutoRefresh()
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight ?? null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalAlertHeight])
-
-  // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
-  const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
-
-  const { rChainId, rNetwork } = getNetworkFromUrl()
 
   const minHeight = useMemo(
     () => Object.values(layoutHeight).reduce((acc, height) => acc + height, 0) - layoutHeight.footer + 24,
@@ -41,19 +57,9 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const sections = useMemo(() => getSections(), [])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header
-        sections={sections}
-        BannerProps={{
-          ref: globalAlertRef,
-          networkName: rNetwork,
-          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage: isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-          maintenanceMessage,
-          handleNetworkChange: () => setWalletChain({ chainId: ethers.toQuantity(rChainId) }),
-        }}
-      />
+      <Header chainId={chainId} sections={sections} globalAlertRef={globalAlertRef} networkId={networkId} />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dao" networkName={rNetwork} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="dao" networkId={networkId} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }
@@ -102,5 +108,3 @@ const Container = styled.div<{ globalAlertHeight: number }>`
   width: 100%;
   min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
 `
-
-export default BaseLayout
