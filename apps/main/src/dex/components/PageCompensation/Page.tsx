@@ -4,44 +4,41 @@ import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import FormCompensation from '@/dex/components/PageCompensation/index'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
-import usePageOnMount from '@/dex/hooks/usePageOnMount'
 import Settings from '@/dex/layout/default/Settings'
-import useStore from '@/dex/store/useStore'
-import { Provider } from '@/dex/types/main.types'
+import { type CurveApi, type NetworkUrlParams, Provider } from '@/dex/types/main.types'
+import { useChainId } from '@/dex/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import Button from '@ui/Button'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const Page = () => {
-  const { pageLoaded, routerParams, curve } = usePageOnMount()
-  const { rChainId } = routerParams
-  const { provider } = useWallet()
-  const connectWallet = useStore((s) => s.updateConnectState)
+export const PageCompensation = ({ network }: NetworkUrlParams) => {
+  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { connect: connectWallet, provider } = useWallet()
   const [contracts, setContracts] = useState<EtherContract[]>([])
+  const rChainId = useChainId(network)
 
   const fetchData = useCallback(async (provider: Provider) => {
     const signer = await provider.getSigner()
     const contracts = await import('@/dex/components/PageCompensation/abis').then((modules) =>
-      Object.entries(modules).map(([, { contractAddress, abi, ...rest }]) => {
-        const iface = new Interface(abi)
-        const contract = new Contract(contractAddress, iface.format(), signer)
-        return { ...rest, contractAddress, contract }
-      }),
+      Object.values(modules).map(({ contractAddress, abi, ...rest }) => ({
+        ...rest,
+        contractAddress,
+        contract: new Contract(contractAddress, new Interface(abi).format(), signer),
+      })),
     )
     setContracts(contracts)
   }, [])
 
   // get initial data
   useEffect(() => {
-    if (!pageLoaded) return
-    if (provider) {
+    if (!isLoading(connectState) && provider) {
       void fetchData(provider)
     }
-  }, [fetchData, pageLoaded, provider])
+  }, [fetchData, connectState, provider])
 
   return (
     <>
@@ -60,7 +57,13 @@ const Page = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button fillWidth loading={!pageLoaded} size="large" variant="filled" onClick={() => connectWallet()}>
+              <Button
+                fillWidth
+                loading={isLoading(connectState)}
+                size="large"
+                variant="filled"
+                onClick={() => connectWallet()}
+              >
                 {t`Connect Wallet`}
               </Button>
             </>
@@ -105,5 +108,3 @@ const Content = styled(Box)`
   align-content: flex-start;
   min-height: 14.8125rem; //237px
 `
-
-export default Page

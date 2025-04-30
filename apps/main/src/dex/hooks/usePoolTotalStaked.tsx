@@ -1,15 +1,14 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import useStore from '@/dex/store/useStore'
-import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
+import { type CurveApi, PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
-  const curve = useApiStore((state) => state.curve)
+  const { lib: curve = null } = useConnection<CurveApi>()
   const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)

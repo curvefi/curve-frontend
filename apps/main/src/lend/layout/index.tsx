@@ -1,47 +1,29 @@
 import { useParams } from 'next/navigation'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
-import { CONNECT_STAGE, ROUTE } from '@/lend/constants'
-import Header from '@/lend/layout/Header'
+import { ROUTE } from '@/lend/constants'
+import { Header } from '@/lend/layout/Header'
 import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
-import { getNetworkFromUrl, getPath } from '@/lend/utils/utilsRouter'
-import { isFailure, isLoading } from '@ui/utils'
-import { getWalletChainId, useWallet } from '@ui-kit/features/connect-wallet'
+import { getPath } from '@/lend/utils/utilsRouter'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
+import { networksIdMapper } from '../networks'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
-  const { wallet } = useWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const [, elHeight] = useResizeObserver(globalAlertRef) ?? []
   const footerRef = useRef<HTMLDivElement>(null)
   const [, footerHeight] = useResizeObserver(footerRef) ?? []
   const params = useParams() as UrlParams
-
-  const connectState = useStore((state) => state.connectState)
+  const { network: networkId } = params
   const layoutHeight = useStore((state) => state.layout.height)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
-  const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-
-  const [networkSwitch, setNetworkSwitch] = useState('')
-
-  const { rChainId, rNetwork } = getNetworkFromUrl()
-
-  const showSwitchNetworkMessage =
-    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
-
-  const handleNetworkChange = () => {
-    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
-    setNetworkSwitch(connectStage)
-    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
-  }
-
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   useEffect(() => {
@@ -58,18 +40,13 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
       <Header
-        chainId={rChainId}
+        chainId={networksIdMapper[networkId]}
         sections={sections}
-        BannerProps={{
-          ref: globalAlertRef,
-          networkName: rNetwork,
-          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
-          showSwitchNetworkMessage,
-          handleNetworkChange,
-        }}
+        globalAlertRef={globalAlertRef}
+        networkId={networkId}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="lend" networkName={rNetwork} headerHeight={useHeaderHeight(bannerHeight)} />
+      <Footer appName="lend" networkId={networkId} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>
   )
 }

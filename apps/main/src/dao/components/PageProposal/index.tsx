@@ -4,6 +4,7 @@ import ErrorMessage from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { useProposalPricesApiQuery, invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
+import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
@@ -27,13 +28,8 @@ import ProposalHeader from './ProposalHeader'
 import ProposalInformation from './ProposalInformation'
 import Voters from './Voters'
 
-type ProposalProps = {
-  routerParams: ProposalUrlParams
-  rChainId: number
-}
-
-const Proposal = ({ routerParams, rChainId }: ProposalProps) => {
-  const { proposalId: rProposalId } = routerParams
+export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams) => {
+  const rChainId = networksIdMapper[network]
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const proposalType = voteType.toLowerCase() as ProposalType
   const { provider } = useWallet()
@@ -319,5 +315,3 @@ const StyledCopyButton = styled(IconButton)`
     background-color: var(--primary-400);
   }
 `
-
-export default Proposal

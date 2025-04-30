@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getAddress } from 'viem'
-import PageUser from '@/dao/components/PageUser/Page'
+import { PageUser } from '@/dao/components/PageUser/Page'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import { t } from '@ui-kit/lib/i18n'
 

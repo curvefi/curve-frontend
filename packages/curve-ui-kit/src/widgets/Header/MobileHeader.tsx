@@ -37,10 +37,10 @@ export const MobileHeader = <TChainId extends number>({
   appStats,
   sections,
   ChainProps,
-  BannerProps,
+  globalAlertRef,
   height,
   isLite = false,
-  networkName,
+  networkId,
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: HeaderImplementationProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
@@ -63,14 +63,14 @@ export const MobileHeader = <TChainId extends number>({
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: routes.map((p) => routeToPage(p, { networkName, pathname })),
+          pages: routes.map((p) => routeToPage(p, { networkId, pathname })),
         })),
-    [currentMenu, networkName, pathname],
+    [currentMenu, networkId, pathname],
   )
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <GlobalBanner {...BannerProps} />
+        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={ChainProps.chainId} />
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}

@@ -1,5 +1,5 @@
 import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useMemo, useRef } from 'react'
+import { type RefObject, useCallback, useMemo, useRef } from 'react'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
@@ -12,14 +12,17 @@ import { formatNumber, isLoading } from '@ui/utils'
 import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
+type HeaderProps = {
+  sections: NavigationSection[]
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkId: string
+}
 
-export const Header = ({ sections, BannerProps }: HeaderProps) => {
+export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const params = useParams() as UrlParams
   const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
@@ -42,7 +45,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   return (
     <NewHeader<ChainId>
-      networkName={rNetwork}
+      networkId={rNetwork}
       mainNavRef={mainNavRef}
       currentMenu="crvusd"
       routes={APP_LINK.crvusd.routes}
@@ -91,7 +94,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
         },
         { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
       ]}
-      BannerProps={BannerProps}
+      globalAlertRef={globalAlertRef}
       height={useHeaderHeight(bannerHeight)}
       sections={sections}
     />

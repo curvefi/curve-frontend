@@ -27,11 +27,11 @@ export const DesktopHeader = <TChainId extends number>({
   currentMenu,
   ChainProps,
   WalletProps,
-  BannerProps,
+  globalAlertRef,
   height, // height above + banner height
   pages,
   appStats,
-  networkName,
+  networkId,
   isLite = false,
 }: HeaderImplementationProps<TChainId>) => {
   const [menu, setMenu] = useState<AppMenuOption>(currentMenu)
@@ -44,7 +44,7 @@ export const DesktopHeader = <TChainId extends number>({
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef}>
-        <GlobalBanner {...BannerProps} />
+        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={ChainProps.chainId} />
 
         <Toolbar
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
@@ -52,7 +52,7 @@ export const DesktopHeader = <TChainId extends number>({
         >
           <Container>
             <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
-            <AppButtonLinks currentMenu={menu} onChange={setMenu} networkName={networkName} />
+            <AppButtonLinks currentMenu={menu} onChange={setMenu} networkId={networkId} />
 
             <Box sx={{ flexGrow: 1 }} />
 
