@@ -81,6 +81,14 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   const chainId = networksIdMapper[network]
+
+  useEffect(() => {
+    if (!networks[chainId]?.showInSelectNetwork) {
+      console.warn(`Network ${network} not supported, redirecting...`, chainId)
+      push(getPath({ network: 'ethereum' }, `/${getRestFullPathname()}`))
+    }
+  }, [network, chainId, push])
+
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
