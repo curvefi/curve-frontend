@@ -40,8 +40,23 @@ export const useWagmi = () => {
   // this is the wallet type selected in the modal
   const [walletType, setWalletType] = useWalletType()
 
+  const { address, isConnecting, isReconnecting } = useAccount()
+  const { data: ensName } = useEnsName({ address })
   const { data: client } = useConnectorClient()
-  const provider = useMemo(() => client?.transport.request && { request: client.transport.request }, [client])
+
+  const wallet =
+    useMemo(
+      () =>
+        client?.transport?.request &&
+        createWallet({
+          chainId: client.chain.id,
+          provider: { request: client.transport.request },
+          label: walletType?.label,
+          address: client.account.address,
+          ensName,
+        }),
+      [client, walletType?.label, ensName],
+    ) ?? null
 
   // important: use the async functions so we can properly handle the promise failures
   const { connectAsync } = useConnect()
@@ -60,8 +75,7 @@ export const useWagmi = () => {
     await disconnectAsync()
   }
 
-  const { address, isConnecting, isReconnecting } = useAccount()
-
+  const request = useMemo(() => client?.transport?.request, [client])
   const connectWagmi = useCallback(
     async (label?: string) => {
       if (!label) {
@@ -82,7 +96,7 @@ export const useWagmi = () => {
 
         const wallet = createWallet({
           chainId,
-          provider,
+          provider: (request && { request }) || undefined,
           label,
           address,
         })
@@ -94,7 +108,7 @@ export const useWagmi = () => {
         throw err
       }
     },
-    [setWalletType, connectCallbacks, setConnectCallbacks, connectAsync, provider],
+    [setWalletType, connectCallbacks, setConnectCallbacks, connectAsync, request],
   )
 
   const closeModal = useCallback(
@@ -105,23 +119,6 @@ export const useWagmi = () => {
       }),
     [setConnectCallbacks],
   )
-
-  const { data: ensName } = useEnsName({ address })
-
-  const wallet =
-    useMemo(
-      () =>
-        client &&
-        address &&
-        createWallet({
-          chainId: client.chain.id,
-          provider,
-          label: walletType?.label,
-          address,
-          ensName,
-        }),
-      [address, client, provider, walletType?.label, ensName],
-    ) ?? null
 
   const showModal = !!connectCallbacks
   const connecting = (isConnecting || showModal) && !isReconnecting && !address // note: workaround to avoid showing the modal when reconnecting
