@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "2.66.16",
+    "@curvefi/api": "2.66.17",
     "@curvefi/lending-api": "2.5.9",
     "@curvefi/stablecoin-api": "1.5.19",
     "@hookform/error-message": "^2.0.1",
