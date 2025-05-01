@@ -68,6 +68,60 @@ const compareSignerAddress = <TChainId extends any>(
 ) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
 /**
+ * Module-level variables to track initialization state across multiple calls
+ */
+let initPromise: Promise<unknown> | null = null
+let pendingParams: {
+  chainId: number
+  provider?: Eip1193Provider
+} | null = null
+
+/**
+ * Ensures that initialization functions are executed in a controlled sequence,
+ * preventing race conditions when multiple initialization requests occur.
+ *
+ * This function implements a mutex pattern that handles concurrent initialization
+ * requests by ensuring only the most recent request is processed when multiple
+ * calls happen in quick succession:
+ *
+ * 1. If a call comes in while another is in progress, it waits for the current one to finish
+ * 2. After waiting, it checks if newer parameters were requested during the wait
+ * 3. If newer parameters exist, this call is skipped (only the last requested call executes)
+ * 4. This prevents redundant initializations when chain or provider changes rapidly
+ *
+ * @param initFn - The initialization function to execute with mutex protection
+ * @param params - Parameters for the initialization function
+ * @returns A promise that resolves with the result of the initialization
+ */
+async function initWithMutex<T, TChain extends number>(
+  initFn: (chainId: TChain, provider?: Eip1193Provider) => Promise<T>,
+  params: {
+    chainId: TChain
+    provider?: Eip1193Provider
+  },
+) {
+  pendingParams = params
+
+  if (initPromise) {
+    await initPromise
+
+    if (pendingParams !== params) {
+      return initPromise as Promise<T>
+    }
+
+    initPromise = null
+  }
+
+  pendingParams = null
+
+  initPromise = initFn(params.chainId, params.provider).finally(() => {
+    initPromise = null
+  })
+
+  return initPromise as Promise<T>
+}
+
+/**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
  * todo: Merged with useWallet after wagmi migration. Get rid of apiStore after this is used everywhere.
@@ -142,7 +196,11 @@ export const ConnectionProvider = <
         if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
-          newLib = (await initLib(chainId, wallet?.provider)) ?? null
+          newLib =
+            (await initWithMutex(initLib, {
+              chainId,
+              provider: wallet?.provider,
+            })) ?? null
 
           if (signal.aborted) return
           libRef.set(newLib)
