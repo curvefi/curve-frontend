@@ -160,6 +160,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
+    state.networks.setNetworkConfigs(curveApi)
 
     const network = state.networks.networks[chainId]
     const { excludePoolsMapper } = network
