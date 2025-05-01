@@ -207,7 +207,9 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, connect, walletName])
+    // Missing connect from dep array, otherwise hydration is triggered upon open and closing of connect wallet modal.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, walletName])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
