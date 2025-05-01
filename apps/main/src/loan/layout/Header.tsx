@@ -6,13 +6,13 @@ import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crv
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
-import { getPath, getRestFullPathname, parseNetworkFromUrl } from '@/loan/utils/utilsRouter'
-import { formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import { getPath, getRestFullPathname, useChainId } from '@/loan/utils/utilsRouter'
+import { formatNumber } from '@ui/utils'
+import { isLoading } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
@@ -24,28 +24,25 @@ type HeaderProps = {
 
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const params = useParams() as UrlParams
-  const { wallet } = useWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId, rNetwork } = parseNetworkFromUrl(params)
-  const curve = useApiStore((state) => state.stable)
-  const chainId = curve?.chainId
-  const connectState = useStore((state) => state.connectState)
+  const rChainId = useChainId(params)
+  const { lib, connectState } = useStablecoinConnection()
+
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
-  const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
   const { data: dailyVolume } = useAppStatsDailyVolume({})
-  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId: lib?.chainId })
 
   return (
     <NewHeader<ChainId>
-      networkId={rNetwork}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="crvusd"
       routes={APP_LINK.crvusd.routes}
@@ -54,27 +51,9 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
         onChange: useCallback(
-          (selectedChainId: ChainId) => {
-            if (rChainId !== selectedChainId) {
-              push(getPath(params, getRestFullPathname(params)))
-              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
-            }
-          },
-          [rChainId, push, updateConnectState, params],
+          (selectedChainId: ChainId) => rChainId !== selectedChainId && push(getPath(params, getRestFullPathname())),
+          [rChainId, push, params],
         ),
-      }}
-      WalletProps={{
-        onConnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
-          [updateConnectState],
-        ),
-        onDisconnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
-          [updateConnectState],
-        ),
-        walletAddress: getWalletSignerAddress(wallet),
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`,
       }}
       appStats={[
         {

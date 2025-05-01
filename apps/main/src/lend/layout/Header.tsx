@@ -6,14 +6,7 @@ import useStore from '@/lend/store/useStore'
 import { type Api, ChainId, type NetworkEnum } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import {
-  CONNECT_STAGE,
-  getWalletSignerAddress,
-  isLoading,
-  useConnection,
-  useWallet,
-} from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
+import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
@@ -29,7 +22,6 @@ export const Header = ({
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: NetworkEnum
 }) => {
-  const { wallet } = useWallet()
   const { push } = useRouter()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
@@ -54,11 +46,6 @@ export const Header = ({
           },
           [chainId, push],
         ),
-      }}
-      WalletProps={{
-        walletAddress: getWalletSignerAddress(wallet),
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`,
       }}
       appStats={[
         {

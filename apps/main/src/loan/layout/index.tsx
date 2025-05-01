@@ -20,6 +20,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const layoutHeight = useStore((state) => state.layout.height)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const params = useParams() as UrlParams
+
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   const sections = useMemo(() => getSections(params), [params])

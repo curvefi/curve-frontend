@@ -7,18 +7,16 @@ import CollateralList from '@/loan/components/PageMarketList/index'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
 import { ROUTE, TITLE } from '@/loan/constants'
-import usePageOnMount from '@/loan/hooks/usePageOnMount'
 import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import Settings from '@/loan/layout/Settings'
 import useStore from '@/loan/store/useStore'
+import { useStablecoinConnection } from '@/loan/temp-lib'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
-import { getPath } from '@/loan/utils/utilsRouter'
+import { getPath, useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
-import { isLoading } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, useWallet } from '@ui-kit/features/connect-wallet'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
+import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 
 enum SEARCH {
   sortBy = 'sortBy',
@@ -29,24 +27,20 @@ enum SEARCH {
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { pageLoaded, routerParams, curve } = usePageOnMount()
+  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
-  const { rChainId } = routerParams
-  const { provider } = useWallet()
-
-  const isLoadingStable = useApiStore((state) => state.isLoadingStable)
+  const rChainId = useChainId(params)
+  const { connect: connectWallet, provider } = useWallet()
   const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
-  const connectWallet = useStore((s) => s.updateConnectState)
-  const connectState = useStore((s) => s.connectState)
 
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)
 
   useEffect(() => {
     setStateByKey('initialLoaded', false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [setStateByKey])
 
   const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
     const { searchText, sortBy, sortByOrder } = {
@@ -66,9 +60,7 @@ const Page = (params: CollateralUrlParams) => {
   }
 
   useEffect(() => {
-    setLoaded(false)
-
-    if (!pageLoaded || isLoadingStable) return
+    if (!pageLoaded) return
 
     const parsedSearchParams = {
       sortBy: searchParams?.get(SEARCH.sortBy) || TITLE.totalBorrowed,
@@ -79,8 +71,7 @@ const Page = (params: CollateralUrlParams) => {
     setStateByKey('searchParams', parsedSearchParams)
     setParsedSearchParams(parsedSearchParams)
     setLoaded(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingStable, searchParams])
+  }, [pageLoaded, searchParams, setStateByKey])
 
   return (
     <>

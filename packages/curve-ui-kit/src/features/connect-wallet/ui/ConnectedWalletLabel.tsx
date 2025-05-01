@@ -1,16 +1,12 @@
-import Button from '@mui/material/Button'
-import type { SxProps, Theme } from '@mui/material/styles'
-import { shortenAddress, type Address } from '@ui-kit/utils'
+import Button, { type ButtonProps } from '@mui/material/Button'
+import { type Address, shortenAddress } from '@ui-kit/utils'
 
-export type ConnectedWalletLabelProps = {
+export type ConnectedWalletLabelProps = ButtonProps & {
   walletAddress: Address
-  onDisconnectWallet: () => void
-  disabled?: boolean
-  sx?: SxProps<Theme>
 }
 
-export const ConnectedWalletLabel = ({ walletAddress, onDisconnectWallet, ...props }: ConnectedWalletLabelProps) => (
-  <Button size="small" color="ghost" onClick={onDisconnectWallet} title={walletAddress} {...props}>
+export const ConnectedWalletLabel = ({ walletAddress, ...props }: ConnectedWalletLabelProps) => (
+  <Button size="small" color="ghost" title={walletAddress} {...props}>
     {shortenAddress(walletAddress)}
   </Button>
 )
