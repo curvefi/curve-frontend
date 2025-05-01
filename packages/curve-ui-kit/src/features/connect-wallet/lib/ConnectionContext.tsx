@@ -67,14 +67,9 @@ const compareSignerAddress = <TChainId extends any>(
   lib: { chainId: TChainId; signerAddress?: string } | null,
 ) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
-/**
- * Module-level variables to track initialization state across multiple calls
- */
-let initPromise: Promise<unknown> | null = null
-let pendingParams: {
-  chainId: number
-  provider?: Eip1193Provider
-} | null = null
+/** Module-level variables to track initialization state across multiple calls */
+let mutexPromise: Promise<unknown> | null = null
+let mutexKey: any | null = null
 
 /**
  * Ensures that initialization functions are executed in a controlled sequence,
@@ -93,32 +88,26 @@ let pendingParams: {
  * @param params - Parameters for the initialization function
  * @returns A promise that resolves with the result of the initialization
  */
-async function initWithMutex<T, TChain extends number>(
-  initFn: (chainId: TChain, provider?: Eip1193Provider) => Promise<T>,
-  params: {
-    chainId: TChain
-    provider?: Eip1193Provider
-  },
-) {
-  pendingParams = params
+async function withMutex(fn: () => Promise<any>, key: unknown) {
+  mutexKey = key
 
-  if (initPromise) {
-    await initPromise
+  if (mutexPromise) {
+    await mutexPromise
 
-    if (pendingParams !== params) {
-      return initPromise as Promise<T>
+    if (mutexKey !== key) {
+      return mutexPromise
     }
 
-    initPromise = null
+    mutexPromise = null
   }
 
-  pendingParams = null
+  mutexKey = null
 
-  initPromise = initFn(params.chainId, params.provider).finally(() => {
-    initPromise = null
+  mutexPromise = fn().finally(() => {
+    mutexPromise = null
   })
 
-  return initPromise as Promise<T>
+  return mutexPromise
 }
 
 /**
@@ -196,19 +185,19 @@ export const ConnectionProvider = <
         if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
-          newLib =
-            (await initWithMutex(initLib, {
-              chainId,
-              provider: wallet?.provider,
-            })) ?? null
 
-          if (signal.aborted) return
-          libRef.set(newLib)
+          await withMutex(async () => {
+            newLib = (await initLib(chainId, wallet?.provider)) ?? null
+
+            if (signal.aborted) return
+            libRef.set(newLib)
+
+            setConnectState({ status: SUCCESS, stage: HYDRATE })
+            await hydrate(newLib, prevLib, wallet)
+          }, [chainId, wallet])
         }
 
         if (signal.aborted) return
-        setConnectState({ status: SUCCESS, stage: HYDRATE })
-        await hydrate(newLib, prevLib, wallet)
         setConnectState({ status: SUCCESS })
       } catch (error) {
         if (signal.aborted) return console.info('Error during init ignored', error)
