@@ -180,24 +180,24 @@ export const ConnectionProvider = <
           }
         }
 
-        const prevLib = libRef.get<TLib>()
-        let newLib = prevLib
-        if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
-          if (signal.aborted) return
-          setConnectState({ status: LOADING, stage: CONNECT_API })
+        await withMutex(async () => {
+          const prevLib = libRef.get<TLib>()
+          let newLib = prevLib
 
-          await withMutex(async () => {
+          if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
+            if (signal.aborted) return
+            setConnectState({ status: LOADING, stage: CONNECT_API })
             newLib = (await initLib(chainId, wallet?.provider)) ?? null
 
             if (signal.aborted) return
             libRef.set(newLib)
+          }
 
-            setConnectState({ status: SUCCESS, stage: HYDRATE })
-            await hydrate(newLib, prevLib, wallet)
-          }, [chainId, wallet])
-        }
+          if (signal.aborted) return
+          setConnectState({ status: SUCCESS, stage: HYDRATE })
+          await hydrate(newLib, prevLib, wallet)
+        }, [chainId, wallet])
 
-        if (signal.aborted) return
         setConnectState({ status: SUCCESS })
       } catch (error) {
         if (signal.aborted) return console.info('Error during init ignored', error)
