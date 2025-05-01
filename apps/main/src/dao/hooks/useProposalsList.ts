@@ -24,16 +24,20 @@ const sortProposals = (
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
-    const activeProposals = proposals.filter((proposal) => proposal.timestamp + WEEK > currentTimestamp)
-    const passedProposals = orderBy(
-      proposals.filter((proposal) => proposal.timestamp + WEEK < currentTimestamp),
+    const activeProposals = proposals.filter((proposal) => proposal.status === 'Active')
+    const inactiveProposals = orderBy(
+      proposals.filter((proposal) => proposal.status !== 'Active'),
       ['timestamp'],
       ['desc'],
     )
 
     return [
-      ...orderBy(activeProposals, [(proposal) => proposal.timestamp + WEEK - currentTimestamp], [activeSortDirection]),
-      ...passedProposals,
+      ...orderBy(
+        activeProposals,
+        [(proposal) => proposal.timestamp + WEEK - currentTimestamp],
+        [activeSortDirection === 'asc' ? 'desc' : 'asc'],
+      ),
+      ...inactiveProposals,
     ]
   }
 
@@ -63,7 +67,7 @@ export const useProposalsList = () => {
   const activeFilter = useStore((state) => state.proposals.activeFilter)
   const searchValue = useStore((state) => state.proposals.searchValue)
 
-  const { data: proposalsMapper, ...rest } = useProposalsMapperQuery({})
+  const { data: proposalsMapper, isLoading, isError, isSuccess } = useProposalsMapperQuery({})
 
   const processedData = useMemo(() => {
     if (!proposalsMapper) return { data: [] }
@@ -79,5 +83,5 @@ export const useProposalsList = () => {
     return { data: sortProposals(filteredProposals, activeSortBy, activeSortDirection) }
   }, [proposalsMapper, activeFilter, searchValue, activeSortBy, activeSortDirection])
 
-  return { ...processedData, ...rest }
+  return { ...processedData, isLoading, isError, isSuccess }
 }
