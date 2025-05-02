@@ -2,7 +2,7 @@ import { BrowserProvider } from 'ethers'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
-import { Address } from '@ui-kit/utils'
+import { Address, isCypress } from '@ui-kit/utils'
 import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
 import type { Wallet } from './types'
 import { convertOnboardWallet } from './utils/wallet-helpers'
@@ -38,7 +38,7 @@ const state: {
 export const useUseWagmi = (): boolean => {
   const [isBeta] = useBetaFlag()
   const [{ wallet, connecting }] = useOnboardWallet()
-  return isBeta && !wallet && !connecting
+  return !isCypress && isBeta && !wallet && !connecting
 }
 
 export const useWallet: UseConnectWallet = () => {
