@@ -35,6 +35,7 @@ const sortProposals = (
       ...orderBy(
         activeProposals,
         [(proposal) => proposal.timestamp + WEEK - currentTimestamp],
+        // order needs to be reversed for active proposals on 'ending soon' to behave as expected
         [activeSortDirection === 'asc' ? 'desc' : 'asc'],
       ),
       ...inactiveProposals,
