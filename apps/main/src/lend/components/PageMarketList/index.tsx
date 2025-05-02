@@ -65,9 +65,9 @@ const MarketList = (pageProps: PageMarketList) => {
 
   useEffect(() => {
     if (isLoaded && isPageVisible) {
-      void setFormValues(rChainId, api, marketMapping, !initialLoaded)
+      void setFormValues(rChainId, api, searchParams, marketMapping, !initialLoaded)
     }
-  }, [api, initialLoaded, isLoaded, isPageVisible, marketMapping, rChainId, setFormValues])
+  }, [api, initialLoaded, isLoaded, isPageVisible, marketMapping, rChainId, searchParams, setFormValues])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -77,7 +77,7 @@ const MarketList = (pageProps: PageMarketList) => {
   }, [initCampaignRewards, rChainId, initiated])
 
   usePageVisibleInterval(
-    () => void setFormValues(rChainId, api, marketMapping),
+    () => void setFormValues(rChainId, api, searchParams, marketMapping),
     REFRESH_INTERVAL['5m'],
     isPageVisible && isLoaded,
   )

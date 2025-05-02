@@ -4,7 +4,10 @@ import { svg as metamaskSvg } from './MetamaskWalletIcon'
 import { svg as phantomSvg } from './PhantomWalletIcon'
 import { svg as rabbySvg } from './RabbyWalletIcon'
 
-export const svg = (
+/**
+ * An icon representing a browser wallet, combining icons from the different wallet plugins.
+ */
+export const BrowserWalletIcon = createSvgIcon(
   <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       {/* Top left - Rabby */}
@@ -19,7 +22,6 @@ export const svg = (
       {/* Bottom right - Metamask */}
       <g transform="translate(50, 50) scale(1.5)">{metamaskSvg}</g>
     </g>
-  </svg>
+  </svg>,
+  'BrowserWallet',
 )
-
-export const BrowserWalletIcon = createSvgIcon(svg, 'BrowserWallet')
