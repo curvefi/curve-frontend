@@ -1,6 +1,5 @@
 import groupBy from 'lodash/groupBy'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { Fragment, useMemo, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -10,6 +9,7 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
+import { useNetworkPathname } from '@ui-kit/shared/routes'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
@@ -21,39 +21,29 @@ enum ChainType {
   main = 'main',
 }
 
-function ChainListItem<TChainId extends number>({
+const ChainListItem = <TChainId extends number>({
   chain,
   isSelected,
 }: {
   chain: ChainOption<TChainId>
   isSelected: boolean
-}) {
-  const ref = useRef<HTMLLIElement | null>(null)
-  const pathname = usePathname() ?? ''
-  const { networkId, label, chainId } = chain
-  const href = useMemo(() => {
-    const [_, appName, _currentNetwork, ...rest] = pathname.split('/')
-    return `/${appName}/${networkId}/${rest.join('/')}`
-  }, [networkId, pathname])
-
-  return (
-    <InvertOnHover hoverEl={ref.current}>
-      <MenuItem
-        component={Link}
-        href={href}
-        data-testid={`menu-item-chain-${chainId}`}
-        selected={isSelected}
-        tabIndex={0}
-      >
-        <ChainSwitcherIcon chain={chain} size={36} />
-        <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-          {label}
-        </Typography>
-        {isSelected && <CheckedIcon />}
-      </MenuItem>
-    </InvertOnHover>
-  )
-}
+}) => (
+  <InvertOnHover hoverEl={useRef<HTMLLIElement | null>(null).current}>
+    <MenuItem
+      component={Link}
+      href={useNetworkPathname(chain.networkId)}
+      data-testid={`menu-item-chain-${chain.chainId}`}
+      selected={isSelected}
+      tabIndex={0}
+    >
+      <ChainSwitcherIcon chain={chain} size={36} />
+      <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
+        {chain.label}
+      </Typography>
+      {isSelected && <CheckedIcon />}
+    </MenuItem>
+  </InvertOnHover>
+)
 
 export function ChainList<TChainId extends number>({
   options,
