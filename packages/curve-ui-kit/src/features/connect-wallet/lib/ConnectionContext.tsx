@@ -208,6 +208,7 @@ export const ConnectionProvider = <
     void initApp()
     return () => abort.abort()
     // Missing connect from dep array, otherwise hydration is triggered upon open and closing of connect wallet modal.
+    // This should be removed soon. Problem is caused by `connectCallbacks` which will be removed in #873.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, walletName])
 
