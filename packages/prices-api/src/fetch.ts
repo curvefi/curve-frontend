@@ -6,7 +6,7 @@ export const addQueryString = (params: Record<string, string | number | boolean 
   const query = new URLSearchParams(
     Object.entries(params)
       .filter(([_, value]) => value != null)
-      .map(([key, value]) => [key, value!.toString()]),
+      .map(([key, value]) => [key, value!.toString()] as [string, string]) as ReadonlyArray<[string, string]>,
   ).toString()
   return query && `?${query}`
 }
@@ -46,5 +46,5 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
     // Make the promise be rejected if we didn't get a 2xx response
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
   }
-  return resp.json()
+  return resp.json() as Promise<T>
 }
