@@ -80,13 +80,17 @@ let mutexKey: any | null = null
  * calls happen in quick succession:
  *
  * 1. If a call comes in while another is in progress, it waits for the current one to finish
- * 2. After waiting, it checks if newer parameters were requested during the wait
- * 3. If newer parameters exist, this call is skipped (only the last requested call executes)
- * 4. This prevents redundant initializations when chain or provider changes rapidly
+ * 2. After waiting, it checks if the key has changed during the wait
+ * 3. If the key has changed, it returns the existing promise (skipping execution for outdated keys)
+ * 4. If no other operation is in progress, it executes the function and cleans up when done
  *
- * @param initFn - The initialization function to execute with mutex protection
- * @param params - Parameters for the initialization function
- * @returns A promise that resolves with the result of the initialization
+ * Primary reason for this function is to avoid simultaneous CurveJS library instantiations,
+ * which is not only unnecessary, it is also not supported and can cause unintentional side-effects like
+ * duplicate mint markets for crvUSD.
+ *
+ * @param fn - The function to execute with mutex protection
+ * @param key - A value used to identify this specific operation
+ * @returns A promise that resolves with the result of the function execution
  */
 async function withMutex(fn: () => Promise<any>, key: unknown) {
   mutexKey = key
