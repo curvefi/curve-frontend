@@ -106,7 +106,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: Wallet) => {
-      const userAddress = wallet.account.address!
+      const userAddress = wallet.account.address
 
       try {
         const veCRV = await curve.dao.userVeCrv(userAddress)
