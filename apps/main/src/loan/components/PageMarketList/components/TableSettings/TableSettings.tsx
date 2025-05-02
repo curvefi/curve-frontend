@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import SelectFilterType from '@/loan/components/PageMarketList/components/TableSettings/SelectFilterType'
 import type { PageCollateralList, TableLabel } from '@/loan/components/PageMarketList/types'
-import useStore from '@/loan/store/useStore'
 import SearchListInput from '@ui/SearchInput/SearchListInput'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -10,33 +9,28 @@ const TableSettings = ({
   someLoanExists,
   tableLabels,
   titleMapper,
-  updatePath,
-}: Pick<PageCollateralList, 'titleMapper' | 'updatePath'> & {
+  onSearch,
+  searchParams,
+}: Pick<PageCollateralList, 'titleMapper' | 'onSearch' | 'searchParams'> & {
   someLoanExists: boolean
   tableLabels: TableLabel[]
-}) => {
-  const searchParams = useStore((state) => state.collateralList.searchParams)
-
-  const { searchText } = searchParams
-
-  return (
-    <SettingsWrapper>
-      <SearchListInput
-        placeholder={t`Search by tokens or address`}
-        searchText={searchText}
-        handleInputChange={(val) => updatePath({ searchText: val })}
-        handleClose={() => updatePath({ searchText: '' })}
-      />
-      <SelectFilterType
-        searchParams={searchParams}
-        someLoanExists={someLoanExists}
-        tableLabels={tableLabels}
-        titleMapper={titleMapper}
-        updatePath={updatePath}
-      />
-    </SettingsWrapper>
-  )
-}
+}) => (
+  <SettingsWrapper>
+    <SearchListInput
+      placeholder={t`Search by tokens or address`}
+      searchText={searchParams.searchText}
+      handleInputChange={(val) => onSearch({ searchText: val })}
+      handleClose={() => onSearch({ searchText: '' })}
+    />
+    <SelectFilterType
+      searchParams={searchParams}
+      someLoanExists={someLoanExists}
+      tableLabels={tableLabels}
+      titleMapper={titleMapper}
+      updatePath={onSearch}
+    />
+  </SettingsWrapper>
+)
 
 const SettingsWrapper = styled.div`
   display: grid;
