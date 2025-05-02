@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment, useMemo, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -9,7 +10,7 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
-import { useNetworkPathname } from '@ui-kit/shared/routes'
+import { AppNames } from '@ui-kit/shared/routes'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
@@ -19,6 +20,19 @@ import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 enum ChainType {
   test = 'test',
   main = 'main',
+}
+
+/**
+ * Returns a new pathname with a different network
+ * @param networkId The new network ID
+ * @returns The new pathname
+ */
+export function useNetworkPathname(networkId: string) {
+  const pathname = usePathname() ?? ''
+  return useMemo(() => {
+    const [, appName = AppNames[0], , ...rest] = pathname.split('/')
+    return ['', appName, networkId, ...rest].join('/')
+  }, [networkId, pathname])
 }
 
 const ChainListItem = <TChainId extends number>({

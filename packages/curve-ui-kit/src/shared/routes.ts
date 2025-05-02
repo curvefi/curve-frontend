@@ -1,5 +1,3 @@
-import { usePathname } from 'next/navigation'
-import { useMemo } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import type { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
@@ -90,17 +88,4 @@ export const routeToPage = (
     label: label(),
     isActive: pathname?.startsWith(href.split('?')[0]),
   }
-}
-
-/**
- * Returns a new pathname with a different network
- * @param networkId The new network ID
- * @returns The new pathname
- */
-export function useNetworkPathname(networkId: string) {
-  const pathname = usePathname() ?? ''
-  return useMemo(() => {
-    const [, appName = AppNames[0], , ...rest] = pathname.split('/')
-    return ['', appName, networkId, ...rest].join('/')
-  }, [networkId, pathname])
 }
