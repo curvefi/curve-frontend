@@ -4,9 +4,11 @@
  */
 export const addQueryString = (params: Record<string, string | number | boolean | null | undefined>) => {
   const query = new URLSearchParams(
-    Object.entries(params)
-      .filter(([_, value]) => value != null)
-      .map(([key, value]) => [key, value!.toString()] as [string, string]) as ReadonlyArray<[string, string]>,
+    Object.fromEntries(
+      Object.entries(params)
+        .filter(([_, value]) => value != null)
+        .map(([key, value]) => [key, value!.toString()]),
+    ),
   ).toString()
   return query && `?${query}`
 }
@@ -22,8 +24,6 @@ export class FetchError extends Error {
 
 /**
  * Fetches data from a URL and parses the response as JSON.
- * Custom made to avoid a ky or axios dependency.
- *
  * @template T - The expected type of the parsed JSON data.
  * @param url - The URL to fetch from.
  * @param body - Optional request body for POST requests.
@@ -46,5 +46,5 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
     // Make the promise be rejected if we didn't get a 2xx response
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
   }
-  return resp.json() as Promise<T>
+  return (await resp.json()) as T
 }
