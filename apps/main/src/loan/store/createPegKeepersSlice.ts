@@ -45,11 +45,14 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       const { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
-        if (Object.keys(detailsMapper).length > 0) return
-
-        const contracts = await Promise.all(
-          PEG_KEEPERS_ADDRESSES.map((p) => state.getContract('pegKeeper', p, provider)),
+        const pegKeeperAddresses = PEG_KEEPERS_ADDRESSES
+        const contractsToProcess = await Promise.all(
+          pegKeeperAddresses.map(async (address) => ({
+            address,
+            contract: await state.getContract('pegKeeper', address, provider),
+          })),
         )
+
         const debtCeilingContract = await state.getContract(
           'pegKeeperDebtCeiling',
           '0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC',
@@ -58,29 +61,67 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
 
         const results: DetailsMapper = {}
 
-        await PromisePool.for(contracts)
-          .handleError((error) => {
-            console.error(error)
+        await PromisePool.withConcurrency(5) // Adjust concurrency as needed
+          .for(contractsToProcess)
+          .handleError((error, item) => {
+            // This outer handler catches errors *before* the process function runs
+            // (e.g., if contract instantiation failed badly) or if the process function itself throws uncaught errors.
+            console.error(`Critical error processing Peg Keeper: ${item.address}`, error)
+            results[item.address] = {
+              debt: 'Error',
+              estCallerProfit: 'Error',
+              debtCeiling: 'Error',
+            }
           })
-          .process(async (contract, idx) => {
-            if (!contract) return
+          .process(async (item) => {
+            const { address: pegKeeperAddress, contract } = item
+            if (!contract) {
+              console.warn(`Contract instance not available for ${pegKeeperAddress}`)
+              results[pegKeeperAddress] = { debt: 'Error', estCallerProfit: 'Error', debtCeiling: 'Error' }
+              return
+            }
 
-            const pegKeeperAddress = PEG_KEEPERS_ADDRESSES[idx]
-            const [debt, estCallerProfit, debtCeiling] = await Promise.all([
+            // Use Promise.allSettled to run calls concurrently but handle individual failures
+            const settledResults = await Promise.allSettled([
               contract.debt(),
               contract.estimate_caller_profit(),
-              debtCeilingContract ? debtCeilingContract['debt_ceiling'](pegKeeperAddress) : () => '',
+              debtCeilingContract ? debtCeilingContract['debt_ceiling'](pegKeeperAddress) : Promise.resolve(0n),
             ])
+
+            // Process results individually
+            const debtResult = settledResults[0]
+            const profitResult = settledResults[1]
+            const ceilingResult = settledResults[2]
+
+            const debtValue = debtResult.status === 'fulfilled' ? ethers.formatEther(debtResult.value) : '-'
+            const profitValue = profitResult.status === 'fulfilled' ? ethers.formatEther(profitResult.value) : '-'
+            const ceilingValue = ceilingResult.status === 'fulfilled' ? ethers.formatEther(ceilingResult.value) : '-'
+
+            // Log individual errors if needed
+            if (debtResult.status === 'rejected') {
+              console.error(`Error fetching debt for ${pegKeeperAddress}:`, debtResult.reason)
+            }
+            if (profitResult.status === 'rejected') {
+              // Specifically log the known estimate_caller_profit failure
+              console.warn(
+                `Error fetching estimate_caller_profit for ${pegKeeperAddress}:`,
+                profitResult.reason?.message || profitResult.reason,
+              )
+            }
+            if (ceilingResult.status === 'rejected') {
+              console.error(`Error fetching debt ceiling for ${pegKeeperAddress}:`, ceilingResult.reason)
+            }
+
             results[pegKeeperAddress] = {
-              debt: ethers.formatEther(debt),
-              estCallerProfit: ethers.formatEther(estCallerProfit),
-              debtCeiling: ethers.formatEther(debtCeiling),
+              debt: debtValue,
+              estCallerProfit: profitValue,
+              debtCeiling: ceilingValue,
             }
           })
 
         sliceState.setStateByKey('detailsMapper', results)
       } catch (error) {
-        console.error(error)
+        console.error('Error in fetchDetails:', error)
       }
     },
     fetchEstCallerProfit: async (provider, pegKeeperAddress) => {
