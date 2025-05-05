@@ -1,4 +1,6 @@
 import groupBy from 'lodash/groupBy'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment, useMemo, useRef, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -8,6 +10,7 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
+import { AppNames } from '@ui-kit/shared/routes'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
@@ -19,41 +22,48 @@ enum ChainType {
   main = 'main',
 }
 
-function ChainListItem<TChainId extends number>({
+/**
+ * Returns a new pathname with a different network
+ * @param networkId The new network ID
+ * @returns The new pathname
+ */
+export function useNetworkPathname(networkId: string) {
+  const pathname = usePathname() ?? ''
+  return useMemo(() => {
+    const [, appName = AppNames[0], , ...rest] = pathname.split('/')
+    return ['', appName, networkId, ...rest].join('/')
+  }, [networkId, pathname])
+}
+
+const ChainListItem = <TChainId extends number>({
   chain,
-  onChange,
   isSelected,
 }: {
   chain: ChainOption<TChainId>
-  onChange: (chainId: TChainId) => void
   isSelected: boolean
-}) {
-  const ref = useRef<HTMLLIElement | null>(null)
-  return (
-    <InvertOnHover hoverEl={ref.current}>
-      <MenuItem
-        onClick={() => onChange(chain.chainId)}
-        data-testid={`menu-item-chain-${chain.chainId}`}
-        selected={isSelected}
-        tabIndex={0}
-      >
-        <ChainSwitcherIcon chain={chain} size={36} />
-        <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-          {chain.label}
-        </Typography>
-        {isSelected && <CheckedIcon />}
-      </MenuItem>
-    </InvertOnHover>
-  )
-}
+}) => (
+  <InvertOnHover hoverEl={useRef<HTMLLIElement | null>(null).current}>
+    <MenuItem
+      component={Link}
+      href={useNetworkPathname(chain.networkId)}
+      data-testid={`menu-item-chain-${chain.chainId}`}
+      selected={isSelected}
+      tabIndex={0}
+    >
+      <ChainSwitcherIcon chain={chain} size={36} />
+      <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
+        {chain.label}
+      </Typography>
+      {isSelected && <CheckedIcon />}
+    </MenuItem>
+  </InvertOnHover>
+)
 
 export function ChainList<TChainId extends number>({
   options,
-  onChange,
   showTestnets,
   selectedNetwork,
 }: {
-  onChange: (chainId: TChainId) => void
   options: ChainOption<TChainId>[]
   showTestnets: boolean
   selectedNetwork: ChainOption<TChainId>
@@ -94,7 +104,6 @@ export function ChainList<TChainId extends number>({
                     <ChainListItem
                       key={chain.chainId}
                       chain={chain}
-                      onChange={onChange}
                       isSelected={chain.chainId == selectedNetwork?.chainId}
                     />
                   ))}

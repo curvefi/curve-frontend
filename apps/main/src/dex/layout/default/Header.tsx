@@ -1,15 +1,14 @@
-import { useRouter } from 'next/navigation'
-import { type RefObject, useCallback, useMemo, useRef } from 'react'
+import { type RefObject, useMemo, useRef } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
-import { ChainId, type CurveApi } from '@/dex/types/main.types'
-import { getPath, useChainId, useRestFullPathname } from '@/dex/utils/utilsRouter'
+import { type CurveApi } from '@/dex/types/main.types'
+import { useChainId } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -24,9 +23,8 @@ type HeaderProps = {
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { connectState, lib: curve = {} } = useConnection<CurveApi>()
+  const { lib: curve = {} } = useConnection<CurveApi>()
   const rChainId = useChainId(networkId)
-  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const hasRouter = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasRouter)
@@ -39,11 +37,11 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const { data: volumeTotal } = useAppStatsVolume(curve)
 
   const network = networks[rChainId]
-  const restPartialPathname = useRestFullPathname()
 
   return (
-    <NewHeader<ChainId>
+    <NewHeader
       networkId={networkId}
+      chainId={rChainId}
       mainNavRef={mainNavRef}
       currentMenu="dex"
       isLite={network?.isLite}
@@ -62,19 +60,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
         ],
         [hasRouter, network, routerCached],
       )}
-      ChainProps={{
-        options: visibleNetworksList,
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        chainId: rChainId,
-        onChange: useCallback(
-          (selectedChainId: ChainId) => {
-            if (rChainId !== selectedChainId) {
-              push(getPath({ network: networks[selectedChainId as ChainId].id }, `/${restPartialPathname}`))
-            }
-          },
-          [rChainId, networks, push, restPartialPathname],
-        ),
-      }}
+      chains={visibleNetworksList}
       appStats={[
         {
           label: t`Total Deposits`,

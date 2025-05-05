@@ -3,7 +3,7 @@ import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
-import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
+import { parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
 import { TITLE } from '@/loan/constants'
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import type { State } from '@/loan/store/useStore'
@@ -23,7 +23,6 @@ type SliceState = {
   activeKey: string
   initialLoaded: false
   formStatus: FormStatus
-  searchParams: SearchParams
   searchedByTokens: SearchTermsResult
   searchedByAddresses: SearchTermsResult
   result: { [activeKey: string]: string[] }
@@ -36,7 +35,7 @@ export type CollateralListSlice = {
   [sliceKey]: SliceState & {
     filterBySearchText(searchText: string, collateralData: CollateralData[]): CollateralData[]
     sortFn(rChainId: ChainId, sortKey: TitleKey, order: Order, collateralData: CollateralData[]): CollateralData[]
-    setFormValues(rChainId: ChainId, curve: Curve | null, shouldRefetch?: boolean): Promise<void>
+    setFormValues(rChainId: ChainId, curve: Curve | null, searchParams: SearchParams, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -49,7 +48,6 @@ const DEFAULT_STATE: SliceState = {
   activeKey: '',
   initialLoaded: false,
   formStatus: DEFAULT_FORM_STATUS,
-  searchParams: DEFAULT_SEARCH_PARAMS,
   searchedByTokens: {},
   searchedByAddresses: {},
   result: {},
@@ -115,9 +113,9 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
 
       return collateralDatas
     },
-    setFormValues: async (rChainId, curve) => {
+    setFormValues: async (rChainId, curve, searchParams, shouldRefetch) => {
       const { collaterals, storeCache } = get()
-      const { formStatus, initialLoaded, result, searchParams, ...sliceState } = get()[sliceKey]
+      const { formStatus, initialLoaded, result, ...sliceState } = get()[sliceKey]
 
       const activeKey = getActiveKey(rChainId, searchParams)
       sliceState.setStateByKeys({
