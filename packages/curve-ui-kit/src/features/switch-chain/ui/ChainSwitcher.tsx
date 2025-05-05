@@ -6,6 +6,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
+import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -18,6 +19,7 @@ import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
+  networkId: string
   label: string
   src: string
   srcDark: string
@@ -27,18 +29,15 @@ export type ChainOption<TChainId> = {
 export type ChainSwitcherProps<TChainId> = {
   chainId: TChainId
   options: ChainOption<TChainId>[]
-  onChange: (chainId: TChainId) => void
-  disabled?: boolean
   headerHeight: string
 }
 
 export const ChainSwitcher = <TChainId extends number>({
   options,
   chainId,
-  onChange,
-  disabled,
   headerHeight,
 }: ChainSwitcherProps<TChainId>) => {
+  const { connectState } = useConnection()
   const [isOpen, , close, toggle] = useSwitch()
   const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
@@ -50,7 +49,12 @@ export const ChainSwitcher = <TChainId extends number>({
   const onClick = options.length > 1 ? toggle : openSnackbar
   return (
     <>
-      <IconButton size="small" disabled={disabled} onClick={onClick} data-testid="btn-change-chain">
+      <IconButton
+        size="small"
+        disabled={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
+        onClick={onClick}
+        data-testid="btn-change-chain"
+      >
         {selectedNetwork && <ChainSwitcherIcon chain={selectedNetwork} />}
         {options.length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
@@ -86,12 +90,7 @@ export const ChainSwitcher = <TChainId extends number>({
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList<TChainId>
-              showTestnets={showTestnets}
-              onChange={onChange}
-              options={options}
-              selectedNetwork={selectedNetwork}
-            />
+            <ChainList<TChainId> showTestnets={showTestnets} options={options} selectedNetwork={selectedNetwork} />
           )}
         </ModalDialog>
       )}

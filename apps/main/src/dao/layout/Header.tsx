@@ -1,11 +1,8 @@
-import { useRouter } from 'next/navigation'
-import { type RefObject, useCallback, useRef } from 'react'
+import { type RefObject, useRef } from 'react'
 import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
-import networks, { visibleNetworksList } from '@/dao/networks'
+import { visibleNetworksList } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { ChainId, type CurveApi } from '@/dao/types/dao.types'
-import { getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
-import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { ChainId } from '@/dao/types/dao.types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
@@ -22,30 +19,16 @@ export const Header = ({
   chainId: ChainId
 }) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
-  const { connectState } = useConnection<CurveApi>()
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   return (
-    <NewHeader<ChainId>
+    <NewHeader
+      chainId={chainId}
       networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="dao"
       routes={APP_LINK.dao.routes}
-      ChainProps={{
-        options: visibleNetworksList,
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        chainId,
-        onChange: useCallback(
-          (selectedChainId: ChainId) => {
-            if (chainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              push(getPath({ network }, `/${getRestFullPathname()}`))
-            }
-          },
-          [chainId, push],
-        ),
-      }}
+      chains={visibleNetworksList}
       globalAlertRef={globalAlertRef}
       height={useHeaderHeight(bannerHeight)}
       sections={sections}

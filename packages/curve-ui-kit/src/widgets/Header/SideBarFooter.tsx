@@ -15,7 +15,7 @@ import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 
 const backgroundColor = 'background.paper'
 
-export const SideBarFooter = () => {
+export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => {
   const theme = useUserProfileStore((state) => state.theme)
   const setTheme = useUserProfileStore((state) => state.setTheme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -33,7 +33,7 @@ export const SideBarFooter = () => {
         })}
       >
         <Box display="flex" paddingX={4} marginTop={4}>
-          <ConnectWalletIndicator sx={{ flexGrow: 1 }} />
+          <ConnectWalletIndicator sx={{ flexGrow: 1 }} onConnect={onConnect} />
         </Box>
 
         <Accordion sx={{ backgroundColor }} disableGutters>
