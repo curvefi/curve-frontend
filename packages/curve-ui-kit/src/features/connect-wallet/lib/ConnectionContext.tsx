@@ -1,7 +1,9 @@
+'use client'
 import { type Eip1193Provider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
-import { useSwitchChain, useChainId } from 'wagmi'
-import { useWallet, type Wallet } from '@ui-kit/features/connect-wallet'
+import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { type Wallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet/lib/useWallet'
 import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
@@ -79,7 +81,7 @@ let mutexKey: any | null = null
  * 4. If no other operation is in progress, it executes the function and cleans up when done
  *
  * Primary reason for this function is to avoid simultaneous CurveJS library instantiations,
- * which is not only unnecessary, it is also not supported and can cause unintentional side-effects like
+ * which is not only unnecessary, it is also not supported and can cause unintentional side effects like
  * duplicate mint markets for crvUSD.
  *
  * @param fn - The function to execute with mutex protection
@@ -132,11 +134,11 @@ export const ConnectionProvider = <
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
   const { switchChainAsync } = useSwitchChain()
   const walletChainId = useChainId()
-
-  // todo: replace with actual hooks like useAccount and the provider from useWallet
-  const { wallet } = useWallet.getState()
+  const { isReconnecting } = useAccount()
+  const { wallet } = useWallet()
 
   useEffect(() => {
+    if (isReconnecting) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
 
@@ -182,7 +184,7 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet, walletChainId])
+  }, [isReconnecting, chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet, walletChainId])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet

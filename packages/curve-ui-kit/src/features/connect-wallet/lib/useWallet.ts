@@ -1,7 +1,6 @@
-import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { BrowserProvider } from 'ethers'
 import { useCallback, useMemo } from 'react'
-import type { Address } from 'viem'
-import { useAccount, useConnect, useConnectorClient, useDisconnect, useEnsName } from 'wagmi'
+import { useConnect, useConnectorClient, useDisconnect } from 'wagmi'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Wallet } from './types'
 import { connectors } from './wagmi/connectors'
@@ -15,42 +14,22 @@ const state: {
   wallet: null,
 }
 
-export const createWallet = ({
-  chainId,
-  provider,
-  address,
-  ensName,
-}: {
-  chainId: number
-  provider?: Eip1193Provider
-  address: Address
-  ensName?: string | null
-}): Wallet => ({
-  provider,
-  account: { address, ...(ensName && { ensName }) },
-  chainId,
-})
-
 const useWallet = () => {
   // Dunno why but it was a global and needs to be a global. Can this be a ref?
   const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
-
-  const { address } = useAccount()
-  const { data: ensName } = useEnsName({ address })
   const { data: client } = useConnectorClient()
 
   const wallet =
     useMemo(
       () =>
-        client?.transport?.request &&
-        createWallet({
-          chainId: client.chain.id,
+        client?.transport.request && {
           provider: { request: client.transport.request },
-          address: client.account.address,
-          ensName,
-        }),
-      [client, ensName],
+          // no ensName in account, resolving ens triggers re-initialization of the app. Value didn't seem to be used
+          account: { address: client.account.address },
+          chainId: client.chain.id,
+        },
+      [client?.account.address, client?.chain.id, client?.transport.request],
     ) ?? null
 
   // important: use the async functions so we can properly handle the promise failures
@@ -97,6 +76,7 @@ const useWallet = () => {
   }, [wallet])
 
   return {
+    wallet,
     connect: connectWagmi,
     disconnect,
     provider: browserProvider,
