@@ -1,6 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import sortBy from 'lodash/sortBy'
-import { ChainId, NetworkEnum, NetworkConfig } from '@/lend/types/lend.types'
+import { ChainId, NetworkConfig, NetworkEnum } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -76,6 +76,7 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
       mapper.selectNetworkList.push({
         label: networkConfig.name,
         chainId,
+        networkId: networkConfig.networkId,
         src: networkConfig.logoSrc,
         srcDark: networkConfig.logoSrcDark,
         isTestnet: networkConfig.isTestnet,

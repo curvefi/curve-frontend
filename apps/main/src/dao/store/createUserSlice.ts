@@ -15,7 +15,7 @@ import {
   UserProposalVotesSortBy,
   type Wallet,
 } from '@/dao/types/dao.types'
-import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -106,7 +106,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: Wallet) => {
-      const userAddress = getWalletSignerAddress(wallet)!
+      const userAddress = wallet.account.address
 
       try {
         const veCRV = await curve.dao.userVeCrv(userAddress)
@@ -118,7 +118,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       get()[sliceKey].setStateByKeys({
         userAddress: userAddress.toLowerCase(),
-        userEns: getWalletSignerEns(wallet),
+        userEns: wallet.account?.ensName,
         snapshotVeCrvMapper: {},
       })
     },
