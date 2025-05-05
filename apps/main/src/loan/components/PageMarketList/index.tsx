@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import TableHead from '@/loan/components/PageMarketList/components/TableHead/TableHead'
 import TableHeadMobile from '@/loan/components/PageMarketList/components/TableHead/TableHeadMobile'
@@ -18,7 +18,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const CollateralList = (pageProps: PageCollateralList) => {
-  const { pageLoaded, rChainId, searchParams, updatePath } = pageProps
+  const { pageLoaded, rChainId, searchParams, onSearch } = pageProps
 
   const titleMapper = useTitleMapper()
 
@@ -50,13 +50,6 @@ const CollateralList = (pageProps: PageCollateralList) => {
     [activeKey, prevActiveKey, resultCached, results],
   )
 
-  const updateFormValues = useCallback(
-    (shouldRefetch?: boolean) => {
-      void setFormValues(rChainId, pageLoaded ? curve : null, shouldRefetch)
-    },
-    [setFormValues, rChainId, pageLoaded, curve],
-  )
-
   // fetch partial user loan details
   const someLoanExists = !!useMemo(
     () =>
@@ -81,8 +74,9 @@ const CollateralList = (pageProps: PageCollateralList) => {
   )
 
   useEffect(() => {
-    if (pageLoaded && isPageVisible) updateFormValues(!initialLoaded)
-  }, [pageLoaded, isPageVisible, initialLoaded, updateFormValues])
+    if (pageLoaded && isPageVisible)
+      void setFormValues(rChainId, pageLoaded ? curve : null, searchParams, !initialLoaded)
+  }, [pageLoaded, isPageVisible, initialLoaded, setFormValues, rChainId, curve, searchParams])
 
   usePageVisibleInterval(
     () => curve && collateralDatas && void fetchLoansDetails(curve, collateralDatas),
@@ -119,12 +113,13 @@ const CollateralList = (pageProps: PageCollateralList) => {
             someLoanExists={someLoanExists}
             tableLabels={tableLabels}
             titleMapper={titleMapper}
-            updatePath={updatePath}
+            onSearch={onSearch}
+            searchParams={searchParams}
           />
         )}
         <Tbody $borderBottom>
           {formStatus.noResult ? (
-            <TableRowNoResult colSpan={colSpan} updatePath={updatePath} />
+            <TableRowNoResult colSpan={colSpan} onSearch={onSearch} searchParams={searchParams} />
           ) : parsedResult ? (
             parsedResult.map((collateralId: string) => (
               <TableRowResult

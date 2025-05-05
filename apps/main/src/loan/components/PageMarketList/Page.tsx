@@ -1,6 +1,6 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import TableStats from '@/loan/components/PageMarketList/components/TableStats'
 import CollateralList from '@/loan/components/PageMarketList/index'
@@ -42,22 +42,25 @@ const Page = (params: CollateralUrlParams) => {
     setStateByKey('initialLoaded', false)
   }, [setStateByKey])
 
-  const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
-    const { searchText, sortBy, sortByOrder } = {
-      ...parsedSearchParams,
-      ...updatedSearchParams,
-    }
+  const onSearch = useCallback(
+    (updatedSearchParams: Partial<SearchParams>) => {
+      const { searchText, sortBy, sortByOrder } = {
+        ...parsedSearchParams,
+        ...updatedSearchParams,
+      }
 
-    const searchPath = new URLSearchParams(
-      [
-        [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
-        [SEARCH.sortBy, sortBy && sortBy !== TITLE.totalBorrowed ? sortBy : ''],
-        [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
-      ].filter(([, v]) => v),
-    ).toString()
+      const searchPath = new URLSearchParams(
+        [
+          [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+          [SEARCH.sortBy, sortBy && sortBy !== TITLE.totalBorrowed ? sortBy : ''],
+          [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+        ].filter(([, v]) => v),
+      ).toString()
 
-    push(getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`))
-  }
+      push(getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`))
+    },
+    [params, parsedSearchParams, push],
+  )
 
   useEffect(() => {
     if (!pageLoaded) return
@@ -68,7 +71,6 @@ const Page = (params: CollateralUrlParams) => {
       searchText: decodeURIComponent(searchParams?.get(SEARCH.search) || ''),
     } as SearchParams
 
-    setStateByKey('searchParams', parsedSearchParams)
     setParsedSearchParams(parsedSearchParams)
     setLoaded(true)
   }, [pageLoaded, searchParams, setStateByKey])
@@ -87,7 +89,7 @@ const Page = (params: CollateralUrlParams) => {
                 searchParams={parsedSearchParams}
                 searchTermMapper={searchTermMapper}
                 titleMapper={titleMapper}
-                updatePath={updatePath}
+                onSearch={onSearch}
               />
             )}
           </Content>
