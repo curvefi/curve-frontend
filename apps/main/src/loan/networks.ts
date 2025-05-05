@@ -1,6 +1,6 @@
 import sortBy from 'lodash/sortBy'
 import curvejsApi from '@/loan/lib/apiCrvusd'
-import { ChainId, NetworkEnum, NetworkConfig } from '@/loan/types/loan.types'
+import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
 
@@ -29,6 +29,7 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
       mapper.selectNetworkList.push({
         label: networkConfig.name,
         chainId,
+        networkId: networkConfig.networkId,
         src: networkConfig.logoSrc,
         srcDark: networkConfig.logoSrcDark,
         isTestnet: networkConfig.isTestnet,
