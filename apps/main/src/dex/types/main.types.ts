@@ -23,7 +23,7 @@ export type PoolUrlParams = NetworkUrlParams & { pool: string; formType: [] | [R
 export type CrvLockerUrlParams = NetworkUrlParams & { formType: [] | [RFormType] }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
-export interface NetworkConfig extends BaseConfig {
+export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   isLite: boolean
   isCrvRewardsEnabled: boolean
   useApi: boolean

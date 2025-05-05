@@ -1,60 +1,37 @@
-import { useRouter } from 'next/navigation'
-import { useCallback, useRef } from 'react'
-import { CONNECT_STAGE } from '@/dao/constants'
+import { type RefObject, useRef } from 'react'
 import useLayoutHeight from '@/dao/hooks/useLayoutHeight'
-import networks, { visibleNetworksList } from '@/dao/networks'
+import { visibleNetworksList } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { ChainId, type CurveApi } from '@/dao/types/dao.types'
-import { getNetworkFromUrl, getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
-import { getWalletSignerAddress, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
+import { ChainId } from '@/dao/types/dao.types'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
-
-export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useWallet()
+export const Header = ({
+  sections,
+  chainId,
+  globalAlertRef,
+  networkId,
+}: {
+  sections: NavigationSection[]
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkId: string
+  chainId: ChainId
+}) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
-
-  const { rChainId, rNetwork } = getNetworkFromUrl()
-
-  const { connectState } = useConnection<CurveApi>()
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   return (
-    <NewHeader<ChainId>
-      networkName={rNetwork}
+    <NewHeader
+      chainId={chainId}
+      networkId={networkId}
       mainNavRef={mainNavRef}
       currentMenu="dao"
       routes={APP_LINK.dao.routes}
-      ChainProps={{
-        options: visibleNetworksList,
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        chainId: rChainId,
-        onChange: useCallback(
-          (selectedChainId: ChainId) => {
-            if (rChainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              push(getPath({ network }, `/${getRestFullPathname()}`))
-            }
-          },
-          [rChainId, push],
-        ),
-      }}
-      WalletProps={{
-        walletAddress: getWalletSignerAddress(wallet),
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`,
-      }}
-      BannerProps={BannerProps}
+      chains={visibleNetworksList}
+      globalAlertRef={globalAlertRef}
       height={useHeaderHeight(bannerHeight)}
       sections={sections}
     />
   )
 }
-
-export default Header

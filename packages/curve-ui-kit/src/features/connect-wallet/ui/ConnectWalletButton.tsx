@@ -1,15 +1,8 @@
-import Button from '@mui/material/Button'
-import type { SxProps, Theme } from '@mui/material/styles'
+import Button, { type ButtonProps } from '@mui/material/Button'
+import { t } from '@ui-kit/lib/i18n'
 
-export type ConnectWalletButtonProps = {
-  onConnectWallet: () => void
-  label: string
-  disabled?: boolean
-  sx?: SxProps<Theme>
-}
-
-export const ConnectWalletButton = ({ onConnectWallet, label, ...props }: ConnectWalletButtonProps) => (
-  <Button size="small" color="primary" onClick={onConnectWallet} data-testid="navigation-connect-wallet" {...props}>
-    {label}
+export const ConnectWalletButton = (props: ButtonProps) => (
+  <Button size="small" color="primary" data-testid="navigation-connect-wallet" {...props}>
+    {t`Connect Wallet`}
   </Button>
 )

@@ -1,27 +1,27 @@
-import type { SetOptional } from 'type-fest'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
-import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletButton'
+import type { SxProps, Theme } from '@mui/material'
+import { CONNECT_STAGE, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectedWalletLabel } from './ConnectedWalletLabel'
+import { ConnectWalletButton } from './ConnectWalletButton'
 
-export type ConnectWalletIndicatorProps = SetOptional<ConnectWalletButtonProps, 'onConnectWallet'> &
-  SetOptional<ConnectedWalletLabelProps, 'walletAddress' | 'onDisconnectWallet'>
-
-export const ConnectWalletIndicator = ({
-  walletAddress,
-  label,
-  // todo: get rid of these props after apps migrated
-  onConnectWallet,
-  onDisconnectWallet,
-  ...props
-}: ConnectWalletIndicatorProps) => {
+export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps<Theme>; onConnect?: () => void }) => {
   const { signerAddress, connect, disconnect, wallet } = useWallet()
+  const { connectState } = useConnection()
+  const loading = isLoading(connectState, CONNECT_STAGE.CONNECT_WALLET)
   return wallet && signerAddress ? (
     <ConnectedWalletLabel
-      walletAddress={walletAddress ?? signerAddress}
-      onDisconnectWallet={() => (onDisconnectWallet ? onDisconnectWallet() : disconnect({ label: wallet.label }))}
-      {...props}
+      walletAddress={signerAddress}
+      onClick={() => disconnect({ label: wallet.label })}
+      loading={loading}
+      sx={sx}
     />
   ) : (
-    <ConnectWalletButton label={label} onConnectWallet={() => (onConnectWallet ?? connect)()} {...props} />
+    <ConnectWalletButton
+      onClick={() => {
+        onConnect?.()
+        return connect()
+      }}
+      loading={loading}
+      sx={sx}
+    />
   )
 }

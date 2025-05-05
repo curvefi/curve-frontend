@@ -1,52 +1,47 @@
-import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useRef } from 'react'
-import { CONNECT_STAGE, ROUTE } from '@/dex/constants'
+import { type RefObject, useMemo, useRef } from 'react'
+import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
-import { getPath, useNetworkFromUrl, useRestPartialPathname } from '@/dex/utils/utilsRouter'
-import { FORMAT_OPTIONS, formatNumber, isLoading } from '@ui/utils'
-import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import { type CurveApi } from '@/dex/types/main.types'
+import { useChainId } from '@/dex/utils/utilsRouter'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
-import { GlobalBannerProps } from '@ui-kit/shared/ui/GlobalBanner'
-import { useApiStore } from '@ui-kit/shared/useApiStore'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
+type HeaderProps = {
+  sections: NavigationSection[]
+  globalAlertRef: RefObject<HTMLDivElement | null>
+  networkId: string
+}
 
 const QuickSwap = () => t`Quickswap`
-export const Header = ({ sections, BannerProps }: HeaderProps) => {
-  const { wallet } = useWallet()
+export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { push } = useRouter()
+  const { lib: curve = {} } = useConnection<CurveApi>()
+  const rChainId = useChainId(networkId)
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const chainId = useApiStore((state) => state.curve?.chainId)
-  const connectState = useStore((state) => state.connectState)
-  const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const updateConnectState = useStore((state) => state.updateConnectState)
+  const hasRouter = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasRouter)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
-
-  const { data: tvlTotal } = useAppStatsTvl({ chainId })
-  const { data: volumeTotal } = useAppStatsVolume({ chainId })
-
-  const { rChainId, rNetwork } = useNetworkFromUrl()
-  const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
+  const { data: tvlTotal } = useAppStatsTvl(curve)
+  const { data: volumeTotal } = useAppStatsVolume(curve)
+
   const network = networks[rChainId]
-  const restPartialPathname = useRestPartialPathname()
 
   return (
-    <NewHeader<ChainId>
-      networkName={rNetwork}
+    <NewHeader
+      networkId={networkId}
+      chainId={rChainId}
       mainNavRef={mainNavRef}
       currentMenu="dex"
       isLite={network?.isLite}
@@ -65,34 +60,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
         ],
         [hasRouter, network, routerCached],
       )}
-      ChainProps={{
-        options: visibleNetworksList,
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        chainId: rChainId,
-        onChange: useCallback(
-          (selectedChainId: ChainId) => {
-            if (rChainId !== selectedChainId) {
-              const network = networks[selectedChainId as ChainId].id
-              push(getPath({ network }, `/${restPartialPathname}`))
-              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
-            }
-          },
-          [rChainId, networks, push, restPartialPathname, updateConnectState],
-        ),
-      }}
-      WalletProps={{
-        onConnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
-          [updateConnectState],
-        ),
-        onDisconnectWallet: useCallback(
-          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
-          [updateConnectState],
-        ),
-        walletAddress: getWalletSignerAddress(wallet),
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`,
-      }}
+      chains={visibleNetworksList}
       appStats={[
         {
           label: t`Total Deposits`,
@@ -110,7 +78,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
       ]}
       sections={sections}
       height={useHeaderHeight(bannerHeight)}
-      BannerProps={BannerProps}
+      globalAlertRef={globalAlertRef}
     />
   )
 }

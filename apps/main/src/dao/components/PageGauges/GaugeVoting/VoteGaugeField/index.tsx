@@ -25,9 +25,8 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
   const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
     chainId: Chain.Ethereum,
-    gaugeAddress: userGaugeVoteData?.gaugeAddress ?? '',
-    userAddress: userAddress ?? '',
-    enabled: true,
+    gaugeAddress: userGaugeVoteData?.gaugeAddress,
+    userAddress,
   })
   const { userPower, gaugeAddress } = userGaugeVoteData
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true

@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import type { Order, SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 import { TITLE } from '@/loan/constants'
-import useStore from '@/loan/store/useStore'
 import { TitleKey, TitleMapper } from '@/loan/types/loan.types'
 import { Th, Thead, TheadSortButton } from '@ui/Table'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
@@ -11,18 +10,17 @@ const TableHead = ({
   someLoanExists,
   tableLabels,
   titleMapper,
-  updatePath,
+  onSearch,
+  searchParams,
 }: {
   someLoanExists: boolean
   tableLabels: TableLabel[]
   titleMapper: TitleMapper
-  updatePath: (updatedSearchParams: Partial<SearchParams>) => void
+  onSearch: (updatedSearchParams: Partial<SearchParams>) => void
+  searchParams: SearchParams
 }) => {
-  const searchParams = useStore((state) => state.collateralList.searchParams)
-
-  const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
-    updatePath({ sortBy: sortBy as TitleKey, sortByOrder })
-  }
+  const handleBtnClickSort = (sortBy: string, sortByOrder: Order) =>
+    onSearch({ sortBy: sortBy as TitleKey, sortByOrder })
 
   const theadBtnProps: Omit<TheadSortButtonProps<TitleKey>, 'loading' | 'sortIdKey'> = {
     ...searchParams,

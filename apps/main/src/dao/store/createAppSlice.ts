@@ -28,7 +28,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: CurveApi, prevApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(api: CurveApi | null, prevApi: CurveApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
@@ -75,20 +75,24 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   },
 
   hydrate: async (api, prevApi, wallet) => {
-    const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
+    if (!api) return
+
+    const isNetworkSwitched = prevApi?.chainId != api.chainId
 
     log('Hydrating DAO', api?.chainId, {
       wallet: wallet?.chains[0]?.id ?? '',
       isNetworkSwitched,
     })
 
-    if (isNetworkSwitched) {
-      get().gas.resetState()
-    }
-
-    if (!prevApi || isNetworkSwitched) {
-      void get().gas.fetchGasInfo(api)
-    }
+    const { usdRates, user, gas, gauges } = get()
+    if (isNetworkSwitched) gas.resetState()
+    await Promise.all([
+      api && isNetworkSwitched && gas.fetchGasInfo(api),
+      api && wallet && user.updateUserData(api, wallet),
+      api && usdRates.fetchAllStoredUsdRates(api),
+      gauges.getGauges(),
+      gauges.getGaugesData(),
+    ])
 
     log('Hydrating DAO - Complete')
   },
