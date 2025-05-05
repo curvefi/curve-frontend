@@ -62,8 +62,7 @@ const Page = (params: NetworkUrlParams) => {
 
   useEffect(() => {
     setStateByKey('initialLoaded', false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [setStateByKey])
 
   const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
     const { filterKey, filterTypeKey, hideSmallMarkets, searchText, sortBy, sortByOrder } = {
@@ -86,26 +85,21 @@ const Page = (params: NetworkUrlParams) => {
   }
 
   useEffect(() => {
-    setLoaded(false)
+    if (isLoadingApi) {
+      setLoaded(false)
+      return
+    }
 
-    if (isLoadingApi) return
-
-    const hideSmallMarkets = searchParams?.get(SEARCH.hideSmallMarkets) || 'true'
-
-    const parsedSearchParams = {
+    setParsedSearchParams({
       filterKey: searchParams?.get(SEARCH.filter) || 'all',
       filterTypeKey: searchParams?.get(SEARCH.type) || 'borrow',
-      hideSmallMarkets: hideSmallMarkets === 'true',
+      hideSmallMarkets: searchParams?.get(SEARCH.hideSmallMarkets) !== 'false',
       sortBy: searchParams?.get(SEARCH.sortBy) || '',
       sortByOrder: searchParams?.get(SEARCH.order) || 'desc',
       searchText: decodeURIComponent(searchParams?.get(SEARCH.search) || ''),
-    } as SearchParams
-
-    setStateByKey('searchParams', parsedSearchParams)
-    setParsedSearchParams(parsedSearchParams)
+    } as SearchParams)
     setLoaded(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, searchParams])
+  }, [isLoadingApi, searchParams, setStateByKey])
 
   return (
     <>

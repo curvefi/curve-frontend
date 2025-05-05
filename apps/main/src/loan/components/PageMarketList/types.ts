@@ -35,7 +35,7 @@ export type PageCollateralList = {
   searchParams: SearchParams
   searchTermMapper: SearchTermMapper
   titleMapper: TitleMapper
-  updatePath(updatedSearchParams: Partial<SearchParams>): void
+  onSearch(updatedSearchParams: Partial<SearchParams>): void
 }
 
 export type TableRowProps = {
