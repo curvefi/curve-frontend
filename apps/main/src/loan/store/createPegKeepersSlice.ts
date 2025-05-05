@@ -82,16 +82,11 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
             }
 
             // Use Promise.allSettled to run calls concurrently but handle individual failures
-            const settledResults = await Promise.allSettled([
+            const [debtResult, profitResult, ceilingResult] = await Promise.allSettled([
               contract.debt(),
               contract.estimate_caller_profit(),
               debtCeilingContract ? debtCeilingContract['debt_ceiling'](pegKeeperAddress) : Promise.resolve(0n),
             ])
-
-            // Process results individually
-            const debtResult = settledResults[0]
-            const profitResult = settledResults[1]
-            const ceilingResult = settledResults[2]
 
             const debtValue = debtResult.status === 'fulfilled' ? ethers.formatEther(debtResult.value) : '-'
             const profitValue = profitResult.status === 'fulfilled' ? ethers.formatEther(profitResult.value) : '-'
