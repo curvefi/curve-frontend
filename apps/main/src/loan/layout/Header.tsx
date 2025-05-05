@@ -1,16 +1,15 @@
-import { useParams, useRouter } from 'next/navigation'
-import { type RefObject, useCallback, useMemo, useRef } from 'react'
-import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/loan/constants'
+import { useParams } from 'next/navigation'
+import { type RefObject, useMemo, useRef } from 'react'
+import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { useStablecoinConnection } from '@/loan/temp-lib'
-import { ChainId, CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
-import { getPath, getRestFullPathname, useChainId } from '@/loan/utils/utilsRouter'
+import { CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
+import { useChainId } from '@/loan/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
-import { isLoading } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -25,11 +24,10 @@ type HeaderProps = {
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const params = useParams() as UrlParams
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { push } = useRouter()
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const rChainId = useChainId(params)
-  const { lib, connectState } = useStablecoinConnection()
+  const { lib } = useStablecoinConnection()
 
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
@@ -41,20 +39,13 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId: lib?.chainId })
 
   return (
-    <NewHeader<ChainId>
+    <NewHeader
       networkId={networkId}
+      chainId={rChainId}
       mainNavRef={mainNavRef}
       currentMenu="crvusd"
       routes={APP_LINK.crvusd.routes}
-      ChainProps={{
-        options: visibleNetworksList,
-        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        chainId: rChainId,
-        onChange: useCallback(
-          (selectedChainId: ChainId) => rChainId !== selectedChainId && push(getPath(params, getRestFullPathname())),
-          [rChainId, push, params],
-        ),
-      }}
+      chains={visibleNetworksList}
       appStats={[
         {
           label: 'TVL',

@@ -1,10 +1,13 @@
 import groupBy from 'lodash/groupBy'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { t } from '@ui-kit/lib/i18n'
+import { AppNames } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
@@ -16,17 +19,27 @@ enum ChainType {
   main = 'main',
 }
 
+/**
+ * Returns a new pathname with a different network
+ * @param pathname The current pathname
+ * @param networkId The new network ID
+ * @returns The new pathname
+ */
+export function getNetworkPathname(pathname: string, networkId: string) {
+  const [, appName = AppNames[0], , ...rest] = pathname.split('/')
+  return ['', appName, networkId, ...rest].join('/')
+}
+
 export function ChainList<TChainId extends number>({
   options,
-  onChange,
   showTestnets,
   selectedNetwork,
 }: {
-  onChange: (chainId: TChainId) => void
   options: ChainOption<TChainId>[]
   showTestnets: boolean
   selectedNetwork: ChainOption<TChainId>
 }) {
+  const pathname = usePathname() || ''
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
@@ -60,11 +73,12 @@ export function ChainList<TChainId extends number>({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {chains.map((chain) => (
-                    <MenuItem
+                    <MenuItem<TChainId, typeof Link>
                       data-testid={`menu-item-chain-${chain.chainId}`}
                       key={chain.chainId}
                       value={chain.chainId}
-                      onSelected={onChange}
+                      component={Link}
+                      href={getNetworkPathname(pathname, chain.networkId)}
                       isSelected={chain.chainId == selectedNetwork?.chainId}
                       icon={<ChainSwitcherIcon chain={chain} size={36} />}
                       label={chain.label}

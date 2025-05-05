@@ -1,6 +1,8 @@
 import { type ReactNode, useRef } from 'react'
+import { type ElementType } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import MuiMenuItem, { type MenuItemProps as MuiMenuItemProps } from '@mui/material/MenuItem'
+import type { MenuItemTypeMap } from '@mui/material/MenuItem/MenuItem'
 import Typography from '@mui/material/Typography'
 import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
@@ -12,14 +14,14 @@ export type Item<T> = {
   icon: ReactNode
 }
 
-export type MenuItemProps<T> = Item<T> & {
+export type MenuItemProps<T, RootComponent extends ElementType> = Item<T> & {
   labelVariant?: TypographyVariantKey
-  onSelected: (value: T) => void
+  onSelected?: (value: T) => void
   isSelected?: boolean
   isLoading?: boolean
-} & Omit<MuiMenuItemProps, 'onChange'>
+} & Omit<MuiMenuItemProps<RootComponent>, 'onChange'>
 
-export function MenuItem<T>({
+export function MenuItem<T, C extends ElementType = MenuItemTypeMap['defaultComponent']>({
   label,
   value,
   onSelected,
@@ -28,11 +30,11 @@ export function MenuItem<T>({
   isLoading,
   labelVariant,
   ...props
-}: MenuItemProps<T>) {
+}: MenuItemProps<T, C>) {
   const ref = useRef<HTMLLIElement | null>(null)
   return (
     <InvertOnHover hoverEl={ref.current}>
-      <MuiMenuItem selected={isSelected} tabIndex={0} {...props} onClick={() => onSelected(value)}>
+      <MuiMenuItem selected={isSelected} tabIndex={0} {...props} onClick={() => onSelected?.(value)}>
         {icon}
         <Typography sx={{ flexGrow: 1 }} variant={labelVariant ?? 'headingXsBold'}>
           {label}

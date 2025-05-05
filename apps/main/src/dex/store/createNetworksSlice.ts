@@ -56,6 +56,7 @@ const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State
       .map((networkConfig) => ({
         label: networkConfig.name,
         chainId: networkConfig.chainId,
+        networkId: networkConfig.networkId,
         src: networkConfig.logoSrc,
         srcDark: networkConfig.logoSrcDark,
         isTestnet: networkConfig.isTestnet,
