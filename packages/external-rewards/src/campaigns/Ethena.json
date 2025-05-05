@@ -244,6 +244,18 @@
       "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xAA00BF46394774938922E282f6C4B07F5059651F",
+      "network": "hyperliquid",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
