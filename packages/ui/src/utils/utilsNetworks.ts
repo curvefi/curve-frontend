@@ -1,4 +1,4 @@
-import { Chain } from 'curve-ui-kit/src/utils/network'
+import { Chain, ChainIds } from 'curve-ui-kit/src/utils/network'
 import { ethers } from 'ethers'
 import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 
@@ -21,7 +21,7 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   orgUIPath: '',
 }
 
-export const NETWORK_BASE_CONFIG: Record<number, any> = {
+export const NETWORK_BASE_CONFIG = {
   [Chain.Ethereum]: {
     id: 'ethereum',
     chainId: Chain.Ethereum,
@@ -170,7 +170,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     nativeCurrencySymbol: 'S',
     explorerUrl: 'https://sonicscan.org/',
   },
-}
+} satisfies { [key in Chain]: { chainId: key, [_: string]: any } }
 
 export type BaseConfig<TId = string> = {
   id: TId
@@ -214,7 +214,7 @@ export function getBaseNetworksConfig<T>(chainId: number, networkConfig: any): B
     isTestnet,
     scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
     scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
-    ...(chainId === Chain.Hyperliquid // Hyperliquid explorer doesn't support the /token syntax
+    ...(chainId === ChainIds.Hyperliquid // explorer doesn't support the /token syntax
       ? { scanTokenPath: (hash: string) => `${explorerUrl}address/${hash}` }
       : { scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}` }),
   }
