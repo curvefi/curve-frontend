@@ -13,9 +13,9 @@ import {
   UserLocksSortBy,
   UserMapper,
   UserProposalVotesSortBy,
+  type Wallet,
 } from '@/dao/types/dao.types'
-import { getWalletSignerAddress, getWalletSignerEns, useWallet } from '@ui-kit/features/connect-wallet'
-import type { WalletState } from '@web3-onboard/core'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -55,7 +55,7 @@ const sliceKey = 'user'
 // prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
-    updateUserData(curve: CurveApi, wallet: WalletState): void
+    updateUserData(curve: CurveApi, wallet: Wallet): void
     getUserEns(userAddress: string): Promise<void>
 
     setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
@@ -105,8 +105,8 @@ const DEFAULT_STATE: SliceState = {
 const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    updateUserData: async (curve: CurveApi, wallet: WalletState) => {
-      const userAddress = getWalletSignerAddress(wallet)!
+    updateUserData: async (curve: CurveApi, wallet: Wallet) => {
+      const userAddress = wallet.account.address
 
       try {
         const veCRV = await curve.dao.userVeCrv(userAddress)
@@ -118,7 +118,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       get()[sliceKey].setStateByKeys({
         userAddress: userAddress.toLowerCase(),
-        userEns: getWalletSignerEns(wallet),
+        userEns: wallet.account?.ensName,
         snapshotVeCrvMapper: {},
       })
     },

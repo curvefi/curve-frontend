@@ -298,7 +298,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
           invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
@@ -357,7 +357,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
           invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
@@ -417,7 +417,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
           invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
@@ -470,7 +470,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = getLend()

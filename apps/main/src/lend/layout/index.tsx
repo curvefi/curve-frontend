@@ -37,14 +37,11 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   }, [footerHeight])
 
   const sections = useMemo(() => getSections(params), [params])
+  const chainId = networksIdMapper[networkId]
+
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header
-        chainId={networksIdMapper[networkId]}
-        sections={sections}
-        globalAlertRef={globalAlertRef}
-        networkId={networkId}
-      />
+      <Header chainId={chainId} sections={sections} globalAlertRef={globalAlertRef} networkId={networkId} />
       <Main minHeight={minHeight}>{children}</Main>
       <Footer appName="lend" networkId={networkId} headerHeight={useHeaderHeight(bannerHeight)} />
     </Container>

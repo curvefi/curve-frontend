@@ -6,7 +6,8 @@ import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { WalletState } from '@web3-onboard/core'
+
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
@@ -258,7 +259,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type Order = 'asc' | 'desc'
-export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>

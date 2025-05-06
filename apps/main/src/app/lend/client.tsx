@@ -3,7 +3,7 @@ import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import GlobalStyle from '@/globalStyle'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/lend/layout'
 import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
@@ -11,12 +11,9 @@ import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import type { ChainId, UrlParams } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
-import { OverlayProvider } from '@react-aria/overlays'
-import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
@@ -91,24 +88,15 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [networkId, chainId, push])
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <OverlayProvider>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <ConnectionProvider
-                hydrate={hydrate}
-                initLib={helpers.initApi}
-                chainId={chainId}
-                onChainUnavailable={onChainUnavailable}
-              >
-                <Page>{children}</Page>
-              </ConnectionProvider>
-            </QueryProvider>
-          </OverlayProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <ConnectionProvider
+        hydrate={hydrate}
+        initLib={helpers.initApi}
+        chainId={chainId}
+        onChainUnavailable={onChainUnavailable}
+      >
+        <Page>{children}</Page>
+      </ConnectionProvider>
+    </ClientWrapper>
   )
 }

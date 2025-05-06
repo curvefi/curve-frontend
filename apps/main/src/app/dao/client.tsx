@@ -3,20 +3,16 @@ import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import { BaseLayout } from '@/dao/layout'
 import { helpers } from '@/dao/lib/curvejs'
 import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { ChainId, type UrlParams } from '@/dao/types/dao.types'
 import { getPath, getRestFullPathname } from '@/dao/utils'
-import GlobalStyle from '@/globalStyle'
-import { OverlayProvider } from '@react-aria/overlays'
 import { getPageWidthClassName } from '@ui/utils'
 import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
@@ -90,26 +86,17 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [network, chainId, push])
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <OverlayProvider>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <ConnectionProvider
-                hydrate={hydrate}
-                initLib={helpers.initCurveJs}
-                chainId={chainId}
-                onChainUnavailable={onChainUnavailable}
-              >
-                <BaseLayout networkId={network} chainId={chainId}>
-                  {children}
-                </BaseLayout>
-              </ConnectionProvider>
-            </QueryProvider>
-          </OverlayProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <ConnectionProvider
+        hydrate={hydrate}
+        initLib={helpers.initCurveJs}
+        chainId={chainId}
+        onChainUnavailable={onChainUnavailable}
+      >
+        <BaseLayout networkId={network} chainId={chainId}>
+          {children}
+        </BaseLayout>
+      </ConnectionProvider>
+    </ClientWrapper>
   )
 }

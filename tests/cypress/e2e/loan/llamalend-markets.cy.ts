@@ -200,7 +200,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="chip-${type}"]`).click()
     firstRow().contains(capitalize(type))
     cy.get(`[data-testid^="market-link-"]`).first().click()
-    cy.url().should('match', urlRegex, LOAD_TIMEOUT)
+    cy.url(LOAD_TIMEOUT).should('match', urlRegex)
   })
 
   it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {

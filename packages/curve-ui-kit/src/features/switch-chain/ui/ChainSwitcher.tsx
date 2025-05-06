@@ -7,7 +7,7 @@ import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -41,7 +41,7 @@ export const ChainSwitcher = <TChainId extends number>({
   const [isOpen, , close, toggle] = useSwitch()
   const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
-  const [showTestnets, setShowTestnets] = useLocalStorage<boolean>('showTestnets', false)
+  const [showTestnets, setShowTestnets] = useShowTestNets()
   const selectedNetwork = useMemo(() => options.find((o) => o.chainId === chainId) ?? options[0], [options, chainId])
 
   useEffect(() => () => close(), [chainId, close]) // close on chain change
