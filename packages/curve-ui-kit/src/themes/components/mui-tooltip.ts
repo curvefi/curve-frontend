@@ -1,5 +1,4 @@
-import type { Components } from '@mui/material/styles'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../basic-theme'
 import { getShadow } from '../basic-theme/shadows'
@@ -7,7 +6,10 @@ import type { DesignSystem } from '../design'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-export const defineMuiTooltip = (design: DesignSystem, typography: TypographyOptions): Components['MuiTooltip'] => ({
+export const defineMuiTooltip = (
+  design: DesignSystem,
+  typography: TypographyVariantsOptions,
+): Components['MuiTooltip'] => ({
   styleOverrides: {
     tooltip: {
       color: design.Text.TextColors.Secondary,

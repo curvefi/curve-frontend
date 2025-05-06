@@ -1,4 +1,5 @@
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
+import type { OnboardAPI } from '@web3-onboard/core'
 import * as onboard from '@web3-onboard/react'
 import {
   bitget,
@@ -19,7 +20,7 @@ import {
 export const initOnboard = (
   themeType: ThemeKey,
   networks: Record<number, { hex: string; symbol: string; name: string; rpcUrl: string }>,
-) =>
+): OnboardAPI =>
   onboard.init({
     wallets: [
       injected,

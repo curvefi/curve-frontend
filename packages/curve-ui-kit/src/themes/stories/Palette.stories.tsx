@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { StandardCSSProperties } from '@mui/system/styleFunctionSx/StandardCssProperties'
+import { StandardCSSProperties } from '@mui/system/styleFunctionSx'
 import type { Meta } from '@storybook/react'
 
 const PaletteStory = () => {
