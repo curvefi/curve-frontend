@@ -181,6 +181,19 @@ const lockCrv = {
       return resp
     }
   },
+  estGasWithdrawLockedCrv: async (curve: CurveApi, walletAddress: string) => {
+    log('estGasWithdrawLockedCrv', curve.chainId, walletAddress)
+    const resp = { estimatedGas: null as EstimatedGas, error: '' }
+
+    try {
+      resp.estimatedGas = await curve.boosting.estimateGas.withdrawLockedCrv()
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-est-gas-withdraw-locked-crv')
+      return resp
+    }
+  },
   withdrawLockedCrv: async (curve: CurveApi, provider: Provider, walletAddress: string) => {
     log('withdrawLockedCrv', curve.chainId)
     const resp = { walletAddress, hash: '', error: '' }

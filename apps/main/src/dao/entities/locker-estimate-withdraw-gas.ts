@@ -8,16 +8,25 @@ import { userValidationGroup } from '@ui-kit/lib/model/query/user-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { curvejsValidationGroup } from './validation/curvejs-validation'
 
-async function _fetchLockerVecrvInfo({ chainId, walletAddress }: ChainQuery<ChainId> & { walletAddress: Address }) {
+async function _fetchLockEstimateWithdrawGas({
+  chainId,
+  walletAddress,
+}: ChainQuery<ChainId> & { walletAddress: Address }) {
   const curve = requireLib<CurveApi>()
 
-  return (await lib.lockCrv.vecrvInfo(curve, walletAddress)).resp
+  const gasInfo = await lib.lockCrv.estGasWithdrawLockedCrv(curve, walletAddress)
+  const estimatedGasValue = gasInfo.estimatedGas
+
+  if (Array.isArray(estimatedGasValue)) {
+    return estimatedGasValue.length > 0 ? estimatedGasValue[0] : 0
+  }
+  return estimatedGasValue
 }
 
-export const { useQuery: useLockerVecrvInfo, invalidate: invalidateLockerVecrvInfo } = queryFactory({
+export const { useQuery: useLockEstimateWithdrawGas, invalidate: invalidateLockEstimateWithdrawGas } = queryFactory({
   queryKey: (params: ChainParams<ChainId> & { walletAddress: Address }) =>
-    ['locker-vecrv-info', { chainId: params.chainId }, { walletAddress: params.walletAddress }] as const,
-  queryFn: _fetchLockerVecrvInfo,
+    ['lock-estimate-withdraw-gas', { chainId: params.chainId }, { walletAddress: params.walletAddress }] as const,
+  queryFn: _fetchLockEstimateWithdrawGas,
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & { walletAddress: Address }) => {
     curvejsValidationGroup({ chainId: params.chainId })
     userValidationGroup({ userAddress: params.walletAddress })
