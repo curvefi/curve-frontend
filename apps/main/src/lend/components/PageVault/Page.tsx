@@ -30,12 +30,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const {
-    network: rNetwork,
-    market: rMarket,
-    formType: [rFormType = null],
-  } = params
-  const rChainId = networksIdMapper[rNetwork]
+  const rFormType = params.formType?.[0] ?? null
+  const rChainId = networksIdMapper[params.network]
+  const rMarket = params.market.toLowerCase()
 
   const { connect, provider } = useWallet()
   const { lib: api = null, connectState } = useConnection<Api>()

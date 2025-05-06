@@ -40,12 +40,9 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const Page = (params: MarketUrlParams) => {
   const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()
-  const {
-    network: rNetwork,
-    market: rMarket,
-    formType: [rFormType = null],
-  } = params
-  const rChainId = networksIdMapper[rNetwork]
+  const rMarket = params.market.toLowerCase()
+  const rChainId = networksIdMapper[params.network]
+  const rFormType = params.formType?.[0] ?? ''
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)

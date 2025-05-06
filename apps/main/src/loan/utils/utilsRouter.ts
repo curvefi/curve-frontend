@@ -7,7 +7,7 @@ import { Chain } from '@ui-kit/utils'
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('crvusd', network, route)
 
-export const getCollateralListPathname = (params: NetworkUrlParams) => getPath(params, `${ROUTE.PAGE_MARKETS}`)
+export const getCollateralListPathname = (params: NetworkUrlParams) => getPath(params, ROUTE.PAGE_MARKETS)
 
 export const useChainId = ({ network }: NetworkUrlParams): ChainId =>
   ({

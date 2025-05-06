@@ -40,7 +40,8 @@ const Page = (params: CollateralUrlParams) => {
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
-  const { collateralId: rCollateralId, formType: [rFormType] = [] } = params
+  const { collateralId, formType: [rFormType] = [] } = params
+  const rCollateralId = collateralId.toLowerCase()
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const isMdUp = useStore((state) => state.layout.isMdUp)

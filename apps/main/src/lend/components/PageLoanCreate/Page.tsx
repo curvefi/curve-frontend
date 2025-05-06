@@ -1,4 +1,5 @@
 'use client'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
@@ -11,7 +12,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { scrollToTop } from '@/lend/utils/helpers'
+import { getCollateralListPathname, scrollToTop } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   AppPageFormContainer,
@@ -34,15 +35,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const { network: rNetwork, market: rMarket } = params
-  const rChainId = networksIdMapper[rNetwork]
+  const rMarket = params.market.toLowerCase()
+  const rChainId = networksIdMapper[params.network]
   const rFormType = params.formType?.[0] ?? ''
 
-  const market = useOneWayMarket(rChainId, rMarket).data
+  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
   const [isLoaded, setLoaded] = useState(false)
+  const { push } = useRouter()
 
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -75,6 +77,13 @@ const Page = (params: MarketUrlParams) => {
     },
     [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
   )
+
+  useEffect(() => {
+    if (isSuccess && !market) {
+      console.warn(`Market ${rMarket} not found. Redirecting to market list.`)
+      push(getCollateralListPathname(params))
+    }
+  }, [isSuccess, market, params, push, rMarket])
 
   useEffect(() => {
     if (api && market && isPageVisible) void fetchInitial(api, market)
