@@ -4,7 +4,8 @@ import type curveApi from '@curvefi/api'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import type { Address } from '@ui-kit/utils'
-import type { WalletState } from '@web3-onboard/core'
+
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type PageWidthClassName =
   | 'page-wide'
@@ -32,7 +33,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
 }
 
 export type Provider = ethers.BrowserProvider
-export type Wallet = WalletState
 export type EstimatedGas = number | number[] | null
 export type GasInfo = {
   gasPrice: number | null

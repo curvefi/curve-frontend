@@ -2,19 +2,17 @@
 import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
-import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { useRef } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/dex/layout/default'
 import useStore from '@/dex/store/useStore'
 import { type ChainId, type UrlParams } from '@/dex/types/main.types'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
-import GlobalStyle from '@/globalStyle'
-import { OverlayProvider } from '@react-aria/overlays'
-import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
@@ -81,24 +79,15 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <OverlayProvider>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <ConnectionProvider
-                hydrate={hydrate}
-                initLib={initCurveJs}
-                chainId={chainId}
-                onChainUnavailable={onChainUnavailable}
-              >
-                <Page network={network}>{children}</Page>
-              </ConnectionProvider>
-            </QueryProvider>
-          </OverlayProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <ConnectionProvider
+        hydrate={hydrate}
+        initLib={initCurveJs}
+        chainId={chainId}
+        onChainUnavailable={onChainUnavailable}
+      >
+        <Page network={network}>{children}</Page>
+      </ConnectionProvider>
+    </ClientWrapper>
   )
 }

@@ -1,5 +1,5 @@
 import sortBy from 'lodash/sortBy'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { defaultNetworks, getNetworks } from '@/dex/lib/networks'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
@@ -18,14 +18,7 @@ type SliceState = {
 export type NetworksSlice = {
   networks: SliceState & {
     fetchNetworks(): Promise<Record<number, NetworkConfig>>
-    setNetworksIdMapper(networks: Networks): void
-    setVisibleNetworksList(networks: Networks): void
     setNetworkConfigs(curve: CurveApi): void
-
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
   }
 }
 
@@ -39,78 +32,64 @@ const DEFAULT_STATE: SliceState = {
 
 const sliceKey = 'networks'
 
-const createNetworksSlice = (set: SetState<State>, get: GetState<State>): NetworksSlice => ({
-  [sliceKey]: {
-    ...DEFAULT_STATE,
+const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): NetworksSlice => {
+  const setStateByActiveKey = <T>(key: StateKey, activeKey: string, value: T): void =>
+    get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
 
-    fetchNetworks: async () => {
-      try {
-        const sliceState = get()[sliceKey]
-        const networks = await getNetworks()
-        sliceState.setStateByKey('networks', networks)
-        sliceState.setNetworksIdMapper(networks)
-        sliceState.setVisibleNetworksList(networks)
-        return networks
-      } catch (error) {
-        console.error(error)
-        return defaultNetworks
-      }
-    },
-    setNetworksIdMapper: (networks) => {
-      const sliceState = get()[sliceKey]
+  const setStateByKey = <T>(key: StateKey, value: T): void => get().setAppStateByKey(sliceKey, key, value)
 
-      sliceState.setStateByKey(
-        'networksIdMapper',
-        Object.entries(networks).reduce(
-          (prev, [chainId, { networkId }]) => {
-            prev[networkId] = Number(chainId)
-            return prev
-          },
-          {} as Record<string, number>,
-        ),
-      )
-    },
-    setVisibleNetworksList: (networks) => {
-      const sliceState = get()[sliceKey]
+  const setNetworksIdMapper = (networks: Networks): void =>
+    setStateByKey(
+      'networksIdMapper',
+      Object.entries(networks).reduce(
+        (prev, [chainId, { networkId }]) => {
+          prev[networkId] = Number(chainId)
+          return prev
+        },
+        {} as Record<string, number>,
+      ),
+    )
 
-      const visibleNetworksList = Object.values(networks)
-        .filter((networkConfig) => networkConfig.showInSelectNetwork)
-        .map((networkConfig) => ({
-          label: networkConfig.name,
-          chainId: networkConfig.chainId,
-          networkId: networkConfig.networkId,
-          src: networkConfig.logoSrc,
-          srcDark: networkConfig.logoSrcDark,
-          isTestnet: networkConfig.isTestnet,
-        }))
+  const setVisibleNetworksList = (networks: Networks): void => {
+    const visibleNetworksList = Object.values(networks)
+      .filter((networkConfig) => networkConfig.showInSelectNetwork)
+      .map((networkConfig) => ({
+        label: networkConfig.name,
+        chainId: networkConfig.chainId,
+        networkId: networkConfig.networkId,
+        src: networkConfig.logoSrc,
+        srcDark: networkConfig.logoSrcDark,
+        isTestnet: networkConfig.isTestnet,
+      }))
 
-      sliceState.setStateByKey(
-        'visibleNetworksList',
-        sortBy(visibleNetworksList, (n) => n.label),
-      )
-    },
-    setNetworkConfigs: (curve: CurveApi) => {
-      const { networks, ...sliceState } = get()[sliceKey]
-      const { ALIASES, NATIVE_TOKEN } = curve.getNetworkConstants()
+    setStateByKey(
+      'visibleNetworksList',
+      sortBy(visibleNetworksList, (n) => n.label),
+    )
+  }
 
-      sliceState.setStateByActiveKey('nativeToken', curve.chainId.toString(), { ...NATIVE_TOKEN })
-      sliceState.setStateByActiveKey('aliases', curve.chainId.toString(), { ...ALIASES })
+  return {
+    [sliceKey]: {
+      ...DEFAULT_STATE,
+      fetchNetworks: async () => {
+        try {
+          const networks = await getNetworks()
+          setStateByKey('networks', networks)
+          setNetworksIdMapper(networks)
+          setVisibleNetworksList(networks)
+          return networks
+        } catch (error) {
+          console.error(error)
+          return defaultNetworks
+        }
+      },
+      setNetworkConfigs: (curve: CurveApi) => {
+        const { ALIASES, NATIVE_TOKEN } = curve.getNetworkConstants()
+        setStateByActiveKey('nativeToken', curve.chainId.toString(), { ...NATIVE_TOKEN })
+        setStateByActiveKey('aliases', curve.chainId.toString(), { ...ALIASES })
+      },
     },
-
-    // slice helpers
-    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
-    },
-    setStateByKey: <T>(key: StateKey, value: T) => {
-      get().setAppStateByKey(sliceKey, key, value)
-    },
-    setStateByKeys: (sliceState: Partial<SliceState>) => {
-      get().setAppStateByKeys(sliceKey, sliceState)
-    },
-    resetState: () => {
-      get().resetAppState(sliceKey, { ...DEFAULT_STATE })
-    },
-  },
-})
+  }
+}
 
 export default createNetworksSlice

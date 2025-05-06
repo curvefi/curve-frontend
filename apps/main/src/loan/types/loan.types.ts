@@ -8,7 +8,8 @@ import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { WalletState } from '@web3-onboard/core'
+
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type NetworkUrlParams = { network: INetworkName }
 type CollateralExtraParams = { collateralId: string; formType?: string[] }
@@ -153,7 +154,6 @@ export type UserWalletBalances = {
 }
 export type Theme = 'default' | 'dark' | 'chad'
 export type UsdRate = { [tokenAddress: string]: string | number }
-export type Wallet = WalletState
 
 export interface CollateralAlert extends TooltipProps {
   alertType: AlertType

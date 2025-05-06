@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { forwardRef, Ref } from 'react'
 import Box from '@mui/material/Box'
 import {
@@ -6,14 +5,15 @@ import {
   getWalletChainId,
   isFailure,
   useConnection,
-  useSetChain,
   useWallet,
+  useSetChain,
 } from '@ui-kit/features/connect-wallet'
-import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { isCypress } from '@ui-kit/utils'
 
 export type GlobalBannerProps = {
   networkId: string
@@ -28,28 +28,27 @@ const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
 export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   ({ networkId, chainId }, ref) => {
+    const [isBeta, setIsBeta] = useBetaFlag()
+    const showBetaBanner = isBeta && !isCypress
+
     const { wallet } = useWallet()
-    const [, setWalletChain] = useSetChain()
+    const setChain = useSetChain()
     const { connectState } = useConnection()
     const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
     const showSwitchNetworkMessage =
       (wallet && getWalletChainId(wallet) != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
-    const [isBeta, setIsBeta] = useLocalStorage<boolean>('beta')
+
     return (
-      (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || isBeta) && (
+      (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || showBetaBanner) && (
         <Box ref={ref}>
-          {isBeta && (
+          {showBetaBanner && (
             <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
               <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
             </Banner>
           )}
           {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
           {showSwitchNetworkMessage && (
-            <Banner
-              severity="warning"
-              buttonText={t`Change network`}
-              onClick={() => setWalletChain({ chainId: ethers.toQuantity(chainId) })}
-            >
+            <Banner severity="warning" buttonText={t`Change network`} onClick={() => setChain(chainId)}>
               {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
               <strong>{networkId}</strong>.{' '}
             </Banner>

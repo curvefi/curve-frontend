@@ -1,30 +1,23 @@
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { Address } from '@ui-kit/utils'
-import type { EIP1193Provider } from '@web3-onboard/common'
-import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
+import type { WalletState } from '@web3-onboard/core/dist/types'
+import { Wallet } from '../types'
 
-export function getWalletChainId(wallet: Wallet | undefined | null) {
-  const chainId = wallet?.chains[0].id
-  return chainId && Number(BigInt(chainId).toString())
-}
+// todo: inline the following functions
+export const getWalletChainId = (wallet: Wallet | undefined | null) => wallet?.chainId
 
 export const getWalletSignerAddress = (wallet: Wallet | undefined | null): Address | undefined =>
-  wallet?.accounts[0]?.address
+  wallet?.account?.address
 
-export const getWalletSignerEns = (wallet: Wallet | undefined | null): string | undefined =>
-  wallet?.accounts[0]?.ens?.name
+export const getWalletSignerEns = (wallet: Wallet | undefined | null): string | undefined => wallet?.account?.ensName
 
-export function getRpcProvider(wallet: Wallet): EIP1193Provider {
-  if ('isTrustWallet' in wallet.provider && window.ethereum) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum as any // todo: why do we need any here?
-  }
-  if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
-}
+export const convertOnboardWallet = ({ chains, provider, accounts: [account], label }: WalletState): Wallet => ({
+  chainId: Number(BigInt(chains[0].id).toString()),
+  provider,
+  account: { ensName: account.ens?.name, address: account.address },
+  label,
+})
 
 const timeout = (message: string, timeoutMs: number) =>
   new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs))

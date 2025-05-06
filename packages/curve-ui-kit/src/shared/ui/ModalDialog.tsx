@@ -18,6 +18,7 @@ export type ModalDialogProps = {
   onTransitionExited?: () => void
   titleAction?: ReactNode
   footer?: ReactNode
+  compact?: boolean
   sx?: SxProps<Theme>
 }
 
@@ -29,9 +30,25 @@ export const ModalDialog = ({
   title,
   titleAction,
   footer,
+  compact,
   sx,
 }: ModalDialogProps) => (
-  <Dialog open={open} onClose={onClose} onTransitionExited={onTransitionExited} sx={sx} disableRestoreFocus>
+  <Dialog
+    open={open}
+    onClose={onClose}
+    onTransitionExited={onTransitionExited}
+    disableRestoreFocus
+    sx={{
+      ...sx,
+      ...(compact && {
+        '& .MuiPaper-root': {
+          height: 'auto',
+          minHeight: 'auto',
+          ...(sx as Record<string, Record<string, string>>)?.['& .MuiPaper-root'],
+        },
+      }),
+    }}
+  >
     <Card
       sx={{
         ...SizesAndSpaces.ModalHeight.sm,
