@@ -205,7 +205,7 @@ export function getBaseNetworksConfig<T>(chainId: number, networkConfig: any): B
     name: formatNetworkName(name || id),
     chainId,
     symbol: nativeCurrencySymbol,
-    id: id, // TODO: remove id or networkId
+    id, // TODO: remove id or networkId
     networkId: id,
     hex: ethers.toQuantity(chainId),
     logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
@@ -214,10 +214,13 @@ export function getBaseNetworksConfig<T>(chainId: number, networkConfig: any): B
     isTestnet,
     scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
     scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
-    scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}`,
+    ...(chainId === Chain.Hyperliquid // Hyperliquid explorer doesn't support the /token syntax
+      ? { scanTokenPath: (hash: string) => `${explorerUrl}address/${hash}` }
+      : { scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}` }),
   }
 }
 
+/** Capitalizes and separates words in a string by replacing hyphens and underscores with spaces. */
 function formatNetworkName(id: string) {
   const formattedText = id.replace(/[-_]./g, (match) => ' ' + match.charAt(1).toUpperCase())
   return formattedText.charAt(0).toUpperCase() + formattedText.slice(1)

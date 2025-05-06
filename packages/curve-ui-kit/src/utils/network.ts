@@ -17,4 +17,5 @@ export enum Chain {
   XLayer = 196,
   Mantle = 5000,
   Sonic = 146,
+  Hyperliquid = 999,
 }
