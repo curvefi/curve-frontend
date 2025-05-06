@@ -328,7 +328,7 @@ export const defaultNetworks = Object.entries({
     const chainId = Number(key) as ChainId
 
     prev[chainId] = {
-      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId]),
+      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId as Chain]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,

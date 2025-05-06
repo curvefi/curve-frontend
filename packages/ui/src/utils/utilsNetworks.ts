@@ -170,7 +170,7 @@ export const NETWORK_BASE_CONFIG = {
     nativeCurrencySymbol: 'S',
     explorerUrl: 'https://sonicscan.org/',
   },
-} satisfies { [key in Chain]: { chainId: key, [_: string]: any } }
+} satisfies { [key in Chain]: { chainId: key; [_: string]: any } }
 
 export type BaseConfig<TId = string> = {
   id: TId

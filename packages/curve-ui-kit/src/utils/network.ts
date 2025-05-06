@@ -27,5 +27,5 @@ export enum Chain {
  * Constant used to identify chain IDs. It should be expanded to include all supported chains.
  */
 export const ChainIds = {
-  Hyperliquid: 999
+  Hyperliquid: 999,
 } as const
