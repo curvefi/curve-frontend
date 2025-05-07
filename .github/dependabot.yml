@@ -1,7 +1,7 @@
 # configuration options: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: 'npm'
     directories:
       - /
       - /apps/main/
@@ -13,44 +13,21 @@ updates:
       - /packages/external-rewards/
       - /tests/
     schedule:
-      interval: "monthly"
+      interval: 'monthly'
     ignore:
       - dependency-name: immer
-        update-types: ["version-update:semver-major"]
+        update-types: ['version-update:semver-major']
       - dependency-name: lightweight-charts
-        update-types: ["version-update:semver-major"]
+        update-types: ['version-update:semver-major']
       - dependency-name: zustand
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@curvefi/*"  # curve updates done manually
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@curvefi/*' # curve updates done manually
     groups:
-      react:
-        patterns:
-          - "*react*"
-          - "*@tanstack*"
-      onboard:
-        patterns:
-          - "*@safe-global*"
-          - "*@web3-onboard*"
-      storybook:
-        patterns:
-          - "@storybook*"
-          - "storybook"
-      typescript:
-        patterns:
-          - "*babel*"
-          - "*eslint*"
-          - "*tsconfig*"
-          - "*typescript*"
-          - "*webpack*"
-      mui:
-        patterns:
-          - "*@mui*"
-          - "*@hookform*"
-      # Group minor updates in a single PR, major updates not matching above groups are separate PRs
+      # Group all minor updates in a single PR
       minor-updates:
         applies-to: version-updates
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'

@@ -1,5 +1,6 @@
 /// <reference types="./mui-card-header.d.ts" />
-import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
+import type { Components } from '@mui/material/styles'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -7,7 +8,7 @@ const { Sizing, Spacing, ButtonSize } = SizesAndSpaces
 
 export const defineMuiCardHeader = (
   design: DesignSystem,
-  typography: TypographyVariantsOptions,
+  typography: TypographyOptions,
 ): Components['MuiCardHeader'] => ({
   styleOverrides: {
     root: {

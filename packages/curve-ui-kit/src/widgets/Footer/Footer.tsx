@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
