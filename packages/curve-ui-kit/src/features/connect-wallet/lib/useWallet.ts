@@ -1,5 +1,5 @@
 import { BrowserProvider } from 'ethers'
-import { Dispatch, SetStateAction, useMemo } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo } from 'react'
 import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
 import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
 import { Address, isCypress } from '@ui-kit/utils'
@@ -37,8 +37,22 @@ const state: {
  **/
 export const useUseWagmi = (): boolean => {
   const [isBeta] = useBetaFlag()
-  const [{ wallet, connecting }] = useOnboardWallet()
-  return !isCypress && isBeta && !wallet && !connecting
+  const [{ wallet: onboardWallet, connecting }] = useOnboardWallet()
+  const [, setWalletName] = useWalletName()
+
+  const wagmiEnabled = !isCypress && isBeta
+  const onboardActive = !!(onboardWallet || connecting)
+  useEffect(() => {
+    // make sure the wallet connections don't fight each other
+    if (!wagmiEnabled) {
+      window.localStorage.removeItem('wagmi.recentConnectorId')
+      window.localStorage.removeItem('wagmi.store')
+    } else if (!onboardActive) {
+      setWalletName(null) // used by the onboard connector to reconnect
+    }
+  }, [wagmiEnabled, setWalletName, onboardActive])
+
+  return wagmiEnabled && !onboardActive
 }
 
 export const useWallet: UseConnectWallet = () => {
