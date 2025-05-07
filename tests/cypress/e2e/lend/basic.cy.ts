@@ -3,7 +3,7 @@ import { LOAD_TIMEOUT } from '@/support/ui'
 describe('Basic Access Test', () => {
   it('should open the Lend DApp successfully', () => {
     cy.visit('/lend/')
-    cy.title().should('include', 'Lend')
+    cy.title(LOAD_TIMEOUT).should('include', 'Lend')
   })
 
   it('should redirect from the old root URL successfully', () => {
