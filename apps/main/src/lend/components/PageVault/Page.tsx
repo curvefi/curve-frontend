@@ -10,9 +10,9 @@ import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageT
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { parseMarketParams } from '@/lend/utils/utilsRouter'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -29,13 +29,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
-  const {
-    network: rNetwork,
-    market: rMarket,
-    formType: [rFormType = null],
-  } = params
-  const rChainId = networksIdMapper[rNetwork]
-
+  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { connect, provider } = useWallet()
   const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()

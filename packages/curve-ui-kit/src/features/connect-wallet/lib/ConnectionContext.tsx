@@ -142,10 +142,14 @@ export const ConnectionProvider = <
   const setChain = useSetChain()
 
   useEffect(() => {
-    if (isWalletInitialized.current) {
-      setWalletName(wallet?.label ?? null)
+    if (isWalletInitialized.current && wallet) {
+      // update the wallet name so that onboard can use it for reconnecting
+      setWalletName(wallet.label ?? null)
     }
   }, [setWalletName, wallet])
+
+  // make sure the ref is reset when the component is unmounted, so it doesn't get used in the wrong app
+  useEffect(() => () => libRef.reset(), [])
 
   useEffect(() => {
     const abort = new AbortController()
@@ -236,11 +240,14 @@ export const useConnection = <TLib extends unknown>() => useContext(ConnectionCo
 const libRef = {
   current: null as unknown,
   get: <T = unknown,>() => libRef.current as T | null,
-  require: <T = unknown,>() => {
+  require<T = unknown>() {
     if (!libRef.current) throw new Error('Lib not initialized')
     return libRef.current as T
   },
   set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
+  reset() {
+    libRef.set(null)
+  },
 }
 
 export const getLib = <TLib extends unknown>() => libRef.get<TLib>()
