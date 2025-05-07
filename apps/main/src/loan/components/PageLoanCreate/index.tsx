@@ -4,7 +4,7 @@ import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
@@ -14,7 +14,7 @@ const LoanCreate = ({
   ...props
 }: PageLoanCreateProps & {
   loanExists: boolean | undefined
-  fetchInitial: (curve: Curve, isLeverage: boolean, llamma: Llamma) => void
+  fetchInitial: (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => void
 }) => {
   const { curve, llamma, loanExists, params, rCollateralId, rFormType } = props
   const { push } = useRouter()

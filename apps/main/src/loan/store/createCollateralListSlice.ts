@@ -7,7 +7,7 @@ import { parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
 import { TITLE } from '@/loan/constants'
 import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, Curve, CollateralData, TitleKey } from '@/loan/types/loan.types'
+import { ChainId, LlamaApi, CollateralData, TitleKey } from '@/loan/types/loan.types'
 import { sleep } from '@/loan/utils/helpers'
 import { searchByText } from '@ui-kit/utils'
 
@@ -35,7 +35,7 @@ export type CollateralListSlice = {
   [sliceKey]: SliceState & {
     filterBySearchText(searchText: string, collateralData: CollateralData[]): CollateralData[]
     sortFn(rChainId: ChainId, sortKey: TitleKey, order: Order, collateralData: CollateralData[]): CollateralData[]
-    setFormValues(rChainId: ChainId, curve: Curve | null, searchParams: SearchParams, shouldRefetch?: boolean): Promise<void>
+    setFormValues(rChainId: ChainId, curve: LlamaApi | null, searchParams: SearchParams, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void

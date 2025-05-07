@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { useStablecoinConnection } from '@/loan/temp-lib'
+import type { LlamaApi } from '@/loan/types/loan.types'
 import { BN, formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number) => {
-  const { lib: curve } = useStablecoinConnection()
+  const { lib: curve } = useConnection<LlamaApi>()
   const chainId = curve?.chainId
   const chainTokenUsdRate = useStore().usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault

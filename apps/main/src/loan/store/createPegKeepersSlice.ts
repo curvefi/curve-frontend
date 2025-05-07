@@ -5,7 +5,7 @@ import { DEFAULT_FORM_STATUS } from '@/loan/components/PagePegKeepers/utils'
 import { PEG_KEEPERS_ADDRESSES } from '@/loan/constants'
 import crvusdjsApi from '@/loan/lib/apiCrvusd'
 import type { State } from '@/loan/store/useStore'
-import { Curve, Provider } from '@/loan/types/loan.types'
+import { LlamaApi, Provider } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
@@ -22,7 +22,7 @@ export type PegKeepersSlice = {
   [sliceKey]: SliceState & {
     fetchDetails(provider: Provider): Promise<void>
     fetchEstCallerProfit(provider: Provider, pegKeeperAddress: string): Promise<void>
-    fetchUpdate(curve: Curve, pegKeeperAddress: string): Promise<{ hash: string; error: string }>
+    fetchUpdate(curve: LlamaApi, pegKeeperAddress: string): Promise<{ hash: string; error: string }>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void

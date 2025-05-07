@@ -9,7 +9,7 @@ import {
 } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { ChainId, Curve, Llamma } from '@/loan/types/loan.types'
+import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
@@ -37,13 +37,13 @@ export type LoanIncreaseSlice = {
     // steps
     fetchStepApprove(
       activeKey: string,
-      curve: Curve,
+      curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
     ): Promise<{ hashes: string[]; error: string } | undefined>
     fetchStepIncrease(
       activeKey: string,
-      curve: Curve,
+      curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
     ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
@@ -174,7 +174,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
     },
 
     // steps
-    fetchStepApprove: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
+    fetchStepApprove: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -202,7 +202,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
         return resp
       }
     },
-    fetchStepIncrease: async (activeKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
+    fetchStepIncrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 

@@ -1,4 +1,4 @@
-import { ChainId, type CollateralUrlParams, Curve, Llamma, TitleMapper } from '@/loan/types/loan.types'
+import { ChainId, type CollateralUrlParams, LlamaApi, Llamma, TitleMapper } from '@/loan/types/loan.types'
 export type DetailInfoTypes = 'user' | 'llamma'
 export type FormType = 'loan' | 'collateral' | 'swap' | 'deleverage'
 export type LoanFormType = 'loan-increase' | 'loan-decrease' | 'loan-liquidate'
@@ -25,7 +25,7 @@ export type FormDetailInfo = {
 }
 
 export type PageLoanManageProps = {
-  curve: Curve | null
+  curve: LlamaApi | null
   isReady: boolean
   llamma: Llamma | null
   llammaId: string

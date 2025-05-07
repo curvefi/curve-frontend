@@ -3,7 +3,7 @@ import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/componen
 import type { FormValues as SwapFormValues } from '@/loan/components/PageLoanManage/LoanSwap/types'
 import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
-import { ChainId, Curve, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
 import {
   getChartBandBalancesData,
@@ -13,6 +13,7 @@ import {
   reverseBands,
   sortBands,
 } from '@/loan/utils/utilsCurvejs'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const network = {
@@ -48,25 +49,25 @@ const DEFAULT_PARAMETERS = {
 }
 
 const helpers = {
-  getLlammaObj: (api: Curve, token: string) => {
+  getLlammaObj: (api: LlamaApi, token: string) => {
     log('getLlammaObj', token)
-    return api.getLlamma(token)
+    return api.getMintMarket(token)
   },
-  getLlammas: (curve: Curve) => {
+  getLlammas: (curve: LlamaApi) => {
     log('getCollaterals', curve.chainId)
-    const collaterals = curve.getLlammaList()
+    const collaterals = curve.mintMarkets.getMarketList()
 
     // set mappers
     const llammasMapper: { [llammaId: string]: Llamma } = {}
     for (const idx in collaterals) {
       const collateralName = collaterals[idx]
-      const llamma = curve.getLlamma(collateralName)
+      const llamma = curve.getMintMarket(collateralName)
       llammasMapper[llamma.id] = llamma
     }
 
     return llammasMapper
   },
-  getUsdRate: async (api: Curve, tokenAddress: string) => {
+  getUsdRate: async (api: LlamaApi, tokenAddress: string) => {
     log('getUsdRate', tokenAddress)
     const resp: { usdRate: string | number; error: string } = { usdRate: 0, error: '' }
     try {
@@ -79,7 +80,7 @@ const helpers = {
       return resp
     }
   },
-  getTotalSupply: async (api: Curve) => {
+  getTotalSupply: async (api: LlamaApi) => {
     log('getTotalSupply', api.chainId)
     const resp = { total: '', minted: '', pegKeepersDebt: '', error: '' }
     try {
@@ -282,7 +283,7 @@ const detailInfo = {
       return resp
     }
   },
-  userTokenBalance: async (api: Curve, token: string) => {
+  userTokenBalance: async (api: LlamaApi, token: string) => {
     log('userTokenBalance', token)
     const resp = { balance: '', error: '' }
 
@@ -296,6 +297,8 @@ const detailInfo = {
     }
   },
 }
+
+const initialGas = 0 as TGas
 
 const loanCreate = {
   exists: async (llamma: Llamma, signerAddress: string) => {
@@ -322,7 +325,7 @@ const loanCreate = {
     maxSlippage: string,
   ) => {
     log('loanEstGas', llamma.collateralSymbol, collateral, debt, n, maxSlippage)
-    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: initialGas, error: '' }
 
     try {
       resp.isApproved = isLeverage
@@ -569,7 +572,7 @@ const loanIncrease = {
     const parsedCollateral = collateral || '0'
     const parsedDebt = debt || '0'
     log('estGasApproval', activeKey, llamma.collateralSymbol, parsedCollateral, parsedDebt)
-    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: initialGas, error: '' }
 
     try {
       resp.isApproved = await llamma.borrowMoreIsApproved(parsedCollateral)
@@ -677,7 +680,7 @@ const loanIncrease = {
 const loanDecrease = {
   estGasApproval: async (activeKey: string, llamma: Llamma, debt: string, isFullRepay: boolean) => {
     log('estGasApproval', llamma.collateralSymbol, isFullRepay, debt)
-    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: initialGas, error: '' }
 
     try {
       resp.isApproved = isFullRepay ? await llamma.fullRepayIsApproved() : await llamma.repayIsApproved(debt)
@@ -752,7 +755,7 @@ const loanDecrease = {
 const loanLiquidate = {
   estGasApproval: async (llamma: Llamma, maxSlippage: string) => {
     log('estGasApproval', llamma.collateralSymbol, maxSlippage)
-    const resp = { isApproved: false, estimatedGas: 0, error: '', warning: '' }
+    const resp = { isApproved: false, estimatedGas: initialGas, error: '', warning: '' }
 
     try {
       resp.isApproved = await llamma.selfLiquidateIsApproved()
@@ -828,7 +831,7 @@ const loanLiquidate = {
 const collateralIncrease = {
   estGasApproval: async (activeKey: string, llamma: Llamma, collateral: string) => {
     log('estGasApproval', llamma.collateralSymbol, collateral)
-    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: initialGas, error: '' }
 
     try {
       resp.isApproved = await llamma.addCollateralIsApproved(collateral)
@@ -907,7 +910,7 @@ const collateralIncrease = {
 const collateralDecrease = {
   estGas: async (activeKey: string, llamma: Llamma, collateral: string) => {
     log('estGas', llamma.collateralSymbol, collateral)
-    const resp = { activeKey, estimatedGas: 0, error: '' }
+    const resp = { activeKey, estimatedGas: initialGas, error: '' }
 
     try {
       resp.estimatedGas = await llamma.removeCollateralEstimateGas(collateral)
@@ -991,7 +994,7 @@ const swap = {
     maxSlippage: string,
   ) => {
     log('estGasApproval', llamma.collateralSymbol, item1Key, item2Key, amount, maxSlippage)
-    const resp = { activeKey, isApproved: false, estimatedGas: 0, error: '' }
+    const resp = { activeKey, isApproved: false, estimatedGas: initialGas, error: '' }
 
     try {
       resp.isApproved = await llamma.swapIsApproved(+item1Key, amount)
@@ -1086,7 +1089,7 @@ const loanDeleverage = {
   // no approval is needed for deleverage
   estGas: async (activeKey: string, llamma: Llamma, collateral: string, maxSlippage: string) => {
     log('estGas', llamma.collateralSymbol, collateral, maxSlippage)
-    const resp = { activeKey, estimatedGas: 0, error: '' }
+    const resp = { activeKey, estimatedGas: initialGas, error: '' }
 
     try {
       resp.estimatedGas = await llamma.deleverage.estimateGas.repay(collateral, +maxSlippage)

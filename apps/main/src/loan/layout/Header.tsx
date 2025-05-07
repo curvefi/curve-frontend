@@ -6,10 +6,16 @@ import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crv
 import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { useStablecoinConnection } from '@/loan/temp-lib'
-import { CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
+import {
+  CollateralDatasMapper,
+  type LlamaApi,
+  LoanDetailsMapper,
+  type UrlParams,
+  UsdRate,
+} from '@/loan/types/loan.types'
 import { useChainId } from '@/loan/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -27,7 +33,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const rChainId = useChainId(params)
-  const { lib } = useStablecoinConnection()
+  const { lib } = useConnection<LlamaApi>()
 
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])

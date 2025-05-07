@@ -40,8 +40,8 @@ import {
   UserLoss,
   UserMarketBalances,
 } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
@@ -49,14 +49,13 @@ import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
   initApi: async (chainId: ChainId, provider?: Eip1193Provider) => {
+    if (!provider) return
     if (!(chainId in networks)) {
       throw new Error(`ChainId ${chainId} not supported`)
     }
-    const { networkId } = networks[chainId]
-    if (!provider) return
-    const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-    await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
-
+    const network = networks[chainId].networkId
+    const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as Api
+    await api.init('Web3', { network, externalProvider: provider }, { chainId })
     return api
   },
   getIsUserCloseToLiquidation: (

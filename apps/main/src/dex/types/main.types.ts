@@ -87,22 +87,6 @@ export const FormTypes = [
   '',
 ] as const
 export type RFormType = (typeof FormTypes)[number]
-export type RouterParams = {
-  rChainId: ChainId
-  rNetwork: NetworkEnum
-  rNetworkIdx: number
-  rSubdirectory: string
-  rSubdirectoryUseDefault: boolean
-  rPoolId: string
-  rFormType: RFormType
-  redirectPathname: string
-  restFullPathname: string
-}
-export type PageProps = {
-  curve: CurveApi | null
-  pageLoaded: boolean
-  routerParams: RouterParams
-}
 export type Pool = PoolTemplate
 export type Provider = ethers.BrowserProvider
 export type ClaimableReward = {

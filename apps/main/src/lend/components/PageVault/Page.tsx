@@ -11,9 +11,8 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { parseMarketParams } from '@/lend/utils/utilsRouter'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,

@@ -2,17 +2,16 @@
 import styled from 'styled-components'
 import PagePegKeepers from '@/loan/components/PagePegKeepers'
 import Settings from '@/loan/layout/Settings'
-import { useStablecoinConnection } from '@/loan/temp-lib'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import type { LlamaApi, NetworkUrlParams } from '@/loan/types/loan.types'
 import { useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
-  const { connectState } = useStablecoinConnection()
+  const { connectState } = useConnection<LlamaApi>()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
 

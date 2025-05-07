@@ -1,32 +1,19 @@
 import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
-import { ETHEREUM_CHAIN_ID } from '@/loan/constants'
 import networks from '@/loan/networks'
-import {
-  BandBalance,
-  ChainId,
-  type Curve,
-  HeathColorKey,
-  LendApi,
-  Llamma,
-  UserLoanDetails,
-} from '@/loan/types/loan.types'
+import { BandBalance, ChainId, type LlamaApi, HeathColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
-export async function initStableJs(chainId: ChainId, provider?: Eip1193Provider): Promise<Curve> {
-  const { networkId } = networks[chainId]
-  const api = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
-  await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
-  api.chainId = ETHEREUM_CHAIN_ID // only chain supported, default is 0 and causes issues
-  return api
-}
-
-export async function initLendApi(chainId: ChainId, provider?: Eip1193Provider) {
-  const { networkId } = networks[chainId]
-  const api = cloneDeep((await import('@curvefi/lending-api')).default) as LendApi
-  await api.init('Web3', { network: networkId, externalProvider: provider }, { chainId })
+export async function initLlamaApi(
+  chainId: ChainId,
+  externalProvider?: Eip1193Provider,
+): Promise<LlamaApi | undefined> {
+  if (!externalProvider) return
+  const network = networks[chainId].networkId
+  const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamaApi
+  await api.init('Web3', { network, externalProvider }, { chainId })
   return api
 }
 
