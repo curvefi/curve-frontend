@@ -51,7 +51,7 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>
-              {formatNumber(currentSupport, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              {formatNumber(currentSupport * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </HighlightedData>
             <Data>{t`of ${minSupport}%`}</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
