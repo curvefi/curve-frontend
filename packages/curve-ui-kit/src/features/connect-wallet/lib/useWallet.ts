@@ -56,11 +56,11 @@ export const useUseWagmi = (): boolean => {
 }
 
 export const useWallet: UseConnectWallet = () => {
+  const shouldUseWagmi = useUseWagmi()
   const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
     useOnboardWallet()
   const [{ wallet: wagmiWallet, connecting: wagmiConnecting }, wagmiConnect, wagmiDisconnect] = useWagmi()
   const [walletName, setWalletName] = useWalletName()
-  const shouldUseWagmi = useUseWagmi()
 
   const { wallet, provider } = useMemo(() => {
     state.wallet = shouldUseWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)

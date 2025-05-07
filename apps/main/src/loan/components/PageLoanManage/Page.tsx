@@ -13,7 +13,12 @@ import useStore from '@/loan/store/useStore'
 import { useStablecoinConnection } from '@/loan/temp-lib'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import { getCollateralListPathname, getLoanCreatePathname, useChainId } from '@/loan/utils/utilsRouter'
+import {
+  getCollateralListPathname,
+  getLoanCreatePathname,
+  parseCollateralParams,
+  useChainId,
+} from '@/loan/utils/utilsRouter'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -35,13 +40,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
+  const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
   const { connectState, lib: curve = null } = useStablecoinConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
-  const { collateralId, formType: [rFormType] = [] } = params
-  const rCollateralId = collateralId.toLowerCase()
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const isMdUp = useStore((state) => state.layout.isMdUp)

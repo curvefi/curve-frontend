@@ -34,5 +34,5 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
 export const useOneWayMarket = (chainId: ChainId, marketName: string) => {
   const { data: markets, isSuccess, ...rest } = useOneWayMarketMapping({ chainId })
   const market = markets?.[marketName]
-  return { data: market, isSuccess: !!markets, ...rest }
+  return { data: market, isSuccess: isSuccess && !!markets, ...rest }
 }

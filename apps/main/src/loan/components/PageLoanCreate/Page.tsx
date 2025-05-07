@@ -15,6 +15,7 @@ import {
   getCollateralListPathname,
   getLoanCreatePathname,
   getLoanManagePathname,
+  parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
 import {
@@ -37,13 +38,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
+  const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
   const { connectState, lib: curve = null } = useStablecoinConnection()
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
-  const { collateralId, formType: [rFormType] = [] } = params
-  const rCollateralId = collateralId.toLowerCase()
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
