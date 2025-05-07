@@ -21,8 +21,32 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: zustand
         update-types: ["version-update:semver-major"]
+      - dependency-name: @curvefi/*  # curve updates done manually
     groups:
-      # Group all minor updates in a single PR
+      react:
+        patterns:
+          - "*react*"
+          - "*@tanstack*"
+      onboard:
+        patterns:
+          - "*@safe-global*"
+          - "*@web3-onboard*"
+      storybook:
+        patterns:
+          - "@storybook*"
+          - "storybook"
+      typescript:
+        patterns:
+          - "*babel*"
+          - "*eslint*"
+          - "*tsconfig*"
+          - "*typescript*"
+          - "*webpack*"
+      mui:
+        patterns:
+          - "*@mui*"
+          - "*@hookform*"
+      # Group minor updates in a single PR, major updates not matching above groups are separate PRs
       minor-updates:
         applies-to: version-updates
         patterns:

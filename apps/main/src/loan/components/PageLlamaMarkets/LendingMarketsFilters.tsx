@@ -4,7 +4,7 @@ import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.
 import { MultiSelectFilter } from '@/loan/components/PageLlamaMarkets/filters/MultiSelectFilter'
 import { RangeSliderFilter } from '@/loan/components/PageLlamaMarkets/filters/RangeSliderFilter'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'

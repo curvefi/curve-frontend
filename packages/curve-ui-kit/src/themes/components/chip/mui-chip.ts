@@ -1,7 +1,7 @@
 /// <reference types="./mui-chip.d.ts" />
 import type { Components } from '@mui/material'
-import type { ChipProps } from '@mui/material/Chip/Chip'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import type { ChipProps } from '@mui/material/Chip'
+import type { TypographyVariantsOptions } from '@mui/material/styles'
 import { handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -55,7 +55,7 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { delet
  */
 export const defineMuiChip = (
   { Chips, Color, Text: { TextColors }, Layer, Badges }: DesignSystem,
-  typography: TypographyOptions,
+  typography: TypographyVariantsOptions,
 ): Components['MuiChip'] => ({
   styleOverrides: {
     root: {
