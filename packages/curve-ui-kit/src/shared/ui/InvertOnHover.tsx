@@ -32,16 +32,25 @@ type InvertOnHoverProps = {
    * A ref to the element that should trigger the hover effect. Used to handle the focus-visible state.
    */
   hoverEl: HTMLLIElement | HTMLTableRowElement | null
+
+  /** Whether to disable the hover effect */
+  disabled?: boolean
 }
 
 const defaultHoverColor = (t: Theme) => t.design.Layer.TypeAction.Hover
 
-export const InvertOnHover = ({ children: child, hoverEl, hoverColor = defaultHoverColor }: InvertOnHoverProps) => {
+export const InvertOnHover = ({
+  children: child,
+  hoverEl,
+  hoverColor = defaultHoverColor,
+  disabled,
+}: InvertOnHoverProps) => {
   const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
   const inverted = useClassObserver(hoverEl, 'Mui-focusVisible') || isHover
   const childSx = (child.props.sx as Record<string, object>) ?? {}
 
   useNativeEventInCypress(hoverEl, 'mouseenter', onMouseEnter)
+  if (disabled) return child
 
   return (
     <InvertTheme inverted={inverted}>

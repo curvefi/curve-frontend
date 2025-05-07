@@ -8,7 +8,7 @@ import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends RowData, TValue> {
     type?: 'numeric'
-    hidden?: boolean
+    hidden?: boolean // todo: get rid of this property, use column visibility, it breaks e.g. column.getIsLastColumn()
     variant?: TypographyVariantKey
     borderRight?: boolean
     hideZero?: boolean
