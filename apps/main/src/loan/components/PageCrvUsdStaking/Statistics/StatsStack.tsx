@@ -1,7 +1,7 @@
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
 import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { Metric } from '@ui-kit/shared/ui/Metric'

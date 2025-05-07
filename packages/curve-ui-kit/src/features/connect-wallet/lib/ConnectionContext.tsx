@@ -206,11 +206,14 @@ export const useConnection = <TLib extends unknown>() => useContext(ConnectionCo
 const libRef = {
   current: null as unknown,
   get: <T = unknown,>() => libRef.current as T | null,
-  require: <T = unknown,>() => {
+  require<T = unknown>() {
     if (!libRef.current) throw new Error('Lib not initialized')
     return libRef.current as T
   },
   set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
+  reset() {
+    libRef.set(null)
+  },
 }
 
 export const getLib = <TLib extends unknown>() => libRef.get<TLib>()

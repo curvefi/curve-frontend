@@ -328,7 +328,7 @@ export const defaultNetworks = Object.entries({
     const chainId = Number(key) as ChainId
 
     prev[chainId] = {
-      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId]),
+      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId as Chain]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,
@@ -343,6 +343,7 @@ export async function getNetworks() {
 
   const liteNetworks = Object.values(resp).reduce(
     (prev, { chainId, ...config }) => {
+      const isUpgraded = chainId == Chain.Sonic // sonic is upgraded from lite to full
       prev[chainId] = {
         ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
@@ -351,9 +352,9 @@ export async function getNetworks() {
         stableswapFactory: true,
         twocryptoFactory: true,
         tricryptoFactory: true,
-        pricesApi: chainId == 146, // sonic is upgraded from lite to full
-        isLite: chainId != 146, // sonic is upgraded from lite to full
-        isCrvRewardsEnabled: chainId == 146, // sonic is upgraded from lite to full
+        pricesApi: isUpgraded,
+        isLite: !isUpgraded,
+        isCrvRewardsEnabled: isUpgraded,
         isTestnet: config.isTestnet,
       }
       return prev

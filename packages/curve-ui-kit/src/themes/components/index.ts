@@ -1,5 +1,4 @@
-import { type ThemeOptions } from '@mui/material/styles'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { type ThemeOptions, type TypographyVariantsOptions } from '@mui/material/styles'
 import { alpha } from '@mui/system'
 import { basicMuiTheme } from '../basic-theme'
 import { getShadow } from '../basic-theme/shadows'
@@ -23,7 +22,10 @@ import { defineMuiTypography } from './typography'
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 
-export const createComponents = (design: DesignSystem, typography: TypographyOptions): ThemeOptions['components'] => ({
+export const createComponents = (
+  design: DesignSystem,
+  typography: TypographyVariantsOptions,
+): ThemeOptions['components'] => ({
   MuiAlert: defineMuiAlert(design, typography),
   MuiAlertTitle: defineMuiAlertTitle(design, typography),
   MuiButton: defineMuiButton(design),

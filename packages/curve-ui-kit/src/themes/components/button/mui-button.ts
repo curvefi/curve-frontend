@@ -1,6 +1,8 @@
 /// <reference path="./mui-button.d.ts" />
 import { Breakpoint } from '@mui/material'
+import { ButtonProps } from '@mui/material/Button'
 import type { Components } from '@mui/material/styles'
+import { CSSObject } from '@mui/styled-engine'
 import { basicMuiTheme, type Responsive } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { Sizing } from '../../design/0_primitives'
@@ -54,7 +56,7 @@ const buttonSize = ({ height, fontSize, fontWeight = 'Bold', lineHeight }: Butto
 
 export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['MuiButton'] => {
   const { Primary, Secondary, Success, Error, Outlined, Ghost, Navigation, Focus_Outline, Transition } = Button
-  const colors = {
+  const colors = Object.entries({
     primary: buttonColor(Primary),
     secondary: buttonColor(Secondary),
     success: buttonColor(Success),
@@ -62,13 +64,13 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
     outlined: buttonColor(Outlined),
     ghost: buttonColor(Ghost),
     navigation: buttonColor(Navigation),
-  }
+  }) as [NonNullable<ButtonProps['color']>, CSSObject][]
   const fontFamily = Fonts[Text.FontFamily.Button]
   return {
     styleOverrides: {
       root: {
         variants: [
-          ...Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
+          ...colors.map(([color, style]) => ({ props: { color }, style })),
           {
             props: { variant: 'link' },
             style: {

@@ -18,6 +18,12 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
+const initLib = async (chainId: ChainId, provider?: Eip1193Provider): Promise<TempApi | undefined> => {
+  if (!provider) return
+  const [stablecoin, lend] = await Promise.all([initStableJs(chainId, provider), initLendApi(chainId, provider)])
+  return { stablecoin, lend, chainId, signerAddress: stablecoin.signerAddress ?? lend.signerAddress }
+}
+
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
@@ -81,12 +87,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     REFRESH_INTERVAL['5m'],
     isPageVisible,
   )
-
-  const initLib = useCallback(async (chainId: ChainId, provider?: Eip1193Provider): Promise<TempApi | undefined> => {
-    if (!provider) return
-    const [stablecoin, lend] = await Promise.all([initStableJs(chainId, provider), initLendApi(chainId, provider)])
-    return { stablecoin, lend, chainId, signerAddress: stablecoin.signerAddress ?? lend.signerAddress }
-  }, [])
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
