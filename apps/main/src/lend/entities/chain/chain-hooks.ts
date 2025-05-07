@@ -9,7 +9,7 @@ import { useOneWayMarketNames } from './chain-query'
 
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params
-  const { data: marketNames, ...rest } = useOneWayMarketNames(params)
+  const { data: marketNames, isSuccess, error } = useOneWayMarketNames(params)
   const { lib: api, connectState } = useConnection<Api>()
   const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
@@ -28,11 +28,11 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
         : undefined,
     [api, apiChainId, chainId, marketNames, connectState],
   )
-  return { data, ...rest }
+  return { data, isSuccess, error }
 }
 
 export const useOneWayMarket = (chainId: ChainId, marketName: string) => {
-  const { data, ...rest } = useOneWayMarketMapping({ chainId })
-  const market = data?.[marketName]
-  return { data: market, ...rest }
+  const { data: markets, isSuccess, ...rest } = useOneWayMarketMapping({ chainId })
+  const market = markets?.[marketName]
+  return { data: market, isSuccess: isSuccess && !!markets, ...rest }
 }

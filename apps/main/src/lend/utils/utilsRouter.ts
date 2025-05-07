@@ -1,5 +1,6 @@
 import { ROUTE } from '@/lend/constants'
-import { type UrlParams } from '@/lend/types/lend.types'
+import { networksIdMapper } from '@/lend/networks'
+import { type MarketUrlParams, type UrlParams } from '@/lend/types/lend.types'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 
 /** Get the path for the given route in this app */
@@ -21,3 +22,9 @@ export const getVaultPathname = (params: UrlParams, owmId: string, formType: str
  * For example /:app/:network/:page/:id => `:page/:id`
  */
 export const getRestFullPathname = () => window.location.pathname.substring(1).split('/').slice(2).join('/')
+
+export const parseMarketParams = ({ formType, market, network }: MarketUrlParams) => ({
+  rMarket: market.toLowerCase(),
+  rChainId: networksIdMapper[network],
+  rFormType: formType?.[0] ?? '',
+})

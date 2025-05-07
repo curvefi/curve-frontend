@@ -1,3 +1,7 @@
+/**
+ * List of all hardcoded chains IDs. Does not include Lite chains.
+ * TODO: use object as const instead of enum
+ */
 export enum Chain {
   Ethereum = 1,
   Optimism = 10,
@@ -18,3 +22,10 @@ export enum Chain {
   Mantle = 5000,
   Sonic = 146,
 }
+
+/**
+ * Constant used to identify chain IDs. It should be expanded to include all supported chains.
+ */
+export const ChainIds = {
+  Hyperliquid: 999,
+} as const

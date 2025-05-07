@@ -75,7 +75,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           >{t`Profit is denominated in ${poolName} LP Tokens`}</StyledIconTooltip>
         }
       >
-        <strong>{formatNumber(detailsMapper[pegKeeperAddress]?.estCallerProfit)}</strong>
+        <strong>{formatNumber(estCallerProfit)}</strong>
       </DetailInfo>
 
       <LoanFormConnect haveSigner={!!signerAddress} loading={isLoading(connectState)}>
@@ -85,7 +85,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           <Button
             fillWidth
             loading={formStatus[pegKeeperAddress]?.isInProgress}
-            disabled={estCallerProfit === undefined || Number(estCallerProfit) === 0}
+            disabled={estCallerProfit === undefined || Number(estCallerProfit) === 0 || estCallerProfit === '-'}
             size="large"
             variant="filled"
             onClick={() => handleClick(curve, pegKeeperAddress)}

@@ -11,10 +11,10 @@ import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageT
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import networks, { networksIdMapper } from '@/lend/networks'
+import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams } from '@/lend/types/lend.types'
-import { scrollToTop } from '@/lend/utils/helpers'
+import { parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   AppPageFormContainer,
@@ -38,14 +38,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
+  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { lib: api = null, connectState } = useConnection<Api>()
   const titleMapper = useTitleMapper()
-  const {
-    network: rNetwork,
-    market: rMarket,
-    formType: [rFormType = null],
-  } = params
-  const rChainId = networksIdMapper[rNetwork]
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)

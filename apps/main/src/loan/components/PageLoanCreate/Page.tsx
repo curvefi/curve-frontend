@@ -15,6 +15,7 @@ import {
   getCollateralListPathname,
   getLoanCreatePathname,
   getLoanManagePathname,
+  parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
 import {
@@ -37,12 +38,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
+  const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
   const { connectState, lib: curve = null } = useStablecoinConnection()
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
-  const { collateralId: rCollateralId, formType: [rFormType] = [] } = params
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
@@ -100,6 +101,7 @@ const Page = (params: CollateralUrlParams) => {
           void fetchLoanDetails(curve, llamma)
           setLoaded(true)
         } else {
+          console.warn(`Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`)
           push(getCollateralListPathname(params))
         }
       }
@@ -107,23 +109,21 @@ const Page = (params: CollateralUrlParams) => {
       setLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded])
+  }, [pageLoaded && curve && llamma])
 
   // redirect if loan exists
   useEffect(() => {
     if (!loaded && llamma && loanExists) {
       push(getLoanManagePathname(params, llamma.id, 'loan'))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, loanExists])
+  }, [llamma, loaded, loanExists, params, push])
 
   //  redirect if form is leverage but no leverage option
   useEffect(() => {
     if (llamma && rFormType === 'leverage' && !hasLeverage(llamma)) {
       push(getLoanCreatePathname(params, llamma.id))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, rFormType, llamma])
+  }, [loaded, rFormType, llamma, push, params])
 
   // max slippage updated
   useEffect(() => {
