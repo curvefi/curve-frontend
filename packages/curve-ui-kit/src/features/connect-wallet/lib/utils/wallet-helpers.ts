@@ -25,5 +25,5 @@ const timeout = (message: string, timeoutMs: number) =>
 export const withTimeout = <T>(
   connectPromise: Promise<T>,
   message = t`Timeout connecting wallet`,
-  timeoutMs = REFRESH_INTERVAL['3s'],
+  timeoutMs = REFRESH_INTERVAL['15s'],
 ): Promise<T> => Promise.race([connectPromise, timeout(message, timeoutMs)])
