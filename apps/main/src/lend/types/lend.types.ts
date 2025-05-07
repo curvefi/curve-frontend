@@ -16,7 +16,7 @@ export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
 export type EstimatedGas = number | number[] | null
-export type OneWayMarketTemplate = LendMarketTemplate
+export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
 export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }

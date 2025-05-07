@@ -1,9 +1,9 @@
 import {
-  MarketsStatsTotalsMapper,
   MarketsStatsAMMBalancesMapper,
+  MarketsStatsTotalsMapper,
   MarketsTotalLiquidityMapper,
+  OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { IDict } from '@curvefi/llamalend-api/lib/interfaces'
 import { logSuccess } from '@ui-kit/lib'
 

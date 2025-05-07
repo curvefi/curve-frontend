@@ -25,7 +25,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const { lib: lendApi = null } = useConnection<LlamaApi>()
-  const chainId = useConnection<LlamaApi>().lib?.chainId
+  const chainId = lendApi?.chainId
   const { signerAddress, connecting, walletName } = useWallet()
 
   const {

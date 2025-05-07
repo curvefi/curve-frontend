@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import networks from '@/lend/networks'
-import { type Api, ChainId } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { type Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { isHydrated } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ChainParams } from '@ui-kit/lib/model/query'

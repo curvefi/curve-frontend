@@ -14,8 +14,7 @@ import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManag
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { getLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 

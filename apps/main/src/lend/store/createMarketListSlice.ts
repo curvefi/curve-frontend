@@ -25,10 +25,10 @@ import {
   MarketsRewardsMapper,
   MarketsStatsCapAndAvailableMapper,
   MarketsStatsTotalsMapper,
+  OneWayMarketTemplate,
   Order,
   TitleKey,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { sleep } from '@/lend/utils/helpers'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { IDict } from '@curvefi/llamalend-api/lib/interfaces'

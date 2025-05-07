@@ -3,22 +3,22 @@ import { invalidateMarketOnChainRates } from '@/lend/entities/market-onchain-rat
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
-  ChainId,
   Api,
-  MarketsStatsParametersMapper,
-  MarketsStatsBandsMapper,
-  MarketsStatsTotalsMapper,
-  MarketsStatsAMMBalancesMapper,
-  MarketsStatsCapAndAvailableMapper,
+  ChainId,
+  MarketDetailsView,
   MarketsMaxLeverageMapper,
   MarketsPricesMapper,
   MarketsRatesMapper,
-  MarketsTotalLiquidityMapper,
-  MarketsTotalCollateralValueMapper,
   MarketsRewardsMapper,
-  MarketDetailsView,
+  MarketsStatsAMMBalancesMapper,
+  MarketsStatsBandsMapper,
+  MarketsStatsCapAndAvailableMapper,
+  MarketsStatsParametersMapper,
+  MarketsStatsTotalsMapper,
+  MarketsTotalCollateralValueMapper,
+  MarketsTotalLiquidityMapper,
+  OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
 import { getLib } from '@ui-kit/features/connect-wallet'
 

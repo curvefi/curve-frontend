@@ -4,17 +4,17 @@ import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
   Api,
-  UsersLoansHealthsMapper,
-  UserLoanState,
-  UsersLoansStatesMapper,
+  OneWayMarketTemplate,
   UserLoanDetails,
-  UsersLoansDetailsMapper,
   UserLoanExists,
-  UsersLoansExistsMapper,
+  UserLoanState,
   UserMarketBalances,
+  UsersLoansDetailsMapper,
+  UsersLoansExistsMapper,
+  UsersLoansHealthsMapper,
+  UsersLoansStatesMapper,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
