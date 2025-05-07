@@ -41,7 +41,7 @@
     "react-hook-form": "7.55.0",
     "react-is": "19.1.0",
     "recharts": "2.15.2",
-    "sharp": "0.34.0",
+    "sharp": "0.34.1",
     "styled-components": "6.1.17",
     "swr": "2.3.3",
     "ui": "*",
