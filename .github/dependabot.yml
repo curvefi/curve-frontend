@@ -21,7 +21,7 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: zustand
         update-types: ["version-update:semver-major"]
-      - dependency-name: @curvefi/*  # curve updates done manually
+      - dependency-name: "@curvefi/*"  # curve updates done manually
     groups:
       react:
         patterns:
