@@ -2,7 +2,7 @@
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import type { Components } from '@mui/material/styles'
-import { createSvgIcon } from '@mui/material/utils'
+import createSvgIcon from '@mui/material/utils/createSvgIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../../basic-theme'
 

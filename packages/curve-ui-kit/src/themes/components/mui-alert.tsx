@@ -1,5 +1,5 @@
 import type { Components } from '@mui/material'
-import type { TypographyVariantsOptions } from '@mui/material/styles'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { InfoCircledIcon } from '@ui-kit/shared/icons/InfoCircledIcon'
@@ -13,7 +13,7 @@ const titleAndIconSelector = '.MuiAlertTitle-root, .MuiAlert-icon'
 
 export const defineMuiAlert = (
   { Layer: { 1: Layer1, Feedback, Highlight }, Text: { TextColors } }: DesignSystem,
-  { bodyXsRegular }: TypographyVariantsOptions,
+  { bodyXsRegular }: TypographyOptions,
 ): Components['MuiAlert'] => ({
   defaultProps: {
     iconMapping: {
@@ -70,7 +70,7 @@ export const defineMuiAlert = (
 
 export const defineMuiAlertTitle = (
   {}: DesignSystem,
-  { bodySBold }: TypographyVariantsOptions,
+  { bodySBold }: TypographyOptions,
 ): Components['MuiAlertTitle'] => ({
   styleOverrides: {
     root: handleBreakpoints({
