@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
-import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { type OneWayMarketTemplate } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import Icon from '@ui/Icon'

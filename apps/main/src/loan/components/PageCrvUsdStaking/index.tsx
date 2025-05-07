@@ -7,11 +7,10 @@ import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation
 import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection, useStablecoinConnection } from '@/loan/temp-lib'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import type { LlamaApi, NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,8 +24,8 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const { lib: lendApi = null } = useLendConnection()
-  const chainId = useStablecoinConnection().lib?.chainId
+  const { lib: lendApi = null } = useConnection<LlamaApi>()
+  const chainId = useConnection<LlamaApi>().lib?.chainId
   const { signerAddress, connecting, walletName } = useWallet()
 
   const {

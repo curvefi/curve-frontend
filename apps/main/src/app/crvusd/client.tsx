@@ -1,5 +1,4 @@
 'use client'
-import type { Eip1193Provider } from 'ethers'
 import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
@@ -9,11 +8,10 @@ import Page from '@/loan/layout'
 import { networks, networksIdMapper } from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { type TempApi, useStablecoinConnection } from '@/loan/temp-lib'
-import type { ChainId, UrlParams } from '@/loan/types/loan.types'
-import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
+import type { ChainId, LlamaApi, UrlParams } from '@/loan/types/loan.types'
+import { initLlamaApi } from '@/loan/utils/utilsCurvejs'
 import { getPath, getRestFullPathname } from '@/loan/utils/utilsRouter'
-import { ConnectionProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -21,7 +19,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
-  const { lib: curve = null } = useStablecoinConnection()
+  const { lib: curve = null } = useConnection<LlamaApi>()
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
@@ -83,12 +81,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     isPageVisible,
   )
 
-  const initLib = useCallback(async (chainId: ChainId, provider?: Eip1193Provider): Promise<TempApi | undefined> => {
-    if (!provider) return
-    const [stablecoin, lend] = await Promise.all([initStableJs(chainId, provider), initLendApi(chainId, provider)])
-    return { stablecoin, lend, chainId, signerAddress: stablecoin.signerAddress ?? lend.signerAddress }
-  }, [])
-
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
       const network = networks[walletChainId]?.id
@@ -109,9 +101,9 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   return (
     <ClientWrapper loading={!appLoaded}>
-      <ConnectionProvider<ChainId, TempApi>
+      <ConnectionProvider<ChainId, LlamaApi>
         hydrate={hydrate}
-        initLib={initLib}
+        initLib={initLlamaApi}
         chainId={chainId}
         onChainUnavailable={onChainUnavailable}
       >

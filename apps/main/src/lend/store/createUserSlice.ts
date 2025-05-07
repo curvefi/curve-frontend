@@ -14,7 +14,7 @@ import {
   UserMarketBalances,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE

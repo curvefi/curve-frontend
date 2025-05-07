@@ -18,8 +18,8 @@ import {
   MarketsRewardsMapper,
   MarketDetailsView,
 } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { getLib } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

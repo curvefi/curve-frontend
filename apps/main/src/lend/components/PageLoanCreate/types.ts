@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react'
 import type { FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import { DetailInfoResp, DetailInfoLeverageResp, ExpectedCollateral, HealthMode } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Step } from '@ui/Stepper/types'
 
 export type FormType = 'create' | 'vault' | 'leverage'

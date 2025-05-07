@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import networks from '@/lend/networks'
 import { type Api, ChainId } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { isHydrated } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ChainParams } from '@ui-kit/lib/model/query'
@@ -19,7 +19,7 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
         ? Object.fromEntries(
             marketNames
               .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])
-              .map((name) => [name, api.getOneWayMarket(name)] as const)
+              .map((name) => [name, api.getLendMarket(name)] as const)
               .flatMap(([name, market]) => [
                 [name, market],
                 [market.addresses.controller, market],

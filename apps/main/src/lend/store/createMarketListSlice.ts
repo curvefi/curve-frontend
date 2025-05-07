@@ -28,10 +28,10 @@ import {
   Order,
   TitleKey,
 } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { sleep } from '@/lend/utils/helpers'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
-import { IDict } from '@curvefi/lending-api/lib/interfaces'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { IDict } from '@curvefi/llamalend-api/lib/interfaces'
 import { logQuery, logSuccess } from '@ui-kit/lib'
 import { searchByText } from '@ui-kit/utils'
 

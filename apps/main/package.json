@@ -19,8 +19,7 @@
   },
   "dependencies": {
     "@curvefi/api": "2.66.19",
-    "@curvefi/lending-api": "2.5.9",
-    "@curvefi/stablecoin-api": "1.5.19",
+    "@curvefi/llamalend-api": "^1.0.10",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",
     "@supercharge/promise-pool": "^3.2.0",

@@ -14,8 +14,8 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { scrollToTop } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,

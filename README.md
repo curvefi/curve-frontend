@@ -1,6 +1,7 @@
 # curve-frontend
 
-Curve-frontend is a NextJs user-interface application designed to connect to Curve's deployment of smart contracts. This UI application is designed for both the [crvUSD](https://crvusd-curve.fi) and [Curve](https://curve.fi) dapps, and utilizes [curve-js](https://github.com/curvefi/curve-js) and [curve-stablecoin-api](https://github.com/curvefi/curve-stablecoin-js) to communicate with the blockchain.
+Curve-frontend is a NextJs user-interface application designed to connect to Curve's deployment of smart contracts.
+This UI application is designed for both the [Curve](https://curve.fi) dapp, and utilizes [curve-js](https://github.com/curvefi/curve-js) and [curve-llamalend-api](https://github.com/curvefi/curve-llamalend-js) to communicate with the blockchain.
 
 ## Prerequisites
 
@@ -48,6 +49,7 @@ This repository is organized as follows:
 - `/apps/main`: This application manages router swaps, pool-specific functions (deposit, withdraw, swap), and pool creation [React](https://react.dev/) application.
 - `/apps/loan`: crvUSD [React](https://react.dev/) application.
 - `/apps/lend`: Lend [React](https://react.dev/) application.
+- `/apps/dao`: DAO [React](https://react.dev/) application.
 - `/tests`: DApp tests
 - `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@ui-kit`
 - `/packages/prices-api`: Package for consuming the Prices API, mapped as `@curvefi/prices-api`. Soon to be to separated its own NPM package.

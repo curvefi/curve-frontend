@@ -10,8 +10,7 @@ import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { useStablecoinConnection } from '@/loan/temp-lib'
-import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import type { CollateralUrlParams, LlamaApi } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname, getLoanCreatePathname, useChainId } from '@/loan/utils/utilsRouter'
 import {
@@ -28,7 +27,7 @@ import Icon from '@ui/Icon'
 import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -36,7 +35,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
-  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
