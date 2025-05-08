@@ -1622,16 +1622,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/stablecoin-api@npm:1.5.19":
-  version: 1.5.19
-  resolution: "@curvefi/stablecoin-api@npm:1.5.19"
+"@curvefi/stablecoin-api@npm:1.5.20":
+  version: 1.5.20
+  resolution: "@curvefi/stablecoin-api@npm:1.5.20"
   dependencies:
     "@ethersproject/networks": "npm:^5.5.0"
     bignumber.js: "npm:^9.0.1"
     ethcall: "npm:^4.2.5"
     ethers: "npm:^5.4.6"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/bb79653e86c6aeaf20ae928fd040f05777bd464dfdc6ae067d9229f47b4e09952789c77e45463dff4350bcdffbd28a4050cfcaf7098101b3b9f24520438d1f63
+  checksum: 10c0/5f2e34d1dd53c00b044d9e40a7a4b238c5dc4ddd0aab38dccb8d863098165ad1c7ed3a76f7b7df5f6e9fbc4db7df1c09f21d3ac0f7c1a7f4b65633b0585744b2
   languageName: node
   linkType: hard
 
@@ -19210,7 +19210,7 @@ __metadata:
   dependencies:
     "@curvefi/api": "npm:2.66.20"
     "@curvefi/lending-api": "npm:2.5.9"
-    "@curvefi/stablecoin-api": "npm:1.5.19"
+    "@curvefi/stablecoin-api": "npm:1.5.20"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^5.0.1"
     "@next/bundle-analyzer": "npm:^15.2.4"
