@@ -6,10 +6,8 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Title } from '@/dex/components/PageDashboard/styles'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
-import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { toDate } from '@curvefi/prices-api/timestamp'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
@@ -23,8 +21,11 @@ import { Chip } from '@ui/Typography'
 import { formatDate } from '@ui/utils'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
+import { NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { getInternalUrl } from '@ui-kit/shared/routes'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -123,14 +124,7 @@ const FormVecrv = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, lockedAmount, parsedFormStatus])
 
-  const adjustVecrvUrl = getPath(
-    params,
-    `${ROUTE.PAGE_LOCKER}${
-      +signerVecrvInfo?.lockedAmountAndUnlockTime.lockedAmount > 0
-        ? ROUTE.PAGE_LOCKER_ADJUST_CRV
-        : ROUTE.PAGE_LOCKER_CREATE
-    }`,
-  )
+  const adjustVecrvUrl = getInternalUrl('dao', NETWORK_BASE_CONFIG[1].id, DAO_ROUTES.PAGE_VECRV_CREATE)
 
   return (
     <>
