@@ -139,7 +139,7 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
             </ProposalInformationWrapper>
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
-            <UserBox chainId={rChainId} votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
+            <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
               {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
                   userAddress={userAddress ?? ''}
@@ -157,7 +157,6 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
         <SecondColumnBox display="flex" flexColumn flexGap={'var(--spacing-1)'} margin="0 0 auto var(--spacing-1)">
           <Box variant="secondary">
             <UserBox
-              chainId={rChainId}
               votingPower={snapshotVeCrv}
               snapshotVotingPower
               activeProposal={

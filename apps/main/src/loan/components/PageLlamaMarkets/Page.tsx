@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import { useAccount } from 'wagmi'
 import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
@@ -15,7 +16,6 @@ import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } f
 import useStore from '@/loan/store/useStore'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { logSuccess } from '@ui-kit/lib'
@@ -60,8 +60,8 @@ function useInjectServerData(props: CrvUsdServerData) {
  */
 export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   useInjectServerData(props)
-  const { signerAddress } = useWallet()
-  const { data, isError, isLoading } = useLlamaMarkets(signerAddress)
+  const { address } = useAccount()
+  const { data, isError, isLoading } = useLlamaMarkets(address)
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
@@ -73,7 +73,7 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
         <LendingMarketsTable
-          onReload={() => onReload(signerAddress)}
+          onReload={() => onReload(address)}
           result={data}
           headerHeight={headerHeight}
           isError={isError}

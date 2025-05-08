@@ -1,14 +1,10 @@
+'use client'
 import { type Eip1193Provider } from 'ethers'
-import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
-import {
-  getWalletChainId,
-  getWalletSignerAddress,
-  useSetChain,
-  useWallet,
-  type Wallet,
-} from '@ui-kit/features/connect-wallet'
-import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
-import { useWalletName } from '@ui-kit/hooks/useLocalStorage'
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
+import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { type Wallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet/lib/useWallet'
+import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -30,7 +26,7 @@ type ConnectState = {
 }
 
 const { FAILURE, LOADING, SUCCESS } = CONNECT_STATUS
-const { HYDRATE, SWITCH_NETWORK, CONNECT_WALLET, CONNECT_API } = CONNECT_STAGE
+const { HYDRATE, SWITCH_NETWORK, CONNECT_API } = CONNECT_STAGE
 
 export const isSuccess = (connectState: ConnectState) => connectState.status === SUCCESS
 
@@ -65,7 +61,7 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => !wallet || wallet.account?.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
 /** Module-level variables to track initialization state across multiple calls */
 let mutexPromise: Promise<unknown> | null = null
@@ -85,7 +81,7 @@ let mutexKey: any | null = null
  * 4. If no other operation is in progress, it executes the function and cleans up when done
  *
  * Primary reason for this function is to avoid simultaneous CurveJS library instantiations,
- * which is not only unnecessary, it is also not supported and can cause unintentional side-effects like
+ * which is not only unnecessary, it is also not supported and can cause unintentional side effects like
  * duplicate mint markets for crvUSD.
  *
  * @param fn - The function to execute with mutex protection
@@ -136,52 +132,25 @@ export const ConnectionProvider = <
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
-  const isWalletInitialized = useRef(false)
-  const { wallet, connect } = useWallet()
-  const [walletName, setWalletName] = useWalletName()
-  const setChain = useSetChain()
+  const { switchChainAsync } = useSwitchChain()
+  const walletChainId = useChainId()
+  const { isReconnecting } = useAccount()
+  const { wallet } = useWallet()
 
   useEffect(() => {
-    if (isWalletInitialized.current && wallet) {
-      // update the wallet name so that onboard can use it for reconnecting
-      setWalletName(wallet.label ?? null)
-    }
-  }, [setWalletName, wallet])
-
-  // make sure the ref is reset when the component is unmounted, so it doesn't get used in the wrong app
-  useEffect(() => () => libRef.reset(), [])
-
-  useEffect(() => {
+    if (isReconnecting) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
-
-    /**
-     * Try to reconnect to the wallet if it was previously connected, based on the stored wallet name.
-     */
-    const tryToReconnect = async (label: string) => {
-      setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      return withTimeout(connect(label))
-        .then((wallet) => !!wallet)
-        .catch(() => false)
-    }
 
     /**
      * Initialize the app by connecting to the wallet and setting up the library.
      */
     const initApp = async () => {
       try {
-        if (!isWalletInitialized.current) {
-          isWalletInitialized.current = true
-          if (walletName && (await tryToReconnect(walletName))) {
-            return // wallet updated, callback is restarted
-          }
-        }
-
-        const walletChainId = getWalletChainId(wallet)
         const isFocused = document.hasFocus() // only change chains on focused tab, so they don't fight each other
         if (walletChainId && walletChainId !== chainId && isFocused) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
-          if (!(await setChain(chainId))) {
+          if (!(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
             if (signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])
@@ -215,10 +184,7 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-    // Missing connect from dep array, otherwise hydration is triggered upon open and closing of connect wallet modal.
-    // This should be removed soon. Problem is caused by `connectCallbacks` which will be removed in #873.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, walletName])
+  }, [isReconnecting, chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet, walletChainId])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet

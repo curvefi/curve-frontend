@@ -1,13 +1,9 @@
 import { forwardRef, Ref } from 'react'
+import { useChainId, useSwitchChain } from 'wagmi'
+import { useAccount } from 'wagmi'
 import Box from '@mui/material/Box'
-import {
-  CONNECT_STAGE,
-  getWalletChainId,
-  isFailure,
-  useConnection,
-  useWallet,
-  useSetChain,
-} from '@ui-kit/features/connect-wallet'
+import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
+import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -31,12 +27,13 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const [isBeta, setIsBeta] = useBetaFlag()
     const showBetaBanner = isBeta && !isCypress
 
-    const { wallet } = useWallet()
-    const setChain = useSetChain()
+    const { isConnected } = useAccount()
+    const { switchChain } = useSwitchChain()
     const { connectState } = useConnection()
     const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
+    const walletChainId = useChainId()
     const showSwitchNetworkMessage =
-      (wallet && getWalletChainId(wallet) != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
+      (isConnected && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
 
     return (
       (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || showBetaBanner) && (
@@ -48,7 +45,11 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
           )}
           {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
           {showSwitchNetworkMessage && (
-            <Banner severity="warning" buttonText={t`Change network`} onClick={() => setChain(chainId)}>
+            <Banner
+              severity="warning"
+              buttonText={t`Change network`}
+              onClick={() => switchChain({ chainId: chainId as WagmiChainId })}
+            >
               {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
               <strong>{networkId}</strong>.{' '}
             </Banner>

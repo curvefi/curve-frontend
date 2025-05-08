@@ -3,14 +3,12 @@ import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import { useRef } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/dex/layout/default'
 import useStore from '@/dex/store/useStore'
 import { type ChainId, type UrlParams } from '@/dex/types/main.types'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
@@ -29,7 +27,6 @@ export const App = ({ children }: { children: ReactNode }) => {
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const theme = useUserProfileStore((state) => state.theme)
   const hydrate = useStore((s) => s.hydrate)
-  const themeRef = useRef(theme)
 
   const chainId = networksIdMapper[networkId]
   const network = networks[chainId]
@@ -48,9 +45,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
     useStore.setState(useStore.getInitialState())
     void (async () => {
-      const networks = await fetchNetworks()
-
-      useWallet.initialize(themeRef.current, networks)
+      await fetchNetworks()
 
       const handleVisibilityChange = () => {
         updateGlobalStoreByKey('isPageVisible', !document.hidden)

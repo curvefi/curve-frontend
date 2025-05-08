@@ -1,12 +1,16 @@
+import { useEnsName } from 'wagmi'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import { type Address, shortenAddress } from '@ui-kit/utils'
 
 export type ConnectedWalletLabelProps = ButtonProps & {
-  walletAddress: Address
+  address: Address
 }
 
-export const ConnectedWalletLabel = ({ walletAddress, ...props }: ConnectedWalletLabelProps) => (
-  <Button size="small" color="ghost" title={walletAddress} {...props}>
-    {shortenAddress(walletAddress)}
-  </Button>
-)
+export const ConnectedWalletLabel = ({ address, ...props }: ConnectedWalletLabelProps) => {
+  const { data: ensName } = useEnsName({ address })
+  return (
+    <Button size="small" color="ghost" title={address} {...props}>
+      {ensName || shortenAddress(address)}
+    </Button>
+  )
+}
