@@ -1,8 +1,10 @@
+import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
 import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
+import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
@@ -11,10 +13,13 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
+  TransactionState,
 } from '@/dao/types/dao.types'
+import { getErrorMessage } from '@/dao/utils'
 import { Address } from '@curvefi/prices-api'
 import { shortenAccount } from '@ui/utils'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { notify, requireLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -24,6 +29,12 @@ type SliceState = {
   formEstGas: { [activeKey: string]: FormEstGas }
   formValues: FormValues
   formStatus: FormStatus
+
+  withdrawLockedCrvStatus: {
+    transactionState: TransactionState
+    errorMessage: string | null
+    txHash: string | null
+  }
 }
 
 const sliceKey = 'lockedCrv'
@@ -40,6 +51,8 @@ export type LockedCrvSlice = {
     fetchStepIncreaseCrv(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
     fetchStepIncreaseTime(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
 
+    withdrawLockedCrv(): void
+
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
@@ -53,6 +66,11 @@ export const DEFAULT_STATE: SliceState = {
   formEstGas: {},
   formValues: DEFAULT_FORM_VALUES,
   formStatus: DEFAULT_FORM_STATUS,
+  withdrawLockedCrvStatus: {
+    transactionState: '',
+    errorMessage: null,
+    txHash: null,
+  },
 }
 
 const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): LockedCrvSlice => ({
@@ -277,6 +295,59 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         }
 
         return resp
+      }
+    },
+
+    withdrawLockedCrv: async () => {
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
+      const curve = requireLib<CurveApi>()
+
+      await get().gas.fetchGasInfo(curve)
+
+      let dismissNotificationHandler = notify(t`Please confirm to withdraw locked CRV.`, 'pending').dismiss
+
+      try {
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'CONFIRMING'
+            state[sliceKey].withdrawLockedCrvStatus.errorMessage = null
+            state[sliceKey].withdrawLockedCrvStatus.txHash = null
+          }),
+        )
+
+        const hash = await curve.boosting.withdrawLockedCrv()
+
+        dismissNotificationHandler()
+        dismissNotificationHandler = notify(t`Withdrawing locked CRV...`, 'pending').dismiss
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'LOADING'
+            state[sliceKey].withdrawLockedCrvStatus.txHash = hash
+          }),
+        )
+
+        await helpers.waitForTransaction(hash, provider)
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'SUCCESS'
+          }),
+        )
+
+        dismissNotificationHandler()
+        notify(t`CRV withdrawal successful.`, 'success', 15000)
+      } catch (error) {
+        dismissNotificationHandler()
+        console.warn(error)
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'ERROR'
+            state[sliceKey].withdrawLockedCrvStatus.errorMessage = getErrorMessage(error, 'error-withdraw-locked-crv')
+            state[sliceKey].withdrawLockedCrvStatus.txHash = null
+          }),
+        )
       }
     },
 
