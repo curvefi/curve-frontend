@@ -1,1 +1,22 @@
+{
+  "campaignName": "Activity Points",
+  "platform": "Sonic",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "sonic.png",
+  "dashboardLink": "https://my.soniclabs.com/points",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Whitelisted assets earns Sonic Activity Points. For more information please visit issuer.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xD3Dc6b2c947F1BCa4D4a85114b34a71985606cd2",
+      "network": "sonic",
+      "multiplier": "AP",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
 
