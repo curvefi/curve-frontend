@@ -347,6 +347,23 @@ export async function getNetworks() {
       prev[chainId] = {
         ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
+        ...(isUpgraded
+          ? {
+              poolFilters: [
+                'all',
+                'usd',
+                'btc',
+                'eth',
+                'crypto',
+                'crvusd',
+                'tricrypto',
+                'stableng',
+                'cross-chain',
+                'others',
+                'user',
+              ],
+            }
+          : {}),
         chainId,
         hasFactory: true,
         stableswapFactory: true,
