@@ -1,5 +1,5 @@
 import { type Eip1193Provider } from 'ethers'
-import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
 import {
   getWalletChainId,
   getWalletSignerAddress,
@@ -136,13 +136,13 @@ export const ConnectionProvider = <
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
-  const isWalletInitialized = useRef(false)
+  const [isReconnecting, setIsReconnecting] = useState<boolean | null>(null)
   const { wallet, connect } = useWallet()
   const [walletName, setWalletName] = useWalletName()
   const setChain = useSetChain()
 
   useEffect(() => {
-    if (isWalletInitialized.current && wallet) {
+    if (wallet) {
       // update the wallet name so that onboard can use it for reconnecting
       setWalletName(wallet.label ?? null)
     }
@@ -158,11 +158,14 @@ export const ConnectionProvider = <
     /**
      * Try to reconnect to the wallet if it was previously connected, based on the stored wallet name.
      */
-    const tryToReconnect = async (label: string) => {
+    const tryToReconnect = async (label: string | null) => {
+      setIsReconnecting(!!label)
+      if (!label) return
       setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
       return withTimeout(connect(label))
         .then((wallet) => !!wallet)
         .catch(() => false)
+        .finally(() => setIsReconnecting(false))
     }
 
     /**
@@ -170,11 +173,8 @@ export const ConnectionProvider = <
      */
     const initApp = async () => {
       try {
-        if (!isWalletInitialized.current) {
-          isWalletInitialized.current = true
-          if (walletName && (await tryToReconnect(walletName))) {
-            return // wallet updated, callback is restarted
-          }
+        if (isReconnecting === null && (await tryToReconnect(walletName))) {
+          return // wallet updated, callback is restarted
         }
 
         const walletChainId = getWalletChainId(wallet)
@@ -184,7 +184,7 @@ export const ConnectionProvider = <
           if (!(await setChain(chainId))) {
             if (signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
-            onChainUnavailable([chainId, walletChainId as TChainId])
+            return onChainUnavailable([chainId, walletChainId as TChainId])
           }
         }
 
@@ -213,12 +213,9 @@ export const ConnectionProvider = <
         setConnectState(({ stage }) => ({ status: FAILURE, stage, error }))
       }
     }
-    void initApp()
+    if (!isReconnecting) void initApp()
     return () => abort.abort()
-    // Missing connect from dep array, otherwise hydration is triggered upon open and closing of connect wallet modal.
-    // This should be removed soon. Problem is caused by `connectCallbacks` which will be removed in #873.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWalletInitialized, chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, walletName])
+  }, [chainId, hydrate, initLib, onChainUnavailable, setChain, wallet, walletName, connect, isReconnecting])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
