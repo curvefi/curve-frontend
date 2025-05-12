@@ -2165,7 +2165,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:^5.1.2":
+"@ethersproject/abi@npm:^5.1.2, @ethersproject/abi@npm:^5.8.0":
   version: 5.8.0
   resolution: "@ethersproject/abi@npm:5.8.0"
   dependencies:
@@ -14738,6 +14738,7 @@ __metadata:
   dependencies:
     "@curvefi/api": "npm:2.66.20"
     "@curvefi/llamalend-api": "npm:^1.0.12"
+    "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^5.0.1"
     "@next/bundle-analyzer": "npm:^15.2.4"
