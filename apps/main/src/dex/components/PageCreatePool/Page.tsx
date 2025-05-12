@@ -1,5 +1,6 @@
 'use client'
 import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
 import { CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -8,9 +9,10 @@ import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-ki
 
 export const PageCreatePool = (_: NetworkUrlParams) => {
   const { lib: curve = null, connectState } = useConnection<CurveApi>()
-  const { connect: connectWallet, signerAddress } = useWallet()
+  const { connect: connectWallet } = useWallet()
+  const { address } = useAccount()
 
-  if (signerAddress) {
+  if (address) {
     return (
       <Container>
         <PoolCreation curve={curve as CurveApi} />

@@ -1,3 +1,4 @@
+import { useAccount } from 'wagmi'
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import { isLoading, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
@@ -5,7 +6,6 @@ import useStore from '@/loan/store/useStore'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import { Stack, Typography } from '@mui/material'
 import { formatNumber } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
@@ -15,12 +15,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 export const TransactionDetails = () => {
-  const { signerAddress } = useWallet()
+  const { address } = useAccount()
   const { preview, scrvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
     (state) => state.scrvusd,
   )
   const fetchStatus = useStore((state) => state.scrvusd.estGas.fetchStatus)
-  const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(signerAddress ?? ''))
+  const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(address ?? ''))
 
   const { estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)
   const exchangeRateLoading = isLoading(scrvUsdExchangeRate.fetchStatus)
