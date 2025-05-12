@@ -15,7 +15,7 @@ const state: {
 }
 
 const useWallet = () => {
-  // Dunno why but it was a global and needs to be a global. Can this be a ref?
+  // modal state needs to be global because every call creates new state
   const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { data: client } = useConnectorClient()
