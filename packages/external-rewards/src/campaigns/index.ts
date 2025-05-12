@@ -11,6 +11,7 @@ import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
 import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
+import HumanNetwork from './HumanNetwork.json'
 import Inception from './Inception.json'
 import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
@@ -66,4 +67,5 @@ export {
   Ditto,
   Mevcommit,
   Sonic,
+  HumanNetwork,
 }
