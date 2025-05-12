@@ -1,5 +1,4 @@
 import { get, sortBy, sortedUniq } from 'lodash'
-import * as React from 'react'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'

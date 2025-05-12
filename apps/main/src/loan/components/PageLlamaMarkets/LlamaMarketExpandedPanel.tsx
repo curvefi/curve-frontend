@@ -27,7 +27,12 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         <Metric label={t`Supplied Amount`} value={0} unit="percentage" />
       </ExpansionPanelSection>
     )}
-    <Button sx={{ flexGrow: 1 }} component={Link} href={market.url} color="navigation">
+    <Button
+      sx={{ flexGrow: 1, borderTop: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
+      component={Link}
+      href={market.url}
+      color="navigation"
+    >
       {t`Go To Market`}
     </Button>
   </>

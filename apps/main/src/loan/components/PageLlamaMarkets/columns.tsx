@@ -24,14 +24,6 @@ const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>
 
 type LlamaColumn = ColumnDef<LlamaMarket, any>
 
-const LendChartColumn = columnHelper.accessor('rates.lend', {
-  id: LlamaMarketColumnId.LendChart,
-  header: t`7D Supply Yield Chart`,
-  cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
-  size: ColumnWidth.md,
-  sortUndefined: 'last',
-}) satisfies LlamaColumn
-
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
@@ -93,7 +85,13 @@ export const LLAMA_MARKET_COLUMNS = [
     size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  LendChartColumn,
+  columnHelper.accessor('rates.lend', {
+    id: LlamaMarketColumnId.LendChart,
+    header: t`7D Supply Yield Chart`,
+    cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
+    size: ColumnWidth.md,
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: t`Utilization`,
     cell: PercentageCell,
@@ -101,7 +99,7 @@ export const LLAMA_MARKET_COLUMNS = [
     size: ColumnWidth.sm,
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
-    header: () => t`Available Liquidity`,
+    header: t`Available Liquidity`,
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
@@ -171,3 +169,10 @@ export const useDefaultMarketColumnsVisibility: () => VisibilityGroup<LlamaMarke
     [isUserConnected, isMobile],
   )
 }
+
+export const LLAMA_MARKET_SORT_OPTIONS = LLAMA_MARKET_COLUMNS.filter((c) => c.id && c.enableSorting !== false).map(
+  ({ id, header }) => ({
+    id: id as LlamaMarketColumnId,
+    label: header as string,
+  }),
+)

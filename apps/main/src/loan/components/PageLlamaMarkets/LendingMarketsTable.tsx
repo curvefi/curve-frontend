@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import {
   DEFAULT_SORT,
   LLAMA_MARKET_COLUMNS,
+  LLAMA_MARKET_SORT_OPTIONS,
   useDefaultMarketColumnsVisibility,
 } from '@/loan/components/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
@@ -21,6 +22,7 @@ import {
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
+import { SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -98,16 +100,25 @@ export const LendingMarketsTable = ({
               minLiquidity={minLiquidity}
             />
           }
-        >
-          <MarketsFilterChips
-            columnFiltersById={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-            hasFilters={columnFilters.length > 0}
-            hasPositions={hasPositions}
-            hasFavorites={hasFavorites}
-            resetFilters={resetFilters}
-          />
-        </TableFilters>
+          chips={
+            <MarketsFilterChips
+              columnFiltersById={columnFiltersById}
+              setColumnFilter={setColumnFilter}
+              hasFilters={columnFilters.length > 0}
+              hasPositions={hasPositions}
+              hasFavorites={hasFavorites}
+              resetFilters={resetFilters}
+            />
+          }
+          sort={
+            <SelectFilter
+              name="sort"
+              options={LLAMA_MARKET_SORT_OPTIONS}
+              onSelected={({ id }) => table.setSorting([{ id, desc: false }])}
+              value={sorting[0]?.id ?? ''}
+            />
+          }
+        />
       </DataTable>
     </Stack>
   )

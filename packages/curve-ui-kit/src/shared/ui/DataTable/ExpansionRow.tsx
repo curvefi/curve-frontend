@@ -1,5 +1,4 @@
 import { ReactNode, useEffect, useState } from 'react'
-import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
@@ -51,11 +50,15 @@ export function ExpansionRow<T extends TableItem>({
       <TableRow>
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
           <Collapse in={expanded} onExited={() => setRender(false)}>
-            <Card>
-              <Stack gap={Spacing.lg} padding={Spacing.md} direction="column">
-                <ExpandedPanel row={row} />
-              </Stack>
-            </Card>
+            <Stack
+              gap={Spacing.lg}
+              paddingInline={Spacing.md}
+              paddingBlockStart={Spacing.md}
+              paddingBlockEnd={0}
+              direction="column"
+            >
+              <ExpandedPanel row={row} />
+            </Stack>
           </Collapse>
         </TableCell>
       </TableRow>
