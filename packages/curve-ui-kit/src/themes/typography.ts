@@ -1,5 +1,5 @@
 import { Breakpoint } from '@mui/material'
-import { type TypographyVariantsOptions } from '@mui/material/styles'
+import { type TypographyOptions } from '@mui/material/styles/createTypography'
 import { basicMuiTheme } from './basic-theme'
 import { DesignSystem } from './design'
 import { Sizing, TransitionFunction } from './design/0_primitives'
@@ -113,17 +113,14 @@ export const createTypography = ({ Text }: DesignSystem) =>
     fontWeightMedium: FontWeight.Medium,
     fontWeightRegular: FontWeight.Normal,
     fontWeightLight: FontWeight.Light,
-    ...disabledTypographyKeys.reduce(
-      (acc, variant) => ({ ...acc, [variant]: undefined }),
-      {} as TypographyVariantsOptions,
-    ),
+    ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
     ...Object.fromEntries(
       Object.entries(TYPOGRAPHY_VARIANTS).map(([key, def]) => {
         const { fontFamily, ...value } = variant(def)
         return [key, { ...value, fontFamily: Fonts[Text.FontFamily[fontFamily]] }]
       }),
     ),
-  }) as TypographyVariantsOptions
+  }) as TypographyOptions
 
 export type DisabledTypographyVariantKey = typeof disabledTypographyKeys
 export type TypographyVariantKey = keyof typeof TYPOGRAPHY_VARIANTS

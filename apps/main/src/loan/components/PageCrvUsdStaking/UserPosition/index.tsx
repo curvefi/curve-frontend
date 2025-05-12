@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { isReady, oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useAccount } from 'wagmi'
+import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
+import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
 import { Card, CardHeader, Stack } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid2'
 import { useTheme } from '@mui/material/styles'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -16,13 +17,13 @@ const { MaxWidth, Spacing } = SizesAndSpaces
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
-  const { signerAddress } = useWallet()
+  const { address } = useAccount()
   const {
     design: { Layer },
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({
-    userAddress: signerAddress ?? '',
+    userAddress: address ?? '',
   })
   const usdRateLoading = useStore((state) => state.usdRates.loading)
   const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)

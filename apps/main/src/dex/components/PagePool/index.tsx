@@ -353,10 +353,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 />
               </StatsWrapper>
             )}
-            {selectedTab === 'advanced' &&
-              poolData &&
-              snapshotsMapper[poolData.pool.address] !== undefined &&
-              !basePoolsLoading && <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />}
+            {selectedTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
+              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
+            )}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
       </Wrapper>

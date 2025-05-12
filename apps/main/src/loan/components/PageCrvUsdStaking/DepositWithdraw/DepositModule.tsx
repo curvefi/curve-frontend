@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
+import { useAccount } from 'wagmi'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import {
   ErrorText,
@@ -18,9 +18,9 @@ import {
 } from './styles'
 
 const DepositModule = () => {
-  const { signerAddress } = useWallet()
+  const { address } = useAccount()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
-    userAddress: signerAddress ?? '',
+    userAddress: address ?? '',
   })
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const preview = useStore((state) => state.scrvusd.preview)
@@ -51,7 +51,7 @@ const DepositModule = () => {
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
-            setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'deposit')}
+            setMax={() => setMax(address?.toLowerCase() ?? '', 'deposit')}
           />
         </InputWrapper>
       </Box>

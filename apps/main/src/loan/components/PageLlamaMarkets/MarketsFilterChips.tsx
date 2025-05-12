@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
+import { useAccount } from 'wagmi'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
 import Stack from '@mui/material/Stack'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
@@ -77,7 +77,7 @@ export const MarketsFilterChips = ({
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
-  const { signerAddress } = useWallet()
+  const { address } = useAccount()
 
   return (
     <Stack direction="row" gap={Spacing.md} flexWrap="wrap" alignItems="center" justifyContent="flex-end">
@@ -96,7 +96,7 @@ export const MarketsFilterChips = ({
         />
       </Stack>
       <Stack direction="row" columnGap="4px">
-        {signerAddress && (
+        {address && (
           <SelectableChip
             label={t`My Markets`}
             selected={myMarkets}

@@ -11,7 +11,7 @@ import useStore from '@/loan/store/useStore'
 import type { ChainId, LlamaApi, UrlParams } from '@/loan/types/loan.types'
 import { initLlamaApi } from '@/loan/utils/utilsCurvejs'
 import { getPath, getRestFullPathname } from '@/loan/utils/utilsRouter'
-import { ConnectionProvider, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -51,7 +51,6 @@ export const App = ({ children }: { children: ReactNode }) => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    useWallet.initialize(theme, networks)
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)

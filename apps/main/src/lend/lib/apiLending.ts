@@ -366,7 +366,6 @@ const market = {
     return results
   },
   fetchMarketsTotalCollateralValue: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    log('fetchMarketsTotalCollateralValue', markets.length)
     const results: MarketsTotalCollateralValueMapper = {}
     const useMultiCall = markets.length > 1
 
