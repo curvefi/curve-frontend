@@ -1,9 +1,9 @@
 {
   "campaignName": "Mev-commit Points",
-  "platform": "",
+  "platform": "Primev",
   "description": "Points for providing liquidity.",
   "platformImageId": "mev-commit.png",
-  "dashboardLink": "",
+  "dashboardLink": "https://primev.xyz/",
   "pools": [
     {
       "id": "null",
