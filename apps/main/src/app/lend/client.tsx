@@ -11,7 +11,6 @@ import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import type { ChainId, UrlParams } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
@@ -45,9 +44,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     const handleScrollListener = () => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
-
-    // init onboard
-    useWallet.initialize(theme, networks)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)

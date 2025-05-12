@@ -256,6 +256,42 @@
       "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xC8819A6cE017139CceB5710b44be104667187A7C",
+      "network": "hyperliquid",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x35d5854E6697396129395Ba0a41149d4057174C2",
+      "network": "hyperliquid",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xC2E5B3bd2C630D803b0b5A0BcFAD5f51B651F375",
+      "network": "hyperliquid",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
