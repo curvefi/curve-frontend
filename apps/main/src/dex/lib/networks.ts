@@ -347,8 +347,7 @@ export async function getNetworks() {
       prev[chainId] = {
         ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
-        ...(isUpgraded
-          ? {
+        ...(isUpgraded && {
               poolFilters: [
                 'all',
                 'usd',
@@ -362,8 +361,7 @@ export async function getNetworks() {
                 'others',
                 'user',
               ],
-            }
-          : {}),
+            }),
         chainId,
         hasFactory: true,
         stableswapFactory: true,
