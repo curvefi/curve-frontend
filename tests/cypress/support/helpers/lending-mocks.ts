@@ -6,7 +6,7 @@ const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 type Chain = (typeof LendingChains)[number]
 
 export const mockLendingChains = () =>
-  cy.intercept('https://prices.curve.fi/v1/lending/chains', { body: { data: LendingChains } })
+  cy.intercept('https://prices.curve.finance/v1/lending/chains', { body: { data: LendingChains } })
 
 const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['data'][number] => {
   const collateral = oneToken(chain)
@@ -94,12 +94,12 @@ export const createLendingVaultResponses = (): LendingVaultResponses =>
   Object.fromEntries(LendingChains.map((c) => [c, oneLendingVaultResponse(c)])) as LendingVaultResponses
 
 export const mockLendingVaults = (responses: LendingVaultResponses) =>
-  cy.intercept('https://prices.curve.fi/v1/lending/markets/*', (req) => {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*', (req) => {
     const chain = new URL(req.url).pathname.split('/').pop() as Chain
     req.reply(responses[chain])
   })
 
 export const mockLendingSnapshots = () =>
-  cy.intercept('https://prices.curve.fi/v1/lending/markets/*/*/snapshots?agg=none', {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none', {
     fixture: 'lending-snapshots.json',
   })

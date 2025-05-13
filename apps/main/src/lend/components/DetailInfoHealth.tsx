@@ -110,7 +110,7 @@ const DetailInfoHealth = ({
             <p>{t`The loan metric indicates the current health of your position.`}</p>
             <p>
               {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
-              <ExternalLink href="https://resources.curve.fi/lending/overview/#health-hard-liquidation" $noStyles>
+              <ExternalLink href="https://resources.curve.finance/lending/overview/#health-hard-liquidation" $noStyles>
                 Click here to learn more.
               </ExternalLink>
             </p>

@@ -124,7 +124,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
 
       try {
-        const response = await fetch('https://prices.curve.fi/v1/dao/gauges/overview')
+        const response = await fetch('https://prices.curve.finance/v1/dao/gauges/overview')
         const formattedGauges: PricesGaugeOverviewResponse = await response.json()
 
         const newGaugeMapper: GaugeMapper = {}
@@ -162,7 +162,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       )
 
       try {
-        const response = await fetch(`https://api.curve.fi/v1/getAllGauges`)
+        const response = await fetch(`https://api.curve.finance/v1/getAllGauges`)
         const data: CurveGaugeResponse = await response.json()
 
         const gaugeDataMapper: GaugeCurveApiDataMapper = Object.values(data.data).reduce((acc, gaugeData) => {
@@ -202,7 +202,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       )
 
       try {
-        const response = await fetch(`https://prices.curve.fi/v1/dao/gauges/${address}/votes`)
+        const response = await fetch(`https://prices.curve.finance/v1/dao/gauges/${address}/votes`)
         const data: GaugeVotesResponse = await response.json()
 
         const formattedData = data.votes.map((vote) => ({
@@ -238,7 +238,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       )
 
       try {
-        const weights = await fetch(`https://prices.curve.fi/v1/dao/gauges/${gaugeAddress}/weight_history`)
+        const weights = await fetch(`https://prices.curve.finance/v1/dao/gauges/${gaugeAddress}/weight_history`)
         const weightsData = await weights.json()
 
         const formattedWeightsData = weightsData.data

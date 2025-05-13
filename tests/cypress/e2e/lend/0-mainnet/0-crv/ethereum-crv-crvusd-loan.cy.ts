@@ -1,7 +1,7 @@
+import { ethers } from 'ethers'
 import createLoanSettings from '@/fixtures/create-loan-settings.json'
 import markets from '@/fixtures/markets.json'
 import tokens from '@/fixtures/tokens.json'
-import { ethers } from 'ethers'
 
 const CHAIN = 'mainnet'
 const MARKET_ID = 'CRV-crvUSD'
@@ -21,7 +21,7 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
       .prepareMetamaskWallet()
 
     // prepare page
-    cy.intercept('GET', 'https://api.curve.fi/api/**').as('getAPI')
+    cy.intercept('GET', 'https://api.curve.finance/api/**').as('getAPI')
     cy.visit(market.url)
     cy.wait('@getAPI').its('response.statusCode').should('equal', 200)
 

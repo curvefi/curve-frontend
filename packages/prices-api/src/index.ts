@@ -16,9 +16,9 @@ export type Options = {
  * @param options - Optional configuration options
  * @returns Promise that resolves to the host URL
  * @example
- * const host = getHost() // "https://prices.curve.fi"
+ * const host = getHost() // "https://prices.curve.finance"
  */
-export const getHost = (options?: Options): Required<Options>['host'] => options?.host ?? 'https://prices.curve.fi'
+export const getHost = (options?: Options): Required<Options>['host'] => options?.host ?? 'https://prices.curve.finance'
 
 /**
  * List of supported blockchain networks

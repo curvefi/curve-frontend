@@ -78,12 +78,12 @@ export const getSections = (appName: AppName) => [
     links: [
       {
         label: t`News`,
-        href: 'https://news.curve.fi/',
+        href: 'https://news.curve.finance/',
         icon: <NewsIcon />,
       },
       {
         label: t`User Docs`,
-        href: 'https://resources.curve.fi/',
+        href: 'https://resources.curve.finance/',
         icon: <HelpOutlineIcon />,
       },
       {
@@ -94,7 +94,7 @@ export const getSections = (appName: AppName) => [
       },
       {
         label: t`Technical Docs`,
-        href: 'https://docs.curve.fi/',
+        href: 'https://docs.curve.finance/',
         icon: <DocsIcon />,
       },
       {
@@ -114,12 +114,12 @@ export const getSections = (appName: AppName) => [
     links: [
       {
         label: t`Audits`,
-        href: 'https://docs.curve.fi/security/security/#security-audits',
+        href: 'https://docs.curve.finance/security/security/#security-audits',
         icon: <BeenhereOutlinedIcon />,
       },
       {
         label: t`Bug Bounty`,
-        href: 'https://docs.curve.fi/security/security/#bug-bounty',
+        href: 'https://docs.curve.finance/security/security/#bug-bounty',
         icon: <BugReportOutlinedIcon />,
       },
       {
@@ -134,7 +134,7 @@ export const getSections = (appName: AppName) => [
       },
       {
         label: t`Dune Analytics`,
-        href: 'https://dune.com/mrblock_buidl/Curve.fi',
+        href: 'https://dune.com/mrblock_buidl/Curve.finance',
         icon: <DuneIcon />,
       },
       {
