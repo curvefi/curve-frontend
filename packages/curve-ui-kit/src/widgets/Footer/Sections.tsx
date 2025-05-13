@@ -134,7 +134,7 @@ export const getSections = (appName: AppName) => [
       },
       {
         label: t`Dune Analytics`,
-        href: 'https://dune.com/mrblock_buidl/Curve.finance',
+        href: 'https://dune.com/mrblock_buidl/Curve.fi',
         icon: <DuneIcon />,
       },
       {

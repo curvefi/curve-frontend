@@ -81,7 +81,7 @@ const getSections = (): NavigationSection[] => [
     links: [
       { href: 'https://docs.curve.finance/references/audits/', label: t`Audits` },
       { href: 'https://docs.curve.finance/security/security/', label: t`Bug Bounty` },
-      { href: 'https://dune.com/mrblock_buidl/Curve.finance', label: t`Dune Analytics` },
+      { href: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
       { href: 'https://curvemonitor.com', label: t`Curve Monitor` },
       { href: 'https://crvhub.com/', label: t`Crvhub` },
     ],
