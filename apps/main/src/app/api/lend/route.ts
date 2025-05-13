@@ -9,7 +9,7 @@ type Response = {
 }
 
 refreshDataInBackground('Lend', async () => {
-  const { data } = await fetchJson<Response>(`https://api.curve.finance/api/getLendingVaults/all`)
+  const { data } = await fetchJson<Response>(`https://d3dl9x5bpp6us7.cloudfront.net/api/getLendingVaults/all`)
   LendServerSideCache.lendingVaultData = data.lendingVaultData
 }).catch(console.error)
 

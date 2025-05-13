@@ -147,11 +147,11 @@ const network = {
     return api.getVolume()
   },
   getFailedFetching24hOldVprice: async () => {
-    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
+    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://d3dl9x5bpp6us7.cloudfront.net/api/getFactoryAPYs-kava)
     // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
     // something like a dash with a tooltip "not available currently"
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
-    const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
+    const url = 'https://d3dl9x5bpp6us7.cloudfront.net/api/getFactoryAPYs-kava'
     try {
       const resp = await httpFetcher(url)
       if (resp.success && Object.keys(resp.data.poolDetails).length) {

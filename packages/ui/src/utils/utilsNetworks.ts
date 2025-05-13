@@ -25,7 +25,7 @@ export const NETWORK_BASE_CONFIG = {
   [Chain.Ethereum]: {
     id: 'ethereum',
     chainId: Chain.Ethereum,
-    gasPricesUrl: 'https://api.curve.finance/api/getGas',
+    gasPricesUrl: 'https://d3dl9x5bpp6us7.cloudfront.net/api/getGas',
     gasPricesDefault: 1,
     nativeCurrencySymbol: 'ETH',
     rpcUrl: `https://eth.drpc.org`,
