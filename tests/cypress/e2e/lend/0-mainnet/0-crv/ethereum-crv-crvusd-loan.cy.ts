@@ -21,7 +21,7 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
       .prepareMetamaskWallet()
 
     // prepare page
-    cy.intercept('GET', 'https://d3dl9x5bpp6us7.cloudfront.net/api/**').as('getAPI')
+    cy.intercept('GET', 'https://api.curve.finance/api/**').as('getAPI')
     cy.visit(market.url)
     cy.wait('@getAPI').its('response.statusCode').should('equal', 200)
 
