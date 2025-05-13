@@ -15,7 +15,7 @@ import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
 import useStore from '@/loan/store/useStore'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
@@ -104,7 +104,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   }
 
   const handleBtnClickPay = useCallback(
-    async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
+    async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
       const { debt, isFullRepay } = formValues
       const notifyMessage = isFullRepay
         ? t`Please approve full repay.`
@@ -139,7 +139,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      curve: Curve,
+      curve: LlamaApi,
       llamma: Llamma,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
