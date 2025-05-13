@@ -1,6 +1,6 @@
 /**
  * @file entities/gauge/model.ts
- * @description This file defines the data fetching and mutation logic for gauge-related operations in the Curve.fi DApp.
+ * @description This file defines the data fetching and mutation logic for gauge-related operations in the Curve.finance DApp.
  * It's a core part of the 'gauge' entity in the FSD architecture.
  *
  * This module exports functions that create React Query options for various gauge operations

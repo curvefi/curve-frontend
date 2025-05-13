@@ -85,7 +85,7 @@ const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId:
         </>
       ) : null}
 
-      <BoostingLink $noStyles href="https://resources.curve.fi/reward-gauges/boosting-your-crv-rewards">
+      <BoostingLink $noStyles href="https://resources.curve.finance/reward-gauges/boosting-your-crv-rewards">
         {t`Learn more about Boosting your CRV rewards`}
       </BoostingLink>
     </RewardsWrapper>

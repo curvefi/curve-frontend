@@ -82,9 +82,9 @@ export const PageCompensation = ({ network }: NetworkUrlParams) => {
             or{' '}
             <ExternalLink
               $noStyles
-              href="https://gov.curve.fi/t/proposal-to-recompensate-lps-affected-by-curve-pool-exploit/9825"
+              href="https://gov.curve.finance/t/proposal-to-recompensate-lps-affected-by-curve-pool-exploit/9825"
             >
-              gov.curve.fi
+              gov.curve.finance
             </ExternalLink>
           </i>
           <i>

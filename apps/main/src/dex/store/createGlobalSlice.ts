@@ -178,7 +178,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       return
     }
 
-    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
+    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://d3dl9x5bpp6us7.cloudfront.net/api/getFactoryAPYs-kava)
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
       chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 

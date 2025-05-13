@@ -23,7 +23,7 @@ const Page = (params: NetworkUrlParams) => {
             <>
               <Title>{t`Peg Keepers`}</Title>
               <Description>
-                <StyledExternalLink href="https://resources.curve.fi/crvusd/faq/#peg-keepers">
+                <StyledExternalLink href="https://resources.curve.finance/crvusd/faq/#peg-keepers">
                   Click here
                 </StyledExternalLink>{' '}
                 to learn more about Peg Keepers.
