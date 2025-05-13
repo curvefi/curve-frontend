@@ -1,11 +1,12 @@
+import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
-import { ChainId, CurveApi, RewardsApy, Wallet } from '@/dex/types/main.types'
+import { CurveApi, ChainId, RewardsApy } from '@/dex/types/main.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
+export async function initCurveJs(chainId: ChainId, provider?: Eip1193Provider) {
   const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-  if (wallet) {
-    await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+  if (provider) {
+    await curveApi.init('Web3', { network: { chainId }, externalProvider: provider }, { chainId })
   } else {
     await curveApi.init('NoRPC', 'NoRPC', { chainId })
   }
@@ -69,16 +70,6 @@ export function separateCrvProfit<T extends { symbol: string }>(tokensProfit: T[
   }
 
   return { crvProfit: null, tokensProfit }
-}
-
-export function getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
 }
 
 export function parseBaseProfit(baseProfit: { day: string; week: string; month: string; year: string }) {

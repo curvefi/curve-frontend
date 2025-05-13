@@ -1,7 +1,6 @@
 import { Filter, FilterType } from '@/lend/components/PageMarketList/utils'
 import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
-import { ChainId, Api, Order, TitleKey, TitleMapper } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, ChainId, OneWayMarketTemplate, Order, TitleKey, TitleMapper } from '@/lend/types/lend.types'
 
 export type FormStatus = {
   error: string

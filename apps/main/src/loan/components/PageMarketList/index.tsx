@@ -10,10 +10,11 @@ import { TITLE } from '@/loan/constants'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import { getActiveKey } from '@/loan/store/createCollateralListSlice'
 import useStore from '@/loan/store/useStore'
-import { useStablecoinConnection } from '@/loan/temp-lib'
+import type { LlamaApi } from '@/loan/types/loan.types'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody, Tr } from '@ui/Table'
 import { breakpoints } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
@@ -23,7 +24,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
   const titleMapper = useTitleMapper()
 
   const activeKey = getActiveKey(rChainId, searchParams)
-  const { lib: curve = null } = useStablecoinConnection()
+  const { lib: curve = null } = useConnection<LlamaApi>()
   const prevActiveKey = useStore((state) => state.collateralList.activeKey)
   const formStatus = useStore((state) => state.collateralList.formStatus)
   const initialLoaded = useStore((state) => state.collateralList.initialLoaded)

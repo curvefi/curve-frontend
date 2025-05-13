@@ -7,9 +7,8 @@ import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { getLend, getStablecoin } from '@/loan/temp-lib'
-import { FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
-import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { FetchStatus, type LlamaApi, TransactionStatus } from '@/loan/types/loan.types'
+import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
@@ -94,7 +93,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     ...DEFAULT_STATE,
     checkApproval: {
       depositApprove: async (amount: string) => {
-        const lendApi = getLend()
+        const lendApi = getLib<LlamaApi>()
         if (!lendApi) return
 
         get()[sliceKey].setStateByKey('depositApproval', { approval: false, allowance: '', fetchStatus: 'loading' })
@@ -120,8 +119,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       depositApprove: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
@@ -141,8 +140,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       deposit: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
@@ -161,8 +160,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
       withdraw: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         if (!curve) return
 
         await get().gas.fetchGasInfo(curve)
@@ -180,8 +179,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       redeem: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         if (!curve) return
 
         await get().gas.fetchGasInfo(curve)
@@ -199,8 +198,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
     deploy: {
       depositApprove: async (amount: string) => {
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         const { provider } = useWallet.getState()
         const approveInfinite = get()[sliceKey].approveInfinite
 
@@ -257,8 +256,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
       deposit: async (amount: string) => {
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
@@ -298,7 +297,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
           invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
@@ -316,8 +315,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
       withdraw: async (amount: string) => {
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
@@ -357,7 +356,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
           invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
@@ -375,8 +374,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
       redeem: async (amount: string) => {
-        const lendApi = getLend()
-        const curve = getStablecoin()
+        const lendApi = getLib<LlamaApi>()
+        const curve = getLib<LlamaApi>()
         const { provider } = useWallet.getState()
         if (!lendApi || !curve || !provider) return
 
@@ -417,7 +416,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
           invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
 
           get()[sliceKey].setStakingModuleChangeReset()
@@ -436,7 +435,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
     },
     fetchExchangeRate: async () => {
-      const lendApi = getLend()
+      const lendApi = getLib<LlamaApi>()
       if (!lendApi) return
 
       get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
@@ -451,7 +450,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchCrvUsdSupplies: async () => {
-      const lendApi = getLend()
+      const lendApi = getLib<LlamaApi>()
       if (!lendApi) return
 
       get()[sliceKey].setStateByKey('crvUsdSupplies', { fetchStatus: 'loading', crvUSD: '', scrvUSD: '' })
@@ -470,10 +469,10 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const signerAddress = useWallet.getState().wallet?.accounts?.[0]?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
-      const lendApi = getLend()
+      const lendApi = getLib<LlamaApi>()
       if (!lendApi || !signerAddress) return
 
       const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([

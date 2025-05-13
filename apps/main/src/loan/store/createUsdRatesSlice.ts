@@ -3,7 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { Curve, UsdRate } from '@/loan/types/loan.types'
+import { LlamaApi, UsdRate } from '@/loan/types/loan.types'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
 
@@ -18,9 +18,9 @@ const sliceKey = 'usdRates'
 
 export type UsdRatesSlice = {
   [sliceKey]: SliceState & {
-    fetchUsdRateByToken(curve: Curve, tokenAddress: string): Promise<void>
-    fetchUsdRateByTokens(curve: Curve, tokenAddresses: string[]): Promise<void>
-    fetchAllStoredUsdRates(curve: Curve): Promise<void>
+    fetchUsdRateByToken(curve: LlamaApi, tokenAddress: string): Promise<void>
+    fetchUsdRateByTokens(curve: LlamaApi, tokenAddresses: string[]): Promise<void>
+    fetchAllStoredUsdRates(curve: LlamaApi): Promise<void>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -42,13 +42,13 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUsdRateByToken: async (curve: Curve, tokenAddress: string) => {
+    fetchUsdRateByToken: async (curve: LlamaApi, tokenAddress: string) => {
       log('fetchUsdRateByToken', curve.chainId, tokenAddress)
       const chainId = curve.chainId
       const resp = await networks[chainId].api.helpers.getUsdRate(curve, tokenAddress)
       get()[sliceKey].setStateByActiveKey('tokens', tokenAddress, resp.usdRate)
     },
-    fetchUsdRateByTokens: async (curve: Curve, tokenAddresses: string[]) => {
+    fetchUsdRateByTokens: async (curve: LlamaApi, tokenAddresses: string[]) => {
       log('fetchUsdRateByTokens', curve.chainId, tokenAddresses.join(','))
       get().usdRates.setStateByKey('loading', true)
 
@@ -68,7 +68,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('tokens', usdRatesTokens)
       get().usdRates.setStateByKey('loading', false)
     },
-    fetchAllStoredUsdRates: async (curve: Curve) => {
+    fetchAllStoredUsdRates: async (curve: LlamaApi) => {
       const tokenAddresses = Object.keys(get().usdRates.tokens)
       void get()[sliceKey].fetchUsdRateByTokens(curve, tokenAddresses)
     },

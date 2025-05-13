@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useAccount } from 'wagmi'
 import {
   DEFAULT_SORT,
   LLAMA_MARKET_COLUMNS,
@@ -10,7 +11,6 @@ import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFi
 import { type LlamaMarketsResult } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
 import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
@@ -34,11 +34,11 @@ export const LendingMarketsTable = ({
   isError: boolean
   minLiquidity: number
 }) => {
-  const { signerAddress } = useWallet()
+  const { address } = useAccount()
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
     { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
   ])
-  const defaultVisibility = useDefaultMarketColumnsVisibility(signerAddress)
+  const defaultVisibility = useDefaultMarketColumnsVisibility(address)
   const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(defaultVisibility)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
@@ -72,7 +72,7 @@ export const LendingMarketsTable = ({
           title={t`Llamalend Markets`}
           subtitle={t`Borrow with the power of Curve soft liquidations`}
           onReload={onReload}
-          learnMoreUrl="https://docs.curve.fi/lending/overview/"
+          learnMoreUrl="https://docs.curve.finance/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
           onSearch={useCallback(

@@ -1,3 +1,4 @@
+import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 import { zeroAddress } from 'viem'
@@ -38,24 +39,23 @@ import {
   UserLoanState,
   UserLoss,
   UserMarketBalances,
-  Wallet,
 } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, wallet: Wallet | null) => {
+  initApi: async (chainId: ChainId, provider?: Eip1193Provider) => {
+    if (!provider) return
     if (!(chainId in networks)) {
       throw new Error(`ChainId ${chainId} not supported`)
     }
-    const { networkId } = networks[chainId]
-    if (!wallet) return
-    const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-    await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
+    const network = networks[chainId].networkId
+    const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as Api
+    await api.init('Web3', { network, externalProvider: provider }, { chainId })
     return api
   },
   getIsUserCloseToLiquidation: (
@@ -366,7 +366,6 @@ const market = {
     return results
   },
   fetchMarketsTotalCollateralValue: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    log('fetchMarketsTotalCollateralValue', markets.length)
     const results: MarketsTotalCollateralValueMapper = {}
     const useMultiCall = markets.length > 1
 
@@ -1997,16 +1996,6 @@ const apiLending = {
 }
 
 export default apiLending
-
-function _getWalletProvider(wallet: Wallet) {
-  if ('isTrustWallet' in wallet.provider) {
-    // unable to connect to curvejs with wallet.provider
-    return window.ethereum
-  } else if ('isExodus' in wallet.provider && typeof window.exodus.ethereum !== 'undefined') {
-    return window.exodus.ethereum
-  }
-  return wallet.provider
-}
 
 /** healthNotFull is needed here because:
  * User full health can be > 0

@@ -22,8 +22,8 @@ export const defaultNetworks = Object.entries({
       y: true,
     },
     missingPools: [
-      { name: 'linkusd', url: 'https://classic.curve.fi/linkusd/withdraw' },
-      { name: 'tricrypto', url: 'https://classic.curve.fi/tricrypto/withdraw' },
+      { name: 'linkusd', url: 'https://classic.curve.finance/linkusd/withdraw' },
+      { name: 'tricrypto', url: 'https://classic.curve.finance/tricrypto/withdraw' },
     ],
     swap: {
       fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -121,8 +121,8 @@ export const defaultNetworks = Object.entries({
   [Chain.Polygon]: {
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     missingPools: [
-      { name: 'atricrypto', url: 'https://polygon.curve.fi/atricrypto/withdraw' },
-      { name: 'atricrypto2', url: 'https://polygon.curve.fi/atricrypto2/withdraw' },
+      { name: 'atricrypto', url: 'https://polygon.curve.finance/atricrypto/withdraw' },
+      { name: 'atricrypto2', url: 'https://polygon.curve.finance/atricrypto2/withdraw' },
     ],
     swap: {
       fromAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
@@ -328,7 +328,7 @@ export const defaultNetworks = Object.entries({
     const chainId = Number(key) as ChainId
 
     prev[chainId] = {
-      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId]),
+      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId as Chain]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,
@@ -343,6 +343,7 @@ export async function getNetworks() {
 
   const liteNetworks = Object.values(resp).reduce(
     (prev, { chainId, ...config }) => {
+      const isUpgraded = chainId == Chain.Sonic // sonic is upgraded from lite to full
       prev[chainId] = {
         ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
@@ -351,9 +352,9 @@ export async function getNetworks() {
         stableswapFactory: true,
         twocryptoFactory: true,
         tricryptoFactory: true,
-        pricesApi: chainId == 146, // sonic is upgraded from lite to full
-        isLite: chainId != 146, // sonic is upgraded from lite to full
-        isCrvRewardsEnabled: chainId == 146, // sonic is upgraded from lite to full
+        pricesApi: isUpgraded,
+        isLite: !isUpgraded,
+        isCrvRewardsEnabled: isUpgraded,
         isTestnet: config.isTestnet,
       }
       return prev

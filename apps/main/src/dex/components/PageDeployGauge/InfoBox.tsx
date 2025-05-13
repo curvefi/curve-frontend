@@ -9,15 +9,15 @@ const InfoBox = () => (
     <Box flex flexColumn>
       <InfoText>
         {t`
-          The address that deploys a gauge is set as the gauge admin/manager.
+          The address that deploys a gauge is set as the gauge manager.
         `}
       </InfoText>
       <InfoText>
         {t`
-          Only admin/manager can set reward token, set reward token distributor address.
+          Only the gauge manager can set reward tokens and set reward tokens distributor address.
         `}
       </InfoText>
-      <StyledExternalLink $noStyles href="https://resources.curve.fi/reward-gauges/permissionless-rewards/">
+      <StyledExternalLink $noStyles href="https://resources.curve.finance/reward-gauges/permissionless-rewards/">
         {t`Learn more`}
       </StyledExternalLink>
     </Box>

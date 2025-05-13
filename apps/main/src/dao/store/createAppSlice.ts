@@ -80,7 +80,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     const isNetworkSwitched = prevApi?.chainId != api.chainId
 
     log('Hydrating DAO', api?.chainId, {
-      wallet: wallet?.chains[0]?.id ?? '',
+      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
     })
 
@@ -88,7 +88,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     if (isNetworkSwitched) gas.resetState()
     await Promise.all([
       api && isNetworkSwitched && gas.fetchGasInfo(api),
-      api && wallet && user.updateUserData(api, wallet),
+      api && wallet?.provider && user.updateUserData(api, wallet),
       api && usdRates.fetchAllStoredUsdRates(api),
       gauges.getGauges(),
       gauges.getGaugesData(),

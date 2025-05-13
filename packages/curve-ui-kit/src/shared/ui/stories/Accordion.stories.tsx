@@ -43,7 +43,7 @@ const meta: Meta<typeof Accordion> = {
     },
   },
   args: {
-    title: 'Accordion Title',
+    title: 'Accordion title',
     ghost: false,
     size: 'small',
     defaultExpanded: false,

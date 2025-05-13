@@ -2,44 +2,28 @@ import { BrowserProvider } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/loan/constants'
 import curvejsApi from '@/loan/lib/apiCrvusd'
-import type lendingApi from '@curvefi/lending-api'
-import type stablecoinApi from '@curvefi/stablecoin-api'
-import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
-import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
+import type llamalendApi from '@curvefi/llamalend-api'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { WalletState } from '@web3-onboard/core'
 
-export type NetworkUrlParams = { network: INetworkName }
-type CollateralExtraParams = { collateralId: string; formType?: string[] }
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+
+export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
+export type NetworkEnum = Extract<INetworkName, 'ethereum'>
+
+export type NetworkUrlParams = { network: NetworkEnum }
+type CollateralExtraParams = { collateralId: string; formType?: RFormType[] }
 export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
-export type ChainId = 1 // note lend also has other chains, but we only use eth
 /** Actually the stablecoin api, but not renaming to avoid a huge rename PR */
-export type Curve = typeof stablecoinApi & { chainId: ChainId }
-export type LendApi = typeof lendingApi & { chainId: ChainId }
+export type LlamaApi = typeof llamalendApi & { chainId: ChainId }
 
-export type NetworkEnum = INetworkName
 export type Provider = BrowserProvider
 export type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
-export type RouterParams = {
-  rChainId: ChainId
-  rNetwork: NetworkEnum
-  rNetworkIdx: number
-  rSubdirectory: string
-  rSubdirectoryUseDefault: boolean
-  rCollateralId: string
-  rFormType: RFormType
-  redirectPathname: string
-  restFullPathname: string
-}
-export type PageProps = {
-  pageLoaded: boolean
-  routerParams: RouterParams
-  curve: Curve | null
-}
 
 export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   api: typeof curvejsApi
@@ -54,7 +38,7 @@ export type PageWidthClassName =
   | 'page-small'
   | 'page-small-x'
   | 'page-small-xx'
-export type Llamma = LlammaTemplate
+export type Llamma = MintMarketTemplate
 
 export interface CollateralData {
   llamma: Llamma
@@ -153,7 +137,6 @@ export type UserWalletBalances = {
 }
 export type Theme = 'default' | 'dark' | 'chad'
 export type UsdRate = { [tokenAddress: string]: string | number }
-export type Wallet = WalletState
 
 export interface CollateralAlert extends TooltipProps {
   alertType: AlertType

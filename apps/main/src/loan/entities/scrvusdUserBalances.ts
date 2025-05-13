@@ -1,4 +1,5 @@
-import { getLend } from '@/loan/temp-lib'
+import type { LlamaApi } from '@/loan/types/loan.types'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 
@@ -9,7 +10,7 @@ async function _fetchSavingsUserBalances({
 }: {
   userAddress: string
 }): Promise<ScrvUsdUserBalances | null> {
-  const lendApi = getLend()
+  const lendApi = getLib<LlamaApi>()
   if (!lendApi) return null
 
   const response = await lendApi.st_crvUSD.userBalances(userAddress)

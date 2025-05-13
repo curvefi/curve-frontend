@@ -3,28 +3,23 @@ import '@/global-extensions'
 import delay from 'lodash/delay'
 import { useParams, useRouter } from 'next/navigation'
 import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import GlobalStyle from '@/globalStyle'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/loan/layout'
 import { networks, networksIdMapper } from '@/loan/networks'
 import { getPageWidthClassName } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
-import { type TempApi, useStablecoinConnection } from '@/loan/temp-lib'
-import type { ChainId, UrlParams } from '@/loan/types/loan.types'
-import { initLendApi, initStableJs } from '@/loan/utils/utilsCurvejs'
+import type { ChainId, LlamaApi, UrlParams } from '@/loan/types/loan.types'
+import { initLlamaApi } from '@/loan/utils/utilsCurvejs'
 import { getPath, getRestFullPathname } from '@/loan/utils/utilsRouter'
-import { ConnectionProvider, getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
-import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
-  const { lib: curve = null } = useStablecoinConnection()
+  const { lib: curve = null } = useConnection<LlamaApi>()
   const isPageVisible = useStore((state) => state.isPageVisible)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
@@ -56,7 +51,6 @@ export const App = ({ children }: { children: ReactNode }) => {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    useWallet.initialize(theme, networks)
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
@@ -86,12 +80,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     isPageVisible,
   )
 
-  const initLib = useCallback(async (chainId: ChainId, wallet: Wallet | null): Promise<TempApi | undefined> => {
-    if (!wallet) return
-    const [stablecoin, lend] = await Promise.all([initStableJs(chainId, wallet), initLendApi(chainId, wallet)])
-    return { stablecoin, lend, chainId, signerAddress: getWalletSignerAddress(wallet) }
-  }, [])
-
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
       const network = networks[walletChainId]?.id
@@ -111,22 +99,15 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [networkId, chainId, push])
 
   return (
-    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        {appLoaded && (
-          <QueryProvider persister={persister} queryClient={queryClient}>
-            <ConnectionProvider<ChainId, TempApi>
-              hydrate={hydrate}
-              initLib={initLib}
-              chainId={chainId}
-              onChainUnavailable={onChainUnavailable}
-            >
-              <Page>{children}</Page>
-            </ConnectionProvider>
-          </QueryProvider>
-        )}
-      </ThemeProvider>
-    </div>
+    <ClientWrapper loading={!appLoaded}>
+      <ConnectionProvider<ChainId, LlamaApi>
+        hydrate={hydrate}
+        initLib={initLlamaApi}
+        chainId={chainId}
+        onChainUnavailable={onChainUnavailable}
+      >
+        <Page>{children}</Page>
+      </ConnectionProvider>
+    </ClientWrapper>
   )
 }

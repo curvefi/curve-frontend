@@ -2,9 +2,7 @@ import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneTabletViewport, oneVie
 
 describe('Disclaimers', () => {
   describe('Footer link', () => {
-    const footerViewports = [oneDesktopViewport(), oneTabletViewport()]
-
-    footerViewports.forEach((viewport) => {
+    ;[oneDesktopViewport(), oneTabletViewport()].forEach((viewport) => {
       it(`should contain footer disclaimer links for ${viewport[0]}x${viewport[1]}`, () => {
         cy.viewport(...viewport)
         cy.visit(`/${oneAppPath() || 'dex'}/`)
@@ -12,7 +10,7 @@ describe('Disclaimers', () => {
         // Navigate to risk disclaimer from footer.
         cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
         cy.get(`[data-testid='footer'] a`).contains('disclaimer', { matchCase: false }).click()
-        cy.url().should('match', /\/disclaimer\/?(\?tab=(lend|crvusd))?$/)
+        cy.url(LOAD_TIMEOUT).should('match', /\/disclaimer\/?(\?tab=(lend|crvusd))?$/)
         cy.get(`[data-testid='disclaimer']`).should('be.visible')
       })
     })
@@ -32,10 +30,14 @@ describe('Disclaimers', () => {
       cy.get(tabSelector).should('have.length.at.least', 4)
 
       // scrvusd tab should not be open. Find it, click it, and its contents should have a link to the scrvusd docs.
-      cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('not.exist')
+      cy.get('div[role="tabpanel"] a')
+        .filter('[href="https://docs.curve.finance/scrvusd/overview/"]')
+        .should('not.exist')
       cy.get(tabSelector).last().click()
-      cy.url().should('include', '?tab=scrvusd')
-      cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('be.visible')
+      cy.url(LOAD_TIMEOUT).should('include', '?tab=scrvusd')
+      cy.get('div[role="tabpanel"] a')
+        .filter('[href="https://docs.curve.finance/scrvusd/overview/"]')
+        .should('be.visible')
     })
   })
 })

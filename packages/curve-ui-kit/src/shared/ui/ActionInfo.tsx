@@ -102,7 +102,7 @@ const ActionInfo = ({
 
       {prevValue && (
         <Stack direction="row" alignItems="center">
-          <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textSecondary'}>
+          <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textTertiary'}>
             {prevValue}
           </Typography>
 
@@ -110,7 +110,7 @@ const ActionInfo = ({
             sx={{
               width: IconSize.sm,
               height: IconSize.sm,
-              color: (t) => t.palette.text.primary,
+              color: (t) => t.palette.text.tertiary,
             }}
           />
         </Stack>

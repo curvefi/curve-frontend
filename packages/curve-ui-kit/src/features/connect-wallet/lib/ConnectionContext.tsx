@@ -1,10 +1,10 @@
-import { ethers } from 'ethers'
-import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
-import { getWalletChainId, getWalletSignerAddress, useSetChain, useWallet } from '@ui-kit/features/connect-wallet'
-import { WalletNameStorageKey } from '@ui-kit/features/connect-wallet/lib/hooks'
-import { withTimeout } from '@ui-kit/features/connect-wallet/lib/utils/wallet-helpers'
-import { getFromLocalStorage, setLocalStorage } from '@ui-kit/hooks/useLocalStorage'
-import type { WalletState as Wallet } from '@web3-onboard/core'
+'use client'
+import { type Eip1193Provider } from 'ethers'
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
+import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { type Wallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet/lib/useWallet'
+import type { WagmiChainId } from './wagmi/chains'
 
 const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -26,7 +26,7 @@ type ConnectState = {
 }
 
 const { FAILURE, LOADING, SUCCESS } = CONNECT_STATUS
-const { HYDRATE, SWITCH_NETWORK, CONNECT_WALLET, CONNECT_API } = CONNECT_STAGE
+const { HYDRATE, SWITCH_NETWORK, CONNECT_API } = CONNECT_STAGE
 
 export const isSuccess = (connectState: ConnectState) => connectState.status === SUCCESS
 
@@ -61,7 +61,54 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => !wallet || getWalletSignerAddress(wallet)?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => !wallet || wallet.account?.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+
+/** Module-level variables to track initialization state across multiple calls */
+let mutexPromise: Promise<unknown> | null = null
+let mutexKey: any | null = null
+
+/**
+ * Ensures that initialization functions are executed in a controlled sequence,
+ * preventing race conditions when multiple initialization requests occur.
+ *
+ * This function implements a mutex pattern that handles concurrent initialization
+ * requests by ensuring only the most recent request is processed when multiple
+ * calls happen in quick succession:
+ *
+ * 1. If a call comes in while another is in progress, it waits for the current one to finish
+ * 2. After waiting, it checks if the key has changed during the wait
+ * 3. If the key has changed, it returns the existing promise (skipping execution for outdated keys)
+ * 4. If no other operation is in progress, it executes the function and cleans up when done
+ *
+ * Primary reason for this function is to avoid simultaneous CurveJS library instantiations,
+ * which is not only unnecessary, it is also not supported and can cause unintentional side effects like
+ * duplicate mint markets for crvUSD.
+ *
+ * @param fn - The function to execute with mutex protection
+ * @param key - A value used to identify this specific operation
+ * @returns A promise that resolves with the result of the function execution
+ */
+async function withMutex(fn: () => Promise<any>, key: unknown) {
+  mutexKey = key
+
+  if (mutexPromise) {
+    await mutexPromise
+
+    if (mutexKey !== key) {
+      return mutexPromise
+    }
+
+    mutexPromise = null
+  }
+
+  mutexKey = null
+
+  mutexPromise = fn().finally(() => {
+    mutexPromise = null
+  })
+
+  return mutexPromise
+}
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
@@ -79,74 +126,55 @@ export const ConnectionProvider = <
   children,
 }: {
   hydrate: (newLib: TLib | null, prevLib: TLib | null, wallet: Wallet | null) => Promise<void>
-  initLib: (chainId: TChainId, wallet: Wallet | null) => Promise<TLib | undefined>
+  initLib: (chainId: TChainId, provider?: Eip1193Provider) => Promise<TLib | undefined>
   chainId: TChainId
   onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
-  const isWalletInitialized = useRef(false)
-  const { wallet, connect } = useWallet()
-  const [_, setChain] = useSetChain()
+  const { switchChainAsync } = useSwitchChain()
+  const walletChainId = useChainId()
+  const { isReconnecting } = useAccount()
+  const { wallet } = useWallet()
 
   useEffect(() => {
-    if (isWalletInitialized.current) {
-      setLocalStorage(WalletNameStorageKey, wallet?.label ?? null)
-    }
-  }, [wallet])
-
-  useEffect(() => {
+    if (isReconnecting) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
-
-    /**
-     * Try to reconnect to the wallet if it was previously connected, based on the stored wallet name.
-     */
-    const tryToReconnect = async (label: string) => {
-      setConnectState({ status: LOADING, stage: CONNECT_WALLET }) // TODO: this status is not being set when connecting manually
-      return withTimeout(connect({ autoSelect: { label, disableModals: true } }))
-        .then((wallets) => wallets.length > 0)
-        .catch(() => false)
-    }
 
     /**
      * Initialize the app by connecting to the wallet and setting up the library.
      */
     const initApp = async () => {
       try {
-        if (!isWalletInitialized.current) {
-          isWalletInitialized.current = true
-          const storedWalletName = getFromLocalStorage<string>(WalletNameStorageKey) // todo: get rid of walletName with wagmi
-          if (storedWalletName && (await tryToReconnect(storedWalletName))) {
-            return // wallet updated, callback is restarted
-          }
-        }
-
-        const walletChainId = getWalletChainId(wallet)
         const isFocused = document.hasFocus() // only change chains on focused tab, so they don't fight each other
         if (walletChainId && walletChainId !== chainId && isFocused) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
-          if (!(await setChain({ chainId: ethers.toQuantity(chainId) }))) {
+          if (!(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
             if (signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])
           }
         }
 
-        const prevLib = libRef.get<TLib>()
-        let newLib = prevLib
-        if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
-          if (signal.aborted) return
-          setConnectState({ status: LOADING, stage: CONNECT_API })
-          newLib = (await initLib(chainId, wallet)) ?? null
+        await withMutex(async () => {
+          const prevLib = libRef.get<TLib>()
+          let newLib = prevLib
+
+          if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
+            if (signal.aborted) return
+            setConnectState({ status: LOADING, stage: CONNECT_API })
+            newLib = (await initLib(chainId, wallet?.provider)) ?? null
+
+            if (signal.aborted) return
+            libRef.set(newLib)
+          }
 
           if (signal.aborted) return
-          libRef.set(newLib)
-        }
+          setConnectState({ status: SUCCESS, stage: HYDRATE })
+          await hydrate(newLib, prevLib, wallet)
+        }, [chainId, wallet])
 
-        if (signal.aborted) return
-        setConnectState({ status: SUCCESS, stage: HYDRATE })
-        await hydrate(newLib, prevLib, wallet)
         setConnectState({ status: SUCCESS })
       } catch (error) {
         if (signal.aborted) return console.info('Error during init ignored', error)
@@ -156,7 +184,7 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [isWalletInitialized, chainId, connect, hydrate, initLib, onChainUnavailable, setChain, wallet])
+  }, [isReconnecting, chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet, walletChainId])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
@@ -178,11 +206,14 @@ export const useConnection = <TLib extends unknown>() => useContext(ConnectionCo
 const libRef = {
   current: null as unknown,
   get: <T = unknown,>() => libRef.current as T | null,
-  require: <T = unknown,>() => {
+  require<T = unknown>() {
     if (!libRef.current) throw new Error('Lib not initialized')
     return libRef.current as T
   },
   set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
+  reset() {
+    libRef.set(null)
+  },
 }
 
 export const getLib = <TLib extends unknown>() => libRef.get<TLib>()

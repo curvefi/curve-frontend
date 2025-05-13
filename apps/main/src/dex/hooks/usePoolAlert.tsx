@@ -96,9 +96,9 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
               the discountRate For more information please refer to{' '}
               <ExternalLink
                 $noStyles
-                href="https://gov.curve.fi/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2"
+                href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2"
               >
-                https://gov.curve.fi/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2
+                https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2
               </ExternalLink>
             </p>
             <p>Please note that sUSD is not involved, so these would be on the other pools sETH, sBTC, sForex ...</p>

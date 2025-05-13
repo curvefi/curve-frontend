@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 import SubNav from '@/dao/components/SubNav'
 import { SubNavItem } from '@/dao/components/SubNav/types'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import GaugesList from './GaugeList'
 import GaugeVoting from './GaugeVoting'
@@ -12,8 +12,7 @@ import GaugeWeightDistribution from './GaugeWeightDistribution'
 
 const Gauges = () => {
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const { wallet } = useWallet()
-  const userAddress = wallet?.accounts[0].address
+  const { address: userAddress } = useAccount()
 
   const [navSelection, setNavSelection] = useState('gaugeList')
 

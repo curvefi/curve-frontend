@@ -1,5 +1,4 @@
-import { Api } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { t } from '@ui-kit/lib/i18n'
 
 export * from './utilsRouter'

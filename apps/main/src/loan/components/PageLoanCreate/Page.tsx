@@ -8,13 +8,13 @@ import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { useStablecoinConnection } from '@/loan/temp-lib'
-import { type CollateralUrlParams, type Curve, Llamma } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
   getCollateralListPathname,
   getLoanCreatePathname,
   getLoanManagePathname,
+  parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
 import {
@@ -30,19 +30,19 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, isLoading, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
+  const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
-  const { connectState, lib: curve = null } = useStablecoinConnection()
+  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
-  const { collateralId: rCollateralId, formType: [rFormType] = [] } = params
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
@@ -69,7 +69,7 @@ const Page = (params: CollateralUrlParams) => {
   const isLeverage = rFormType === 'leverage'
 
   const fetchInitial = useCallback(
-    (curve: Curve, isLeverage: boolean, llamma: Llamma) => {
+    (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
       // reset createLoan estGas, detailInfo state
       setStateByKeys({
         formEstGas: {},
@@ -100,6 +100,7 @@ const Page = (params: CollateralUrlParams) => {
           void fetchLoanDetails(curve, llamma)
           setLoaded(true)
         } else {
+          console.warn(`Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`)
           push(getCollateralListPathname(params))
         }
       }
@@ -107,23 +108,21 @@ const Page = (params: CollateralUrlParams) => {
       setLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded])
+  }, [pageLoaded && curve && llamma])
 
   // redirect if loan exists
   useEffect(() => {
     if (!loaded && llamma && loanExists) {
       push(getLoanManagePathname(params, llamma.id, 'loan'))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, loanExists])
+  }, [llamma, loaded, loanExists, params, push])
 
   //  redirect if form is leverage but no leverage option
   useEffect(() => {
     if (llamma && rFormType === 'leverage' && !hasLeverage(llamma)) {
       push(getLoanCreatePathname(params, llamma.id))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, rFormType, llamma])
+  }, [loaded, rFormType, llamma, push, params])
 
   // max slippage updated
   useEffect(() => {

@@ -1,20 +1,22 @@
 import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
-import type lendingApi from '@curvefi/lending-api'
-import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
-import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type llamaApi from '@curvefi/llamalend-api'
+import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { WalletState } from '@web3-onboard/core'
+
+export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
-export type Api = typeof lendingApi & { chainId: ChainId }
+export type Api = typeof llamaApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
 export type EstimatedGas = number | number[] | null
+export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
 export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
@@ -258,7 +260,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type Order = 'asc' | 'desc'
-export type Wallet = WalletState
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>

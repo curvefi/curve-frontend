@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
+import { useAccount } from 'wagmi'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
@@ -7,11 +8,10 @@ import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation
 import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection, useStablecoinConnection } from '@/loan/temp-lib'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import type { LlamaApi, NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,40 +25,32 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const { lib: lendApi = null } = useLendConnection()
-  const chainId = useStablecoinConnection().lib?.chainId
-  const { signerAddress, connecting, walletName } = useWallet()
+  const { lib: lendApi = null } = useConnection<LlamaApi>()
+  const chainId = lendApi?.chainId
+  const { address, isConnecting } = useAccount()
 
   const {
     data: userScrvUsdBalance,
     isFetching: isUserScrvUsdBalanceFetching,
     isFetched: isUserScrvUsdBalanceFetched,
     refetch: refetchUserScrvUsdBalance,
-  } = useScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+  } = useScrvUsdUserBalances({ userAddress: address ?? '' })
 
-  const isUserScrvUsdBalanceZero =
-    !signerAddress || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
+  const isUserScrvUsdBalanceZero = !address || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
-  const connectedUserNoScrvUsdBalance = [
-    signerAddress,
-    walletName,
-    isUserScrvUsdBalanceFetched,
-    isUserScrvUsdBalanceZero,
-  ].every(Boolean)
+  const connectedUserNoScrvUsdBalance = [address, isUserScrvUsdBalanceFetched, isUserScrvUsdBalanceZero].every(Boolean)
 
-  // walletName indicates the wallet is cached and will begin connecting
   const showStatsBanner =
-    !walletName ||
     connectedUserNoScrvUsdBalance ||
-    !signerAddress ||
-    (!connecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
+    !address ||
+    (!isConnecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!lendApi || !signerAddress) return
+      if (!lendApi || !address) return
       // ensure user balances are up to date on load
       void refetchUserScrvUsdBalance()
       fetchExchangeRate()
@@ -66,15 +58,15 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     }
 
     void fetchData()
-  }, [lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance])
+  }, [lendApi, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance, address])
 
   useEffect(() => {
-    if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
+    if (!lendApi || !chainId || !address || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
       void checkApproval.depositApprove(inputAmount)
     }
-  }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
+  }, [checkApproval, lendApi, chainId, inputAmount, stakingModule, address])
 
   // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
   useEffect(() => {

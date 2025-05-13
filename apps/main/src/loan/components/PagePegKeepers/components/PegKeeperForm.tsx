@@ -4,14 +4,13 @@ import AlertFormError from '@/loan/components/AlertFormError'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { useStablecoinConnection } from '@/loan/temp-lib'
-import { ChainId, Curve } from '@/loan/types/loan.types'
+import { ChainId, LlamaApi } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import TxInfoBar from '@ui/TxInfoBar'
 import { breakpoints, formatNumber } from '@ui/utils'
-import { isLoading, notify } from '@ui-kit/features/connect-wallet'
+import { isLoading, notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -23,7 +22,7 @@ type Props = {
 const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const isSubscribed = useRef(false)
 
-  const { lib: curve, connectState } = useStablecoinConnection()
+  const { lib: curve, connectState } = useConnection<LlamaApi>()
   const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
   const formStatus = useStore((state) => state.pegKeepers.formStatus)
   const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
@@ -33,7 +32,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const { signerAddress } = curve || {}
 
   const handleClick = useCallback(
-    async (curve: Curve, pegKeeperAddress: string) => {
+    async (curve: LlamaApi, pegKeeperAddress: string) => {
       setTxInfoBar(null)
 
       const notifyMessage = t`Please confirm update ${poolName} pool`
@@ -75,7 +74,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           >{t`Profit is denominated in ${poolName} LP Tokens`}</StyledIconTooltip>
         }
       >
-        <strong>{formatNumber(detailsMapper[pegKeeperAddress]?.estCallerProfit)}</strong>
+        <strong>{formatNumber(estCallerProfit)}</strong>
       </DetailInfo>
 
       <LoanFormConnect haveSigner={!!signerAddress} loading={isLoading(connectState)}>
@@ -85,7 +84,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
           <Button
             fillWidth
             loading={formStatus[pegKeeperAddress]?.isInProgress}
-            disabled={estCallerProfit === undefined || Number(estCallerProfit) === 0}
+            disabled={estCallerProfit === undefined || Number(estCallerProfit) === 0 || estCallerProfit === '-'}
             size="large"
             variant="filled"
             onClick={() => handleClick(curve, pegKeeperAddress)}

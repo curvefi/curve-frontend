@@ -94,5 +94,11 @@
   },
   {
     "campaign": "Mevcommit.json"
+  },
+  {
+    "campaign": "Sonic.json"
+  },
+  {
+    "campaign": "HumanNetwork.json"
   }
 ]

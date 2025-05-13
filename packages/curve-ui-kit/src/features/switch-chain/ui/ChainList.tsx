@@ -1,17 +1,14 @@
 import groupBy from 'lodash/groupBy'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Fragment, useMemo, useRef, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
-import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
-import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
 import { AppNames } from '@ui-kit/shared/routes'
-import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
+import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { ChainOption } from './ChainSwitcher'
@@ -24,40 +21,14 @@ enum ChainType {
 
 /**
  * Returns a new pathname with a different network
+ * @param pathname The current pathname
  * @param networkId The new network ID
  * @returns The new pathname
  */
-export function useNetworkPathname(networkId: string) {
-  const pathname = usePathname() ?? ''
-  return useMemo(() => {
-    const [, appName = AppNames[0], , ...rest] = pathname.split('/')
-    return ['', appName, networkId, ...rest].join('/')
-  }, [networkId, pathname])
+export function getNetworkPathname(pathname: string, networkId: string) {
+  const [, appName = AppNames[0], , ...rest] = pathname.split('/')
+  return ['', appName, networkId, ...rest].join('/')
 }
-
-const ChainListItem = <TChainId extends number>({
-  chain,
-  isSelected,
-}: {
-  chain: ChainOption<TChainId>
-  isSelected: boolean
-}) => (
-  <InvertOnHover hoverEl={useRef<HTMLLIElement | null>(null).current}>
-    <MenuItem
-      component={Link}
-      href={useNetworkPathname(chain.networkId)}
-      data-testid={`menu-item-chain-${chain.chainId}`}
-      selected={isSelected}
-      tabIndex={0}
-    >
-      <ChainSwitcherIcon chain={chain} size={36} />
-      <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-        {chain.label}
-      </Typography>
-      {isSelected && <CheckedIcon />}
-    </MenuItem>
-  </InvertOnHover>
-)
 
 export function ChainList<TChainId extends number>({
   options,
@@ -68,6 +39,7 @@ export function ChainList<TChainId extends number>({
   showTestnets: boolean
   selectedNetwork: ChainOption<TChainId>
 }) {
+  const pathname = usePathname() || ''
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
@@ -101,10 +73,15 @@ export function ChainList<TChainId extends number>({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {chains.map((chain) => (
-                    <ChainListItem
+                    <MenuItem<TChainId, typeof Link>
+                      data-testid={`menu-item-chain-${chain.chainId}`}
                       key={chain.chainId}
-                      chain={chain}
+                      value={chain.chainId}
+                      component={Link}
+                      href={getNetworkPathname(pathname, chain.networkId)}
                       isSelected={chain.chainId == selectedNetwork?.chainId}
+                      icon={<ChainSwitcherIcon chain={chain} size={36} />}
+                      label={chain.label}
                     />
                   ))}
                 </MenuList>
