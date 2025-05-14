@@ -13,7 +13,7 @@ export const DomainChangedBanner = ({ onDismiss, color }: { onDismiss: () => voi
     severity="warning"
     onClick={onDismiss}
     color={color}
-    learnMoreUrl="https://x.com/CurveFinance/status/1922210827362349546"
+    learnMoreUrl="https://x.com/CurveFinance/status/1922664429646184482"
   >
     <Stack direction="row" alignItems="end" gap={Spacing.xxs}>
       <ExclamationTriangleIcon />
@@ -27,7 +27,7 @@ export const DomainChangedBanner = ({ onDismiss, color }: { onDismiss: () => voi
       </Link>
       {'. '}
       {t`Always make sure you are on the right domain.`} {t`Read the announcement `}
-      <Link href="https://x.com/CurveFinance/status/1922210827362349546" target="_blank" color={color}>
+      <Link href="https://x.com/CurveFinance/status/1922664429646184482" target="_blank" color={color}>
         {t`tweet`}
       </Link>
       .
