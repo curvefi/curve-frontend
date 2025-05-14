@@ -18,6 +18,9 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 288
 const expectedFooterMaxWidth = 1536
 
+// disable header height tests until the domain banner is hidden
+const domainBannerDisplayed = new Date() < new Date('2025-06-01')
+
 describe('Header', () => {
   let viewport: readonly [number, number]
 
@@ -35,23 +38,24 @@ describe('Header', () => {
       waitIsLoaded(appPath)
     })
 
-    it('should have the right size', () => {
-      cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
-      cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
-      cy.get(`header`)
-        .invoke('outerHeight')
-        .should('equal', expectedSubNavHeight + expectedMainNavHeight)
-      cy.get(`header`)
-        .invoke('outerWidth')
-        .should('equal', viewport[0] - SCROLL_WIDTH)
-      cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
+    if (!domainBannerDisplayed)
+      it('should have the right size', () => {
+        cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
+        cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
+        cy.get(`header`)
+          .invoke('outerHeight')
+          .should('equal', expectedSubNavHeight + expectedMainNavHeight)
+        cy.get(`header`)
+          .invoke('outerWidth')
+          .should('equal', viewport[0] - SCROLL_WIDTH)
+        cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
-      const expectedFooterWidth = Math.min(
-        expectedFooterMaxWidth,
-        viewport[0] - expectedFooterXMargin.desktop - SCROLL_WIDTH,
-      )
-      cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
-    })
+        const expectedFooterWidth = Math.min(
+          expectedFooterMaxWidth,
+          viewport[0] - expectedFooterXMargin.desktop - SCROLL_WIDTH,
+        )
+        cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
+      })
 
     it('should switch themes', () => {
       cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
@@ -98,23 +102,26 @@ describe('Header', () => {
       waitIsLoaded(appPath)
     })
 
-    it(`should have the right size`, () => {
-      const breakpoint = viewport[0] < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
-      const expectedFooterWidth = Math.max(
-        expectedFooterMinWidth,
-        viewport[0] - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
-      )
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height')
-      cy.get(`header`)
-        .invoke('outerWidth')
-        .should('equal', viewport[0] - SCROLL_WIDTH, 'Header width')
-      cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth, 'Footer width')
-      cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height changed')
-      cy.get("[data-testid='navigation-connect-wallet']")
-        .invoke('outerHeight')
-        .should('equal', expectedConnectHeight, 'Connect height')
-    })
+    if (!domainBannerDisplayed)
+      it(`should have the right size`, () => {
+        const breakpoint = viewport[0] < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
+        const expectedFooterWidth = Math.max(
+          expectedFooterMinWidth,
+          viewport[0] - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
+        )
+        cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height')
+        cy.get(`header`)
+          .invoke('outerWidth')
+          .should('equal', viewport[0] - SCROLL_WIDTH, 'Header width')
+        cy.get("[data-testid='footer-content']")
+          .invoke('outerWidth')
+          .should('equal', expectedFooterWidth, 'Footer width')
+        cy.get(`[data-testid='menu-toggle']`).click()
+        cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight, 'Header height changed')
+        cy.get("[data-testid='navigation-connect-wallet']")
+          .invoke('outerHeight')
+          .should('equal', expectedConnectHeight, 'Connect height')
+      })
 
     it('should open the menu and navigate', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('not.exist')

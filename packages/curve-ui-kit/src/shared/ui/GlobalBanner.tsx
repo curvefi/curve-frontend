@@ -4,6 +4,7 @@ import { Stack, Typography } from '@mui/material'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
+import { useTheme } from '@mui/material/styles'
 import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
@@ -39,6 +40,8 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const showSwitchNetworkMessage =
       (isConnected && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
 
+    const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
+
     return (
       (showSwitchNetworkMessage ||
         showConnectApiErrorMessage ||
@@ -51,10 +54,15 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
               <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
             </Banner>
           )}
-          {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
+          {maintenanceMessage && (
+            <Banner severity="warning" color={warnColor}>
+              {maintenanceMessage}
+            </Banner>
+          )}
           {showSwitchNetworkMessage && (
             <Banner
               severity="warning"
+              color={warnColor}
               buttonText={t`Change network`}
               onClick={() => switchChain({ chainId: chainId as WagmiChainId })}
             >
@@ -71,21 +79,17 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
             <Banner severity="warning">
               <Stack direction="row" alignItems="end" gap={Spacing.xxs}>
                 <ExclamationTriangleIcon />
-                <AlertTitle>{t`Domain Change`}</AlertTitle>
+                <AlertTitle color={warnColor}>{t`Domain Change`}</AlertTitle>
               </Stack>
-              <Typography color="textSecondary" variant="bodySRegular" sx={{ textTransform: 'none' }}>
+              <Typography color={warnColor} variant="bodySRegular" sx={{ textTransform: 'none' }}>
                 {t`Curve Finance has moved to a new domain`}
                 {': '}
-                <Link href="https://curve.finance" target="_blank" color="textSecondary">
+                <Link href="https://curve.finance" target="_blank" color={warnColor}>
                   {t`curve.finance`}
                 </Link>
                 {'. '}
                 {t`Always make sure you are on the right domain.`} {t`Read the announcement `}
-                <Link
-                  href="https://x.com/CurveFinance/status/1922210827362349546"
-                  target="_blank"
-                  color="textSecondary"
-                >
+                <Link href="https://x.com/CurveFinance/status/1922210827362349546" target="_blank" color={warnColor}>
                   {t`tweet`}
                 </Link>
                 .

@@ -47,11 +47,13 @@ export const Banner = ({
   buttonText,
   children,
   severity = 'default',
+  color,
 }: {
   onClick?: () => void
   buttonText?: string
   children: ReactNode
   severity?: BannerSeverity
+  color?: TypographyProps['color']
 }) => (
   <Card
     sx={{
@@ -72,7 +74,7 @@ export const Banner = ({
       justifyContent="space-between"
     >
       <InvertTheme inverted={TitleInverted[severity]}>
-        <Typography color={TitleColor[severity]} variant="headingXsBold">
+        <Typography color={color ?? TitleColor[severity]} variant="headingXsBold">
           {children}
         </Typography>
       </InvertTheme>
