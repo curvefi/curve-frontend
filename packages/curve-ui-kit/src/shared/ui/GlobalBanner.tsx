@@ -73,20 +73,22 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
                 <ExclamationTriangleIcon />
                 <AlertTitle>{t`Domain Change`}</AlertTitle>
               </Stack>
-              <Typography color="textSecondary" variant="bodyMRegular" sx={{ textTransform: 'none' }}>
-                {t`Curve Finance has moved to a new domain: `}
+              <Typography color="textSecondary" variant="bodySRegular" sx={{ textTransform: 'none' }}>
+                {t`Curve Finance has moved to a new domain`}
+                {': '}
                 <Link href="https://curve.finance" target="_blank" color="textSecondary">
                   {t`curve.finance`}
                 </Link>
-                {t`. Always make sure you are on the right domain. `}
-                {t`Read the announcement `}
+                {'. '}
+                {t`Always make sure you are on the right domain.`} {t`Read the announcement `}
                 <Link
                   href="https://x.com/CurveFinance/status/1922210827362349546"
                   target="_blank"
                   color="textSecondary"
                 >
-                  {t`tweet.`}
+                  {t`tweet`}
                 </Link>
+                .
               </Typography>
             </Banner>
           )}
