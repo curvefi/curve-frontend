@@ -206,7 +206,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             })
           }
 
-          // re-fetch data
+          // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
@@ -245,7 +245,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             formStatus: cloneDeep(cFormStatus),
           })
 
-          // re-fetch data
+          // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
@@ -286,7 +286,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             formStatus: cloneDeep(cFormStatus),
           })
 
-          // re-fetch data
+          // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
@@ -335,6 +335,9 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             state[sliceKey].withdrawLockedCrvStatus.transactionState = 'SUCCESS'
           }),
         )
+
+        // re-fetch user vecrv info
+        invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
 
         dismissNotificationHandler()
         notify(t`CRV withdrawal successful.`, 'success', 15000)

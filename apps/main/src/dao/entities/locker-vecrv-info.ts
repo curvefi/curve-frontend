@@ -18,6 +18,7 @@ export const { useQuery: useLockerVecrvInfo, invalidate: invalidateLockerVecrvIn
   queryKey: (params: ChainParams<ChainId> & { walletAddress: Address }) =>
     ['locker-vecrv-info', { chainId: params.chainId }, { walletAddress: params.walletAddress }] as const,
   queryFn: _fetchLockerVecrvInfo,
+  staleTime: '1m',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & { walletAddress: Address }) => {
     curvejsValidationGroup({ chainId: params.chainId })
     userValidationGroup({ userAddress: params.walletAddress })

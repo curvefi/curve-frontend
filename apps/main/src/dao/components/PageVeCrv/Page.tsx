@@ -13,7 +13,6 @@ import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { WrongNetwork } from './WrongNetwork'
 
@@ -23,7 +22,7 @@ export const PageVeCrv = (params: VeCrvUrlParams) => {
   const rChainId = networksIdMapper[params.network]
   const isLoadingCurve = isLoading(connectState)
 
-  const { signerAddress } = useWallet()
+  const signerAddress = curve?.signerAddress
   const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, walletAddress: signerAddress as Address })
   const resetState = useStore((state) => state.lockedCrv.resetState)
 
