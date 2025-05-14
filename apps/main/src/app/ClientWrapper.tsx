@@ -17,9 +17,7 @@ export const ClientWrapper = ({ children, loading }: { children: ReactNode; load
       <ThemeProvider theme={theme}>
         <OverlayProvider>
           <QueryProvider persister={persister} queryClient={queryClient}>
-            <WagmiProvider config={config} reconnectOnMount={true}>
-              {!loading && children}
-            </WagmiProvider>
+            <WagmiProvider config={config}>{!loading && children}</WagmiProvider>
           </QueryProvider>
         </OverlayProvider>
       </ThemeProvider>
