@@ -57,7 +57,7 @@ export const oneToken = (chain?: string) =>
   chain ? oneOf(...TOKENS.filter((t) => t.chain === chain)!) : oneOf(...TOKENS)
 
 export const mockTokenPrices = () =>
-  cy.intercept('https://prices.curve.fi/v1/usd_price/*/*', (req) => {
+  cy.intercept('https://prices.curve.finance/v1/usd_price/*/*', (req) => {
     const address = new URL(req.url).pathname.split('/').pop()
     const token = TOKENS.find((t) => t.address === address)
     if (!token) {

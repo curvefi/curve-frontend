@@ -12,9 +12,8 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId } from '@/lend/types/lend.types'
+import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

@@ -5,8 +5,7 @@ import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import { PageContentProps, HeathColorKey, HealthMode } from '@/lend/types/lend.types'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { OneWayMarketTemplate, PageContentProps, HeathColorKey, HealthMode } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
@@ -110,7 +109,7 @@ const DetailInfoHealth = ({
             <p>{t`The loan metric indicates the current health of your position.`}</p>
             <p>
               {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
-              <ExternalLink href="https://resources.curve.fi/lending/overview/#health-hard-liquidation" $noStyles>
+              <ExternalLink href="https://resources.curve.finance/lending/overview/#health-hard-liquidation" $noStyles>
                 Click here to learn more.
               </ExternalLink>
             </p>

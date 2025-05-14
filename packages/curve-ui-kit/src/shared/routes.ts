@@ -28,7 +28,7 @@ export const DAO_ROUTES = {
   PAGE_VECRV: '/vecrv',
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
-  DISCUSSION: 'https://gov.curve.fi/',
+  DISCUSSION: 'https://gov.curve.finance/',
   PAGE_DISCLAIMER: '/disclaimer',
 }
 

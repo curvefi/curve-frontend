@@ -9,10 +9,10 @@ export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl
 
 export const getCollateralListPathname = (params: NetworkUrlParams) => getPath(params, ROUTE.PAGE_MARKETS)
 
-export const useChainId = ({ network }: NetworkUrlParams): ChainId =>
+export const useChainId = ({ network }: NetworkUrlParams) =>
   ({
     ethereum: Chain.Ethereum as const,
-  })[network]
+  })[network] as ChainId
 
 export const getLoanCreatePathname = (
   params: NetworkUrlParams,

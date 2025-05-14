@@ -1,9 +1,9 @@
 {
-  "campaignName": "Mev-commit Points",
-  "platform": "Primev",
+  "campaignName": "",
+  "platform": "Human Network",
   "description": "Points for providing liquidity.",
-  "platformImageId": "mev-commit.png",
-  "dashboardLink": "https://primev.xyz/",
+  "platformImageId": "human-network.png",
+  "dashboardLink": "https://network.human.tech/",
   "pools": [
     {
       "id": "null",

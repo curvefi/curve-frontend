@@ -11,7 +11,10 @@ export * from './searchText'
 
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: boolean }).Cypress)
 export const isBetaDefault =
-  process.env.NODE_ENV === 'development' || (typeof window !== 'undefined' && window.location.hostname !== 'curve.fi')
+  process.env.NODE_ENV === 'development' ||
+  (typeof window !== 'undefined' &&
+    window.location.hostname !== 'curve.finance' &&
+    window.location.hostname !== 'www.curve.finance')
 export const enableLogging = isBetaDefault
 
 /**

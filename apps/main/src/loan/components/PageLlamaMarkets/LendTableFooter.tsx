@@ -57,7 +57,7 @@ export const LendTableFooter = () => (
           color="ghost"
           endIcon={<ArrowOutwardIcon />}
           component={Link}
-          href="https://docs.curve.fi/lending/overview/"
+          href="https://docs.curve.finance/lending/overview/"
           target="_blank"
         >
           Learn
