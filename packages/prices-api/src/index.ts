@@ -38,6 +38,7 @@ export const chains = [
   'base',
   'polygon',
   'fraxtal',
+  'sonic',
 ] as const
 
 export type Chain = (typeof chains)[number]
