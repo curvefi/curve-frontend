@@ -100,5 +100,8 @@
   },
   {
     "campaign": "HumanNetwork.json"
+  },
+  {
+    "campaign": "Rings.json"
   }
 ]
