@@ -79,7 +79,12 @@ export const Banner = ({
         </Typography>
       </InvertTheme>
       {buttonText && (
-        <Button color="ghost" onClick={onClick} size="extraSmall">
+        <Button
+          color="ghost"
+          onClick={onClick}
+          size="extraSmall"
+          sx={{ ...(color?.startsWith('#') && { color: `${color} !important` }) }}
+        >
           {buttonText}
         </Button>
       )}

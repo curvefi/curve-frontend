@@ -7,7 +7,7 @@ import Link from '@mui/material/Link'
 import { useTheme } from '@mui/material/styles'
 import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag, useNewDomainNotificationSeen } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -31,11 +31,13 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const [isBeta, setIsBeta] = useBetaFlag()
     const showBetaBanner = isBeta && !isCypress
 
+    const [isNewDomainNotificationSeen, setIsNewDomainNotificationSeen] = useNewDomainNotificationSeen()
+    const showDomainChangeMessage = !isNewDomainNotificationSeen && new Date() < new Date('2025-06-01') // TODO: delete after this date
+
     const { isConnected } = useAccount()
     const { switchChain } = useSwitchChain()
     const { connectState } = useConnection()
     const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
-    const showDomainChangeMessage = new Date() < new Date('2025-06-01') // TODO: remove code line after this date
     const walletChainId = useChainId()
     const showSwitchNetworkMessage =
       (isConnected && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
@@ -76,12 +78,17 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
             </Banner>
           )}
           {showDomainChangeMessage && (
-            <Banner severity="warning">
+            <Banner
+              severity="warning"
+              buttonText={t`Dismiss`}
+              onClick={() => setIsNewDomainNotificationSeen(true)}
+              color={warnColor}
+            >
               <Stack direction="row" alignItems="end" gap={Spacing.xxs}>
                 <ExclamationTriangleIcon />
-                <AlertTitle color={warnColor}>{t`Domain Change`}</AlertTitle>
+                <AlertTitle>{t`Domain Change`}</AlertTitle>
               </Stack>
-              <Typography color={warnColor} variant="bodySRegular" sx={{ textTransform: 'none' }}>
+              <Typography variant="bodySRegular" sx={{ textTransform: 'none' }}>
                 {t`Curve Finance has moved to a new domain`}
                 {': '}
                 <Link href="https://curve.finance" target="_blank" color={warnColor}>
