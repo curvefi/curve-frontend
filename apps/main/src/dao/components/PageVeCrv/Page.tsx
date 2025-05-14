@@ -74,5 +74,4 @@ const Container = styled(Box)`
 
 const Content = styled(Box)`
   align-content: flex-start;
-  min-height: 14.8125rem; //237px
 `

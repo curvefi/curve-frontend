@@ -52,7 +52,7 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
     if (withdrawTxSuccess) {
       setTxInfoBar(
         <TxInfoBar
-          description={t`Withdraw locked CRV`}
+          description={t`Locked CRV withdrawn`}
           txHash={withdrawLockedCrvStatus.txHash ?? ''}
           onClose={closeTxBar}
         />,
@@ -61,7 +61,7 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
   }, [withdrawTxSuccess, closeTxBar, withdrawLockedCrvStatus.txHash])
 
   return (
-    <>
+    <Box display="flex" flexDirection="column" flexGap="var(--spacing-3)" fillHeight>
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
           <RowTitle>{t`CRV Locked`}:</RowTitle>
@@ -73,44 +73,45 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
         </Box>
       </WithdrawInfo>
 
-      {haveSigner && canUnlock && (
-        <ActionInfo
-          label={t`Estimated TX cost`}
-          labelColor="tertiary"
-          value={valueGas !== '' && valueGas !== '0' ? valueGas : '-'}
-          valueColor="tertiary"
-          valueLeft={<LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
-          valueTooltip={tooltip}
-          loading={isLoadingLockEstimateWithdrawGas}
-        />
-      )}
-
-      <FormActions haveSigner={haveSigner} loading={loading}>
-        {!canUnlock && (
-          <StyledAlertBox alertType="info">
-            {t`Your CRV unlocks in:`}
-            <StyledVoteCountdown startDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
-          </StyledAlertBox>
+      <Box display="flex" flexDirection="column" margin="auto 0 0" flexGap="var(--spacing-3)">
+        {haveSigner && canUnlock && (
+          <ActionInfo
+            label={t`Estimated TX cost`}
+            labelColor="tertiary"
+            value={valueGas !== '' && valueGas !== '0' ? valueGas : '-'}
+            valueColor="tertiary"
+            valueLeft={<LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
+            valueTooltip={tooltip}
+            loading={isLoadingLockEstimateWithdrawGas}
+          />
         )}
-        {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
-          <AlertFormError errorKey={withdrawLockedCrvStatus.errorMessage} handleBtnClose={() => closeTxBar()} />
-        )}
-        {txInfoBar}
-        {withdrawTxSuccess && <SuccesBox>{t`Withdrawal successful`}</SuccesBox>}
-        {!withdrawTxSuccess && canUnlock && (
-          <Button
-            fillWidth
-            size="large"
-            variant="filled"
-            disabled={!canUnlock}
-            loading={withdrawTxLoading}
-            onClick={withdrawLockedCrv}
-          >
-            Withdraw
-          </Button>
-        )}
-      </FormActions>
-    </>
+        <FormActions haveSigner={haveSigner} loading={loading}>
+          {!canUnlock && (
+            <AlertBox alertType="info">
+              {t`Your CRV unlocks in:`}
+              <StyledVoteCountdown startDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
+            </AlertBox>
+          )}
+          {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
+            <AlertFormError errorKey={withdrawLockedCrvStatus.errorMessage} />
+          )}
+          {txInfoBar}
+          {withdrawTxSuccess && <SuccesBox>{t`Withdrawal successful`}</SuccesBox>}
+          {!withdrawTxSuccess && canUnlock && (
+            <Button
+              fillWidth
+              size="large"
+              variant="filled"
+              disabled={!canUnlock}
+              loading={withdrawTxLoading}
+              onClick={withdrawLockedCrv}
+            >
+              Withdraw
+            </Button>
+          )}
+        </FormActions>
+      </Box>
+    </Box>
   )
 }
 
@@ -126,10 +127,6 @@ const RowTitle = styled.p`
 
 const StyledVoteCountdown = styled(VoteCountdown)`
   margin-left: var(--spacing-2);
-`
-
-const StyledAlertBox = styled(AlertBox)`
-  align-self: flex-end;
 `
 
 // mimics StepBox from StepAction.tsx
