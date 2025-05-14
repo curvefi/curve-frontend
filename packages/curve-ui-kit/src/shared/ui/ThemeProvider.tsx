@@ -28,3 +28,9 @@ export const InvertTheme = ({
   const theme = createTheme(themeName, inverted)
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
 }
+
+export const ChangeTheme = ({ children, to }: { children: ReactNode; to: keyof typeof themes | false }) => {
+  if (!to) return children
+  const theme = createTheme(to)
+  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+}
