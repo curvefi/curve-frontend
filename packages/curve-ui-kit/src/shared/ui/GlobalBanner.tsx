@@ -1,17 +1,14 @@
 import { forwardRef, Ref } from 'react'
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
-import { Stack, Typography } from '@mui/material'
-import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
 import { useTheme } from '@mui/material/styles'
 import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
 import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { useBetaFlag, useNewDomainNotificationSeen } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
+import { DomainChangedBanner } from '@ui-kit/shared/ui/DomainChangedBanner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isCypress } from '@ui-kit/utils'
 
@@ -21,7 +18,7 @@ export type GlobalBannerProps = {
   ref: Ref<HTMLDivElement>
 }
 
-const { IconSize, Spacing } = SizesAndSpaces
+const { IconSize } = SizesAndSpaces
 
 // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
 const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
@@ -78,30 +75,7 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
             </Banner>
           )}
           {showDomainChangeMessage && (
-            <Banner
-              severity="warning"
-              buttonText={t`Dismiss`}
-              onClick={() => setIsNewDomainNotificationSeen(true)}
-              color={warnColor}
-            >
-              <Stack direction="row" alignItems="end" gap={Spacing.xxs}>
-                <ExclamationTriangleIcon />
-                <AlertTitle>{t`Domain Change`}</AlertTitle>
-              </Stack>
-              <Typography variant="bodySRegular" sx={{ textTransform: 'none' }}>
-                {t`Curve Finance has moved to a new domain`}
-                {': '}
-                <Link href="https://curve.finance" target="_blank" color={warnColor}>
-                  {t`curve.finance`}
-                </Link>
-                {'. '}
-                {t`Always make sure you are on the right domain.`} {t`Read the announcement `}
-                <Link href="https://x.com/CurveFinance/status/1922210827362349546" target="_blank" color={warnColor}>
-                  {t`tweet`}
-                </Link>
-                .
-              </Typography>
-            </Banner>
+            <DomainChangedBanner onDismiss={() => setIsNewDomainNotificationSeen(true)} color={warnColor} />
           )}
         </Box>
       )
