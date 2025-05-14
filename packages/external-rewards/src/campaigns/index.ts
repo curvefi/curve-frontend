@@ -20,6 +20,7 @@ import Mellow from './Mellow.json'
 import Mevcommit from './Mevcommit.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
+import Rings from './Rings.json'
 import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
@@ -68,4 +69,5 @@ export {
   Mevcommit,
   Sonic,
   HumanNetwork,
+  Rings,
 }
