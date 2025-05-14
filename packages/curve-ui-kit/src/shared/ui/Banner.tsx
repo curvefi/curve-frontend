@@ -10,7 +10,7 @@ import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { InvertTheme } from './ThemeProvider'
+import { ChangeTheme, InvertTheme } from './ThemeProvider'
 
 type BannerSeverity = 'default' | 'highlight' | 'warning' | 'alert'
 
@@ -86,29 +86,32 @@ export const Banner = ({
         </Typography>
       </InvertTheme>
       <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
-        {learnMoreUrl && (
-          <Button
-            component={LinkMui}
-            href={learnMoreUrl}
-            target="_blank"
-            color="ghost"
-            variant="link"
-            endIcon={<ArrowTopRightIcon />}
-            size="extraSmall"
-          >
-            {t`Learn more`}
-          </Button>
-        )}
-        {onClick &&
-          (buttonText ? (
-            <Button color="ghost" onClick={onClick} size="extraSmall">
-              {buttonText}
+        {/* fixme: currently using light theme on dark theme */}
+        <ChangeTheme to={color === '#000' && 'light'}>
+          {learnMoreUrl && (
+            <Button
+              component={LinkMui}
+              href={learnMoreUrl}
+              target="_blank"
+              color="ghost"
+              variant="link"
+              endIcon={<ArrowTopRightIcon />}
+              size="extraSmall"
+            >
+              {t`Learn more`}
             </Button>
-          ) : (
-            <IconButton onClick={onClick} size="extraSmall">
-              <CloseIcon />
-            </IconButton>
-          ))}
+          )}
+          {onClick &&
+            (buttonText ? (
+              <Button color="ghost" onClick={onClick} size="extraSmall">
+                {buttonText}
+              </Button>
+            ) : (
+              <IconButton onClick={onClick} size="extraSmall">
+                <CloseIcon />
+              </IconButton>
+            ))}
+        </ChangeTheme>
       </Stack>
     </Stack>
   </Card>
