@@ -190,7 +190,11 @@ export function formatNumberWithPrecision(value: number, precisionDigits: number
   return _formatNumber(value, opts)
 }
 
-export const formatDate = (date: Date, variant: 'short' | 'long' = 'short') => {
+export const formatDate = (date: Date | string, variant: 'short' | 'long' = 'short') => {
+  if (typeof date === 'string') {
+    // `date` is a string when coming from query cache
+    date = new Date(date)
+  }
   if (variant === 'short') {
     // example: 31/01/25 adjusted for local timezone
     return new Intl.DateTimeFormat(undefined, {
