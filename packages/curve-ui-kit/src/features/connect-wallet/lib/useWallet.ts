@@ -20,7 +20,7 @@ const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { data: client } = useConnectorClient()
 
-  const address = client?.account.address
+  const address = client?.account?.address
   const { wallet, provider } =
     useMemo(() => {
       const wallet =
