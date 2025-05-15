@@ -25,14 +25,18 @@ export const MainTransactionStep = styled(Step)<{ approvalReady: boolean }>`
 
 export const StepTitle = styled.p`
   font-size: var(--font-size-2);
+  color: var(--box--primary--color);
   font-weight: var(--bold);
 `
 
 export const TransactionLink = styled(ExternalLink)`
   font-size: var(--font-size-1);
-  color: var(--primary-400);
+  color: var(--primary_darkBg-400);
   text-decoration: none;
   border: none;
+  &:hover {
+    color: var(--primary_darkBg-400);
+  }
 `
 
 export const IconWrapper = styled.div`
@@ -46,10 +50,15 @@ export const SuccessIcon = styled(Icon)`
 `
 
 export const StyledRCPinBottom = styled(RCPinBottom)`
+  color: var(--box--primary--color);
   min-width: 1.25rem;
   min-height: 1.25rem;
   max-width: 1.25rem;
   min-width: 1.25rem;
+`
+
+export const WalletIcon = styled(Icon)`
+  color: var(--box--primary--color);
 `
 
 export const DividerWrapper = styled.div`
@@ -65,9 +74,14 @@ export const DividerLine = styled.div`
   height: 100%;
   width: 0.09375rem;
   margin: 0 auto;
-  background-color: var(--page--text-color);
+  background-color: var(--box--primary--color);
 `
 
 export const ResetButton = styled(Button)`
   margin: var(--spacing-2) auto 0;
+  color: var(--primary_darkBg-400);
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
+    color: var(--primary_darkBg-400);
+  }
 `
