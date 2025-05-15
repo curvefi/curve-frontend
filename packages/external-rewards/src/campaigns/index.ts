@@ -32,7 +32,6 @@ import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import YieldNest from './YieldNest.json'
-import Zunami from './Zunami.json'
 
 export {
   DLCLink,
@@ -64,7 +63,6 @@ export {
   Bills,
   StableLabs,
   Taiko,
-  Zunami,
   Ditto,
   Mevcommit,
   Sonic,
