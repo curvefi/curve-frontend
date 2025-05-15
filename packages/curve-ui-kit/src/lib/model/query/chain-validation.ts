@@ -13,7 +13,7 @@ export const apiValidationGroup = <TChainId extends number, TLib extends { chain
   chainId,
 }: ChainParams<TChainId>) =>
   group('apiValidation', () => {
-    test('api', () => {
+    test('api', 'API chain ID mismatch', () => {
       enforce(getLib<TLib>()?.chainId).message('Chain ID should be loaded').equals(chainId)
     })
   })
