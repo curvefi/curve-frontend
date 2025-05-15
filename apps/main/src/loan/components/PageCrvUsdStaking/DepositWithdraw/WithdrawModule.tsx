@@ -51,7 +51,7 @@ const WithdrawModule = () => {
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
-            setMax={() => setMax(address?.toLowerCase() ?? '', 'withdraw')}
+            setMax={() => setMax(address, 'withdraw')}
           />
         </InputWrapper>
       </Box>

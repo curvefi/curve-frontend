@@ -51,7 +51,7 @@ const DepositModule = () => {
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
-            setMax={() => setMax(address?.toLowerCase() ?? '', 'deposit')}
+            setMax={() => setMax(address, 'deposit')}
           />
         </InputWrapper>
       </Box>
