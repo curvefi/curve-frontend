@@ -162,7 +162,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       )
 
       try {
-        const response = await fetch(`https://d3dl9x5bpp6us7.cloudfront.net/v1/getAllGauges`)
+        const response = await fetch(`https://api.curve.finance/v1/getAllGauges`)
         const data: CurveGaugeResponse = await response.json()
 
         const gaugeDataMapper: GaugeCurveApiDataMapper = Object.values(data.data).reduce((acc, gaugeData) => {

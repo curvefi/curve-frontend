@@ -20,7 +20,7 @@ import {
 const DepositModule = () => {
   const { address } = useAccount()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
-    userAddress: address ?? '',
+    userAddress: address,
   })
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const preview = useStore((state) => state.scrvusd.preview)
@@ -51,7 +51,7 @@ const DepositModule = () => {
             isLoadingBalances={userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
-            setMax={() => setMax(address?.toLowerCase() ?? '', 'deposit')}
+            setMax={() => setMax(address, 'deposit')}
           />
         </InputWrapper>
       </Box>

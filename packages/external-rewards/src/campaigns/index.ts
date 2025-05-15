@@ -20,6 +20,7 @@ import Mellow from './Mellow.json'
 import Mevcommit from './Mevcommit.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
+import Rings from './Rings.json'
 import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
@@ -31,7 +32,6 @@ import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import YieldNest from './YieldNest.json'
-import Zunami from './Zunami.json'
 
 export {
   DLCLink,
@@ -63,9 +63,9 @@ export {
   Bills,
   StableLabs,
   Taiko,
-  Zunami,
   Ditto,
   Mevcommit,
   Sonic,
   HumanNetwork,
+  Rings,
 }
