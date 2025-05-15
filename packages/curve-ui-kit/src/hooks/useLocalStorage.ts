@@ -36,6 +36,7 @@ const useLocalStorage = <Type, Default = Type>(key: string, initialValue?: Defau
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
+export const useNewDomainNotificationSeen = () => useLocalStorage<boolean>('isNewDomainNotificationSeen', false)
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`)
 

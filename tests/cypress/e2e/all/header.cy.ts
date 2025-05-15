@@ -18,6 +18,13 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 288
 const expectedFooterMaxWidth = 1536
 
+function hideDomainBanner(win: Cypress.AUTWindow) {
+  // avoid the domain banner, this may be deleted after the date below
+  if (new Date() < new Date('2025-06-01')) {
+    win.localStorage.setItem('isNewDomainNotificationSeen', 'true')
+  }
+}
+
 describe('Header', () => {
   let viewport: readonly [number, number]
 
@@ -30,7 +37,10 @@ describe('Header', () => {
       cy.viewport(...viewport)
       appPath = oneAppPath()
       cy.visit(`/${appPath}/`, {
-        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
+        onBeforeLoad: (win) => {
+          isDarkMode = checkIsDarkMode(win)
+          hideDomainBanner(win)
+        },
       })
       waitIsLoaded(appPath)
     })
@@ -94,7 +104,9 @@ describe('Header', () => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
       appPath = oneAppPath()
-      cy.visit(`/${appPath}`)
+      cy.visit(`/${appPath}`, {
+        onBeforeLoad: hideDomainBanner,
+      })
       waitIsLoaded(appPath)
     })
 
