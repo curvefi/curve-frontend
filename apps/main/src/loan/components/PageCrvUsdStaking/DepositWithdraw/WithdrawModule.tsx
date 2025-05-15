@@ -20,7 +20,7 @@ import {
 const WithdrawModule = () => {
   const { address } = useAccount()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
-    userAddress: address ?? '',
+    userAddress: address,
   })
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const preview = useStore((state) => state.scrvusd.preview)

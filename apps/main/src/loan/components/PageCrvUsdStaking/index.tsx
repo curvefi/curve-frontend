@@ -34,7 +34,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     isFetching: isUserScrvUsdBalanceFetching,
     isFetched: isUserScrvUsdBalanceFetched,
     refetch: refetchUserScrvUsdBalance,
-  } = useScrvUsdUserBalances({ userAddress: address ?? '' })
+  } = useScrvUsdUserBalances({ userAddress: address })
 
   const isUserScrvUsdBalanceZero = !address || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 

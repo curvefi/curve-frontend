@@ -297,8 +297,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -356,8 +355,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -416,8 +414,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
