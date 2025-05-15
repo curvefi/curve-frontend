@@ -1,4 +1,5 @@
 import { Contract } from 'ethers'
+import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { getStatistics } from '@curvefi/prices-api/savings'
 import type { Statistics } from '@curvefi/prices-api/savings/models'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -6,7 +7,6 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { weiToEther } from '@ui-kit/utils'
 
-const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
 const UNLOCK_MULTIPLIER = 1e-12 * YEAR
 const VAULT_ABI = [
@@ -35,7 +35,7 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
   const { provider } = useWallet.getState()
 
   if (provider) {
-    const vault = new Contract(VAULT_ADDRESS, VAULT_ABI, provider)
+    const vault = new Contract(SCRVUSD_VAULT_ADDRESS, VAULT_ABI, provider)
     const [unlock_amount, supply, block] = await Promise.all([
       vault.profitUnlockingRate(),
       vault.totalSupply(),
