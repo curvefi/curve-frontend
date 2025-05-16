@@ -11,13 +11,13 @@ import { breakpoints } from '@ui/utils/responsive'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 
-const QUICK_ACTIONS: { unit: dayjs.ManipulateType; value: number; label: string }[] = [
+const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },
   { unit: 'month', value: 1, label: t`1 month` },
   { unit: 'month', value: 3, label: t`3 months` },
-  { unit: 'month', value: 6, label: t`6 months` },
   { unit: 'year', value: 1, label: t`1 year` },
   { unit: 'year', value: 4, label: t`4 years` },
+  { label: t`Max` },
 ]
 
 const FieldDatePicker = ({
@@ -49,7 +49,7 @@ const FieldDatePicker = ({
   maxUtcDate: dayjs.Dayjs | null
   vecrvInfo: VecrvInfo
   handleInpEstUnlockedDays: (curve: CurveApi, updatedLockedDays: DateValue) => void
-  handleBtnClickQuickAction: (curve: CurveApi, value: number, unit: dayjs.ManipulateType) => dayjs.Dayjs
+  handleBtnClickQuickAction: (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
 }) => {
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
 
@@ -57,13 +57,14 @@ const FieldDatePicker = ({
   const quickActions = useMemo(
     () =>
       QUICK_ACTIONS.filter(({ unit, value }) => {
+        if (!value || !unit) return !isMax // max button, only show if not already at max
         const quickActionUtcDate = currUnlockUtcTime.add(value, unit)
         return (
           (quickActionUtcDate.isSame(minUtcDate, 'd') || quickActionUtcDate.isAfter(minUtcDate, 'd')) &&
           (quickActionUtcDate.isSame(maxUtcDate, 'd') || quickActionUtcDate.isBefore(maxUtcDate, 'd'))
         )
       }),
-    [currUnlockUtcTime, maxUtcDate, minUtcDate],
+    [currUnlockUtcTime, maxUtcDate, minUtcDate, isMax],
   )
 
   const isDateUnavailable = (date: DateValue) => {
