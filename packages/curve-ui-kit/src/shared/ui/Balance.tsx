@@ -28,7 +28,7 @@ const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
     sx={{
       minWidth: 'unset',
       // Sadly the !important is still necessary because of the !important in defineMuiButton for the Link variant :(
-      '&': { height: '50px !important' },
+      '&': { height: '0px !important' },
       ...(underline && {
         '&:hover': {
           textDecoration: 'underline',
