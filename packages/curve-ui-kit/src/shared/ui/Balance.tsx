@@ -83,7 +83,7 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
   <Stack direction="row" gap={Spacing.xs} alignItems="center">
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
 
-    {max === 'balance' && balance !== undefined ? (
+    {max === 'balance' && balance != null ? (
       <MaxButton underline={true} onClick={() => onMax?.(balance)}>
         <BalanceText symbol={symbol} balance={balance} />
       </MaxButton>
@@ -97,7 +97,7 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
       </Typography>
     )}
 
-    {max === 'button' && balance !== undefined && (
+    {max === 'button' && balance != null && (
       <MaxButton underline={false} onClick={() => onMax?.(balance)}>
         Max
       </MaxButton>
