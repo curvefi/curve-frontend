@@ -13,11 +13,8 @@ const formatNumber = (value: number): string =>
   })
 
 type MaxButtonProps = {
-  /** The content to display in the button */
   children: React.ReactNode
-  /** Whether to show underline on hover */
   underline: boolean
-  /** Callback function when button is clicked */
   onClick?: () => void
 }
 
@@ -42,6 +39,23 @@ const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
   </Button>
 )
 
+type BalanceTextProps = {
+  symbol: string
+  balance?: number
+}
+
+const BalanceText = ({ symbol, balance }: BalanceTextProps) => (
+  <Stack direction="row" gap={Spacing.xs} alignItems="center">
+    <Typography variant="highlightS" color={balance !== undefined ? 'textPrimary' : 'textTertiary'}>
+      {balance ? formatNumber(balance) : '?'}
+    </Typography>
+
+    <Typography variant="highlightS" color="textPrimary">
+      {symbol}
+    </Typography>
+  </Stack>
+)
+
 /**
  * Props for the Balance component
  */
@@ -64,42 +78,28 @@ type Props = {
   onMax?: (maxValue: number) => void
 }
 
-export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => {
-  const balanceText = (
-    <Stack direction="row" gap={Spacing.xs} alignItems="center">
-      <Typography variant="highlightS" color={balance !== undefined ? 'textPrimary' : 'textTertiary'}>
-        {balance ? formatNumber(balance) : '?'}
+export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => (
+  <Stack direction="row" gap={Spacing.xs} alignItems="center">
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+
+    {max === 'balance' && balance !== undefined ? (
+      <MaxButton underline={true} onClick={() => onMax?.(balance)}>
+        <BalanceText symbol={symbol} balance={balance} />
+      </MaxButton>
+    ) : (
+      <BalanceText symbol={symbol} balance={balance} />
+    )}
+
+    {notionalValue && (
+      <Typography variant="bodySRegular" color="textTertiary">
+        ${formatNumber(notionalValue)}
       </Typography>
+    )}
 
-      <Typography variant="highlightS" color="textPrimary">
-        {symbol}
-      </Typography>
-    </Stack>
-  )
-
-  return (
-    <Stack direction="row" gap={Spacing.xs} alignItems="center">
-      {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
-
-      {max === 'balance' && balance !== undefined ? (
-        <MaxButton underline={true} onClick={() => onMax?.(balance)}>
-          {balanceText}
-        </MaxButton>
-      ) : (
-        balanceText
-      )}
-
-      {notionalValue && (
-        <Typography variant="bodySRegular" color="textTertiary">
-          ${formatNumber(notionalValue)}
-        </Typography>
-      )}
-
-      {max === 'button' && balance !== undefined && (
-        <MaxButton underline={false} onClick={() => onMax?.(balance)}>
-          Max
-        </MaxButton>
-      )}
-    </Stack>
-  )
-}
+    {max === 'button' && balance !== undefined && (
+      <MaxButton underline={false} onClick={() => onMax?.(balance)}>
+        Max
+      </MaxButton>
+    )}
+  </Stack>
+)
