@@ -36,7 +36,7 @@ type Props = {
 
 export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => {
   const balanceText = (
-    <>
+    <Stack direction="row" gap={Spacing.xs} alignItems="center">
       <Typography variant="highlightS" color={balance !== undefined ? 'textPrimary' : 'textTertiary'}>
         {balance ? formatNumber(balance) : '?'}
       </Typography>
@@ -44,7 +44,7 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
       <Typography variant="highlightS" color="textPrimary">
         {symbol}
       </Typography>
-    </>
+    </Stack>
   )
 
   return (
@@ -58,6 +58,7 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
           size="extraSmall"
           onClick={() => onMax?.(balance)}
           sx={{
+            minWidth: 'unset',
             '&': { height: '0px !important' },
             '&:hover': {
               textDecoration: 'underline',
