@@ -12,6 +12,36 @@ const formatNumber = (value: number): string =>
     maximumFractionDigits: 2,
   })
 
+type MaxButtonProps = {
+  /** The content to display in the button */
+  children: React.ReactNode
+  /** Whether to show underline on hover */
+  underline: boolean
+  /** Callback function when button is clicked */
+  onClick?: () => void
+}
+
+/** Reusable Max button component with consistent styling */
+const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
+  <Button
+    color="ghost"
+    variant="link"
+    size="extraSmall"
+    onClick={onClick}
+    sx={{
+      minWidth: 'unset',
+      '&': { height: '50px !important' },
+      ...(underline && {
+        '&:hover': {
+          textDecoration: 'underline',
+        },
+      }),
+    }}
+  >
+    {children}
+  </Button>
+)
+
 /**
  * Props for the Balance component
  */
@@ -52,21 +82,9 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
       {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
 
       {max === 'balance' && balance !== undefined ? (
-        <Button
-          color="ghost"
-          variant="link"
-          size="extraSmall"
-          onClick={() => onMax?.(balance)}
-          sx={{
-            minWidth: 'unset',
-            '&': { height: '0px !important' },
-            '&:hover': {
-              textDecoration: 'underline',
-            },
-          }}
-        >
+        <MaxButton underline={true} onClick={() => onMax?.(balance)}>
           {balanceText}
-        </Button>
+        </MaxButton>
       ) : (
         balanceText
       )}
@@ -78,18 +96,9 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
       )}
 
       {max === 'button' && balance !== undefined && (
-        <Button
-          color="ghost"
-          variant="link"
-          size="extraSmall"
-          onClick={() => onMax?.(balance)}
-          sx={{
-            minWidth: 'unset',
-            '&': { height: '0px !important' },
-          }}
-        >
+        <MaxButton underline={false} onClick={() => onMax?.(balance)}>
           Max
-        </Button>
+        </MaxButton>
       )}
     </Stack>
   )
