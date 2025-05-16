@@ -58,6 +58,7 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
           size="extraSmall"
           onClick={() => onMax?.(balance)}
           sx={{
+            '&': { height: '0px !important' },
             '&:hover': {
               textDecoration: 'underline',
             },
@@ -83,6 +84,7 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
           onClick={() => onMax?.(balance)}
           sx={{
             minWidth: 'unset',
+            '&': { height: '0px !important' },
           }}
         >
           Max
