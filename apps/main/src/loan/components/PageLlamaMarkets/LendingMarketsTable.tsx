@@ -1,24 +1,35 @@
-import { useCallback } from 'react'
-import { useAccount } from 'wagmi'
+import { useCallback, useState } from 'react'
 import {
   DEFAULT_SORT,
   LLAMA_MARKET_COLUMNS,
+  LLAMA_MARKET_SORT_OPTIONS,
   useDefaultMarketColumnsVisibility,
 } from '@/loan/components/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
+import { LlamaMarketExpandedPanel } from '@/loan/components/PageLlamaMarkets/LlamaMarketExpandedPanel'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { type LlamaMarketsResult } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
-import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table'
+import {
+  ExpandedState,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
+import { SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
+
+const useVisibility = () => useVisibilitySettings(useDefaultMarketColumnsVisibility())
 
 // todo: rename to LlamaMarketsTable
 export const LendingMarketsTable = ({
@@ -34,22 +45,23 @@ export const LendingMarketsTable = ({
   isError: boolean
   minLiquidity: number
 }) => {
-  const { address } = useAccount()
+  const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
     { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
   ])
-  const defaultVisibility = useDefaultMarketColumnsVisibility(address)
-  const { columnSettings, columnVisibility, toggleVisibility } = useVisibilitySettings(defaultVisibility)
-
+  const { columnSettings, columnVisibility, toggleVisibility } = useVisibility()
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const data = result?.markets ?? []
+  const [expanded, setExpanded] = useState<ExpandedState>({})
+
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, columnVisibility, columnFilters },
+    onExpandedChange: setExpanded,
+    getExpandedRowModel: getExpandedRowModel(),
+    state: { expanded, sorting, columnVisibility, columnFilters },
     onSortingChange,
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
@@ -67,8 +79,9 @@ export const LendingMarketsTable = ({
         headerHeight={headerHeight}
         rowSx={{ height: { ...Sizing['3xl'], mobile: 77 } }} // the 3xl is too small in mobile (64px)
         emptyText={isError ? t`Could not load markets` : t`No markets found`}
+        expandedPanel={LlamaMarketExpandedPanel}
       >
-        <TableFilters
+        <TableFilters<LlamaMarketColumnId>
           title={t`Llamalend Markets`}
           subtitle={t`Borrow with the power of Curve soft liquidations`}
           onReload={onReload}
@@ -87,16 +100,25 @@ export const LendingMarketsTable = ({
               minLiquidity={minLiquidity}
             />
           }
-        >
-          <MarketsFilterChips
-            columnFiltersById={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-            hasFilters={columnFilters.length > 0}
-            hasPositions={result?.hasPositions}
-            hasFavorites={result?.hasFavorites}
-            resetFilters={resetFilters}
-          />
-        </TableFilters>
+          chips={
+            <MarketsFilterChips
+              columnFiltersById={columnFiltersById}
+              setColumnFilter={setColumnFilter}
+              hasFilters={columnFilters.length > 0}
+              hasPositions={hasPositions}
+              hasFavorites={hasFavorites}
+              resetFilters={resetFilters}
+            />
+          }
+          sort={
+            <SelectFilter
+              name="sort"
+              options={LLAMA_MARKET_SORT_OPTIONS}
+              onSelected={({ id }) => table.setSorting([{ id, desc: false }])}
+              value={sorting[0]?.id ?? ''}
+            />
+          }
+        />
       </DataTable>
     </Stack>
   )

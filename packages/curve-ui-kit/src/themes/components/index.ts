@@ -122,6 +122,18 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
+  MuiTableRow: {
+    styleOverrides: {
+      root: {
+        backgroundColor: design.Table.Row.Default,
+        '&.Mui-selected': {
+          backgroundColor: design.Table.Row.Selected,
+        },
+      },
+      hover: { backgroundColor: design.Table.Row.Hover },
+      head: { backgroundColor: design.Table.Header.Fill },
+    },
+  },
   MuiToolbar: {
     styleOverrides: {
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },

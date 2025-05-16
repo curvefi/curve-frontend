@@ -5,6 +5,7 @@ import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
+import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow } from './DataRow'
@@ -23,13 +24,15 @@ export const DataTable = <T extends TableItem>({
   emptyText,
   children,
   rowSx,
+  expandedPanel,
 }: {
   table: TanstackTable<T>
   headerHeight: string
   emptyText: string
-  children?: ReactNode
+  children?: ReactNode // passed to <FilterRow />
   rowSx?: SystemStyleObject<Theme>
   minRowHeight?: number
+  expandedPanel: ExpandedPanel<T>
 }) => (
   <Table
     sx={{
@@ -61,7 +64,7 @@ export const DataTable = <T extends TableItem>({
     <TableBody>
       {table.getRowModel().rows.length === 0 && <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>}
       {table.getRowModel().rows.map((row) => (
-        <DataRow<T> key={row.id} row={row} sx={rowSx} />
+        <DataRow<T> key={row.id} row={row} sx={rowSx} expandedPanel={expandedPanel} />
       ))}
     </TableBody>
   </Table>

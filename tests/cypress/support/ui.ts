@@ -1,6 +1,6 @@
 import { oneInt, oneOf } from '@/support/generators'
 
-export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 640, 1200, 2000]
+export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 820, 1200, 2000]
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
 
 export const oneDesktopViewport = () => [oneInt(DESKTOP_BREAKPOINT, MAX_WIDTH), oneInt(MIN_HEIGHT, MAX_HEIGHT)] as const

@@ -266,7 +266,7 @@ export const SizesAndSpaces = {
   ModalHeight: MappedModalHeight,
   OutlineWidth: '0.125rem', // 2px
   MinWidth: {
-    table: '60rem', // 960px
+    table: { desktop: '60rem' }, // 960px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
   },

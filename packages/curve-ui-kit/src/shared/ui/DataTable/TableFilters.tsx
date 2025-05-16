@@ -1,4 +1,5 @@
 import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
@@ -50,9 +51,8 @@ const TableButton = forwardRef<
 
 /**
  * A component that wraps a table and provides a title, subtitle, and filter controls.
- * The actual filters that are displayed on the collapse are passed as children.
  */
-export const TableFilters = ({
+export const TableFilters = <ColumnIds extends string>({
   title,
   subtitle,
   onReload,
@@ -60,17 +60,19 @@ export const TableFilters = ({
   visibilityGroups,
   toggleVisibility,
   collapsible,
-  children,
+  chips,
+  sort,
   onSearch,
 }: {
   title: string
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
-  visibilityGroups: VisibilityGroup[]
+  visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
-  collapsible: ReactNode
-  children: ReactNode
+  collapsible: ReactNode // filters that may be collapsed
+  chips: ReactNode // buttons that are always visible
+  sort: ReactNode // sorting options, only for mobile
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
@@ -106,14 +108,25 @@ export const TableFilters = ({
         <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
           <TableSearchField onSearch={onSearch} />
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 7, desktop: 8 }} justifyContent="flex-end" gap={0}>
-          {children}
+        <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
+          {sort}
+        </Grid>
+        <Grid
+          size={{ tablet: 7, desktop: 8 }}
+          justifyContent="flex-end"
+          gap={0}
+          display={{ mobile: 'none', tablet: 'flex' }}
+        >
+          {chips}
         </Grid>
       </Grid>
-      <Collapse in={filterExpanded}>{filterExpanded != null && collapsible}</Collapse>
+      <Collapse in={filterExpanded}>{collapsible}</Collapse>
+      <Box sx={{ display: { tablet: 'none' } }} paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
+        {chips}
+      </Box>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
-        <TableVisibilitySettingsPopover
+        <TableVisibilitySettingsPopover<ColumnIds>
           anchorEl={settingsRef.current}
           visibilityGroups={visibilityGroups}
           toggleVisibility={toggleVisibility}
