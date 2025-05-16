@@ -20,7 +20,7 @@ const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { data: client } = useConnectorClient()
 
-  const address = client?.account.address
+  const address = client?.account?.address
   const { wallet, provider } =
     useMemo(() => {
       const wallet =
@@ -38,14 +38,7 @@ const useWallet = () => {
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
   const { connectAsync } = useConnect()
-  const { disconnectAsync } = useDisconnect()
-
-  const disconnect = useCallback(async () => {
-    // Call disconnectAsync twice to ensure the useAccount hooks properly reset
-    // Bro I don't even know why, but if you call it once the useAccount states won't update...
-    await disconnectAsync()
-    await disconnectAsync()
-  }, [disconnectAsync])
+  const { disconnect } = useDisconnect()
 
   const connect = useCallback(
     async (connector?: (typeof supportedWallets)[number]['connector']) => {
