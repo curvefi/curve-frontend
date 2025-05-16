@@ -64,18 +64,6 @@
       "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "lp",
-      "description": "Deposit your Curve LP tokens on f(x) Protocol and earn FXN rewards or on Convex and earn CRV and FXN rewards. For more information please visit f(x) Protocol",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0x13eA95Ce68185e334d3747539845A3b7643a8cab",
-      "network": "ethereum",
-      "multiplier": "FXN",
-      "tags": ["tokens"],
-      "lock": "false"
     }
   ]
 }

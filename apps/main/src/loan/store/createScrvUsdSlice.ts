@@ -53,7 +53,7 @@ export type ScrvUsdSlice = {
     }
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
-    setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
+    setMax: (userAddress: string | undefined, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setSelectedStatisticsChart: (chart: StatisticsChart) => void
     setRevenueChartTimeOption: (timeOption: TimeOption) => void
@@ -297,8 +297,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -356,8 +355,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -416,8 +414,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
 
           // invalidate user balances query
-          const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
-          invalidateScrvUsdUserBalances({ userAddress: signerAddress ?? '' })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -506,16 +503,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     setRevenueChartTimeOption: (timeOption: TimeOption) => {
       get()[sliceKey].setStateByKey('revenueChartTimeOption', timeOption)
     },
-    setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => {
-      const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([
-        'useScrvUsdUserBalances',
-        { userAddress: userAddress.toLowerCase() },
-      ]) ?? { crvUSD: '0', scrvUSD: '0' }
-
+    setMax: (userAddress: string | undefined, stakingModule: DepositWithdrawModule) => {
+      const userBalance = queryClient.getQueryData<ScrvUsdUserBalances>(['useScrvUsdUserBalances', { userAddress }])
       if (stakingModule === 'deposit') {
-        get()[sliceKey].setStateByKey('inputAmount', userBalance.crvUSD)
+        get()[sliceKey].setStateByKey('inputAmount', userBalance?.crvUSD ?? '0')
       } else {
-        get()[sliceKey].setStateByKey('inputAmount', userBalance.scrvUSD)
+        get()[sliceKey].setStateByKey('inputAmount', userBalance?.scrvUSD ?? '0')
       }
     },
     setInputAmount: (amount: string) => {

@@ -1,7 +1,6 @@
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
-import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import {
@@ -13,6 +12,7 @@ import {
   IconWrapper,
   StyledRCPinBottom,
   ResetButton,
+  WalletIcon,
 } from './styles'
 
 type WithdrawTrackingProps = {
@@ -50,7 +50,7 @@ const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
         </Box>
         <IconWrapper>
           {withdrawConfirmed && <SuccessIcon name="CheckmarkFilled" size={20} />}
-          {withdrawConfirming && <Icon name="Wallet" size={20} />}
+          {withdrawConfirming && <WalletIcon name="Wallet" size={20} />}
           {withdrawLoading && <Spinner size={16} />}
         </IconWrapper>
       </MainTransactionStep>

@@ -87,9 +87,6 @@
     "campaign": "Taiko.json"
   },
   {
-    "campaign": "Zunami.json"
-  },
-  {
     "campaign": "Ditto.json"
   },
   {
@@ -100,5 +97,8 @@
   },
   {
     "campaign": "HumanNetwork.json"
+  },
+  {
+    "campaign": "Rings.json"
   }
 ]

@@ -11,7 +11,7 @@ type DeployButtonProps = { className?: string }
 
 const DeployButton = ({ className }: DeployButtonProps) => {
   const { address } = useAccount()
-  const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address ?? '' })
+  const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address })
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
   const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
   const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)

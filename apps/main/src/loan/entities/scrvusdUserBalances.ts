@@ -1,28 +1,26 @@
 import type { LlamaApi } from '@/loan/types/loan.types'
-import { getLib } from '@ui-kit/features/connect-wallet'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
+import { requireLib } from '@ui-kit/features/connect-wallet'
+import { createValidationSuite } from '@ui-kit/lib'
+import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
+import { apiValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { Chain } from '@ui-kit/utils'
 
 export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
 
-async function _fetchSavingsUserBalances({
-  userAddress,
-}: {
-  userAddress: string
-}): Promise<ScrvUsdUserBalances | null> {
-  const lendApi = getLib<LlamaApi>()
-  if (!lendApi) return null
-
-  const response = await lendApi.st_crvUSD.userBalances(userAddress)
+async function _fetchSavingsUserBalances({ userAddress }: UserQuery): Promise<ScrvUsdUserBalances | null> {
+  const { crvUSD, st_crvUSD } = await requireLib<LlamaApi>().st_crvUSD.userBalances(userAddress)
   return {
-    crvUSD: response.crvUSD === '0.0' ? '0' : response.crvUSD,
-    scrvUSD: response.st_crvUSD === '0.0' ? '0' : response.st_crvUSD,
+    crvUSD: crvUSD === '0.0' ? '0' : crvUSD,
+    scrvUSD: st_crvUSD === '0.0' ? '0' : st_crvUSD,
   }
 }
 
 export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
-  queryKey: (params: { userAddress: string }) =>
-    ['useScrvUsdUserBalances', { userAddress: params.userAddress }] as const,
+  queryKey: ({ userAddress }: UserParams) => ['useScrvUsdUserBalances', { userAddress }] as const,
   queryFn: _fetchSavingsUserBalances,
-  validationSuite: userAddressValidationSuite,
+  validationSuite: createValidationSuite(({ userAddress }: UserParams) => {
+    userAddressValidationGroup({ userAddress })
+    apiValidationGroup({ chainId: Chain.Ethereum })
+  }),
 })
