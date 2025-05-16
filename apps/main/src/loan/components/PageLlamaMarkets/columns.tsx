@@ -1,12 +1,8 @@
-import { useMemo } from 'react'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
-import { useMediaQuery } from '@mui/material'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CompactUsdCell, LineGraphCell, MarketTitleCell, PercentageCell, PriceCell, RateCell } from './cells'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
@@ -29,7 +25,6 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: t`Collateral • Borrow`,
     cell: MarketTitleCell,
-    // size: ColumnWidth.lg,
     filterFn: filterByText,
   }),
   columnHelper.display({
@@ -115,66 +110,3 @@ export const LLAMA_MARKET_COLUMNS = [
 ] satisfies LlamaColumn[]
 
 export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.LiquidityUsd, desc: true }]
-
-export const useDefaultMarketColumnsVisibility: () => VisibilityGroup<LlamaMarketColumnId>[] = () => {
-  const { wallet } = useWallet()
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-  const isUserConnected = !!wallet
-  return useMemo(
-    () => [
-      {
-        label: t`Markets`,
-        options: [
-          {
-            label: t`Available Liquidity`,
-            columns: [LlamaMarketColumnId.LiquidityUsd],
-            active: true,
-            enabled: !isMobile,
-          },
-          {
-            label: t`Utilization`,
-            columns: [LlamaMarketColumnId.UtilizationPercent],
-            active: true,
-            enabled: !isMobile,
-          },
-        ],
-      },
-      {
-        label: t`Borrow`,
-        options: [
-          { columns: [LlamaMarketColumnId.BorrowRate], active: true, enabled: true },
-          { label: t`Chart`, columns: [LlamaMarketColumnId.BorrowChart], active: true, enabled: !isMobile },
-          {
-            label: t`Borrow Details`,
-            columns: [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed],
-            active: true,
-            enabled: !isMobile && isUserConnected,
-          },
-        ],
-      },
-      {
-        label: t`Lend`,
-        options: [
-          { columns: [LlamaMarketColumnId.LendRate], active: true, enabled: !isMobile },
-          { label: t`Chart`, columns: [LlamaMarketColumnId.LendChart], active: false, enabled: !isMobile },
-          {
-            label: t`Lend Details`,
-            columns: [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited],
-            active: true,
-            enabled: !isMobile && isUserConnected,
-          },
-        ],
-      },
-    ],
-    [isUserConnected, isMobile],
-  )
-}
-
-export const LLAMA_MARKET_SORT_OPTIONS = LLAMA_MARKET_COLUMNS.filter((c) => c.id && c.enableSorting !== false).map(
-  ({ id, header }) => ({
-    id: id as LlamaMarketColumnId,
-    label: header as string,
-  }),
-)
-
-console.log({ LLAMA_MARKET_SORT_OPTIONS, LLAMA_MARKET_COLUMNS })

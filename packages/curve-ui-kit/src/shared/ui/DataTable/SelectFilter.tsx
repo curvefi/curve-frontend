@@ -1,4 +1,4 @@
-import { type ReactNode, useRef } from 'react'
+import { type ReactNode, useMemo, useRef } from 'react'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Option<T = string> = { id: T; label: ReactNode }
+export type Option<T = string> = { id: T; label: ReactNode }
 
 export const SelectFilter = <T extends string>({
   value,
@@ -28,8 +28,7 @@ export const SelectFilter = <T extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-
-  const selectedOption = options.find((option) => option.id === value)
+  const selectedOption = useMemo(() => options.find((option) => option.id === value), [options, value])
 
   // the select component does a lot of stuff with its children, so we cannot add a wrapper for the theme inverter.
   // therefore, I was forced to reimplement the menu separate from the select component.
@@ -49,8 +48,7 @@ export const SelectFilter = <T extends string>({
         slotProps={{ input: { sx: { paddingBlock: Spacing.md } } }} // smaller padding, bodyMBold has a larger font
         renderValue={() => (
           <Typography component="span" variant="bodyMBold">
-            {t`Sort`}
-            {`: `}
+            {t`Sort by: `}
             {selectedOption?.label}
           </Typography>
         )}
@@ -70,7 +68,10 @@ export const SelectFilter = <T extends string>({
                 ref={menuRef}
                 value={id}
                 className={selectedOption?.id === id ? 'Mui-selected' : ''}
-                onClick={() => onSelected({ id, label })}
+                onClick={() => {
+                  onSelected({ id, label })
+                  close()
+                }}
               >
                 <Typography component="span" variant="bodyMBold">
                   {label}

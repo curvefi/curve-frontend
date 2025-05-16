@@ -45,7 +45,12 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </>
         )}
         <Metric label={t`Available Liquidity`} value={market.liquidityUsd} unit="dollar" />
-        <Metric label={t`Utilization`} value={market.utilizationPercent} unit="percentage" />
+        <Metric
+          label={t`Utilization`}
+          value={market.utilizationPercent}
+          unit="percentage"
+          testId="metric-utilizationPercent"
+        />
       </ExpansionPanelSection>
       {market.userHasPosition && (
         //  todo: get the data

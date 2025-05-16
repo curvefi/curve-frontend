@@ -1,6 +1,7 @@
 import {
   AppPath,
   checkIsDarkMode,
+  hideDomainBanner,
   LOAD_TIMEOUT,
   oneAppPath,
   oneDesktopViewport,
@@ -17,13 +18,6 @@ const expectedConnectHeight = 40
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 288
 const expectedFooterMaxWidth = 1536
-
-function hideDomainBanner(win: Cypress.AUTWindow) {
-  // avoid the domain banner, this may be deleted after the date below
-  if (new Date() < new Date('2025-06-01')) {
-    win.localStorage.setItem('isNewDomainNotificationSeen', 'true')
-  }
-}
 
 describe('Header', () => {
   let viewport: readonly [number, number]

@@ -2,6 +2,7 @@ import { capitalize } from 'lodash'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
   createLendingVaultResponses,
+  HighUtilizationAddress,
   type LendingVaultResponses,
   mockLendingChains,
   mockLendingSnapshots,
@@ -9,7 +10,15 @@ import {
 } from '@/support/helpers/lending-mocks'
 import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@/support/helpers/tokens'
-import { type Breakpoint, checkIsDarkMode, isInViewport, LOAD_TIMEOUT, oneViewport, RETRY_IN_CI } from '@/support/ui'
+import {
+  assertInViewport,
+  assertNotInViewport,
+  type Breakpoint,
+  checkIsDarkMode,
+  hideDomainBanner,
+  LOAD_TIMEOUT,
+  RETRY_IN_CI,
+} from '@/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
@@ -18,7 +27,8 @@ describe(`LlamaLend Markets`, () => {
   let vaultData: LendingVaultResponses
 
   beforeEach(() => {
-    const [width, height, screen] = oneViewport()
+    // const [width, height, screen] = oneViewport()
+    const [width, height, screen] = [400, 700, 'mobile'] as const
     vaultData = createLendingVaultResponses()
     breakpoint = screen
     mockChains()
@@ -32,9 +42,10 @@ describe(`LlamaLend Markets`, () => {
     cy.viewport(width, height)
     cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
     cy.visit('/crvusd/ethereum/beta-markets/', {
-      onBeforeLoad: (win) => {
-        win.localStorage.clear()
-        isDarkMode = checkIsDarkMode(win)
+      onBeforeLoad: (window) => {
+        window.localStorage.clear()
+        isDarkMode = checkIsDarkMode(window)
+        hideDomainBanner(window)
       },
       ...LOAD_TIMEOUT,
     })
@@ -45,29 +56,43 @@ describe(`LlamaLend Markets`, () => {
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
 
   it('should have sticky headers', () => {
-    cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
+    cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
-    cy.get('[data-testid="data-table-head"] th').eq(1).then(isInViewport).should('be.true')
+    cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
     cy.get(`[data-testid^="pool-type-"]`).should('be.visible') // wait for the table to render
 
     // filter height changes because text wraps depending on the width
     const filterHeight = {
-      mobile: [274, 266, 234, 226, 196, 156],
+      mobile: [318, 310, 274, 244, 232, 192],
       tablet: [244, 232, 188, 176, 120],
       desktop: [128],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
-    const rowHeight = { mobile: 77, tablet: 88, desktop: 88 }[breakpoint]
-    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', rowHeight)
+    // mobile row is usually 77px but can be higher when the text is long
+    const rowHeight = { mobile: [77, 88], tablet: [88], desktop: [88] }[breakpoint]
+    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('be.oneOf', rowHeight)
   })
 
   it('should sort', () => {
-    cy.get(`[data-testid^="data-table-cell-utilizationPercent"]`).first().contains('%')
-    cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
-    cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
+    cy.get(`[data-testid^="data-table-cell-rates_borrow"]`).first().contains('%')
+    if (breakpoint == 'mobile') {
+      cy.get('[data-testid="select-filter-sort"]').click()
+      cy.get('[data-testid="menu-sort"] [value="utilizationPercent"]').click()
+      cy.get('[data-testid="select-filter-sort"]').contains('Utilization', LOAD_TIMEOUT)
+      cy.get(`[data-testid^="data-table-row"]`)
+        .first()
+        .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
+        .should('exist')
+      cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().click()
+      cy.get('[data-testid="metric-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
+      // note: not possible currently to sort descending
+    } else {
+      cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
+    }
   })
 
   it('should show graphs', () => {

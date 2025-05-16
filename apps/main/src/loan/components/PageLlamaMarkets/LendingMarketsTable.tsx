@@ -1,11 +1,8 @@
 import { useCallback, useState } from 'react'
-import {
-  DEFAULT_SORT,
-  LLAMA_MARKET_COLUMNS,
-  LLAMA_MARKET_SORT_OPTIONS,
-  useDefaultMarketColumnsVisibility,
-} from '@/loan/components/PageLlamaMarkets/columns'
+import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
+import { useLlamaMarketsColumnVisibility } from '@/loan/components/PageLlamaMarkets/hooks/useLlamaMarketsColumnVisibility'
+import { useLlamaMarketSortOptions } from '@/loan/components/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
 import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from '@/loan/components/PageLlamaMarkets/LlamaMarketExpandedPanel'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
@@ -29,7 +26,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
-const useVisibility = () => useVisibilitySettings(useDefaultMarketColumnsVisibility())
+const useVisibility = () => useVisibilitySettings(useLlamaMarketsColumnVisibility())
 
 // todo: rename to LlamaMarketsTable
 export const LendingMarketsTable = ({
@@ -52,7 +49,6 @@ export const LendingMarketsTable = ({
   const { columnSettings, columnVisibility, toggleVisibility } = useVisibility()
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const [expanded, setExpanded] = useState<ExpandedState>({})
-
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
@@ -113,8 +109,8 @@ export const LendingMarketsTable = ({
           sort={
             <SelectFilter
               name="sort"
-              options={LLAMA_MARKET_SORT_OPTIONS}
-              onSelected={({ id }) => table.setSorting([{ id, desc: false }])}
+              options={useLlamaMarketSortOptions()}
+              onSelected={({ id }) => table.setSorting([{ id, desc: true }])}
               value={(sorting.length ? sorting : DEFAULT_SORT)[0].id}
             />
           }
