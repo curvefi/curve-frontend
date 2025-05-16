@@ -115,7 +115,7 @@ export const LendingMarketsTable = ({
               name="sort"
               options={LLAMA_MARKET_SORT_OPTIONS}
               onSelected={({ id }) => table.setSorting([{ id, desc: false }])}
-              value={sorting[0]?.id ?? ''}
+              value={(sorting.length ? sorting : DEFAULT_SORT)[0].id}
             />
           }
         />

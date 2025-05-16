@@ -29,7 +29,7 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: t`Collateral • Borrow`,
     cell: MarketTitleCell,
-    size: ColumnWidth.lg,
+    // size: ColumnWidth.lg,
     filterFn: filterByText,
   }),
   columnHelper.display({
@@ -176,3 +176,5 @@ export const LLAMA_MARKET_SORT_OPTIONS = LLAMA_MARKET_COLUMNS.filter((c) => c.id
     label: header as string,
   }),
 )
+
+console.log({ LLAMA_MARKET_SORT_OPTIONS, LLAMA_MARKET_COLUMNS })

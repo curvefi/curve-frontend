@@ -95,7 +95,7 @@ export const MarketsFilterChips = ({
           data-testid="chip-lend"
         />
       </Stack>
-      <Stack direction="row" columnGap="4px">
+      <Stack direction="row" gap="4px" alignItems="center" justifyContent="flex-end" flexWrap="wrap">
         {address && (
           <SelectableChip
             label={t`My Markets`}
@@ -121,8 +121,8 @@ export const MarketsFilterChips = ({
           icon={<PointsIcon />}
           data-testid="chip-rewards"
         />
+        <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
       </Stack>
-      <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
     </Stack>
   )
 }

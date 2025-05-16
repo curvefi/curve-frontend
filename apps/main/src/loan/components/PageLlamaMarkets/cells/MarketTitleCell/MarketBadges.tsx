@@ -6,6 +6,7 @@ import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
@@ -29,6 +30,7 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market: { address, rewards, type, leverage } }: { market: LlamaMarket }) => {
   const [isFavorite, toggleFavorite] = useFavoriteMarket(address)
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const iconColor = useTheme().design.Text.TextColors.Highlight
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
@@ -43,7 +45,11 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
 
       {leverage > 0 && (
         <Tooltip title={t`How much you can leverage your position`}>
-          <Chip size="small" color="highlight" label={t`🔥 ${leverage.toPrecision(2)}x leverage`} />
+          <Chip
+            size="small"
+            color="highlight"
+            label={t`🔥 ${leverage.toPrecision(2)}x ${isMobile ? '' : t`leverage`}`}
+          />
         </Tooltip>
       )}
 
@@ -63,6 +69,7 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
           size="extraSmall"
           onClick={toggleFavorite}
           className={classNames(!isFavorite && DesktopOnlyHoverClass, ClickableInRowClass)}
+          sx={{ display: { mobile: 'none', tablet: 'flex' } }}
         >
           <FavoriteHeartIcon color={iconColor} isFavorite={isFavorite} />
         </IconButton>

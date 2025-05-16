@@ -7,6 +7,9 @@ import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 type Option<T = string> = { id: T; label: ReactNode }
 
@@ -43,21 +46,15 @@ export const SelectFilter = <T extends string>({
         value=""
         data-testid={`select-filter-${name}`}
         size="small"
+        slotProps={{ input: { sx: { paddingBlock: Spacing.md } } }} // smaller padding, bodyMBold has a larger font
         renderValue={() => (
-          <MenuItem
-            sx={{
-              display: 'inline-flex', // display inline to avoid wrapping
-              '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
-            }}
-          >
-            <Typography component="span" variant="bodyMBold">
-              {t`Sort`}
-              {`: `}
-              {selectedOption?.label}
-            </Typography>
-          </MenuItem>
+          <Typography component="span" variant="bodyMBold">
+            {t`Sort`}
+            {`: `}
+            {selectedOption?.label}
+          </Typography>
         )}
-      ></Select>
+      />
       {isOpen !== undefined && (
         <Menu
           data-testid={`menu-${name}`}

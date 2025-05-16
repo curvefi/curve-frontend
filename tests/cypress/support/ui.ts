@@ -17,13 +17,18 @@ export type Breakpoint = 'mobile' | 'tablet' | 'desktop'
 export const oneViewport = (): [number, number, Breakpoint] =>
   oneOf([...oneDesktopViewport(), 'desktop'], [...oneMobileViewport(), 'mobile'], [...oneTabletViewport(), 'tablet'])
 
-export const isInViewport = ($el: JQuery) => {
+const isInViewport = ($el: JQuery) => {
   const height = Cypress.$(cy.state('window')).height()!
   const width = Cypress.$(cy.state('window')).width()!
   const rect = $el[0].getBoundingClientRect()
   const [x, y] = [rect.left + rect.width / 2, rect.top + rect.height / 2]
   return y > 0 && y < height && x > 0 && x < width
 }
+
+export const assertInViewport = ($el: JQuery) =>
+  expect(isInViewport($el), `${$el} should be in the viewport`).to.be.true
+export const assertNotInViewport = ($el: JQuery) =>
+  expect(isInViewport($el), `${$el} should not be in the viewport`).to.be.false
 
 export const checkIsDarkMode = (win: Cypress.AUTWindow) => win.matchMedia('(prefers-color-scheme: dark)').matches
 
