@@ -1,0 +1,45 @@
+{
+  "campaignName": "TAC Campaign",
+  "platform": "TAC",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "tac.png",
+  "dashboardLink": "https://app.turtle.club/campaigns/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "4.2 * 4 TAC per $1k/day. Please visit issuer for more information.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xFfF8634dE89271b6075C55FA89B4E9A087Fdb9FE",
+      "network": "ethereum",
+      "multiplier": "4.2x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "3.6 * 4 TAC per $1k/day. Please visit issuer for more information.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F",
+      "network": "ethereum",
+      "multiplier": "3.6x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "6 * 4 TAC per $1k/day. Please visit issuer for more information.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x51F5466690978173f45270f57e06e25b0c888261",
+      "network": "ethereum",
+      "multiplier": "",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
