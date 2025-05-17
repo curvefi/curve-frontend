@@ -96,6 +96,12 @@ export const FullFeaturedWithMaxBalance: Story = {
   },
 }
 
+export const ZeroBalance: Story = {
+  args: {
+    balance: 0,
+  },
+}
+
 export const NoBalance: Story = {
   args: {
     balance: undefined,

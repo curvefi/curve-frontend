@@ -48,7 +48,7 @@ type BalanceTextProps = {
 const BalanceText = ({ symbol, balance }: BalanceTextProps) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center">
     <Typography variant="highlightS" color={balance !== undefined ? 'textPrimary' : 'textTertiary'}>
-      {balance ? formatNumber(balance) : '?'}
+      {balance != null ? (balance === 0 ? '0' : formatNumber(balance)) : '?'}
     </Typography>
 
     <Typography variant="highlightS" color="textPrimary">
