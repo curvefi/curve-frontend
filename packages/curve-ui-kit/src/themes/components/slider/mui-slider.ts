@@ -44,6 +44,8 @@ const borderPseudoElement = (design: DesignSystem) => ({
     left: -THUMB_WIDTH / 2,
     border: `1px solid ${design.Color.Neutral[500]}`,
     zIndex: -1,
+    // used by TradingSlider to set the background color. I can't add TSX props so this is the only way.
+    backgroundColor: 'var(--slider-background)',
   },
 })
 
