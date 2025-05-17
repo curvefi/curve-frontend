@@ -1,4 +1,4 @@
-import { ChainId, CurveApi, EstimatedGas } from '@/dex/types/main.types'
+import { EstimatedGas } from '@/dex/types/main.types'
 import { DateValue } from '@react-types/calendar'
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date'
@@ -9,15 +9,6 @@ export type VecrvInfo = {
   lockedAmountAndUnlockTime: { lockedAmount: string; unlockTime: number }
   veCrv: string
   veCrvPct: string
-}
-
-export type PageVecrv = {
-  curve: CurveApi | null
-  rChainId: ChainId
-  rFormType: FormType
-  vecrvInfo: VecrvInfo
-  toggleForm: (formType: FormType) => void
-  pageLoaded: boolean
 }
 
 export type FormStatus = {

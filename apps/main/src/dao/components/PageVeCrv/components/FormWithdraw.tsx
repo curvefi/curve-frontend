@@ -1,0 +1,148 @@
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+import styled from 'styled-components'
+import AlertFormError from '@/dao/components/AlertFormError'
+import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
+import VoteCountdown from '@/dao/components/VoteCountdown'
+import { useLockEstimateWithdrawGas } from '@/dao/entities/locker-estimate-withdraw-gas'
+import useEstimateGasConversion from '@/dao/hooks/useEstimateGasConversion'
+import useStore from '@/dao/store/useStore'
+import { Address } from '@curvefi/prices-api'
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
+import AlertBox from '@ui/AlertBox'
+import Box from '@ui/Box'
+import Button from '@ui/Button'
+import TxInfoBar from '@ui/TxInfoBar'
+import { formatNumber } from '@ui/utils/utilsFormat'
+import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { IconSize } = SizesAndSpaces
+
+const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
+  const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
+  const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
+
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+
+  const { signerAddress } = curve ?? {}
+  const haveSigner = !!signerAddress
+  const canUnlock =
+    +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
+  const { data: lockEstimateWithdrawGas, isLoading: isLoadingLockEstimateWithdrawGas } = useLockEstimateWithdrawGas(
+    { chainId: rChainId, walletAddress: signerAddress as Address },
+    canUnlock,
+  )
+
+  const loading = typeof vecrvInfo === 'undefined'
+  const withdrawTxLoading =
+    withdrawLockedCrvStatus.transactionState === 'CONFIRMING' || withdrawLockedCrvStatus.transactionState === 'LOADING'
+  const withdrawTxError = withdrawLockedCrvStatus.transactionState === 'ERROR'
+  const withdrawTxSuccess = withdrawLockedCrvStatus.transactionState === 'SUCCESS'
+
+  const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas ?? 0)
+  const valueGas = formatNumber(estGasCostUsd, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+
+  const closeTxBar = useCallback(() => {
+    setTxInfoBar(null)
+  }, [setTxInfoBar])
+
+  useEffect(() => {
+    if (withdrawTxSuccess) {
+      setTxInfoBar(
+        <TxInfoBar
+          description={t`Locked CRV withdrawn`}
+          txHash={withdrawLockedCrvStatus.txHash ?? ''}
+          onClose={closeTxBar}
+        />,
+      )
+    }
+  }, [withdrawTxSuccess, closeTxBar, withdrawLockedCrvStatus.txHash])
+
+  return (
+    <Box display="flex" flexDirection="column" flexGap="var(--spacing-3)" fillHeight>
+      <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
+        <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
+          <RowTitle>{t`CRV Locked`}:</RowTitle>
+          <p>{formatNumber(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount)}</p>
+        </Box>
+        <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
+          <RowTitle>{t`Unlock Time`}:</RowTitle>
+          <p>{new Date(vecrvInfo.lockedAmountAndUnlockTime.unlockTime).toLocaleString()}</p>
+        </Box>
+      </WithdrawInfo>
+
+      <Box display="flex" flexDirection="column" margin="auto 0 0" flexGap="var(--spacing-3)">
+        {haveSigner && canUnlock && (
+          <ActionInfo
+            label={t`Estimated TX cost`}
+            labelColor="tertiary"
+            value={valueGas !== '' && valueGas !== '0' ? valueGas : '-'}
+            valueColor="tertiary"
+            valueLeft={<LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
+            valueTooltip={tooltip}
+            loading={isLoadingLockEstimateWithdrawGas}
+          />
+        )}
+        <FormActions haveSigner={haveSigner} loading={loading}>
+          {!canUnlock && (
+            <AlertBox alertType="info">
+              {t`Your CRV unlocks in:`}
+              <StyledVoteCountdown startDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
+            </AlertBox>
+          )}
+          {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
+            <AlertFormError errorKey={withdrawLockedCrvStatus.errorMessage} />
+          )}
+          {txInfoBar}
+          {withdrawTxSuccess && <SuccesBox>{t`Withdrawal successful`}</SuccesBox>}
+          {!withdrawTxSuccess && canUnlock && (
+            <Button
+              fillWidth
+              size="large"
+              variant="filled"
+              disabled={!canUnlock}
+              loading={withdrawTxLoading}
+              onClick={withdrawLockedCrv}
+            >
+              Withdraw
+            </Button>
+          )}
+        </FormActions>
+      </Box>
+    </Box>
+  )
+}
+
+const WithdrawInfo = styled(Box)`
+  p {
+    font-size: var(--font-size-2);
+  }
+`
+
+const RowTitle = styled.p`
+  font-weight: var(--bold);
+`
+
+const StyledVoteCountdown = styled(VoteCountdown)`
+  margin-left: var(--spacing-2);
+`
+
+// mimics StepBox from StepAction.tsx
+const SuccesBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-1) var(--spacing-2);
+  min-height: var(--height-large);
+  font-size: var(--box_action--button--font-size);
+  font-weight: var(--button--font-weight);
+  width: 100%;
+  color: var(--success-400);
+  border: 2px solid var(--success-400);
+  background-color: var(--success-600);
+  text-align: center;
+`
+
+export default FormWithdraw

@@ -18,7 +18,7 @@ export type CurveApi = typeof curveApi & { chainId: number }
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
-export type FormType = 'create' | 'adjust_crv' | 'adjust_date'
+export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
 export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }

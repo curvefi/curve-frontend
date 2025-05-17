@@ -25,6 +25,8 @@ type ComponentSize = 'small' | 'medium' | 'large'
 type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
+  /** Custom color for the label text */
+  labelColor?: React.ComponentProps<typeof Typography>['color']
   /** Primary value to display and copy */
   value: string
   /** Custom color for the value text */
@@ -71,6 +73,7 @@ const valueSize = {
 
 const ActionInfo = ({
   label,
+  labelColor,
   prevValue,
   prevValueColor,
   value,
@@ -93,7 +96,7 @@ const ActionInfo = ({
 
   return (
     <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-      <Typography flexGrow={1} variant={labelSize[size]} color="textSecondary">
+      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'}>
         {label}
       </Typography>
 

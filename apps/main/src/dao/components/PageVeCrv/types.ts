@@ -17,7 +17,6 @@ export type PageVecrv = {
   rChainId: ChainId
   rFormType: FormType
   vecrvInfo: VecrvInfo
-  toggleForm: (formType: FormType) => void
 }
 
 export type FormStatus = {

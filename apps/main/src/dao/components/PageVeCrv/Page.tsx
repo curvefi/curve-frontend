@@ -1,15 +1,14 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
-import { ROUTE } from '@/dao/constants'
+import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import Settings from '@/dao/layout/Settings'
 import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
-import { getPath } from '@/dao/utils/utilsRouter'
+import type { Address } from '@curvefi/prices-api'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
@@ -19,36 +18,13 @@ import { WrongNetwork } from './WrongNetwork'
 
 export const PageVeCrv = (params: VeCrvUrlParams) => {
   const [rFormType] = params.formType
-  const { push } = useRouter()
   const { lib: curve = null, connectState } = useConnection<CurveApi>()
   const rChainId = networksIdMapper[params.network]
   const isLoadingCurve = isLoading(connectState)
 
-  const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
-
-  const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
-  const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
+  const signerAddress = curve?.signerAddress
+  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, walletAddress: signerAddress as Address })
   const resetState = useStore((state) => state.lockedCrv.resetState)
-
-  const toggleForm = useCallback(
-    (formType: FormType) => push(getPath(params, `${ROUTE.PAGE_VECRV}/${formType}`)),
-    [push, params],
-  )
-
-  const fetchData = useCallback(
-    async (curve: CurveApi | null, isLoadingCurve: boolean) => {
-      if (curve && !isLoadingCurve) {
-        const resp = await fetchVecrvInfo(curve)
-        if (+resp.lockedAmountAndUnlockTime.lockedAmount > 0) {
-          const updatedFormType: FormType = rFormType === 'adjust_date' ? 'adjust_date' : 'adjust_crv'
-          toggleForm(updatedFormType)
-        } else {
-          toggleForm('create')
-        }
-      }
-    },
-    [fetchVecrvInfo, rFormType, toggleForm],
-  )
 
   // onMount
   useEffect(
@@ -56,12 +32,6 @@ export const PageVeCrv = (params: VeCrvUrlParams) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
-
-  // get initial data
-  useEffect(() => {
-    void fetchData(curve, isLoadingCurve)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.chainId, curve?.signerAddress, isLoadingCurve])
 
   return (
     <>
@@ -80,7 +50,6 @@ export const PageVeCrv = (params: VeCrvUrlParams) => {
                 rChainId={rChainId}
                 rFormType={rFormType as FormType}
                 vecrvInfo={vecrvInfo}
-                toggleForm={toggleForm}
               />
             ) : (
               <SpinnerWrapper>
@@ -105,5 +74,4 @@ const Container = styled(Box)`
 
 const Content = styled(Box)`
   align-content: flex-start;
-  min-height: 14.8125rem; //237px
 `
