@@ -30,7 +30,7 @@ const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
       // Sadly the !important is still necessary because of the !important in defineMuiButton for the Link variant :(
       '&': { height: '0px !important' },
       ...(underline && {
-        '&:hover': {
+        '&:hover .balance': {
           textDecoration: 'underline',
         },
       }),
@@ -47,7 +47,7 @@ type BalanceTextProps = {
 
 const BalanceText = ({ symbol, balance }: BalanceTextProps) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center">
-    <Typography variant="highlightS" color={balance !== undefined ? 'textPrimary' : 'textTertiary'}>
+    <Typography className="balance" variant="highlightS" color={balance !== undefined ? 'textPrimary' : 'textTertiary'}>
       {balance != null ? (balance === 0 ? '0' : formatNumber(balance)) : '?'}
     </Typography>
 
