@@ -64,12 +64,12 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
     <Box display="flex" flexDirection="column" flexGap="var(--spacing-3)" fillHeight>
       <WithdrawInfo display="flex" flexDirection="column" flexGap="var(--spacing-1)">
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
-          <RowTitle>{t`CRV Locked`}:</RowTitle>
-          <p>{formatNumber(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount)}</p>
+          <p>{t`CRV Locked`}:</p>
+          <RowParagraph>{formatNumber(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount)}</RowParagraph>
         </Box>
         <Box display="flex" flexAlignItems="center" flexJustifyContent="space-between">
-          <RowTitle>{t`Unlock Time`}:</RowTitle>
-          <p>{new Date(vecrvInfo.lockedAmountAndUnlockTime.unlockTime).toLocaleString()}</p>
+          <p>{t`Unlock Time`}:</p>
+          <RowParagraph>{new Date(vecrvInfo.lockedAmountAndUnlockTime.unlockTime).toLocaleString()}</RowParagraph>
         </Box>
       </WithdrawInfo>
 
@@ -121,7 +121,7 @@ const WithdrawInfo = styled(Box)`
   }
 `
 
-const RowTitle = styled.p`
+const RowParagraph = styled.p`
   font-weight: var(--bold);
 `
 

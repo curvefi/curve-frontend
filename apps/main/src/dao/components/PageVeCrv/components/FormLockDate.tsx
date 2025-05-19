@@ -223,7 +223,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
         )}
         {txInfoBar}
-        <Stepper steps={steps} />
+        <Stepper steps={steps} hideStepNumber />
       </FormActions>
     </>
   )
