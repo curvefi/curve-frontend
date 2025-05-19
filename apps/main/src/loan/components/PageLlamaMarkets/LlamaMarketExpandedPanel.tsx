@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { LineGraphCell } from '@/loan/components/PageLlamaMarkets/cells'
+import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
+import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -16,6 +18,8 @@ import type { LlamaMarket } from '../../entities/llama-markets'
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   const [isFavorite, toggleFavorite] = useFavoriteMarket(market.address)
+  const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
+  const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   return (
     <>
       <ExpansionPanelSection
@@ -53,10 +57,11 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         />
       </ExpansionPanelSection>
       {market.userHasPosition && (
-        //  todo: get the data
         <ExpansionPanelSection title={t`Your Position`}>
-          <Metric label={t`Earnings`} value={0} unit="percentage" />
-          <Metric label={t`Supplied Amount`} value={0} unit="percentage" />
+          {earnings?.earnings != null && <Metric label={t`Earnings`} value={earnings.earnings} unit="dollar" />}
+          {deposited?.deposited != null && (
+            <Metric label={t`Supplied Amount`} value={deposited.deposited} unit="dollar" />
+          )}
         </ExpansionPanelSection>
       )}
       <Button

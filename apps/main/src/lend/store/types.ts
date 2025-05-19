@@ -1,7 +1,6 @@
 /* createAppLayoutSlice */
 export type LayoutHeight = {
   globalAlert: number
-  footer: number
 }
 
 /* createCreateLoanSlice */

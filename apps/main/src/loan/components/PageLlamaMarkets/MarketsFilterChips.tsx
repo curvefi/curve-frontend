@@ -70,16 +70,16 @@ type MarketsFilterChipsProps = ColumnFilterProps & {
   hasFavorites: boolean | undefined
 }
 
-const GridWrapper = ({
+const GridItem = ({
   children,
   size = 6,
   alignRight,
   extraMargin,
 }: {
   children: ReactNode
-  size?: number
-  alignRight?: boolean
-  extraMargin?: boolean
+  size?: number // used for mobile size (`Points` can take the full width on mobile)
+  alignRight?: boolean // used to align text to the right on the last item
+  extraMargin?: boolean // used to separate the different types of chips on larger screens
 }) => (
   <Grid
     size={{ mobile: size, tablet: 'auto' }}
@@ -98,9 +98,9 @@ const GridChip = ({
   extraMargin,
   ...props
 }: Omit<SelectableChipProps, 'size'> & { size?: number; extraMargin?: boolean }) => (
-  <GridWrapper size={size} extraMargin={extraMargin}>
+  <GridItem size={size} extraMargin={extraMargin}>
     <SelectableChip {...props} sx={{ width: { mobile: '100%', tablet: 'auto' } }} />
-  </GridWrapper>
+  </GridItem>
 )
 
 export const MarketsFilterChips = ({
@@ -165,15 +165,15 @@ export const MarketsFilterChips = ({
         {...(address && { size: 12 })}
         extraMargin
       />
-      <GridWrapper {...(!isMobile && { alignRight: true })}>
+      <GridItem {...(!isMobile && { alignRight: true })}>
         <Stack direction="column">
           <Typography variant="bodyXsRegular">{t`Hidden Markets`}</Typography>
           <Typography variant="highlightS">{hiddenMarketCount}</Typography>
         </Stack>
-      </GridWrapper>
-      <GridWrapper alignRight>
+      </GridItem>
+      <GridItem alignRight>
         <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
-      </GridWrapper>
+      </GridItem>
     </Grid>
   )
 }

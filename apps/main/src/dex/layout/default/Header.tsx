@@ -2,13 +2,13 @@ import { type RefObject, useMemo, useRef } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
-import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
 import { type CurveApi } from '@/dex/types/main.types'
 import { useChainId } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -25,7 +25,8 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { lib: curve = {} } = useConnection<CurveApi>()
   const rChainId = useChainId(networkId)
-  useLayoutHeight(mainNavRef, 'mainNav')
+  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
+  useLayoutHeight(mainNavRef, 'mainNav', updateLayoutHeight)
 
   const hasRouter = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasRouter)
   const networks = useStore((state) => state.networks.networks)
