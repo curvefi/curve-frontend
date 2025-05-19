@@ -58,9 +58,9 @@ export const TradingSlider = ({
       onChange={(event) => {
         const numValue = Number(event.target.value)
         const clampedValue = Math.min(Math.max(numValue, 0), 100)
-        event.target.value = String(clampedValue) // remove leading zeros
 
         if (!isNaN(numValue) && percentage !== clampedValue) {
+          event.target.value = String(clampedValue) // remove leading zeros
           onPercentageCommitted?.(clampedValue)
         }
       }}
