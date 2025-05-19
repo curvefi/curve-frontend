@@ -7,7 +7,6 @@ import type { DateValue } from '@internationalized/date'
 import Button from '@ui/Button'
 import DatePicker from '@ui/DatePicker'
 import { Chip } from '@ui/Typography'
-import { breakpoints } from '@ui/utils/responsive'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -100,17 +99,26 @@ const FieldDatePicker = ({
         quickActions={
           <>
             <QuickActionsWrapper>
-              {quickActions.map(({ unit, value, label }) => (
-                <QuickActionButton
-                  key={label}
-                  variant="outlined"
-                  onClick={() => {
-                    if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
-                  }}
-                >
-                  {label}
-                </QuickActionButton>
-              ))}
+              {quickActions.map(({ unit, value, label }, index) => {
+                const totalCount = quickActions.length
+                const rowIndex = Math.floor(index / 3)
+                // Calculate how many items are meant to be in the current item's visual row
+                const itemsInThisRow = Math.min(totalCount - rowIndex * 3, 3)
+
+                return (
+                  <QuickActionButton
+                    key={label}
+                    variant="outlined"
+                    fillWidth
+                    itemsInRow={itemsInThisRow}
+                    onClick={() => {
+                      if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
+                    }}
+                  >
+                    {label}
+                  </QuickActionButton>
+                )
+              })}
             </QuickActionsWrapper>
           </>
         }
@@ -137,38 +145,56 @@ const FieldDatePicker = ({
 
       {Array.isArray(quickActions) && quickActions.length > 0 && (
         <QuickActionsWrapper>
-          {quickActions.map(({ unit, value, label }) => (
-            <QuickActionButton
-              key={label}
-              variant="outlined"
-              onClick={() => {
-                if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
-              }}
-            >
-              {label}
-            </QuickActionButton>
-          ))}
+          {quickActions.map(({ unit, value, label }, index) => {
+            const totalCount = quickActions.length
+            const rowIndex = Math.floor(index / 3)
+            const itemsInThisRow = Math.min(totalCount - rowIndex * 3, 3)
+
+            return (
+              <QuickActionButton
+                key={label}
+                variant="outlined"
+                itemsInRow={itemsInThisRow}
+                onClick={() => {
+                  if (curve) setQuickActionValue(handleBtnClickQuickAction(curve, value, unit))
+                }}
+              >
+                {label}
+              </QuickActionButton>
+            )
+          })}
         </QuickActionsWrapper>
       )}
     </div>
   )
 }
 
-const QuickActionButton = styled(Button)`
+const QuickActionButton = styled(Button)<{ itemsInRow: number }>`
   color: inherit;
-  margin: 0.25rem;
   padding: 0.5rem 0.25rem;
   font-size: var(--button--font-size);
+  flex-grow: 1;
+
+  /* Dynamically set flex-basis based on itemsInRow */
+  ${({ itemsInRow }) => {
+    if (itemsInRow === 1) {
+      return 'flex-basis: 100%;'
+    }
+    if (itemsInRow === 2) {
+      // Adjust for the 0.5rem gap from the parent (QuickActionsWrapper)
+      return 'flex-basis: calc(50% - 0.25rem);'
+    }
+    // Default for 3 items
+    // Adjust for two 0.5rem gaps from the parent, distributed among 3 items
+    return 'flex-basis: calc(33.333% - (2 * 0.5rem / 3));'
+  }}
 `
 
 const QuickActionsWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
   margin-top: 1rem;
-
-  @media (min-width: ${breakpoints.xs}rem) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
 `
 
 export default FieldDatePicker
