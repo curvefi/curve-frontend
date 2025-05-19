@@ -49,8 +49,8 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const remainingLockedDays = dayjs(currUnlockUtcDate).diff(dayjs(todayUtcDate), 'day', false)
 
   const maxUtcDate = useMemo((): dayjs.Dayjs => {
-    const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-    return fn(curve!, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
+    const { calcUnlockTime } = networks[rChainId].api.lockCrv
+    return calcUnlockTime(curve!, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
   }, [currUnlockTime, curve, rChainId, rFormType, remainingLockedDays])
 
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false

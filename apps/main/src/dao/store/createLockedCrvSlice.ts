@@ -51,7 +51,7 @@ export type LockedCrvSlice = {
     fetchStepIncreaseCrv(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
     fetchStepIncreaseTime(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
 
-    withdrawLockedCrv(): void
+    withdrawLockedCrv(): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -207,7 +207,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           }
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -246,7 +246,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -287,7 +287,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -337,7 +337,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         )
 
         // re-fetch user vecrv info
-        invalidateLockerVecrvInfo({ chainId: curve.chainId, walletAddress: curve.signerAddress as Address })
+        invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
 
         dismissNotificationHandler()
         notify(t`CRV withdrawal successful.`, 'success', 15000)

@@ -102,7 +102,12 @@ const FieldDatePicker = ({
               {quickActions.map(({ unit, value, label }, index) => {
                 const totalCount = quickActions.length
                 const rowIndex = Math.floor(index / 3)
-                // Calculate how many items are meant to be in the current item's visual row
+                // Determine the number of buttons in the current visual row (max 3).
+                // This is used to adjust the flex-basis of each button so they collectively fill the row width.
+                // Given quickActions.length (totalCount) is at most 6:
+                // Example with totalCount = 5:
+                // Row 0 (indices 0,1,2): itemsInThisRow will be min(5 - 0*3, 3) = min(5, 3) = 3
+                // Row 1 (indices 3,4):   itemsInThisRow will be min(5 - 1*3, 3) = min(2, 3) = 2
                 const itemsInThisRow = Math.min(totalCount - rowIndex * 3, 3)
 
                 return (

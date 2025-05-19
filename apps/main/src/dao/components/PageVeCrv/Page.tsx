@@ -1,6 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
@@ -8,7 +9,6 @@ import Settings from '@/dao/layout/Settings'
 import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
-import type { Address } from '@curvefi/prices-api'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
@@ -22,8 +22,9 @@ export const PageVeCrv = (params: VeCrvUrlParams) => {
   const rChainId = networksIdMapper[params.network]
   const isLoadingCurve = isLoading(connectState)
 
-  const signerAddress = curve?.signerAddress
-  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, walletAddress: signerAddress as Address })
+  const { address } = useAccount()
+
+  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, userAddress: address })
   const resetState = useStore((state) => state.lockedCrv.resetState)
 
   // onMount

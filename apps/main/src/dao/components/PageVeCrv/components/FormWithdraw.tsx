@@ -1,5 +1,5 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/dao/components/AlertFormError'
 import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
@@ -7,31 +7,31 @@ import VoteCountdown from '@/dao/components/VoteCountdown'
 import { useLockEstimateWithdrawGas } from '@/dao/entities/locker-estimate-withdraw-gas'
 import useEstimateGasConversion from '@/dao/hooks/useEstimateGasConversion'
 import useStore from '@/dao/store/useStore'
-import { Address } from '@curvefi/prices-api'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils/utilsFormat'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
-const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
+const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
+  const [txInfoBar, openTxInfoBar, closeTxInfoBar] = useSwitch()
   const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
 
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+  const { address } = useAccount()
 
-  const { signerAddress } = curve ?? {}
-  const haveSigner = !!signerAddress
+  const haveSigner = !!address
   const canUnlock =
     +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
   const { data: lockEstimateWithdrawGas, isLoading: isLoadingLockEstimateWithdrawGas } = useLockEstimateWithdrawGas(
-    { chainId: rChainId, walletAddress: signerAddress as Address },
+    { chainId: rChainId, userAddress: address },
     canUnlock,
   )
 
@@ -41,24 +41,8 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawTxError = withdrawLockedCrvStatus.transactionState === 'ERROR'
   const withdrawTxSuccess = withdrawLockedCrvStatus.transactionState === 'SUCCESS'
 
-  const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas ?? 0)
+  const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas)
   const valueGas = formatNumber(estGasCostUsd, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
-
-  const closeTxBar = useCallback(() => {
-    setTxInfoBar(null)
-  }, [setTxInfoBar])
-
-  useEffect(() => {
-    if (withdrawTxSuccess) {
-      setTxInfoBar(
-        <TxInfoBar
-          description={t`Locked CRV withdrawn`}
-          txHash={withdrawLockedCrvStatus.txHash ?? ''}
-          onClose={closeTxBar}
-        />,
-      )
-    }
-  }, [withdrawTxSuccess, closeTxBar, withdrawLockedCrvStatus.txHash])
 
   return (
     <Box display="flex" flexDirection="column" flexGap="var(--spacing-3)" fillHeight>
@@ -95,8 +79,14 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
           {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
             <AlertFormError errorKey={withdrawLockedCrvStatus.errorMessage} />
           )}
-          {txInfoBar}
-          {withdrawTxSuccess && <SuccesBox>{t`Withdrawal successful`}</SuccesBox>}
+          {txInfoBar && (
+            <TxInfoBar
+              description={t`Locked CRV withdrawn`}
+              txHash={withdrawLockedCrvStatus.txHash ?? ''}
+              onClose={closeTxInfoBar}
+            />
+          )}
+          {withdrawTxSuccess && <SuccessBox>{t`Withdrawal successful`}</SuccessBox>}
           {!withdrawTxSuccess && canUnlock && (
             <Button
               fillWidth
@@ -104,7 +94,7 @@ const FormWithdraw = ({ curve, rChainId, vecrvInfo }: PageVecrv) => {
               variant="filled"
               disabled={!canUnlock}
               loading={withdrawTxLoading}
-              onClick={withdrawLockedCrv}
+              onClick={() => withdrawLockedCrv().then(() => openTxInfoBar())}
             >
               Withdraw
             </Button>
@@ -130,7 +120,7 @@ const StyledVoteCountdown = styled(VoteCountdown)`
 `
 
 // mimics StepBox from StepAction.tsx
-const SuccesBox = styled.div`
+const SuccessBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

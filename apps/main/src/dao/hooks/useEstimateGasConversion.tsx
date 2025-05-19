@@ -6,7 +6,7 @@ import { BN, formatNumber } from '@ui/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
-const useEstimateGasConversion = (gas: number) => {
+const useEstimateGasConversion = (gas: number | null | undefined) => {
   const curve = requireLib<CurveApi>()
   const chainId = curve?.chainId
   const chainTokenUsdRate = useStore().usdRates.usdRatesMapper['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
@@ -17,14 +17,14 @@ const useEstimateGasConversion = (gas: number) => {
     const basePlusPriority =
       basePlusPriorities && typeof gasPricesDefault !== 'undefined' && basePlusPriorities[gasPricesDefault]
 
-    if (!curve || !chainId) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
+    if (!curve || !chainId) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
 
-    if (!basePlusPriority) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
+    if (!basePlusPriority || !gas) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
 
     const { symbol, gasPricesUnit } = networks[chainId]
     const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * gas))
     if (chainTokenUsdRate === undefined) {
-      return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: '' }
+      return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: undefined }
     } else {
       const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
       const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
