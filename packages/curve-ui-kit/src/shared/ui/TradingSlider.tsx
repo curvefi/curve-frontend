@@ -72,8 +72,6 @@ export const TradingSlider = ({
         },
         input: {
           sx: {
-            color: (t) => t.design.Text.TextColors.Primary,
-            backgroundColor: (t) => t.design.Inputs.Base.Default.Fill,
             fontFamily: (t) => t.typography.bodySBold.fontFamily,
             fontSize: FontSize.sm,
             fontWeight: FontWeight.Bold,
