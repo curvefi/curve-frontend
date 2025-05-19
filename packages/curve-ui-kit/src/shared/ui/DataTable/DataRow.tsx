@@ -16,11 +16,10 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   if (hasParentWithClass(target, ClickableInRowClass, { untilTag: 'TR' })) {
     return
   }
-  // redirect to the url or navigate to the route
   if (url.startsWith('http')) {
-    location.href = url
+    location.href = url // external link
   } else {
-    routerNavigate(url)
+    routerNavigate(url) // internal link
   }
 }
 

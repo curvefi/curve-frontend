@@ -1,5 +1,6 @@
 import { get, sortBy, sortedUniq } from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
+import type { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
@@ -10,7 +11,6 @@ import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -35,12 +35,14 @@ export const MultiSelectFilter = <T extends unknown>({
   defaultText,
   renderItem,
   field,
+  id,
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
   data: T[]
   defaultText: string
   field: DeepKeys<T>
+  id: LlamaMarketColumnId
   renderItem?: (value: string) => ReactNode
 }) => {
   const selectRef = useRef<HTMLDivElement | null>(null)
@@ -48,7 +50,6 @@ export const MultiSelectFilter = <T extends unknown>({
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
-  const id = cleanColumnId(field)
   const selectedOptions = columnFilters[id] as string[] | undefined
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {

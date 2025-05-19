@@ -18,9 +18,6 @@ export type VisibilityGroup<ColumnIds> = {
 }
 const { Spacing } = SizesAndSpaces
 
-// when we define columns in nested objects, tanstack replaces dots with underscores internally
-export const cleanColumnId = (field: string) => field.replaceAll('.', '_')
-
 /**
  * Dialog that allows to toggle visibility of columns in a table.
  */
@@ -92,7 +89,7 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
       ...group.options.reduce(
         (acc, { active, enabled, columns }) => ({
           ...acc,
-          ...columns.reduce((acc, id) => ({ ...acc, [cleanColumnId(id)]: active && enabled }), {}),
+          ...columns.reduce((acc, id) => ({ ...acc, [id]: active && enabled }), {}),
         }),
         {},
       ),
@@ -113,7 +110,7 @@ export const useVisibilitySettings = <ColumnIds extends string>(groups: Visibili
   }, [groups])
 
   /** toggle visibility of a column by its id */
-  const toggleColumnVisibility = useCallback(
+  const toggleVisibility = useCallback(
     (columns: string[]): void =>
       setVisibilitySettings((prev) =>
         prev.map((group) => ({
@@ -129,9 +126,5 @@ export const useVisibilitySettings = <ColumnIds extends string>(groups: Visibili
   /** current column visibility state as used internally by tanstack */
   const columnVisibility = useMemo(() => flatten(visibilitySettings), [visibilitySettings])
 
-  return {
-    columnSettings: visibilitySettings,
-    columnVisibility,
-    toggleVisibility: toggleColumnVisibility,
-  }
+  return { columnSettings: visibilitySettings, columnVisibility, toggleVisibility }
 }

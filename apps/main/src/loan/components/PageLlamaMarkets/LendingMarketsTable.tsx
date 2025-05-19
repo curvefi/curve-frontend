@@ -1,12 +1,17 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
-import { useLlamaMarketsColumnVisibility } from '@/loan/components/PageLlamaMarkets/hooks/useLlamaMarketsColumnVisibility'
+import {
+  createLlamaMarketsColumnOptions,
+  createLlamaMarketsMobileColumns,
+} from '@/loan/components/PageLlamaMarkets/hooks/useLlamaMarketsColumnVisibility'
 import { useLlamaMarketSortOptions } from '@/loan/components/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
 import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from '@/loan/components/PageLlamaMarkets/LlamaMarketExpandedPanel'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { type LlamaMarketsResult } from '@/loan/entities/llama-markets'
+import { useMediaQuery } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import {
   ExpandedState,
@@ -26,7 +31,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
-const useVisibility = () => useVisibilitySettings(useLlamaMarketsColumnVisibility())
+const useVisibility = (sortField: LlamaMarketColumnId) => {
+  const { isConnected } = useAccount()
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const groups = useMemo(() => createLlamaMarketsColumnOptions(isConnected), [isConnected])
+  const visibilitySettings = useVisibilitySettings(groups)
+  const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
+  return { ...visibilitySettings, ...(isMobile && { columnVisibility }) }
+}
 
 // todo: rename to LlamaMarketsTable
 export const LendingMarketsTable = ({
@@ -46,8 +58,9 @@ export const LendingMarketsTable = ({
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
     { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
   ])
-  const { columnSettings, columnVisibility, toggleVisibility } = useVisibility()
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
+  const { columnSettings, columnVisibility, toggleVisibility } = useVisibility(sortField)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -112,7 +125,7 @@ export const LendingMarketsTable = ({
               name="sort"
               options={useLlamaMarketSortOptions()}
               onSelected={({ id }) => table.setSorting([{ id, desc: true }])}
-              value={(sorting.length ? sorting : DEFAULT_SORT)[0].id}
+              value={sortField}
             />
           }
         />

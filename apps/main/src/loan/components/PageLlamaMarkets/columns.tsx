@@ -12,8 +12,9 @@ const { ColumnWidth } = SizesAndSpaces
 const columnHelper = createColumnHelper<LlamaMarket>()
 
 /** Define a hidden column. */
-const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
-  columnHelper.accessor(id, {
+const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn: FilterFnOption<LlamaMarket>) =>
+  columnHelper.accessor(field, {
+    id,
     filterFn,
     meta: { hidden: true },
   })
@@ -60,7 +61,8 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(LlamaMarketColumnId.BorrowRate, {
+  columnHelper.accessor('rates.borrow', {
+    id: LlamaMarketColumnId.BorrowRate,
     header: t`7D Avg Borrow Rate`,
     cell: (c) => <RateCell market={c.row.original} type="borrow" />,
     meta: { type: 'numeric' },
@@ -73,7 +75,8 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
     size: ColumnWidth.md,
   }),
-  columnHelper.accessor(LlamaMarketColumnId.LendRate, {
+  columnHelper.accessor('rates.lend', {
+    id: LlamaMarketColumnId.LendRate,
     header: t`7D Avg Supply Yield`,
     cell: (c) => <RateCell market={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
@@ -100,13 +103,13 @@ export const LLAMA_MARKET_COLUMNS = [
     size: ColumnWidth.sm,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden(LlamaMarketColumnId.Chain, multiFilterFn),
-  hidden(LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
-  hidden(LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
-  hidden(LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(LlamaMarketColumnId.UserHasPosition, boolFilterFn),
-  hidden(LlamaMarketColumnId.Rewards, listFilterFn),
-  hidden(LlamaMarketColumnId.Type, multiFilterFn),
+  hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
+  hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
+  hidden('assets.borrowed.symbol', LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
+  hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
+  hidden(LlamaMarketColumnId.UserHasPosition, LlamaMarketColumnId.UserHasPosition, boolFilterFn),
+  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listFilterFn),
+  hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]
 
 export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.LiquidityUsd, desc: true }]
