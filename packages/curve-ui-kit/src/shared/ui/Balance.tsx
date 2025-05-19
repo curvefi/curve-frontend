@@ -6,11 +6,15 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-const formatNumber = (value: number): string =>
-  value.toLocaleString(undefined, {
+const formatNumber = (value?: number): string => {
+  if (value == null) return '?'
+  if (value === 0) return '0'
+
+  return value.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
+}
 
 type MaxButtonProps = {
   children: React.ReactNode
@@ -48,7 +52,7 @@ type BalanceTextProps = {
 const BalanceText = ({ symbol, balance }: BalanceTextProps) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center">
     <Typography className="balance" variant="highlightS" color={balance != null ? 'textPrimary' : 'textTertiary'}>
-      {balance != null ? (balance === 0 ? '0' : formatNumber(balance)) : '?'}
+      {formatNumber(balance)}
     </Typography>
 
     <Typography variant="highlightS" color="textPrimary">
