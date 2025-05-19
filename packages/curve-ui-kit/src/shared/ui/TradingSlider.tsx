@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
@@ -46,7 +47,7 @@ export const TradingSlider = ({
       min={0}
       max={100}
       step={step}
-      sx={{ '--slider-background': (t) => t.design.Color.Primary[200] }}
+      sx={{ [SLIDER_BACKGROUND_VAR]: (t) => t.design.Color.Primary[200] }}
     />
 
     <TextField
