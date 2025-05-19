@@ -92,7 +92,7 @@ export const TradingSlider = ({
           ),
         },
       }}
-      sx={{ minWidth: '4.5rem' }} // just enough for comma value with 2 digits like 99,99%
+      sx={{ minWidth: '7ch' }} // just enough for comma value with 2 digits like 99,99%
     />
   </Stack>
 )
