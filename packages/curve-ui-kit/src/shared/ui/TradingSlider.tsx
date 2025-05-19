@@ -63,7 +63,7 @@ export const TradingSlider = ({ percentage, onPercentageChange, onPercentageComm
         },
         input: {
           sx: {
-            color: (t) => t.design.Text.TextColors.Tertiary,
+            color: (t) => t.design.Text.TextColors.Primary,
             backgroundColor: (t) => t.design.Inputs.Base.Default.Fill,
             fontFamily: (t) => t.typography.bodySBold.fontFamily,
             fontSize: FontSize.sm,
