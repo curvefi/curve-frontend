@@ -1,4 +1,5 @@
 import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
+import { useMediaQuery } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -78,6 +79,7 @@ export const TableFilters = <ColumnIds extends string>({
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   return (
     <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 16px)">
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
@@ -87,13 +89,15 @@ export const TableFilters = <ColumnIds extends string>({
         </Grid>
         {/* flex-wrap below is for screens < 500px */}
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
-          <TableButton
-            ref={settingsRef}
-            onClick={openVisibilitySettings}
-            icon={ToolkitIcon}
-            testId="btn-visibility-settings"
-            active={visibilitySettingsOpen}
-          />
+          {!isMobile && (
+            <TableButton
+              ref={settingsRef}
+              onClick={openVisibilitySettings}
+              icon={ToolkitIcon}
+              testId="btn-visibility-settings"
+              active={visibilitySettingsOpen}
+            />
+          )}
           <TableButton
             onClick={() => setFilterExpanded((prev) => !prev)}
             active={filterExpanded}
@@ -101,9 +105,11 @@ export const TableFilters = <ColumnIds extends string>({
             testId="btn-expand-filters"
           />
           <TableButton onClick={onReload} icon={ReloadIcon} />
-          <Button size="small" color="secondary" component={Link} href={learnMoreUrl} target="_blank">
-            Learn More
-          </Button>
+          {!isMobile && (
+            <Button size="small" color="secondary" component={Link} href={learnMoreUrl} target="_blank">
+              Learn More
+            </Button>
+          )}
         </Grid>
         <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
           <TableSearchField onSearch={onSearch} />
@@ -111,19 +117,18 @@ export const TableFilters = <ColumnIds extends string>({
         <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
           {sort}
         </Grid>
-        <Grid
-          size={{ tablet: 7, desktop: 8 }}
-          justifyContent="flex-end"
-          gap={0}
-          display={{ mobile: 'none', tablet: 'flex' }}
-        >
-          {chips}
-        </Grid>
+        {!isMobile && (
+          <Grid size={{ tablet: 7, desktop: 8 }} gap={0}>
+            {chips}
+          </Grid>
+        )}
       </Grid>
       <Collapse in={filterExpanded}>{collapsible}</Collapse>
-      <Box sx={{ display: { tablet: 'none' } }} paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
-        {chips}
-      </Box>
+      {isMobile && (
+        <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
+          {chips}
+        </Box>
+      )}
 
       {visibilitySettingsOpen != null && settingsRef.current && (
         <TableVisibilitySettingsPopover<ColumnIds>

@@ -9,12 +9,14 @@ export const RotatableIcon = ({
   rotated,
   fontSize,
   sx,
+  testId,
 }: {
   rotated: boolean
   isEnabled?: boolean
   fontSize: number
   icon: typeof SvgIcon
   sx?: SxProps<Theme>
+  testId?: string
 }) => (
   <Icon
     sx={{
@@ -25,5 +27,6 @@ export const RotatableIcon = ({
       visibility: isEnabled ? 'visible' : 'hidden', // render it invisible to avoid layout shift
       ...sx,
     }}
+    data-testid={testId}
   />
 )

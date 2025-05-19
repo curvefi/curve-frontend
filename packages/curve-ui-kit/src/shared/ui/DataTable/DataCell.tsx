@@ -47,7 +47,12 @@ export const DataCell = <T extends TableItem>({
           <Box sx={sx} flexGrow={1}>
             {children}
           </Box>
-          <RotatableIcon icon={ChevronDownIcon} rotated={row.getIsExpanded()} fontSize={28} />
+          <RotatableIcon
+            icon={ChevronDownIcon}
+            rotated={row.getIsExpanded()}
+            fontSize={28}
+            testId={`${row.getIsExpanded() ? 'collapse' : 'expand'}-icon`}
+          />
         </Stack>
       ) : (
         children

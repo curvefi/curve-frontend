@@ -98,6 +98,7 @@ export const LendingMarketsTable = ({
           }
           chips={
             <MarketsFilterChips
+              hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
               hasFilters={columnFilters.length > 0}

@@ -12,7 +12,7 @@ export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; h
     onClick={onClick}
     data-testid="reset-filter"
     sx={{
-      minWidth: 0,
+      marginBlock: Spacing.xs,
       marginInlineStart: Spacing.xs,
       transition: `all ${TransitionFunction}`,
       ...(hidden && {

@@ -1,15 +1,18 @@
-import { useCallback } from 'react'
+import { type ReactNode, useCallback } from 'react'
 import { useAccount } from 'wagmi'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
+import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
-import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
+import { SelectableChip, type SelectableChipProps } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -60,13 +63,48 @@ function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: ColumnFilte
 }
 
 type MarketsFilterChipsProps = ColumnFilterProps & {
+  hiddenMarketCount: number
   resetFilters: () => void
   hasFilters: boolean
   hasPositions: boolean | undefined
   hasFavorites: boolean | undefined
 }
 
+const GridWrapper = ({
+  children,
+  size = 6,
+  alignRight,
+  extraMargin,
+}: {
+  children: ReactNode
+  size?: number
+  alignRight?: boolean
+  extraMargin?: boolean
+}) => (
+  <Grid
+    size={{ mobile: size, tablet: 'auto' }}
+    sx={{
+      alignContent: 'center',
+      ...(alignRight && { textAlign: 'right', '&': { flexGrow: '1' } }),
+      ...(extraMargin && { marginInlineEnd: { tablet: Spacing.md.tablet } }),
+    }}
+  >
+    {children}
+  </Grid>
+)
+
+const GridChip = ({
+  size,
+  extraMargin,
+  ...props
+}: Omit<SelectableChipProps, 'size'> & { size?: number; extraMargin?: boolean }) => (
+  <GridWrapper size={size} extraMargin={extraMargin}>
+    <SelectableChip {...props} sx={{ width: { mobile: '100%', tablet: 'auto' } }} />
+  </GridWrapper>
+)
+
 export const MarketsFilterChips = ({
+  hiddenMarketCount,
   resetFilters,
   hasFilters,
   hasPositions,
@@ -78,51 +116,64 @@ export const MarketsFilterChips = ({
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { address } = useAccount()
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
 
   return (
-    <Stack direction="row" gap={Spacing.md} flexWrap="wrap" alignItems="center" justifyContent="flex-end">
-      <Stack direction="row" columnGap="4px">
-        <SelectableChip
-          label={t`Mint Markets`}
-          selected={marketTypes.Mint}
-          toggle={toggleMarkets.Mint}
-          data-testid="chip-mint"
+    <Grid
+      container
+      rowSpacing={{ mobile: 2, tablet: 4 }}
+      columnSpacing={{ mobile: 2, tablet: '4px' }}
+      sx={{ width: '100%' }}
+    >
+      <GridChip
+        label={t`Mint Markets`}
+        selected={marketTypes.Mint}
+        toggle={toggleMarkets.Mint}
+        data-testid="chip-mint"
+      />
+      <GridChip
+        label={t`Lend Markets`}
+        selected={marketTypes.Lend}
+        toggle={toggleMarkets.Lend}
+        data-testid="chip-lend"
+        extraMargin
+      />
+      {address && (
+        <GridChip
+          label={t`My Markets`}
+          selected={myMarkets}
+          toggle={toggleMyMarkets}
+          icon={<PersonIcon />}
+          data-testid="chip-my-markets"
+          disabled={!hasPositions}
         />
-        <SelectableChip
-          label={t`Lend Markets`}
-          selected={marketTypes.Lend}
-          toggle={toggleMarkets.Lend}
-          data-testid="chip-lend"
-        />
-      </Stack>
-      <Stack direction="row" gap="4px" alignItems="center" justifyContent="flex-end" flexWrap="wrap">
-        {address && (
-          <SelectableChip
-            label={t`My Markets`}
-            selected={myMarkets}
-            toggle={toggleMyMarkets}
-            icon={<PersonIcon />}
-            data-testid="chip-my-markets"
-            disabled={!hasPositions}
-          />
-        )}
-        <SelectableChip
-          label={t`Favorites`}
-          selected={favorites}
-          toggle={toggleFavorites}
-          icon={<HeartIcon />}
-          data-testid="chip-favorites"
-          disabled={!hasFavorites}
-        />
-        <SelectableChip
-          label={t`Rewards`}
-          selected={rewards}
-          toggle={toggleRewards}
-          icon={<PointsIcon />}
-          data-testid="chip-rewards"
-        />
+      )}
+      <GridChip
+        label={t`Favorites`}
+        selected={favorites}
+        toggle={toggleFavorites}
+        icon={<HeartIcon />}
+        data-testid="chip-favorites"
+        disabled={!hasFavorites}
+      />
+      <GridChip
+        label={t`Points`}
+        selected={rewards}
+        toggle={toggleRewards}
+        icon={<PointsIcon />}
+        data-testid="chip-rewards"
+        {...(address && { size: 12 })}
+        extraMargin
+      />
+      <GridWrapper {...(!isMobile && { alignRight: true })}>
+        <Stack direction="column">
+          <Typography variant="bodyXsRegular">{t`Hidden Markets`}</Typography>
+          <Typography variant="highlightS">{hiddenMarketCount}</Typography>
+        </Stack>
+      </GridWrapper>
+      <GridWrapper alignRight>
         <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
-      </Stack>
-    </Stack>
+      </GridWrapper>
+    </Grid>
   )
 }

@@ -5,7 +5,6 @@ import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
-import { useScrollbarDimensions } from '@ui-kit/hooks/useScrollbarDimensions'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
@@ -38,7 +37,6 @@ export const DataTable = <T extends TableItem>({
   <Table
     sx={{
       minWidth: MinWidth.table,
-      maxWidth: `calc(100vw - ${useScrollbarDimensions()[0] ?? 0}px)`,
       backgroundColor: (t) => t.design.Layer[1].Fill,
       borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
     }}

@@ -84,9 +84,9 @@ describe(`LlamaLend Markets`, () => {
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
         .should('exist')
-      cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().click()
+      cy.get(`[data-testid="expand-icon"]`).first().click()
+      // note: not possible currently to sort ascending
       cy.get('[data-testid="metric-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
-      // note: not possible currently to sort descending
     } else {
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
       cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
@@ -99,10 +99,16 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="chip-lend"]`).click()
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
 
+    if (breakpoint == 'mobile') {
+      cy.get(`[data-testid="expand-icon"]`).first().click()
+    }
+
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     checkLineGraphColor('borrow', red)
 
-    showHiddenColumn({ element: 'line-graph-lend', toggle: 'lendChart' })
+    if (breakpoint != 'mobile') {
+      showHiddenColumn({ element: 'line-graph-lend', toggle: 'lendChart' })
+    }
     checkLineGraphColor('lend', green)
 
     // check that scrolling loads more snapshots:
@@ -110,6 +116,9 @@ describe(`LlamaLend Markets`, () => {
       cy.get('[data-testid^="data-table-row"]')
         .last()
         .scrollIntoView({ offset: { top: -100, left: 0 } }) // scroll to the last row, make sure it's still visible
+      if (breakpoint == 'mobile') {
+        cy.get(`[data-testid="expand-icon"]`).last().click()
+      }
       cy.wait('@lend-snapshots')
       cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
       cy.wait(range(calls1.length).map(() => '@lend-snapshots'))
