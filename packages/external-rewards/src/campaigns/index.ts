@@ -25,7 +25,9 @@ import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
+import Tac from './Tac.json'
 import Taiko from './Taiko.json'
+import Turtle from './Turtle.json'
 import TurtleSeeds from './TurtleSeeds.json'
 import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
@@ -68,4 +70,6 @@ export {
   Sonic,
   HumanNetwork,
   Rings,
+  Tac,
+  Turtle,
 }

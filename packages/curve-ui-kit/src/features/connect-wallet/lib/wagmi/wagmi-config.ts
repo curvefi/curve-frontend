@@ -38,4 +38,10 @@ export const config = createConfig({
   chains,
   connectors: Object.values(connectors),
   transports,
+  /**
+   * Disabled to prevent auto-reconnect on disconnecting an injected wallet.
+   * Solves the same issue as discussed on https://github.com/wevm/wagmi/discussions/3537.
+   * We don't use wallet specific injected connectors anyway and prefer to use the single global one.
+   */
+  multiInjectedProviderDiscovery: false,
 })
