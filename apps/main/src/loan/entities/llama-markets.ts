@@ -90,7 +90,7 @@ const convertLendingVault = (
       usdPrice: collateralBalanceUsd / collateralBalance,
     },
   },
-  utilizationPercent: (100 * totalDebtUsd) / totalAssetsUsd,
+  utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
   liquidityUsd: totalAssetsUsd - totalDebtUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
@@ -193,9 +193,9 @@ export const useLlamaMarkets = (userAddress?: Address) =>
             hasPositions: userVaults.size > 0 || userMints.size > 0,
             hasFavorites: favoriteMarketsSet.size > 0,
             markets: [
-              ...(lendingVaults.data ?? [])
-                .filter((vault) => vault.totalAssetsUsd)
-                .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
+              ...(lendingVaults.data ?? []).map((vault) =>
+                convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults),
+              ),
               ...(mintMarkets.data ?? []).map((market) =>
                 convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
               ),
