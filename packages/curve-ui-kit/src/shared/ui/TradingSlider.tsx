@@ -1,3 +1,4 @@
+import type { Property } from 'csstype'
 import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
@@ -15,9 +16,17 @@ type Props = {
   onPercentageCommitted?: (percentage: number) => void
   /** Step increment for the slider and input */
   step?: number
+  /** Text alignment for the input field */
+  textAlign?: Property.TextAlign
 }
 
-export const TradingSlider = ({ percentage, onPercentageChange, onPercentageCommitted, step = 1 }: Props) => (
+export const TradingSlider = ({
+  percentage,
+  onPercentageChange,
+  onPercentageCommitted,
+  step = 1,
+  textAlign = 'left',
+}: Props) => (
   <Stack
     direction="row"
     alignItems="center"
@@ -75,6 +84,7 @@ export const TradingSlider = ({ percentage, onPercentageChange, onPercentageComm
             '& input': {
               padding: 0,
               marginInline: Spacing.sm,
+              textAlign,
             },
           },
           endAdornment: (

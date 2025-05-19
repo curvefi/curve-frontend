@@ -36,6 +36,11 @@ const meta: Meta<typeof TradingSlider> = {
       control: 'number',
       description: 'Step increment for the slider and input',
     },
+    textAlign: {
+      control: 'select',
+      options: ['left', 'center', 'right'],
+      description: 'Text alignment for the input field',
+    },
     onPercentageChange: {
       description: 'Callback when percentage changes on the slider',
     },
@@ -46,6 +51,7 @@ const meta: Meta<typeof TradingSlider> = {
   args: {
     percentage: 50,
     step: 1,
+    textAlign: 'left',
     onPercentageChange: (x) => console.info('Percentage changing:', x),
     onPercentageCommitted: (x) => console.info('Percentage committed:', x),
   },
