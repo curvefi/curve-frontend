@@ -4,18 +4,18 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { LargeInput } from '../LargeInput'
 
+const TOKEN_OPTIONS = [
+  { name: 'Inferium', symbol: 'ETH', balance: 1000 },
+  { name: 'Bitcorn', symbol: 'BTC', balance: 2500 },
+  { name: 'The Ripple', symbol: 'RPL', balance: 5000 },
+]
+
 type TokenSelectorProps = {
-  onTokenChange: (balance: number) => void
+  onTokenChange: (tokenInfo: { balance: number; symbol: string }) => void
 }
 
 const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
-  const options = [
-    { name: 'Inferium', balance: 1000 },
-    { name: 'Bitcorn', balance: 2500 },
-    { name: 'The Ripple', balance: 5000 },
-  ]
-
-  const [value, setValue] = useState(options[0].name)
+  const [value, setValue] = useState(TOKEN_OPTIONS[0].name)
 
   return (
     <Select
@@ -23,10 +23,13 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
       onChange={(e) => {
         const selectedToken = e.target.value
         setValue(selectedToken)
-        const selectedOption = options.find((option) => option.name === selectedToken)
+        const selectedOption = TOKEN_OPTIONS.find((option) => option.name === selectedToken)
 
         if (selectedOption) {
-          onTokenChange(selectedOption?.balance)
+          onTokenChange({
+            balance: selectedOption.balance,
+            symbol: selectedOption.symbol,
+          })
         }
       }}
       size="small"
@@ -37,7 +40,7 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
         backgroundColor: (t) => t.design.Layer[1].Fill,
       }}
     >
-      {options.map((option) => (
+      {TOKEN_OPTIONS.map((option) => (
         <MenuItem key={option.name} value={option.name}>
           {option.name}
         </MenuItem>
@@ -47,7 +50,21 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
 }
 
 const LargeInputWithTokenSelector = (props: any) => {
-  const [maxBalance, setMaxBalance] = useState(props.maxBalance)
+  const [tokenInfo, setTokenInfo] = useState({
+    balance: TOKEN_OPTIONS[0].balance,
+    symbol: TOKEN_OPTIONS[0].symbol,
+  })
+
+  const maxBalance =
+    props.maxBalance === undefined
+      ? undefined
+      : {
+          balance: tokenInfo.balance,
+          symbol: tokenInfo.symbol,
+          notionalValue: tokenInfo.balance * 2, // Mock USD value
+          showBalance: props.maxBalance.showBalance,
+          showSlider: props.maxBalance.showSlider,
+        }
 
   return (
     <LargeInput
@@ -59,7 +76,7 @@ const LargeInputWithTokenSelector = (props: any) => {
             You pay
           </Typography>
 
-          <TokenSelector onTokenChange={setMaxBalance} />
+          <TokenSelector onTokenChange={setTokenInfo} />
         </Stack>
       }
     />
@@ -71,8 +88,8 @@ const meta: Meta<typeof LargeInput> = {
   component: LargeInput,
   argTypes: {
     maxBalance: {
-      control: 'number',
-      description: 'Maximum balance available for the selected token',
+      control: 'object',
+      description: 'Configuration for maximum balance, token symbol, and display options',
     },
     message: {
       control: 'object',
@@ -88,7 +105,10 @@ const meta: Meta<typeof LargeInput> = {
     },
   },
   args: {
-    maxBalance: 1000,
+    maxBalance: {
+      showBalance: true,
+      showSlider: true,
+    },
     message: '',
     isError: false,
     onBalance: fn(),
@@ -110,10 +130,10 @@ export const Default: Story = {
 }
 
 export const NoMaxBalance: Story = {
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
   args: {
     maxBalance: undefined,
   },
+  render: (args) => <LargeInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -123,11 +143,46 @@ export const NoMaxBalance: Story = {
   },
 }
 
-export const WithMessage: Story = {
+export const WithoutSlider: Story = {
+  args: {
+    maxBalance: {
+      symbol: 'ETH',
+      showBalance: true,
+      showSlider: false,
+    },
+  },
   render: (args) => <LargeInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input without the percentage slider',
+      },
+    },
+  },
+}
+
+export const WithoutBalance: Story = {
+  args: {
+    maxBalance: {
+      showBalance: false,
+      showSlider: true,
+    },
+  },
+  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input without the balance display',
+      },
+    },
+  },
+}
+
+export const WithMessage: Story = {
   args: {
     message: 'This is a helpful message',
   },
+  render: (args) => <LargeInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -138,11 +193,11 @@ export const WithMessage: Story = {
 }
 
 export const WithError: Story = {
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
   args: {
     message: 'This is an error message',
     isError: true,
   },
+  render: (args) => <LargeInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -152,23 +207,7 @@ export const WithError: Story = {
   },
 }
 
-export const WithMaxBalanceAndError: Story = {
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
-  args: {
-    message: 'Insufficient balance',
-    isError: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large input with maximum balance and an error state',
-      },
-    },
-  },
-}
-
 export const WithReactNodeMessage: Story = {
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
   args: {
     message: (
       <Stack spacing={1}>
@@ -182,6 +221,7 @@ export const WithReactNodeMessage: Story = {
       </Stack>
     ),
   },
+  render: (args) => <LargeInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {

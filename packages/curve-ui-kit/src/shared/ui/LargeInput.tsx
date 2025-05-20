@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Balance } from './Balance'
+import { Balance, type Props as BalanceProps } from './Balance'
 import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
@@ -106,6 +106,25 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
 )
 
 /**
+ * Configuration for maximum balance display and input.
+ * When provided, enables percentage-based input via the slider.
+ *
+ * @property {number} [balance] - The maximum numerical balance available for this input.
+ * @property {number} [notionalValue] - The notional value (e.g., in USD) of the maximum balance.
+ * @property {string} [symbol] - The token symbol (e.g., 'ETH').
+ * @property {boolean} [showBalance=true] - Whether to display the balance component.
+ *                                        When true, shows the token balance and notional value.
+ *                                        When false, hides the balance display.
+ * @property {boolean} [showSlider=true] - Whether to display the percentage slider.
+ *                                       When true, shows the slider for percentage-based input.
+ *                                       When false, hides the slider but still allows direct input.
+ */
+type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol'>> & {
+  showBalance?: boolean
+  showSlider?: boolean
+}
+
+/**
  * Props for the LargeInput component.
  */
 type Props = {
@@ -129,10 +148,10 @@ type Props = {
   tokenSelector: React.ReactNode
 
   /**
-   * The maximum balance available for this input.
-   * When provided, enables percentage-based input via the slider.
+   * Maximum balance configuration for the input.
+   * {@link MaxBalanceProps}
    */
-  maxBalance?: number
+  maxBalance?: MaxBalanceProps
 
   /**
    * Optional message to display below the input, called the 'helper message'.
@@ -158,12 +177,16 @@ export const LargeInput = ({ tokenSelector, maxBalance, message, isError = false
   const [percentage, setPercentage] = useState(0)
   const [balance, setBalance] = useState(0)
 
+  // Set defaults for showSlider and showBalance to true if maxBalance is provided
+  const showSlider = maxBalance && maxBalance.showSlider !== false
+  const showBalance = maxBalance && maxBalance.showBalance !== false
+
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
-      if (!maxBalance) return
+      if (!maxBalance?.balance) return
 
       setPercentage(newPercentage)
-      setBalance((maxBalance * newPercentage) / 100)
+      setBalance((maxBalance.balance * newPercentage) / 100)
     },
     [maxBalance],
   )
@@ -172,9 +195,9 @@ export const LargeInput = ({ tokenSelector, maxBalance, message, isError = false
     (newBalance: number) => {
       setBalance(newBalance)
 
-      if (maxBalance) {
+      if (maxBalance?.balance) {
         // Calculate percentage based on new balance and round to 2 decimal places
-        const calculatedPercentage = (newBalance / maxBalance) * 100
+        const calculatedPercentage = (newBalance / maxBalance.balance) * 100
         const newPercentage = Math.min(Math.round(calculatedPercentage * 100) / 100, 100)
         setPercentage(newPercentage)
       }
@@ -199,7 +222,7 @@ export const LargeInput = ({ tokenSelector, maxBalance, message, isError = false
    * 2. The slider percentage accurately reflects the balance/maxBalance ratio
    */
   useEffect(() => {
-    handleBalanceChange(clampBalance(balance, maxBalance))
+    handleBalanceChange(clampBalance(balance, maxBalance?.balance))
   }, [balance, handleBalanceChange, maxBalance])
 
   return (
@@ -218,36 +241,41 @@ export const LargeInput = ({ tokenSelector, maxBalance, message, isError = false
 
           <BalanceTextField
             balance={balance}
-            maxBalance={maxBalance}
+            maxBalance={maxBalance?.balance}
             isError={isError}
             onChange={handleBalanceChange}
           />
         </Stack>
 
-        {/** Second row containing balance and sliders */}
-        <Stack
-          direction="row"
-          gap={Spacing.sm}
-          sx={{
-            minHeight: Sizing.sm, // same height as slider so height doesn't jump if maxBalance becomes available
-            zIndex: 1, // required otherwise the slider background and border don't show up
-          }}
-        >
-          <Balance
-            symbol="ETH"
-            balance={maxBalance}
-            notionalValue={1234}
-            max={maxBalance ? 'balance' : 'off'}
-            onMax={() => handlePercentageChange(100)}
-          />
-          {maxBalance && (
-            <TradingSlider
-              percentage={percentage}
-              onPercentageChange={handlePercentageChange}
-              onPercentageCommitted={handlePercentageChange}
-            />
-          )}
-        </Stack>
+        {/** Second row containing (max) balance and sliders */}
+        {maxBalance && (
+          <Stack
+            direction="row"
+            gap={Spacing.sm}
+            sx={{
+              minHeight: Sizing.sm, // same height as slider so height doesn't jump if maxBalance becomes available
+              zIndex: 1, // required otherwise the slider background and border don't show up
+            }}
+          >
+            {showBalance && (
+              <Balance
+                symbol={maxBalance.symbol ?? ''}
+                balance={maxBalance.balance}
+                notionalValue={maxBalance.notionalValue}
+                max={maxBalance ? 'balance' : 'off'}
+                onMax={() => handlePercentageChange(100)}
+              />
+            )}
+
+            {showSlider && (
+              <TradingSlider
+                percentage={percentage}
+                onPercentageChange={handlePercentageChange}
+                onPercentageCommitted={handlePercentageChange}
+              />
+            )}
+          </Stack>
+        )}
       </Stack>
 
       {/** Third row containing optional helper (or error) message */}

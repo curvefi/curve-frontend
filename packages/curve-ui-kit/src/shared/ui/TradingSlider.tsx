@@ -3,8 +3,8 @@ import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
@@ -34,7 +34,7 @@ export const TradingSlider = ({
     gap={Spacing.md}
     sx={{
       flexGrow: 1,
-      marginInlineStart: Spacing.md,
+      marginInlineStart: Spacing.sm,
     }}
   >
     <Slider
