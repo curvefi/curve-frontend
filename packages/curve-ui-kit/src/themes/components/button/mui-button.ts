@@ -71,12 +71,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           ...Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
           {
             props: { variant: 'link' },
-            style: {
-              textTransform: 'none',
-              padding: 0,
-              // !important is required as the sizes defined below with `buttonSize` have a higher specificity.
-              height: `${Sizing[400]} !important`,
-            },
+            style: { textTransform: 'none', padding: 0 },
           },
         ],
         borderRadius: 0,
