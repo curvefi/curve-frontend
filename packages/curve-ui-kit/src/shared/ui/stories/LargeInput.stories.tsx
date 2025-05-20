@@ -75,8 +75,8 @@ const meta: Meta<typeof LargeInput> = {
       description: 'Maximum balance available for the selected token',
     },
     message: {
-      control: 'text',
-      description: 'Optional message to display below the input',
+      control: 'object',
+      description: 'Optional message to display below the input (can be a React node)',
     },
     isError: {
       control: 'boolean',
@@ -162,6 +162,30 @@ export const WithMaxBalanceAndError: Story = {
     docs: {
       description: {
         story: 'Large input with maximum balance and an error state',
+      },
+    },
+  },
+}
+
+export const WithReactNodeMessage: Story = {
+  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  args: {
+    message: (
+      <Stack spacing={1}>
+        <Typography variant="bodyMBold">Important Message</Typography>
+        <Typography variant="bodySRegular" color="textSecondary">
+          This is some additional information about your transaction
+        </Typography>
+        <Typography variant="bodyXsRegular" color="textTertiary">
+          Fees may apply based on network conditions
+        </Typography>
+      </Stack>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input with a complex message composed of multiple typography elements',
       },
     },
   },

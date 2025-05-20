@@ -25,7 +25,7 @@ function clampBalance(balance: number | string, maxBalance?: number) {
 }
 
 type HelperMessageProps = {
-  message: string
+  message: string | React.ReactNode
   isError: boolean
 }
 
@@ -38,9 +38,13 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
       outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
     }}
   >
-    <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textSecondary'}>
-      {message}
-    </Typography>
+    {typeof message === 'string' ? (
+      <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textSecondary'}>
+        {message}
+      </Typography>
+    ) : (
+      message
+    )}
   </Box>
 )
 
@@ -130,8 +134,12 @@ type Props = {
    */
   maxBalance?: number
 
-  /** Optional message to display below the input, called the 'helper message'. Can be an error. */
-  message?: string
+  /**
+   * Optional message to display below the input, called the 'helper message'.
+   * Can also be used for displaying an error message.
+   * Can be a string or a ReactNode for greater message customization and styling.
+   */
+  message?: string | React.ReactNode
 
   /**
    * Whether the input is in an error state.
