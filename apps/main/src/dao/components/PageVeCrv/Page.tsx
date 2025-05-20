@@ -22,9 +22,9 @@ export const PageVeCrv = (params: VeCrvUrlParams) => {
   const rChainId = networksIdMapper[params.network]
   const isLoadingCurve = isLoading(connectState)
 
-  const { address } = useAccount()
+  const { address: userAddress } = useAccount()
 
-  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, userAddress: address })
+  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, userAddress })
   const resetState = useStore((state) => state.lockedCrv.resetState)
 
   // onMount

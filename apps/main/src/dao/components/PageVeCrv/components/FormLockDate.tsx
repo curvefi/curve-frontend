@@ -97,7 +97,6 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
-        console.info(days)
         const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
         void updateFormValues(
           { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },

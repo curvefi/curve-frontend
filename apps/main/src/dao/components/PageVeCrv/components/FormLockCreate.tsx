@@ -217,6 +217,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         }}
       >
         <FieldLockedAmt
+          curve={curve}
           disabled={disabled}
           haveSigner={haveSigner}
           formType={rFormType}

@@ -7,6 +7,7 @@ import type { DateValue } from '@internationalized/date'
 import Button from '@ui/Button'
 import DatePicker from '@ui/DatePicker'
 import { Chip } from '@ui/Typography'
+import { formatNumber } from '@ui/utils/utilsFormat'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -30,6 +31,7 @@ const FieldDatePicker = ({
   utcDateError,
   minUtcDate,
   maxUtcDate,
+  lockedAmt,
   vecrvInfo,
   handleInpEstUnlockedDays,
   handleBtnClickQuickAction,
@@ -46,6 +48,7 @@ const FieldDatePicker = ({
   utcDateError: 'invalid-date' | string
   minUtcDate: dayjs.Dayjs
   maxUtcDate: dayjs.Dayjs | null
+  lockedAmt?: string
   vecrvInfo: VecrvInfo
   handleInpEstUnlockedDays: (curve: CurveApi, updatedLockedDays: DateValue) => void
   handleBtnClickQuickAction: (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => dayjs.Dayjs
@@ -73,6 +76,23 @@ const FieldDatePicker = ({
   }
 
   const loading = typeof vecrvInfo === 'undefined' || !curve
+  const isCreateLock = formType === 'create'
+
+  const futureVeCrv = useMemo(() => {
+    if (!curve || !utcDate) return undefined
+
+    if (isCreateLock) {
+      if (!lockedAmt) return undefined
+      return curve.boosting.calculateVeCrv(
+        Number(lockedAmt),
+        Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000),
+      )
+    }
+    return curve.boosting.calculateVeCrv(
+      vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
+      Math.floor(dayjs.utc(utcDate.toString()).valueOf() / 1000),
+    )
+  }, [curve, utcDate, isCreateLock, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime.lockedAmount])
 
   return (
     <div>
@@ -128,6 +148,14 @@ const FieldDatePicker = ({
           </>
         }
       />
+      {curve && typeof futureVeCrv === 'number' && (
+        <>
+          <Chip size="xs">
+            {t`Future veCRV:`} {!isCreateLock && `${formatNumber(vecrvInfo.veCrv)} → `} {formatNumber(futureVeCrv)}
+          </Chip>
+          <br />
+        </>
+      )}
       {!!curve?.signerAddress && utcDateError ? (
         <Chip size="xs" isError>
           {utcDateError === 'invalid-date' ? t`Invalid date` : utcDateError}
