@@ -91,6 +91,7 @@ export const MarketsFilterChips = ({
       rowSpacing={{ mobile: 2, tablet: 4 }}
       columnSpacing={{ mobile: 2, tablet: '4px' }}
       sx={{ width: '100%' }}
+      justifyContent="flex-end"
     >
       <GridChip
         label={t`Mint Markets`}

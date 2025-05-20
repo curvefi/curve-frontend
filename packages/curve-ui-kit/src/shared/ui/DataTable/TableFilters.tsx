@@ -87,7 +87,6 @@ export const TableFilters = <ColumnIds extends string>({
           <Typography variant="headingSBold">{title}</Typography>
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
-        {/* flex-wrap below is for screens < 500px */}
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           {!isMobile && (
             <TableButton
@@ -118,7 +117,7 @@ export const TableFilters = <ColumnIds extends string>({
           {sort}
         </Grid>
         {!isMobile && (
-          <Grid size={{ tablet: 7, desktop: 8 }} gap={0}>
+          <Grid size={{ tablet: 7, desktop: 8 }} gap={0} justifyContent="flex-end">
             {chips}
           </Grid>
         )}

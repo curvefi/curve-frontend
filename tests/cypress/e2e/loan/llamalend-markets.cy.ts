@@ -64,9 +64,9 @@ describe(`LlamaLend Markets`, () => {
 
     // filter height changes because text wraps depending on the width
     const filterHeight = {
-      mobile: [318, 304, 280, 268],
-      tablet: [244, 232, 188, 176, 120],
-      desktop: [128],
+      mobile: [314, 300, 276, 264],
+      tablet: [174],
+      desktop: [174, 128],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
 
@@ -273,6 +273,7 @@ describe(`LlamaLend Markets`, () => {
   function expandFirstRowOnMobile() {
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="expand-icon"]`).first().click()
+      cy.get(`[data-testid="data-table-row-expansion"]`).should('be.visible')
     }
   }
 

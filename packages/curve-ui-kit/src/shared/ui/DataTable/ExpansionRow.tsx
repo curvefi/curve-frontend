@@ -30,7 +30,7 @@ export function ExpansionRow<T extends TableItem>({
   const { render, onExited, expanded } = useRowExpansion(row)
   return (
     render && (
-      <TableRow sx={{ boxShadow }}>
+      <TableRow sx={{ boxShadow }} data-testid="data-table-row-expansion">
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
           <Collapse in={expanded} onExited={onExited}>
             <Stack
