@@ -45,6 +45,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           value={market.utilizationPercent}
           unit="percentage"
           testId="metric-utilizationPercent"
+          decimals={2}
         />
       </ExpansionPanelSection>
       {market.userHasPosition && (
@@ -60,6 +61,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         component={Link}
         href={market.url}
         color="ghost"
+        data-testid="llama-market-go-to-market"
       >
         {t`Go To Market`}
       </Button>

@@ -24,7 +24,7 @@ import {
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
-import { SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
+import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -124,7 +124,10 @@ export const LendingMarketsTable = ({
             <SelectFilter
               name="sort"
               options={useLlamaMarketSortOptions()}
-              onSelected={({ id }) => table.setSorting([{ id, desc: true }])}
+              onSelected={useCallback(
+                ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
+                [onSortingChange],
+              )}
               value={sortField}
             />
           }

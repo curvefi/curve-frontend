@@ -17,6 +17,8 @@ import {
   checkIsDarkMode,
   hideDomainBanner,
   LOAD_TIMEOUT,
+  oneDesktopViewport,
+  oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -27,8 +29,7 @@ describe(`LlamaLend Markets`, () => {
   let vaultData: LendingVaultResponses
 
   beforeEach(() => {
-    // const [width, height, screen] = oneViewport()
-    const [width, height, screen] = [400, 700, 'mobile'] as const
+    const [width, height, screen] = oneViewport()
     vaultData = createLendingVaultResponses()
     breakpoint = screen
     mockChains()
@@ -53,7 +54,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).eq(0)
-  const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]`).first()
+  const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]:visible`).first()
 
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
@@ -63,7 +64,7 @@ describe(`LlamaLend Markets`, () => {
 
     // filter height changes because text wraps depending on the width
     const filterHeight = {
-      mobile: [318, 310, 274, 244, 232, 192],
+      mobile: [318, 304, 280, 268],
       tablet: [244, 232, 188, 176, 120],
       desktop: [128],
     }[breakpoint]
@@ -75,8 +76,8 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should sort', () => {
-    cy.get(`[data-testid^="data-table-cell-rates_borrow"]`).first().contains('%')
     if (breakpoint == 'mobile') {
+      cy.get(`[data-testid="data-table-cell-liquidityUsd"]`).first().contains('$')
       cy.get('[data-testid="select-filter-sort"]').click()
       cy.get('[data-testid="menu-sort"] [value="utilizationPercent"]').click()
       cy.get('[data-testid="select-filter-sort"]').contains('Utilization', LOAD_TIMEOUT)
@@ -84,10 +85,11 @@ describe(`LlamaLend Markets`, () => {
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
         .should('exist')
-      cy.get(`[data-testid="expand-icon"]`).first().click()
+      expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
       cy.get('[data-testid="metric-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
     } else {
+      cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
       cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
@@ -98,10 +100,7 @@ describe(`LlamaLend Markets`, () => {
   it('should show graphs', () => {
     cy.get(`[data-testid="chip-lend"]`).click()
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
-
-    if (breakpoint == 'mobile') {
-      cy.get(`[data-testid="expand-icon"]`).first().click()
-    }
+    expandFirstRowOnMobile()
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     checkLineGraphColor('borrow', red)
@@ -144,7 +143,7 @@ describe(`LlamaLend Markets`, () => {
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.exist')
+      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
       cy.get(`[data-testid="btn-expand-filters"]`).click()
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
@@ -165,7 +164,7 @@ describe(`LlamaLend Markets`, () => {
   it('should allow filtering by chain', () => {
     const chains = Object.keys(vaultData)
     const chain = oneOf(...chains)
-    cy.get('[data-testid="multi-select-filter-chain"]').should('not.exist')
+    cy.get('[data-testid="multi-select-filter-chain"]').should('not.be.visible')
     cy.get(`[data-testid="btn-expand-filters"]`).click()
 
     selectChain(chain)
@@ -191,11 +190,12 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it(`should allow filtering favorites`, () => {
-    cy.get(`[data-testid="favorite-icon"]`).first().click()
+    expandFirstRowOnMobile()
+    cy.get(`[data-testid="favorite-icon"]:visible`).first().click()
     cy.get(`[data-testid="chip-favorites"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-    cy.get(`[data-testid="favorite-icon"]`).should('not.exist')
-    cy.get(`[data-testid="favorite-icon-filled"]`).click()
+    cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
+    cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
     cy.get(`[data-testid="table-empty-row"]`).should('exist')
     cy.get(`[data-testid="reset-filter"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
@@ -212,15 +212,19 @@ describe(`LlamaLend Markets`, () => {
     })
   })
 
-  // todo: this test fails sometimes in ci because the click doesn't work
   it(`should hover and copy the market address`, RETRY_IN_CI, () => {
-    const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
-    cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
-    firstRow().should('not.have.css', 'background-color', hoverBackground)
-    cy.scrollTo(0, 0)
-    firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
-    firstRow().should('have.css', 'background-color', hoverBackground)
-    copyFirstAddress().should('have.css', 'opacity', '1')
+    if (breakpoint === 'mobile') {
+      expandFirstRowOnMobile()
+    } else {
+      const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
+      cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
+      firstRow().should('not.have.css', 'background-color', hoverBackground)
+      cy.scrollTo(0, 0)
+      firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
+      firstRow().should('have.css', 'background-color', hoverBackground)
+      copyFirstAddress().should('have.css', 'opacity', '1')
+    }
+    // todo: this test fails sometimes in ci because the click doesn't work
     copyFirstAddress().click()
     copyFirstAddress().click() // click again, in chrome in CI the first click doesn't work (because of tooltip?)
     cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
@@ -234,6 +238,9 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="chip-${type}"]`).click()
     firstRow().contains(capitalize(type))
     cy.get(`[data-testid^="market-link-"]`).first().click()
+    if (breakpoint === 'mobile') {
+      cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
+    }
     cy.url(LOAD_TIMEOUT).should('match', urlRegex)
   })
 
@@ -247,6 +254,10 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should hide columns', () => {
+    if (breakpoint == 'mobile') {
+      // mobile viewports do not have this feature
+      cy.viewport(...oneDesktopViewport())
+    }
     const { toggle, element } = oneOf(
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
       { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
@@ -258,13 +269,22 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
-})
 
-function checkLineGraphColor(type: 'lend' | 'borrow', color: string) {
-  // the graphs are lazy loaded, so we need to scroll to them first before checking the color
-  cy.get(`[data-testid="line-graph-${type}"]`).first().scrollIntoView()
-  cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
-}
+  function expandFirstRowOnMobile() {
+    if (breakpoint == 'mobile') {
+      cy.get(`[data-testid="expand-icon"]`).first().click()
+    }
+  }
+
+  function checkLineGraphColor(type: 'lend' | 'borrow', color: string) {
+    // the graphs are lazy loaded, so we need to scroll to them first before checking the color
+    if (breakpoint != 'mobile') {
+      // no need to scroll on mobile, the graph is already in view after collapsing the row
+      cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
+    }
+    cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
+  }
+})
 
 function selectChain(chain: string) {
   cy.get('[data-testid="multi-select-filter-chain"]').click()
