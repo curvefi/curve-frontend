@@ -22,16 +22,14 @@
     "@tanstack/react-query-devtools": "5.71.10",
     "@tanstack/react-query-persist-client": "5.71.10",
     "@tanstack/react-table": "8.21.2",
-    "@wagmi/connectors": "^5.7.11",
-    "@wagmi/core": "^2.16.7",
     "dayjs": "^1.11.13",
     "ethers": "^6.13.5",
     "next": "*",
     "pino-pretty": "^13.0.0",
     "react": "*",
     "react-dom": "*",
-    "viem": "2.26.2",
-    "wagmi": "^2.14.15"
+    "viem": "^2.29.4",
+    "wagmi": "^2.15.4"
   },
   "peerDependencies": {
     "eslint-config-custom": "*",
