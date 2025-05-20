@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 import { Balance } from '../Balance'
 
 const meta: Meta<typeof Balance> = {
@@ -36,10 +37,7 @@ const meta: Meta<typeof Balance> = {
     balance: 1.234,
     max: 'off',
     hideIcon: false,
-    onMax: (maxValue: number) => {
-      // eslint-disable-next-line no-console
-      console.log('Max value:', maxValue)
-    },
+    onMax: fn(),
   },
 }
 
