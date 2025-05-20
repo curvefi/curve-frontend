@@ -115,6 +115,7 @@ type Props = {
    * 1. Slot in any token selector implementation
    * 2. Handle the callbacks of the token selector in the parent component
    * 3. Feed props back to LargeInput via its properties
+   * 4. Customize labels like 'You pay' more easily
    *
    * See the storybook for simple implementation examples of LargeInput.
    *
@@ -205,13 +206,7 @@ export const LargeInput = ({ tokenSelector, maxBalance, message, isError = false
       <Stack gap={Spacing.xs}>
         {/** First row containing the token selector and balance input text */}
         <Stack direction="row" alignItems="end">
-          <Stack>
-            <Typography variant="bodyXsRegular" color="textTertiary">
-              You pay
-            </Typography>
-
-            {tokenSelector}
-          </Stack>
+          {tokenSelector}
 
           <BalanceTextField
             balance={balance}

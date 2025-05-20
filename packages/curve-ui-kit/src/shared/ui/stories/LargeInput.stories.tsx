@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Select, MenuItem, Typography } from '@mui/material'
+import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { LargeInput } from '../LargeInput'
@@ -50,7 +50,19 @@ const LargeInputWithTokenSelector = (props: any) => {
   const [maxBalance, setMaxBalance] = useState(props.maxBalance)
 
   return (
-    <LargeInput {...props} maxBalance={maxBalance} tokenSelector={<TokenSelector onTokenChange={setMaxBalance} />} />
+    <LargeInput
+      {...props}
+      maxBalance={maxBalance}
+      tokenSelector={
+        <Stack>
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            You pay
+          </Typography>
+
+          <TokenSelector onTokenChange={setMaxBalance} />
+        </Stack>
+      }
+    />
   )
 }
 
