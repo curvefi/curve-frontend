@@ -26,13 +26,18 @@ type MaxButtonProps = {
 const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
   <Button
     color="ghost"
-    variant="link"
     size="extraSmall"
     onClick={onClick}
     sx={{
       minWidth: 'unset',
-      // Sadly the !important is still necessary because of the !important in defineMuiButton for the Link variant :(
-      '&': { height: '0px !important' },
+      /**
+       * Remove any properties that cause the total height component to change
+       * depending on the value of the 'max' property of BalanceText.
+       * Under normal circumstances, we want the ghost link to have a bit of
+       * white space and thus breathing room. However in this case we want the
+       * link to be embedded into the typography and be as compact as possible.
+       */
+      '&': { height: 'auto', padding: 0, border: 0, lineHeight: 0 },
       ...(underline && {
         '&:hover .balance': {
           textDecoration: 'underline',
