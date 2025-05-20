@@ -1,23 +1,18 @@
 import Link from 'next/link'
 import { LineGraphCell } from '@/loan/components/PageLlamaMarkets/cells'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
-import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
+import { FavoriteMarketButton } from '@/loan/components/PageLlamaMarkets/FavoriteMarketButton'
 import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
 import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
-import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ExpansionPanelSection } from '@ui-kit/shared/ui/DataTable/ExpansionPanelSection'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { LlamaMarket } from '../../entities/llama-markets'
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
-  const [isFavorite, toggleFavorite] = useFavoriteMarket(market.address)
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   return (
@@ -32,11 +27,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               confirmationText={t`Market address copied`}
               data-testid={`copy-market-address-${market.address}`}
             />
-            <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
-              <IconButton size="extraSmall" onClick={toggleFavorite}>
-                <FavoriteHeartIcon color={useTheme().design.Text.TextColors.Highlight} isFavorite={isFavorite} />
-              </IconButton>
-            </Tooltip>
+            <FavoriteMarketButton address={market.address} />
           </Stack>
         }
       >
