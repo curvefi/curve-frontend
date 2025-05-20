@@ -122,12 +122,14 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         )}
       </Grid>
-      <Collapse in={filterExpanded}>{collapsible}</Collapse>
-      {isMobile && (
-        <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
-          {chips}
-        </Box>
-      )}
+      <Collapse in={filterExpanded}>
+        {collapsible}
+        {isMobile && (
+          <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
+            {chips}
+          </Box>
+        )}
+      </Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
         <TableVisibilitySettingsPopover<ColumnIds>

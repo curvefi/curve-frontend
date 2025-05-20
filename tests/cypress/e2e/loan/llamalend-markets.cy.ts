@@ -18,6 +18,7 @@ import {
   hideDomainBanner,
   LOAD_TIMEOUT,
   oneDesktopViewport,
+  oneMobileViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
@@ -57,6 +58,8 @@ describe(`LlamaLend Markets`, () => {
   const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]:visible`).first()
 
   it('should have sticky headers', () => {
+    cy.viewport(...oneMobileViewport())
+    const breakpoint = 'mobile'
     cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
@@ -64,7 +67,7 @@ describe(`LlamaLend Markets`, () => {
 
     // filter height changes because text wraps depending on the width
     const filterHeight = {
-      mobile: [314, 300, 276, 264],
+      mobile: [194, 180, 156, 144],
       tablet: [174],
       desktop: [174, 128],
     }[breakpoint]
@@ -144,7 +147,7 @@ describe(`LlamaLend Markets`, () => {
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-      cy.get(`[data-testid="btn-expand-filters"]`).click()
+      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click()
@@ -189,10 +192,16 @@ describe(`LlamaLend Markets`, () => {
     selectCoin(coin2, type)
   })
 
-  it(`should allow filtering favorites`, () => {
+  it('should allow filtering favorites', { scrollBehavior: false }, () => {
     expandFirstRowOnMobile()
+    if (breakpoint == 'desktop') {
+      // on desktop, favorite icon is only visible on hover
+      firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
+    }
     cy.get(`[data-testid="favorite-icon"]:visible`).first().click()
+    expandFiltersOnMobile()
     cy.get(`[data-testid="chip-favorites"]`).click()
+    hideFiltersOnMobile()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
     cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
@@ -202,6 +211,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it(`should allow filtering by market type`, () => {
+    expandFiltersOnMobile()
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       const [type, otherType] = shuffle('mint', 'lend')
       cy.get(`[data-testid="chip-${type}"]`).click()
@@ -246,6 +256,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
+    expandFiltersOnMobile()
     cy.get(`[data-testid="chip-rewards"]`).click()
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
@@ -273,7 +284,25 @@ describe(`LlamaLend Markets`, () => {
   function expandFirstRowOnMobile() {
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="expand-icon"]`).first().click()
-      cy.get(`[data-testid="data-table-row-expansion"]`).should('be.visible')
+      cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
+    }
+  }
+
+  function expandFiltersOnMobile() {
+    if (breakpoint == 'mobile') {
+      cy.scrollTo(0, 0)
+      cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
+      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+      cy.get(`[data-testid="chip-lend"]`).should('be.visible')
+    }
+  }
+
+  function hideFiltersOnMobile() {
+    if (breakpoint == 'mobile') {
+      cy.scrollTo(0, 0)
+      cy.get(`[data-testid="chip-lend"]`).should('be.visible')
+      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+      cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
     }
   }
 
