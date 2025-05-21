@@ -30,6 +30,8 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, selectedTab)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}
+  const canUnlock =
+    +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
 
   const setData = useCallback(async () => {
     setFormValues(curve, isLoadingCurve, selectedTab, {}, vecrvInfo, true)
@@ -51,6 +53,9 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   }
 
   useEffect(() => {
+    if (canUnlock) {
+      setSelectedTab('withdraw')
+    }
     // if user has no locked crv, and is not on the create tab, set the tab to create
     if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && selectedTab !== 'create') {
       setSelectedTab('create')
@@ -59,7 +64,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && selectedTab === 'create') {
       setSelectedTab('adjust_crv')
     }
-  }, [selectedTab, vecrvInfo])
+  }, [selectedTab, vecrvInfo, canUnlock])
 
   // fetch locked crv data
   useEffect(() => {
@@ -74,6 +79,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
           {TABS.map(({ formType, label }, idx) => (
             <SlideTab
               key={label}
+              disabled={canUnlock && formType !== 'withdraw'} // disable other tabs if user can unlock
               tabLeft={tabPositions[idx]?.left}
               tabWidth={tabPositions[idx]?.width}
               tabTop={tabPositions[idx]?.top}
