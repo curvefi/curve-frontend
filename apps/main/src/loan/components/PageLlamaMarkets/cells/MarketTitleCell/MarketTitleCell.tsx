@@ -19,7 +19,7 @@ const { Spacing } = SizesAndSpaces
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => (
   <Stack direction="row" gap={Spacing.sm} alignItems="center">
     <TokenPair chain={market.chain} assets={market.assets} />
-    <Stack direction="column" gap={Spacing.xs} sx={{ flexWrap: 1 }}>
+    <Stack direction="column" gap={Spacing.xs}>
       <MarketBadges market={market} />
       <Typography component={Stack} variant="tableCellL" direction="row" gap={2}>
         <MuiLink

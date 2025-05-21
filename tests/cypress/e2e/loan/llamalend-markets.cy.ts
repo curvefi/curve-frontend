@@ -27,12 +27,12 @@ import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 describe(`LlamaLend Markets`, () => {
   let isDarkMode: boolean
   let breakpoint: Breakpoint
+  let width: number, height: number
   let vaultData: LendingVaultResponses
 
   beforeEach(() => {
-    const [width, height, screen] = oneViewport()
+    ;[width, height, breakpoint] = oneViewport()
     vaultData = createLendingVaultResponses()
-    breakpoint = screen
     mockChains()
     mockLendingChains()
     mockTokenPrices()
@@ -108,6 +108,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="chip-lend"]`).click()
       cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
     })
+    expandFirstRowOnMobile()
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     checkLineGraphColor('borrow', red)
@@ -121,7 +122,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
       cy.get('[data-testid^="data-table-row"]')
         .last()
-        .scrollIntoView({ offset: { top: -100, left: 0 } }) // scroll to the last row, make sure it's still visible
+        .scrollIntoView({ offset: { top: -height / 2, left: 0 } }) // scroll to the last row, make sure it's still visible
       if (breakpoint == 'mobile') {
         cy.get(`[data-testid="expand-icon"]`).last().click()
       }
