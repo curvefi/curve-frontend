@@ -19,6 +19,7 @@ import {
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileViewport,
+  oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -66,8 +67,11 @@ describe(`LlamaLend Markets`, () => {
 
     // filter height changes because text wraps depending on the width
     const filterHeight = {
+      // the height of the header changes depending on how often the description text wraps
       mobile: [194, 180, 156, 144],
+      // on tablet, we expect always 3 rows to fit all market filter chips
       tablet: [174],
+      // on desktop, we expect 2 rows as the chips should always fit. The original design was 128 px.
       desktop: [174, 128],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)

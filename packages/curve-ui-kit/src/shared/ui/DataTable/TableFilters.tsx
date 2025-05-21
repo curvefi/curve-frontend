@@ -72,8 +72,8 @@ export const TableFilters = <ColumnIds extends string>({
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode // filters that may be collapsed
-  chips: ReactNode // buttons that are always visible
-  sort: ReactNode // sorting options, only for mobile
+  chips: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
+  sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)

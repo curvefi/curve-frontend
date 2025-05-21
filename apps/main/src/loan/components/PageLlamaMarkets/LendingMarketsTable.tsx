@@ -31,6 +31,11 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 
+/**
+ * Hook to manage the visibility of columns in the Llama Markets table.
+ * The visibility on mobile is based on the sort field.
+ * On larger devices, it uses the visibility settings that may be customized by the user.
+ */
 const useVisibility = (sortField: LlamaMarketColumnId) => {
   const { isConnected } = useAccount()
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))

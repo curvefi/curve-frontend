@@ -23,22 +23,25 @@ yarn
 ## Usage
 
 Start development:
+
 ```bash
 yarn dev
 ```
 
 Access the application in a web browser:
+
 - http://localhost:3000
 
 ## Forked Mainnet
 
-Copy `.env.sample` from `/apps/(loan|main|lend)` and update environment variables:
+Testing with a forked mainnet is not generally necessary.
+However, if you want to do that, you can do so by copying `.env.sample` and updating environment variables:
 
 ```bash
 cp apps/main/.env.sample apps/main/.env.development.local
 ```
 
-To develop against a forked mainnet, connect your wallet to the RPC URL: `http://localhost:8545` or whichever port your forked mainnet is using.
+Connect your wallet to the RPC URL that you used.
 
 ## Folder Structure
 

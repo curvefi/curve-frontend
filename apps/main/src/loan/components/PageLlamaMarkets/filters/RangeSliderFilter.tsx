@@ -6,7 +6,7 @@ import Slider from '@mui/material/Slider'
 import type { SliderProps } from '@mui/material/Slider/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 
 /**
