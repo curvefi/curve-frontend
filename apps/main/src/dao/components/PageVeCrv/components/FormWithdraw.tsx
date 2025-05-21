@@ -73,7 +73,7 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
         {haveSigner && canUnlock && (
           <ActionInfo
             label={t`Estimated TX cost`}
-            labelColor="tertiary"
+            labelColor="tertiary" // Change the label color to tertiary to work together with legacy background colors until we can fully upgrade to the new design system
             value={valueGas !== '' && valueGas !== '0' ? valueGas : '-'}
             valueColor="tertiary"
             valueLeft={<LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
