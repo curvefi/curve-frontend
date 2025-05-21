@@ -10,18 +10,15 @@ import { TradingSlider } from './TradingSlider'
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 function clampBalance(balance: number | string, maxBalance?: number) {
-  let newBalance = Number(balance)
+  const newBalance = Math.max(0, Number(balance)) // Disallow negative values
 
-  // Disallow negative values.
-  newBalance = Math.max(0, newBalance)
+  if (maxBalance == null) {
+    return newBalance
+  }
 
   // We only clamp the positive side if there's a max balance.
   // This is up to debate and might be removed, it could be considered annoying UX.
-  if (maxBalance != null) {
-    newBalance = Math.min(newBalance, maxBalance)
-  }
-
-  return newBalance
+  return Math.min(newBalance, maxBalance)
 }
 
 type HelperMessageProps = {
