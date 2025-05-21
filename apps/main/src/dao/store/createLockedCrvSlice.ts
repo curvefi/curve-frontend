@@ -1,12 +1,10 @@
+import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-import {
-  DEFAULT_FORM_EST_GAS,
-  DEFAULT_FORM_STATUS,
-  DEFAULT_FORM_VALUES,
-  DEFAULT_USER_LOCKED_CRV_INFO,
-} from '@/dao/components/PageVeCrv/utils'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
+import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
+import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
@@ -15,10 +13,13 @@ import {
   FnStepApproveResponse,
   FnStepEstGasApprovalResponse,
   FnStepResponse,
+  TransactionState,
 } from '@/dao/types/dao.types'
-import { formatNumber, shortenAccount } from '@ui/utils'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import dayjs from '@ui-kit/lib/dayjs'
+import { getErrorMessage } from '@/dao/utils'
+import { Address } from '@curvefi/prices-api'
+import { shortenAccount } from '@ui/utils'
+import { notify, requireLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -28,7 +29,12 @@ type SliceState = {
   formEstGas: { [activeKey: string]: FormEstGas }
   formValues: FormValues
   formStatus: FormStatus
-  vecrvInfo: { [vecrvInfoActiveKey: string]: VecrvInfo }
+
+  withdrawLockedCrvStatus: {
+    transactionState: TransactionState
+    errorMessage: string | null
+    txHash: string | null
+  }
 }
 
 const sliceKey = 'lockedCrv'
@@ -36,7 +42,6 @@ const sliceKey = 'lockedCrv'
 // prettier-ignore
 export type LockedCrvSlice = {
   [sliceKey]: SliceState & {
-    fetchVecrvInfo: (curve: CurveApi) => Promise<VecrvInfo>
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 
     // steps
@@ -45,6 +50,8 @@ export type LockedCrvSlice = {
     fetchStepCreate(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse & { lockedAmt: string, lockedDate: string } | undefined>
     fetchStepIncreaseCrv(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
     fetchStepIncreaseTime(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
+
+    withdrawLockedCrv(): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -59,41 +66,16 @@ export const DEFAULT_STATE: SliceState = {
   formEstGas: {},
   formValues: DEFAULT_FORM_VALUES,
   formStatus: DEFAULT_FORM_STATUS,
-  vecrvInfo: {},
+  withdrawLockedCrvStatus: {
+    transactionState: '',
+    errorMessage: null,
+    txHash: null,
+  },
 }
 
 const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-
-    fetchVecrvInfo: async (curve) => {
-      let resp = cloneDeep(DEFAULT_USER_LOCKED_CRV_INFO)
-      const activeKey = getActiveKeyVecrvInfo(curve, curve.signerAddress)
-
-      if (curve.signerAddress) {
-        get()[sliceKey].setStateByKey('activeKeyVecrvInfo', activeKey)
-        const fn = networks[curve.chainId].api.lockCrv.vecrvInfo
-        const fetchedResp = await fn(activeKey, curve, curve.signerAddress)
-
-        if (fetchedResp.error) {
-          const storedFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          storedFormStatus.error = fetchedResp.error
-          get()[sliceKey].setStateByKey('formStatus', cloneDeep(storedFormStatus))
-        }
-
-        get()[sliceKey].setStateByKeys({
-          activeKeyVecrvInfo: fetchedResp.activeKey,
-          vecrvInfo: { [fetchedResp.activeKey]: fetchedResp.resp },
-        })
-        resp = fetchedResp.resp
-      } else {
-        get()[sliceKey].setStateByKeys({
-          activeKeyVecrvInfo: activeKey,
-          vecrvInfo: { [activeKey]: resp },
-        })
-      }
-      return resp
-    },
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
       // stored state
       const storedFormValues = get()[sliceKey].formValues
@@ -224,16 +206,11 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             })
           }
 
-          // re-fetch data
-          const fetchedVecrvInfo = await get()[sliceKey].fetchVecrvInfo(curve)
+          // re-fetch user vecrv info
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
-          }
-          if (fetchedVecrvInfo) {
-            const lockedAmt = formatNumber(fetchedVecrvInfo.lockedAmountAndUnlockTime.lockedAmount)
-            const lockedDate = dayjs.utc(fetchedVecrvInfo.lockedAmountAndUnlockTime.unlockTime).format('l')
-            return { ...resp, lockedAmt, lockedDate }
           }
         }
       }
@@ -268,8 +245,8 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             formStatus: cloneDeep(cFormStatus),
           })
 
-          // re-fetch data
-          void get()[sliceKey].fetchVecrvInfo(curve)
+          // re-fetch user vecrv info
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -309,8 +286,8 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
             formStatus: cloneDeep(cFormStatus),
           })
 
-          // re-fetch data
-          void get()[sliceKey].fetchVecrvInfo(curve)
+          // re-fetch user vecrv info
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -318,6 +295,62 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         }
 
         return resp
+      }
+    },
+
+    withdrawLockedCrv: async () => {
+      const { provider } = useWallet.getState()
+      if (!provider) return setMissingProvider(get()[sliceKey])
+      const curve = requireLib<CurveApi>()
+
+      await get().gas.fetchGasInfo(curve)
+
+      let dismissNotificationHandler = notify(t`Please confirm to withdraw locked CRV.`, 'pending').dismiss
+
+      try {
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'CONFIRMING'
+            state[sliceKey].withdrawLockedCrvStatus.errorMessage = null
+            state[sliceKey].withdrawLockedCrvStatus.txHash = null
+          }),
+        )
+
+        const hash = await curve.boosting.withdrawLockedCrv()
+
+        dismissNotificationHandler()
+        dismissNotificationHandler = notify(t`Withdrawing locked CRV...`, 'pending').dismiss
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'LOADING'
+            state[sliceKey].withdrawLockedCrvStatus.txHash = hash
+          }),
+        )
+
+        await helpers.waitForTransaction(hash, provider)
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'SUCCESS'
+          }),
+        )
+
+        // re-fetch user vecrv info
+        invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
+
+        dismissNotificationHandler()
+        notify(t`CRV withdrawal successful.`, 'success', 15000)
+      } catch (error) {
+        dismissNotificationHandler()
+        console.warn(error)
+        set(
+          produce((state: State) => {
+            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'ERROR'
+            state[sliceKey].withdrawLockedCrvStatus.errorMessage = getErrorMessage(error, 'error-withdraw-locked-crv')
+            state[sliceKey].withdrawLockedCrvStatus.txHash = null
+          }),
+        )
       }
     },
 
