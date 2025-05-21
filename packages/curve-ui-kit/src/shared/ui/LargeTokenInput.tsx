@@ -32,7 +32,7 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
       backgroundColor: (t) => t.design.Layer[3].Fill,
       paddingBlock: Spacing.sm,
       paddingInlineStart: Spacing.sm,
-      outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
+      ...(isError && { outline: (t) => `1px solid ${t.design.Layer.Feedback.Error}` }),
     }}
   >
     {typeof message === 'string' ? (
