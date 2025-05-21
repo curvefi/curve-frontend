@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { LargeInput } from '../LargeInput'
+import { LargeTokenInput } from '../LargeTokenInput'
 
 const TOKEN_OPTIONS = [
   { name: 'Inferium', symbol: 'ETH', balance: 1000 },
@@ -49,7 +49,7 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
   )
 }
 
-const LargeInputWithTokenSelector = (props: any) => {
+const LargeTokenInputWithTokenSelector = (props: any) => {
   const [tokenInfo, setTokenInfo] = useState({
     balance: TOKEN_OPTIONS[0].balance,
     symbol: TOKEN_OPTIONS[0].symbol,
@@ -67,7 +67,7 @@ const LargeInputWithTokenSelector = (props: any) => {
         }
 
   return (
-    <LargeInput
+    <LargeTokenInput
       {...props}
       maxBalance={maxBalance}
       tokenSelector={
@@ -83,9 +83,9 @@ const LargeInputWithTokenSelector = (props: any) => {
   )
 }
 
-const meta: Meta<typeof LargeInput> = {
-  title: 'UI Kit/Widgets/LargeInput',
-  component: LargeInput,
+const meta: Meta<typeof LargeTokenInput> = {
+  title: 'UI Kit/Widgets/LargeTokenInput',
+  component: LargeTokenInput,
   argTypes: {
     maxBalance: {
       control: 'object',
@@ -115,10 +115,10 @@ const meta: Meta<typeof LargeInput> = {
   },
 }
 
-type Story = StoryObj<typeof LargeInput>
+type Story = StoryObj<typeof LargeTokenInput>
 
 export const Default: Story = {
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -133,7 +133,7 @@ export const NoMaxBalance: Story = {
   args: {
     maxBalance: undefined,
   },
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -151,7 +151,7 @@ export const WithoutSlider: Story = {
       showSlider: false,
     },
   },
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -168,7 +168,7 @@ export const WithoutBalance: Story = {
       showSlider: true,
     },
   },
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -182,7 +182,7 @@ export const WithMessage: Story = {
   args: {
     message: 'This is a helpful message',
   },
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -197,7 +197,7 @@ export const WithError: Story = {
     message: 'This is an error message',
     isError: true,
   },
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -221,7 +221,7 @@ export const WithReactNodeMessage: Story = {
       </Stack>
     ),
   },
-  render: (args) => <LargeInputWithTokenSelector {...args} />,
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {

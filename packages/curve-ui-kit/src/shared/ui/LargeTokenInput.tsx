@@ -124,25 +124,22 @@ type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 
   showSlider?: boolean
 }
 
-/**
- * Props for the LargeInput component.
- */
 type Props = {
   /**
    * The token selector UI element to be rendered.
    *
    * We've chosen to use React.ReactNode here to prevent coupling the relatively simple
-   * LargeInput component with the more complex SelectToken feature. This approach provides better composability,
+   * LargeTokenInput component with the more complex SelectToken feature. This approach provides better composability,
    * allowing you to:
    *
    * 1. Slot in any token selector implementation
    * 2. Handle the callbacks of the token selector in the parent component
-   * 3. Feed props back to LargeInput via its properties
+   * 3. Feed props back to LargeTokenInput via its properties
    * 4. Customize labels like 'You pay' more easily
    *
-   * See the storybook for simple implementation examples of LargeInput.
+   * See the storybook for simple implementation examples of LargeTokenInput.
    *
-   * Note: We'll likely create a new 'feature' component that combines this LargeInput component with
+   * Note: We'll likely create a new 'feature' component that combines this LargeTokenInput component with
    * a token selector and other required app interactions.
    */
   tokenSelector: React.ReactNode
@@ -173,7 +170,7 @@ type Props = {
   onBalance: (balance: number) => void
 }
 
-export const LargeInput = ({ tokenSelector, maxBalance, message, isError = false, onBalance }: Props) => {
+export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = false, onBalance }: Props) => {
   const [percentage, setPercentage] = useState(0)
   const [balance, setBalance] = useState(0)
 
