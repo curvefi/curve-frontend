@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
@@ -35,26 +36,29 @@ export const TabsSwitcher = <T extends string | number>({
   value,
   textVariant,
   ...props
-}: TabsSwitcherProps<T>) => (
-  <Tabs
-    variant={muiVariant}
-    textColor="inherit"
-    value={value ?? false}
-    onChange={(_, newValue) => onChange?.(newValue)}
-    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
-    {...props}
-  >
-    {options.map(({ value: tab, label, sx, ...props }) => (
-      <Tab
-        key={tab}
-        value={tab}
-        component={Link}
-        href={{ query: { tab } }}
-        label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
-        sx={{ ...sx, whiteSpace: 'nowrap' }}
-        onClick={(e) => pushSearchParams(e, { tab })}
-        {...props}
-      />
-    ))}
-  </Tabs>
-)
+}: TabsSwitcherProps<T>) => {
+  const pathname = usePathname()
+  return (
+    <Tabs
+      variant={muiVariant}
+      textColor="inherit"
+      value={value ?? false}
+      onChange={(_, newValue) => onChange?.(newValue)}
+      className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
+      {...props}
+    >
+      {options.map(({ value: tab, label, sx, ...props }) => (
+        <Tab
+          key={tab}
+          value={tab}
+          component={Link}
+          href={{ query: { tab }, pathname }}
+          label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
+          sx={{ ...sx, whiteSpace: 'nowrap' }}
+          onClick={(e) => pushSearchParams(e, { tab })}
+          {...props}
+        />
+      ))}
+    </Tabs>
+  )
+}
