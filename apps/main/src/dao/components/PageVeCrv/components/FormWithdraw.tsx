@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useAccount } from 'wagmi'
 import AlertFormError from '@/dao/components/AlertFormError'
+import Countdown from '@/dao/components/Countdown'
 import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
-import VoteCountdown from '@/dao/components/VoteCountdown'
 import { useLockEstimateWithdrawGas } from '@/dao/entities/locker-estimate-withdraw-gas'
 import useEstimateGasConversion from '@/dao/hooks/useEstimateGasConversion'
 import useStore from '@/dao/store/useStore'
@@ -85,7 +85,7 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
           {!canUnlock && (
             <AlertBox alertType="info">
               {t`Your CRV unlocks in:`}
-              <StyledVoteCountdown startDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
+              <StyledCountdown endDate={vecrvInfo.lockedAmountAndUnlockTime.unlockTime / 1000} />
             </AlertBox>
           )}
           {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
@@ -121,7 +121,7 @@ const RowParagraph = styled.p`
   font-weight: var(--bold);
 `
 
-const StyledVoteCountdown = styled(VoteCountdown)`
+const StyledCountdown = styled(Countdown)`
   margin-left: var(--spacing-2);
 `
 
