@@ -34,7 +34,7 @@
     "lightweight-charts": "^4.2.3",
     "lodash": "4.17.21",
     "memoizee": "^0.4.17",
-    "next": "15.3.2",
+    "next": "15.2.4",
     "next-images": "^1.8.5",
     "react": "*",
     "react-dom": "*",
