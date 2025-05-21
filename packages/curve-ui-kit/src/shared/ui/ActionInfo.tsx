@@ -100,12 +100,14 @@ const ActionInfo = ({
         {label}
       </Typography>
 
-      {prevValue && (
-        <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        {prevValue && (
           <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textTertiary'}>
             {prevValue}
           </Typography>
+        )}
 
+        {prevValue && (
           <ArrowForwardIcon
             sx={{
               width: IconSize.sm,
@@ -113,10 +115,8 @@ const ActionInfo = ({
               color: (t) => t.palette.text.tertiary,
             }}
           />
-        </Stack>
-      )}
+        )}
 
-      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
         {valueLeft}
 
         <WithSkeleton loading={!!loading}>
