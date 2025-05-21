@@ -1,4 +1,5 @@
 'use client'
+import { useSearchParams } from 'next/navigation'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -22,44 +23,47 @@ const TABS = [
 
 export type DisclaimerTabId = (typeof TABS)[number]['value']
 
-export type DisclaimerProps = { tab: DisclaimerTabId; network: string }
+export type DisclaimerProps = { defaultTab: DisclaimerTabId; network: string }
 
-export const Disclaimer = ({ tab, network }: DisclaimerProps) => (
-  <Stack
-    alignItems="center"
-    gap={Spacing.xl}
-    sx={{
-      marginInline: 'auto',
-      marginBlockStart: Spacing.xl,
-      marginBlockEnd: Spacing.xxl,
-    }}
-  >
+export const Disclaimer = ({ defaultTab, network }: DisclaimerProps) => {
+  const tab = useSearchParams().get('tab') ?? defaultTab
+  return (
     <Stack
+      alignItems="center"
+      gap={Spacing.xl}
       sx={{
-        maxWidth: MaxWidth.disclaimer,
-        paddingInline: Spacing.md,
+        marginInline: 'auto',
+        marginBlockStart: Spacing.xl,
+        marginBlockEnd: Spacing.xxl,
       }}
-      data-testid="disclaimer"
     >
       <Stack
-        direction={{
-          mobile: 'column-reverse',
-          tablet: 'row',
+        sx={{
+          maxWidth: MaxWidth.disclaimer,
+          paddingInline: Spacing.md,
         }}
-        justifyContent="space-between"
-        spacing={Spacing.md}
+        data-testid="disclaimer"
       >
-        <TabsSwitcher variant="contained" value={tab} options={[...TABS]} />
-        <LastUpdated />
-      </Stack>
+        <Stack
+          direction={{
+            mobile: 'column-reverse',
+            tablet: 'row',
+          }}
+          justifyContent="space-between"
+          spacing={Spacing.md}
+        >
+          <TabsSwitcher variant="contained" value={tab} options={TABS} />
+          <LastUpdated />
+        </Stack>
 
-      <TabPanel>
-        {tab === 'dex' && <Dex />}
-        {tab === 'lend' && <LlamaLend network={network} />}
-        {tab === 'crvusd' && <CrvUsd />}
-        {tab === 'scrvusd' && <SCrvUsd />}
-        <Footer />
-      </TabPanel>
+        <TabPanel>
+          {tab === 'dex' && <Dex />}
+          {tab === 'lend' && <LlamaLend network={network} />}
+          {tab === 'crvusd' && <CrvUsd />}
+          {tab === 'scrvusd' && <SCrvUsd />}
+          <Footer />
+        </TabPanel>
+      </Stack>
     </Stack>
-  </Stack>
-)
+  )
+}
