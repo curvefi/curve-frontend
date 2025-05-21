@@ -79,15 +79,13 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
         },
       },
     }}
-    onClick={(e) => {
-      /**
-       * Select all content when clicked.
-       * This prevents unintended behavior when users click on the input field.
-       * For example, if the field contains "5000" and a user clicks on the left
-       * to type "4", it would become "45000" instead of the likely intended "4".
-       */
-      ;(e.target as HTMLInputElement).select()
-    }}
+    /**
+     * Select all content when clicked.
+     * This prevents unintended behavior when users click on the input field.
+     * For example, if the field contains "5000" and a user clicks on the left
+     * to type "4", it would become "45000" instead of the likely intended "4".
+     */
+    onFocus={(e) => (e.target as HTMLInputElement).select()}
     onChange={(e) => {
       /**
        * We clamp here and not in the onChange handler passed as property, because
