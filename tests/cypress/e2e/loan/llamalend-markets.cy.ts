@@ -19,7 +19,6 @@ import {
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileViewport,
-  oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -101,8 +100,10 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should show graphs', () => {
+    expandFiltersOnMobile()
     cy.get(`[data-testid="chip-lend"]`).click()
     cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+    hideFiltersOnMobile()
     expandFirstRowOnMobile()
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
@@ -245,8 +246,10 @@ describe(`LlamaLend Markets`, () => {
       ['mint', /\/crvusd\/\w+\/markets\/.+\/create/],
       ['lend', /\/lend\/\w+\/markets\/.+\/create/],
     )
+    expandFiltersOnMobile()
     cy.get(`[data-testid="chip-${type}"]`).click()
     firstRow().contains(capitalize(type))
+    hideFiltersOnMobile()
     cy.get(`[data-testid^="market-link-"]`).first().click()
     if (breakpoint === 'mobile') {
       cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
