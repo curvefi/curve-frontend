@@ -117,28 +117,31 @@ const ActionInfo = ({
           />
         )}
 
-        {valueLeft}
+        {/** Additional stack to add some space between left (icon), value and right (icon) */}
+        <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+          {valueLeft}
 
-        <WithSkeleton loading={!!loading}>
-          <Tooltip
-            title={valueTooltip}
-            placement="top"
-            slotProps={{
-              popper: {
-                sx: {
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+          <WithSkeleton loading={!!loading}>
+            <Tooltip
+              title={valueTooltip}
+              placement="top"
+              slotProps={{
+                popper: {
+                  sx: {
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  },
                 },
-              },
-            }}
-          >
-            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-              {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
-            </Typography>
-          </Tooltip>
-        </WithSkeleton>
+              }}
+            >
+              <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+                {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
+              </Typography>
+            </Tooltip>
+          </WithSkeleton>
 
-        {valueRight}
+          {valueRight}
+        </Stack>
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">
