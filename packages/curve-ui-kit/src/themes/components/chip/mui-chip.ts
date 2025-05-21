@@ -69,7 +69,10 @@ export const defineMuiChip = (
       '&:has(.MuiChip-icon)': {
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
-        '& .MuiChip-label': { paddingInline: 0 },
+        '& .MuiChip-label': {
+          paddingInline: 0,
+          '&:empty': { display: 'none' },
+        },
       },
     },
   },
