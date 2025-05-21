@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useAccount } from 'wagmi'
 import AlertFormError from '@/dao/components/AlertFormError'
@@ -13,7 +14,6 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils/utilsFormat'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -21,9 +21,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
-  const [txInfoBar, openTxInfoBar, closeTxInfoBar] = useSwitch()
   const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
+  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
   const { address } = useAccount()
 
@@ -43,6 +43,18 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
 
   const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas)
   const valueGas = formatNumber(estGasCostUsd, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+
+  useEffect(() => {
+    if (withdrawTxSuccess) {
+      setTxInfoBar(
+        <TxInfoBar
+          description={t`Locked CRV withdrawn`}
+          txHash={withdrawLockedCrvStatus.txHash ?? ''}
+          onClose={() => setTxInfoBar(null)}
+        />,
+      )
+    }
+  }, [withdrawTxSuccess, withdrawLockedCrvStatus.txHash])
 
   return (
     <Box display="flex" flexDirection="column" flexGap="var(--spacing-3)" fillHeight>
@@ -79,13 +91,7 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
           {withdrawTxError && withdrawLockedCrvStatus.errorMessage && (
             <AlertFormError errorKey={withdrawLockedCrvStatus.errorMessage} />
           )}
-          {txInfoBar && (
-            <TxInfoBar
-              description={t`Locked CRV withdrawn`}
-              txHash={withdrawLockedCrvStatus.txHash ?? ''}
-              onClose={closeTxInfoBar}
-            />
-          )}
+          {txInfoBar}
           {withdrawTxSuccess && <SuccessBox>{t`Withdrawal successful`}</SuccessBox>}
           {!withdrawTxSuccess && canUnlock && (
             <Button
@@ -94,9 +100,9 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
               variant="filled"
               disabled={!canUnlock}
               loading={withdrawTxLoading}
-              onClick={() => withdrawLockedCrv().then(() => openTxInfoBar())}
+              onClick={() => withdrawLockedCrv()}
             >
-              Withdraw
+              {t`Withdraw`}
             </Button>
           )}
         </FormActions>
