@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "2.66.26",
+    "@curvefi/api": "2.66.27",
     "@curvefi/llamalend-api": "^1.0.20",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
