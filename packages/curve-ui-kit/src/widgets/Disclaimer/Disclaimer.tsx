@@ -26,7 +26,7 @@ export type DisclaimerTabId = (typeof TABS)[number]['value']
 export type DisclaimerProps = { defaultTab: DisclaimerTabId; network: string }
 
 export const Disclaimer = ({ defaultTab, network }: DisclaimerProps) => {
-  const tab = useSearchParams().get('tab') ?? defaultTab
+  const tab = useSearchParams()?.get('tab') ?? defaultTab
   return (
     <Stack
       alignItems="center"
