@@ -24,7 +24,7 @@ const useEstimateGasConversion = (gas: number | null | undefined) => {
     const { symbol, gasPricesUnit } = networks[chainId]
     const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * gas))
     if (chainTokenUsdRate === undefined) {
-      return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: undefined }
+      return { estGasCost: estGasCost.toString(), estGasCostUsd: undefined, tooltip: undefined }
     } else {
       const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
       const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })

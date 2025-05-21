@@ -32,13 +32,14 @@ const FieldLockedAmt = ({
   const { lockedAmount } = vecrvInfo.lockedAmountAndUnlockTime
   const isAdjustCrv = formType === 'adjust_crv'
 
-  const futureVeCrv = useMemo(() => {
-    if (!curve) return undefined
-    return curve.boosting.calculateVeCrv(
-      Number(lockedAmt) + Number(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount),
-      vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
-    )
-  }, [curve, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime])
+  const futureVeCrv = useMemo(
+    () =>
+      curve?.boosting.calculateVeCrv(
+        Number(lockedAmt) + Number(vecrvInfo.lockedAmountAndUnlockTime.lockedAmount),
+        vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
+      ),
+    [curve, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime],
+  )
 
   return (
     <div>

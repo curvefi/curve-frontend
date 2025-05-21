@@ -10,7 +10,8 @@ import { curvejsValidationGroup } from './validation/curvejs-validation'
 async function _fetchLockerVecrvInfo({ userAddress }: ChainQuery<ChainId> & UserQuery) {
   const curve = requireLib<CurveApi>()
 
-  return (await lib.lockCrv.vecrvInfo(curve, userAddress)).resp
+  const { resp } = await lib.lockCrv.vecrvInfo(curve, userAddress)
+  return resp
 }
 
 export const { useQuery: useLockerVecrvInfo, invalidate: invalidateLockerVecrvInfo } = queryFactory({

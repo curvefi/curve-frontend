@@ -93,11 +93,11 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
   const handleBtnClickQuickAction = useCallback(
     (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => {
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
+      const { calcUnlockTime } = networks[rChainId].api.lockCrv
       // max button
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
-        const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
+        const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
         void updateFormValues(
           { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },
           false,
@@ -107,7 +107,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
+      const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
       void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
       return calcdUtcDate
