@@ -3,6 +3,9 @@ import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.
 import { t } from '@ui-kit/lib/i18n'
 import type { Option } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 
+/**
+ * Creates a list of select options for sorting the Llama Market table (used for mobile only)
+ */
 export const useLlamaMarketSortOptions = () => {
   const { isConnected } = useAccount()
   return [

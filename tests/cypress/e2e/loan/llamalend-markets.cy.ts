@@ -104,11 +104,10 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should show graphs', () => {
-    expandFiltersOnMobile()
-    cy.get(`[data-testid="chip-lend"]`).click()
-    cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
-    hideFiltersOnMobile()
-    expandFirstRowOnMobile()
+    withFilterChips(() => {
+      cy.get(`[data-testid="chip-lend"]`).click()
+      cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+    })
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     checkLineGraphColor('borrow', red)
@@ -204,28 +203,26 @@ describe(`LlamaLend Markets`, () => {
       firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
     }
     cy.get(`[data-testid="favorite-icon"]:visible`).first().click()
-    expandFiltersOnMobile()
-    cy.get(`[data-testid="chip-favorites"]`).click()
-    hideFiltersOnMobile()
+    withFilterChips(() => cy.get(`[data-testid="chip-favorites"]`).click())
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
     cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
     cy.get(`[data-testid="table-empty-row"]`).should('exist')
-    cy.get(`[data-testid="reset-filter"]`).click()
+    withFilterChips(() => cy.get(`[data-testid="reset-filter"]`).click())
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
 
-  it(`should allow filtering by market type`, () => {
-    expandFiltersOnMobile()
-    cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-      const [type, otherType] = shuffle('mint', 'lend')
-      cy.get(`[data-testid="chip-${type}"]`).click()
-      cy.get(`[data-testid^="pool-type-"]`).each(($el) => expect($el.attr('data-testid')).equals(`pool-type-${type}`))
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
-      cy.get(`[data-testid="chip-${otherType}"]`).click()
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
-    })
-  })
+  it(`should allow filtering by market type`, () =>
+    withFilterChips(() =>
+      cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
+        const [type, otherType] = shuffle('mint', 'lend')
+        cy.get(`[data-testid="chip-${type}"]`).click()
+        cy.get(`[data-testid^="pool-type-"]`).each(($el) => expect($el.attr('data-testid')).equals(`pool-type-${type}`))
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+        cy.get(`[data-testid="chip-${otherType}"]`).click()
+        cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
+      }),
+    ))
 
   it(`should hover and copy the market address`, RETRY_IN_CI, () => {
     if (breakpoint === 'mobile') {
@@ -250,10 +247,10 @@ describe(`LlamaLend Markets`, () => {
       ['mint', /\/crvusd\/\w+\/markets\/.+\/create/],
       ['lend', /\/lend\/\w+\/markets\/.+\/create/],
     )
-    expandFiltersOnMobile()
-    cy.get(`[data-testid="chip-${type}"]`).click()
-    firstRow().contains(capitalize(type))
-    hideFiltersOnMobile()
+    withFilterChips(() => {
+      cy.get(`[data-testid="chip-${type}"]`).click()
+      firstRow().contains(capitalize(type))
+    })
     cy.get(`[data-testid^="market-link-"]`).first().click()
     if (breakpoint === 'mobile') {
       cy.get(`[data-testid^="llama-market-go-to-market"]:visible`).click()
@@ -263,12 +260,13 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-    expandFiltersOnMobile()
-    cy.get(`[data-testid="chip-rewards"]`).click()
-    cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-    cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
-    cy.get(`[data-testid="chip-rewards"]`).click()
-    cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+    withFilterChips(() => {
+      cy.get(`[data-testid="chip-rewards"]`).click()
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
+      cy.get(`[data-testid="chip-rewards"]`).click()
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+    })
   })
 
   it('should hide columns', () => {
@@ -295,22 +293,23 @@ describe(`LlamaLend Markets`, () => {
     }
   }
 
-  function expandFiltersOnMobile() {
-    if (breakpoint == 'mobile') {
-      cy.scrollTo(0, 0)
-      cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
-      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
-      cy.get(`[data-testid="chip-lend"]`).should('be.visible')
+  /**
+   * Makes sure that the filter chips are visible during the given callback.
+   * On mobile, the filters are hidden behind a button and need to be expanded for some actions.
+   */
+  function withFilterChips(callback: () => void) {
+    if (breakpoint != 'mobile') {
+      return callback()
     }
-  }
-
-  function hideFiltersOnMobile() {
-    if (breakpoint == 'mobile') {
-      cy.scrollTo(0, 0)
-      cy.get(`[data-testid="chip-lend"]`).should('be.visible')
-      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
-      cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
-    }
+    cy.scrollTo(0, 0)
+    cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
+    cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+    cy.get(`[data-testid="chip-lend"]`).should('be.visible')
+    callback()
+    cy.scrollTo(0, 0)
+    cy.get(`[data-testid="chip-lend"]`).should('be.visible')
+    cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+    cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
   }
 
   function checkLineGraphColor(type: 'lend' | 'borrow', color: string) {
