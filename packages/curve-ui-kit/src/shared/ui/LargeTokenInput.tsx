@@ -181,16 +181,19 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
       if (!maxBalance?.balance) return
+      const newBalance = (maxBalance.balance * newPercentage) / 100
 
       setPercentage(newPercentage)
-      setBalance((maxBalance.balance * newPercentage) / 100)
+      setBalance(newBalance)
+      onBalance(newBalance)
     },
-    [maxBalance],
+    [maxBalance, onBalance],
   )
 
   const handleBalanceChange = useCallback(
     (newBalance: number) => {
       setBalance(newBalance)
+      onBalance(newBalance)
 
       if (maxBalance?.balance) {
         // Calculate percentage based on new balance and round to 2 decimal places
@@ -199,17 +202,8 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
         setPercentage(newPercentage)
       }
     },
-    [maxBalance],
+    [maxBalance, onBalance],
   )
-
-  /**
-   * Invoke onBalance callback to notify parent component when balance changes
-   * Could argue about debouncing this, but I'd rather put that burden on the
-   * parent, such that in isolation this component is unbiased and responsive.
-   */
-  useEffect(() => {
-    onBalance(balance)
-  }, [balance, onBalance])
 
   /**
    * When maxBalance changes, adjust the slider and balance values accordingly
