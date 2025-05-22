@@ -1,5 +1,4 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -23,47 +22,44 @@ const TABS = [
 
 export type DisclaimerTabId = (typeof TABS)[number]['value']
 
-export type DisclaimerProps = { defaultTab: DisclaimerTabId; network: string }
+export type DisclaimerProps = { tab: DisclaimerTabId; network: string }
 
-export const Disclaimer = ({ defaultTab, network }: DisclaimerProps) => {
-  const tab = useSearchParams()?.get('tab') ?? defaultTab
-  return (
+export const Disclaimer = ({ tab, network }: DisclaimerProps) => (
+  <Stack
+    alignItems="center"
+    gap={Spacing.xl}
+    sx={{
+      marginInline: 'auto',
+      marginBlockStart: Spacing.xl,
+      marginBlockEnd: Spacing.xxl,
+    }}
+  >
     <Stack
-      alignItems="center"
-      gap={Spacing.xl}
       sx={{
-        marginInline: 'auto',
-        marginBlockStart: Spacing.xl,
-        marginBlockEnd: Spacing.xxl,
+        maxWidth: MaxWidth.disclaimer,
+        paddingInline: Spacing.md,
       }}
+      data-testid="disclaimer"
     >
       <Stack
-        sx={{
-          maxWidth: MaxWidth.disclaimer,
-          paddingInline: Spacing.md,
+        direction={{
+          mobile: 'column-reverse',
+          tablet: 'row',
         }}
-        data-testid="disclaimer"
+        justifyContent="space-between"
+        spacing={Spacing.md}
       >
-        <Stack
-          direction={{
-            mobile: 'column-reverse',
-            tablet: 'row',
-          }}
-          justifyContent="space-between"
-          spacing={Spacing.md}
-        >
-          <TabsSwitcher variant="contained" value={tab} options={TABS} />
-          <LastUpdated />
-        </Stack>
-
-        <TabPanel>
-          {tab === 'dex' && <Dex />}
-          {tab === 'lend' && <LlamaLend network={network} />}
-          {tab === 'crvusd' && <CrvUsd />}
-          {tab === 'scrvusd' && <SCrvUsd />}
-          <Footer />
-        </TabPanel>
+        <TabsSwitcher variant="contained" value={tab} options={[...TABS]} />
+        <LastUpdated />
       </Stack>
+
+      <TabPanel>
+        {tab === 'dex' && <Dex />}
+        {tab === 'lend' && <LlamaLend network={network} />}
+        {tab === 'crvusd' && <CrvUsd />}
+        {tab === 'scrvusd' && <SCrvUsd />}
+        <Footer />
+      </TabPanel>
     </Stack>
-  )
-}
+  </Stack>
+)
