@@ -100,12 +100,14 @@ const ActionInfo = ({
         {label}
       </Typography>
 
-      {prevValue && (
-        <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        {prevValue && (
           <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textTertiary'}>
             {prevValue}
           </Typography>
+        )}
 
+        {prevValue && (
           <ArrowForwardIcon
             sx={{
               width: IconSize.sm,
@@ -113,32 +115,33 @@ const ActionInfo = ({
               color: (t) => t.palette.text.tertiary,
             }}
           />
-        </Stack>
-      )}
+        )}
 
-      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-        {valueLeft}
+        {/** Additional stack to add some space between left (icon), value and right (icon) */}
+        <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+          {valueLeft}
 
-        <WithSkeleton loading={!!loading}>
-          <Tooltip
-            title={valueTooltip}
-            placement="top"
-            slotProps={{
-              popper: {
-                sx: {
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+          <WithSkeleton loading={!!loading}>
+            <Tooltip
+              title={valueTooltip}
+              placement="top"
+              slotProps={{
+                popper: {
+                  sx: {
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  },
                 },
-              },
-            }}
-          >
-            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-              {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
-            </Typography>
-          </Tooltip>
-        </WithSkeleton>
+              }}
+            >
+              <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+                {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
+              </Typography>
+            </Tooltip>
+          </WithSkeleton>
 
-        {valueRight}
+          {valueRight}
+        </Stack>
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">
