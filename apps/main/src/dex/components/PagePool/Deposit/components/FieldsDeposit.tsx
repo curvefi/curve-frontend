@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { useMemo } from 'react'
+import type { UsdRatesMapper } from '@/dao/types/dao.types'
 import FieldToken from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
@@ -8,6 +9,37 @@ import useStore from '@/dex/store/useStore'
 import Checkbox from '@ui/Checkbox'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Amount } from '../../utils'
+
+/**
+ * Calculate new form values based on the changed index and value.
+ * This function is used to update the amounts in the form when a user changes the value of one of the inputs.
+ *
+ * When "balanced amounts" is selected, we update all the other form fields to maintain the same ratio.
+ */
+function calculateNewFormValues(
+  value: string,
+  changedIndex: number,
+  { isBalancedAmounts, amounts: oldAmounts }: Pick<FormValues, 'amounts' | 'isBalancedAmounts'>,
+  tokenAddresses: string[],
+  usdRatesMapper: UsdRatesMapper,
+): Amount[] {
+  const changedTokenRate = usdRatesMapper[tokenAddresses[changedIndex]]
+  return oldAmounts.map((item, index) => {
+    if (changedIndex === index) {
+      return { ...item, value }
+    }
+
+    if (isBalancedAmounts) {
+      const tokenRate = usdRatesMapper[tokenAddresses[index]]
+      if (tokenRate && changedTokenRate) {
+        const newValue = ((Number(value) * Number(tokenRate)) / Number(changedTokenRate)).toString()
+        return { ...item, value: newValue }
+      }
+    }
+    return item
+  })
+}
 
 const FieldsDeposit = ({
   formProcessing,
@@ -38,15 +70,20 @@ const FieldsDeposit = ({
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
+  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
+  const isBalancedAmounts = formValues.isBalancedAmounts
 
-  const handleFormAmountChange = (value: string, idx: number) => {
-    const clonedFrmAmounts = cloneDeep(formValues.amounts)
-    clonedFrmAmounts[idx].value = value
-
+  const handleFormAmountChange = (value: string, changedIndex: number) => {
     updateFormValues(
       {
-        amounts: clonedFrmAmounts,
-        isBalancedAmounts: false,
+        amounts: calculateNewFormValues(
+          value,
+          changedIndex,
+          formValues,
+          poolDataCacheOrApi.tokenAddresses,
+          usdRatesMapper,
+        ),
+        isBalancedAmounts: isBalancedAmounts ? 'by-form' : false,
       },
       null,
       null,
@@ -94,7 +131,13 @@ const FieldsDeposit = ({
               token={token}
               tokenAddress={ethAddress}
               handleAmountChange={handleFormAmountChange}
-              handleMaxClick={() => updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null)}
+              handleMaxClick={() =>
+                updateFormValues(
+                  { isBalancedAmounts: isBalancedAmounts ? 'by-form' : false },
+                  { tokenAddress, idx },
+                  null,
+                )
+              }
             />
           )
         })}
@@ -103,8 +146,10 @@ const FieldsDeposit = ({
         <FieldsWrapper>
           <Checkbox
             isDisabled={isDisabled}
-            isSelected={formValues.isBalancedAmounts}
-            onChange={(isBalancedAmounts) => updateFormValues({ isBalancedAmounts }, null, null)}
+            isSelected={!!formValues.isBalancedAmounts}
+            onChange={(isBalancedAmounts) =>
+              updateFormValues({ isBalancedAmounts: isBalancedAmounts ? 'by-wallet' : false }, null, null)
+            }
           >
             {t`Add all coins in a balanced proportion`}
           </Checkbox>

@@ -237,7 +237,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
             formValues: cloneDeep(cFormValues),
             maxLoading: null,
           })
-        } else if (cFormValues.isBalancedAmounts) {
+        } else if (cFormValues.isBalancedAmounts === 'by-wallet') {
           // get balanced amounts
           const resp = await curvejsApi.poolDeposit.depositBalancedAmounts(activeKey, pool, cFormValues.isWrapped)
 
@@ -607,10 +607,10 @@ export function getActiveKey(
   return activeKey
 }
 
-function resetFormValues(formValues: FormValues) {
+function resetFormValues(formValues: FormValues): FormValues {
   return {
     ...cloneDeep(formValues),
-    isBalancedAmounts: false,
+    isBalancedAmounts: false as const,
     lpToken: '',
     amounts: formValues.amounts.map((a) => ({ ...a, value: '' })),
   }
