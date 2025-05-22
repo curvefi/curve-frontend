@@ -2,12 +2,12 @@ import { useParams } from 'next/navigation'
 import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/loan/constants'
-import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import Header from '@/loan/layout/Header'
 import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams, UrlParams } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -15,7 +15,8 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  useLayoutHeight(globalAlertRef, 'globalAlert')
+  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
 
   const layoutHeight = useStore((state) => state.layout.height)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

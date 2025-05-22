@@ -51,6 +51,7 @@ export const LendingMarketsFilters = ({
   <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
+        id={LlamaMarketColumnId.Chain}
         field={LlamaMarketColumnId.Chain}
         renderItem={(chain) => (
           <>
@@ -67,7 +68,8 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field={LlamaMarketColumnId.CollateralSymbol}
+        id={LlamaMarketColumnId.CollateralSymbol}
+        field="assets.collateral.symbol"
         renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="collateral" />}
         defaultText={t`All Collateral Tokens`}
         {...props}
@@ -76,7 +78,8 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
-        field={LlamaMarketColumnId.BorrowedSymbol}
+        id={LlamaMarketColumnId.BorrowedSymbol}
+        field="assets.borrowed.symbol"
         renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="borrowed" />}
         defaultText={t`All Debt Tokens`}
         {...props}
@@ -85,6 +88,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
       <RangeSliderFilter
+        id={LlamaMarketColumnId.LiquidityUsd}
         field={LlamaMarketColumnId.LiquidityUsd}
         defaultMinimum={minLiquidity}
         title={t`Liquidity`}
@@ -95,6 +99,7 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 6 }}>
       <RangeSliderFilter
+        id={LlamaMarketColumnId.UtilizationPercent}
         field={LlamaMarketColumnId.UtilizationPercent}
         title={t`Utilization`}
         format={formatPercent}

@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
-import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import Header from '@/dex/layout/default/Header'
 import curvejsApi from '@/dex/lib/curvejs'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
@@ -10,6 +9,7 @@ import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -76,7 +76,8 @@ const useAutoRefresh = (network: NetworkConfig) => {
 
 const BaseLayout = ({ children, network }: { children: ReactNode } & { network: NetworkConfig }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  useLayoutHeight(globalAlertRef, 'globalAlert')
+  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
+  useLayoutHeight(globalAlertRef, 'globalAlert', updateLayoutHeight)
   useAutoRefresh(network)
 
   const layoutHeight = useStore((state) => state.layoutHeight)

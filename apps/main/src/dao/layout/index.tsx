@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useRef } from 'react'
+import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { Header } from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
@@ -6,7 +6,7 @@ import type { ChainId, CurveApi, NetworkEnum } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -37,17 +37,12 @@ export const BaseLayout = ({
   chainId: ChainId
 }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const [, globalAlertHeight] = useResizeObserver(globalAlertRef) ?? []
+  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
+  useLayoutHeight(globalAlertRef, 'globalAlert', updateLayoutHeight)
 
   const layoutHeight = useStore((state) => state.layoutHeight)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   useAutoRefresh()
-
-  useEffect(() => {
-    updateLayoutHeight('globalAlert', globalAlertHeight ?? null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [globalAlertHeight])
 
   const minHeight = useMemo(
     () => Object.values(layoutHeight).reduce((acc, height) => acc + height, 0) - layoutHeight.footer + 24,

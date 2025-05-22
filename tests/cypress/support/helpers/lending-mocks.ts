@@ -58,6 +58,8 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
   }
 }
 
+export const HighUtilizationAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+
 function oneLendingVaultResponse(chain: Chain) {
   const count = oneInt(2, 20)
   const data = [
@@ -75,6 +77,9 @@ function oneLendingVaultResponse(chain: Chain) {
             ...oneLendingPool(chain, oneFloat()),
             total_assets_usd: 100_000_000,
             total_debt_usd: 99_990_000,
+            address: HighUtilizationAddress,
+            vault: HighUtilizationAddress,
+            controller: HighUtilizationAddress,
           },
           {
             // 0 utilization to test the slider filter

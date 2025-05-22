@@ -7,8 +7,8 @@ This UI application is designed for both the [Curve](https://curve.finance) dapp
 
 Before you begin, ensure you have met the following requirements:
 
-- [nodejs](https://nodejs.org/) version 20
-- [yarn](https://yarnpkg.com/) version 1.22
+- [nodejs](https://nodejs.org/en/about/previous-releases) active version
+- [yarn](https://yarnpkg.com/getting-started/install) version 4.x
 
 ## Installation
 
@@ -17,18 +17,12 @@ To install curve-frontend, follow these steps:
 ```bash
 git clone https://github.com/curvefi/curve-frontend.git
 cd curve-frontend
-yarn install
+yarn
 ```
 
 ## Usage
 
-1. Copy `.env.sample` from `/apps/(loan|main|lend)` and update environment variables:
-
-```bash
-cp apps/main/.env.sample apps/main/.env.development.local
-```
-
-2. Start development:
+Start development:
 
 ```bash
 yarn dev
@@ -40,17 +34,21 @@ Access the application in a web browser:
 
 ## Forked Mainnet
 
-To develop against a forked mainnet, connect your wallet to the RPC URL: `http://localhost:8545` or whichever port your forked mainnet is using.
+Testing with a forked mainnet is not generally necessary.
+However, if you want to do that, you can do so by copying `.env.sample` and updating environment variables:
+
+```bash
+cp apps/main/.env.sample apps/main/.env.development.local
+```
+
+Connect your wallet to the RPC URL that you used.
 
 ## Folder Structure
 
 This repository is organized as follows:
 
 - `/apps/main`: This application manages router swaps, pool-specific functions (deposit, withdraw, swap), and pool creation [React](https://react.dev/) application.
-- `/apps/loan`: crvUSD [React](https://react.dev/) application.
-- `/apps/lend`: Lend [React](https://react.dev/) application.
-- `/apps/dao`: DAO [React](https://react.dev/) application.
-- `/tests`: DApp tests
+- `/tests`: Cypress tests
 - `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@ui-kit`
 - `/packages/prices-api`: Package for consuming the Prices API, mapped as `@curvefi/prices-api`. Soon to be to separated its own NPM package.
 

@@ -1,5 +1,5 @@
 import { useParams } from 'next/navigation'
-import { ReactNode, useEffect, useMemo, useRef } from 'react'
+import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/lend/constants'
 import { Header } from '@/lend/layout/Header'
@@ -7,7 +7,7 @@ import { layoutHeightKeys } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { getPath } from '@/lend/utils/utilsRouter'
-import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -16,9 +16,6 @@ import { networksIdMapper } from '../networks'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const [, elHeight] = useResizeObserver(globalAlertRef) ?? []
-  const footerRef = useRef<HTMLDivElement>(null)
-  const [, footerHeight] = useResizeObserver(footerRef) ?? []
   const params = useParams() as UrlParams
   const { network: networkId } = params
   const layoutHeight = useStore((state) => state.layout.height)
@@ -26,15 +23,7 @@ const BaseLayout = ({ children }: { children: ReactNode }) => {
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
-  useEffect(() => {
-    setLayoutHeight('globalAlert', elHeight ?? null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elHeight])
-
-  useEffect(() => {
-    setLayoutHeight('footer', footerHeight ?? null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [footerHeight])
+  useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
 
   const sections = useMemo(() => getSections(params), [params])
   const chainId = networksIdMapper[networkId]

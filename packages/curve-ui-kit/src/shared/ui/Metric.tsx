@@ -180,6 +180,7 @@ type Props = {
   size?: keyof typeof MetricSize
   alignment?: Alignment
   loading?: boolean
+  testId?: string
 }
 
 export const Metric = ({
@@ -203,6 +204,7 @@ export const Metric = ({
   size = 'medium',
   alignment = 'start',
   loading = false,
+  testId,
 }: Props) => {
   unit = typeof unit === 'string' ? UNIT_MAP[unit] : unit
   abbreviate ??= unit?.abbreviate ?? false
@@ -229,7 +231,7 @@ export const Metric = ({
   }
 
   return (
-    <Stack alignItems={alignment}>
+    <Stack alignItems={alignment} data-testid={testId}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {tooltip && (

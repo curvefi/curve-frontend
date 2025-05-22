@@ -6,25 +6,22 @@ import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-export type VisibilityOption = {
-  columns: string[]
-  active: boolean
-  label: string
-  visible: boolean
+export type VisibilityOption<ColumnIds> = {
+  columns: ColumnIds[] // the column ids that are affected by this option
+  active: boolean // whether the column is currently visible in the table
+  label?: string // the label for the popover, without a label the option is not shown
+  enabled: boolean // whether the column can be currently used
 }
-export type VisibilityGroup = {
-  options: VisibilityOption[]
+export type VisibilityGroup<ColumnIds> = {
+  options: VisibilityOption<ColumnIds>[]
   label: string
 }
 const { Spacing } = SizesAndSpaces
 
-// when we define columns in nested objects, tanstack replaces dots with underscores internally
-export const cleanColumnId = (field: string) => field.replaceAll('.', '_')
-
 /**
  * Dialog that allows to toggle visibility of columns in a table.
  */
-export const TableVisibilitySettingsPopover = ({
+export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   visibilityGroups,
   toggleVisibility,
   open,
@@ -33,7 +30,7 @@ export const TableVisibilitySettingsPopover = ({
 }: {
   open: boolean
   onClose: () => void
-  visibilityGroups: VisibilityGroup[]
+  visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
   anchorEl: HTMLButtonElement
 }) => (
@@ -57,23 +54,25 @@ export const TableVisibilitySettingsPopover = ({
           >
             {label}
           </Typography>
-          {options.map(
-            ({ columns, active, label, visible }) =>
-              visible && (
-                <FormControlLabel
-                  key={columns.join(',')}
-                  control={
-                    <Switch
-                      data-testid={`visibility-toggle-${columns.join(',')}`}
-                      checked={active}
-                      onChange={() => toggleVisibility(columns)}
-                      size="small"
-                    />
-                  }
-                  label={label}
-                />
-              ),
-          )}
+          {options
+            .filter((option) => option.label)
+            .map(
+              ({ columns, active, label, enabled }) =>
+                enabled && (
+                  <FormControlLabel
+                    key={columns.join(',')}
+                    control={
+                      <Switch
+                        data-testid={`visibility-toggle-${columns.join(',')}`}
+                        checked={active}
+                        onChange={() => toggleVisibility(columns)}
+                        size="small"
+                      />
+                    }
+                    label={label}
+                  />
+                ),
+            )}
         </Stack>
       ))}
     </Stack>
@@ -83,14 +82,14 @@ export const TableVisibilitySettingsPopover = ({
 /**
  * Converts a grouped visibility settings object to a flat object with column ids as keys and visibility as values.
  */
-const flatten = (visibilitySettings: VisibilityGroup[]): Record<string, boolean> =>
+const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<ColumnIds>[]): Record<string, boolean> =>
   visibilitySettings.reduce(
     (acc, group) => ({
       ...acc,
       ...group.options.reduce(
-        (acc, { active, visible, columns }) => ({
+        (acc, { active, enabled, columns }) => ({
           ...acc,
-          ...columns.reduce((acc, id) => ({ ...acc, [cleanColumnId(id)]: active && visible }), {}),
+          ...columns.reduce((acc, id) => ({ ...acc, [id]: active && enabled }), {}),
         }),
         {},
       ),
@@ -101,16 +100,17 @@ const flatten = (visibilitySettings: VisibilityGroup[]): Record<string, boolean>
 /**
  * Hook to manage column and feature visibility settings. Currently saved in the state.
  */
-export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
+export const useVisibilitySettings = <ColumnIds extends string>(groups: VisibilityGroup<ColumnIds>[]) => {
   /** current visibility settings in grouped format */
   const [visibilitySettings, setVisibilitySettings] = useState(groups)
 
   useEffect(() => {
+    // reset visibility settings when groups change, e.g. when connecting the wallet
     setVisibilitySettings(groups)
   }, [groups])
 
   /** toggle visibility of a column by its id */
-  const toggleColumnVisibility = useCallback(
+  const toggleVisibility = useCallback(
     (columns: string[]): void =>
       setVisibilitySettings((prev) =>
         prev.map((group) => ({
@@ -126,9 +126,5 @@ export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
   /** current column visibility state as used internally by tanstack */
   const columnVisibility = useMemo(() => flatten(visibilitySettings), [visibilitySettings])
 
-  return {
-    columnSettings: visibilitySettings,
-    columnVisibility,
-    toggleVisibility: toggleColumnVisibility,
-  }
+  return { columnSettings: visibilitySettings, columnVisibility, toggleVisibility }
 }

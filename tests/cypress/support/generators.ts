@@ -20,9 +20,13 @@ export const range = (lengthOrStart: number, length?: number) =>
 export const oneOf = <T>(...options: T[]) => options[oneInt(0, options.length)]
 
 export const oneAddress = (): Address =>
-  `0x${oneInt(0, 16 ** 40)
-    .toString(16)
-    .padStart(40, '0')}`
+  `0x${range(4) // create separate ints otherwise they aren't large enough
+    .map(() =>
+      oneInt(0, 16 ** 10)
+        .toString(16)
+        .padStart(10, '0'),
+    )
+    .join('')}`
 
 export const onePrice = (max = MAX_USD_VALUE) => oneFloat(max)
 
