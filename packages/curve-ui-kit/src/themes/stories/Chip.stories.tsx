@@ -28,6 +28,9 @@ const ChipStories = ({ clickable, color, variant }: ChipStoryProps) => (
         {/* with icon */}
         <Chip label={size} size={size} color={color} icon={<CheckIcon />} clickable={clickable} variant={variant} />
 
+        {/* only icon */}
+        <Chip size={size} color={color} icon={<CheckIcon />} clickable={clickable} variant={variant} />
+
         {/* with icon and delete icon only for clickable chips */}
         {clickable && (
           <Chip
