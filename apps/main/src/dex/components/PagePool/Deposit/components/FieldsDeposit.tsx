@@ -5,7 +5,8 @@ import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposi
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import useStore from '@/dex/store/useStore'
-import type { UsdRatesMapper } from '@/dex/types/main.types'
+import type { CurrencyReserves } from '@/dex/types/main.types'
+import { getChainPoolIdActiveKey } from '@/dex/utils'
 import Checkbox from '@ui/Checkbox'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -22,19 +23,19 @@ function calculateNewFormValues(
   changedIndex: number,
   { isBalancedAmounts, amounts: oldAmounts }: Pick<FormValues, 'amounts' | 'isBalancedAmounts'>,
   tokenAddresses: string[],
-  usdRatesMapper: UsdRatesMapper,
+  { tokens, totalUsd }: CurrencyReserves,
 ): Amount[] {
-  const changedTokenRate = usdRatesMapper[tokenAddresses[changedIndex]]
+  const ratios = Object.fromEntries(tokens.map((t) => [t.tokenAddress, t.balanceUsd / Number(totalUsd)]))
+  const changedTokenRatio = ratios[tokenAddresses[changedIndex]]
   return oldAmounts.map((item, index) => {
     if (changedIndex === index) {
       return { ...item, value }
     }
-
     if (isBalancedAmounts) {
-      const tokenRate = usdRatesMapper[tokenAddresses[index]]
-      if (tokenRate && changedTokenRate) {
-        const newValue = ((Number(value) * Number(tokenRate)) / Number(changedTokenRate)).toString()
-        return { ...item, value: newValue }
+      const tokenRatio = ratios[tokenAddresses[index]]
+      if (tokenRatio && changedTokenRatio) {
+        const newValue = (Number(value) * Number(tokenRatio)) / Number(changedTokenRatio)
+        return { ...item, value: newValue.toString() }
       }
     }
     return item
@@ -49,7 +50,7 @@ const FieldsDeposit = ({
   blockchainId,
   poolData,
   poolDataCacheOrApi,
-  routerParams,
+  routerParams: { rChainId, rPoolId },
   tokensMapper,
   userPoolBalances,
   updateFormValues,
@@ -65,12 +66,11 @@ const FieldsDeposit = ({
     updatedMaxSlippage: string | null,
   ) => void
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'>) => {
-  const { rChainId } = routerParams
   const network = useStore((state) => state.networks.networks[rChainId])
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
+  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = (value: string, changedIndex: number) => {
@@ -81,7 +81,7 @@ const FieldsDeposit = ({
           changedIndex,
           formValues,
           poolDataCacheOrApi.tokenAddresses,
-          usdRatesMapper,
+          currencyReserves,
         ),
         isBalancedAmounts: isBalancedAmounts ? 'by-form' : false,
       },
