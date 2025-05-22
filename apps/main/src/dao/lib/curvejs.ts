@@ -39,10 +39,9 @@ export const helpers = {
 }
 
 const lockCrv = {
-  vecrvInfo: async (activeKey: string, curve: CurveApi, walletAddress: string) => {
+  vecrvInfo: async (curve: CurveApi, walletAddress: string) => {
     log('vecrvInfo', curve.chainId, walletAddress)
     const resp = {
-      activeKey,
       resp: {
         crv: '',
         lockedAmountAndUnlockTime: { lockedAmount: '', unlockTime: 0 },
@@ -172,6 +171,19 @@ const lockCrv = {
     } catch (error) {
       console.error(error)
       resp.error = getErrorMessage(error, 'error-step-locked-time')
+      return resp
+    }
+  },
+  estGasWithdrawLockedCrv: async (curve: CurveApi, walletAddress: string) => {
+    log('estGasWithdrawLockedCrv', curve.chainId, walletAddress)
+    const resp = { estimatedGas: null as EstimatedGas, error: '' }
+
+    try {
+      resp.estimatedGas = await curve.boosting.estimateGas.withdrawLockedCrv()
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-est-gas-withdraw-locked-crv')
       return resp
     }
   },

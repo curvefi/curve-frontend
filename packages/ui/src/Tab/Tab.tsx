@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const Tab = styled.button<{ variant?: 'secondary' }>`
   background-color: transparent;
   box-shadow: none;
-  color: ${({ variant }) => (variant === 'secondary' ? `var(--tab_secondary--color);` : `var(--tab--color);`)}
+  color: ${({ variant }) => (variant === 'secondary' ? `var(--tab_secondary--color)` : `var(--tab--color)`)};
   font-size: var(--font-size-2);
   font-family: var(--button--font);
   font-weight: var(--button--font-weight);
@@ -11,19 +11,19 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   padding: 0 1rem;
   position: relative;
   transition: none;
-  
+
   &:not(:disabled) {
     cursor: pointer;
   }
-  
+
   &:hover {
     background-color: var(--tab--content--background-color);
   }
-  
+
   &.active {
-    color: ${({ variant }) => (variant === 'secondary' ? `var(--tab-secondary--active--color);` : `inherit;`)}
+    color: ${({ variant }) => (variant === 'secondary' ? `var(--tab-secondary--active--color)` : `inherit`)};
     background-color: ${({ variant }) =>
-      variant === 'secondary' ? `var(--tab-secondary--background-color);` : `var(--tab--content--background-color);`}
+      variant === 'secondary' ? `var(--tab-secondary--background-color)` : `var(--tab--content--background-color)`};
     position: relative;
 
     &:not(:disabled) {
@@ -32,7 +32,7 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
 
     &::before {
       background-color: ${({ variant }) =>
-        variant === 'secondary' ? `var(--tab-secondary--background-color);` : `var(--tab--content--background-color);`}
+        variant === 'secondary' ? `var(--tab-secondary--background-color)` : `var(--tab--content--background-color)`};
       content: '';
       position: absolute;
       width: 100%;

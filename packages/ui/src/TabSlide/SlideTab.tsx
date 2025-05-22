@@ -72,6 +72,10 @@ const Input = styled.input<{ tabLeft: number }>`
   &:checked + ${Label} {
     opacity: 1;
   }
+
+  &:disabled + ${Label} {
+    opacity: 0.5;
+  }
 `
 
 export default SlideTab

@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 import styled from 'styled-components'
+import Countdown from '@/dao/components/Countdown'
 import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
 import SmallLabel from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import LazyItem from '@ui/LazyItem'
 import { t } from '@ui-kit/lib/i18n'
-import VoteCountdown from '../../VoteCountdown'
 
 type Props = {
   proposalData: ProposalData
@@ -47,7 +47,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
             )}
             <ProposalId>#{id}</ProposalId>
             <ProposalType>{type}</ProposalType>
-            <StyledVoteCountdown startDate={timestamp} />
+            <Countdown startDate={timestamp} />
           </ProposalDetailsRow>
           <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>
         </InformationWrapper>
@@ -165,8 +165,6 @@ const VoteWrapper = styled.div`
   margin: auto 0;
   padding: var(--spacing-3);
 `
-
-const StyledVoteCountdown = styled(VoteCountdown)``
 
 const ExecutedStatus = styled.h4`
   font-size: var(--font-size-1);
