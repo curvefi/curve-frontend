@@ -62,7 +62,7 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
         ),
       },
       '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6': {
-        alertType: 'alert',
+        alertType: 'danger',
         address: '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6',
         message: (
           <div>
@@ -77,7 +77,7 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
         ),
       },
       '0xc2e660c62f72c2ad35ace6db78a616215e2f2222': {
-        alertType: 'alert',
+        alertType: 'danger',
         address: '0xc2e660c62f72c2ad35ace6db78a616215e2f2222',
         message: (
           <div>
