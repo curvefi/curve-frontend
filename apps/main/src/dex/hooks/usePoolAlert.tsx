@@ -108,12 +108,10 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     })
     const ironbankAlert = (): PoolAlert => ({
       alertType: 'warning',
-      isInformationOnly: true,
+      isInformationOnlyAndShowInForm: true,
       message: (
         <MessageWrapper>
-          <div>
-            Ironbank protocol is deprecated. Please do not supply liquidity to this pool.
-          </div>
+          <div>Ironbank protocol is deprecated. Please do not supply liquidity to this pool.</div>
         </MessageWrapper>
       ),
     })
