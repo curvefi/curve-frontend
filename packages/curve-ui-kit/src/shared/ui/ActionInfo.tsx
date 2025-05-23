@@ -97,7 +97,7 @@ const ActionInfo = ({
   }
 
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx}>
       <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'}>
         {label}
       </Typography>
