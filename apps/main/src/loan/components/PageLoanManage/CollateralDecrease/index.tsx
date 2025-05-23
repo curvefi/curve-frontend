@@ -14,7 +14,7 @@ import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralDecreaseSlice'
 import useStore from '@/loan/store/useStore'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import AlertBox from '@ui/AlertBox'
@@ -93,7 +93,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   }
 
   const handleBtnClickRemove = useCallback(
-    async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues) => {
+    async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
       const notifyMessage = t`Please confirm removal of ${formValues.collateral} ${llamma.collateralSymbol}`
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
@@ -116,7 +116,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const stepsObj = useCallback(
     (
       payloadActiveKey: string,
-      curve: Curve,
+      curve: LlamaApi,
       llamma: Llamma,
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,

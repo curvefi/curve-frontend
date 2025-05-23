@@ -24,22 +24,22 @@
     "storybook:build": "turbo run storybook:build --filter=curve-ui-kit"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.0",
-    "@commitlint/config-conventional": "^19.8.0",
-    "@commitlint/load": "19.8.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/load": "19.8.1",
     "@eslint/eslintrc": "*",
     "@eslint/js": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "eslint-config-turbo": "2.5.0",
+    "eslint-config-turbo": "2.5.3",
     "husky": "^9.1.7",
-    "lint-staged": "15.5.0",
+    "lint-staged": "15.5.2",
     "prettier": "^3.5.3",
     "react": "*",
     "react-dom": "*",
-    "turbo": "^2.5.0",
+    "turbo": "^2.5.3",
     "typescript": "*"
   },
   "packageManager": "yarn@4.6.0",
@@ -50,14 +50,14 @@
     ]
   },
   "resolutions": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.23.0",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
-    "eslint": "^9.23.0",
-    "next": "^15.2.4",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "typescript": "^5.8.2"
+    "@eslint/eslintrc": "3.3.1",
+    "@eslint/js": "9.27.0",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "eslint": "9.27.0",
+    "next": "15.2.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "typescript": "5.8.3"
   }
 }

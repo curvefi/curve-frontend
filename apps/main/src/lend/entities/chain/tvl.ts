@@ -1,10 +1,10 @@
 import {
-  MarketsStatsTotalsMapper,
   MarketsStatsAMMBalancesMapper,
+  MarketsStatsTotalsMapper,
   MarketsTotalLiquidityMapper,
+  OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
-import { IDict } from '@curvefi/lending-api/lib/interfaces'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { IDict } from '@curvefi/llamalend-api/lib/interfaces'
 import { logSuccess } from '@ui-kit/lib'
 
 export function calculateChainTvl(

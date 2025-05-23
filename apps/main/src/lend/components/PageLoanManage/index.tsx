@@ -11,12 +11,12 @@ import type {
   LeverageFormType,
   LoanFormType,
 } from '@/lend/components/PageLoanManage/types'
-import useSlideTabState from '@/lend/hooks/useSlideTabState'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
+import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {

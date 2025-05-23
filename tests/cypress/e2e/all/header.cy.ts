@@ -1,6 +1,7 @@
 import {
   AppPath,
   checkIsDarkMode,
+  hideDomainBanner,
   LOAD_TIMEOUT,
   oneAppPath,
   oneDesktopViewport,
@@ -30,7 +31,10 @@ describe('Header', () => {
       cy.viewport(...viewport)
       appPath = oneAppPath()
       cy.visit(`/${appPath}/`, {
-        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
+        onBeforeLoad: (win) => {
+          isDarkMode = checkIsDarkMode(win)
+          hideDomainBanner(win)
+        },
       })
       waitIsLoaded(appPath)
     })
@@ -94,7 +98,9 @@ describe('Header', () => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
       appPath = oneAppPath()
-      cy.visit(`/${appPath}`)
+      cy.visit(`/${appPath}`, {
+        onBeforeLoad: hideDomainBanner,
+      })
       waitIsLoaded(appPath)
     })
 

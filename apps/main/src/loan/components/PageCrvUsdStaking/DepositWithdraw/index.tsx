@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import useStore from '@/loan/store/useStore'
-import { useLendConnection, useStablecoinConnection } from '@/loan/temp-lib'
+import type { LlamaApi } from '@/loan/types/loan.types'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import SubNav from '../components/SubNav'
 import type { SubNavItem } from '../components/SubNav/types'
@@ -33,8 +34,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
-  const { lib: lending = null } = useLendConnection()
-  const { lib: curve = null } = useStablecoinConnection()
+  const { lib: curve = null } = useConnection<LlamaApi>()
 
   const setNavChange = (key: SubNavItem['key']) => {
     setStakingModule(key as DepositWithdrawModule)
@@ -58,7 +58,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (lending && curve && inputAmount !== '0') {
+      if (curve && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
             void estimateGasDeposit(inputAmount)
@@ -79,7 +79,6 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
     return () => clearTimeout(timer)
   }, [
-    lending,
     estimateGasDepositApprove,
     curve,
     inputAmount,

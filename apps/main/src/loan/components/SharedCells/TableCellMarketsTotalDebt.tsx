@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
-import { useStablecoinConnection } from '@/loan/temp-lib'
+import type { LlamaApi } from '@/loan/types/loan.types'
 import TextCaption from '@ui/TextCaption'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 
 const TableCellMarketsTotalDebt = () => {
-  const chainId = useStablecoinConnection().lib?.chainId
+  const chainId = useConnection<LlamaApi>().lib?.chainId
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}

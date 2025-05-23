@@ -32,8 +32,8 @@ const paragraphs = {
 }
 
 const learnMoreLinks = {
-  [LlamaMarketType.Lend]: 'https://resources.curve.fi/lending/overview/#utilization-lend-apy-and-borrow-apy',
-  [LlamaMarketType.Mint]: 'https://resources.curve.fi/crvusd/loan-concepts/#borrow-rate',
+  [LlamaMarketType.Lend]: 'https://resources.curve.finance/lending/overview/#utilization-lend-apy-and-borrow-apy',
+  [LlamaMarketType.Mint]: 'https://resources.curve.finance/crvusd/loan-concepts/#borrow-rate',
 }
 
 const Item = ({ icon, title, children }: { icon?: ReactNode; title: string; children: string }) => (

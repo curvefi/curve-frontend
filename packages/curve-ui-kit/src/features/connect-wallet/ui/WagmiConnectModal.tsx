@@ -3,13 +3,13 @@ import { BaseError } from 'viem/errors/base'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MenuList from '@mui/material/MenuList'
-import { useWagmi } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmi'
 import { t } from '@ui-kit/lib/i18n'
 import { WalletIcon } from '@ui-kit/shared/icons/WalletIcon'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useWallet } from '../lib'
 import { supportedWallets, type WalletType } from '../lib/wagmi/wallets'
 
 const { IconSize } = SizesAndSpaces
@@ -47,36 +47,35 @@ const WalletListItem = ({
 
 /**
  * Display a list of wallets to choose from, connecting to the selected one.
- * Use global state retrieved from the useWagmi hook to determine if the modal is open.
+ * Use global state retrieved from the useWallet hook to determine if the modal is open.
  */
 export const WagmiConnectModal = () => {
-  const [{ showModal }, connect, , closeModal] = useWagmi()
+  const { connect, showModal, closeModal } = useWallet()
   const [error, setError] = useState<unknown>(null)
-  const [isConnectingLabel, setIsConnectingLabel] = useState<string | null>(null)
+  const [isConnectingType, setIsConnectingType] = useState<(typeof supportedWallets)[number]['connector'] | null>(null)
 
   const onConnect = useCallback(
-    async ({ label }: WalletType) => {
+    async ({ connector }: WalletType) => {
       setError(null)
       try {
-        setIsConnectingLabel(label)
-        await connect(label)
-        closeModal()
+        setIsConnectingType(connector)
+        await connect(connector)
       } catch (e) {
         console.info(e) // e.g. user rejected
         setError(e)
       } finally {
-        setIsConnectingLabel(null)
+        setIsConnectingType(null)
       }
     },
-    [connect, closeModal],
+    [connect],
   )
 
   const wallets = supportedWallets.map((wallet) => ({
     wallet: wallet,
     onConnect: onConnect,
     key: wallet.label,
-    isLoading: isConnectingLabel == wallet.label,
-    isDisabled: !!isConnectingLabel,
+    isLoading: isConnectingType == wallet.connector,
+    isDisabled: !!isConnectingType,
   }))
 
   return (

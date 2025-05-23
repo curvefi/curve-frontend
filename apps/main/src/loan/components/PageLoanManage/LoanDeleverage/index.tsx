@@ -25,7 +25,7 @@ import {
 } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { Curve, Llamma } from '@/loan/types/loan.types'
+import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
@@ -101,7 +101,7 @@ const LoanDeleverage = ({
   )
 
   const handleBtnClickRepay = useCallback(
-    async (payloadActiveKey: string, curve: Curve, llamma: Llamma, formValues: FormValues, maxSlippage: string) => {
+    async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string) => {
       const { collateral } = formValues
       const fTokenName = `${collateral} ${collateralName}`
       const notifyMessage = t`Please approve deleverage with ${fTokenName} at ${maxSlippage}% max slippage.`
@@ -136,7 +136,7 @@ const LoanDeleverage = ({
   const getSteps = useCallback(
     (
       payloadActiveKey: string,
-      curve: Curve,
+      curve: LlamaApi,
       llamma: Llamma,
       formStatus: FormStatus,
       formValues: FormValues,

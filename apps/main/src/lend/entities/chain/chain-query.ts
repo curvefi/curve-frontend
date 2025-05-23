@@ -9,8 +9,8 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   queryFn: async ({ chainId }: ChainQuery<ChainId>): Promise<string[]> => {
     const useAPI = chainId !== 146 // disable API for sonic
     const api = requireLib<Api>()
-    await api.oneWayfactory.fetchMarkets(useAPI)
-    return api.oneWayfactory.getMarketList()
+    await api.lendMarkets.fetchMarkets(useAPI)
+    return api.lendMarkets.getMarketList()
   },
   staleTime: '5m',
   refetchInterval: '1m',

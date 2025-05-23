@@ -1,8 +1,8 @@
+import { useAccount } from 'wagmi'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/loan/entities/lending-vaults'
 import { type LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { useUserMintMarketStats } from '@/loan/entities/mint-markets'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 const statsColumns = [
   LlamaMarketColumnId.UserHealth,
@@ -19,8 +19,8 @@ const statsColumns = [
  * @returns The stats data and an error if any
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPosition, address, controllerAddress, chain } = market
-  const { signerAddress } = useWallet()
+  const { type, userHasPosition, address: marketAddress, controllerAddress, chain } = market
+  const { address: userAddress } = useAccount()
 
   const enableStats = userHasPosition && (!column || statsColumns.includes(column))
   const enableEarnings = userHasPosition && column === LlamaMarketColumnId.UserEarnings
@@ -30,9 +30,9 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
   const params = {
-    userAddress: signerAddress,
+    userAddress,
     // todo: api will be updated to use controller address for earnings too
-    contractAddress: enableEarnings ? address : controllerAddress,
+    contractAddress: enableEarnings ? marketAddress : controllerAddress,
     blockchainId: chain,
   }
 

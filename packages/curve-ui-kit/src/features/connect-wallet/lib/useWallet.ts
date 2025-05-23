@@ -1,27 +1,10 @@
 import { BrowserProvider } from 'ethers'
-import { Dispatch, SetStateAction, useMemo } from 'react'
-import { initOnboard } from '@ui-kit/features/connect-wallet/lib/init'
-import { useBetaFlag, useWalletName } from '@ui-kit/hooks/useLocalStorage'
-import { Address, isCypress } from '@ui-kit/utils'
-import { useConnectWallet as useOnboardWallet } from '@web3-onboard/react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { useConnect, useConnectorClient, useDisconnect, useEnsName } from 'wagmi'
+import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import type { Wallet } from './types'
-import { convertOnboardWallet } from './utils/wallet-helpers'
-import { useWagmi } from './wagmi/useWagmi'
-
-type UseConnectWallet = {
-  (): {
-    wallet: Wallet | null
-    connecting: boolean
-    connect: (label?: string) => Promise<Wallet | null>
-    disconnect: (label?: string) => Promise<unknown>
-    walletName: string | null
-    setWalletName: Dispatch<SetStateAction<string | null>>
-    provider: BrowserProvider | null
-    signerAddress: Address | undefined
-  }
-  getState: () => typeof state
-  initialize(...params: Parameters<typeof initOnboard>): void
-}
+import { connectors } from './wagmi/connectors'
+import { supportedWallets } from './wagmi/wallets'
 
 const state: {
   provider: BrowserProvider | null
@@ -31,59 +14,60 @@ const state: {
   wallet: null,
 }
 
-/**
- * Hook to determine if the Wagmi wallet should be used.
- * @returns {boolean} - True if Wagmi wallet should be used, false if Onboard wallet should be used.
- **/
-export const useUseWagmi = (): boolean => {
-  const [isBeta] = useBetaFlag()
-  const [{ wallet, connecting }] = useOnboardWallet()
-  return !isCypress && isBeta && !wallet && !connecting
-}
+const useWallet = () => {
+  // modal state needs to be global because every call creates new state
+  const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
+  const closeModal = useCallback(() => setShowModal(false), [setShowModal])
+  const { data: client } = useConnectorClient()
 
-export const useWallet: UseConnectWallet = () => {
-  const [{ wallet: onboardWallet, connecting: onboardConnecting }, onboardConnect, onboardDisconnect] =
-    useOnboardWallet()
-  const [{ wallet: wagmiWallet, connecting: wagmiConnecting }, wagmiConnect, wagmiDisconnect] = useWagmi()
-  const [walletName, setWalletName] = useWalletName()
-  const shouldUseWagmi = useUseWagmi()
+  const address = client?.account?.address
+  const { wallet, provider } =
+    useMemo(() => {
+      const wallet =
+        address && client?.transport.request
+          ? {
+              provider: { request: client.transport.request },
+              account: { address }, // the ensName is set later when detected
+              chainId: client.chain.id,
+            }
+          : null
+      state.wallet = wallet
+      state.provider = wallet ? new BrowserProvider(wallet.provider) : null
+      return state
+    }, [address, client?.chain.id, client?.transport.request]) ?? null
 
-  const { wallet, provider } = useMemo(() => {
-    state.wallet = shouldUseWagmi ? wagmiWallet : onboardWallet && convertOnboardWallet(onboardWallet)
-    state.provider = state.wallet?.provider ? new BrowserProvider(state.wallet.provider) : null
-    return state
-  }, [onboardWallet, wagmiWallet, shouldUseWagmi])
+  // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
+  const { connectAsync } = useConnect()
+  const { disconnect } = useDisconnect()
 
-  const signerAddress = onboardWallet?.accounts[0]?.address ?? wagmiWallet?.account?.address
-  const connect = useMemo(
-    (): ((label?: string) => Promise<Wallet | null>) =>
-      shouldUseWagmi
-        ? wagmiConnect
-        : async (label?: string) => {
-            const [wallet] = await onboardConnect({ ...(label && { autoSelect: { label, disableModals: true } }) })
-            return convertOnboardWallet(wallet)
-          },
-    [onboardConnect, shouldUseWagmi, wagmiConnect],
+  const connect = useCallback(
+    async (connector?: (typeof supportedWallets)[number]['connector']) => {
+      if (!connector) {
+        setShowModal(true)
+        return
+      }
+
+      // take the first (injected) as default. This is temporary until we get rid of onboard
+      const walletType = supportedWallets.find((w) => w.connector === connector) ?? supportedWallets[0]!
+      try {
+        await connectAsync({ connector: connectors[walletType.connector] })
+        setShowModal(false)
+      } catch (err) {
+        console.error('Error connecting wallet:', err)
+        throw err
+      }
+    },
+    [connectAsync, setShowModal],
   )
 
-  const disconnect = useMemo(
-    () =>
-      shouldUseWagmi
-        ? wagmiDisconnect
-        : async () => wallet?.label && (await onboardDisconnect({ label: wallet.label })),
-    [onboardDisconnect, shouldUseWagmi, wagmiDisconnect, wallet],
-  )
+  const { data: ensName } = useEnsName({ address })
+  useEffect(() => {
+    // not changing the object reference, so we avoid reinitializing the app
+    state.wallet && (state.wallet.account.ensName = ensName ?? undefined)
+  }, [ensName])
 
-  return {
-    wallet: wallet,
-    connecting: wagmiConnecting || onboardConnecting,
-    connect,
-    disconnect,
-    walletName,
-    setWalletName,
-    provider,
-    signerAddress,
-  }
+  return { wallet, connect, disconnect, provider, showModal, closeModal }
 }
-useWallet.initialize = (...params) => initOnboard(...params)
 useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
+
+export { useWallet }

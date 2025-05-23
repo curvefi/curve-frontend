@@ -109,6 +109,8 @@ export const Accordion = ({
               color="textSecondary"
               sx={{
                 textAlign: 'start',
+                // Specifcally unset to override the variant's uppercase styling; we want full control here
+                textTransform: ghost ? 'unset' : 'uppercase',
               }}
             >
               {title}

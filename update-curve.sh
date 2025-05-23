@@ -1,5 +1,5 @@
 cd apps/main
-yarn add @curvefi/api @curvefi/lending-api @curvefi/lending-api @curvefi/stablecoin-api
+yarn add @curvefi/api @curvefi/llamalend-api
 cd ../..
 git add .
 git commit -m "chore: update Curve API dependencies"

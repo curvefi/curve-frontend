@@ -1,5 +1,5 @@
+import { useAccount } from 'wagmi'
 import Stack from '@mui/material/Stack'
-import { getWalletSignerAddress, useWallet } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Settings } from '../settings'
 import { UserProfileHeader } from './Header'
@@ -11,8 +11,7 @@ type Props = {
 }
 
 export const Home = ({ onClose }: Props) => {
-  const { wallet } = useWallet()
-  const walletAddress = getWalletSignerAddress(wallet)
+  const { address: walletAddress } = useAccount()
 
   return (
     <Stack gap={Spacing.md}>

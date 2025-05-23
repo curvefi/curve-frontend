@@ -24,7 +24,7 @@ jobs:
           - browser: chrome
             count: 2
     name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}

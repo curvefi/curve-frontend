@@ -50,7 +50,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
               <StyledInformationIcon name="InformationSquare" size={16} />
             </StyledTooltip>
             <StyledDescriptionChip>
-              <ExternalLink $noStyles href="https://resources.curve.fi/pools/calculating-yield/#base-vapy">
+              <ExternalLink $noStyles href="https://resources.curve.finance/pools/calculating-yield/#base-vapy">
                 {t`Learn more`}
               </ExternalLink>
             </StyledDescriptionChip>
@@ -126,7 +126,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
           </Box>
           {!isLite && (
             <BoostingLink>
-              <ExternalLink $noStyles href="https://resources.curve.fi/reward-gauges/boosting-your-crv-rewards/">
+              <ExternalLink $noStyles href="https://resources.curve.finance/reward-gauges/boosting-your-crv-rewards/">
                 {t`Learn more about Boosting your CRV rewards`}
               </ExternalLink>
             </BoostingLink>

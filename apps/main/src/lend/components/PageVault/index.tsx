@@ -6,12 +6,12 @@ import VaultDepositMint from '@/lend/components/PageVault/VaultDepositMint'
 import VaultStake from '@/lend/components/PageVault/VaultStake'
 import VaultUnstake from '@/lend/components/PageVault/VaultUnstake'
 import VaultWithdrawRedeem from '@/lend/components/PageVault/VaultWithdrawRedeem'
-import useSlideTabState from '@/lend/hooks/useSlideTabState'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
+import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {

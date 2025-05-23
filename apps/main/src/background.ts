@@ -32,7 +32,7 @@ export async function refreshDataInBackground(name: string, callback: () => Prom
  * properly handle fetch failures and background fetching.
  */
 export async function getServerData<T>(path: string, headers: ReadonlyHeaders) {
-  const hostHeader = headers.get('host') || 'curve.fi'
+  const hostHeader = headers.get('host') || 'curve.finance'
   const hostName = hostHeader.startsWith('localhost:') ? `http://${hostHeader}` : `https://${hostHeader}`
   const url = `${hostName}/api/${path}`
   let text: string | undefined = undefined

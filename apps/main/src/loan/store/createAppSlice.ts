@@ -3,8 +3,7 @@ import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import { type State } from '@/loan/store/useStore'
-import type { TempApi } from '@/loan/temp-lib'
-import { Wallet } from '@/loan/types/loan.types'
+import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 import { Interface } from '@ethersproject/abi'
 
@@ -23,7 +22,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curve: TempApi | null, prevCurveApi: TempApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(curve: LlamaApi | null, prevCurveApi: LlamaApi | null, wallet: Wallet | null): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -60,12 +59,10 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     )
   },
 
-  hydrate: async (tempApi: TempApi, prevTempApi: TempApi | null, wallet: Wallet | null) => {
-    if (!tempApi) return
+  hydrate: async (curveApi, prevCurveApi, wallet) => {
+    if (!curveApi) return
 
     const { loans, usdRates, campaigns, collaterals } = get()
-    const curveApi = tempApi.stablecoin
-    const prevCurveApi = prevTempApi?.stablecoin
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress

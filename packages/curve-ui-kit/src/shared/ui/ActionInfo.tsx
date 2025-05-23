@@ -25,6 +25,8 @@ type ComponentSize = 'small' | 'medium' | 'large'
 type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
+  /** Custom color for the label text */
+  labelColor?: React.ComponentProps<typeof Typography>['color']
   /** Primary value to display and copy */
   value: string
   /** Custom color for the value text */
@@ -71,6 +73,7 @@ const valueSize = {
 
 const ActionInfo = ({
   label,
+  labelColor,
   prevValue,
   prevValueColor,
   value,
@@ -93,49 +96,52 @@ const ActionInfo = ({
 
   return (
     <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-      <Typography flexGrow={1} variant={labelSize[size]} color="textSecondary">
+      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'}>
         {label}
       </Typography>
 
-      {prevValue && (
-        <Stack direction="row" alignItems="center">
-          <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textSecondary'}>
+      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        {prevValue && (
+          <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textTertiary'}>
             {prevValue}
           </Typography>
+        )}
 
+        {prevValue && (
           <ArrowForwardIcon
             sx={{
               width: IconSize.sm,
               height: IconSize.sm,
-              color: (t) => t.palette.text.primary,
+              color: (t) => t.palette.text.tertiary,
             }}
           />
-        </Stack>
-      )}
+        )}
 
-      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-        {valueLeft}
+        {/** Additional stack to add some space between left (icon), value and right (icon) */}
+        <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+          {valueLeft}
 
-        <WithSkeleton loading={!!loading}>
-          <Tooltip
-            title={valueTooltip}
-            placement="top"
-            slotProps={{
-              popper: {
-                sx: {
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+          <WithSkeleton loading={!!loading}>
+            <Tooltip
+              title={valueTooltip}
+              placement="top"
+              slotProps={{
+                popper: {
+                  sx: {
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  },
                 },
-              },
-            }}
-          >
-            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-              {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
-            </Typography>
-          </Tooltip>
-        </WithSkeleton>
+              }}
+            >
+              <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+                {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
+              </Typography>
+            </Tooltip>
+          </WithSkeleton>
 
-        {valueRight}
+          {valueRight}
+        </Stack>
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">

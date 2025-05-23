@@ -1,17 +1,14 @@
 import { forwardRef, Ref } from 'react'
+import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
-import {
-  CONNECT_STAGE,
-  getWalletChainId,
-  isFailure,
-  useConnection,
-  useWallet,
-  useSetChain,
-} from '@ui-kit/features/connect-wallet'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
+import { useTheme } from '@mui/material/styles'
+import { CONNECT_STAGE, isFailure, useConnection } from '@ui-kit/features/connect-wallet'
+import type { WagmiChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
+import { useBetaFlag, useNewDomainNotificationSeen } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
+import { DomainChangedBanner } from '@ui-kit/shared/ui/DomainChangedBanner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isCypress } from '@ui-kit/utils'
 
@@ -31,24 +28,43 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const [isBeta, setIsBeta] = useBetaFlag()
     const showBetaBanner = isBeta && !isCypress
 
-    const { wallet } = useWallet()
-    const setChain = useSetChain()
+    const [isNewDomainNotificationSeen, setIsNewDomainNotificationSeen] = useNewDomainNotificationSeen()
+    const showDomainChangeMessage = !isNewDomainNotificationSeen && new Date() < new Date('2025-06-01') // TODO: delete after this date
+
+    const { isConnected } = useAccount()
+    const { switchChain } = useSwitchChain()
     const { connectState } = useConnection()
     const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
+    const walletChainId = useChainId()
     const showSwitchNetworkMessage =
-      (wallet && getWalletChainId(wallet) != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
+      (isConnected && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
+
+    const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
 
     return (
-      (showSwitchNetworkMessage || showConnectApiErrorMessage || maintenanceMessage || showBetaBanner) && (
+      (showSwitchNetworkMessage ||
+        showConnectApiErrorMessage ||
+        maintenanceMessage ||
+        showBetaBanner ||
+        showDomainChangeMessage) && (
         <Box ref={ref}>
           {showBetaBanner && (
             <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
               <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
             </Banner>
           )}
-          {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
+          {maintenanceMessage && (
+            <Banner severity="warning" color={warnColor}>
+              {maintenanceMessage}
+            </Banner>
+          )}
           {showSwitchNetworkMessage && (
-            <Banner severity="warning" buttonText={t`Change network`} onClick={() => setChain(chainId)}>
+            <Banner
+              severity="warning"
+              color={warnColor}
+              buttonText={t`Change network`}
+              onClick={() => switchChain({ chainId: chainId as WagmiChainId })}
+            >
               {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
               <strong>{networkId}</strong>.{' '}
             </Banner>
@@ -57,6 +73,9 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
             <Banner severity="alert">
               {t`There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.`}
             </Banner>
+          )}
+          {showDomainChangeMessage && (
+            <DomainChangedBanner onDismiss={() => setIsNewDomainNotificationSeen(true)} color={warnColor} />
           )}
         </Box>
       )

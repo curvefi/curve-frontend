@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import styled from 'styled-components'
+import { useAccount, useChainId } from 'wagmi'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -9,7 +10,6 @@ import { t } from '@ui-kit/lib/i18n'
 import UserInformation from './UserInformation'
 
 type Props = {
-  chainId: number
   children?: ReactNode
   className?: string
   votingPower?: SnapshotVotingPower
@@ -17,12 +17,14 @@ type Props = {
   snapshotVotingPower: boolean
 }
 
-const UserBox = ({ chainId, className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
-  const { wallet, connect } = useWallet()
+const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
+  const { address } = useAccount()
+  const chainId = useChainId()
+  const { connect } = useWallet()
 
   return (
     <Wrapper className={className}>
-      {wallet && chainId === 1 ? (
+      {address && chainId === 1 ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
           <UserInformation
             votingPower={votingPower}

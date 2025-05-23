@@ -6,8 +6,7 @@ import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wa
 import { t } from '@ui-kit/lib/i18n'
 
 const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
-  const { lib: curve } = useConnection<CurveApi>()
-  const { connectState } = useConnection<CurveApi>()
+  const { connectState, lib: curve } = useConnection<CurveApi>()
   const { connect: connectWallet } = useWallet()
   return (
     <>

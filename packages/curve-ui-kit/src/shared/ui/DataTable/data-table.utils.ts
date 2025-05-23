@@ -30,3 +30,8 @@ export const getExtraColumnPadding = <T extends any>(column: Column<T>) => ({
   ...(column.getIsFirstColumn() && { paddingInlineStart: Spacing.md }),
   ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
 })
+
+export type FilterProps<T extends string> = {
+  columnFiltersById: Record<T, unknown>
+  setColumnFilter: (id: T, value: unknown) => void
+}

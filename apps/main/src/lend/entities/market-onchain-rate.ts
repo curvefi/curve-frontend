@@ -9,7 +9,7 @@ type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
 
 const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
-  rates: await requireLib<Api>().getOneWayMarket(marketId).stats.rates(false, false),
+  rates: await requireLib<Api>().getLendMarket(marketId).stats.rates(false, false),
 })
 
 /**

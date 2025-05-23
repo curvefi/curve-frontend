@@ -32,7 +32,7 @@ export const SCrvUsd = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/scrvusd/overview/"
+        href="https://docs.curve.finance/scrvusd/overview/"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{
@@ -46,7 +46,7 @@ export const SCrvUsd = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/assets/pdf/ChainSecurity_Curve_scrvUSD_audit.pdf"
+        href="https://docs.curve.finance/assets/pdf/ChainSecurity_Curve_scrvUSD_audit.pdf"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{
@@ -88,7 +88,7 @@ export const SCrvUsd = () => (
 
           <Box component="li">
             <Typography variant="bodyMBold" component="span">
-              <Link color="textSecondary" href="https://docs.curve.fi/crvUSD/pegkeepers/overview/" target="_blank">
+              <Link color="textSecondary" href="https://docs.curve.finance/crvUSD/pegkeepers/overview/" target="_blank">
                 {t`PegKeeper Dependency:`}
               </Link>
               {': '}
