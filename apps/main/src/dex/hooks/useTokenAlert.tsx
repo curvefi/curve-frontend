@@ -55,7 +55,8 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
               The Liquity BOLD token has been redeployed. This pool contain the legacy BOLD token.
               <StyledExternalLink href="https://www.liquity.org/blog/liquity-v2-redeployment">
                 Learn more here
-              </StyledExternalLink>.
+              </StyledExternalLink>
+              .
             </Trans>
           </div>
         ),
