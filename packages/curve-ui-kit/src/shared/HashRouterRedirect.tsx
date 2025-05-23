@@ -17,7 +17,7 @@ function getRedirectUrl({ search, hash, origin }: Location, currentApp?: AppName
   if (routes?.find((r) => r.startsWith(path))) {
     return `/${destApp}/ethereum/${path}${search}`
   }
-  if (path.split('/').filter(Boolean).length > 1) {
+  if (path.split('/').filter(Boolean).join('/') != 'integrations') {
     return `/${destApp}/${path}${search}`
   }
   return `/${destApp}/ethereum/${path ?? defaultPages[destApp]}`
