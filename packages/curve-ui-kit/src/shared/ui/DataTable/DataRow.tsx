@@ -2,10 +2,10 @@ import { useRouter } from 'next/navigation'
 import { type MouseEvent, useCallback, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import type { SystemStyleObject, Theme } from '@mui/system'
 import { type Row } from '@tanstack/react-table'
 import { type ExpandedPanel, ExpansionRow } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import type { SxProps } from '@ui-kit/utils'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
@@ -29,7 +29,7 @@ export const DataRow = <T extends TableItem>({
   expandedPanel,
 }: {
   row: Row<T>
-  sx?: SystemStyleObject<Theme>
+  sx?: SxProps
   expandedPanel: ExpandedPanel<T>
 }) => {
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress

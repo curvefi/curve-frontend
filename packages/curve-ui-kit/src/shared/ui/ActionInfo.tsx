@@ -9,13 +9,12 @@ import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Typography from '@mui/material/Typography'
-import type { SystemStyleObject, Theme } from '@mui/system'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, type SxProps } from '@ui-kit/utils'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -52,7 +51,7 @@ type ActionInfoProps = {
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
-  sx?: SystemStyleObject<Theme>
+  sx?: SxProps
 }
 
 const labelSize = {

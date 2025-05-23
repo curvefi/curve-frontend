@@ -1,10 +1,10 @@
 import type { ImgHTMLAttributes } from 'react'
 import Box from '@mui/material/Box'
-import type { SystemStyleObject, Theme } from '@mui/system'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
@@ -16,7 +16,7 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   tooltip?: string
   address?: string | null
   size?: 'sm' | 'mui-sm' | 'mui-md' | 'xl'
-  sx?: SystemStyleObject<Theme>
+  sx?: SxProps
 }
 
 export const TokenIcon = ({
@@ -54,7 +54,7 @@ export const TokenIcon = ({
         ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
         ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
         ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
-        ...sx,
+        ...applySxProps(sx, theme),
       })}
     />
   </Tooltip>

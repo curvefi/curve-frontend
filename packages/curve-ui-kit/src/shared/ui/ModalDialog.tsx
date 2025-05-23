@@ -7,7 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import type { SystemStyleObject, Theme } from '@mui/system'
+import type { SxProps } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 export type ModalDialogProps = {
@@ -19,7 +19,7 @@ export type ModalDialogProps = {
   titleAction?: ReactNode
   footer?: ReactNode
   compact?: boolean
-  sx?: SystemStyleObject<Theme>
+  sx?: SxProps
 }
 
 export const ModalDialog = ({

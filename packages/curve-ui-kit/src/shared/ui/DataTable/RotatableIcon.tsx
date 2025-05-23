@@ -1,6 +1,6 @@
 import SvgIcon from '@mui/material/SvgIcon'
-import type { SystemStyleObject, Theme } from '@mui/system'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import type { SxProps } from '@ui-kit/utils'
 
 /** Allows an icon to be rotated with animations when rotated or getting hidden */
 export const RotatableIcon = ({
@@ -15,7 +15,7 @@ export const RotatableIcon = ({
   isEnabled?: boolean
   fontSize: number
   icon: typeof SvgIcon
-  sx?: SystemStyleObject<Theme>
+  sx?: SxProps
   testId?: string
 }) => (
   <Icon
