@@ -86,7 +86,7 @@ const FieldsDeposit = ({
 
   const handleFormAmountChange = (value: string, changedIndex: number) => {
     updateFormValues(
-      isBalancedAmounts
+      isBalancedAmounts && reserves
         ? {
             amounts: calculateBalancedValues(
               [value, changedIndex],
