@@ -38,7 +38,7 @@ const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageCont
         <p>{t`You are in soft-liquidation mode. The amount currently at risk is ${softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate).`}</p>
         <p>
           {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
-          <ExternalLink href="https://resources.curve.fi/lending/overview/#health-hard-liquidation" $noStyles>
+          <ExternalLink href="https://resources.curve.finance/lending/overview/#health-hard-liquidation" $noStyles>
             Click here to learn more.
           </ExternalLink>
         </p>

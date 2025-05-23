@@ -8,6 +8,13 @@ const { Sizing } = SizesAndSpaces
 
 const THUMB_WIDTH = 20 // 20px is a default MUI value, not responsive to reduce headaches
 
+/**
+ * CSS custom property name for customizing the slider background color.
+ * Used by components like TradingSlider to set a background color.
+ * This approach is necessary because we can't add TSX props directly.
+ */
+export const SLIDER_BACKGROUND_VAR = '--slider-background'
+
 type Size = 'small' | 'medium'
 const heights: Record<Size, Responsive> = {
   small: Sizing.xs,
@@ -44,6 +51,7 @@ const borderPseudoElement = (design: DesignSystem) => ({
     left: -THUMB_WIDTH / 2,
     border: `1px solid ${design.Color.Neutral[500]}`,
     zIndex: -1,
+    backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
   },
 })
 

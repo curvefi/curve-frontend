@@ -1,7 +1,7 @@
 import styled from 'styled-components'
+import Countdown from '@/dao/components/Countdown'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import SmallLabel from '@/dao/components/SmallLabel'
-import VoteCountdown from '@/dao/components/VoteCountdown'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -38,7 +38,7 @@ const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHea
     <TimeRemainingBox
       loading={loading}
       title={t`Time Remaining`}
-      data={<StyledVoteCountdown startDate={proposal?.timestamp ?? null} />}
+      data={<StyledCountdown startDate={proposal?.timestamp ?? null} />}
     />
   </Wrapper>
 )
@@ -145,7 +145,7 @@ const TimeRemainingBox = styled(MetricsComp)`
   }
 `
 
-const StyledVoteCountdown = styled(VoteCountdown)`
+const StyledCountdown = styled(Countdown)`
   margin-top: var(--spacing-1);
 `
 

@@ -1,4 +1,4 @@
-import { type RefObject, useRef } from 'react'
+import { type RefObject } from 'react'
 import { useTvl } from '@/lend/entities/chain'
 import { visibleNetworksList } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -19,14 +19,13 @@ export const Header = ({
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: NetworkEnum
 }) => {
-  const mainNavRef = useRef<HTMLDivElement>(null)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const { data: tvl } = useTvl(chainId)
   return (
     <NewHeader<ChainId>
       networkId={networkId}
       chainId={chainId}
-      mainNavRef={mainNavRef}
+      mainNavRef={{ current: null }} // not used in lend
       currentMenu="lend"
       routes={APP_LINK.lend.routes}
       chains={visibleNetworksList}

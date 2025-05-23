@@ -512,7 +512,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const networkId = networks[chainId].id
 
         try {
-          const response = await fetch(`https://prices.curve.fi/v1/chains/${networkId}`)
+          const response = await fetch(`https://prices.curve.finance/v1/chains/${networkId}`)
           const data: PricesApiPoolResponse = await response.json()
 
           const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
@@ -538,9 +538,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const network = networks[chainId].id.toLowerCase()
 
         try {
-          const poolInfoPromise = fetch(`https://prices.curve.fi/v1/pools/${network}/${poolAddress}/metadata`)
+          const poolInfoPromise = fetch(`https://prices.curve.finance/v1/pools/${network}/${poolAddress}/metadata`)
           const snapshotsPromise = fetch(
-            `https://prices.curve.fi/v1/snapshots/${network}/${poolAddress}?start=${startTime}&end=${endTime}`,
+            `https://prices.curve.finance/v1/snapshots/${network}/${poolAddress}?start=${startTime}&end=${endTime}`,
           )
 
           const response = await Promise.all([poolInfoPromise, snapshotsPromise])
@@ -587,7 +587,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const priceUnit = selectedChartIndex === 0 ? 'usd' : 'token0'
 
           const lpPriceRes = await fetch(
-            `https://prices.curve.fi/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`,
+            `https://prices.curve.finance/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`,
           )
           const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
           const filteredLpPriceData = {
@@ -630,7 +630,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const main_token = ifPairFlipped ? pair[1].address : pair[0].address
           const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
           const lpPriceRes = await fetch(
-            `https://prices.curve.fi/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
+            `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
           )
           const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
           const filteredLpPriceData = {
@@ -689,7 +689,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const priceUnit = selectedChartIndex === 0 ? 'usd' : 'token0'
 
           const lpPriceRes = await fetch(
-            `https://prices.curve.fi/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`,
+            `https://prices.curve.finance/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`,
           )
           const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
 
@@ -725,7 +725,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const main_token = ifPairFlipped ? pair[1].address : pair[0].address
           const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
           const lpPriceRes = await fetch(
-            `https://prices.curve.fi/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
+            `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
           )
           const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
           const filteredLpPriceData = {
@@ -775,7 +775,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       try {
         const promises = chartCombinations.map((coin: PricesApiCoin[]) =>
           fetch(
-            `https://prices.curve.fi/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`,
+            `https://prices.curve.finance/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`,
           ),
         )
         const lpTradesRes = await Promise.all(promises)
@@ -814,7 +814,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           )
         }
         const liqudityEventsRes = await fetch(
-          `https://prices.curve.fi/v1/liquidity/${network}/${poolAddress}?page=1&per_page=100`,
+          `https://prices.curve.finance/v1/liquidity/${network}/${poolAddress}?page=1&per_page=100`,
         )
         const liquidityEventsData: LpLiquidityEventsApiResponse = await liqudityEventsRes.json()
 

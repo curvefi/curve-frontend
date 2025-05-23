@@ -6,7 +6,7 @@ import type { Address } from '@ui-kit/utils'
 const { fetchQuery: fetchCoinPrice } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'usd-price'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractParams) => {
-    const response = await fetch(`https://prices.curve.fi/v1/usd_price/${blockchainId}/${contractAddress}`)
+    const response = await fetch(`https://prices.curve.finance/v1/usd_price/${blockchainId}/${contractAddress}`)
     const { data } = (await response.json()) as { data: { address: string; usd_price: number; last_updated: string } }
     return data.usd_price
   },

@@ -48,14 +48,9 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const minUtcDate = currUnlockUtcTime
   const remainingLockedDays = dayjs(currUnlockUtcDate).diff(dayjs(todayUtcDate), 'day', false)
 
-  const maxUtcDate = useMemo(() => {
-    let maxUtcDate: dayjs.Dayjs | null = null
-
-    if (curve) {
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      maxUtcDate = fn(curve, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
-    }
-    return maxUtcDate
+  const maxUtcDate = useMemo((): dayjs.Dayjs => {
+    const { calcUnlockTime } = networks[rChainId].api.lockCrv
+    return calcUnlockTime(curve!, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
   }, [currUnlockTime, curve, rChainId, rFormType, remainingLockedDays])
 
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
@@ -97,16 +92,27 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   )
 
   const handleBtnClickQuickAction = useCallback(
-    (curve: CurveApi, value: number, unit: dayjs.ManipulateType) => {
+    (curve: CurveApi, value?: number, unit?: dayjs.ManipulateType) => {
+      const { calcUnlockTime } = networks[rChainId].api.lockCrv
+      // max button
+      if (!value || !unit) {
+        const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
+        const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
+        void updateFormValues(
+          { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },
+          false,
+        )
+        return maxUtcDate
+      }
+
       const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
+      const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
       void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
       return calcdUtcDate
     },
-    [currUnlockTime, currUnlockUtcTime, rChainId, rFormType, updateFormValues],
+    [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, rFormType, updateFormValues],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -216,7 +222,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
         )}
         {txInfoBar}
-        <Stepper steps={steps} />
+        <Stepper steps={steps} hideStepNumber />
       </FormActions>
     </>
   )

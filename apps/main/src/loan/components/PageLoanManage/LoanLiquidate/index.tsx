@@ -11,7 +11,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
 import useStore from '@/loan/store/useStore'
-import { Curve, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
@@ -76,7 +76,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
   const getSteps = useCallback(
     (
-      curve: Curve,
+      curve: LlamaApi,
       llamma: Llamma,
       formEstGas: FormEstGas,
       formStatus: FormStatus,

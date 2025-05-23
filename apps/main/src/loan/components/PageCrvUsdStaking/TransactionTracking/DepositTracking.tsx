@@ -18,6 +18,7 @@ import {
   StyledRCPinBottom,
   DividerLine,
   ResetButton,
+  WalletIcon,
 } from './styles'
 
 type DepositTrackingProps = {
@@ -94,7 +95,7 @@ const DepositTracking = ({ className }: DepositTrackingProps) => {
         </Box>
         <IconWrapper>
           {depositConfirmed && <SuccessIcon name="CheckmarkFilled" size={20} />}
-          {depositConfirming && <Icon name="Wallet" size={20} />}
+          {depositConfirming && <WalletIcon name="Wallet" size={20} />}
           {depositLoading && <Spinner size={16} />}
         </IconWrapper>
       </MainTransactionStep>

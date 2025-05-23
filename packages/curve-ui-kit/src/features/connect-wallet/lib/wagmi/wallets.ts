@@ -11,9 +11,15 @@ export type WalletType = {
   connector: ConnectorType
 }
 
+/**
+ * The Safe connector only works inside the Safe application, where the Curve app is loaded in an iframe.
+ * Trying to use the Safe connector outside the iframe will result in an error.
+ */
+const isInIframe = typeof window !== 'undefined' && window !== window.parent
+
 export const supportedWallets = [
   { label: `Browser Wallet`, icon: BrowserWalletIcon, connector: 'injected' },
   { label: `Wallet Connect`, icon: WalletConnectIcon, connector: 'walletConnect' },
   { label: `Coinbase`, icon: CoinbaseWalletIcon, connector: 'coinbaseWallet' },
-  { label: 'Safe', icon: SafeWalletIcon, connector: 'safe' },
+  ...(isInIframe ? [{ label: 'Safe', icon: SafeWalletIcon, connector: 'safe' } as const] : []),
 ] satisfies WalletType[]

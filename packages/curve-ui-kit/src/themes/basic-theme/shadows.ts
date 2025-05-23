@@ -30,3 +30,9 @@ export const getShadow = (design: DesignSystem, elevation: ShadowElevation) =>
       '0px 32px 32px -16px #2A33451A',
     ].join(','),
   })[elevation]
+
+export const getInsetShadow = (design: DesignSystem, elevation: ShadowElevation) =>
+  getShadow(design, elevation)
+    .split(',')
+    .map((s) => `inset ${s}`)
+    .join(',')

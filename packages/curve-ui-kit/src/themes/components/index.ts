@@ -21,7 +21,7 @@ import { defineMuiTab, defineMuiTabs } from './tabs'
 import { defineMuiTypography } from './typography'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
-export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
+export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320, maxWidth: '100vw' } as const
 
 export const createComponents = (design: DesignSystem, typography: TypographyOptions): ThemeOptions['components'] => ({
   MuiAlert: defineMuiAlert(design, typography),
@@ -122,6 +122,18 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
+  MuiTableRow: {
+    styleOverrides: {
+      root: {
+        backgroundColor: design.Table.Row.Default,
+        '&.Mui-selected': {
+          backgroundColor: design.Table.Row.Selected,
+        },
+      },
+      hover: { backgroundColor: design.Table.Row.Hover },
+      head: { backgroundColor: design.Table.Header.Fill },
+    },
+  },
   MuiToolbar: {
     styleOverrides: {
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },

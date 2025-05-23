@@ -1,9 +1,6 @@
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
 
 export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; hidden: boolean }) => (
   <Button
@@ -12,8 +9,6 @@ export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; h
     onClick={onClick}
     data-testid="reset-filter"
     sx={{
-      minWidth: 0,
-      marginInlineStart: Spacing.xs,
       transition: `all ${TransitionFunction}`,
       ...(hidden && {
         '&&&': {
@@ -21,7 +16,6 @@ export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; h
           fontSize: 0,
         },
         padding: 0,
-        marginInlineStart: '-16px', // negative margin to compensate for the flex gap
       }),
     }}
   >

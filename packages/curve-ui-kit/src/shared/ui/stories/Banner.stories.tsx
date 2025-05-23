@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Banner } from '../Banner'
@@ -73,7 +74,7 @@ export const WithButton: Story = {
     severity: 'alert',
     children: 'This is an error message with an action button',
     buttonText: 'Dismiss',
-    onClick: () => console.info('Button clicked'),
+    onClick: fn(),
   },
 }
 

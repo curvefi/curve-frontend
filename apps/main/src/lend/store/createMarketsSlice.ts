@@ -3,23 +3,23 @@ import { invalidateMarketOnChainRates } from '@/lend/entities/market-onchain-rat
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
-  ChainId,
   Api,
-  MarketsStatsParametersMapper,
-  MarketsStatsBandsMapper,
-  MarketsStatsTotalsMapper,
-  MarketsStatsAMMBalancesMapper,
-  MarketsStatsCapAndAvailableMapper,
+  ChainId,
+  MarketDetailsView,
   MarketsMaxLeverageMapper,
   MarketsPricesMapper,
   MarketsRatesMapper,
-  MarketsTotalLiquidityMapper,
-  MarketsTotalCollateralValueMapper,
   MarketsRewardsMapper,
-  MarketDetailsView,
+  MarketsStatsAMMBalancesMapper,
+  MarketsStatsBandsMapper,
+  MarketsStatsCapAndAvailableMapper,
+  MarketsStatsParametersMapper,
+  MarketsStatsTotalsMapper,
+  MarketsTotalCollateralValueMapper,
+  MarketsTotalLiquidityMapper,
+  OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
-import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { getLib } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE

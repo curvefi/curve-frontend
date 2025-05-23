@@ -16,7 +16,7 @@ export const LlamaLend = ({ network }: { network: string }) => (
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </Link>
         {t`. Users are also advised to review the public`}{' '}
-        <Link color="textSecondary" href="https://docs.curve.fi/references/audits/" target="_blank">
+        <Link color="textSecondary" href="https://docs.curve.finance/references/audits/" target="_blank">
           {t`audit reports`}
         </Link>{' '}
         {t`to assess the security and reliability of the platform before engaging in any lending or borrowing activities.`}

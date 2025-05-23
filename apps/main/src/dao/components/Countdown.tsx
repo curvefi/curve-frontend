@@ -1,20 +1,34 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-interface VoteCountdownProps {
-  startDate: number | null
+interface CountdownProps {
+  /** startDate adds 7 days to the current date to mimic a DAO proposal voting period */
+  startDate?: number | null
+  /** endDate is the specific date to count down to. Takes precedence over startDate. */
+  endDate?: number | null
   className?: string
 }
 
-const VoteCountdown = ({ startDate, className }: VoteCountdownProps) => {
+const Countdown = ({ startDate, endDate, className }: CountdownProps) => {
   const [timeRemaining, setTimeRemaining] = useState('')
 
   useEffect(() => {
     const updateTimeRemaining = () => {
-      if (!startDate) return
+      let effectiveEndDate: number | null = null
+
+      if (endDate) {
+        effectiveEndDate = endDate
+      } else if (startDate) {
+        effectiveEndDate = startDate + 604800 // 7 days in seconds
+      }
+
+      if (!effectiveEndDate) {
+        setTimeRemaining('')
+        return
+      }
+
       const now = Math.floor(Date.now() / 1000)
-      const endDate = startDate + 604800 // 7 days in seconds
-      const remainingSeconds = endDate - now
+      const remainingSeconds = effectiveEndDate - now
 
       if (remainingSeconds <= 0) {
         setTimeRemaining('Voting has ended')
@@ -34,16 +48,16 @@ const VoteCountdown = ({ startDate, className }: VoteCountdownProps) => {
     return () => {
       clearInterval(timer)
     }
-  }, [startDate])
+  }, [startDate, endDate])
 
   return (
-    <VoteCountdownContainer className={className}>
-      <p>{startDate ? timeRemaining : '-'}</p>
-    </VoteCountdownContainer>
+    <CountdownContainer className={className}>
+      <p>{timeRemaining || '-'}</p>
+    </CountdownContainer>
   )
 }
 
-const VoteCountdownContainer = styled.div`
+const CountdownContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -52,4 +66,4 @@ const VoteCountdownContainer = styled.div`
   font-variant-numeric: tabular-nums;
 `
 
-export default VoteCountdown
+export default Countdown

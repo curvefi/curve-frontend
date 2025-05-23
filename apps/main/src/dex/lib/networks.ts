@@ -22,8 +22,8 @@ export const defaultNetworks = Object.entries({
       y: true,
     },
     missingPools: [
-      { name: 'linkusd', url: 'https://classic.curve.fi/linkusd/withdraw' },
-      { name: 'tricrypto', url: 'https://classic.curve.fi/tricrypto/withdraw' },
+      { name: 'linkusd', url: 'https://classic.curve.finance/linkusd/withdraw' },
+      { name: 'tricrypto', url: 'https://classic.curve.finance/tricrypto/withdraw' },
     ],
     swap: {
       fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -121,8 +121,8 @@ export const defaultNetworks = Object.entries({
   [Chain.Polygon]: {
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     missingPools: [
-      { name: 'atricrypto', url: 'https://polygon.curve.fi/atricrypto/withdraw' },
-      { name: 'atricrypto2', url: 'https://polygon.curve.fi/atricrypto2/withdraw' },
+      { name: 'atricrypto', url: 'https://polygon.curve.finance/atricrypto/withdraw' },
+      { name: 'atricrypto2', url: 'https://polygon.curve.finance/atricrypto2/withdraw' },
     ],
     swap: {
       fromAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',

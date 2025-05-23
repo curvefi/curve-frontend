@@ -37,7 +37,6 @@ export type AppLayoutSlice = {
 
 const DEFAULT_LAYOUT_HEIGHT: LayoutHeight = {
   globalAlert: 0,
-  footer: 170,
 }
 export const layoutHeightKeys = Object.keys(DEFAULT_LAYOUT_HEIGHT) as (keyof LayoutHeight)[]
 

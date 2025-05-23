@@ -27,7 +27,7 @@ export const Dex = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/references/whitepaper"
+        href="https://docs.curve.finance/references/whitepaper"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{
@@ -41,7 +41,7 @@ export const Dex = () => (
       <Button
         component={Link}
         variant="link"
-        href="https://docs.curve.fi/security/security/#security-audits"
+        href="https://docs.curve.finance/security/security/#security-audits"
         target="_blank"
         endIcon={<ArrowOutwardIcon />}
         sx={{

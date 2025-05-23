@@ -189,7 +189,7 @@ function DatePicker<T extends DateValue>(
       >
         <Box flexAlignItems="center" grid gridTemplateColumns="1fr auto" {...groupProps} ref={ref}>
           <Box grid gridRowGap={1}>
-            <Chip size="sm" {...labelProps}>
+            <Chip size="xs" {...labelProps}>
               {props.label}
             </Chip>
             <DateField {...dateFieldProps} state={dateFieldState} />

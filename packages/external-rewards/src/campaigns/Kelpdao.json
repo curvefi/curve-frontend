@@ -3,7 +3,7 @@
   "platform": "Kelp DAO",
   "description": "Points for providing liquidity",
   "platformImageId": "kelpdao-kernels.png",
-  "dashboardLink": "https://kelpdao.xyz/dashboard/",
+  "dashboardLink": "https://kerneldao.com/kelp/defi/",
   "pools": [
     {
       "id": "null",

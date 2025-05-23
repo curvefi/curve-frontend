@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
-import useLayoutHeight from '@/dex/hooks/useLayoutHeight'
 import Header from '@/dex/layout/default/Header'
 import curvejsApi from '@/dex/lib/curvejs'
 import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
@@ -10,6 +9,7 @@ import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -76,7 +76,8 @@ const useAutoRefresh = (network: NetworkConfig) => {
 
 const BaseLayout = ({ children, network }: { children: ReactNode } & { network: NetworkConfig }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  useLayoutHeight(globalAlertRef, 'globalAlert')
+  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
+  useLayoutHeight(globalAlertRef, 'globalAlert', updateLayoutHeight)
   useAutoRefresh(network)
 
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -98,20 +99,20 @@ const getSections = (network: string): NavigationSection[] => [
   {
     title: t`Documentation`,
     links: [
-      { href: 'https://news.curve.fi/', label: t`News` },
-      { href: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
-      { href: 'https://docs.curve.fi', label: t`Developer Resources` },
+      { href: 'https://news.curve.finance/', label: t`News` },
+      { href: 'https://resources.curve.finance/lending/understanding-lending/', label: t`User Resources` },
+      { href: 'https://docs.curve.finance', label: t`Developer Resources` },
       { href: getPath({ network }, ROUTE.PAGE_DISCLAIMER), label: t`Risk Disclaimers` },
       { href: getPath({ network }, ROUTE.PAGE_INTEGRATIONS), label: t`Integrations` },
-      { href: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
+      { href: 'https://resources.curve.finance/glossary-branding/branding/', label: t`Branding` },
       ...(isChinese() ? [{ href: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },
   {
     title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
     links: [
-      { href: 'https://docs.curve.fi/references/audits/', label: t`Audits` },
-      { href: 'https://docs.curve.fi/security/security/', label: t`Bug Bounty` },
+      { href: 'https://docs.curve.finance/references/audits/', label: t`Audits` },
+      { href: 'https://docs.curve.finance/security/security/', label: t`Bug Bounty` },
       { href: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
       { href: 'https://curvemonitor.com', label: t`Curve Monitor` },
       { href: 'https://crvhub.com/', label: t`Crvhub` },

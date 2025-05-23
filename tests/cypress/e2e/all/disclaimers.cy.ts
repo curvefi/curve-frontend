@@ -30,10 +30,14 @@ describe('Disclaimers', () => {
       cy.get(tabSelector).should('have.length.at.least', 4)
 
       // scrvusd tab should not be open. Find it, click it, and its contents should have a link to the scrvusd docs.
-      cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('not.exist')
+      cy.get('div[role="tabpanel"] a')
+        .filter('[href="https://docs.curve.finance/scrvusd/overview/"]')
+        .should('not.exist')
       cy.get(tabSelector).last().click()
       cy.url(LOAD_TIMEOUT).should('include', '?tab=scrvusd')
-      cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('be.visible')
+      cy.get('div[role="tabpanel"] a')
+        .filter('[href="https://docs.curve.finance/scrvusd/overview/"]')
+        .should('be.visible')
     })
   })
 })
