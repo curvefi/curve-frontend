@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
-import type { SxProps, Theme } from '@mui/material/styles'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import type { SystemStyleObject, Theme } from '@mui/system'
 import { LogoImg } from '@ui/images'
 import type { AppMenuOption } from '@ui-kit/shared/routes'
 
@@ -16,7 +16,7 @@ const LogoImageSrc = (LogoImg as unknown as { src: string }).src
 export type HeaderLogoProps = {
   currentMenu: AppMenuOption
   isLite: boolean
-  sx?: SxProps<Theme>
+  sx?: SystemStyleObject<Theme>
 }
 
 const APP_NAMES = {

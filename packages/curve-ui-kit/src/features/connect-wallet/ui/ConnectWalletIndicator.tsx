@@ -1,10 +1,16 @@
 import { useAccount } from 'wagmi'
-import type { SxProps, Theme } from '@mui/material'
+import type { SystemStyleObject, Theme } from '@mui/system'
 import { CONNECT_STAGE, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 import { ConnectWalletButton } from './ConnectWalletButton'
 
-export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps<Theme>; onConnect?: () => void }) => {
+export const ConnectWalletIndicator = ({
+  sx,
+  onConnect,
+}: {
+  sx?: SystemStyleObject<Theme>
+  onConnect?: () => void
+}) => {
   const { address } = useAccount()
   const { connect, disconnect } = useWallet()
   const { connectState } = useConnection()

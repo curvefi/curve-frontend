@@ -1,6 +1,6 @@
 import type { ImgHTMLAttributes } from 'react'
 import Box from '@mui/material/Box'
-import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
+import type { SystemStyleObject, Theme } from '@mui/system'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
