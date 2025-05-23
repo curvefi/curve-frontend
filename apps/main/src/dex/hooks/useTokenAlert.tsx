@@ -61,6 +61,36 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6': {
+        alertType: 'alert',
+        address: '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0xc2e660c62f72c2ad35ace6db78a616215e2f2222': {
+        alertType: 'alert',
+        address: '0xc2e660c62f72c2ad35ace6db78a616215e2f2222',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
