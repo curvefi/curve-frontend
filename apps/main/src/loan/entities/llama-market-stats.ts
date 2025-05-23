@@ -49,7 +49,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         isCollateralEroded: stats.softLiquidation && stats.debt > 0,
         health: stats.healthFull,
         borrowed: stats.debt,
-        deposited: stats.totalDeposited,
+        deposited: earnData?.deposited ?? stats.totalDeposited,
       },
     }),
     ...(earnings && { data: { earnings: earnData.earnings } }),
