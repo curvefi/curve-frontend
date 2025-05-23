@@ -46,6 +46,20 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0xb01dd87b29d187f3e3a4bf6cdaebfb97f3d9ab98': {
+        alertType: 'warning',
+        address: '0xb01dd87b29d187f3e3a4bf6cdaebfb97f3d9ab98',
+        message: (
+          <div>
+            <Trans>
+              The Liquity BOLD token has been redeployed. This pool contain the legacy BOLD token.
+              <StyledExternalLink href="https://www.liquity.org/blog/liquity-v2-redeployment">
+                Learn more here
+              </StyledExternalLink>.
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
