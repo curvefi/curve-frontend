@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { zip } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 import { useMemo } from 'react'
@@ -14,22 +15,24 @@ import { t } from '@ui-kit/lib/i18n'
 import { Amount } from '../../utils'
 
 /**
- * Calculate new form values based on the changed index and value.
- * This function is used to update the amounts in the form when a user changes the value of one of the inputs.
- *
- * When "balanced amounts" is selected, we update all the other form fields to maintain the same ratio.
+ * Format the precision of the balanced value based on the USD price.
+ * The amount of decimals is determined by the USD price, so it's accurate to around $1.
  */
-function calculateNewFormValues(
-  value: string,
-  changedIndex: number,
-  { isBalancedAmounts, amounts: oldAmounts }: Pick<FormValues, 'amounts' | 'isBalancedAmounts'>,
+function formatPrecision(balancedValue: BigNumber, usdPrice: number) {
+  const decimals = Math.ceil(Math.log10(usdPrice))
+  return balancedValue.toFormat(decimals, BigNumber.ROUND_HALF_DOWN, { groupSeparator: '', decimalSeparator: '.' })
+}
+
+/**
+ * Calculate new balanced form values based on the changed index and value, keeping the ratios of the other tokens.
+ * This function is used to update the amounts in the form when a user changes the value of one of the inputs.
+ */
+function calculateBalancedValues(
+  [value, changedIndex]: [string, number],
+  oldAmounts: FormValues['amounts'],
   tokenAddresses: string[],
   { tokens, totalUsd }: CurrencyReserves,
 ): Amount[] {
-  if (!isBalancedAmounts) {
-    return oldAmounts.map((amount, index) => (index === changedIndex ? { ...amount, value } : amount))
-  }
-
   const reserves = Object.fromEntries(
     tokens.map((t) => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
   )
@@ -41,10 +44,10 @@ function calculateNewFormValues(
     }
     const { usdPrice, reserveRatio } = reserves[tokenAddress] ?? {}
     if (usdPrice && reserveRatio && changedRatio) {
-      const valueUsd = Number(value) * Number(changedUsdPrice)
-      const newValueUsd = (Number(valueUsd) * Number(reserveRatio)) / Number(changedRatio)
-      const newValue = newValueUsd / Number(usdPrice)
-      return { ...amount, value: newValue.toString() }
+      const valueUsd = BigNumber(value).times(changedUsdPrice)
+      const balancedValueUsd = BigNumber(valueUsd).times(reserveRatio).div(changedRatio)
+      const balancedValue = balancedValueUsd.div(usdPrice)
+      return { ...amount, value: formatPrecision(balancedValue, usdPrice) }
     }
     return amount
   })
@@ -78,21 +81,26 @@ const FieldsDeposit = ({
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
+  const reserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = (value: string, changedIndex: number) => {
     updateFormValues(
-      {
-        amounts: calculateNewFormValues(
-          value,
-          changedIndex,
-          formValues,
-          poolDataCacheOrApi.tokenAddresses,
-          currencyReserves,
-        ),
-        isBalancedAmounts: isBalancedAmounts ? 'by-form' : false,
-      },
+      isBalancedAmounts
+        ? {
+            amounts: calculateBalancedValues(
+              [value, changedIndex],
+              formValues.amounts,
+              poolDataCacheOrApi.tokenAddresses,
+              reserves,
+            ),
+            isBalancedAmounts: 'by-form',
+          }
+        : {
+            amounts: formValues.amounts.map((amount, index) =>
+              index === changedIndex ? { ...amount, value } : amount,
+            ),
+          },
       null,
       null,
     )
@@ -139,13 +147,7 @@ const FieldsDeposit = ({
               token={token}
               tokenAddress={ethAddress}
               handleAmountChange={handleFormAmountChange}
-              handleMaxClick={() =>
-                updateFormValues(
-                  { isBalancedAmounts: isBalancedAmounts ? 'by-form' : false },
-                  { tokenAddress, idx },
-                  null,
-                )
-              }
+              handleMaxClick={() => updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null)}
             />
           )
         })}
