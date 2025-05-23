@@ -1,3 +1,4 @@
+import { zip } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 import { useMemo } from 'react'
 import FieldToken from '@/dex/components/PagePool/components/FieldToken'
@@ -25,20 +26,27 @@ function calculateNewFormValues(
   tokenAddresses: string[],
   { tokens, totalUsd }: CurrencyReserves,
 ): Amount[] {
-  const ratios = Object.fromEntries(tokens.map((t) => [t.tokenAddress, t.balanceUsd / Number(totalUsd)]))
-  const changedTokenRatio = ratios[tokenAddresses[changedIndex]]
-  return oldAmounts.map((item, index) => {
+  if (!isBalancedAmounts) {
+    return oldAmounts.map((amount, index) => (index === changedIndex ? { ...amount, value } : amount))
+  }
+
+  const reserves = Object.fromEntries(
+    tokens.map((t) => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
+  )
+  const { reserveRatio: changedRatio, usdPrice: changedUsdPrice } = reserves[tokenAddresses[changedIndex]] ?? {}
+  return zip(oldAmounts, tokenAddresses).map((tuple, index) => {
+    const [amount, tokenAddress] = tuple as [Amount, string]
     if (changedIndex === index) {
-      return { ...item, value }
+      return { ...amount, value }
     }
-    if (isBalancedAmounts) {
-      const tokenRatio = ratios[tokenAddresses[index]]
-      if (tokenRatio && changedTokenRatio) {
-        const newValue = (Number(value) * Number(tokenRatio)) / Number(changedTokenRatio)
-        return { ...item, value: newValue.toString() }
-      }
+    const { usdPrice, reserveRatio } = reserves[tokenAddress] ?? {}
+    if (usdPrice && reserveRatio && changedRatio) {
+      const valueUsd = Number(value) * Number(changedUsdPrice)
+      const newValueUsd = (Number(valueUsd) * Number(reserveRatio)) / Number(changedRatio)
+      const newValue = newValueUsd / Number(usdPrice)
+      return { ...amount, value: newValue.toString() }
     }
-    return item
+    return amount
   })
 }
 
