@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Typography from '@mui/material/Typography'
+import type { SystemStyleObject, Theme } from '@mui/system'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -51,6 +52,7 @@ type ActionInfoProps = {
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
+  sx?: SystemStyleObject<Theme>
 }
 
 const labelSize = {
@@ -86,6 +88,7 @@ const ActionInfo = ({
   copy = false,
   copiedTitle,
   loading = false,
+  sx,
 }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
