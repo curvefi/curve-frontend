@@ -108,7 +108,6 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     })
     const ironbankAlert = (): PoolAlert => ({
       alertType: 'warning',
-      isInformationOnly: true,
       message: (
         <MessageWrapper>
           <div>
