@@ -14,7 +14,13 @@ export type FormStatus = {
 
 export type FormValues = {
   amounts: Amount[]
-  isBalancedAmounts: boolean
+  /**
+   * The balanced amounts switch works as follows:
+   * - when selected, we calculate balanced amounts based on the wallet balances ('by-wallet')
+   *   - this happens in curvejs, and tokens with zero balance are ignored
+   * - when form values change, we recalculate the other amounts based on the changed value, ignoring the wallet ('by-form')
+   */
+  isBalancedAmounts: 'by-wallet' | 'by-form' | false
   isWrapped: boolean
   lpToken: string
 }
