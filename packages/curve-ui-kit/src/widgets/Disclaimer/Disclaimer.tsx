@@ -1,8 +1,11 @@
 'use client'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { MouseEvent, useMemo } from 'react'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { pushSearchParams } from '@ui-kit/utils/urls'
 import { Footer } from './Footer'
 import { LastUpdated } from './LastUpdated'
 import { TabPanel } from './TabPanel'
@@ -22,44 +25,59 @@ const TABS = [
 
 export type DisclaimerTabId = (typeof TABS)[number]['value']
 
-export type DisclaimerProps = { tab: DisclaimerTabId; network: string }
+export type DisclaimerProps = { defaultTab: DisclaimerTabId; network: string }
 
-export const Disclaimer = ({ tab, network }: DisclaimerProps) => (
-  <Stack
-    alignItems="center"
-    gap={Spacing.xl}
-    sx={{
-      marginInline: 'auto',
-      marginBlockStart: Spacing.xl,
-      marginBlockEnd: Spacing.xxl,
-    }}
-  >
+export const Disclaimer = ({ defaultTab, network }: DisclaimerProps) => {
+  const pathname = usePathname()
+  const tab = useSearchParams()?.get('tab') ?? defaultTab
+  const tabs = useMemo(
+    () => [
+      ...TABS.map(({ value, ...props }) => ({
+        ...props,
+        value,
+        href: { query: { tab: value }, pathname },
+        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { tab: value }),
+      })),
+    ],
+    [pathname],
+  )
+  return (
     <Stack
+      alignItems="center"
+      gap={Spacing.xl}
       sx={{
-        maxWidth: MaxWidth.disclaimer,
-        paddingInline: Spacing.md,
+        marginInline: 'auto',
+        marginBlockStart: Spacing.xl,
+        marginBlockEnd: Spacing.xxl,
       }}
-      data-testid="disclaimer"
     >
       <Stack
-        direction={{
-          mobile: 'column-reverse',
-          tablet: 'row',
+        sx={{
+          maxWidth: MaxWidth.disclaimer,
+          paddingInline: Spacing.md,
         }}
-        justifyContent="space-between"
-        spacing={Spacing.md}
+        data-testid="disclaimer"
       >
-        <TabsSwitcher variant="contained" value={tab} options={[...TABS]} />
-        <LastUpdated />
-      </Stack>
+        <Stack
+          direction={{
+            mobile: 'column-reverse',
+            tablet: 'row',
+          }}
+          justifyContent="space-between"
+          spacing={Spacing.md}
+        >
+          <TabsSwitcher variant="contained" value={tab} options={tabs} />
+          <LastUpdated />
+        </Stack>
 
-      <TabPanel>
-        {tab === 'dex' && <Dex />}
-        {tab === 'lend' && <LlamaLend network={network} />}
-        {tab === 'crvusd' && <CrvUsd />}
-        {tab === 'scrvusd' && <SCrvUsd />}
-        <Footer />
-      </TabPanel>
+        <TabPanel>
+          {tab === 'dex' && <Dex />}
+          {tab === 'lend' && <LlamaLend network={network} />}
+          {tab === 'crvusd' && <CrvUsd />}
+          {tab === 'scrvusd' && <SCrvUsd />}
+          <Footer />
+        </TabPanel>
+      </Stack>
     </Stack>
-  </Stack>
-)
+  )
+}

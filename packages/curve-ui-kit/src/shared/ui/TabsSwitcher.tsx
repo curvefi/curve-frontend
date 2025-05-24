@@ -1,5 +1,5 @@
+import type { UrlObject } from 'url'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
@@ -14,6 +14,7 @@ const defaultTextVariants = {
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
+  href: string | UrlObject
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
@@ -22,7 +23,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   muiVariant?: TabsProps['variant']
   textVariant?: TypographyProps['variant']
   value: T | undefined
-  options: TabOption<T>[]
+  options: readonly TabOption<T>[]
   onChange?: (value: T) => void
 }
 
@@ -35,28 +36,24 @@ export const TabsSwitcher = <T extends string | number>({
   value,
   textVariant,
   ...props
-}: TabsSwitcherProps<T>) => {
-  const pathname = usePathname()
-  return (
-    <Tabs
-      variant={muiVariant}
-      textColor="inherit"
-      value={value ?? false}
-      onChange={(_, newValue) => onChange?.(newValue)}
-      className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
-      {...props}
-    >
-      {options.map(({ value, label, sx, ...props }) => (
-        <Tab
-          key={value}
-          value={value}
-          component={Link}
-          href={`${pathname}?tab=${value}`}
-          label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
-          sx={{ ...sx, whiteSpace: 'nowrap' }}
-          {...props}
-        />
-      ))}
-    </Tabs>
-  )
-}
+}: TabsSwitcherProps<T>) => (
+  <Tabs
+    variant={muiVariant}
+    textColor="inherit"
+    value={value ?? false}
+    onChange={(_, newValue) => onChange?.(newValue)}
+    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
+    {...props}
+  >
+    {options.map(({ value, label, sx, ...props }) => (
+      <Tab
+        key={value}
+        value={value}
+        component={Link}
+        label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
+        sx={{ ...sx, whiteSpace: 'nowrap' }}
+        {...props}
+      />
+    ))}
+  </Tabs>
+)
