@@ -72,7 +72,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           {
             props: { variant: 'link' },
             style: {
-              '&.MuiButton-root': {
+              '&.MuiButton-link': {
                 textTransform: 'none',
                 padding: 0,
                 height: Sizing[400],
@@ -82,7 +82,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           {
             props: { variant: 'inline' },
             style: {
-              '&.MuiButton-root': {
+              '&.MuiButton-inline': {
                 textTransform: 'none',
                 padding: 0,
                 border: 0,
