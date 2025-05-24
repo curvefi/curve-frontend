@@ -72,10 +72,24 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           {
             props: { variant: 'link' },
             style: {
-              textTransform: 'none',
-              padding: 0,
-              // !important is required as the sizes defined below with `buttonSize` have a higher specificity.
-              height: `${Sizing[400]} !important`,
+              '&.MuiButton-root': {
+                textTransform: 'none',
+                padding: 0,
+                height: Sizing[400],
+              },
+            },
+          },
+          {
+            props: { variant: 'inline' },
+            style: {
+              '&.MuiButton-root': {
+                textTransform: 'none',
+                padding: 0,
+                border: 0,
+                lineHeight: 1,
+                height: `auto`,
+                minWidth: 'unset',
+              },
             },
           },
         ],
