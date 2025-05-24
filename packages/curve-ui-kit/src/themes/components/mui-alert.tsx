@@ -26,6 +26,7 @@ export const defineMuiAlert = (
   styleOverrides: {
     root: handleBreakpoints({
       ...bodyXsRegular,
+      borderWidth: '2px',
       paddingInlineStart: Spacing.md,
       paddingInlineEnd: Spacing.sm,
       paddingBlockStart: Spacing.sm,
