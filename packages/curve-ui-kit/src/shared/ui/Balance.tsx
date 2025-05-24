@@ -69,7 +69,7 @@ const BalanceText = ({ symbol, balance }: BalanceTextProps) => (
 /**
  * Props for the Balance component
  */
-type Props = {
+export type Props = {
   /** The token symbol to display */
   symbol: string
   /** Controls how the max value is displayed:

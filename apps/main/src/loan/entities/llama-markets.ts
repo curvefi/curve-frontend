@@ -6,6 +6,7 @@ import { NetworkEnum } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
 import { Chain } from '@curvefi/prices-api'
 import { useQueries } from '@tanstack/react-query'
+import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -47,6 +48,8 @@ export type LlamaMarket = {
   deprecatedMessage?: string
   userHasPosition: boolean
 }
+
+export type LlamaMarketKey = DeepKeys<LlamaMarket>
 
 const DEPRECATED_LLAMAS: Record<string, () => string> = {
   '0x136e783846ef68C8Bd00a3369F787dF8d683a696': () =>
@@ -90,7 +93,7 @@ const convertLendingVault = (
       usdPrice: collateralBalanceUsd / collateralBalance,
     },
   },
-  utilizationPercent: (100 * totalDebtUsd) / totalAssetsUsd,
+  utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
   liquidityUsd: totalAssetsUsd - totalDebtUsd,
   rates: { lend: apyLend, borrow: apyBorrow },
   type: LlamaMarketType.Lend,
@@ -193,9 +196,9 @@ export const useLlamaMarkets = (userAddress?: Address) =>
             hasPositions: userVaults.size > 0 || userMints.size > 0,
             hasFavorites: favoriteMarketsSet.size > 0,
             markets: [
-              ...(lendingVaults.data ?? [])
-                .filter((vault) => vault.totalAssetsUsd)
-                .map((vault) => convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults)),
+              ...(lendingVaults.data ?? []).map((vault) =>
+                convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults),
+              ),
               ...(mintMarkets.data ?? []).map((market) =>
                 convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
               ),

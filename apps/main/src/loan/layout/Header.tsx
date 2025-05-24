@@ -3,7 +3,6 @@ import { type RefObject, useMemo, useRef } from 'react'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
-import useLayoutHeight from '@/loan/hooks/useLayoutHeight'
 import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import {
@@ -16,6 +15,7 @@ import {
 import { useChainId } from '@/loan/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -30,7 +30,8 @@ type HeaderProps = {
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const params = useParams() as UrlParams
   const mainNavRef = useRef<HTMLDivElement>(null)
-  useLayoutHeight(mainNavRef, 'mainNav')
+  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
 
   const rChainId = useChainId(params)
   const { lib } = useConnection<LlamaApi>()

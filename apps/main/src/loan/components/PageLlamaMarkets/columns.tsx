@@ -1,12 +1,9 @@
-import { useMemo } from 'react'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Address } from '@ui-kit/utils'
 import { CompactUsdCell, LineGraphCell, MarketTitleCell, PercentageCell, PriceCell, RateCell } from './cells'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
@@ -15,18 +12,20 @@ const { ColumnWidth } = SizesAndSpaces
 const columnHelper = createColumnHelper<LlamaMarket>()
 
 /** Define a hidden column. */
-const hidden = (id: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
-  columnHelper.accessor(id, {
+const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn: FilterFnOption<LlamaMarket>) =>
+  columnHelper.accessor(field, {
+    id,
     filterFn,
     meta: { hidden: true },
   })
+
+type LlamaColumn = ColumnDef<LlamaMarket, any>
 
 /** Columns for the lending markets table. */
 export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: t`Collateral • Borrow`,
     cell: MarketTitleCell,
-    size: ColumnWidth.lg,
     filterFn: filterByText,
   }),
   columnHelper.display({
@@ -62,7 +61,8 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(LlamaMarketColumnId.BorrowRate, {
+  columnHelper.accessor('rates.borrow', {
+    id: LlamaMarketColumnId.BorrowRate,
     header: t`7D Avg Borrow Rate`,
     cell: (c) => <RateCell market={c.row.original} type="borrow" />,
     meta: { type: 'numeric' },
@@ -75,7 +75,8 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
     size: ColumnWidth.md,
   }),
-  columnHelper.accessor(LlamaMarketColumnId.LendRate, {
+  columnHelper.accessor('rates.lend', {
+    id: LlamaMarketColumnId.LendRate,
     header: t`7D Avg Supply Yield`,
     cell: (c) => <RateCell market={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
@@ -96,57 +97,19 @@ export const LLAMA_MARKET_COLUMNS = [
     size: ColumnWidth.sm,
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
-    header: () => t`Available Liquidity`,
+    header: t`Available Liquidity`,
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden(LlamaMarketColumnId.Chain, multiFilterFn),
-  hidden(LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
-  hidden(LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
-  hidden(LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(LlamaMarketColumnId.UserHasPosition, boolFilterFn),
-  hidden(LlamaMarketColumnId.Rewards, listFilterFn),
-  hidden(LlamaMarketColumnId.Type, multiFilterFn),
-] satisfies ColumnDef<LlamaMarket, any>[]
+  hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
+  hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
+  hidden('assets.borrowed.symbol', LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
+  hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
+  hidden(LlamaMarketColumnId.UserHasPosition, LlamaMarketColumnId.UserHasPosition, boolFilterFn),
+  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listFilterFn),
+  hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
+] satisfies LlamaColumn[]
 
 export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.LiquidityUsd, desc: true }]
-
-export const useDefaultMarketColumnsVisibility: (address?: Address) => VisibilityGroup[] = (address) =>
-  useMemo(
-    () => [
-      {
-        label: t`Markets`,
-        options: [
-          { label: t`Available Liquidity`, columns: [LlamaMarketColumnId.LiquidityUsd], active: true, visible: true },
-          { label: t`Utilization`, columns: [LlamaMarketColumnId.UtilizationPercent], active: true, visible: true },
-        ],
-      },
-      {
-        label: t`Borrow`,
-        options: [
-          { label: t`Chart`, columns: [LlamaMarketColumnId.BorrowChart], active: true, visible: true },
-          {
-            label: t`Borrow Details`,
-            columns: [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed],
-            active: true,
-            visible: !!address,
-          },
-        ],
-      },
-      {
-        label: t`Lend`,
-        options: [
-          { label: t`Chart`, columns: [LlamaMarketColumnId.LendChart], active: false, visible: true },
-          {
-            label: t`Lend Details`,
-            columns: [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited],
-            active: true,
-            visible: !!address,
-          },
-        ],
-      },
-    ],
-    [address],
-  )

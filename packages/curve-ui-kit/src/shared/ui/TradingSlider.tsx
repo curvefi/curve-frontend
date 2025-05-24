@@ -34,7 +34,7 @@ export const TradingSlider = ({
     gap={Spacing.md}
     sx={{
       flexGrow: 1,
-      marginInlineStart: Spacing.md,
+      marginInlineStart: Spacing.sm,
     }}
   >
     <Slider

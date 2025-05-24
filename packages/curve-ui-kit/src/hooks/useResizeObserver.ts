@@ -51,7 +51,7 @@ export default function useResizeObserver(
       setDimensions((prev): [number, number] =>
         prev == null
           ? dimensions
-          : dimensions.find((dimension, i) => Math.abs(dimension - prev[i]) > threshold)
+          : dimensions.some((dimension, i) => Math.abs(dimension - prev[i]) > threshold)
             ? dimensions
             : prev,
       )
@@ -66,4 +66,15 @@ export default function useResizeObserver(
   }, [elementRef, threshold])
 
   return dimensions
+}
+
+export function useLayoutHeight<T extends string>(
+  elementRef: RefObject<Element | null>,
+  key: T,
+  updateLayoutHeight: (key: T, height: number) => void,
+) {
+  const [, height] = useResizeObserver(elementRef) ?? []
+  useEffect(() => {
+    if (height != null) updateLayoutHeight(key, height)
+  }, [height, key, updateLayoutHeight])
 }

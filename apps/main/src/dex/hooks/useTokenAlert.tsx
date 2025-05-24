@@ -46,6 +46,81 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0xb01dd87b29d187f3e3a4bf6cdaebfb97f3d9ab98': {
+        alertType: 'warning',
+        address: '0xb01dd87b29d187f3e3a4bf6cdaebfb97f3d9ab98',
+        message: (
+          <div>
+            <Trans>
+              The Liquity BOLD token has been redeployed. This pool contain the legacy BOLD token.{' '}
+              <StyledExternalLink href="https://www.liquity.org/blog/liquity-v2-redeployment">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6': {
+        alertType: 'danger',
+        address: '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0xc2e660c62f72c2ad35ace6db78a616215e2f2222': {
+        alertType: 'danger',
+        address: '0xc2e660c62f72c2ad35ace6db78a616215e2f2222',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x06d65ec13465ac5a4376dc101e1141252c4addf8': {
+        alertType: 'danger',
+        address: '0x06d65ec13465ac5a4376dc101e1141252c4addf8',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x870908873b6f940e025a7c6879678cb82ec6c9b6': {
+        alertType: 'danger',
+        address: '0x870908873b6f940e025a7c6879678cb82ec6c9b6',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])

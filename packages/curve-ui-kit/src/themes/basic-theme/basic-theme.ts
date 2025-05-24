@@ -11,7 +11,7 @@ export const basicMuiTheme = createMuiTheme({
     keys: ['mobile', 'tablet', 'desktop'] as const,
     values: {
       mobile: 0,
-      tablet: 640,
+      tablet: 820,
       desktop: 1200,
     },
     unit: 'px',

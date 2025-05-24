@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 import { TradingSlider } from '../TradingSlider'
 
 const TradingSliderComponent = (props: React.ComponentProps<typeof TradingSlider>) => {
@@ -52,8 +53,8 @@ const meta: Meta<typeof TradingSlider> = {
     percentage: 50,
     step: 1,
     textAlign: 'left',
-    onPercentageChange: (x) => console.info('Percentage changing:', x),
-    onPercentageCommitted: (x) => console.info('Percentage committed:', x),
+    onPercentageChange: fn(),
+    onPercentageCommitted: fn(),
   },
 }
 

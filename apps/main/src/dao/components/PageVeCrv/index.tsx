@@ -3,57 +3,68 @@ import styled from 'styled-components'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
+import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
 import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 
+const TABS: { label: string; formType: FormType }[] = [
+  { label: t`Lock More`, formType: 'adjust_crv' },
+  { label: t`Extend Lock`, formType: 'adjust_date' },
+  { label: t`Withdraw`, formType: 'withdraw' },
+]
+
 const FormCrvLocker = (pageProps: PageVecrv) => {
-  const { curve, rFormType, vecrvInfo, toggleForm } = pageProps
+  const { curve, rFormType, vecrvInfo } = pageProps
   const tabsRef = useRef<HTMLDivElement>(null)
+  const [selectedTab, setSelectedTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
   const { connectState } = useConnection<CurveApi>()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
-
-  const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
-  const [selectedTabIdx, setSelectedTabIdx] = useState<number>(0)
-
-  const { chainId, signerAddress } = curve ?? {}
-
-  const TABS: { label: string; formType: FormType }[] = [
-    { label: t`Increase Amount`, formType: 'adjust_crv' },
-    { label: t`Increase Lock`, formType: 'adjust_date' },
-  ]
-
-  // tabs positions
-  useEffect(() => {
-    if (!tabsRef.current || selectedTabIdx === null) return
-
-    const tabsNode = tabsRef.current
-    const tabsDOMRect = tabsNode.getBoundingClientRect()
-    const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
-      .map((n, idx) => {
-        const domRect = n.getBoundingClientRect()
-        const left = idx == -0 ? 0 : domRect.left - tabsDOMRect.left
-        const top = domRect.bottom - tabsDOMRect.top
-        return { left, width: domRect.width, top }
-      })
-
-    setTabPositions(updatedTabPositions)
-  }, [selectedTabIdx])
+  const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, selectedTab)
+  const signerAddress = curve?.signerAddress
+  const { chainId } = curve ?? {}
+  const canUnlock =
+    +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
 
   const setData = useCallback(async () => {
-    setFormValues(curve, isLoadingCurve, rFormType, {}, vecrvInfo, true)
-  }, [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues])
+    setFormValues(curve, isLoadingCurve, selectedTab, {}, vecrvInfo, true)
+  }, [curve, isLoadingCurve, vecrvInfo, selectedTab, setFormValues])
 
   useEffect(() => {
-    setSelectedTabIdx(rFormType === 'adjust_crv' ? 0 : 1)
-  }, [rFormType])
+    if (selectedTab === 'adjust_crv') {
+      setSelectedTabIdx(0)
+    } else if (selectedTab === 'adjust_date') {
+      setSelectedTabIdx(1)
+    } else if (selectedTab === 'withdraw') {
+      setSelectedTabIdx(2)
+    }
+  }, [selectedTab, setSelectedTabIdx])
+
+  const handleTabClick = (formType: FormType, idx: number) => {
+    setSelectedTab(formType)
+    setSelectedTabIdx(idx)
+  }
+
+  useEffect(() => {
+    if (canUnlock) {
+      setSelectedTab('withdraw')
+    }
+    // if user has no locked crv, and is not on the create tab, set the tab to create
+    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && selectedTab !== 'create') {
+      setSelectedTab('create')
+    }
+    // if user has locked crv, and is on the create tab, set the tab to adjust_crv
+    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && selectedTab === 'create') {
+      setSelectedTab('adjust_crv')
+    }
+  }, [selectedTab, vecrvInfo, canUnlock])
 
   // fetch locked crv data
   useEffect(() => {
@@ -61,17 +72,18 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, signerAddress, isPageVisible])
 
-  return rFormType === 'adjust_crv' || rFormType === 'adjust_date' ? (
+  return selectedTab === 'adjust_crv' || selectedTab === 'adjust_date' || selectedTab === 'withdraw' ? (
     <>
       <StyledTabSlide activeIdx={selectedTabIdx}>
         <SlideTabs ref={tabsRef}>
           {TABS.map(({ formType, label }, idx) => (
             <SlideTab
               key={label}
+              disabled={canUnlock && formType !== 'withdraw'} // disable other tabs if user can unlock
               tabLeft={tabPositions[idx]?.left}
               tabWidth={tabPositions[idx]?.width}
               tabTop={tabPositions[idx]?.top}
-              onChange={() => toggleForm(formType)}
+              onChange={() => handleTabClick(formType, idx)}
               tabIdx={idx}
               label={label}
             />
@@ -79,8 +91,9 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
         </SlideTabs>
       </StyledTabSlide>
 
-      {rFormType === 'adjust_crv' && <FormLockCrv {...pageProps} />}
-      {rFormType === 'adjust_date' && <FormLockDate {...pageProps} />}
+      {selectedTab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={selectedTab} />}
+      {selectedTab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={selectedTab} />}
+      {selectedTab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={selectedTab} />}
     </>
   ) : (
     <FormLockCreate {...pageProps} />

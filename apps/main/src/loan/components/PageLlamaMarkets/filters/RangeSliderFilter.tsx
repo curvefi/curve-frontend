@@ -1,13 +1,13 @@
 import { get } from 'lodash'
 import { useCallback, useMemo } from 'react'
+import type { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
 import type { SliderProps } from '@mui/material/Slider/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
-import { cleanColumnId } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -30,6 +30,7 @@ export const RangeSliderFilter = <T extends unknown>({
   title,
   format,
   field,
+  id,
   defaultMinimum = 0,
 }: {
   columnFilters: Record<string, unknown>
@@ -37,10 +38,10 @@ export const RangeSliderFilter = <T extends unknown>({
   data: T[]
   title: string
   field: DeepKeys<T>
+  id: LlamaMarketColumnId
   format: (value: number) => string
   defaultMinimum?: number
 }) => {
-  const id = cleanColumnId(field)
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
   const defaultValue = useMemo((): NumberRange => {

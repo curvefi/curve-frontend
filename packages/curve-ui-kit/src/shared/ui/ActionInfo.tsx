@@ -14,7 +14,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, type SxProps } from '@ui-kit/utils'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -25,6 +25,8 @@ type ComponentSize = 'small' | 'medium' | 'large'
 type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
+  /** Custom color for the label text */
+  labelColor?: React.ComponentProps<typeof Typography>['color']
   /** Primary value to display and copy */
   value: string
   /** Custom color for the value text */
@@ -49,6 +51,7 @@ type ActionInfoProps = {
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
+  sx?: SxProps
 }
 
 const labelSize = {
@@ -71,6 +74,7 @@ const valueSize = {
 
 const ActionInfo = ({
   label,
+  labelColor,
   prevValue,
   prevValueColor,
   value,
@@ -83,6 +87,7 @@ const ActionInfo = ({
   copy = false,
   copiedTitle,
   loading = false,
+  sx,
 }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
@@ -92,17 +97,19 @@ const ActionInfo = ({
   }
 
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-      <Typography flexGrow={1} variant={labelSize[size]} color="textSecondary">
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx}>
+      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'}>
         {label}
       </Typography>
 
-      {prevValue && (
-        <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        {prevValue && (
           <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textTertiary'}>
             {prevValue}
           </Typography>
+        )}
 
+        {prevValue && (
           <ArrowForwardIcon
             sx={{
               width: IconSize.sm,
@@ -110,32 +117,33 @@ const ActionInfo = ({
               color: (t) => t.palette.text.tertiary,
             }}
           />
-        </Stack>
-      )}
+        )}
 
-      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-        {valueLeft}
+        {/** Additional stack to add some space between left (icon), value and right (icon) */}
+        <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+          {valueLeft}
 
-        <WithSkeleton loading={!!loading}>
-          <Tooltip
-            title={valueTooltip}
-            placement="top"
-            slotProps={{
-              popper: {
-                sx: {
-                  userSelect: 'none',
-                  pointerEvents: 'none',
+          <WithSkeleton loading={!!loading}>
+            <Tooltip
+              title={valueTooltip}
+              placement="top"
+              slotProps={{
+                popper: {
+                  sx: {
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  },
                 },
-              },
-            }}
-          >
-            <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-              {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
-            </Typography>
-          </Tooltip>
-        </WithSkeleton>
+              }}
+            >
+              <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
+                {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
+              </Typography>
+            </Tooltip>
+          </WithSkeleton>
 
-        {valueRight}
+          {valueRight}
+        </Stack>
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">

@@ -1,24 +1,12 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { flexRender, type Header, type SortDirection } from '@tanstack/react-table'
+import { flexRender, type Header } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getAlignment, getExtraColumnPadding, getFlexAlignment, type TableItem } from './data-table.utils'
 
 const { Spacing } = SizesAndSpaces
-
-const SortArrow = ({ isSorted, canSort }: { isSorted: false | SortDirection; canSort: boolean }) => (
-  <ArrowDownIcon
-    sx={{
-      ...(isSorted === 'asc' && { transform: `rotate(180deg)` }),
-      verticalAlign: 'text-bottom',
-      fontSize: isSorted ? 20 : 0,
-      transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
-      visibility: canSort ? 'visible' : 'hidden', // render it invisible to avoid layout shift
-    }}
-  />
-)
 
 export const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown> }) => {
   const { column } = header
@@ -52,7 +40,12 @@ export const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, 
       >
         <Stack direction="row" justifyContent={getFlexAlignment(column)} alignItems="end">
           {flexRender(column.columnDef.header, header.getContext())}
-          <SortArrow isSorted={isSorted} canSort={canSort} />
+          <RotatableIcon
+            icon={ArrowDownIcon}
+            rotated={isSorted === 'asc'}
+            fontSize={isSorted ? 20 : 0}
+            isEnabled={canSort}
+          />
         </Stack>
       </Typography>
     )

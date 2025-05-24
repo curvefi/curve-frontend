@@ -68,7 +68,7 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   const headerHeight = useHeaderHeight(bannerHeight)
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
-    <Box sx={{ marginBlockEnd: Spacing.xxl }}>
+    <Box sx={{ marginBlockEnd: Spacing.xxl, marginInline: Spacing.md }}>
       {showSkeleton ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
