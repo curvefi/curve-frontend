@@ -10,18 +10,15 @@ import { TradingSlider } from './TradingSlider'
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 function clampBalance(balance: number | string, maxBalance?: number) {
-  let newBalance = Number(balance)
+  const newBalance = Math.max(0, Number(balance)) // Disallow negative values
 
-  // Disallow negative values.
-  newBalance = Math.max(0, newBalance)
+  if (maxBalance == null) {
+    return newBalance
+  }
 
   // We only clamp the positive side if there's a max balance.
   // This is up to debate and might be removed, it could be considered annoying UX.
-  if (maxBalance != null) {
-    newBalance = Math.min(newBalance, maxBalance)
-  }
-
-  return newBalance
+  return Math.min(newBalance, maxBalance)
 }
 
 type HelperMessageProps = {
@@ -35,7 +32,7 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
       backgroundColor: (t) => t.design.Layer[3].Fill,
       paddingBlock: Spacing.sm,
       paddingInlineStart: Spacing.sm,
-      outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
+      ...(isError && { outline: (t) => `1px solid ${t.design.Layer.Feedback.Error}` }),
     }}
   >
     {typeof message === 'string' ? (
@@ -82,15 +79,13 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
         },
       },
     }}
-    onClick={(e) => {
-      /**
-       * Select all content when clicked.
-       * This prevents unintended behavior when users click on the input field.
-       * For example, if the field contains "5000" and a user clicks on the left
-       * to type "4", it would become "45000" instead of the likely intended "4".
-       */
-      ;(e.target as HTMLInputElement).select()
-    }}
+    /**
+     * Select all content when clicked.
+     * This prevents unintended behavior when users click on the input field.
+     * For example, if the field contains "5000" and a user clicks on the left
+     * to type "4", it would become "45000" instead of the likely intended "4".
+     */
+    onFocus={(e) => (e.target as HTMLInputElement).select()}
     onChange={(e) => {
       /**
        * We clamp here and not in the onChange handler passed as property, because

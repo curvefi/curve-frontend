@@ -4,9 +4,9 @@ import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import type { SystemStyleObject, Theme } from '@mui/system' // Can't use SxProps for some reason inside an sx *function*
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui-kit/utils'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow } from './DataRow'
 import { EmptyStateRow } from './EmptyStateRow'
@@ -30,7 +30,7 @@ export const DataTable = <T extends TableItem>({
   headerHeight: string
   emptyText: string
   children?: ReactNode // passed to <FilterRow />
-  rowSx?: SystemStyleObject<Theme>
+  rowSx?: SxProps
   minRowHeight?: number
   expandedPanel: ExpandedPanel<T>
 }) => (
