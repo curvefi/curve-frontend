@@ -89,6 +89,8 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
                 lineHeight: 1,
                 height: `auto`,
                 minWidth: 'unset',
+                textAlign: 'start',
+                justifyContent: 'start',
               },
             },
           },
