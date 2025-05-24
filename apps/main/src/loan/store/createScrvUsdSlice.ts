@@ -391,8 +391,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
 
         try {
-          console.info('redeem', amount)
-
           const transactionHash = await lendApi.st_crvUSD.redeem(amount)
 
           get()[sliceKey].setStateByKey('withdrawTransaction', {

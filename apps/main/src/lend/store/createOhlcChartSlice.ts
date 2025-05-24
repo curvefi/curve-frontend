@@ -418,6 +418,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
       try {
         const { pools, ohlc } = await getOracle({
+          endpoint: 'lending',
           chain: network as Chain,
           controller: checkSummedController as Address,
           interval,
@@ -510,6 +511,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
       try {
         const { pools, ohlc } = await getOracle({
+          endpoint: 'lending',
           chain: network as Chain,
           controller: checkSummedController as Address,
           interval,
