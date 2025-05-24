@@ -97,8 +97,11 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
     // create loan prices
     if (formValues.n && liqRangesMapper && chartOhlcObject.data) {
       const currentPrices = liqRangesMapper[formValues.n].prices
-      // flip order to match other data
-      liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
+
+      if (currentPrices.length !== 0) {
+        // flip order to match other data
+        liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
+      }
     }
 
     // current loan prices
@@ -223,6 +226,10 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
     return 'day' // 14d
   }, [timeOption])
 
+  /*
+   * Fetch both oracle and llamma data at once in order to have access to volume data in
+   * the oracle pools based ohlc chart.
+   */
   const refetchPricesData = useCallback(() => {
     void fetchOracleOhlcData(
       rChainId,

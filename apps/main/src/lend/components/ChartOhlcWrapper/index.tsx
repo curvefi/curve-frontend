@@ -117,8 +117,11 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     if (formValues.n && liqRangesMapper && currentChart.data) {
       if (liqRangesMapper[formValues.n].prices.length !== 0) {
         const currentPrices = liqRangesMapper[formValues.n].prices
-        // flip order to match other data
-        liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
+
+        if (currentPrices.length !== 0) {
+          // flip order to match other data
+          liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
+        }
       } else {
         const currentPrices = loanCreateLeverageDetailInfo?.prices
 
@@ -296,39 +299,15 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     timeUnit,
   ])
 
-  // initial fetch
+  /*
+   * Fetch both oracle and llamma data at once in order to have access to volume data in
+   * the oracle pools based ohlc chart.
+   */
   useEffect(() => {
     if (market !== undefined) {
-      void fetchLlammaOhlcData(
-        rChainId,
-        rOwmId,
-        market.addresses.amm,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
-      void fetchOraclePoolOhlcData(
-        rChainId,
-        market.addresses.controller,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
+      refetchPricesData()
     }
-  }, [
-    selectedChartIndex,
-    rChainId,
-    chartInterval,
-    chartTimeSettings.end,
-    chartTimeSettings.start,
-    timeUnit,
-    fetchLlammaOhlcData,
-    fetchOraclePoolOhlcData,
-    market,
-    rOwmId,
-  ])
+  }, [market, refetchPricesData])
 
   const fetchMoreChartData = useCallback(
     (lastFetchEndTime: number) => {
