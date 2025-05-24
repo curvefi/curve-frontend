@@ -2,18 +2,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import PoolActivity from '@/loan/components/ChartOhlcWrapper/PoolActivity'
 import useStore from '@/loan/store/useStore'
+import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ChartWrapper from '@ui/Chart'
+import ChartWrapper, { type ChartWrapperProps } from '@ui/Chart/ChartWrapper'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
+import TextCaption from '@ui/TextCaption'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
 
 const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps) => {
   const address = llamma?.address ?? ''
+  const controller = llamma?.controller ?? ''
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
@@ -35,16 +38,13 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
   const theme = useUserProfileStore((state) => state.theme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const chartFetchStatus = useStore((state) => state.ohlcCharts.chartFetchStatus)
+  const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
+  const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const timeOption = useStore((state) => state.ohlcCharts.timeOption)
-  const refetchingCapped = useStore((state) => state.ohlcCharts.refetchingCapped)
-  const lastFetchEndTime = useStore((state) => state.ohlcCharts.lastFetchEndTime)
-  const chartOhlcData = useStore((state) => state.ohlcCharts.chartOhlcData)
-  const volumeData = useStore((state) => state.ohlcCharts.volumeData)
-  const oraclePriceData = useStore((state) => state.ohlcCharts.oraclePriceData)
   const setChartTimeOption = useStore((state) => state.ohlcCharts.setChartTimeOption)
-  const fetchOhlcData = useStore((state) => state.ohlcCharts.fetchOhlcData)
-  const fetchMoreOhlcData = useStore((state) => state.ohlcCharts.fetchMoreOhlcData)
+  const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
+  const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
+  const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
   const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
@@ -58,6 +58,10 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
 
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+  const [selectedChartIndex, setChartSelectedIndex] = useState(0)
+
+  const chartOhlcObject = selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc
+  const ohlcDataUnavailable = chartLlammaOhlc.dataDisabled && chartOraclePoolOhlc.dataDisabled
 
   const selectedLiqRange = useMemo(() => {
     const liqRanges: LiquidationRanges = {
@@ -71,7 +75,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
         price2: [],
       }
 
-      for (const data of chartOhlcData) {
+      for (const data of chartOhlcObject.data) {
         range.price1 = [
           ...range.price1,
           {
@@ -91,35 +95,35 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
     }
 
     // create loan prices
-    if (formValues.n && liqRangesMapper && chartOhlcData) {
+    if (formValues.n && liqRangesMapper && chartOhlcObject.data) {
       const currentPrices = liqRangesMapper[formValues.n].prices
       // flip order to match other data
       liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
     }
 
     // current loan prices
-    if (userPrices && chartOhlcData) {
+    if (userPrices && chartOhlcObject.data) {
       liqRanges.current = formatRange(userPrices)
     }
     // increase loan prices
-    if (increaseLoanPrices && increaseLoanPrices.length !== 0 && chartOhlcData) {
+    if (increaseLoanPrices && increaseLoanPrices.length !== 0 && chartOhlcObject.data) {
       liqRanges.new = formatRange(increaseLoanPrices)
     }
     // decrease loan prices
-    if (decreaseLoanPrices && decreaseLoanPrices.length !== 0 && chartOhlcData) {
+    if (decreaseLoanPrices && decreaseLoanPrices.length !== 0 && chartOhlcObject.data) {
       liqRanges.new = formatRange(decreaseLoanPrices)
     }
     // increase collateral prices
-    if (increaseCollateralPrices && increaseCollateralPrices.length !== 0 && chartOhlcData) {
+    if (increaseCollateralPrices && increaseCollateralPrices.length !== 0 && chartOhlcObject.data) {
       liqRanges.new = formatRange(increaseCollateralPrices)
     }
     // decrease collateral prices
-    if (decreaseCollateralPrices && decreaseCollateralPrices.length !== 0 && chartOhlcData) {
+    if (decreaseCollateralPrices && decreaseCollateralPrices.length !== 0 && chartOhlcObject.data) {
       liqRanges.new = formatRange(decreaseCollateralPrices)
     }
 
     // deleverage prices
-    if (deleveragePrices && chartOhlcData) {
+    if (deleveragePrices && chartOhlcObject.data) {
       liqRanges.new = formatRange(deleveragePrices)
     }
 
@@ -127,7 +131,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
   }, [
     formValues.n,
     liqRangesMapper,
-    chartOhlcData,
+    chartOhlcObject.data,
     userPrices,
     increaseLoanPrices,
     decreaseLoanPrices,
@@ -148,6 +152,38 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
         },
       }
     : null
+
+  const selectChartList = useMemo(() => {
+    if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
+      return [{ label: t`Loading` }, { label: t`Loading` }]
+    }
+
+    if (chartOraclePoolOhlc.dataDisabled) {
+      return [{ label: t`${coins?.collateral.symbol} / crvUSD (LLAMMA)` }]
+    }
+
+    return [
+      {
+        label: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
+      },
+      {
+        label: t`${coins?.collateral.symbol} / crvUSD (LLAMMA)`,
+      },
+    ]
+  }, [
+    chartOraclePoolOhlc.borrowedToken.symbol,
+    chartOraclePoolOhlc.collateralToken.symbol,
+    chartOraclePoolOhlc.dataDisabled,
+    chartOraclePoolOhlc.fetchStatus,
+    coins?.collateral.symbol,
+  ])
+
+  // set chart selected index to llamma if oracle pool is disabled due to no oracle pools being found for market on the api
+  useEffect(() => {
+    if (chartOraclePoolOhlc.dataDisabled) {
+      setChartSelectedIndex(1)
+    }
+  }, [chartOraclePoolOhlc.dataDisabled, setChartSelectedIndex])
 
   const chartHeight = {
     expanded: 500,
@@ -187,73 +223,98 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
     return 'day' // 14d
   }, [timeOption])
 
-  const refetchPricesData = () => {
-    fetchOhlcData(rChainId, llammaId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
-  }
+  const refetchPricesData = useCallback(() => {
+    void fetchOracleOhlcData(
+      rChainId,
+      controller,
+      chartInterval,
+      timeUnit,
+      chartTimeSettings.start,
+      chartTimeSettings.end,
+    )
+    void fetchLlammaOhlcData(
+      rChainId,
+      llammaId,
+      address,
+      chartInterval,
+      timeUnit,
+      chartTimeSettings.start,
+      chartTimeSettings.end,
+    )
+  }, [
+    fetchOracleOhlcData,
+    rChainId,
+    controller,
+    chartInterval,
+    timeUnit,
+    chartTimeSettings.start,
+    chartTimeSettings.end,
+    fetchLlammaOhlcData,
+    llammaId,
+    address,
+  ])
 
   // fetch ohlc data
   useEffect(() => {
     if (llamma !== undefined) {
-      fetchOhlcData(
-        rChainId,
-        llammaId,
-        address,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
+      refetchPricesData()
     }
-  }, [
-    rChainId,
-    chartInterval,
-    chartTimeSettings.end,
-    chartTimeSettings.start,
-    timeUnit,
-    fetchOhlcData,
-    address,
-    llamma,
-    llammaId,
-  ])
+  }, [llamma, refetchPricesData])
 
   const fetchMoreChartData = useCallback(
     (lastFetchEndTime: number) => {
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      fetchMoreOhlcData(rChainId, address, chartInterval, timeUnit, +startTime, endTime)
+      void fetchMoreData(rChainId, controller, address, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit],
+    [timeOption, fetchMoreData, rChainId, controller, address, chartInterval, timeUnit],
   )
+
+  if (ohlcDataUnavailable) {
+    setChartExpanded(false)
+
+    return (
+      <StyledAlertBox alertType="">
+        <TextCaption isCaps isBold>
+          {t`Ohlc chart data and pool activity is not yet available for this market.`}
+        </TextCaption>
+      </StyledAlertBox>
+    )
+  }
+
+  const ChartWrapperProps: ChartWrapperProps = {
+    chartType: 'crvusd',
+    chartStatus: llamma ? chartOhlcObject.fetchStatus : 'LOADING',
+    chartHeight: chartHeight,
+    chartExpanded: chartExpanded,
+    themeType: theme,
+    ohlcData: chartOhlcObject.data,
+    volumeData: chartLlammaOhlc.volumeData,
+    oraclePriceData: chartOhlcObject.oraclePriceData,
+    liquidationRange: selectedLiqRange,
+    timeOption: timeOption,
+    selectChartList: selectChartList,
+    setChartTimeOption: setChartTimeOption,
+    refetchPricesData: refetchPricesData,
+    refetchingCapped: chartOhlcObject.refetchingCapped,
+    fetchMoreChartData: fetchMoreChartData,
+    lastFetchEndTime: chartOhlcObject.lastFetchEndTime,
+    toggleLiqRangeCurrentVisible: toggleLiqRangeCurrentVisible,
+    toggleLiqRangeNewVisible: toggleLiqRangeNewVisible,
+    toggleOraclePriceVisible: toggleOraclePriceVisible,
+    liqRangeCurrentVisible: liqRangeCurrentVisible,
+    liqRangeNewVisible: liqRangeNewVisible,
+    oraclePriceVisible: oraclePriceVisible,
+    latestOraclePrice: oraclePrice,
+    selectedChartIndex: selectedChartIndex,
+    setChartSelectedIndex: setChartSelectedIndex,
+  }
 
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
-        <ChartWrapper
-          chartType="crvusd"
-          chartStatus={llamma ? chartFetchStatus : 'LOADING'}
-          chartHeight={chartHeight}
-          chartExpanded={chartExpanded}
-          themeType={theme}
-          ohlcData={chartOhlcData}
-          volumeData={volumeData}
-          oraclePriceData={oraclePriceData}
-          liquidationRange={selectedLiqRange}
-          timeOption={timeOption}
-          selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
-          setChartTimeOption={setChartTimeOption}
-          refetchPricesData={refetchPricesData}
-          refetchingCapped={refetchingCapped}
-          fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={lastFetchEndTime}
-          toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
-          toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
-          toggleOraclePriceVisible={toggleOraclePriceVisible}
-          liqRangeCurrentVisible={liqRangeCurrentVisible}
-          liqRangeNewVisible={liqRangeNewVisible}
-          oraclePriceVisible={oraclePriceVisible}
-          latestOraclePrice={oraclePrice}
-        />
+        <ChartWrapper {...ChartWrapperProps} />
       </Wrapper>
       <LpEventsWrapperExpanded>
         <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />
@@ -284,33 +345,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
         )}
       </SelectorRow>
       {poolInfo === 'poolActivity' && <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />}
-      {poolInfo === 'chart' && (
-        <ChartWrapper
-          chartType="crvusd"
-          chartStatus={llamma ? chartFetchStatus : 'LOADING'}
-          chartHeight={chartHeight}
-          chartExpanded={false}
-          themeType={theme}
-          ohlcData={chartOhlcData}
-          volumeData={volumeData}
-          oraclePriceData={oraclePriceData}
-          liquidationRange={selectedLiqRange}
-          timeOption={timeOption}
-          selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
-          setChartTimeOption={setChartTimeOption}
-          refetchPricesData={refetchPricesData}
-          refetchingCapped={refetchingCapped}
-          fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={lastFetchEndTime}
-          toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
-          toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
-          toggleOraclePriceVisible={toggleOraclePriceVisible}
-          liqRangeCurrentVisible={liqRangeCurrentVisible}
-          liqRangeNewVisible={liqRangeNewVisible}
-          oraclePriceVisible={oraclePriceVisible}
-          latestOraclePrice={oraclePrice}
-        />
-      )}
+      {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} />}
     </Wrapper>
   )
 }
@@ -367,6 +402,13 @@ const ExpandButton = styled(SelectorButton)`
 
 const ExpandIcon = styled(Icon)`
   margin-left: var(--spacing-1);
+`
+
+const StyledAlertBox = styled(AlertBox)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-narrow) 0;
 `
 
 export default ChartOhlcWrapper

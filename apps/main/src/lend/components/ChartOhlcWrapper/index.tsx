@@ -6,7 +6,7 @@ import useStore from '@/lend/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ChartWrapper from '@ui/Chart'
+import ChartWrapper, { type ChartWrapperProps } from '@ui/Chart/ChartWrapper'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
@@ -185,7 +185,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     [market],
   )
 
-  const selectChartList = useCallback(() => {
+  const selectChartList = useMemo(() => {
     if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
       return [{ label: t`Loading` }, { label: t`Loading` }]
     }
@@ -362,36 +362,38 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     )
   }
 
+  const ChartWrapperProps: ChartWrapperProps = {
+    chartType: 'crvusd',
+    chartStatus: currentChart.fetchStatus,
+    chartHeight: chartHeight,
+    chartExpanded: false,
+    themeType: theme,
+    ohlcData: currentChart.data,
+    volumeData: chartLlammaOhlc.volumeData,
+    oraclePriceData: oraclePriceData,
+    liquidationRange: selectedLiqRange,
+    timeOption: timeOption,
+    selectedChartIndex: selectedChartIndex,
+    setChartSelectedIndex: setChartSelectedIndex,
+    selectChartList: selectChartList,
+    setChartTimeOption: setChartTimeOption,
+    refetchPricesData: refetchPricesData,
+    refetchingCapped: currentChart.refetchingCapped,
+    fetchMoreChartData: fetchMoreChartData,
+    lastFetchEndTime: currentChart.lastFetchEndTime,
+    toggleLiqRangeCurrentVisible: toggleLiqRangeCurrentVisible,
+    toggleLiqRangeNewVisible: toggleLiqRangeNewVisible,
+    toggleOraclePriceVisible: toggleOraclePriceVisible,
+    liqRangeCurrentVisible: liqRangeCurrentVisible,
+    liqRangeNewVisible: liqRangeNewVisible,
+    oraclePriceVisible: oraclePriceVisible,
+    latestOraclePrice: oraclePrice,
+  }
+
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
-        <ChartWrapper
-          chartType="crvusd"
-          chartStatus={currentChart.fetchStatus}
-          chartHeight={chartHeight}
-          chartExpanded={chartExpanded}
-          themeType={theme}
-          ohlcData={currentChart.data}
-          volumeData={chartLlammaOhlc.volumeData}
-          oraclePriceData={oraclePriceData}
-          liquidationRange={selectedLiqRange}
-          timeOption={timeOption}
-          selectChartList={selectChartList()}
-          setChartTimeOption={setChartTimeOption}
-          refetchPricesData={refetchPricesData}
-          refetchingCapped={currentChart.refetchingCapped}
-          fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={currentChart.lastFetchEndTime}
-          toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
-          toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
-          toggleOraclePriceVisible={toggleOraclePriceVisible}
-          liqRangeCurrentVisible={liqRangeCurrentVisible}
-          liqRangeNewVisible={liqRangeNewVisible}
-          oraclePriceVisible={oraclePriceVisible}
-          latestOraclePrice={oraclePrice}
-          selectedChartIndex={selectedChartIndex}
-          setChartSelectedIndex={setChartSelectedIndex}
-        />
+        <ChartWrapper {...ChartWrapperProps} />
       </Wrapper>
       <LpEventsWrapperExpanded>
         {market && <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />}
@@ -424,35 +426,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       {poolInfo === 'poolActivity' && market && (
         <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />
       )}
-      {poolInfo === 'chart' && (
-        <ChartWrapper
-          chartType="crvusd"
-          chartStatus={currentChart.fetchStatus}
-          chartHeight={chartHeight}
-          chartExpanded={false}
-          themeType={theme}
-          ohlcData={currentChart.data}
-          volumeData={chartLlammaOhlc.volumeData}
-          oraclePriceData={oraclePriceData}
-          liquidationRange={selectedLiqRange}
-          timeOption={timeOption}
-          selectedChartIndex={selectedChartIndex}
-          setChartSelectedIndex={setChartSelectedIndex}
-          selectChartList={selectChartList()}
-          setChartTimeOption={setChartTimeOption}
-          refetchPricesData={refetchPricesData}
-          refetchingCapped={currentChart.refetchingCapped}
-          fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={currentChart.lastFetchEndTime}
-          toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
-          toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
-          toggleOraclePriceVisible={toggleOraclePriceVisible}
-          liqRangeCurrentVisible={liqRangeCurrentVisible}
-          liqRangeNewVisible={liqRangeNewVisible}
-          oraclePriceVisible={oraclePriceVisible}
-          latestOraclePrice={oraclePrice}
-        />
-      )}
+      {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} />}
     </Wrapper>
   )
 }

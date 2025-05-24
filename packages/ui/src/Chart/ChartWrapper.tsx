@@ -20,7 +20,7 @@ import type {
   VolumeData,
 } from './types'
 
-type Props = {
+export type ChartWrapperProps = {
   chartType: ChartType
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
@@ -94,7 +94,7 @@ const ChartWrapper = ({
   toggleLiqRangeCurrentVisible,
   toggleLiqRangeNewVisible,
   latestOraclePrice,
-}: Props) => {
+}: ChartWrapperProps) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = [...ohlcData]
 

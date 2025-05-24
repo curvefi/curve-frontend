@@ -16,6 +16,7 @@ export async function getLoanDistribution(endpoint: Endpoint, chain: Chain, cont
 }
 
 type GetOracleParams = {
+  endpoint: Endpoint
   chain: Chain
   controller: Address
   interval: number
@@ -25,7 +26,7 @@ type GetOracleParams = {
 }
 
 export async function getOracle(
-  { chain, controller, interval, units = 'hour', start, end }: GetOracleParams,
+  { endpoint, chain, controller, interval, units = 'hour', start, end }: GetOracleParams,
   options?: Options,
 ) {
   const host = getHost(options)
@@ -40,7 +41,7 @@ export async function getOracle(
   })
 
   const resp = await fetch<Responses.GetOracleResponse>(
-    `${host}/v1/lending/oracle_ohlc/${chain}/${controller}?${params.toString()}`,
+    `${host}/v1/${endpoint}/oracle_ohlc/${chain}/${controller}?${params.toString()}`,
   )
 
   return Parsers.parseOracle(resp)
