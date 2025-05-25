@@ -7,7 +7,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CompactUsdCell, LineGraphCell, MarketTitleCell, PercentageCell, PriceCell, RateCell } from './cells'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
-const { ColumnWidth } = SizesAndSpaces
+const {
+  Width: { column: ColumnWidth },
+} = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LlamaMarket>()
 
