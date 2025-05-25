@@ -1,0 +1,155 @@
+import { useRef } from 'react'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Stack from '@mui/material/Stack'
+import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
+
+const Spinner = () => (
+  <CircularProgress
+    size={20}
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: '0 auto',
+      color: (theme) => theme.palette.text.secondary,
+    }}
+  />
+)
+
+/** Represents a selectable option in the dropdown menu */
+type Option<T extends string> = {
+  /** Unique identifier for the option */
+  id: T
+  /** Display text for the option */
+  label: string
+}
+
+type Props<T extends string> = {
+  /** Text to display on the primary button */
+  primary: string
+  /** Array of options to display in the dropdown menu */
+  options?: Option<T>[]
+  /** Whether the dropdown menu is currently open */
+  open: boolean
+  /** Whether the button is disabled */
+  disabled?: boolean
+  /** Whether an action is currently executing (shows spinner) */
+  executing?: boolean
+  /** Callback fired when the primary button is clicked */
+  onPrimary: () => void
+  /** Callback fired when a dropdown option is selected */
+  onOption?: (option: T) => void
+  /** Callback fired when the dropdown should open */
+  onOpen?: () => void
+  /** Callback fired when the dropdown should close */
+  onClose?: () => void
+}
+
+/**
+ * A split button component that combines a primary action button with an optional dropdown menu.
+ * The dropdown opens upward from the right side and contains additional action options.
+ *
+ * @example
+ * ```tsx
+ * <ButtonMenu
+ *   primary="Save"
+ *   options={[
+ *     { id: 'save-as', label: 'Save As...' },
+ *     { id: 'save-copy', label: 'Save Copy' }
+ *   ]}
+ *   open={isMenuOpen}
+ *   onPrimary={() => save()}
+ *   onOption={(optionId) => handleOptionSelect(optionId)}
+ *   onOpen={() => setIsMenuOpen(true)}
+ *   onClose={() => setIsMenuOpen(false)}
+ * />
+ * ```
+ *
+ * Menu implementation based on https://mui.com/material-ui/react-menu/#basic-menu
+ */
+export const ButtonMenu = <T extends string>({
+  primary,
+  options = [],
+  open,
+  disabled = false,
+  executing = false,
+  onPrimary,
+  onOption,
+  onOpen,
+  onClose,
+}: Props<T>) => {
+  const anchorEl = useRef<HTMLDivElement>(null)
+
+  return (
+    <Stack ref={anchorEl} direction="row" gap={'1px'}>
+      <Button color="primary" disabled={disabled || executing} sx={{ flexGrow: 1 }} onClick={onPrimary}>
+        {primary}
+      </Button>
+
+      {options.length > 0 && (
+        <Button
+          color="primary"
+          disabled={disabled || executing}
+          sx={{ width: ButtonSize.md, height: ButtonSize.md, minWidth: 'unset' }}
+          onClick={() => onOpen?.()}
+        >
+          {executing ? <Spinner /> : <ChevronDownIcon sx={{ width: IconSize.lg, height: IconSize.lg }} />}
+        </Button>
+      )}
+
+      {options.length > 0 && (
+        <Menu
+          anchorEl={anchorEl.current}
+          open={open}
+          onClose={() => onClose?.()}
+          // Modify anchor and transform to open upwards from the right
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                width: anchorEl.current?.clientWidth,
+                transform: 'translateY(-10px) !important',
+                ul: { padding: 0, margin: Spacing.sm },
+                li: { padding: 0 },
+                // I prefer this over hacking the ul into display flex (it's block by default) just for a gap
+                'li + li': { marginBlock: Spacing.xs },
+              },
+            },
+          }}
+        >
+          {options.map((option) => (
+            <MenuItem key={option.id} onClick={() => onOption?.(option.id)}>
+              <Button
+                color="secondary"
+                sx={{
+                  flexGrow: 1,
+                  overflow: 'hidden',
+                  display: 'block',
+                  textOverflow: 'ellipsis',
+                  // We're setting display to block for the ellipsis, but that screws the lineheight,
+                  // so we have to set it back to just 1 for vertical centering
+                  '&': { lineHeight: '1' },
+                }}
+              >
+                {option.label}
+              </Button>
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
+    </Stack>
+  )
+}
