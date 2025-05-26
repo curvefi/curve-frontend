@@ -116,6 +116,12 @@ export const ButtonMenu = <T extends string>({
                   '--options-gap': Spacing.sm,
                   transform: `translateY(calc(-1 * var(--options-gap))) !important`,
                 }),
+
+                /**
+                 * Sets the menu width to match the anchor element (the button stack).
+                 * By default, MUI Menu auto-sizes to fit content, but we want consistent
+                 * width alignment with the trigger buttons (see Figma).
+                 */
                 width: anchorEl.current?.clientWidth,
                 ul: { padding: 0, margin: Spacing.sm },
                 li: { padding: 0 },
