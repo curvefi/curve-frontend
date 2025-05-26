@@ -5,8 +5,8 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
