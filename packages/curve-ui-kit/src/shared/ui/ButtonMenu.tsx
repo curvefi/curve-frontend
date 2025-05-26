@@ -82,7 +82,7 @@ export const ButtonMenu = <T extends string>({
           color="primary"
           disabled={disabled || executing}
           sx={{ width: ButtonSize.md, height: ButtonSize.md, minWidth: 'unset' }}
-          onClick={() => onOpen?.()}
+          onClick={onOpen}
         >
           {executing ? <Spinner /> : <ChevronDownIcon sx={{ width: IconSize.lg, height: IconSize.lg }} />}
         </Button>
@@ -92,7 +92,7 @@ export const ButtonMenu = <T extends string>({
         <Menu
           anchorEl={anchorEl.current}
           open={open}
-          onClose={() => onClose?.()}
+          onClose={onClose}
           // Modify anchor and transform to open upwards from the right
           anchorOrigin={{
             vertical: 'top',
