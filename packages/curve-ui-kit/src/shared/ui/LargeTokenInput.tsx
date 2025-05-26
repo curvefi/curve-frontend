@@ -159,13 +159,26 @@ type Props = {
   isError?: boolean
 
   /**
+   * Number of decimal places to round balance values to when calculating from percentage.
+   * @default 4
+   */
+  balanceDecimals?: number
+
+  /**
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
   onBalance: (balance: number) => void
 }
 
-export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = false, onBalance }: Props) => {
+export const LargeTokenInput = ({
+  tokenSelector,
+  maxBalance,
+  message,
+  isError = false,
+  balanceDecimals = 4,
+  onBalance,
+}: Props) => {
   const [percentage, setPercentage] = useState(0)
   const [balance, setBalance] = useState(0)
 
@@ -176,13 +189,17 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
       if (!maxBalance?.balance) return
-      const newBalance = (maxBalance.balance * newPercentage) / 100
+
+      let newBalance = (maxBalance.balance * newPercentage) / 100
+      if (balanceDecimals != null) {
+        newBalance = Number(newBalance.toFixed(balanceDecimals))
+      }
 
       setPercentage(newPercentage)
       setBalance(newBalance)
       onBalance(newBalance)
     },
-    [maxBalance, onBalance],
+    [maxBalance, balanceDecimals, onBalance],
   )
 
   const handleBalanceChange = useCallback(
