@@ -36,7 +36,7 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
     }}
   >
     {typeof message === 'string' ? (
-      <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textSecondary'}>
+      <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textTertiary'}>
         {message}
       </Typography>
     ) : (
