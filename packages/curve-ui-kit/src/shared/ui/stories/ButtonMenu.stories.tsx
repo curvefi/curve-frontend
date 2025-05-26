@@ -31,8 +31,9 @@ const meta: Meta<typeof ButtonMenu> = {
       description: 'Disables the entire button menu',
     },
     executing: {
-      control: 'boolean',
-      description: 'Shows loading state',
+      control: 'select',
+      options: [false, 'primary'],
+      description: 'Shows loading state - false, "primary", or option id',
     },
     onPrimary: {
       action: 'onPrimary',
@@ -99,9 +100,15 @@ export const Disabled: Story = {
   },
 }
 
-export const Executing: Story = {
+export const ExecutingPrimary: Story = {
   args: {
-    executing: true,
+    executing: 'primary',
+  },
+}
+
+export const ExecutingOption: Story = {
+  args: {
+    executing: 'increase-collateral',
   },
 }
 
