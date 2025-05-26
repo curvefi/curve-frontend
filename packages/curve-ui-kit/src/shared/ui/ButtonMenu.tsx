@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
@@ -120,8 +121,18 @@ export const ButtonMenu = <T extends string>({
           slotProps={{
             paper: {
               sx: {
+                /**
+                 * Positions the menu with a small gap above the button component.
+                 *
+                 * - handleBreakpoints requires Responsive type values, preventing direct interpolation
+                 * - Uses CSS custom property to store spacing value for string interpolation
+                 * - !important is required to override MUI's internal high-specificity styles
+                 */
+                ...handleBreakpoints({
+                  '--options-gap': Spacing.sm,
+                  transform: `translateY(calc(-1 * var(--options-gap))) !important`,
+                }),
                 width: anchorEl.current?.clientWidth,
-                transform: 'translateY(-10px) !important',
                 ul: { padding: 0, margin: Spacing.sm },
                 li: { padding: 0 },
                 // I prefer this over hacking the ul into display flex (it's block by default) just for a gap
