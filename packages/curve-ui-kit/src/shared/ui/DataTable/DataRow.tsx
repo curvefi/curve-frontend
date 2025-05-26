@@ -64,7 +64,13 @@ export const DataRow = <T extends TableItem>({
           onClick={isMobile ? () => row.toggleExpanded() : onClickDesktop}
         >
           {visibleCells.map((cell, index) => (
-            <DataCell key={cell.id} cell={cell} isLast={index == visibleCells.length - 1} isMobile={isMobile} />
+            <DataCell
+              key={cell.id}
+              cell={cell}
+              isFirst={!index}
+              isLast={index == visibleCells.length - 1}
+              isMobile={isMobile}
+            />
           ))}
         </TableRow>
       </InvertOnHover>

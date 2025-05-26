@@ -16,10 +16,13 @@ export const DataCell = <T extends TableItem>({
   cell,
   isMobile,
   isLast,
+  isFirst,
 }: {
   cell: Cell<T, unknown>
   isMobile: boolean
-  isLast: boolean // todo: get rid of column hidden meta, use column.getIsLastColumn()
+  // todo: get rid of column hidden meta and use visibility + use column.getIsLastColumn()
+  isFirst: boolean
+  isLast: boolean
 }) => {
   const { column, row } = cell
   const { variant, borderRight } = column.columnDef.meta ?? {}
@@ -37,7 +40,7 @@ export const DataCell = <T extends TableItem>({
       component="td"
       sx={{
         ...(!showCollapseIcon && sx),
-        ...getExtraColumnPadding(column),
+        ...getExtraColumnPadding({ isFirst, isLast }),
         ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
       }}
       data-testid={`data-table-cell-${column.id}`}

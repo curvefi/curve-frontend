@@ -26,9 +26,9 @@ const { Spacing } = SizesAndSpaces
  * In the figma design, the first and last columns seem to be aligned to the table title.
  * However, the normal padding causes them to be misaligned.
  */
-export const getExtraColumnPadding = <T extends any>(column: Column<T>) => ({
-  ...(column.getIsFirstColumn() && { paddingInlineStart: Spacing.md }),
-  ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
+export const getExtraColumnPadding = <T extends any>({ isFirst, isLast }: { isFirst: boolean; isLast: boolean }) => ({
+  ...(isFirst && { paddingInlineStart: Spacing.md }),
+  ...(isLast && { paddingInlineEnd: Spacing.md }),
 })
 
 export type FilterProps<T extends string> = {

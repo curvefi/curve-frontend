@@ -1,11 +1,10 @@
 import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { FavoriteMarketButton } from '@/loan/components/PageLlamaMarkets/FavoriteMarketButton'
-import { useFavoriteMarket } from '@/loan/entities/favorite-markets'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
@@ -26,9 +25,8 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market: { address, rewards, type, leverage } }: { market: LlamaMarket }) => {
-  const [isFavorite, toggleFavorite] = useFavoriteMarket(address)
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-  const iconColor = useTheme().design.Text.TextColors.Highlight
+  const isSmall = useMediaQuery('(max-width:1250px)')
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center">
       <Tooltip title={poolTypeTooltips[type]()}>
@@ -42,11 +40,15 @@ export const MarketBadges = ({ market: { address, rewards, type, leverage } }: {
 
       {leverage > 0 && (
         <Tooltip title={t`How much you can leverage your position`}>
-          <Chip
-            size="small"
-            color="highlight"
-            label={t`🔥 ${leverage.toPrecision(2)}x ${isMobile ? '' : t`leverage`}`}
-          />
+          {isMobile ? (
+            <Typography>🔥</Typography>
+          ) : (
+            <Chip
+              size="small"
+              color="highlight"
+              label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`}
+            />
+          )}
         </Tooltip>
       )}
 

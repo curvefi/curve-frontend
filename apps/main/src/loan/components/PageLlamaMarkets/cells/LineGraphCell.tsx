@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
 
-const graphSize = { width: 172, height: 48 }
+const graphSize = { width: 100, height: 48 }
 
 /**
  * Get the color for the line graph. Will be green if the last value is higher than the first, red if lower, and blue if equal.

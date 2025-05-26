@@ -36,7 +36,6 @@ export const DataTable = <T extends TableItem>({
 }) => (
   <Table
     sx={{
-      minWidth: MinWidth.table,
       backgroundColor: (t) => t.design.Layer[1].Fill,
       borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
     }}

@@ -124,6 +124,7 @@ describe(`LlamaLend Markets`, () => {
         .last()
         .scrollIntoView({ offset: { top: -height / 2, left: 0 } }) // scroll to the last row, make sure it's still visible
       if (breakpoint == 'mobile') {
+        cy.get(`[data-testid="expand-icon"]`).last().scrollIntoView()
         cy.get(`[data-testid="expand-icon"]`).last().click()
       }
       cy.wait('@lend-snapshots')

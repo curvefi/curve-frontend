@@ -21,7 +21,12 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
     <TokenPair chain={market.chain} assets={market.assets} />
     <Stack direction="column" gap={Spacing.xs}>
       <MarketBadges market={market} />
-      <Typography component={Stack} variant="tableCellL" direction="row" gap={2}>
+      <Typography
+        component={Stack}
+        variant={useMediaQuery((t) => t.breakpoints.down('tablet')) ? 'tableCellMBold' : 'tableCellL'}
+        direction="row"
+        gap={2}
+      >
         <MuiLink
           color="inherit"
           underline="none"
@@ -33,6 +38,13 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
             // cancel click on mobile so the panel can open, there is a separate button for it
             onClick: (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault(),
           })}
+          sx={{
+            // for very small screens, truncate the text and limit to a maximum width
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            maxWidth: '40vw', // adjust as needed
+          }}
         >
           {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
         </MuiLink>

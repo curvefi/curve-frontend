@@ -33,7 +33,6 @@ export const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, 
           ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         }}
         colSpan={header.colSpan}
-        width={header.getSize()}
         onClick={column.getToggleSortingHandler()}
         data-testid={`data-table-header-${column.id}`}
         variant="tableHeaderS"
