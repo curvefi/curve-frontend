@@ -56,22 +56,6 @@ type Props<T extends string> = {
  * A split button component that combines a primary action button with an optional dropdown menu.
  * The dropdown opens upward from the right side and contains additional action options.
  *
- * @example
- * ```tsx
- * <ButtonMenu
- *   primary="Save"
- *   options={[
- *     { id: 'save-as', label: 'Save As...' },
- *     { id: 'save-copy', label: 'Save Copy' }
- *   ]}
- *   open={isMenuOpen}
- *   onPrimary={() => save()}
- *   onOption={(optionId) => handleOptionSelect(optionId)}
- *   onOpen={() => setIsMenuOpen(true)}
- *   onClose={() => setIsMenuOpen(false)}
- * />
- * ```
- *
  * Menu implementation based on https://mui.com/material-ui/react-menu/#basic-menu
  */
 export const ButtonMenu = <T extends string>({
