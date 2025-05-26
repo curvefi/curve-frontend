@@ -51,15 +51,15 @@ export const ModalDialog = ({
   >
     <Card
       sx={{
-        ...SizesAndSpaces.ModalHeight.sm,
-        width: SizesAndSpaces.ModalWidth.sm,
+        ...SizesAndSpaces.Height.modal.sm,
+        width: SizesAndSpaces.Width.modal.sm,
         maxWidth: '100vw',
         display: 'flex',
         flexDirection: 'column',
 
-        [`@media (min-width: ${SizesAndSpaces.ModalWidth.md})`]: {
-          ...SizesAndSpaces.ModalHeight.md,
-          width: SizesAndSpaces.ModalWidth.md,
+        [`@media (min-width: ${SizesAndSpaces.Width.modal.md})`]: {
+          ...SizesAndSpaces.Height.modal.md,
+          width: SizesAndSpaces.Width.modal.md,
         },
       }}
     >
