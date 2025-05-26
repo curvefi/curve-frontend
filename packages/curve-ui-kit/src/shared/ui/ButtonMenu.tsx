@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
+import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -70,6 +71,7 @@ export const ButtonMenu = <T extends string>({
   onClose,
 }: Props<T>) => {
   const anchorEl = useRef<HTMLDivElement>(null)
+  const [stackWidth] = useResizeObserver(anchorEl) ?? []
 
   return (
     <Stack ref={anchorEl} direction="row" gap={'1px'}>
@@ -122,7 +124,7 @@ export const ButtonMenu = <T extends string>({
                  * By default, MUI Menu auto-sizes to fit content, but we want consistent
                  * width alignment with the trigger buttons (see Figma).
                  */
-                width: anchorEl.current?.clientWidth,
+                width: stackWidth,
                 ul: { padding: 0, margin: Spacing.sm },
                 li: { padding: 0 },
                 // I prefer this over hacking the ul into display flex (it's block by default) just for a gap
