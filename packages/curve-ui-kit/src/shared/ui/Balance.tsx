@@ -89,7 +89,7 @@ export type Props = {
 
 export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center">
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline={true} onClick={() => onMax?.(balance)}>
