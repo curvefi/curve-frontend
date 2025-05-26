@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
 
-const graphSize = { width: 100, height: 48 }
+const defaultGraphSize = { width: 100, height: 48 }
 
 /**
  * Get the color for the line graph. Will be green if the last value is higher than the first, red if lower, and blue if equal.
@@ -33,12 +33,13 @@ const calculateDomain =
 type RateCellProps = {
   market: LlamaMarket
   type: RateType
+  graphSize?: typeof defaultGraphSize
 }
 
 /**
  * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
  */
-export const LineGraphCell = ({ market, type }: RateCellProps) => {
+export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: RateCellProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
   const { snapshots, snapshotKey, isLoading, rate, error } = useSnapshots(market, type, entry?.isIntersecting)

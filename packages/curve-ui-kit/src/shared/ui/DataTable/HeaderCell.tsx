@@ -8,7 +8,15 @@ import { getAlignment, getExtraColumnPadding, getFlexAlignment, type TableItem }
 
 const { Spacing } = SizesAndSpaces
 
-export const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, unknown> }) => {
+export const HeaderCell = <T extends TableItem>({
+  header,
+  isFirst,
+  isLast,
+}: {
+  header: Header<T, unknown>
+  isFirst: boolean
+  isLast: boolean
+}) => {
   const { column } = header
   const isSorted = column.getIsSorted()
   const canSort = column.getCanSort()
@@ -23,7 +31,7 @@ export const HeaderCell = <T extends TableItem>({ header }: { header: Header<T, 
           padding: Spacing.sm,
           paddingBlockStart: 0,
           color: `text.${isSorted ? 'primary' : 'secondary'}`,
-          ...getExtraColumnPadding(column),
+          ...getExtraColumnPadding({ isFirst, isLast }),
           ...(canSort && {
             cursor: 'pointer',
             '&:hover': {

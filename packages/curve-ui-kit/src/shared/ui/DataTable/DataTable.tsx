@@ -13,7 +13,7 @@ import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 
-const { Sizing, MinWidth } = SizesAndSpaces
+const { Sizing } = SizesAndSpaces
 
 /**
  * DataTable component to render the table with headers and rows.
@@ -54,8 +54,13 @@ export const DataTable = <T extends TableItem>({
 
       {table.getHeaderGroups().map((headerGroup) => (
         <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
-          {headerGroup.headers.map((header) => (
-            <HeaderCell key={header.id} header={header} />
+          {headerGroup.headers.map((header, index) => (
+            <HeaderCell
+              key={header.id}
+              header={header}
+              isFirst={!index}
+              isLast={index == headerGroup.headers.length - 1}
+            />
           ))}
         </TableRow>
       ))}
