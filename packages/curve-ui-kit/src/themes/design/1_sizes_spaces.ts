@@ -265,12 +265,12 @@ export const SizesAndSpaces = {
   Width: {
     modal: MappedModalWidth,
     column: MappedColumnWidth,
-    actionCard: '29rem', // 464px
   },
   MinWidth: {
     table: { desktop: '60rem' }, // 960px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
+    actionCard: '20rem', // 320px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px

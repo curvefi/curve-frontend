@@ -8,7 +8,7 @@ import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
 import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveHealth'
 import { Withdraw, type Props as WithdrawProps } from './tabs/Withdraw'
 
-const { Spacing, Width } = SizesAndSpaces
+const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 
 const TABS_MAIN = [{ value: 'manage', label: t`Manage soft-liquidation`, href: '' }] as const
 
@@ -31,7 +31,13 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, withdraw }: 
     <Stack sx={{ gap: Spacing.sm }}>
       <Stack>
         <TabsSwitcher variant="contained" size="medium" value="manage" options={TABS_MAIN} />
-        <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, width: Width.actionCard }}>
+        <Box
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+            maxWidth: MaxWidth.actionCard,
+            minWidth: MinWidth.actionCard,
+          }}
+        >
           <TabsSwitcher
             variant="underlined"
             size="small"
