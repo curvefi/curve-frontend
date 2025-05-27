@@ -185,6 +185,7 @@ export const LargeTokenInput = ({
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
   const showBalance = maxBalance && maxBalance.showBalance !== false
+  const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
@@ -258,7 +259,7 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Second row containing (max) balance and sliders */}
-        {maxBalance && (
+        {showMaxBalance && (
           <Stack
             direction="row"
             gap={Spacing.sm}
