@@ -18,6 +18,8 @@ export const parseProposal = (x: Responses.GetProposalsResponse['proposals'][num
   voteCount: x.vote_count,
   votesFor: Number(BigInt(x.votes_for)) / 10 ** 18,
   votesAgainst: Number(BigInt(x.votes_against)) / 10 ** 18,
+  executionTx: x.execution_tx,
+  executionDate: x.execution_date ? toDate(x.execution_date) : null,
   executed: x.executed,
   totalSupply: Number(BigInt(x.total_supply)) / 10 ** 18,
   txCreation: x.transaction_hash,
