@@ -10,7 +10,6 @@ import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/Lendin
 import { LlamaMarketExpandedPanel } from '@/loan/components/PageLlamaMarkets/LlamaMarketExpandedPanel'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { type LlamaMarketsResult } from '@/loan/entities/llama-markets'
-import { useMediaQuery } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import {
   ExpandedState,
@@ -21,6 +20,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
+import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
@@ -38,11 +38,10 @@ const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
  */
 const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined) => {
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const groups = useMemo(() => createLlamaMarketsColumnOptions(hasPositions), [hasPositions])
   const visibilitySettings = useVisibilitySettings(groups)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
-  return { sortField, ...visibilitySettings, ...(isMobile && { columnVisibility }) }
+  return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }
 
 // todo: rename to LlamaMarketsTable
@@ -79,10 +78,6 @@ export const LendingMarketsTable = ({
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
 
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-  const isTablet = useMediaQuery((t) => t.breakpoints.down('desktop')) && !isMobile
-  const shouldStickFirstColumn = isTablet && !!hasPositions
-
   return (
     <Stack
       sx={{
@@ -96,8 +91,7 @@ export const LendingMarketsTable = ({
         headerHeight={headerHeight}
         emptyText={isError ? t`Could not load markets` : t`No markets found`}
         expandedPanel={LlamaMarketExpandedPanel}
-        isMobile={isMobile}
-        shouldStickFirstColumn={shouldStickFirstColumn}
+        shouldStickFirstColumn={useIsTablet() && !!hasPositions}
       >
         <TableFilters<LlamaMarketColumnId>
           title={t`Llamalend Markets`}

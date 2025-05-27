@@ -3,7 +3,7 @@ import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
@@ -22,7 +22,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
   const { rewards, type: marketType } = market
   const rewardsAction = getRewardsAction(marketType, type)
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   return (
     <Tooltip
       clickable

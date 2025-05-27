@@ -7,6 +7,7 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
@@ -28,7 +29,7 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market }: { market: LlamaMarket }) => {
   const { address, rewards, type, leverage, deprecatedMessage } = market
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   const isSmall = useMediaQuery('(max-width:1250px)')
   const { isCollateralEroded } = useUserMarketStats(market)?.data ?? {}
   return (

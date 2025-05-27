@@ -2,6 +2,7 @@ import { useRouter } from 'next/navigation'
 import { type MouseEvent, useCallback, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { type ExpandedPanel, ExpansionRow } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
@@ -25,7 +26,6 @@ export type DataRowProps<T extends TableItem> = {
   row: Row<T>
   isLast: boolean
   expandedPanel: ExpandedPanel<T>
-  isMobile: boolean
   shouldStickFirstColumn: boolean
 }
 
@@ -33,9 +33,9 @@ export const DataRow = <T extends TableItem>({
   isLast,
   row,
   expandedPanel,
-  isMobile,
   shouldStickFirstColumn,
 }: DataRowProps<T>) => {
+  const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const { push } = useRouter()
   const url = row.original.url
