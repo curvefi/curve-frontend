@@ -19,7 +19,7 @@ const Spinner = () => (
       alignItems: 'center',
       justifyContent: 'center',
       margin: '0 auto',
-      color: (theme) => theme.palette.text.secondary,
+      color: 'inherit',
     }}
   />
 )
