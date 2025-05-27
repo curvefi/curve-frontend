@@ -1,5 +1,4 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import upperFirst from 'lodash/upperFirst'
 import styled from 'styled-components'
 import Countdown from '@/dao/components/Countdown'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
@@ -38,7 +37,7 @@ const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHea
         />
       )}
       <MetricsComp title={t`Proposal ID`} data={<MetricsColumnData>#{voteId}</MetricsColumnData>} />
-      <MetricsComp title={t`Proposal Type`} data={<MetricsColumnData>{upperFirst(proposalType)}</MetricsColumnData>} />
+      <MetricsComp title={t`Proposal Type`} data={<MetricsColumnData capitalize>{proposalType}</MetricsColumnData>} />
       {executed && executionDate && executionTx ? (
         <MetricsComp
           title={t`Executed On`}

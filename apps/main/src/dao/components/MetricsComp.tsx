@@ -43,8 +43,9 @@ export const MetricsTitle = styled.p<{ row?: boolean }>`
   }
 `
 
-export const MetricsColumnData = styled.h3<{ noMargin?: boolean }>`
+export const MetricsColumnData = styled.h3<{ noMargin?: boolean; capitalize?: boolean }>`
   margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
   font-size: var(--font-size-2);
+  text-transform: ${({ capitalize }) => (capitalize ? 'capitalize' : 'none')};
 `
 export default MetricsComp
