@@ -12,7 +12,8 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { type, assets } = market
-  const { data: stats, error: statsError } = useUserMarketStats(market, column.id as LlamaMarketColumnId)
+  const columnId = column.id as LlamaMarketColumnId
+  const { data: stats, error: statsError } = useUserMarketStats(market, columnId)
   const value =
     {
       [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
@@ -22,7 +23,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   if (!value) {
     return statsError && <ErrorCell error={statsError} />
   }
-  const { usdPrice, chain, address, symbol } = assets[getAssetTypeForColumn(column, type)]
+  const { usdPrice, chain, address, symbol } = assets[getAssetTypeForColumn(columnId, type)]
 
   const usdValue = usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
   const usdTooltip =

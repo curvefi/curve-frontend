@@ -65,10 +65,12 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   }
 }
 
-export function getAssetTypeForColumn(columnId: LlamaMarketColumnId, type: LlamaMarketType) {
-  return columnId === LlamaMarketColumnId.UserBorrowed ||
-    columnId === LlamaMarketColumnId.UserEarnings ||
-    (columnId === LlamaMarketColumnId.UserDeposited && type === LlamaMarketType.Lend)
+/**
+ * Returns the asset type for a given column and market type.
+ */
+export const getAssetTypeForColumn = (columnId: LlamaMarketColumnId, type: LlamaMarketType) =>
+  columnId === LlamaMarketColumnId.UserBorrowed ||
+  columnId === LlamaMarketColumnId.UserEarnings ||
+  (columnId === LlamaMarketColumnId.UserDeposited && type === LlamaMarketType.Lend)
     ? ('borrowed' as const)
     : ('collateral' as const)
-}
