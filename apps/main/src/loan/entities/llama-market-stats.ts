@@ -4,11 +4,19 @@ import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/loan/en
 import { type LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { useUserMintMarketStats } from '@/loan/entities/mint-markets'
 
-const statsColumns = [
-  LlamaMarketColumnId.UserHealth,
-  LlamaMarketColumnId.UserBorrowed,
-  LlamaMarketColumnId.UserDeposited,
-]
+const statsColumns: Record<LlamaMarketType, LlamaMarketColumnId[]> = {
+  [LlamaMarketType.Lend]: [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed],
+  [LlamaMarketType.Mint]: [
+    LlamaMarketColumnId.UserHealth,
+    LlamaMarketColumnId.UserBorrowed,
+    LlamaMarketColumnId.UserDeposited,
+  ],
+}
+
+const earningsColumns: Record<LlamaMarketType, LlamaMarketColumnId[]> = {
+  [LlamaMarketType.Lend]: [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited],
+  [LlamaMarketType.Mint]: [],
+}
 
 /**
  * Hook that fetches the user's stats for a given market.
@@ -22,8 +30,8 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const { type, userHasPosition, address: marketAddress, controllerAddress, chain } = market
   const { address: userAddress } = useAccount()
 
-  const enableStats = userHasPosition && (!column || statsColumns.includes(column))
-  const enableEarnings = userHasPosition && column === LlamaMarketColumnId.UserEarnings
+  const enableStats = userHasPosition && (!column || statsColumns[type].includes(column))
+  const enableEarnings = userHasPosition && column && earningsColumns[type].includes(column)
 
   const enableLendingStats = enableStats && type === LlamaMarketType.Lend
   const enableLendEarnings = enableEarnings && type === LlamaMarketType.Lend
@@ -52,7 +60,15 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         deposited: stats.totalDeposited,
       },
     }),
-    ...(earnings && { data: { earnings: earnData.earnings } }),
+    ...(earnings && { data: { earnings: earnData.earnings, deposited: earnData?.deposited } }),
     ...(error && { error }),
   }
+}
+
+export function getAssetTypeForColumn(columnId: LlamaMarketColumnId, type: LlamaMarketType) {
+  return columnId === LlamaMarketColumnId.UserBorrowed ||
+    columnId === LlamaMarketColumnId.UserEarnings ||
+    (columnId === LlamaMarketColumnId.UserDeposited && type === LlamaMarketType.Lend)
+    ? ('borrowed' as const)
+    : ('collateral' as const)
 }
