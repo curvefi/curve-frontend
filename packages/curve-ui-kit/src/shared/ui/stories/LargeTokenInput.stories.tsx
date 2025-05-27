@@ -8,6 +8,7 @@ const TOKEN_OPTIONS = [
   { name: 'Inferium', symbol: 'ETH', balance: 1000 },
   { name: 'Bitcorn', symbol: 'BTC', balance: 2500 },
   { name: 'The Ripple', symbol: 'RPL', balance: 5000 },
+  { name: 'Decimalator', symbol: 'DEC', balance: 69.4201337 },
 ]
 
 type TokenSelectorProps = {
@@ -103,6 +104,10 @@ const meta: Meta<typeof LargeTokenInput> = {
       control: 'object',
       description: 'React component to use for token selection',
     },
+    balanceDecimals: {
+      control: 'number',
+      description: 'Number of decimal places to round balance values to when calculating from percentage',
+    },
   },
   args: {
     maxBalance: {
@@ -111,6 +116,7 @@ const meta: Meta<typeof LargeTokenInput> = {
     },
     message: '',
     isError: false,
+    balanceDecimals: 4,
     onBalance: fn(),
   },
 }
@@ -226,6 +232,34 @@ export const WithReactNodeMessage: Story = {
     docs: {
       description: {
         story: 'Large input with a complex message composed of multiple typography elements',
+      },
+    },
+  },
+}
+
+export const HighPrecisionDecimals: Story = {
+  args: {
+    balanceDecimals: 8,
+  },
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input with 8 decimal places for high precision calculations',
+      },
+    },
+  },
+}
+
+export const LowPrecisionDecimals: Story = {
+  args: {
+    balanceDecimals: 2,
+  },
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input with 2 decimal places for lower precision calculations',
       },
     },
   },
