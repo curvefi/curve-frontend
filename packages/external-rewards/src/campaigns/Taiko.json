@@ -3,7 +3,7 @@
   "platform": "Taiko",
   "description": "Points for providing liquidity.",
   "platformImageId": "taiko.png",
-  "dashboardLink": "https://trailblazers.taiko.xyz/journeys/liquidity/3/",
+  "dashboardLink": "https://trailblazers.taiko.xyz/leaderboard/liquidity/3/",
   "pools": [
     {
       "id": "null",
