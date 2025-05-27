@@ -1,0 +1,21 @@
+{
+  "campaignName": "infiniFi Points",
+  "platform": "infiniFi",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "infinifi.png",
+  "dashboardLink": "https://app.infinifi.xyz/points/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2E2d6C119bdF226C420cB40E3B9fC9689cF5986e",
+      "network": "ethereum",
+      "multiplier": "3x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
