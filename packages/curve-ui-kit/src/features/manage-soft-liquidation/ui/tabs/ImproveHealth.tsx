@@ -80,7 +80,7 @@ export const ImproveHealth = ({
             />
           </Stack>
         }
-        maxBalance={selectedDebtToken}
+        maxBalance={{ ...selectedDebtToken, showSlider: false }}
         message={t`Repaying debt will increase your health temporarily.`}
         onBalance={(balance) => {
           if (debtBalance !== balance) {

@@ -100,7 +100,7 @@ export const Withdraw = ({
               />
             </Stack>
           }
-          maxBalance={selectedDebtToken}
+          maxBalance={{ ...selectedDebtToken, showSlider: false }}
           message={t`Recover collateral by repaying debt.`}
           onBalance={(balance) => {
             if (debtBalance !== balance) {
