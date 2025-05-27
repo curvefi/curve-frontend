@@ -18,6 +18,7 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from '@tanstack/react-table'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -35,12 +36,13 @@ const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
  * The visibility on mobile is based on the sort field.
  * On larger devices, it uses the visibility settings that may be customized by the user.
  */
-const useVisibility = (sortField: LlamaMarketColumnId, hasPositions: boolean | undefined) => {
+const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined) => {
+  const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const groups = useMemo(() => createLlamaMarketsColumnOptions(hasPositions), [hasPositions])
   const visibilitySettings = useVisibilitySettings(groups)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
-  return { ...visibilitySettings, ...(isMobile && { columnVisibility }) }
+  return { sortField, ...visibilitySettings, ...(isMobile && { columnVisibility }) }
 }
 
 // todo: rename to LlamaMarketsTable
@@ -62,8 +64,7 @@ export const LendingMarketsTable = ({
     { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
   ])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
-  const { columnSettings, columnVisibility, toggleVisibility } = useVisibility(sortField, result?.hasPositions)
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, result?.hasPositions)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -78,6 +79,10 @@ export const LendingMarketsTable = ({
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
 
+  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isTablet = useMediaQuery((t) => t.breakpoints.down('desktop')) && !isMobile
+  const shouldStickFirstColumn = isTablet && !!hasPositions
+
   return (
     <Stack
       sx={{
@@ -89,9 +94,10 @@ export const LendingMarketsTable = ({
       <DataTable
         table={table}
         headerHeight={headerHeight}
-        rowSx={{ height: { ...Sizing['3xl'], mobile: 77 } }} // the 3xl is too small in mobile (64px)
         emptyText={isError ? t`Could not load markets` : t`No markets found`}
         expandedPanel={LlamaMarketExpandedPanel}
+        isMobile={isMobile}
+        shouldStickFirstColumn={shouldStickFirstColumn}
       >
         <TableFilters<LlamaMarketColumnId>
           title={t`Llamalend Markets`}

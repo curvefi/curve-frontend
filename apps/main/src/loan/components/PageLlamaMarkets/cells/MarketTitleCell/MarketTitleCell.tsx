@@ -1,7 +1,6 @@
 import RouterLink from 'next/link'
 import { MouseEvent } from 'react'
 import { MarketBadges } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
-import { MarketWarnings } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketWarnings'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import MuiLink from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
@@ -17,10 +16,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => (
-  <Stack direction="row" gap={Spacing.sm} alignItems="center">
+  <Stack direction="row" gap={Spacing.sm} alignItems="center" marginBlock={Spacing.xxs}>
     <TokenPair chain={market.chain} assets={market.assets} />
     <Stack direction="column" gap={Spacing.xs}>
-      <MarketBadges market={market} />
       <Typography
         component={Stack}
         variant={useMediaQuery((t) => t.breakpoints.down('tablet')) ? 'tableCellMBold' : 'tableCellL'}
@@ -57,7 +55,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
           sx={{ display: { mobile: 'none', tablet: 'flex' } }}
         />
       </Typography>
-      <MarketWarnings market={market} />
+      <MarketBadges market={market} />
     </Stack>
   </Stack>
 )

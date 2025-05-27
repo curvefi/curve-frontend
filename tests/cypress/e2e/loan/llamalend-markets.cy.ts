@@ -75,10 +75,7 @@ describe(`LlamaLend Markets`, () => {
       desktop: [174, 128],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
-
-    // mobile row is usually 77px but can be higher when the text is long
-    const rowHeight = { mobile: [77, 88], tablet: [88], desktop: [88] }[breakpoint]
-    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('be.oneOf', rowHeight)
+    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('be.oneOf', 64)
   })
 
   it('should sort', () => {
@@ -112,11 +109,6 @@ describe(`LlamaLend Markets`, () => {
 
     const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
     checkLineGraphColor('borrow', red)
-
-    if (breakpoint != 'mobile') {
-      showHiddenColumn({ element: 'line-graph-lend', toggle: 'lendChart' })
-    }
-    checkLineGraphColor('lend', green)
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {

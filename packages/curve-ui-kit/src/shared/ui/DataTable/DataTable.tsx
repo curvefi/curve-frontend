@@ -4,11 +4,9 @@ import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui-kit/utils'
 import { type TableItem, type TanstackTable } from './data-table.utils'
-import { DataRow } from './DataRow'
+import { DataRow, type DataRowProps } from './DataRow'
 import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
@@ -23,17 +21,14 @@ export const DataTable = <T extends TableItem>({
   headerHeight,
   emptyText,
   children,
-  rowSx,
-  expandedPanel,
+  ...rowProps
 }: {
   table: TanstackTable<T>
   headerHeight: string
   emptyText: string
   children?: ReactNode // passed to <FilterRow />
-  rowSx?: SxProps
   minRowHeight?: number
-  expandedPanel: ExpandedPanel<T>
-}) => (
+} & Omit<DataRowProps<T>, 'row'>) => (
   <Table
     sx={{
       backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -47,6 +42,7 @@ export const DataTable = <T extends TableItem>({
         position: 'sticky',
         top: headerHeight,
         backgroundColor: t.design.Table.Header.Fill,
+        marginBlock: Sizing['sm'],
       })}
       data-testid="data-table-head"
     >
@@ -60,6 +56,7 @@ export const DataTable = <T extends TableItem>({
               header={header}
               isFirst={!index}
               isLast={index == headerGroup.headers.length - 1}
+              isSticky={!index && rowProps.shouldStickFirstColumn}
             />
           ))}
         </TableRow>
@@ -68,7 +65,7 @@ export const DataTable = <T extends TableItem>({
     <TableBody>
       {table.getRowModel().rows.length === 0 && <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>}
       {table.getRowModel().rows.map((row) => (
-        <DataRow<T> key={row.id} row={row} sx={rowSx} expandedPanel={expandedPanel} />
+        <DataRow<T> key={row.id} row={row} {...rowProps} />
       ))}
     </TableBody>
   </Table>

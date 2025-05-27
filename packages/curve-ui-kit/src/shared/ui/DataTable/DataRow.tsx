@@ -1,11 +1,9 @@
 import { useRouter } from 'next/navigation'
 import { type MouseEvent, useCallback, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Row } from '@tanstack/react-table'
 import { type ExpandedPanel, ExpansionRow } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import type { SxProps } from '@ui-kit/utils'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
@@ -23,19 +21,22 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
+export type DataRowProps<T extends TableItem> = {
+  row: Row<T>
+  expandedPanel: ExpandedPanel<T>
+  isMobile: boolean
+  shouldStickFirstColumn: boolean
+}
+
 export const DataRow = <T extends TableItem>({
   row,
-  sx,
   expandedPanel,
-}: {
-  row: Row<T>
-  sx?: SxProps
-  expandedPanel: ExpandedPanel<T>
-}) => {
+  isMobile,
+  shouldStickFirstColumn,
+}: DataRowProps<T>) => {
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const { push } = useRouter()
   const url = row.original.url
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const onClickDesktop = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),
     [url, push],
@@ -57,7 +58,6 @@ export const DataRow = <T extends TableItem>({
             },
             '&:hover': { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
             [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
-            ...sx,
           }}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
@@ -70,6 +70,7 @@ export const DataRow = <T extends TableItem>({
               isFirst={!index}
               isLast={index == visibleCells.length - 1}
               isMobile={isMobile}
+              isSticky={shouldStickFirstColumn && !index}
             />
           ))}
         </TableRow>

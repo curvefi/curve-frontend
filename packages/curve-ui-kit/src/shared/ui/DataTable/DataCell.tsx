@@ -15,11 +15,13 @@ const { Spacing } = SizesAndSpaces
 export const DataCell = <T extends TableItem>({
   cell,
   isMobile,
+  isSticky,
   isLast,
   isFirst,
 }: {
   cell: Cell<T, unknown>
   isMobile: boolean
+  isSticky: boolean
   // todo: get rid of column hidden meta and use visibility + use column.getIsLastColumn()
   isFirst: boolean
   isLast: boolean
@@ -41,7 +43,13 @@ export const DataCell = <T extends TableItem>({
       sx={{
         ...(!showCollapseIcon && sx),
         ...getExtraColumnPadding({ isFirst, isLast }),
-        ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+        ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+        ...(isSticky && {
+          position: 'sticky',
+          left: 0,
+          zIndex: 1,
+          backgroundColor: (t) => t.design.Table.Row.Default,
+        }),
       }}
       data-testid={`data-table-cell-${column.id}`}
     >

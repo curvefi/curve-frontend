@@ -12,10 +12,12 @@ export const HeaderCell = <T extends TableItem>({
   header,
   isFirst,
   isLast,
+  isSticky,
 }: {
   header: Header<T, unknown>
   isFirst: boolean
   isLast: boolean
+  isSticky: boolean
 }) => {
   const { column } = header
   const isSorted = column.getIsSorted()
@@ -38,7 +40,13 @@ export const HeaderCell = <T extends TableItem>({
               color: `text.highlight`,
             },
           }),
-          ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+          ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+          ...(isSticky && {
+            position: 'sticky',
+            left: 0,
+            zIndex: 2,
+            backgroundColor: (t) => t.design.Table.Header.Fill,
+          }),
         }}
         colSpan={header.colSpan}
         onClick={column.getToggleSortingHandler()}
