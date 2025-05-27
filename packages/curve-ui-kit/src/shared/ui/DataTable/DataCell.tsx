@@ -51,7 +51,7 @@ export const DataCell = <T extends TableItem>({
         ...(isSticky && {
           position: 'sticky',
           left: 0,
-          zIndex: 1,
+          zIndex: (t) => t.zIndex.tableStickyColumn,
           backgroundColor: (t) => t.design.Table.Row.Default,
         }),
       }}

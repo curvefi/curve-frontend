@@ -44,7 +44,7 @@ export const HeaderCell = <T extends TableItem>({
           ...(isSticky && {
             position: 'sticky',
             left: 0,
-            zIndex: 2,
+            zIndex: (t) => t.zIndex.tableHeaderStickyColumn,
             backgroundColor: (t) => t.design.Table.Header.Fill,
           }),
         }}

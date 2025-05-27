@@ -23,12 +23,14 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
 
 export type DataRowProps<T extends TableItem> = {
   row: Row<T>
+  isLast: boolean
   expandedPanel: ExpandedPanel<T>
   isMobile: boolean
   shouldStickFirstColumn: boolean
 }
 
 export const DataRow = <T extends TableItem>({
+  isLast,
   row,
   expandedPanel,
   isMobile,
@@ -57,6 +59,13 @@ export const DataRow = <T extends TableItem>({
             },
             '&:hover': { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
             [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
+            ...(isLast && {
+              // to avoid the sticky header showing without any rows, show the last row on top of it
+              position: 'sticky',
+              zIndex: (t) => t.zIndex.tableStickyLastRow,
+              top: 0,
+              backgroundColor: (t) => t.design.Table.Row.Default,
+            }),
           }}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

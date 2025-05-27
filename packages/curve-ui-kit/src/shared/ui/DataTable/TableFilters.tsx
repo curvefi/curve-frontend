@@ -81,7 +81,7 @@ export const TableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   return (
-    <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 16px)">
+    <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 20px)">
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>

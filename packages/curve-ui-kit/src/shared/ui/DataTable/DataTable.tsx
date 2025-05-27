@@ -28,45 +28,49 @@ export const DataTable = <T extends TableItem>({
   emptyText: string
   children?: ReactNode // passed to <FilterRow />
   minRowHeight?: number
-} & Omit<DataRowProps<T>, 'row'>) => (
-  <Table
-    sx={{
-      backgroundColor: (t) => t.design.Layer[1].Fill,
-      borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-    }}
-    data-testid="data-table"
-  >
-    <TableHead
-      sx={(t) => ({
-        zIndex: t.zIndex.appBar - 1,
-        position: 'sticky',
-        top: headerHeight,
-        backgroundColor: t.design.Table.Header.Fill,
-        marginBlock: Sizing['sm'],
-      })}
-      data-testid="data-table-head"
+} & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
+  const { rows } = table.getRowModel()
+  const { shouldStickFirstColumn } = rowProps
+  return (
+    <Table
+      sx={{
+        backgroundColor: (t) => t.design.Layer[1].Fill,
+        borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+      }}
+      data-testid="data-table"
     >
-      {children && <FilterRow table={table}>{children}</FilterRow>}
+      <TableHead
+        sx={(t) => ({
+          zIndex: t.zIndex.tableHeader,
+          position: 'sticky',
+          top: headerHeight,
+          backgroundColor: t.design.Table.Header.Fill,
+          marginBlock: Sizing['sm'],
+        })}
+        data-testid="data-table-head"
+      >
+        {children && <FilterRow table={table}>{children}</FilterRow>}
 
-      {table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
-          {headerGroup.headers.map((header, index) => (
-            <HeaderCell
-              key={header.id}
-              header={header}
-              isFirst={!index}
-              isLast={index == headerGroup.headers.length - 1}
-              isSticky={!index && rowProps.shouldStickFirstColumn}
-            />
-          ))}
-        </TableRow>
-      ))}
-    </TableHead>
-    <TableBody>
-      {table.getRowModel().rows.length === 0 && <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>}
-      {table.getRowModel().rows.map((row) => (
-        <DataRow<T> key={row.id} row={row} {...rowProps} />
-      ))}
-    </TableBody>
-  </Table>
-)
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+            {headerGroup.headers.map((header, index) => (
+              <HeaderCell
+                key={header.id}
+                header={header}
+                isFirst={!index}
+                isLast={index == headerGroup.headers.length - 1}
+                isSticky={!index && shouldStickFirstColumn}
+              />
+            ))}
+          </TableRow>
+        ))}
+      </TableHead>
+      <TableBody>
+        {rows.length === 0 && <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>}
+        {rows.map((row, index) => (
+          <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
