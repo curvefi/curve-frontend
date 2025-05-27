@@ -30,13 +30,13 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, withdraw }: 
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       <Stack>
-        <TabsSwitcher variant="contained" size="medium" value="manage" options={[...TABS_MAIN]} />
+        <TabsSwitcher variant="contained" size="medium" value="manage" options={TABS_MAIN} />
         <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, width: Width.actionCard }}>
           <TabsSwitcher
             variant="underlined"
             size="small"
             value={subTab}
-            options={[...TABS_SUB]}
+            options={TABS_SUB}
             onChange={setSubTab}
             sx={{ '& .MuiTab-root': { flexGrow: 1 } }}
           />
