@@ -1,3 +1,4 @@
+import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
 import Carrot from './Carrot.json'
@@ -74,4 +75,5 @@ export {
   Tac,
   Turtle,
   Infinifi,
+  Asymmetry,
 }
