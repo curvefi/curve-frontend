@@ -1,8 +1,13 @@
+import { Chain } from 'curve-ui-kit/src/utils/network'
+import upperFirst from 'lodash/upperFirst'
 import styled from 'styled-components'
 import Countdown from '@/dao/components/Countdown'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import SmallLabel from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
+import networks from '@/dao/networks'
+import { ExternalLink } from '@ui/Link'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type ProposalHeaderProps = {
@@ -12,36 +17,47 @@ type ProposalHeaderProps = {
   proposalType: string
 }
 
-const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHeaderProps) => (
-  <Wrapper>
-    <SmallLabel
-      className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
-        proposal?.status === 'Passed' && 'passed'
-      }`}
-      description={<Status className={proposal?.status}>{proposal?.status}</Status>}
-    />
-    {proposal?.status === 'Passed' && (
+const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHeaderProps) => {
+  const { status, executed, timestamp, executionDate, executionTx } = proposal ?? {}
+
+  return (
+    <Wrapper>
       <SmallLabel
-        description={
-          <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
-            {proposal?.executed ? t`Executed` : t`Executable`}
-          </ExecutedStatus>
-        }
+        className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
+          status === 'Passed' && 'passed'
+        }`}
+        description={<Status className={status}>{status}</Status>}
       />
-    )}
-    <MetricsComp loading={false} title={t`Proposal ID`} data={<MetricsColumnData>#{voteId}</MetricsColumnData>} />
-    <MetricsComp
-      loading={false}
-      title={t`Proposal Type`}
-      data={<MetricsColumnData>{proposalType}</MetricsColumnData>}
-    />
-    <TimeRemainingBox
-      loading={loading}
-      title={t`Time Remaining`}
-      data={<StyledCountdown startDate={proposal?.timestamp ?? null} />}
-    />
-  </Wrapper>
-)
+      {status === 'Passed' && (
+        <SmallLabel
+          description={
+            <ExecutedStatus className={executed ? 'executed' : 'executable'}>
+              {executed ? t`Executed` : t`Executable`}
+            </ExecutedStatus>
+          }
+        />
+      )}
+      <MetricsComp title={t`Proposal ID`} data={<MetricsColumnData>#{voteId}</MetricsColumnData>} />
+      <MetricsComp title={t`Proposal Type`} data={<MetricsColumnData>{upperFirst(proposalType)}</MetricsColumnData>} />
+      {executed && executionDate && executionTx ? (
+        <MetricsComp
+          title={t`Executed On`}
+          data={
+            <StyledExternalLink href={networks[Chain.Ethereum].scanTxPath(executionTx)}>
+              <MetricsColumnData>{formatDate(executionDate)}</MetricsColumnData>
+            </StyledExternalLink>
+          }
+        />
+      ) : (
+        <TimeRemainingBox
+          loading={loading}
+          title={t`Time Remaining`}
+          data={<StyledCountdown startDate={timestamp ?? null} />}
+        />
+      )}
+    </Wrapper>
+  )
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -147,6 +163,11 @@ const TimeRemainingBox = styled(MetricsComp)`
 
 const StyledCountdown = styled(Countdown)`
   margin-top: var(--spacing-1);
+`
+
+const StyledExternalLink = styled(ExternalLink)`
+  color: inherit;
+  text-decoration: none;
 `
 
 export default ProposalHeader

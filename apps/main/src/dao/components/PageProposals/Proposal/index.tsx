@@ -1,3 +1,4 @@
+import upperFirst from 'lodash/upperFirst'
 import { useCallback } from 'react'
 import styled from 'styled-components'
 import Countdown from '@/dao/components/Countdown'
@@ -46,7 +47,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
               />
             )}
             <ProposalId>#{id}</ProposalId>
-            <ProposalType>{type}</ProposalType>
+            <ProposalType>{upperFirst(type)}</ProposalType>
             <Countdown startDate={timestamp} />
           </ProposalDetailsRow>
           <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>

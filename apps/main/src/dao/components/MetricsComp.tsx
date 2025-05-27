@@ -4,14 +4,14 @@ import Box from 'ui/src/Box/Box'
 import Loader from 'ui/src/Loader/Loader'
 
 interface Props {
-  loading: boolean
+  loading?: boolean
   title: string
   data: ReactNode
   className?: string
   row?: boolean
 }
 
-const MetricsComp = ({ loading, title, data, className, row = false }: Props) => (
+const MetricsComp = ({ loading = false, title, data, className, row = false }: Props) => (
   <Wrapper className={className} row={row}>
     <MetricsTitle row={row}>{title}</MetricsTitle>
     {loading ? <StyledLoader isLightBg skeleton={[56, 16.5]} row={row} /> : data}
