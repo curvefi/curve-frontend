@@ -32,24 +32,24 @@ type Token = { symbol: string; amount: number }
  * For arrays, concatenates all entries with ' + ' separator.
  * Uses abbreviateNumber and scaleSuffix for compact number formatting.
  *
- * @param collateral - Single collateral object or array of collateral objects
+ * @param collaterals - Single collateral object or array of collateral objects
  * @returns Formatted string combining all collateral values and symbols
  *
  * @example
- * formatCollateral({ symbol: 'ETH', amount: 10.5 })
+ * formatCollaterals({ symbol: 'ETH', amount: 10.5 })
  * // Returns: "10.5 ETH"
  *
- * formatCollateral({ symbol: 'USDC', amount: 1500000 })
+ * formatCollaterals({ symbol: 'USDC', amount: 1500000 })
  * // Returns: "1.5m USDC"
  *
- * formatCollateral([
+ * formatCollaterals([
  *   { symbol: 'ETH', amount: 10.5 },
  *   { symbol: 'BTC', amount: 2500000 }
  * ])
  * // Returns: "10.5 ETH + 2.5m BTC"
  */
-const formatCollateral = (collateral: Token | Token[]) =>
-  (Array.isArray(collateral) ? collateral : [collateral])
+const formatCollaterals = (collaterals: Token | Token[]) =>
+  (Array.isArray(collaterals) ? collaterals : [collaterals])
     .map((x) => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
     .join(' + ')
 
@@ -134,11 +134,11 @@ export const ActionInfos = ({
 
       <ActionInfo
         label="Debt"
-        value={`${formatCollateral({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
-        prevValue={`${formatCollateral({ symbol: debt.symbol, amount: debt.amount })}`}
+        value={`${formatCollaterals({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
+        prevValue={`${formatCollaterals({ symbol: debt.symbol, amount: debt.amount })}`}
       />
 
-      {collateral && <ActionInfo label="Collateral" value={`${formatCollateral(collateral)}`} />}
+      {collateral && <ActionInfo label="Collateral" value={`${formatCollaterals(collateral)}`} />}
 
       <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />
 
@@ -148,9 +148,9 @@ export const ActionInfos = ({
         prevValue={`${formatValue(leverage.old, 1)}x`}
       />
 
-      <ActionInfo label="Collateral" value={`${formatCollateral(borrowedCollateral)}`} />
+      <ActionInfo label="Collateral" value={`${formatCollaterals(borrowedCollateral)}`} />
 
-      {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatCollateral(assetsToWithdraw)}`} />}
+      {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatCollaterals(assetsToWithdraw)}`} />}
 
       <ActionInfo
         label="Estimated tx cost"
