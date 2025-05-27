@@ -11,6 +11,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
@@ -20,24 +21,17 @@ import type { LlamaMarket } from '../../entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 
-const GraphMobileCell = ({ market }: { market: LlamaMarket }) => {
+function useMobileGraphSize() {
   const pageWidth = useStore((state) => state.layout.windowWidth)
-  const graphSize = useMemo(() => ({ width: pageWidth ? pageWidth - 40 : 300, height: 48 }), [pageWidth])
-  return (
-    <Stack direction="column">
-      <Typography variant="bodyXsRegular" color="textTertiary">
-        {t`7D Rate Chart`}
-      </Typography>
-
-      <LineGraphCell market={market} type="borrow" graphSize={graphSize} />
-    </Stack>
-  )
+  const isTiny = useIsTiny()
+  return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const { leverage, utilizationPercent, liquidityUsd, userHasPosition, url, address, rates } = market
+  const graphSize = useMobileGraphSize()
   return (
     <>
       <Grid container spacing={Spacing.md}>
@@ -80,8 +74,16 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         <Grid size={6}>
           <Metric label={t`Available Liquidity`} value={liquidityUsd} unit="dollar" />
         </Grid>
-        <Grid size={12}>
-          <GraphMobileCell market={market} />
+        <Grid size={12} data-testid="llama-market-graph">
+          <Stack direction="column" alignItems="center">
+            <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
+              {t`7D Rate Chart`}
+            </Typography>
+
+            {/*<Stack sx={{ alignItems: 'center' }} data-testid="borrow">*/}
+            <LineGraphCell market={market} type="borrow" graphSize={graphSize} />
+            {/*</Stack>*/}
+          </Stack>
         </Grid>
       </Grid>
       {userHasPosition && (
