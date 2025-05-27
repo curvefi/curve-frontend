@@ -273,8 +273,10 @@ export const LargeTokenInput = ({
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
                 notionalValue={maxBalance.notionalValue}
-                max={maxBalance ? 'balance' : 'off'}
+                max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
+                // Stretch the balance component if there's no slider so the max button can reach the end
+                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
               />
             )}
 
