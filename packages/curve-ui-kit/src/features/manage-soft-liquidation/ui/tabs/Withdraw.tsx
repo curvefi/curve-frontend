@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { ButtonMenu } from '@ui-kit/shared/ui/ButtonMenu'
@@ -71,7 +72,7 @@ export const Withdraw = ({
   onApproveLimited,
   onApproveInfinite,
 }: Props) => {
-  const [open, setOpen] = useState(false)
+  const [isOpen, open, close] = useSwitch(false)
   const [debtBalance, setDebtBalance] = useState(0)
   const [collateralBalance, setCollateralBalance] = useState(0)
 
@@ -151,16 +152,16 @@ export const Withdraw = ({
       <ButtonMenu
         primary={t`Repay debt & withdraw collateral`}
         options={BUTTON_OPTIONS}
-        open={open}
+        open={isOpen}
         executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
         disabled={!selectedDebtToken || !selectedCollateralToken || debtBalance === 0 || collateralBalance === 0}
         onPrimary={() => onRepay(selectedDebtToken!, selectedCollateralToken!, debtBalance, collateralBalance)}
         onOption={(id) => {
-          setOpen(false)
+          close()
           BUTTON_OPTION_CALLBACKS[id]()
         }}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
+        onOpen={open}
+        onClose={close}
       />
     </Stack>
   )
