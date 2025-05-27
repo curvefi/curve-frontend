@@ -49,7 +49,6 @@ export const DataRow = <T extends TableItem>({
         <TableRow
           sx={{
             marginBlock: 0,
-            borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
             cursor: 'pointer',
             transition: `border-bottom ${TransitionFunction}`,
             [`& .${DesktopOnlyHoverClass}`]: {

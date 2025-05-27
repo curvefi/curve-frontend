@@ -29,11 +29,14 @@ export const DataCell = <T extends TableItem>({
   const { column, row } = cell
   const { variant, borderRight } = column.columnDef.meta ?? {}
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const sx = {
+
+  // with the collapse icon there is an extra wrapper
+  const wrapperSx = {
     textAlign: getAlignment(column),
     paddingInline: Spacing.sm,
     paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
   }
+
   const showCollapseIcon = isMobile && isLast
   return (
     <Typography
@@ -41,7 +44,8 @@ export const DataCell = <T extends TableItem>({
       color="text.primary"
       component="td"
       sx={{
-        ...(!showCollapseIcon && sx),
+        ...(!showCollapseIcon && wrapperSx),
+        borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
         ...getExtraColumnPadding({ isFirst, isLast }),
         ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         ...(isSticky && {
@@ -55,7 +59,7 @@ export const DataCell = <T extends TableItem>({
     >
       {showCollapseIcon ? (
         <Stack direction="row" alignItems="center" width="100%">
-          <Box sx={sx} flexGrow={1}>
+          <Box sx={wrapperSx} flexGrow={1}>
             {children}
           </Box>
           <RotatableIcon
