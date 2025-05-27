@@ -1,3 +1,4 @@
+import { getAddress } from 'ethers'
 import produce from 'immer'
 import type {
   TimeOptions,
@@ -12,22 +13,44 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import type { Address, Chain } from '@curvefi/prices-api'
+import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
 
 type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type SliceState = {
-  chartOhlcData: LpPriceOhlcDataFormatted[]
-  volumeData: VolumeData[]
-  oraclePriceData: OraclePriceData[]
-  baselinePriceData: LlamaBaselinePriceData[]
+  chartLlammaOhlc: {
+    data: LpPriceOhlcDataFormatted[]
+    oraclePriceData: OraclePriceData[]
+    baselinePriceData: LlamaBaselinePriceData[]
+    volumeData: VolumeData[]
+    refetchingCapped: boolean
+    lastFetchEndTime: number
+    fetchStatus: FetchingStatus
+    dataDisabled: boolean
+  }
+  chartOraclePoolOhlc: {
+    data: LpPriceOhlcDataFormatted[]
+    oraclePriceData: OraclePriceData[]
+    baselinePriceData: LlamaBaselinePriceData[]
+    refetchingCapped: boolean
+    lastFetchEndTime: number
+    fetchStatus: FetchingStatus
+    borrowedToken: {
+      address: string
+      symbol: string
+    }
+    collateralToken: {
+      address: string
+      symbol: string
+    }
+    // flag for disabling oracle pool data if no oracle pools are found for the market on the api
+    dataDisabled: boolean
+  }
   llammaTradesData: LlammaTrade[]
   llammaControllerData: LlammaEvent[]
-  chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
-  refetchingCapped: boolean
-  lastFetchEndTime: number
   activityHidden: boolean
   chartExpanded: boolean
   oraclePriceVisible: boolean
@@ -40,7 +63,37 @@ const sliceKey = 'ohlcCharts'
 export type OhlcChartSlice = {
   [sliceKey]: SliceState & {
     setChartTimeOption(timeOption: TimeOptions): void
-    fetchOhlcData(
+    fetchOracleOhlcData(
+      chainId: ChainId,
+      controller: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+    ): Promise<void>
+    fetchMoreOracleOhlcData(
+      chainId: ChainId,
+      controller: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+    ): Promise<{
+      ohlcData: LpPriceOhlcDataFormatted[]
+      oracleData: OraclePriceData[]
+      baselineData: LlamaBaselinePriceData[]
+      refetchingCapped: boolean
+      lastFetchEndTime: number
+      borrowedToken: {
+        address: string
+        symbol: string
+      }
+      collateralToken: {
+        address: string
+        symbol: string
+      }
+    }>
+    fetchLlammaOhlcData(
       chainId: ChainId,
       llammaId: string,
       poolAddress: string,
@@ -48,15 +101,31 @@ export type OhlcChartSlice = {
       timeUnit: string,
       start: number,
       end: number,
-    ): void
-    fetchMoreOhlcData(
+    ): Promise<void>
+    fetchMoreLlammaOhlcData(
       chainId: ChainId,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): void
+    ): Promise<{
+      ohlcData: LpPriceOhlcDataFormatted[]
+      volumeData: VolumeData[]
+      oracleData: OraclePriceData[]
+      baselineData: LlamaBaselinePriceData[]
+      refetchingCapped: boolean
+      lastFetchEndTime: number
+    }>
+    fetchMoreData(
+      chainId: ChainId,
+      controller: string,
+      poolAddress: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+    ): Promise<void>
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
     setActivityHidden(bool?: boolean): void
     setChartExpanded(bool?: boolean): void
@@ -68,17 +137,37 @@ export type OhlcChartSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  chartOhlcData: [],
-  volumeData: [],
-  oraclePriceData: [],
-  baselinePriceData: [],
+  chartLlammaOhlc: {
+    data: [],
+    volumeData: [],
+    oraclePriceData: [],
+    baselinePriceData: [],
+    refetchingCapped: false,
+    lastFetchEndTime: 0,
+    fetchStatus: 'LOADING',
+    dataDisabled: false,
+  },
+  chartOraclePoolOhlc: {
+    data: [],
+    oraclePriceData: [],
+    baselinePriceData: [],
+    borrowedToken: {
+      address: '',
+      symbol: '',
+    },
+    collateralToken: {
+      address: '',
+      symbol: '',
+    },
+    refetchingCapped: false,
+    lastFetchEndTime: 0,
+    fetchStatus: 'LOADING',
+    dataDisabled: false,
+  },
   llammaTradesData: [],
   llammaControllerData: [],
-  chartFetchStatus: 'LOADING',
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
-  refetchingCapped: false,
-  lastFetchEndTime: 0,
   activityHidden: false,
   chartExpanded: false,
   oraclePriceVisible: true,
@@ -96,7 +185,200 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         }),
       )
     },
-    fetchOhlcData: async (
+    fetchOracleOhlcData: async (
+      chainId: ChainId,
+      controller: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+    ) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].chartOraclePoolOhlc = {
+            fetchStatus: 'LOADING',
+            data: DEFAULT_STATE.chartOraclePoolOhlc.data,
+            oraclePriceData: DEFAULT_STATE.chartOraclePoolOhlc.oraclePriceData,
+            baselinePriceData: DEFAULT_STATE.chartOraclePoolOhlc.baselinePriceData,
+            borrowedToken: DEFAULT_STATE.chartOraclePoolOhlc.borrowedToken,
+            collateralToken: DEFAULT_STATE.chartOraclePoolOhlc.collateralToken,
+            refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
+            lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
+            dataDisabled: DEFAULT_STATE.chartOraclePoolOhlc.dataDisabled,
+          }
+        }),
+      )
+
+      const network = networks[chainId].id.toLowerCase()
+      const checkSummedController = getAddress(controller)
+
+      try {
+        const { pools, ohlc } = await getOracle({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          controller: checkSummedController as Address,
+          interval,
+          units: timeUnit as OHLCTimeUnit,
+          start,
+          end,
+        })
+
+        if (ohlc.length === 0) {
+          throw new Error('No oracle OHLC data found. Data may be unavailable for this pool.')
+        }
+
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+
+        for (const item of ohlc) {
+          const time = item.time.getLocalTimestamp()
+
+          if (item.basePrice) {
+            baselinePriceArray.push({
+              time,
+              base_price: item.basePrice,
+            })
+          }
+
+          if (item.oraclePrice) {
+            oraclePriceArray.push({
+              time,
+              value: item.oraclePrice,
+            })
+          }
+
+          ohlcDataArray.push({
+            time,
+            open: item.open,
+            close: item.close,
+            high: item.high,
+            low: item.low,
+          })
+        }
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOraclePoolOhlc.data = ohlcDataArray
+            state[sliceKey].chartOraclePoolOhlc.collateralToken = {
+              address: pools[0].collateralAddress,
+              symbol: pools[0].collateralSymbol,
+            }
+            state[sliceKey].chartOraclePoolOhlc.borrowedToken = {
+              address: pools[pools.length - 1].borrowedAddress,
+              symbol: pools[pools.length - 1].borrowedSymbol,
+            }
+            state[sliceKey].chartOraclePoolOhlc.oraclePriceData = oraclePriceArray
+            state[sliceKey].chartOraclePoolOhlc.baselinePriceData = baselinePriceArray
+            state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
+            state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
+            state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'READY'
+            state[sliceKey].chartOraclePoolOhlc.dataDisabled = false
+          }),
+        )
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOraclePoolOhlc = {
+              fetchStatus: 'ERROR',
+              data: DEFAULT_STATE.chartOraclePoolOhlc.data,
+              borrowedToken: DEFAULT_STATE.chartOraclePoolOhlc.borrowedToken,
+              collateralToken: DEFAULT_STATE.chartOraclePoolOhlc.collateralToken,
+              oraclePriceData: DEFAULT_STATE.chartOraclePoolOhlc.oraclePriceData,
+              baselinePriceData: DEFAULT_STATE.chartOraclePoolOhlc.baselinePriceData,
+              refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
+              lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
+              dataDisabled: true,
+            }
+          }),
+        )
+      }
+    },
+    fetchMoreOracleOhlcData: async (
+      chainId: ChainId,
+      controller: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+    ) => {
+      const network = networks[chainId].id.toLowerCase()
+      const checkSummedController = getAddress(controller)
+
+      try {
+        const { pools, ohlc } = await getOracle({
+          endpoint: 'crvusd',
+          chain: network as Chain,
+          controller: checkSummedController as Address,
+          interval,
+          units: timeUnit as OHLCTimeUnit,
+          start,
+          end,
+        })
+
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+
+        for (const item of ohlc) {
+          const time = item.time.getLocalTimestamp()
+
+          if (item.basePrice) {
+            baselinePriceArray.push({
+              time,
+              base_price: item.basePrice,
+            })
+          }
+
+          if (item.oraclePrice) {
+            oraclePriceArray.push({
+              time,
+              value: item.oraclePrice,
+            })
+          }
+
+          ohlcDataArray.push({
+            time,
+            open: item.open,
+            close: item.close,
+            high: item.high,
+            low: item.low,
+          })
+        }
+
+        return {
+          ohlcData: ohlcDataArray,
+          oracleData: oraclePriceArray,
+          baselineData: baselinePriceArray,
+          refetchingCapped: ohlcDataArray.length < 299,
+          lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
+          collateralToken: {
+            address: pools[0].collateralAddress,
+            symbol: pools[0].collateralSymbol,
+          },
+          borrowedToken: {
+            address: pools[pools.length - 1].borrowedAddress,
+            symbol: pools[pools.length - 1].borrowedSymbol,
+          },
+        }
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'ERROR'
+          }),
+        )
+        return {
+          ohlcData: [],
+          oracleData: [],
+          baselineData: [],
+          collateralToken: DEFAULT_STATE.chartOraclePoolOhlc.collateralToken,
+          borrowedToken: DEFAULT_STATE.chartOraclePoolOhlc.borrowedToken,
+          refetchingCapped: false,
+          lastFetchEndTime: 0,
+        }
+      }
+    },
+    fetchLlammaOhlcData: async (
       chainId: ChainId,
       llammaId: string,
       poolAddress: string,
@@ -107,8 +389,16 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     ) => {
       set(
         produce((state: State) => {
-          state[sliceKey].chartFetchStatus = 'LOADING'
-          state[sliceKey].refetchingCapped = DEFAULT_STATE.refetchingCapped
+          state[sliceKey].chartLlammaOhlc = {
+            fetchStatus: 'LOADING',
+            data: DEFAULT_STATE.chartLlammaOhlc.data,
+            volumeData: DEFAULT_STATE.chartLlammaOhlc.volumeData,
+            oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
+            baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
+            refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
+            lastFetchEndTime: DEFAULT_STATE.chartLlammaOhlc.lastFetchEndTime,
+            dataDisabled: DEFAULT_STATE.chartLlammaOhlc.dataDisabled,
+          }
         }),
       )
       const network = networks[chainId].id.toLowerCase()
@@ -124,10 +414,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           end,
         })
 
-        let volumeArray: VolumeData[] = []
-        let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: OraclePriceData[] = []
-        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+        if (ohlc.length === 0) {
+          throw new Error('No LLAMMA OHLC data found. Data may be unavailable for this pool.')
+        }
+
+        const volumeArray: VolumeData[] = []
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -139,18 +433,21 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             })
           }
+
           if (item.basePrice) {
             baselinePriceArray.push({
               time,
               base_price: item.basePrice,
             })
           }
+
           if (item.oraclePrice) {
             oraclePriceArray.push({
               time,
               value: item.oraclePrice,
             })
           }
+
           if (item.open && item.close && item.high && item.low) {
             ohlcDataArray.push({
               time,
@@ -161,9 +458,10 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             })
           }
         }
+
         const arrLength = oraclePriceArray.length - 1
-        const loanPriceInfo = get().loans.detailsMapper[llammaId]?.priceInfo
-        const { oraclePrice } = loanPriceInfo ?? {}
+        const priceInfo = get().loans.priceInfoMapper[llammaId]
+        const { oraclePrice } = priceInfo ?? {}
         oraclePriceArray[arrLength] = {
           ...oraclePriceArray[arrLength],
           value: oraclePrice ? +oraclePrice : oraclePriceArray[arrLength].value,
@@ -171,24 +469,34 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         set(
           produce((state: State) => {
-            state[sliceKey].chartOhlcData = ohlcDataArray
-            state[sliceKey].volumeData = volumeArray
-            state[sliceKey].oraclePriceData = oraclePriceArray
-            state[sliceKey].baselinePriceData = baselinePriceArray
-            state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
-            state[sliceKey].lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
-            state[sliceKey].chartFetchStatus = 'READY'
+            state[sliceKey].chartLlammaOhlc.data = ohlcDataArray
+            state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 298
+            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
+            state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
+            state[sliceKey].chartLlammaOhlc.volumeData = volumeArray
+            state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
+            state[sliceKey].chartLlammaOhlc.baselinePriceData = baselinePriceArray
+            state[sliceKey].chartLlammaOhlc.dataDisabled = false
           }),
         )
       } catch (error) {
         set(
           produce((state: State) => {
-            state[sliceKey].chartFetchStatus = 'ERROR'
+            state[sliceKey].chartLlammaOhlc = {
+              fetchStatus: 'ERROR',
+              data: DEFAULT_STATE.chartLlammaOhlc.data,
+              volumeData: DEFAULT_STATE.chartLlammaOhlc.volumeData,
+              oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
+              baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
+              refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
+              lastFetchEndTime: DEFAULT_STATE.chartLlammaOhlc.lastFetchEndTime,
+              dataDisabled: true,
+            }
           }),
         )
       }
     },
-    fetchMoreOhlcData: async (
+    fetchMoreLlammaOhlcData: async (
       chainId: ChainId,
       poolAddress: string,
       interval: number,
@@ -209,10 +517,10 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           end,
         })
 
-        let volumeArray: VolumeData[] = []
-        let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: OraclePriceData[] = []
-        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+        const volumeArray: VolumeData[] = []
+        const baselinePriceArray: LlamaBaselinePriceData[] = []
+        const oraclePriceArray: OraclePriceData[] = []
+        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -224,18 +532,21 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               color: item.open < item.close ? '#26a69982' : '#ef53507e',
             })
           }
+
           if (item.basePrice) {
             baselinePriceArray.push({
               time,
               base_price: item.basePrice,
             })
           }
+
           if (item.oraclePrice) {
             oraclePriceArray.push({
               time,
               value: item.oraclePrice,
             })
           }
+
           if (item.open && item.close && item.high && item.low) {
             ohlcDataArray.push({
               time,
@@ -247,22 +558,122 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           }
         }
 
-        set(
-          produce((state: State) => {
-            state[sliceKey].chartOhlcData = [...ohlcDataArray, ...get()[sliceKey].chartOhlcData]
-            state[sliceKey].volumeData = [...volumeArray, ...get()[sliceKey].volumeData]
-            state[sliceKey].oraclePriceData = [...oraclePriceArray, ...get()[sliceKey].oraclePriceData]
-            state[sliceKey].baselinePriceData = [...baselinePriceArray, ...get()[sliceKey].baselinePriceData]
-            state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
-            state[sliceKey].lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
-          }),
-        )
+        return {
+          ohlcData: ohlcDataArray,
+          volumeData: volumeArray,
+          oracleData: oraclePriceArray,
+          baselineData: baselinePriceArray,
+          refetchingCapped: ohlcDataArray.length < 299,
+          lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
+        }
       } catch (error) {
         set(
           produce((state: State) => {
-            state[sliceKey].chartFetchStatus = 'ERROR'
+            state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
           }),
         )
+        return {
+          ohlcData: [],
+          volumeData: [],
+          oracleData: [],
+          baselineData: [],
+          refetchingCapped: false,
+          lastFetchEndTime: 0,
+        }
+      }
+    },
+    fetchMoreData: async (
+      chainId: ChainId,
+      controller: string,
+      poolAddress: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+    ) => {
+      const { chartLlammaOhlc, chartOraclePoolOhlc, fetchMoreLlammaOhlcData, fetchMoreOracleOhlcData } = get()[sliceKey]
+
+      if (chartLlammaOhlc.refetchingCapped && chartOraclePoolOhlc.refetchingCapped) {
+        return
+      }
+
+      if (!chartOraclePoolOhlc.refetchingCapped && !chartLlammaOhlc.refetchingCapped) {
+        const llammaDataPromise = fetchMoreLlammaOhlcData(chainId, poolAddress, interval, timeUnit, start, end)
+        const oracleDataPromise = fetchMoreOracleOhlcData(chainId, controller, interval, timeUnit, start, end)
+
+        const [llammaData, oracleData] = await Promise.all([llammaDataPromise, oracleDataPromise])
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOraclePoolOhlc = {
+              fetchStatus: 'READY',
+              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              borrowedToken: oracleData.borrowedToken,
+              collateralToken: oracleData.collateralToken,
+              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
+              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
+              refetchingCapped: oracleData.refetchingCapped,
+              lastFetchEndTime: oracleData.lastFetchEndTime,
+              dataDisabled: false,
+            }
+
+            state[sliceKey].chartLlammaOhlc = {
+              fetchStatus: 'READY',
+              data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
+              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
+              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
+              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
+              refetchingCapped: llammaData.refetchingCapped,
+              lastFetchEndTime: llammaData.lastFetchEndTime,
+              dataDisabled: false,
+            }
+          }),
+        )
+
+        return
+      }
+
+      if (!chartOraclePoolOhlc.refetchingCapped) {
+        const oracleData = await fetchMoreOracleOhlcData(chainId, controller, interval, timeUnit, start, end)
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOraclePoolOhlc = {
+              fetchStatus: 'READY',
+              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              borrowedToken: oracleData.borrowedToken,
+              collateralToken: oracleData.collateralToken,
+              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
+              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
+              refetchingCapped: oracleData.refetchingCapped,
+              lastFetchEndTime: oracleData.lastFetchEndTime,
+              dataDisabled: false,
+            }
+          }),
+        )
+
+        return
+      }
+
+      if (!chartLlammaOhlc.refetchingCapped) {
+        const llammaData = await fetchMoreLlammaOhlcData(chainId, poolAddress, interval, timeUnit, start, end)
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartLlammaOhlc = {
+              fetchStatus: 'READY',
+              data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
+              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
+              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
+              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
+              refetchingCapped: llammaData.refetchingCapped,
+              lastFetchEndTime: llammaData.lastFetchEndTime,
+              dataDisabled: false,
+            }
+          }),
+        )
+
+        return
       }
     },
     fetchPoolActivity: async (chainId: ChainId, poolAddress: string) => {

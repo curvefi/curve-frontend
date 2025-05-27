@@ -22,5 +22,6 @@ declare module '@mui/material/Button' {
     contained: true
     outlined: true
     link: true
+    inline: true
   }
 }

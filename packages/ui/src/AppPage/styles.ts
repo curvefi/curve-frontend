@@ -27,7 +27,7 @@ export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
     margin-left: 1rem;
     margin-right: 1rem;
   }
-  @media (min-width: ${breakpoints.sm}rem) {
+  @media (min-width: 650px) {
     margin-left: 3rem;
     margin-right: 3rem;
   }

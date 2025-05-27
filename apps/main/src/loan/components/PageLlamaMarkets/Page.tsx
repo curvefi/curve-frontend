@@ -34,7 +34,11 @@ const onReload = (userAddress?: Address) => {
   invalidateAllUserMintMarkets(userAddress)
 }
 
-const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
+const {
+  Spacing,
+  MaxWidth,
+  Height: { modal: ModalHeight },
+} = SizesAndSpaces
 
 function useInjectServerData(props: CrvUsdServerData) {
   useEffect(() => {

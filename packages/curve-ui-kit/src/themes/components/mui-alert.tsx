@@ -7,7 +7,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DesignSystem } from '../design'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, IconSize, OutlineWidth } = SizesAndSpaces
 
 const titleAndIconSelector = '.MuiAlertTitle-root, .MuiAlert-icon'
 
@@ -26,6 +26,7 @@ export const defineMuiAlert = (
   styleOverrides: {
     root: handleBreakpoints({
       ...bodyXsRegular,
+      borderWidth: OutlineWidth,
       paddingInlineStart: Spacing.md,
       paddingInlineEnd: Spacing.sm,
       paddingBlockStart: Spacing.sm,
