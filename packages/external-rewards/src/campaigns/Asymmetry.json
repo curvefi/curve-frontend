@@ -1,0 +1,21 @@
+{
+  "campaignName": "Gem Rush",
+  "platform": "Asymmetry Finance",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "asymmetry.png",
+  "dashboardLink": "https://app.asymmetry.finance/gemrush/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1748433600",
+      "campaignEnd": "1779969600",
+      "address": "0x95591348FE9718bE8bfa3afcC9b017D9Ec18A7fa",
+      "network": "ethereum",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

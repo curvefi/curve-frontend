@@ -18,8 +18,8 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "2.66.26",
-    "@curvefi/llamalend-api": "^1.0.20",
+    "@curvefi/api": "2.66.30",
+    "@curvefi/llamalend-api": "^1.0.21",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",
@@ -31,7 +31,7 @@
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "immer": "^9.0.21",
-    "lightweight-charts": "^4.2.3",
+    "lightweight-charts": "^5.0.7",
     "lodash": "4.17.21",
     "memoizee": "^0.4.17",
     "next": "15.2.4",

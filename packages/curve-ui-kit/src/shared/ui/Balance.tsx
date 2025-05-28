@@ -25,11 +25,11 @@ type MaxButtonProps = {
 /** Reusable Max button component with consistent styling */
 const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
   <Button
+    variant="inline"
     color="ghost"
     size="extraSmall"
     onClick={onClick}
     sx={{
-      minWidth: 'unset',
       /**
        * Remove any properties that cause the total height component to change
        * depending on the value of the 'max' property of BalanceText.
@@ -37,7 +37,6 @@ const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
        * white space and thus breathing room. However in this case we want the
        * link to be embedded into the typography and be as compact as possible.
        */
-      '&': { height: 'auto', padding: 0, border: 0, lineHeight: 0 },
       ...(underline && {
         '&:hover .balance': {
           textDecoration: 'underline',
@@ -90,7 +89,7 @@ export type Props = {
 
 export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center">
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline={true} onClick={() => onMax?.(balance)}>

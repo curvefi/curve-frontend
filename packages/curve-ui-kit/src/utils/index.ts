@@ -8,6 +8,7 @@ export * from './web3'
 export * from './network'
 export * from './number'
 export * from './searchText'
+export * from './mui'
 
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: boolean }).Cypress)
 export const isBetaDefault =

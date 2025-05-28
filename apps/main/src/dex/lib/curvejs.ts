@@ -473,7 +473,7 @@ const router = {
 
 const poolDeposit = {
   depositBalancedAmounts: async (activeKey: string, p: Pool, isWrapped: boolean) => {
-    log('depositBalancedAmounts', p.name, isWrapped)
+    log('depositBalancedAmounts', p.name, { isWrapped })
     const resp = { activeKey, amounts: [] as string[], error: '' }
     try {
       resp.amounts = isWrapped ? await p.depositWrappedBalancedAmounts() : await p.depositBalancedAmounts()

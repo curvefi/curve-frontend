@@ -14,7 +14,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, type SxProps } from '@ui-kit/utils'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -51,6 +51,7 @@ type ActionInfoProps = {
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
+  sx?: SxProps
 }
 
 const labelSize = {
@@ -86,6 +87,7 @@ const ActionInfo = ({
   copy = false,
   copiedTitle,
   loading = false,
+  sx,
 }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
@@ -95,8 +97,8 @@ const ActionInfo = ({
   }
 
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'}>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx}>
+      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
         {label}
       </Typography>
 

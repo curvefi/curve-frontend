@@ -106,5 +106,11 @@
   },
   {
     "campaign": "Turtle.json"
+  },
+  {
+    "campaign": "Infinifi.json"
+  },
+  {
+    "campaign": "Asymmetry.json"
   }
 ]

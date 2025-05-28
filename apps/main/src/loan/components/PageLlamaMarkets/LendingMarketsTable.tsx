@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useAccount } from 'wagmi'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/loan/components/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import {
@@ -36,10 +35,9 @@ const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
  * The visibility on mobile is based on the sort field.
  * On larger devices, it uses the visibility settings that may be customized by the user.
  */
-const useVisibility = (sortField: LlamaMarketColumnId) => {
-  const { isConnected } = useAccount()
+const useVisibility = (sortField: LlamaMarketColumnId, hasPositions: boolean | undefined) => {
   const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-  const groups = useMemo(() => createLlamaMarketsColumnOptions(isConnected), [isConnected])
+  const groups = useMemo(() => createLlamaMarketsColumnOptions(hasPositions), [hasPositions])
   const visibilitySettings = useVisibilitySettings(groups)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
   return { ...visibilitySettings, ...(isMobile && { columnVisibility }) }
@@ -65,7 +63,7 @@ export const LendingMarketsTable = ({
   ])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
-  const { columnSettings, columnVisibility, toggleVisibility } = useVisibility(sortField)
+  const { columnSettings, columnVisibility, toggleVisibility } = useVisibility(sortField, result?.hasPositions)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,

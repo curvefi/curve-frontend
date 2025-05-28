@@ -1,10 +1,10 @@
 import { cloneElement, type ReactElement } from 'react'
 import type { Theme } from '@mui/material'
-import type { SystemStyleObject } from '@mui/system'
 import { useClassObserver } from '@ui-kit/hooks/useClassObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import type { SxProps } from '@ui-kit/utils'
 import { classNames, CypressHoverClass, useNativeEventInCypress } from '@ui-kit/utils/dom'
 
 /**
@@ -12,7 +12,7 @@ import { classNames, CypressHoverClass, useNativeEventInCypress } from '@ui-kit/
  * The child component should accept the following props
  */
 type ChildProps = {
-  sx: SystemStyleObject<Theme>
+  sx: SxProps
   onMouseEnter: () => void
   onMouseLeave: () => void
   transition: string

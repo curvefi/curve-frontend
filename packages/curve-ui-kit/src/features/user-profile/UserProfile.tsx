@@ -14,7 +14,7 @@ export const UserProfile = ({ open, onClose }: Props) => (
     onClose={onClose}
     PaperProps={{
       sx: {
-        minWidth: SizesAndSpaces.ModalWidth.lg,
+        minWidth: SizesAndSpaces.Width.modal.lg,
         paddingInline: SizesAndSpaces.Spacing.md,
         paddingBlock: SizesAndSpaces.Spacing.lg,
         backgroundColor: (t) => t.design.Layer[1].Fill,

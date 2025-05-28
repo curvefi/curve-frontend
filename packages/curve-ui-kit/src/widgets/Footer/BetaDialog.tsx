@@ -24,7 +24,7 @@ export const BetaDialog = ({
   openBetaSnackbar: () => void
 }) => (
   <Dialog open={open} onClose={onClose}>
-    <Card sx={{ width: SizesAndSpaces.ModalWidth.md, maxWidth: '100vw', display: 'flex', flexDirection: 'column' }}>
+    <Card sx={{ width: SizesAndSpaces.Width.modal.md, maxWidth: '100vw', display: 'flex', flexDirection: 'column' }}>
       <CardHeader
         action={
           <IconButton onClick={onClose} size="extraSmall">
