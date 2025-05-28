@@ -121,6 +121,22 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0x59d9356e565ab3a36dd77763fc0d87feaf85508c': {
+        alertType: 'warning',
+        isInformationOnly: true,
+        address: '0x59d9356e565ab3a36dd77763fc0d87feaf85508c',
+        message: (
+          <div>
+            <Trans>
+              Mountain Protocol is winding down USDM. Minting is disabled since May 12, 2025. Primary customers can
+              redeem USDM via Mountain Protocol. Other holders can swap on supported exchanges.{' '}
+              <StyledExternalLink href="https://x.com/MountainUSDM/status/1921960086362108270">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
