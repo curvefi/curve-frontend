@@ -7,14 +7,13 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Sizing } = SizesAndSpaces
 
 const poolTypeNames: Record<LlamaMarketType, () => string> = {
   [LlamaMarketType.Lend]: () => t`Lend`,
@@ -27,13 +26,12 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 }
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */
-export const MarketBadges = ({ market }: { market: LlamaMarket }) => {
+export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
   const { address, rewards, type, leverage, deprecatedMessage } = market
-  const isMobile = useIsMobile()
   const isSmall = useMediaQuery('(max-width:1250px)')
   const { isCollateralEroded } = useUserMarketStats(market)?.data ?? {}
   return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center">
+    <Stack direction="row" gap={Spacing.sm} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
       <Tooltip title={poolTypeTooltips[type]()}>
         <Chip
           size="extraSmall"

@@ -18,9 +18,9 @@ const { Spacing } = SizesAndSpaces
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => {
   const isMobile = useIsMobile()
   return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center" marginBlock={Spacing.xxs}>
+    <Stack direction="row" gap={Spacing.sm} alignItems="center" marginBlock={{ ...Spacing.xxs, mobile: 0 }}>
       <TokenPair chain={market.chain} assets={market.assets} />
-      <Stack direction="column" gap={Spacing.xs}>
+      <Stack direction="column" gap={{ ...Spacing.xs, mobile: 0 }} justifyContent="center">
         <Typography component={Stack} variant={isMobile ? 'tableCellMBold' : 'tableCellL'} direction="row" gap={2}>
           <MuiLink
             color="inherit"
@@ -39,6 +39,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               maxWidth: '40vw', // adjust as needed
+              paddingBlock: { mobile: '5px', tablet: 0 },
             }}
           >
             {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
@@ -52,7 +53,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
             sx={{ display: { mobile: 'none', tablet: 'flex' } }}
           />
         </Typography>
-        <MarketBadges market={market} />
+        <MarketBadges market={market} isMobile={isMobile} />
       </Stack>
     </Stack>
   )

@@ -1,3 +1,4 @@
+import { mapValues } from 'lodash'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -30,11 +31,12 @@ export const DataCell = <T extends TableItem>({
   const { variant, borderRight } = column.columnDef.meta ?? {}
   const children = flexRender(column.columnDef.cell, cell.getContext())
 
-  // with the collapse icon there is an extra wrapper
+  // with the collapse icon there is an extra wrapper, so keep the sx separate
   const wrapperSx = {
     textAlign: getAlignment(column),
     paddingInline: Spacing.sm,
-    paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
+    // 1px less for the border bottom
+    paddingBlock: mapValues({ ...Spacing.xs, mobile: Spacing.md.mobile }, (value) => `${value} calc(${value} - 1px)`),
   }
 
   const showCollapseIcon = isMobile && isLast
@@ -45,7 +47,6 @@ export const DataCell = <T extends TableItem>({
       component="td"
       sx={{
         ...(!showCollapseIcon && wrapperSx),
-        borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
         ...getExtraColumnPadding({ isFirst, isLast }),
         ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         ...(isSticky && {
@@ -54,6 +55,7 @@ export const DataCell = <T extends TableItem>({
           zIndex: (t) => t.zIndex.tableStickyColumn,
           backgroundColor: (t) => t.design.Table.Row.Default,
         }),
+        borderBlockEnd: (t) => `1px solid ${t.design.Layer[1].Outline}`,
       }}
       data-testid={`data-table-cell-${column.id}`}
     >
