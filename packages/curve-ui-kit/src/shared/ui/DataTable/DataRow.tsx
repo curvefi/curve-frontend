@@ -57,7 +57,12 @@ export const DataRow = <T extends TableItem>({
               opacity: { mobile: 1, desktop: 0 },
               transition: `opacity ${TransitionFunction}`,
             },
-            '&:hover': { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
+            '&:hover': {
+              [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
+              '& td, & th': {
+                backgroundColor: (t) => t.design.Table.Row.Hover,
+              },
+            },
             [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
             ...(isLast && {
               // to avoid the sticky header showing without any rows, show the last row on top of it

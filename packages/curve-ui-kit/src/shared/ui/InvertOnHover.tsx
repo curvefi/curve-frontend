@@ -33,7 +33,7 @@ type InvertOnHoverProps = {
 }
 
 /**
- * A component that inverts the theme when hovered. Currently disabled due to performance issues.
+ * A component that inverts the theme when hovered. Currently, disabled due to performance issues.
  * In the future we want to use css variables to achieve the same effect without fully changing the theme.
  */
 export const InvertOnHover = ({ children }: InvertOnHoverProps) => children
