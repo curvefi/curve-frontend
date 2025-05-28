@@ -1,3 +1,4 @@
+import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
 import Carrot from './Carrot.json'
@@ -13,6 +14,7 @@ import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import HumanNetwork from './HumanNetwork.json'
 import Inception from './Inception.json'
+import Infinifi from './Infinifi.json'
 import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
@@ -72,4 +74,6 @@ export {
   Rings,
   Tac,
   Turtle,
+  Infinifi,
+  Asymmetry,
 }
