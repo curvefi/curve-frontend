@@ -16,6 +16,8 @@ type Proposal = {
   min_accept_quorum: string
   total_supply: string
   executed: boolean
+  execution_tx: Address | null
+  execution_date: string | null
   transaction_hash: Address
   dt: string
 }
