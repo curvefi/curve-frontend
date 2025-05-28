@@ -128,12 +128,11 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
         message: (
           <div>
             <Trans>
-              Mountain Protocol is winding down USDM. Minting is disabled from May 12, 2025. Primary customers
+              Mountain Protocol is winding down USDM. Minting is disabled since May 12, 2025. Primary customers
               can redeem USDM via Mountain Protocol. Other holders can swap on supported exchanges.{' '}
               <StyledExternalLink href="https://x.com/MountainUSDM/status/1921960086362108270">
                 Learn more here
               </StyledExternalLink>
-              .
             </Trans>
           </div>
         ),
