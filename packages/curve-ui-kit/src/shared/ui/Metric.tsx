@@ -112,9 +112,15 @@ const MetricValue = ({
   copyValue,
 }: MetricValueProps) => (
   <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
-    <Tooltip arrow placement="bottom" title={value.toLocaleString()} onClick={copyValue} sx={{ cursor: 'pointer' }}>
+    <Tooltip
+      arrow
+      placement="bottom"
+      title={value != null ? value.toLocaleString() : 'N/A'}
+      onClick={copyValue}
+      sx={{ cursor: 'pointer' }}
+    >
       <Stack direction="row" alignItems="baseline">
-        {unit?.position === 'prefix' && (
+        {unit?.position === 'prefix' && value != null && (
           <Typography variant={fontVariantUnit} color="textSecondary">
             {unit.symbol}
           </Typography>
@@ -122,18 +128,18 @@ const MetricValue = ({
 
         <Typography variant={fontVariant} color="textPrimary">
           {useMemo(
-            () => runFormatter(value, formatter, abbreviate, unit?.symbol),
+            () => (value != null ? runFormatter(value, formatter, abbreviate, unit?.symbol) : 'N/A'),
             [formatter, abbreviate, value, unit?.symbol],
           )}
         </Typography>
 
-        {abbreviate && (
+        {value != null && abbreviate && (
           <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
             {scaleSuffix(value)}
           </Typography>
         )}
 
-        {unit?.position === 'suffix' && (
+        {unit?.position === 'suffix' && value != null && (
           <Typography variant={fontVariantUnit} color="textSecondary">
             {unit.symbol}
           </Typography>
@@ -151,7 +157,7 @@ const MetricValue = ({
 
 type Props = {
   /** The actual metric value to display */
-  value: number
+  value: number | undefined | null
   /** A unit can be a currency symbol or percentage, prefix or suffix */
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
@@ -215,7 +221,9 @@ export const Metric = ({
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
   const copyValue = () => {
-    void copyToClipboard(value.toString())
+    if (value) {
+      void copyToClipboard(value.toString())
+    }
     setOpenCopyAlert(true)
   }
 
