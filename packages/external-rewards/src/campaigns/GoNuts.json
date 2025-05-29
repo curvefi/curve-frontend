@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0xA10d15538E09479186b4D3278BA5c979110dDdB1",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "gonuts",
       "tags": ["points"],
       "lock": "false"
     },
@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0x394a1e1b934cb4F4a0dC17BDD592ec078741542F",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "gonuts",
       "tags": ["points"],
       "lock": "false"
     }
