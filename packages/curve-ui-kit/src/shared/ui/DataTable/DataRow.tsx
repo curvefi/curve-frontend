@@ -46,7 +46,7 @@ export const DataRow = <T extends TableItem>({
     (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),
     [url, push],
   )
-  const visibleCells = row.getVisibleCells().filter((cell) => !cell.column.columnDef.meta?.hidden)
+  const visibleCells = row.getVisibleCells()
 
   return (
     <>
@@ -80,14 +80,7 @@ export const DataRow = <T extends TableItem>({
           onClick={isMobile ? () => row.toggleExpanded() : onClickDesktop}
         >
           {visibleCells.map((cell, index) => (
-            <DataCell
-              key={cell.id}
-              cell={cell}
-              isFirst={!index}
-              isLast={index == visibleCells.length - 1}
-              isMobile={isMobile}
-              isSticky={shouldStickFirstColumn && !index}
-            />
+            <DataCell key={cell.id} cell={cell} isMobile={isMobile} isSticky={shouldStickFirstColumn && !index} />
           ))}
         </TableRow>
       </InvertOnHover>

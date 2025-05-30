@@ -29,7 +29,7 @@ import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/Tabl
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
@@ -39,7 +39,7 @@ const { Spacing, MaxWidth, Sizing } = SizesAndSpaces
 const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined) => {
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
   const groups = useMemo(() => createLlamaMarketsColumnOptions(hasPositions), [hasPositions])
-  const visibilitySettings = useVisibilitySettings(groups)
+  const visibilitySettings = useVisibilitySettings(groups, LLAMA_MARKET_COLUMNS)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
   return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

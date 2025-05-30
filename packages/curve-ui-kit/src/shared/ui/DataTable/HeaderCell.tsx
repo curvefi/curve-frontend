@@ -10,59 +10,53 @@ const { Spacing } = SizesAndSpaces
 
 export const HeaderCell = <T extends TableItem>({
   header,
-  isFirst,
-  isLast,
   isSticky,
 }: {
   header: Header<T, unknown>
-  isFirst: boolean
-  isLast: boolean
   isSticky: boolean
 }) => {
   const { column } = header
   const isSorted = column.getIsSorted()
   const canSort = column.getCanSort()
-  const { hidden, borderRight } = column.columnDef.meta ?? {}
+  const { borderRight } = column.columnDef.meta ?? {}
   return (
-    !hidden && (
-      <Typography
-        component="th"
-        sx={{
-          textAlign: getAlignment(column),
-          verticalAlign: 'bottom',
-          padding: Spacing.sm,
-          paddingBlockStart: 0,
-          color: `text.${isSorted ? 'primary' : 'secondary'}`,
-          ...getExtraColumnPadding({ isFirst, isLast }),
-          ...(canSort && {
-            cursor: 'pointer',
-            '&:hover': {
-              color: `text.highlight`,
-            },
-          }),
-          ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
-          ...(isSticky && {
-            position: 'sticky',
-            left: 0,
-            zIndex: (t) => t.zIndex.tableHeaderStickyColumn,
-            backgroundColor: (t) => t.design.Table.Header.Fill,
-          }),
-        }}
-        colSpan={header.colSpan}
-        onClick={column.getToggleSortingHandler()}
-        data-testid={`data-table-header-${column.id}`}
-        variant="tableHeaderS"
-      >
-        <Stack direction="row" justifyContent={getFlexAlignment(column)} alignItems="end">
-          {flexRender(column.columnDef.header, header.getContext())}
-          <RotatableIcon
-            icon={ArrowDownIcon}
-            rotated={isSorted === 'asc'}
-            fontSize={isSorted ? 20 : 0}
-            isEnabled={canSort}
-          />
-        </Stack>
-      </Typography>
-    )
+    <Typography
+      component="th"
+      sx={{
+        textAlign: getAlignment(column),
+        verticalAlign: 'bottom',
+        padding: Spacing.sm,
+        paddingBlockStart: 0,
+        color: `text.${isSorted ? 'primary' : 'secondary'}`,
+        ...getExtraColumnPadding(column),
+        ...(canSort && {
+          cursor: 'pointer',
+          '&:hover': {
+            color: `text.highlight`,
+          },
+        }),
+        ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+        ...(isSticky && {
+          position: 'sticky',
+          left: 0,
+          zIndex: (t) => t.zIndex.tableHeaderStickyColumn,
+          backgroundColor: (t) => t.design.Table.Header.Fill,
+        }),
+      }}
+      colSpan={header.colSpan}
+      onClick={column.getToggleSortingHandler()}
+      data-testid={`data-table-header-${column.id}`}
+      variant="tableHeaderS"
+    >
+      <Stack direction="row" justifyContent={getFlexAlignment(column)} alignItems="end">
+        {flexRender(column.columnDef.header, header.getContext())}
+        <RotatableIcon
+          icon={ArrowDownIcon}
+          rotated={isSorted === 'asc'}
+          fontSize={isSorted ? 20 : 0}
+          isEnabled={canSort}
+        />
+      </Stack>
+    </Typography>
   )
 }

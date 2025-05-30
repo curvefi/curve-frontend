@@ -17,15 +17,10 @@ export const DataCell = <T extends TableItem>({
   cell,
   isMobile,
   isSticky,
-  isLast,
-  isFirst,
 }: {
   cell: Cell<T, unknown>
   isMobile: boolean
   isSticky: boolean
-  // todo: get rid of column hidden meta and use visibility + use column.getIsLastColumn()
-  isFirst: boolean
-  isLast: boolean
 }) => {
   const { column, row } = cell
   const { variant, borderRight } = column.columnDef.meta ?? {}
@@ -39,7 +34,7 @@ export const DataCell = <T extends TableItem>({
     paddingBlock: mapValues({ ...Spacing.xs, mobile: Spacing.md.mobile }, (value) => `${value} calc(${value} - 1px)`),
   }
 
-  const showCollapseIcon = isMobile && isLast
+  const showCollapseIcon = isMobile && column.getIsLastColumn()
   return (
     <Typography
       variant={variant ?? 'tableCellMBold'}
@@ -47,7 +42,7 @@ export const DataCell = <T extends TableItem>({
       component="td"
       sx={{
         ...(!showCollapseIcon && wrapperSx),
-        ...getExtraColumnPadding({ isFirst, isLast }),
+        ...getExtraColumnPadding(column),
         ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         ...(isSticky && {
           position: 'sticky',

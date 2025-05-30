@@ -54,13 +54,7 @@ export const DataTable = <T extends TableItem>({
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
             {headerGroup.headers.map((header, index) => (
-              <HeaderCell
-                key={header.id}
-                header={header}
-                isFirst={!index}
-                isLast={index == headerGroup.headers.length - 1}
-                isSticky={!index && shouldStickFirstColumn}
-              />
+              <HeaderCell key={header.id} header={header} isSticky={!index && shouldStickFirstColumn} />
             ))}
           </TableRow>
         ))}
