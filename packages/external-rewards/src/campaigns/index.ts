@@ -10,6 +10,7 @@ import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
 import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
+import GoNuts from './GoNuts.json'
 import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import HumanNetwork from './HumanNetwork.json'
@@ -76,4 +77,5 @@ export {
   Turtle,
   Infinifi,
   Asymmetry,
+  GoNuts,
 }
