@@ -24,7 +24,7 @@ export const PegKeeperStatistics = () => {
           loading={isLoading}
           label="Peg Stabilisation Reserve"
           unit={CRVUSD_OPTION}
-          value={pegKeepersDebt ? Number(pegKeepersDebt) : undefined}
+          value={pegKeepersDebt && Number(pegKeepersDebt)}
         />
         <Metric
           loading={isLoading}

@@ -82,7 +82,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="small"
               label={t`30 Days Projection`}
               unit="dollar"
-              value={scrvUsdApy ? oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance) : undefined}
+              value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               loading={isStatisticsLoading || userBalanceLoading}
               tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />
@@ -92,7 +92,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="small"
               label={t`1 Year Projection`}
               unit="dollar"
-              value={scrvUsdApy ? oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance) : undefined}
+              value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               loading={isStatisticsLoading || userBalanceLoading}
               tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />
