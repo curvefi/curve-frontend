@@ -1,31 +1,31 @@
 {
-  "campaignName": "GoNuts",
+  "campaignName": "",
   "platform": "Treehouse",
   "description": "Points for providing liquidity.",
-  "platformImageId": "gonuts.png",
+  "platformImageId": "treehouse.png",
   "dashboardLink": "https://app.treehouse.finance/gonuts/",
   "pools": [
     {
       "id": "null",
       "action": "lp",
-      "description": "Users who provide liquidity into tETH-wstETH pool gets 10 Nuts/tETH value of LP tokens, and an additional 100% Buff across their Nuts on top of that.",
+      "description": "Users who provide liquidity to the tETH-wstETH pool earn 10 Nuts per tETH worth of LP tokens, along with an additional 100% Buff applied to their total Nuts (Treehouse points).",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xA10d15538E09479186b4D3278BA5c979110dDdB1",
       "network": "ethereum",
-      "multiplier": "gonuts",
+      "multiplier": "2x",
       "tags": ["points"],
       "lock": "false"
     },
     {
       "id": "null",
       "action": "lp",
-      "description": "Users who provide liquidity into tETH-weETH pool gets 10 Nuts/tETH value of LP tokens, and an additional 100% Buff across their Nuts on top of that.",
+      "description": "Users who provide liquidity to the tETH-weETH pool earn 10 Nuts per tETH worth of LP tokens, along with an additional 100% Buff applied to their total Nuts (Treehouse points).",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x394a1e1b934cb4F4a0dC17BDD592ec078741542F",
       "network": "ethereum",
-      "multiplier": "gonuts",
+      "multiplier": "2x",
       "tags": ["points"],
       "lock": "false"
     }
