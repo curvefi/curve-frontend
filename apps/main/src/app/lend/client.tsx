@@ -84,7 +84,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [networkId, chainId, push])
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={helpers.initApi}

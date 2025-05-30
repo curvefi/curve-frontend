@@ -25,7 +25,7 @@ import {
 } from '@wagmi/core/chains'
 import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
 
-export const chains = [
+export const wagmiChains = [
   mainnet,
   optimism,
   bsc,
@@ -56,5 +56,3 @@ export const chains = [
   neonMainnet,
   aurora,
 ] as const
-
-export type WagmiChainId = (typeof chains)[number]['id']

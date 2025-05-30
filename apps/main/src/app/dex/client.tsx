@@ -74,7 +74,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={initCurveJs}

@@ -178,6 +178,7 @@ export type BaseConfig<TId = string> = {
   chainId: number
   symbol: string
   networkId: string
+  explorerUrl: string
   hex: string
   blocknativeSupport: boolean
   isTestnet: boolean
