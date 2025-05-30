@@ -213,12 +213,13 @@ describe(`LlamaLend Markets`, () => {
     if (breakpoint === 'mobile') {
       expandFirstRowOnMobile()
     }
-    if (breakpoint === 'desktop') {
-      // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
-      cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
-    } else {
-      cy.get(`[data-testid^="copy-market-address"]:visible`).first().click()
-    }
+    // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
+    range(2).forEach(() =>
+      breakpoint === 'desktop'
+        ? // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
+          cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
+        : cy.get(`[data-testid^="copy-market-address"]:visible`).first().click(),
+    )
     cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
   })
 
@@ -316,5 +317,5 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
-  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
 }
