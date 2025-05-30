@@ -38,7 +38,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              maxWidth: '40vw', // adjust as needed
+              maxWidth: '40vw', // make sure the other column will fit in small screens
               paddingBlock: { mobile: '5px', tablet: 0 },
             }}
           >

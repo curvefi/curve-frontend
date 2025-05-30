@@ -80,9 +80,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               {t`7D Rate Chart`}
             </Typography>
 
-            {/*<Stack sx={{ alignItems: 'center' }} data-testid="borrow">*/}
             <LineGraphCell market={market} type="borrow" graphSize={graphSize} />
-            {/*</Stack>*/}
           </Stack>
         </Grid>
       </Grid>

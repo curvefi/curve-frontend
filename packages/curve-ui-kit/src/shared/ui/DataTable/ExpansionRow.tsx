@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { getInsetShadow, getShadow, type ShadowElevation } from '@ui-kit/themes/basic-theme/shadows'
+import { getInsetShadow, getShadow } from '@ui-kit/themes/basic-theme/shadows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -29,12 +29,12 @@ export function ExpansionRow<T extends TableItem>({
   const { render, onExited, expanded } = useRowExpansion(row)
   const { design } = useTheme()
   const boxShadow = useMemo(() => getShadow(design, 3), [design])
-  const inset = useMemo(() => getInsetShadow(design, 3), [design])
+  const insetShadow = useMemo(() => getInsetShadow(design, 3), [design])
   return (
     render && (
       // add a scale(1) so the box-shadow is applied correctly on top of the next table row
       <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid="data-table-expansion-row">
-        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: inset, borderBottom: 'none' }}>
+        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: insetShadow, borderBottom: 'none' }}>
           <Collapse in={expanded} onExited={onExited}>
             <Stack
               gap={Spacing.lg}
@@ -79,20 +79,4 @@ function useRowExpansion<T>(row: Row<T>) {
   }, [expanded, render, rowExpanded])
   const onExited = useCallback(() => setRender(false), [])
   return { render, onExited, expanded }
-}
-
-/**
- * Hook to get the inset shadow for the expansion row.
- *
- * The shadow is defined in the design, but it doesn't work between HTML rows.
- */
-function useShadows(elevation: ShadowElevation) {
-  const { design } = useTheme()
-  return useMemo(
-    () => [
-      { boxShadow: getShadow(design, elevation), transform: 'scale(1)' },
-      { boxShadow: getInsetShadow(design, elevation) },
-    ],
-    [design],
-  )
 }
