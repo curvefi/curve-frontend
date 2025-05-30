@@ -185,6 +185,7 @@ export const LargeTokenInput = ({
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
   const showBalance = maxBalance && maxBalance.showBalance !== false
+  const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
@@ -258,7 +259,7 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Second row containing (max) balance and sliders */}
-        {maxBalance && (
+        {showMaxBalance && (
           <Stack
             direction="row"
             gap={Spacing.sm}
@@ -272,8 +273,10 @@ export const LargeTokenInput = ({
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
                 notionalValue={maxBalance.notionalValue}
-                max={maxBalance ? 'balance' : 'off'}
+                max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
+                // Stretch the balance component if there's no slider so the max button can reach the end
+                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
               />
             )}
 

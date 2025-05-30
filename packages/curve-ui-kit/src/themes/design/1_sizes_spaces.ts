@@ -269,6 +269,7 @@ export const SizesAndSpaces = {
   MinWidth: {
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
+    actionCard: '20rem', // 320px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px
