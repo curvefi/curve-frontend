@@ -9,6 +9,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { PegKeeperStatistics } from './components/PegKeeperStatistics'
 
 const Page = (params: NetworkUrlParams) => {
   const { connectState } = useConnection<LlamaApi>()
@@ -22,12 +23,14 @@ const Page = (params: NetworkUrlParams) => {
           {rChainId && provider ? (
             <>
               <Title>{t`Peg Keepers`}</Title>
-              <Description>
+              <p>
                 <StyledExternalLink href="https://resources.curve.finance/crvusd/faq/#peg-keepers">
                   Click here
                 </StyledExternalLink>{' '}
                 to learn more about Peg Keepers.
-              </Description>
+              </p>
+              <PegKeeperStatistics />
+              <br />
               <PagePegKeepers rChainId={rChainId} provider={provider} />
             </>
           ) : (
@@ -77,13 +80,8 @@ const ContainerContent = styled.div`
   }
 `
 
-const Description = styled.p`
-  margin-bottom: var(--spacing-wide);
-`
-
 const Title = styled.h1`
   font-size: var(--font-size-5);
-  margin-bottom: var(--spacing-narrow);
   text-transform: uppercase;
 
   @media (min-width: ${breakpoints.sm}rem) {

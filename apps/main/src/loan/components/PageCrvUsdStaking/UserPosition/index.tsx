@@ -31,10 +31,12 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   const userScrvUsdBalanceInCrvUsd = userScrvUsdBalance / Number(scrvUsdRate)
   const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
 
-  const totalScrvUsdSupply = statisticsData?.supply ?? 0
-  const scrvUsdApy = statisticsData?.aprProjected ?? 0
+  const totalScrvUsdSupply = statisticsData?.supply
+  const scrvUsdApy = statisticsData?.aprProjected
 
-  const userShareOfTotalScrvUsdSupply = Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
+  const userShareOfTotalScrvUsdSupply = totalScrvUsdSupply
+    ? Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
+    : undefined
 
   return (
     <Card
@@ -80,7 +82,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="small"
               label={t`30 Days Projection`}
               unit="dollar"
-              value={oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               loading={isStatisticsLoading || userBalanceLoading}
               tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />
@@ -90,7 +92,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="small"
               label={t`1 Year Projection`}
               unit="dollar"
-              value={oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               loading={isStatisticsLoading || userBalanceLoading}
               tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />

@@ -6,6 +6,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
+import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -110,48 +111,63 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
-}: MetricValueProps) => (
-  <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
-    <Tooltip arrow placement="bottom" title={value.toLocaleString()} onClick={copyValue} sx={{ cursor: 'pointer' }}>
-      <Stack direction="row" alignItems="baseline">
-        {unit?.position === 'prefix' && (
-          <Typography variant={fontVariantUnit} color="textSecondary">
-            {unit.symbol}
-          </Typography>
-        )}
+}: MetricValueProps) => {
+  const numberValue: number | null = useMemo(() => {
+    if (typeof value === 'number' && isFinite(value)) {
+      return value
+    }
+    return null
+  }, [value])
 
-        <Typography variant={fontVariant} color="textPrimary">
-          {useMemo(
-            () => runFormatter(value, formatter, abbreviate, unit?.symbol),
-            [formatter, abbreviate, value, unit?.symbol],
+  return (
+    <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
+      <Tooltip
+        arrow
+        placement="bottom"
+        title={numberValue !== null ? numberValue.toLocaleString() : t`N/A`}
+        onClick={copyValue}
+        sx={{ cursor: 'pointer' }}
+      >
+        <Stack direction="row" alignItems="baseline">
+          {unit?.position === 'prefix' && numberValue !== null && (
+            <Typography variant={fontVariantUnit} color="textSecondary">
+              {unit.symbol}
+            </Typography>
           )}
+
+          <Typography variant={fontVariant} color="textPrimary">
+            {useMemo(
+              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, unit?.symbol)),
+              [numberValue, formatter, abbreviate, unit?.symbol],
+            )}
+          </Typography>
+
+          {numberValue !== null && abbreviate && (
+            <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
+              {scaleSuffix(numberValue)}
+            </Typography>
+          )}
+
+          {unit?.position === 'suffix' && numberValue !== null && (
+            <Typography variant={fontVariantUnit} color="textSecondary">
+              {unit.symbol}
+            </Typography>
+          )}
+        </Stack>
+      </Tooltip>
+
+      {(change || change === 0) && (
+        <Typography variant="highlightM" color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}>
+          {formatChange(change)}%
         </Typography>
-
-        {abbreviate && (
-          <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
-            {scaleSuffix(value)}
-          </Typography>
-        )}
-
-        {unit?.position === 'suffix' && (
-          <Typography variant={fontVariantUnit} color="textSecondary">
-            {unit.symbol}
-          </Typography>
-        )}
-      </Stack>
-    </Tooltip>
-
-    {(change || change === 0) && (
-      <Typography variant="highlightM" color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}>
-        {formatChange(change)}%
-      </Typography>
-    )}
-  </Stack>
-)
+      )}
+    </Stack>
+  )
+}
 
 type Props = {
   /** The actual metric value to display */
-  value: number
+  value: number | '' | false | undefined | null
   /** A unit can be a currency symbol or percentage, prefix or suffix */
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
@@ -215,7 +231,9 @@ export const Metric = ({
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
   const copyValue = () => {
-    void copyToClipboard(value.toString())
+    if (value) {
+      void copyToClipboard(value.toString())
+    }
     setOpenCopyAlert(true)
   }
 
