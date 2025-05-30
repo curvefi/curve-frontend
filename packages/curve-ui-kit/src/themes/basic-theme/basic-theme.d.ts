@@ -27,4 +27,12 @@ declare module '@mui/material/styles' {
     tertiary: string
     highlight: string
   }
+
+  interface ZIndex {
+    tableStickyColumn: number
+    tableHeader: number
+    tableFilters: number
+    tableHeaderStickyColumn: number
+    tableStickyLastRow: number
+  }
 }

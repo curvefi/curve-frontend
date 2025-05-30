@@ -13,7 +13,7 @@ export const FilterRow = <T extends TableItem>({
   children: ReactNode
   table: TanstackTable<T>
 }) => (
-  <TableRow sx={{ height: Sizing['xxl'] }}>
+  <TableRow>
     <TableCell
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
       sx={(t) => ({ backgroundColor: t.design.Layer[1].Fill, padding: 0, borderBottomWidth: 0 })}

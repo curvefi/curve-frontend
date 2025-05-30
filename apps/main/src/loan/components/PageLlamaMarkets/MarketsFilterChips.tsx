@@ -8,7 +8,7 @@ import PersonIcon from '@mui/icons-material/Person'
 import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
@@ -83,8 +83,6 @@ export const MarketsFilterChips = ({
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { address } = useAccount()
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
   return (
     <Grid
       container
@@ -133,7 +131,7 @@ export const MarketsFilterChips = ({
         {...(address && { size: 12 })}
         extraMargin
       />
-      <GridItem {...(!isMobile && { alignRight: true })}>
+      <GridItem {...(!useIsMobile() && { alignRight: true })}>
         <Stack direction="column">
           <Typography variant="bodyXsRegular">{t`Hidden Markets`}</Typography>
           <Typography variant="highlightS">{hiddenMarketCount}</Typography>

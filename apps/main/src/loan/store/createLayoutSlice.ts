@@ -17,6 +17,7 @@ type SliceState = {
   isXSmDown: boolean
   isXXSm: boolean
   pageWidth: PageWidthClassName | null
+  windowWidth: number | null
   scrollY: number
 }
 
@@ -53,6 +54,7 @@ const DEFAULT_STATE: SliceState = {
   isXSmDown: false,
   isXXSm: false,
   pageWidth: null,
+  windowWidth: null,
   scrollY: 0,
 }
 
@@ -70,6 +72,7 @@ const createLayoutSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       set(
         produce((state: State) => {
+          state.layout.windowWidth = window.innerWidth
           state.layout.pageWidth = pageWidthClassName
           state.layout.isXSmDown = isXSmDown
           state.layout.isSmUp = isSmUp || isMd || isLgUp

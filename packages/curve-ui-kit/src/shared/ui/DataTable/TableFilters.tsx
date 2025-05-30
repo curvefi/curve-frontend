@@ -1,5 +1,4 @@
 import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
-import { useMediaQuery } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -10,6 +9,7 @@ import Stack from '@mui/material/Stack'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
+import { useIsMobile, useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -79,9 +79,10 @@ export const TableFilters = <ColumnIds extends string>({
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
+  const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
   return (
-    <Stack paddingBlock={Spacing.md} maxWidth="calc(100vw - 16px)">
+    <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>

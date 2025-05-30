@@ -9,8 +9,8 @@ import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-v
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import ModalDialog from '@ui/Dialog'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 
@@ -35,7 +35,7 @@ const ComboBoxGauges = ({
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
   const setStateByKey = useStore((state) => state.gauges.setStateByKey)
   const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
 
   const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
