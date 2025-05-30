@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { getInsetShadow } from '@ui-kit/themes/basic-theme/shadows'
+import { getInsetShadow, getShadow, type ShadowElevation } from '@ui-kit/themes/basic-theme/shadows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -26,12 +26,15 @@ export function ExpansionRow<T extends TableItem>({
   expandedPanel: ExpandedPanel<T>
   colSpan: number
 }) {
-  const boxShadow = useInsetShadow()
   const { render, onExited, expanded } = useRowExpansion(row)
+  const { design } = useTheme()
+  const boxShadow = useMemo(() => getShadow(design, 3), [design])
+  const inset = useMemo(() => getInsetShadow(design, 3), [design])
   return (
     render && (
-      <TableRow sx={{ boxShadow }} data-testid="data-table-expansion-row">
-        <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
+      // add a scale(1) so the box-shadow is applied correctly on top of the next table row
+      <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid="data-table-expansion-row">
+        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: inset, borderBottom: 'none' }}>
           <Collapse in={expanded} onExited={onExited}>
             <Stack
               gap={Spacing.lg}
@@ -83,7 +86,13 @@ function useRowExpansion<T>(row: Row<T>) {
  *
  * The shadow is defined in the design, but it doesn't work between HTML rows.
  */
-function useInsetShadow() {
+function useShadows(elevation: ShadowElevation) {
   const { design } = useTheme()
-  return useMemo(() => getInsetShadow(design, 3), [design])
+  return useMemo(
+    () => [
+      { boxShadow: getShadow(design, elevation), transform: 'scale(1)' },
+      { boxShadow: getInsetShadow(design, elevation) },
+    ],
+    [design],
+  )
 }
