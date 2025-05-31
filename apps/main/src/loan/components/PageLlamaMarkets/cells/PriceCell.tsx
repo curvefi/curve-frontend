@@ -10,7 +10,10 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
-  const { data: stats, error: statsError } = useUserMarketStats(row.original, column.id as LlamaMarketColumnId)
+  const market = row.original
+  const { assets } = market
+  const columnId = column.id as LlamaMarketColumnId
+  const { data: stats, error: statsError } = useUserMarketStats(market, columnId)
   const value =
     {
       [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
@@ -20,8 +23,8 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   if (!value) {
     return statsError && <ErrorCell error={statsError} />
   }
-  const { usdPrice, chain, address, symbol } =
-    row.original.assets[column.id === LlamaMarketColumnId.UserBorrowed ? 'borrowed' : 'collateral']
+  const { usdPrice, chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
+
   const usdValue = usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
   const usdTooltip =
     usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', showAllFractionDigits: true })
