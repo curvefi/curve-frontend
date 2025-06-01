@@ -3467,19 +3467,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^6.4.11":
-  version: 6.4.11
-  resolution: "@mui/icons-material@npm:6.4.11"
+"@mui/icons-material@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@mui/icons-material@npm:7.1.0"
   dependencies:
-    "@babel/runtime": "npm:^7.26.0"
+    "@babel/runtime": "npm:^7.27.1"
   peerDependencies:
-    "@mui/material": ^6.4.11
+    "@mui/material": ^7.1.0
     "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10c0/f3d3eaada6db71a9f0d4da4a7343830990c585d90b39beb63251006a27e141bee953ce680eeaa6e755bb1021611ad645821307dff5b349e781bb15fce362f962
+  checksum: 10c0/d83c5a1506526525fa93053b4ecd4ff498236a415f7594e75252fbec7e4584bb8470db3e04198a4924e8bd67af96cbaf93a9dee0f0ef9fa19a999bd6ade01734
   languageName: node
   linkType: hard
 
@@ -10434,7 +10434,7 @@ __metadata:
     "@chromatic-com/storybook": "npm:^3.2.6"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
-    "@mui/icons-material": "npm:^6.4.11"
+    "@mui/icons-material": "npm:^7.1.0"
     "@mui/material": "npm:^6.4.11"
     "@mui/utils": "npm:^6.4.9"
     "@storybook/addon-a11y": "npm:8.6.14"
