@@ -20,14 +20,14 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Base
   networks: Record<ChainId, NetworkConfig>
 }) => {
   const theme = useUserProfileStore((state) => state.theme)
-  const config = useMemo(() => createWagmiConfig(networks), [networks])
+  const config = useMemo(() => !loading && createWagmiConfig(networks), [networks, loading])
   return (
     <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <OverlayProvider>
           <QueryProvider persister={persister} queryClient={queryClient}>
-            <WagmiProvider config={config}>{!loading && children}</WagmiProvider>
+            {config && <WagmiProvider config={config}>{children}</WagmiProvider>}
           </QueryProvider>
         </OverlayProvider>
       </ThemeProvider>

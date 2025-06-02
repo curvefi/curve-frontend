@@ -15,7 +15,7 @@ const state: {
   wallet: null,
 }
 
-const useWallet = () => {
+export const useWallet = () => {
   // modal state needs to be global because every call creates new state
   const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
@@ -55,6 +55,5 @@ const useWallet = () => {
 
   return { wallet, connect, disconnect, provider, showModal, closeModal }
 }
-useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
 
-export { useWallet }
+useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })
