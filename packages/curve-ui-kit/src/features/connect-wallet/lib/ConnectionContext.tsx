@@ -57,12 +57,12 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 })
 
 /**
- * Compare the signer address of the wallet with the one in the library. Without wallet, returns true.
+ * Compare the signer address of the wallet with the one in the library.
  */
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => !wallet || wallet.account?.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => wallet?.account.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
 
 /** Module-level variables to track initialization state across multiple calls */
 let mutexPromise: Promise<unknown> | null = null

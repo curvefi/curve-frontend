@@ -191,7 +191,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
       void state.usdRates.fetchAllStoredUsdRates(curveApi)
-    } else {
     }
 
     if (curveApi.signerAddress) {
