@@ -82,7 +82,7 @@ export const createWagmiConfig = memoize(
     })
   },
   {
-    length: 1,
+    max: 1, // only memoize the last call
   },
 )
 
