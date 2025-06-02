@@ -16,12 +16,14 @@ import Hourglass from './Hourglass.json'
 import HumanNetwork from './HumanNetwork.json'
 import Inception from './Inception.json'
 import Infinifi from './Infinifi.json'
+import Kalypso from './Kalypso.json'
 import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
 import Mellow from './Mellow.json'
 import Mevcommit from './Mevcommit.json'
 import Pumpbtc from './Pumpbtc.json'
+import Radius from './Radius.json'
 import Resolv from './Resolv.json'
 import Rings from './Rings.json'
 import SolvProtocol from './SolvProtocol.json'
@@ -78,4 +80,6 @@ export {
   Infinifi,
   Asymmetry,
   GoNuts,
+  Kalypso,
+  Radius,
 }
