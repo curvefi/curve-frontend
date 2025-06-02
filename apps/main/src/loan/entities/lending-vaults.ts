@@ -1,4 +1,3 @@
-import { fetchSupportedLendingChains } from '@/loan/entities/chains'
 import {
   type UserContractParams,
   type UserContractQuery,
@@ -6,9 +5,9 @@ import {
 } from '@/loan/entities/user-contract'
 import { Chain } from '@curvefi/prices-api'
 import {
-  getMarkets,
+  getAllMarkets,
+  getAllUserMarkets,
   getUserMarketEarnings,
-  getUserMarkets,
   getUserMarketStats,
   Market,
   type UserMarketEarnings,
@@ -28,13 +27,10 @@ export const {
   setQueryData: setLendingVaults,
 } = queryFactory({
   queryKey: () => ['lending-vaults', 'v1'] as const,
-  queryFn: async (): Promise<LendingVault[]> => {
-    const chains = await fetchSupportedLendingChains({})
-    const markets = await Promise.all(
-      chains.map(async (chain) => (await getMarkets(chain)).map((market) => ({ ...market, chain }))),
-    )
-    return markets.flat()
-  },
+  queryFn: async (): Promise<LendingVault[]> =>
+    Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
+      markets.map((market) => ({ ...market, chain: chain as Chain })),
+    ),
   validationSuite: EmptyValidationSuite,
 })
 
@@ -44,16 +40,25 @@ const {
   invalidate: invalidateUserLendingVaults,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-vaults', { userAddress }, 'v2'] as const,
-  queryFn: async ({ userAddress }: UserQuery) => {
-    const chains = await fetchSupportedLendingChains({})
-    const markets = await Promise.all(
-      chains.map(async (chain) => {
-        const markets = await getUserMarkets(userAddress, chain, {})
-        return [chain, markets.map((m) => m.controller)] as const
-      }),
-    )
-    return Object.fromEntries(markets) as Record<Chain, Address[]>
-  },
+  queryFn: async ({ userAddress }: UserQuery) =>
+    Object.fromEntries(
+      Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
+        chain,
+        userMarkets.map((market) => market.controller),
+      ]),
+    ) as Record<Chain, Address[]>,
+  validationSuite: userValidationSuite,
+})
+
+const {
+  getQueryOptions: getUserLendingSuppliesQueryOptions,
+  getQueryData: getCurrentUserLendingSupplies,
+  invalidate: invalidateUserLendingSupplies,
+} = queryFactory({
+  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v2'] as const,
+  queryFn: async ({ userAddress }: UserQuery) =>
+    // todo implement with llamalend-js
+    ({}) as Record<Chain, Address[]>,
   validationSuite: userValidationSuite,
 })
 
@@ -79,11 +84,21 @@ export function invalidateAllUserLendingVaults(userAddress: Address | undefined)
     const blockchainId = chain as Chain
     contracts.forEach((contractAddress) => {
       invalidateUserLendingVaultStats({ userAddress, blockchainId, contractAddress })
+    })
+  })
+}
+
+export function invalidateAllUserLendingSupplies(userAddress: Address | undefined) {
+  Object.entries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).forEach(([chain, contracts]) => {
+    invalidateUserLendingSupplies({ userAddress })
+    const blockchainId = chain as Chain
+    contracts.forEach((contractAddress) => {
       invalidateUserLendingVaultEarnings({ userAddress, blockchainId, contractAddress })
     })
   })
 }
 
 export const getUserLendingVaultsOptions = getUserLendingVaultsQueryOptions
+export const getUserLendingSuppliesOptions = getUserLendingSuppliesQueryOptions
 export const useUserLendingVaultStats = useUserLendingVaultStatsQuery
 export const useUserLendingVaultEarnings = useUserLendingVaultEarningsQuery

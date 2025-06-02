@@ -1,4 +1,4 @@
-import type { Address } from '../index'
+import type { Address, Chain } from '../index'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -45,6 +45,12 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   leverage: x.leverage,
 })
 
+export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
+  Object.fromEntries(Object.entries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)])) as Record<
+    Chain,
+    Models.Market[]
+  >
+
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),
   borrowApy: parseFloat(x.borrow_apy) / 100,
@@ -67,13 +73,19 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   discountLoan: x.loan_discount,
 })
 
-export const parseUserMarkets = (x: Responses.GetUserMarketsResponse): Models.UserMarkets =>
+export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarkets =>
   x.markets.map((market) => ({
     name: market.market_name,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
     snapshotLast: toDate(market.last_snapshot),
   }))
+
+export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
+  Object.fromEntries(Object.entries(x.chains).map(([chain, markets]) => [chain, parseUserMarkets(markets)])) as Record<
+    Chain,
+    Models.UserMarkets
+  >
 
 export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) => ({
   health: x.health,

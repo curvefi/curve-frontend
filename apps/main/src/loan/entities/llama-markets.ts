@@ -1,6 +1,11 @@
 import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
-import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/loan/entities/lending-vaults'
+import {
+  getLendingVaultsOptions,
+  getUserLendingSuppliesOptions,
+  getUserLendingVaultsOptions,
+  LendingVault,
+} from '@/loan/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { NetworkEnum } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
@@ -46,7 +51,7 @@ export type LlamaMarket = {
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
-  userHasPosition: boolean
+  userHasPosition: { lend: boolean; borrow: boolean } | null // null means no positions in either market and makes easy to filter
 }
 
 export type LlamaMarketKey = DeepKeys<LlamaMarket>
@@ -77,36 +82,41 @@ const convertLendingVault = (
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
   userVaults: Set<Address>,
-): LlamaMarket => ({
-  chain,
-  address: vault,
-  controllerAddress: controller,
-  assets: {
-    borrowed: {
-      ...borrowedToken,
-      usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
-      chain,
-    },
-    collateral: {
-      ...collateralToken,
-      chain,
-      usdPrice: collateralBalanceUsd / collateralBalance,
-    },
-  },
-  utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
-  liquidityUsd: totalAssetsUsd - totalDebtUsd,
-  rates: { lend: apyLend, borrow: apyBorrow },
-  type: LlamaMarketType.Lend,
-  url: getInternalUrl(
-    'lend',
+  userSupplied: Set<Address>,
+): LlamaMarket => {
+  const hasBorrow = userVaults.has(controller)
+  const hasLend = userSupplied.has(controller)
+  return {
     chain,
-    `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${userVaults.has(controller) ? 'manage' : 'create'}`,
-  ),
-  isFavorite: favoriteMarkets.has(vault),
-  rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
-  leverage,
-  userHasPosition: userVaults.has(controller),
-})
+    address: vault,
+    controllerAddress: controller,
+    assets: {
+      borrowed: {
+        ...borrowedToken,
+        usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
+        chain,
+      },
+      collateral: {
+        ...collateralToken,
+        chain,
+        usdPrice: collateralBalanceUsd / collateralBalance,
+      },
+    },
+    utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
+    liquidityUsd: totalAssetsUsd - totalDebtUsd,
+    rates: { lend: apyLend, borrow: apyBorrow },
+    type: LlamaMarketType.Lend,
+    url: getInternalUrl(
+      'lend',
+      chain,
+      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${userVaults.has(controller) ? 'manage' : 'create'}`,
+    ),
+    isFavorite: favoriteMarkets.has(vault),
+    rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
+    leverage,
+    userHasPosition: hasBorrow || hasLend ? { borrow: hasBorrow, lend: hasLend } : null,
+  }
+}
 
 /** We show WETH as ETH in the UI and market URL */
 const getCollateralSymbol = ({ symbol }: { symbol: string }) => (symbol == 'WETH' ? 'ETH' : symbol)
@@ -159,7 +169,7 @@ const convertMintMarket = (
   isFavorite: favoriteMarkets.has(address),
   rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
   leverage: 0,
-  userHasPosition: userMintMarkets.has(address),
+  userHasPosition: { borrow: userMintMarkets.has(address), lend: false }, // mint markets do not have lend positions
 })
 
 export type LlamaMarketsResult = {
@@ -180,13 +190,23 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       getCampaignsOptions({}),
       getFavoriteMarketOptions({}),
       getUserLendingVaultsOptions({ userAddress }),
+      getUserLendingSuppliesOptions({ userAddress }),
       getUserMintMarketsOptions({ userAddress }),
     ],
     combine: (results): PartialQueryResult<LlamaMarketsResult> => {
-      const [lendingVaults, mintMarkets, campaigns, favoriteMarkets, userLendingVaults, userMintMarkets] = results
+      const [
+        lendingVaults,
+        mintMarkets,
+        campaigns,
+        favoriteMarkets,
+        userLendingVaults,
+        userSuppliedMarkets,
+        userMintMarkets,
+      ] = results
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
       const userVaults = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
+      const userSupplied = new Set<Address>(Object.values(userSuppliedMarkets.data ?? {}).flat())
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
@@ -197,7 +217,7 @@ export const useLlamaMarkets = (userAddress?: Address) =>
             hasFavorites: favoriteMarketsSet.size > 0,
             markets: [
               ...(lendingVaults.data ?? []).map((vault) =>
-                convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults),
+                convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults, userSupplied),
               ),
               ...(mintMarkets.data ?? []).map((market) =>
                 convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),

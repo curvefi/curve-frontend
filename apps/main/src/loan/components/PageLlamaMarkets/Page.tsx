@@ -9,6 +9,7 @@ import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/c
 import {
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
+  invalidateAllUserLendingSupplies,
   setLendingVaults,
 } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
@@ -31,6 +32,7 @@ const onReload = (userAddress?: Address) => {
   invalidateLendingVaults({})
   invalidateMintMarkets({})
   invalidateAllUserLendingVaults(userAddress)
+  invalidateAllUserLendingSupplies(userAddress)
   invalidateAllUserMintMarkets(userAddress)
 }
 

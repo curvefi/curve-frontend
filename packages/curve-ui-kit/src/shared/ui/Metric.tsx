@@ -36,7 +36,7 @@ const MetricUnitSize = {
 
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
-type UnitOptions = {
+export type UnitOptions = {
   symbol: string
   position: 'prefix' | 'suffix'
   abbreviate: boolean
