@@ -1,3 +1,4 @@
+export type { WagmiChainId } from './wagmi/wagmi-config'
 export type { Wallet } from './types'
 export { useWallet } from './useWallet'
 export { notify } from './notify'
