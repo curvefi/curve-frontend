@@ -59,9 +59,9 @@ export const App = ({ children }: { children: ReactNode }) => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', () => handleResizeListener())
       window.removeEventListener('scroll', () => handleScrollListener())
+      setAppLoaded(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [handleResizeListener, updateGlobalStoreByKey, updateShowScrollButton])
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
