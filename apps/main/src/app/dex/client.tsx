@@ -60,6 +60,7 @@ export const App = ({ children }: { children: ReactNode }) => {
       window.addEventListener('resize', () => handleResizeListener())
       window.addEventListener('scroll', () => delay(() => updateShowScrollButton(window.scrollY), 200))
     })()
+    return () => setAppLoaded(false)
   }, [fetchNetworks, handleResizeListener, updateGlobalStoreByKey, updateShowScrollButton])
 
   const onChainUnavailable = useCallback(
@@ -74,7 +75,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={initCurveJs}
