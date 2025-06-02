@@ -203,7 +203,6 @@ export const ConnectionProvider = <
           const newLib = (await initLib(chainId, wallet?.provider)) ?? null
           if (signal.aborted) return
           libRef.set(newLib)
-          if (signal.aborted) return
           setConnectState({ status: SUCCESS, stage: HYDRATE })
           await hydrate(newLib, prevLib, wallet)
         }, [chainId, wallet])
