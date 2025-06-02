@@ -1,8 +1,6 @@
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
 
-// use a much lower refresh rate during development, as this file can be sometimes be called multiple times
-const minute = 1000 * 60
-const RefreshTimeoutMs = process.env.NODE_ENV === 'development' ? 60 * minute : minute
+const RefreshTimeoutMs = 1000 * 60 // 1 minute
 
 /**
  * Refreshes data in the background at a fixed interval. This is useful for keeping data up-to-date without relying on
@@ -32,6 +30,10 @@ export async function refreshDataInBackground(name: string, callback: () => Prom
  * properly handle fetch failures and background fetching.
  */
 export async function getServerData<T>(path: string, headers: ReadonlyHeaders) {
+  if (process.env.NODE_ENV === 'development') {
+    // disable background fetching in development because it gets called multiple times when changing the API routes
+    return {} as Partial<T>
+  }
   const hostHeader = headers.get('host') || 'curve.finance'
   const hostName = hostHeader.startsWith('localhost:') ? `http://${hostHeader}` : `https://${hostHeader}`
   const url = `${hostName}/api/${path}`
