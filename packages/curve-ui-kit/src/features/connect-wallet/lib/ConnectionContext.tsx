@@ -2,8 +2,8 @@
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { useAccount, useChainId, useConnectorClient, useSwitchChain } from 'wagmi'
-import { type Wallet } from '@ui-kit/features/connect-wallet'
-import type { WagmiChainId } from './wagmi/chains'
+import { type Wallet } from './types'
+import { type WagmiChainId } from './wagmi/wagmi-config'
 
 const CONNECT_STATUS = {
   LOADING: 'loading',

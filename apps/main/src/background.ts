@@ -31,6 +31,7 @@ export async function refreshDataInBackground(name: string, callback: () => Prom
  */
 export async function getServerData<T>(path: string, headers: ReadonlyHeaders) {
   if (process.env.NODE_ENV === 'development') {
+    // disable background fetching in development because it gets called multiple times when changing the API routes
     return {} as Partial<T>
   }
   const hostHeader = headers.get('host') || 'curve.finance'
