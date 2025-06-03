@@ -115,5 +115,11 @@
   },
   {
     "campaign": "GoNuts.json"
+  },
+  {
+    "campaign": "Kalypso.json"
+  },
+  {
+    "campaign": "Radius.json"
   }
 ]

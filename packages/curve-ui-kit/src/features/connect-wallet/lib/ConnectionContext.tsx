@@ -62,7 +62,7 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => wallet?.account.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => wallet?.account.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
 
 /** Module-level variables to track initialization state across multiple calls */
 let mutexPromise: Promise<unknown> | null = null

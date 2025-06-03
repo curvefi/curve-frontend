@@ -60,7 +60,10 @@ export const App = ({ children }: { children: ReactNode }) => {
       window.addEventListener('resize', () => handleResizeListener())
       window.addEventListener('scroll', () => delay(() => updateShowScrollButton(window.scrollY), 200))
     })()
-    return () => setAppLoaded(false)
+    return () => {
+      setAppLoaded(false)
+      updateGlobalStoreByKey('loaded', false)
+    }
   }, [fetchNetworks, handleResizeListener, updateGlobalStoreByKey, updateShowScrollButton])
 
   const onChainUnavailable = useCallback(
