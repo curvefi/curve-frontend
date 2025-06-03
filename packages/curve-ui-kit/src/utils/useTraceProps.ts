@@ -19,8 +19,8 @@ export function useTraceProps<T extends Record<string, unknown>>(name: string, p
     propsRef.current = props
   }, [props, name])
   useEffect(() => {
-    console.info(`useTraceProps ${name} ${new Date().toISOString()}: Mounted`, propsRef.current)
-    return () => console.warn(`useTraceProps ${name} ${new Date().toISOString()}: Unmounted`, propsRef.current)
+    console.info(`useTraceProps ${name} ${new Date().toISOString()}: Mounted`, { ...propsRef.current })
+    return () => console.warn(`useTraceProps ${name} ${new Date().toISOString()}: Unmounted`, { ...propsRef.current })
   }, [name])
 }
 
