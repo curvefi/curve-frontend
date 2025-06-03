@@ -4,11 +4,7 @@ import { ChainParams, ChainQuery, queryFactory } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { apiValidationGroup, chainValidationGroup } from './validation'
 
-export const {
-  useQuery: useOneWayMarketNames,
-  fetchQuery: fetchMarketNames,
-  prefetchQuery: prefetchMarkets,
-} = queryFactory({
+export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
   queryFn: async ({ chainId }: ChainQuery<ChainId>): Promise<string[]> => {
     const useAPI = chainId !== 146 // disable API for sonic
