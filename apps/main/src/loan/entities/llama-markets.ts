@@ -1,17 +1,14 @@
 import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
-import {
-  getLendingVaultsOptions,
-  getUserLendingSuppliesOptions,
-  getUserLendingVaultsOptions,
-  LendingVault,
-} from '@/loan/entities/lending-vaults'
+import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/loan/entities/lending-vaults'
+import { getUserLendingSuppliesOptions } from '@/loan/entities/lending-vaults-rpc'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/loan/entities/mint-markets'
-import { NetworkEnum } from '@/loan/types/loan.types'
+import { type LlamaApi, NetworkEnum } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
 import { Chain } from '@curvefi/prices-api'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -194,7 +191,7 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       getCampaignsOptions({}),
       getFavoriteMarketOptions({}),
       getUserLendingVaultsOptions({ userAddress }),
-      getUserLendingSuppliesOptions({ userAddress }),
+      getUserLendingSuppliesOptions({ userAddress, chainId: getLib<LlamaApi>()?.chainId }),
       getUserMintMarketsOptions({ userAddress }),
     ],
     combine: (results): PartialQueryResult<LlamaMarketsResult> => {
@@ -210,7 +207,9 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
       const userVaults = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
-      const userSupplied = new Set<Address>(Object.values(userSuppliedMarkets.data ?? {}).flat())
+      const userSupplied = new Set<Address>(
+        Object.values(userSuppliedMarkets.data ?? {}).flatMap((positions) => Object.keys(positions) as Address[]),
+      )
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
