@@ -3,7 +3,7 @@ import { getCoinPrices } from '@/loan/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
 import { getAllMarkets, getAllUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { userValidationSuite } from '@ui-kit/lib/model/query/user-validation'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
 import { UserContractParams, UserContractQuery, userContractValidationSuite } from './user-contract'
@@ -60,7 +60,7 @@ const {
         userMarkets.map((market) => market.controller),
       ]),
     ) as Record<Chain, Address[]>,
-  validationSuite: userValidationSuite,
+  validationSuite: userAddressValidationSuite,
 })
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions

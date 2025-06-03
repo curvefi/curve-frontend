@@ -86,6 +86,7 @@ const convertLendingVault = (
 ): LlamaMarket => {
   const hasBorrow = userVaults.has(controller)
   const hasLend = userSupplied.has(controller)
+  const hasPosition = hasBorrow || hasLend
   return {
     chain,
     address: vault,
@@ -109,12 +110,12 @@ const convertLendingVault = (
     url: getInternalUrl(
       'lend',
       chain,
-      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${userVaults.has(controller) ? 'manage' : 'create'}`,
+      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasPosition ? 'manage' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage,
-    userHasPosition: hasBorrow || hasLend ? { borrow: hasBorrow, lend: hasLend } : null,
+    userHasPosition: hasPosition ? { borrow: hasBorrow, lend: hasLend } : null,
   }
 }
 
@@ -139,38 +140,41 @@ const convertMintMarket = (
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
   userMintMarkets: Set<Address>,
-): LlamaMarket => ({
-  chain,
-  address: llamma,
-  controllerAddress: address,
-  assets: {
-    borrowed: {
-      symbol: stablecoinToken.symbol,
-      address: stablecoinToken.address,
-      usdPrice: stablecoin_price,
-      chain,
+): LlamaMarket => {
+  const hasBorrow = userMintMarkets.has(address)
+  return {
+    chain,
+    address: llamma,
+    controllerAddress: address,
+    assets: {
+      borrowed: {
+        symbol: stablecoinToken.symbol,
+        address: stablecoinToken.address,
+        usdPrice: stablecoin_price,
+        chain,
+      },
+      collateral: {
+        symbol: getCollateralSymbol(collateralToken),
+        address: collateralToken.address,
+        usdPrice: collateralAmountUsd / collateralAmount,
+        chain,
+      },
     },
-    collateral: {
-      symbol: getCollateralSymbol(collateralToken),
-      address: collateralToken.address,
-      usdPrice: collateralAmountUsd / collateralAmount,
-      chain,
-    },
-  },
-  utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
-  liquidityUsd: borrowable,
-  rates: { borrow: rate * 100, lend: null },
-  type: LlamaMarketType.Mint,
-  deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-  url: getPath(
-    { network: chain as NetworkEnum },
-    `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${userMintMarkets.has(address) ? 'manage' : 'create'}`,
-  ),
-  isFavorite: favoriteMarkets.has(address),
-  rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
-  leverage: 0,
-  userHasPosition: { borrow: userMintMarkets.has(address), lend: false }, // mint markets do not have lend positions
-})
+    utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
+    liquidityUsd: borrowable,
+    rates: { borrow: rate * 100, lend: null },
+    type: LlamaMarketType.Mint,
+    deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
+    url: getPath(
+      { network: chain as NetworkEnum },
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
+    ),
+    isFavorite: favoriteMarkets.has(address),
+    rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
+    leverage: 0,
+    userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
+  }
+}
 
 export type LlamaMarketsResult = {
   markets: LlamaMarket[]

@@ -55,7 +55,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           decimals={2}
         />
       </ExpansionPanelSection>
-      {(userHasPosition?.lend || userHasPosition?.borrow) && (
+      {userHasPosition && (
         <ExpansionPanelSection title={t`Your Position`}>
           {earnings?.earnings != null && <Metric label={t`Earnings`} value={earnings.earnings} unit={borrowedUnit} />}
           {deposited?.deposited != null && (
