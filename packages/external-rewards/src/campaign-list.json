@@ -121,5 +121,8 @@
   },
   {
     "campaign": "Radius.json"
+  },
+  {
+    "campaign": "YieldNestTokens.json"
   }
 ]
