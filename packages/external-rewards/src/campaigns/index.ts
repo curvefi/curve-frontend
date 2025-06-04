@@ -41,7 +41,6 @@ import YieldFi from './YieldFi.json'
 import YieldNestSeeds from './YieldNestSeeds.json'
 import YieldNestTokens from './YieldNestTokens.json'
 
-
 export {
   DLCLink,
   Elixir,
