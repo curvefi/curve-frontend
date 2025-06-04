@@ -57,11 +57,14 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
       </ExpansionPanelSection>
       {userHasPosition && (
         <ExpansionPanelSection title={t`Your Position`}>
-          {earnings?.earnings != null && <Metric label={t`Earnings`} value={earnings.earnings} unit={borrowedUnit} />}
-          {deposited?.deposited != null && (
+          {earnings?.earnings != null && (
+            // todo: handle other claimable rewards
+            <Metric label={t`Earnings`} value={earnings.earnings.claimableCrv} unit={borrowedUnit} />
+          )}
+          {deposited?.earnings != null && (
             <Metric
               label={t`Supplied Amount`}
-              value={deposited.deposited}
+              value={deposited.earnings.deposited}
               unit={type === LlamaMarketType.Lend ? borrowedUnit : 'dollar'}
             />
           )}

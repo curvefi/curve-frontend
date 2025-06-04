@@ -14,7 +14,7 @@ export async function getAllMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetAllMarketsResponse>(`${host}/v1/lending/markets/${addQueryString(params)}`)
+  const resp = await fetch<Responses.GetAllMarketsResponse>(`${host}/v1/lending/markets${addQueryString(params)}`)
   return Parsers.parseAllMarkets(resp)
 }
 

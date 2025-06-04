@@ -4,19 +4,20 @@ import {
   userContractValidationSuite,
 } from '@/loan/entities/user-contract'
 import { Chain as ChainName } from '@curvefi/prices-api'
+import { FetchError } from '@curvefi/prices-api/fetch'
 import {
   getAllMarkets,
   getAllUserMarkets,
   getUserMarketEarnings,
   getUserMarketStats,
   Market,
-  type UserMarketEarnings,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { type Address } from '@ui-kit/utils'
+import { recordEntries } from '@ui-kit/utils/objects.util'
 
 export type LendingVault = Market & { chain: ChainName }
 
@@ -58,21 +59,43 @@ const { useQuery: useUserLendingVaultStatsQuery, invalidate: invalidateUserLendi
   validationSuite: userContractValidationSuite,
 })
 
-export const { useQuery: useUserLendingVaultEarnings, invalidate: invalidateUserLendingVaultEarnings } = queryFactory({
+/**
+ * The prices API doesn't have an endpoint yet to retrieve a list of user vaults.
+ * Therefore, we currently try to fetch each one of them individually and handle 404 errors gracefully.
+ */
+async function handle404<T>(promise: Promise<T>): Promise<T | null> {
+  try {
+    return await promise
+  } catch (e) {
+    if (e instanceof FetchError && e.status === 404) {
+      return null
+    }
+    throw e
+  }
+}
+
+export const {
+  useQuery: useUserLendingVaultEarnings,
+  fetchQuery: fetchUserLendingVaultEarnings,
+  invalidate: invalidateUserLendingVaultEarnings,
+} = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
     ['user-lending-vault', 'earnings', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
-  queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketEarnings> =>
-    getUserMarketEarnings(userAddress, blockchainId, contractAddress),
+  queryFn: ({ userAddress, contractAddress, blockchainId }: UserContractQuery) =>
+    handle404(getUserMarketEarnings(userAddress, blockchainId, contractAddress)),
   validationSuite: userContractValidationSuite,
 })
 
 export function invalidateAllUserLendingVaults(userAddress: Address | undefined) {
-  Object.entries(getCurrentUserLendingVaults({ userAddress }) ?? {}).forEach(([chain, contracts]) => {
+  recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) => {
     invalidateUserLendingVaults({ userAddress })
-    const blockchainId = chain as ChainName
-    contracts.forEach((contractAddress) => {
-      invalidateUserLendingVaultStats({ userAddress, blockchainId, contractAddress })
-    })
+    contracts.forEach((contractAddress) =>
+      invalidateUserLendingVaultStats({
+        userAddress,
+        blockchainId,
+        contractAddress,
+      }),
+    )
   })
 }
 

@@ -5,7 +5,6 @@ import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
-import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/chains'
 import {
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
@@ -15,8 +14,10 @@ import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import useStore from '@/loan/store/useStore'
+import type { LlamaApi } from '@/loan/types/loan.types'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import { isSuccess, useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { logSuccess } from '@ui-kit/lib'
@@ -44,18 +45,14 @@ const {
 
 function useInjectServerData(props: CrvUsdServerData) {
   useEffect(() => {
-    const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume } = props
+    const { lendingVaults, mintMarkets, dailyVolume } = props
     lendingVaults && setLendingVaults({}, lendingVaults)
     mintMarkets && setMintMarkets({}, mintMarkets)
-    supportedChains && setSupportedChains({}, supportedChains)
-    supportedLendingChains && setSupportedLendingChains({}, supportedLendingChains)
     dailyVolume != null && setAppStatsDailyVolume({}, dailyVolume)
 
     logSuccess('useInjectServerData', {
       lendingVaults: lendingVaults?.length,
       mintMarkets: mintMarkets?.length,
-      supportedChains: supportedChains?.length,
-      supportedLendingChains: supportedLendingChains?.length,
       dailyVolume,
     })
   }, [props])
@@ -67,7 +64,8 @@ function useInjectServerData(props: CrvUsdServerData) {
 export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   useInjectServerData(props)
   const { address } = useAccount()
-  const { data, isError, isLoading } = useLlamaMarkets(address)
+  const { connectState } = useConnection<LlamaApi>()
+  const { data, isError, isLoading } = useLlamaMarkets(isSuccess(connectState) ? address : undefined)
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

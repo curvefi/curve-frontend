@@ -6,6 +6,7 @@ import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
+import { recordEntries } from '@ui-kit/utils/objects.util'
 import { UserContractParams, UserContractQuery, userContractValidationSuite } from './user-contract'
 
 type MintMarketFromApi = Market
@@ -75,8 +76,7 @@ const { useQuery: useUserMintMarketStatsQuery, invalidate: invalidateUserMintMar
 
 export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) => {
   invalidateUserMintMarkets({ userAddress })
-  const markets = Object.entries(getCurrentUserMintMarkets({ userAddress }) ?? {}) as [Chain, Address[]][]
-  markets.forEach(([blockchainId, contracts]) =>
+  recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) =>
     contracts.forEach((contractAddress) =>
       invalidateUserMintMarketStats({
         userAddress,

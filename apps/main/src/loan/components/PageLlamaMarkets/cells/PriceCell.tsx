@@ -17,8 +17,8 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const value =
     {
       [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
-      [LlamaMarketColumnId.UserEarnings]: stats?.earnings,
-      [LlamaMarketColumnId.UserDeposited]: stats?.deposited,
+      [LlamaMarketColumnId.UserEarnings]: stats?.earnings?.claimableCrv, // todo: handle other claimable rewards
+      [LlamaMarketColumnId.UserDeposited]: stats?.earnings?.deposited,
     }[column.id] ?? getValue()
   if (!value) {
     return statsError && <ErrorCell error={statsError} />
