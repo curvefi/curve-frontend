@@ -39,6 +39,8 @@ import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import YieldNestSeeds from './YieldNestSeeds.json'
+import YieldNestTokens from './YieldNestTokens.json'
+
 
 export {
   DLCLink,
@@ -82,4 +84,5 @@ export {
   GoNuts,
   Kalypso,
   Radius,
+  YieldNestTokens,
 }
