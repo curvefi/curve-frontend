@@ -38,7 +38,8 @@ import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
-import YieldNest from './YieldNest.json'
+import YieldNestSeeds from './YieldNestSeeds.json'
+import YieldNestTokens from './YieldNestTokens.json'
 
 export {
   DLCLink,
@@ -49,7 +50,7 @@ export {
   Mellow,
   Symbiotic,
   Usual,
-  YieldNest,
+  YieldNestSeeds,
   Fraxtal,
   Resolv,
   Lombard,
@@ -82,4 +83,5 @@ export {
   GoNuts,
   Kalypso,
   Radius,
+  YieldNestTokens,
 }

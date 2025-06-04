@@ -137,6 +137,21 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0x97effb790f2fbb701d88f89db4521348a2b77be8': {
+        alertType: 'danger',
+        address: '0x97effb790f2fbb701d88f89db4521348a2b77be8',
+        message: (
+          <div>
+            <Trans>
+              A vulnerability in the CVXRewardDistributor contract was exploited allowing the hacker to mint 58m CVG
+              intended for future emissions. CVG has been deprecated.{' '}
+              <StyledExternalLink href="https://medium.com/@cvg_wireshark/post-mortem-08-01-2024-e80a49d108a0">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
