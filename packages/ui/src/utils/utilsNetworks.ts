@@ -170,6 +170,13 @@ export const NETWORK_BASE_CONFIG = {
     nativeCurrencySymbol: 'S',
     explorerUrl: 'https://sonicscan.org/',
   },
+  [Chain.Hyperliquid]: {
+    id: 'hyperliquid',
+    chainId: Chain.Hyperliquid,
+    rpcUrl: `https://rpc.hyperliquid.xyz/evm`,
+    nativeCurrencySymbol: 'HYPE',
+    explorerUrl: 'https://www.hyperscan.com/',
+  },
 } satisfies { [key in Chain]: { chainId: key; [_: string]: any } }
 
 export type BaseConfig<TId = string> = {
