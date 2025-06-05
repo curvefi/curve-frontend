@@ -1,4 +1,3 @@
-import type { Chain } from '../index'
 import { fromEntries, recordEntries } from '../objects.util'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
@@ -31,10 +30,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
-  fromEntries(recordEntries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)])) as Record<
-    Chain,
-    Models.Market[]
-  >
+  fromEntries(recordEntries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)]))
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   timestamp: toDate(x.dt),
