@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 export type VisibilityOption<ColumnIds> = {
   columns: ColumnIds[] // the column ids that are affected by this option
   active: boolean // whether the column is currently visible in the table
-  label?: string // the label for the popover, without a label the option is not shown
+  label: string // the label for the popover, without a label the option is not shown
   enabled: boolean // whether the column can be currently used
 }
 export type VisibilityGroup<ColumnIds> = {
@@ -48,7 +48,7 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   >
     <Stack gap={Spacing.md}>
       {visibilityGroups
-        .filter(({ options }) => options.some((o) => o.label))
+        .filter(({ options }) => options.some((o) => o.enabled))
         .map(({ options, label }) => (
           <Stack key={label} gap={Spacing.sm}>
             <Typography
@@ -58,7 +58,7 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
               {label}
             </Typography>
             {options
-              .filter((option) => option.label)
+              .filter((option) => option.enabled)
               .map(
                 ({ columns, active, label, enabled }) =>
                   enabled && (

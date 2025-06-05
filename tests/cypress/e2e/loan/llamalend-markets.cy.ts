@@ -90,7 +90,7 @@ describe(`LlamaLend Markets`, () => {
     }
   })
 
-  it('should show graphs', () => {
+  it('should show charts', () => {
     withFilterChips(() => {
       cy.get(`[data-testid="chip-lend"]`).click()
       cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
