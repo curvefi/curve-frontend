@@ -1,7 +1,6 @@
 import produce from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
 import chunk from 'lodash/chunk'
-import cloneDeep from 'lodash/cloneDeep'
 import countBy from 'lodash/countBy'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
@@ -483,11 +482,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
       const tokenAddresses = curvejsApi.pool.poolTokenAddresses(poolData.pool, isWrapped)
-      const cPoolData = cloneDeep(poolData)
-      cPoolData.isWrapped = isWrapped
-      cPoolData.tokens = tokens
-      cPoolData.tokensCountBy = countBy(tokens)
-      cPoolData.tokenAddresses = tokenAddresses
+      const cPoolData = {
+        ...poolData,
+        isWrapped,
+        tokens,
+        tokensCountBy: countBy(tokens),
+        tokenAddresses,
+      }
 
       set(
         produce((state) => {
