@@ -5,7 +5,6 @@ import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
 import { useOverlayTriggerState } from '@react-stately/overlays'
@@ -15,6 +14,7 @@ import Checkbox from '@ui/Checkbox'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Chip } from '@ui/Typography'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { type Address, filterTokens, shortenAddress } from '@ui-kit/utils'
@@ -46,7 +46,7 @@ const SelectTokenButton = ({
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
 
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)

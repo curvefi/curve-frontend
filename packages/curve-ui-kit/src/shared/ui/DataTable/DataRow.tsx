@@ -1,15 +1,17 @@
 import { useRouter } from 'next/navigation'
 import { type MouseEvent, useCallback, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Row } from '@tanstack/react-table'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { type ExpandedPanel, ExpansionRow } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import type { SxProps } from '@ui-kit/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
+
+const { Sizing } = SizesAndSpaces
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row
@@ -23,24 +25,28 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export const DataRow = <T extends TableItem>({
-  row,
-  sx,
-  expandedPanel,
-}: {
+export type DataRowProps<T extends TableItem> = {
   row: Row<T>
-  sx?: SxProps
+  isLast: boolean
   expandedPanel: ExpandedPanel<T>
-}) => {
+  shouldStickFirstColumn: boolean
+}
+
+export const DataRow = <T extends TableItem>({
+  isLast,
+  row,
+  expandedPanel,
+  shouldStickFirstColumn,
+}: DataRowProps<T>) => {
+  const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const { push } = useRouter()
   const url = row.original.url
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
   const onClickDesktop = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),
     [url, push],
   )
-  const visibleCells = row.getVisibleCells().filter((cell) => !cell.column.columnDef.meta?.hidden)
+  const visibleCells = row.getVisibleCells()
 
   return (
     <>
@@ -48,23 +54,33 @@ export const DataRow = <T extends TableItem>({
         <TableRow
           sx={{
             marginBlock: 0,
-            borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
             cursor: 'pointer',
             transition: `border-bottom ${TransitionFunction}`,
             [`& .${DesktopOnlyHoverClass}`]: {
               opacity: { mobile: 1, desktop: 0 },
               transition: `opacity ${TransitionFunction}`,
             },
-            '&:hover': { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
+            '&:hover': {
+              [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
+              '& td, & th': {
+                backgroundColor: (t) => t.design.Table.Row.Hover,
+              },
+            },
             [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
-            ...sx,
+            ...(isLast && {
+              // to avoid the sticky header showing without any rows, show the last row on top of it
+              position: 'sticky',
+              zIndex: (t) => t.zIndex.tableStickyLastRow,
+              top: 0,
+              backgroundColor: (t) => t.design.Table.Row.Default,
+            }),
           }}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           onClick={isMobile ? () => row.toggleExpanded() : onClickDesktop}
         >
           {visibleCells.map((cell, index) => (
-            <DataCell key={cell.id} cell={cell} isLast={index == visibleCells.length - 1} isMobile={isMobile} />
+            <DataCell key={cell.id} cell={cell} isMobile={isMobile} isSticky={shouldStickFirstColumn && !index} />
           ))}
         </TableRow>
       </InvertOnHover>
