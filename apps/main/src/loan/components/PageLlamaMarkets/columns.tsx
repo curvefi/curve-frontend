@@ -35,7 +35,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`Health`,
     cell: PercentageCell,
     meta: { type: 'numeric', hideZero: true },
-    size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
   columnHelper.display({
@@ -43,7 +42,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`Borrow Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
-    size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
   columnHelper.display({
@@ -51,7 +49,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`My Earnings`,
     cell: PriceCell,
     meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
   columnHelper.display({
@@ -59,7 +56,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`Supplied Amount`,
     cell: PriceCell,
     meta: { type: 'numeric', borderRight: true },
-    size: ColumnWidth.sm,
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
@@ -68,41 +64,29 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`7D Avg Borrow Rate`,
     cell: (c) => <RateCell market={c.row.original} type="borrow" />,
     meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
     sortUndefined: 'last',
-  }),
-  columnHelper.accessor('rates.borrow', {
-    id: LlamaMarketColumnId.BorrowChart,
-    header: t`7D Borrow Rate Chart`,
-    cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
-    size: ColumnWidth.md,
   }),
   columnHelper.accessor('rates.lend', {
     id: LlamaMarketColumnId.LendRate,
     header: t`7D Avg Supply Yield`,
     cell: (c) => <RateCell market={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.lend', {
-    id: LlamaMarketColumnId.LendChart,
-    header: t`7D Supply Yield Chart`,
-    cell: (c) => <LineGraphCell market={c.row.original} type="lend" />,
-    size: ColumnWidth.md,
-    sortUndefined: 'last',
+  columnHelper.accessor('rates.borrow', {
+    id: LlamaMarketColumnId.BorrowChart,
+    header: t`7D Rate Chart`,
+    cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: t`Utilization`,
     cell: PercentageCell,
     meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: t`Available Liquidity`,
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
-    size: ColumnWidth.sm,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),

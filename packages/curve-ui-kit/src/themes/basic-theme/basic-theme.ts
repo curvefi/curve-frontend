@@ -18,7 +18,16 @@ export const basicMuiTheme = createMuiTheme({
   },
   spacing: Object.values(Spacing),
   direction: 'ltr',
+  zIndex: {
+    tableStickyColumn: 100, // the sticky column in the table
+    tableFilters: 110, // the filters in the table header
+    tableHeader: 120, // the whole table header including filters
+    tableHeaderStickyColumn: 130, // the sticky column in the table header
+    tableStickyLastRow: 140, // the last row in the table is sticky so we don't show the header without any data
+  },
 })
+
+export type Responsive = Record<Breakpoint, string>
 
 /**
  * Create a responsive object based on the breakpoints defined in the basicMuiTheme.
@@ -50,4 +59,10 @@ export const handleBreakpoints = (values: Record<keyof CSSObject, number | strin
     }),
   )
 
-export type Responsive = Record<Breakpoint, string>
+export const mapBreakpoints = (
+  values: Responsive,
+  callback: (value: string, breakpoint: Breakpoint) => CSSObject,
+): CSSObject =>
+  Object.fromEntries(
+    Object.entries(values).map(([breakpoint, value]) => [breakpoint, callback(value, breakpoint as Breakpoint)]),
+  )
