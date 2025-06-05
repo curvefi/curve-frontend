@@ -9,9 +9,10 @@ export type SectionProps = {
   links: Omit<LinkProps, 'networkId' | 'appName'>[]
   networkId: string
   appName: AppName
+  isTiny: boolean
 }
 
-export const Section = ({ title, links, networkId, appName }: SectionProps) => (
+export const Section = ({ title, links, networkId, appName, isTiny }: SectionProps) => (
   <Grid container spacing={1}>
     <Grid size={12}>
       <Typography
@@ -27,7 +28,7 @@ export const Section = ({ title, links, networkId, appName }: SectionProps) => (
     </Grid>
 
     {links.map((link) => (
-      <Grid key={link.href} size={{ mobile: 6, tablet: 12 }}>
+      <Grid key={link.href} size={{ mobile: isTiny ? 12 : 6, tablet: 12 }} data-testid="footer-link">
         <Link {...link} appName={appName} networkId={networkId} />
       </Grid>
     ))}

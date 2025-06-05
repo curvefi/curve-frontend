@@ -4,6 +4,7 @@ import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
+import { ColumnDef } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 export type VisibilityOption<ColumnIds> = {
@@ -46,35 +47,37 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
     }}
   >
     <Stack gap={Spacing.md}>
-      {visibilityGroups.map(({ options, label }) => (
-        <Stack key={label} gap={Spacing.sm}>
-          <Typography
-            variant="headingXsBold"
-            sx={{ paddingBottom: Spacing.xs, borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
-          >
-            {label}
-          </Typography>
-          {options
-            .filter((option) => option.label)
-            .map(
-              ({ columns, active, label, enabled }) =>
-                enabled && (
-                  <FormControlLabel
-                    key={columns.join(',')}
-                    control={
-                      <Switch
-                        data-testid={`visibility-toggle-${columns.join(',')}`}
-                        checked={active}
-                        onChange={() => toggleVisibility(columns)}
-                        size="small"
-                      />
-                    }
-                    label={label}
-                  />
-                ),
-            )}
-        </Stack>
-      ))}
+      {visibilityGroups
+        .filter(({ options }) => options.some((o) => o.label))
+        .map(({ options, label }) => (
+          <Stack key={label} gap={Spacing.sm}>
+            <Typography
+              variant="headingXsBold"
+              sx={{ paddingBottom: Spacing.xs, borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
+            >
+              {label}
+            </Typography>
+            {options
+              .filter((option) => option.label)
+              .map(
+                ({ columns, active, label, enabled }) =>
+                  enabled && (
+                    <FormControlLabel
+                      key={columns.join(',')}
+                      control={
+                        <Switch
+                          data-testid={`visibility-toggle-${columns.join(',')}`}
+                          checked={active}
+                          onChange={() => toggleVisibility(columns)}
+                          size="small"
+                        />
+                      }
+                      label={label}
+                    />
+                  ),
+              )}
+          </Stack>
+        ))}
     </Stack>
   </Popover>
 )
@@ -100,7 +103,10 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
 /**
  * Hook to manage column and feature visibility settings. Currently saved in the state.
  */
-export const useVisibilitySettings = <ColumnIds extends string>(groups: VisibilityGroup<ColumnIds>[]) => {
+export const useVisibilitySettings = <T, ColumnIds extends string>(
+  groups: VisibilityGroup<ColumnIds>[],
+  columns: ColumnDef<T, any>[],
+) => {
   /** current visibility settings in grouped format */
   const [visibilitySettings, setVisibilitySettings] = useState(groups)
 
@@ -124,7 +130,14 @@ export const useVisibilitySettings = <ColumnIds extends string>(groups: Visibili
   )
 
   /** current column visibility state as used internally by tanstack */
-  const columnVisibility = useMemo(() => flatten(visibilitySettings), [visibilitySettings])
+  const columnVisibility = useMemo(
+    () =>
+      ({
+        ...flatten(visibilitySettings),
+        ...Object.fromEntries(columns.filter((c) => c.meta?.hidden).map((c) => [c.id, false])),
+      }) as Record<ColumnIds, boolean>,
+    [columns, visibilitySettings],
+  )
 
   return { columnSettings: visibilitySettings, columnVisibility, toggleVisibility }
 }

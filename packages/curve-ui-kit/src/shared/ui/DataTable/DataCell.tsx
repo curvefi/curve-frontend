@@ -1,3 +1,4 @@
+import { mapValues } from 'lodash'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -15,36 +16,47 @@ const { Spacing } = SizesAndSpaces
 export const DataCell = <T extends TableItem>({
   cell,
   isMobile,
-  isLast,
+  isSticky,
 }: {
   cell: Cell<T, unknown>
   isMobile: boolean
-  isLast: boolean // todo: get rid of column hidden meta, use column.getIsLastColumn()
+  isSticky: boolean
 }) => {
   const { column, row } = cell
   const { variant, borderRight } = column.columnDef.meta ?? {}
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const sx = {
+
+  // with the collapse icon there is an extra wrapper, so keep the sx separate
+  const wrapperSx = {
     textAlign: getAlignment(column),
     paddingInline: Spacing.sm,
-    paddingBlock: Spacing.xs, // `md` removed, content should be vertically centered
+    // 1px less for the border bottom
+    paddingBlock: mapValues({ ...Spacing.xs, mobile: Spacing.md.mobile }, (value) => `${value} calc(${value} - 1px)`),
   }
-  const showCollapseIcon = isMobile && isLast
+
+  const showCollapseIcon = isMobile && column.getIsLastColumn()
   return (
     <Typography
       variant={variant ?? 'tableCellMBold'}
       color="text.primary"
       component="td"
       sx={{
-        ...(!showCollapseIcon && sx),
+        ...(!showCollapseIcon && wrapperSx),
         ...getExtraColumnPadding(column),
-        ...(borderRight && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+        ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+        ...(isSticky && {
+          position: 'sticky',
+          left: 0,
+          zIndex: (t) => t.zIndex.tableStickyColumn,
+          backgroundColor: (t) => t.design.Table.Row.Default,
+        }),
+        borderBlockEnd: (t) => `1px solid ${t.design.Layer[1].Outline}`,
       }}
       data-testid={`data-table-cell-${column.id}`}
     >
       {showCollapseIcon ? (
         <Stack direction="row" alignItems="center" width="100%">
-          <Box sx={sx} flexGrow={1}>
+          <Box sx={wrapperSx} flexGrow={1}>
             {children}
           </Box>
           <RotatableIcon

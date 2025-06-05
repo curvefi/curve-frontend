@@ -105,6 +105,6 @@ export const mockLendingVaults = (responses: LendingVaultResponses) =>
   })
 
 export const mockLendingSnapshots = () =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none', {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none&fetch_on_chain=false', {
     fixture: 'lending-snapshots.json',
   })

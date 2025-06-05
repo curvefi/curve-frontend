@@ -54,13 +54,20 @@ const percentage: UnitOptions = {
   abbreviate: false,
 }
 
-export const UNITS = ['dollar', 'percentage'] as const
-type Unit = (typeof UNITS)[number] | UnitOptions
+const multiplier: UnitOptions = {
+  symbol: 'x',
+  position: 'suffix',
+  abbreviate: true,
+}
 
-const UNIT_MAP: Record<(typeof UNITS)[number], UnitOptions> = {
+const UNIT_MAP = {
   dollar,
   percentage,
+  multiplier,
 } as const
+
+type Unit = keyof typeof UNIT_MAP | UnitOptions
+export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
 // Default value formatter.
 const formatValue = (value: number, decimals?: number): string =>
