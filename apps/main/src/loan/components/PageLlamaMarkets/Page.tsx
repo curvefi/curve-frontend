@@ -14,10 +14,8 @@ import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import useStore from '@/loan/store/useStore'
-import type { LlamaApi } from '@/loan/types/loan.types'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { isSuccess, useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
@@ -65,8 +63,7 @@ function useInjectServerData(props: CrvUsdServerData) {
 export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   useInjectServerData(props)
   const { address } = useAccount()
-  const { connectState } = useConnection<LlamaApi>()
-  const { data, isError, isLoading } = useLlamaMarkets(isSuccess(connectState) ? address : undefined)
+  const { data, isError, isLoading } = useLlamaMarkets(address)
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

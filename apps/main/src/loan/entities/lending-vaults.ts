@@ -99,10 +99,10 @@ export function invalidateAllUserLendingVaults(userAddress: Address | undefined)
   })
 }
 
-// note: earnings is not actually available yet, we should add rewards and rewardsCrv once available in the API
 type EarningsResult = {
   deposited: number
   depositedUsd: number
+  earnings?: undefined // placeholder, add rewards and rewardsCrv once available in the API
 }
 
 /**

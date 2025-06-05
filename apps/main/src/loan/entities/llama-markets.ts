@@ -80,8 +80,8 @@ const convertLendingVault = (
   userVaults: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
-  const hasLend = userVaults.has(controller)
-  const hasBorrow = userSupplied.has(controller)
+  const hasBorrow = userVaults.has(controller)
+  const hasLend = userSupplied.has(controller)
   const hasPosition = hasBorrow || hasLend
   return {
     chain,
@@ -137,7 +137,7 @@ const convertMintMarket = (
   campaigns: Record<string, PoolRewards[]> = {},
   userMintMarkets: Set<Address>,
 ): LlamaMarket => {
-  const hasLent = userMintMarkets.has(address)
+  const hasBorrow = userMintMarkets.has(address)
   return {
     chain,
     address: llamma,
@@ -163,12 +163,12 @@ const convertMintMarket = (
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
     url: getPath(
       { network: chain as NetworkEnum },
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasLent ? 'manage' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(address),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
-    userHasPosition: hasLent ? { borrow: false, lend: hasLent } : null, // mint markets do not have borrow positions
+    userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
   }
 }
 
@@ -212,21 +212,28 @@ export const useLlamaMarkets = (userAddress?: Address) =>
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
+      const showUserData =
+        !userAddress ||
+        (userLendingVaults.data && userSuppliedMarkets.data && userMintMarkets.data) ||
+        userLendingVaults.isError ||
+        userSuppliedMarkets.isError ||
+        userMintMarkets.isError
 
-      const data = showData
-        ? {
-            hasPositions: userVaults.size > 0 || userMints.size > 0,
-            hasFavorites: favoriteMarketsSet.size > 0,
-            markets: [
-              ...(lendingVaults.data ?? []).map((vault) =>
-                convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults, userSupplied),
-              ),
-              ...(mintMarkets.data ?? []).map((market) =>
-                convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
-              ),
-            ],
-          }
-        : undefined
+      const data =
+        showData && showUserData
+          ? {
+              hasPositions: userVaults.size > 0 || userMints.size > 0,
+              hasFavorites: favoriteMarketsSet.size > 0,
+              markets: [
+                ...(lendingVaults.data ?? []).map((vault) =>
+                  convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults, userSupplied),
+                ),
+                ...(mintMarkets.data ?? []).map((market) =>
+                  convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
+                ),
+              ],
+            }
+          : undefined
       return { ...combineQueriesMeta(results), data }
     },
   })

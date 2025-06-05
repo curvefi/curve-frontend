@@ -13,11 +13,11 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const market = row.original
   const { assets } = market
   const columnId = column.id as LlamaMarketColumnId
-  const { data: stats, error: statsError } = useUserMarketStats(market, columnId)
+  const { data: stats, error: statsError, ...rest } = useUserMarketStats(market, columnId)
   const value =
     {
       [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
-      [LlamaMarketColumnId.UserEarnings]: stats?.earnings?.claimableCrv, // todo: handle other claimable rewards
+      [LlamaMarketColumnId.UserEarnings]: stats?.earnings?.earnings, // todo: handle other claimable rewards
       [LlamaMarketColumnId.UserDeposited]: stats?.earnings?.deposited,
     }[column.id] ?? getValue()
   if (!value) {
@@ -29,7 +29,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const usdTooltip =
     usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', showAllFractionDigits: true })
   return (
-    <Stack direction="column" spacing={1} alignItems="end">
+    <Stack direction="column" spacing={1} alignItems="end" title={JSON.stringify(stats)}>
       <Tooltip title={`${formatNumber(value)} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>

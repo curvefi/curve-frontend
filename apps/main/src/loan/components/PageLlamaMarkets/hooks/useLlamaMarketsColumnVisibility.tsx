@@ -38,7 +38,7 @@ export const createLlamaMarketsColumnOptions = (hasPositions: boolean | undefine
               label: t`Chart`,
               columns: [LlamaMarketColumnId.BorrowChart],
               active: true,
-              enabled: true,
+              enabled: false,
             },
           ],
         },

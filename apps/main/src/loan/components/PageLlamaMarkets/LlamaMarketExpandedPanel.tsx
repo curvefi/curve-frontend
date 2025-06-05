@@ -93,10 +93,10 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </Grid>
           {earnings?.earnings != null && (
             <Grid size={6}>
-              <Metric label={t`Earnings`} value={earnings.earnings} unit="dollar" />
+              <Metric label={t`Earnings`} value={earnings.earnings.earnings} unit="dollar" />
             </Grid>
           )}
-          {deposited?.deposited != null && (
+          {deposited?.earnings != null && (
             <Grid size={6}>
               <Metric
                 label={t`Supplied Amount`}
