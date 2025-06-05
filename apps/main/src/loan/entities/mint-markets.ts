@@ -2,11 +2,11 @@ import uniq from 'lodash/uniq'
 import { getCoinPrices } from '@/loan/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
 import { getAllMarkets, getAllUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
-import { recordEntries } from '@ui-kit/utils/objects.util'
 import { UserContractParams, UserContractQuery, userContractValidationSuite } from './user-contract'
 
 type MintMarketFromApi = Market

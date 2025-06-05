@@ -10,7 +10,6 @@ const root = ({ chainId, tokenAddress }: TokenParams) =>
 export const {
   getQueryData: getTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,
-  fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,

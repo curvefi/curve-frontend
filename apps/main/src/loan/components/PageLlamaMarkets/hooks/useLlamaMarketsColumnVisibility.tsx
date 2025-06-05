@@ -1,4 +1,5 @@
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
+import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import { t } from '@ui-kit/lib/i18n'
 
 /**
@@ -6,8 +7,8 @@ import { t } from '@ui-kit/lib/i18n'
  * On mobile that is just the market title and the column that is currently sorted.
  */
 export const createLlamaMarketsMobileColumns = (sortBy: LlamaMarketColumnId) =>
-  Object.fromEntries(
-    Object.values(LlamaMarketColumnId).map((key) => [key, key === LlamaMarketColumnId.Assets || key === sortBy]),
+  fromEntries(
+    recordValues(LlamaMarketColumnId).map((key) => [key, key === LlamaMarketColumnId.Assets || key === sortBy]),
   )
 
 /**

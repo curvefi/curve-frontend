@@ -1,4 +1,5 @@
 import type { Address, Chain } from '../index'
+import { fromEntries, recordEntries } from '../objects.util'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -46,10 +47,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
-  Object.fromEntries(Object.entries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)])) as Record<
-    Chain,
-    Models.Market[]
-  >
+  fromEntries(recordEntries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)]))
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),
@@ -82,7 +80,7 @@ export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'mark
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
-  Object.fromEntries(Object.entries(x.chains).map(([chain, markets]) => [chain, parseUserMarkets(markets)])) as Record<
+  fromEntries(recordEntries(x.chains).map(([chain, markets]) => [chain, parseUserMarkets(markets)])) as Record<
     Chain,
     Models.UserMarkets
   >

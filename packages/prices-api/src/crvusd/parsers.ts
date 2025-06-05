@@ -1,4 +1,5 @@
 import type { Chain } from '../index'
+import { fromEntries, recordEntries } from '../objects.util'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'
@@ -30,7 +31,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
-  Object.fromEntries(Object.entries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)])) as Record<
+  fromEntries(recordEntries(resp.chains).map(([chain, { data }]) => [chain, data.map(parseMarket)])) as Record<
     Chain,
     Models.Market[]
   >
@@ -81,10 +82,7 @@ export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'mark
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
-  Object.fromEntries(Object.entries(x.chains).map(([chain, markets]) => [chain, parseUserMarkets(markets)])) as Record<
-    Chain,
-    Models.UserMarkets
-  >
+  fromEntries(recordEntries(x.chains).map(([chain, markets]) => [chain, parseUserMarkets(markets)]))
 
 export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) => ({
   health: x.health,

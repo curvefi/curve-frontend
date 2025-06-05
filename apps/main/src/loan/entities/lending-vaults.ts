@@ -13,11 +13,11 @@ import {
   Market,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
+import { objectKeys, recordEntries } from '@curvefi/prices-api/objects.util'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { type Address } from '@ui-kit/utils'
-import { objectKeys, recordEntries } from '@ui-kit/utils/objects.util'
 
 export type LendingVault = Market & { chain: ChainName }
 
@@ -74,11 +74,7 @@ async function handle404<T>(promise: Promise<T>): Promise<T | null> {
   }
 }
 
-const {
-  useQuery: useUserLendingVaultEarnings,
-  fetchQuery: fetchUserLendingVaultEarnings,
-  invalidate: invalidateUserLendingVaultEarnings,
-} = queryFactory({
+const { fetchQuery: fetchUserLendingVaultEarnings, invalidate: invalidateUserLendingVaultEarnings } = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
     ['user-lending-vault', 'earnings', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, contractAddress, blockchainId }: UserContractQuery) =>
@@ -101,7 +97,6 @@ export function invalidateAllUserLendingVaults(userAddress: Address | undefined)
 
 type EarningsResult = {
   deposited: number
-  depositedUsd: number
   earnings?: undefined // placeholder, add rewards and rewardsCrv once available in the API
 }
 
@@ -117,23 +112,15 @@ const {
   queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v2'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Record<Address, EarningsResult>>> => {
     const vaults = await fetchLendingVaults({}, { staleTime: 5 })
-    const entries = await Promise.all(
-      vaults.map(
-        async ({ controller, vault: contractAddress, chain: blockchainId, borrowedBalance, borrowedBalanceUsd }) => {
-          const params = { userAddress, contractAddress, blockchainId }
-          const { deposited } = (await fetchUserLendingVaultEarnings(params)) ?? {}
-          const data = deposited && {
-            deposited,
-            depositedUsd: deposited * (borrowedBalance / borrowedBalanceUsd),
-          }
-          return [blockchainId, controller, data] as const
-        },
+    const results = await Promise.all(
+      vaults.map(({ vault: contractAddress, chain: blockchainId }) =>
+        fetchUserLendingVaultEarnings({ userAddress, contractAddress, blockchainId }),
       ),
     )
-    return entries.reduce(
-      (acc, [chain, controller, data]) => ({
+    return results.reduce(
+      (acc, data, i) => ({
         ...acc,
-        [chain]: { ...acc[chain], ...(data && { [controller]: data }) },
+        [vaults[i].chain]: { ...acc[vaults[i].chain], ...(data && { [vaults[i].controller]: data.deposited }) },
       }),
       {} as Record<ChainName, Record<Address, EarningsResult>>,
     )
