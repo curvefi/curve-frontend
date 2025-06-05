@@ -1,7 +1,7 @@
 import { getCampaignsOptions, PoolRewards } from '@/loan/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
 import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/loan/entities/lending-vaults'
-import { getUserLendingSuppliesOptions } from '@/loan/entities/lending-vaults-rpc'
+import { getUserLendingSuppliesOptions } from '@/loan/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { NetworkEnum } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
@@ -80,8 +80,8 @@ const convertLendingVault = (
   userVaults: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
-  const hasBorrow = userVaults.has(controller)
-  const hasLend = userSupplied.has(controller)
+  const hasLend = userVaults.has(controller)
+  const hasBorrow = userSupplied.has(controller)
   const hasPosition = hasBorrow || hasLend
   return {
     chain,
@@ -137,7 +137,7 @@ const convertMintMarket = (
   campaigns: Record<string, PoolRewards[]> = {},
   userMintMarkets: Set<Address>,
 ): LlamaMarket => {
-  const hasBorrow = userMintMarkets.has(address)
+  const hasLent = userMintMarkets.has(address)
   return {
     chain,
     address: llamma,
@@ -163,12 +163,12 @@ const convertMintMarket = (
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
     url: getPath(
       { network: chain as NetworkEnum },
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasLent ? 'manage' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(address),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
-    userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
+    userHasPosition: hasLent ? { borrow: false, lend: hasLent } : null, // mint markets do not have borrow positions
   }
 }
 

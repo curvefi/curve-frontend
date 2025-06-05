@@ -10,7 +10,7 @@ import {
   invalidateLendingVaults,
   setLendingVaults,
 } from '@/loan/entities/lending-vaults'
-import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults-rpc'
+import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import useStore from '@/loan/store/useStore'

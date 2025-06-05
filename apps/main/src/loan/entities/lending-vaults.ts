@@ -17,7 +17,7 @@ import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/quer
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { type Address } from '@ui-kit/utils'
-import { recordEntries } from '@ui-kit/utils/objects.util'
+import { objectKeys, recordEntries } from '@ui-kit/utils/objects.util'
 
 export type LendingVault = Market & { chain: ChainName }
 
@@ -74,7 +74,7 @@ async function handle404<T>(promise: Promise<T>): Promise<T | null> {
   }
 }
 
-export const {
+const {
   useQuery: useUserLendingVaultEarnings,
   fetchQuery: fetchUserLendingVaultEarnings,
   invalidate: invalidateUserLendingVaultEarnings,
@@ -99,5 +99,62 @@ export function invalidateAllUserLendingVaults(userAddress: Address | undefined)
   })
 }
 
+// note: earnings is not actually available yet, we should add rewards and rewardsCrv once available in the API
+type EarningsResult = {
+  deposited: number
+  depositedUsd: number
+}
+
+/**
+ * Fetches the user's lending supplies across all chains.
+ */
+const {
+  getQueryOptions: getUserLendingSuppliesQueryOptions,
+  getQueryData: getCurrentUserLendingSupplies,
+  invalidate: invalidateUserLendingSupplies,
+  useQuery: useUserLendingSuppliesQuery,
+} = queryFactory({
+  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v2'] as const,
+  queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Record<Address, EarningsResult>>> => {
+    const vaults = await fetchLendingVaults({}, { staleTime: 5 })
+    const entries = await Promise.all(
+      vaults.map(
+        async ({ controller, vault: contractAddress, chain: blockchainId, borrowedBalance, borrowedBalanceUsd }) => {
+          const params = { userAddress, contractAddress, blockchainId }
+          const { deposited } = (await fetchUserLendingVaultEarnings(params)) ?? {}
+          const data = deposited && {
+            deposited,
+            depositedUsd: deposited * (borrowedBalance / borrowedBalanceUsd),
+          }
+          return [blockchainId, controller, data] as const
+        },
+      ),
+    )
+    return entries.reduce(
+      (acc, [chain, controller, data]) => ({
+        ...acc,
+        [chain]: { ...acc[chain], ...(data && { [controller]: data }) },
+      }),
+      {} as Record<ChainName, Record<Address, EarningsResult>>,
+    )
+  },
+  validationSuite: userAddressValidationSuite,
+})
+
+export function invalidateAllUserLendingSupplies(userAddress: Address | undefined) {
+  recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).forEach(([blockchainId, positions]) => {
+    invalidateUserLendingSupplies({ userAddress })
+    objectKeys(positions).forEach((contractAddress) =>
+      invalidateUserLendingVaultEarnings({
+        userAddress,
+        blockchainId,
+        contractAddress,
+      }),
+    )
+  })
+}
+
+export const getUserLendingSuppliesOptions = getUserLendingSuppliesQueryOptions
+export const useUserLendingSupplies = useUserLendingSuppliesQuery
 export const getUserLendingVaultsOptions = getUserLendingVaultsQueryOptions
 export const useUserLendingVaultStats = useUserLendingVaultStatsQuery

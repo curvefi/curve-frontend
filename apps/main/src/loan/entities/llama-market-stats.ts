@@ -1,7 +1,6 @@
 import { useAccount } from 'wagmi'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
-import { useUserLendingVaultStats } from '@/loan/entities/lending-vaults'
-import { useUserLendingSupplies } from '@/loan/entities/lending-vaults-rpc'
+import { useUserLendingSupplies, useUserLendingVaultStats } from '@/loan/entities/lending-vaults'
 import { type LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { useUserMintMarketStats } from '@/loan/entities/mint-markets'
 
