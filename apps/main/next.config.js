@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfiguration = {
-  // reactStrictMode: false, // uncomment to disable React's Strict Mode when testing page load
   compiler: {
     styledComponents: true
   },
