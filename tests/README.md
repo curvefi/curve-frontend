@@ -38,19 +38,17 @@ Nodes for each network start on port `8545 + chainId`. For example, the Ethereum
 
 Cypress tests require the necessary nodes to be started before running. Make sure the nodes are running before executing the tests.
 
-To open Cypress for the main configuration:
+To open Cypress:
 
 ```sh
-yarn cy:open:e2e:main
+yarn cy:open:e2e
 ```
 
-To run Cypress tests in headless mode for the main configuration:
+To run Cypress tests in headless mode:
 
 ```sh
-yarn cy:run:e2e:main
+yarn cy:run:e2e
 ```
-
-Other configurations (lend, loan) can be run similarly by replacing `main` with `lend` or `loan`.
 
 ### Writing New Tests
 

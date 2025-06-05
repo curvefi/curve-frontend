@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 export type GetMarketsResponse = {
   data: {
@@ -25,6 +25,10 @@ export type GetMarketsResponse = {
     }
   }[]
   count: number
+}
+
+export type GetAllMarketsResponse = {
+  chains: Record<Chain, GetMarketsResponse>
 }
 
 export type GetSnapshotsResponse = {
@@ -81,6 +85,11 @@ export type GetUserMarketsResponse = {
     first_snapshot: string
     last_snapshot: string
   }[]
+}
+
+export type GetAllUserMarketsResponse = {
+  user: Address
+  chains: Record<Chain, Pick<GetUserMarketsResponse, 'markets' | 'count'>>
 }
 
 type UserMarketStats = {

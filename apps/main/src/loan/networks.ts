@@ -3,15 +3,36 @@ import curvejsApi from '@/loan/lib/apiCrvusd'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainOption } from '@ui-kit/features/switch-chain'
+import { Chain } from '@ui-kit/utils'
 
 const DEFAULT_NETWORK_CONFIG = {
   api: curvejsApi,
-  isActiveNetwork: true,
-  showInSelectNetwork: true,
+  isActiveNetwork: false,
+  showInSelectNetwork: false,
 }
 
 const networksConfig = {
-  1: {},
+  [Chain.Ethereum]: {
+    isActiveNetwork: true,
+    showInSelectNetwork: true,
+  },
+  [Chain.Optimism]: {},
+  [Chain.Fraxtal]: {},
+  [Chain.Sonic]: {},
+  [Chain.Gnosis]: {},
+  [Chain.Moonbeam]: {},
+  [Chain.Polygon]: {},
+  [Chain.Kava]: {},
+  [Chain.Fantom]: {},
+  [Chain.Arbitrum]: {},
+  [Chain.Avalanche]: {},
+  [Chain.Celo]: {},
+  [Chain.Aurora]: {},
+  [Chain.ZkSync]: {},
+  [Chain.Base]: {},
+  [Chain.Bsc]: {},
+  [Chain.XLayer]: {},
+  [Chain.Mantle]: {},
 }
 
 export const { networks, networksIdMapper, selectNetworkList } = Object.entries(networksConfig).reduce(

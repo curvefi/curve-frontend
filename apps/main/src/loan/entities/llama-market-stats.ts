@@ -1,14 +1,11 @@
 import { useAccount } from 'wagmi'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
-import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/loan/entities/lending-vaults'
+import { useUserLendingSupplies, useUserLendingVaultStats } from '@/loan/entities/lending-vaults'
 import { type LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import { useUserMintMarketStats } from '@/loan/entities/mint-markets'
 
-const statsColumns = [
-  LlamaMarketColumnId.UserHealth,
-  LlamaMarketColumnId.UserBorrowed,
-  LlamaMarketColumnId.UserDeposited,
-]
+const statsColumns = [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed]
+const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited]
 
 /**
  * Hook that fetches the user's stats for a given market.
@@ -22,26 +19,22 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const { type, userHasPosition, address: marketAddress, controllerAddress, chain } = market
   const { address: userAddress } = useAccount()
 
-  const enableStats = userHasPosition && (!column || statsColumns.includes(column))
-  const enableEarnings = userHasPosition && column === LlamaMarketColumnId.UserEarnings
+  const enableStats = !!userHasPosition?.borrow && (!column || statsColumns.includes(column))
+  const enableEarnings = !!userHasPosition?.lend && column != null && earningsColumns.includes(column)
 
   const enableLendingStats = enableStats && type === LlamaMarketType.Lend
-  const enableLendEarnings = enableEarnings && type === LlamaMarketType.Lend
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
-  const params = {
-    userAddress,
-    // todo: api will be updated to use controller address for earnings too
-    contractAddress: enableEarnings ? marketAddress : controllerAddress,
-    blockchainId: chain,
-  }
+  const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
+  // todo: api will be updated to use controller address for earnings too
+  const earningsParams = { ...params, contractAddress: marketAddress }
 
   const { data: lendData, error: lendError } = useUserLendingVaultStats(params, enableLendingStats)
-  const { data: earnData, error: earnError } = useUserLendingVaultEarnings(params, enableLendEarnings)
+  const { data: earnData, error: earnError } = useUserLendingSupplies(earningsParams, enableEarnings)
   const { data: mintData, error: mintError } = useUserMintMarketStats(params, enableMintStats)
 
   const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
-  const earnings = earnData && enableLendEarnings
+  const earnings = enableEarnings && earnData?.[chain][controllerAddress]
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
   return {
     ...(stats && {
@@ -49,10 +42,9 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         isCollateralEroded: stats.softLiquidation && stats.debt > 0,
         health: stats.healthFull,
         borrowed: stats.debt,
-        deposited: stats.totalDeposited,
       },
     }),
-    ...(earnings && { data: { earnings: earnData.earnings } }),
+    ...(earnings && { data: { earnings } }),
     ...(error && { error }),
   }
 }

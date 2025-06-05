@@ -5,12 +5,12 @@ import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
-import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/chains'
 import {
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
   setLendingVaults,
 } from '@/loan/entities/lending-vaults'
+import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import useStore from '@/loan/store/useStore'
@@ -32,6 +32,7 @@ const onReload = (userAddress?: Address) => {
   invalidateLendingVaults({})
   invalidateMintMarkets({})
   invalidateAllUserLendingVaults(userAddress)
+  invalidateAllUserLendingSupplies(userAddress)
   invalidateAllUserMintMarkets(userAddress)
 }
 
@@ -43,18 +44,14 @@ const {
 
 function useInjectServerData(props: CrvUsdServerData) {
   useEffect(() => {
-    const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume } = props
+    const { lendingVaults, mintMarkets, dailyVolume } = props
     lendingVaults && setLendingVaults({}, lendingVaults)
     mintMarkets && setMintMarkets({}, mintMarkets)
-    supportedChains && setSupportedChains({}, supportedChains)
-    supportedLendingChains && setSupportedLendingChains({}, supportedLendingChains)
     dailyVolume != null && setAppStatsDailyVolume({}, dailyVolume)
 
     logSuccess('useInjectServerData', {
       lendingVaults: lendingVaults?.length,
       mintMarkets: mintMarkets?.length,
-      supportedChains: supportedChains?.length,
-      supportedLendingChains: supportedLendingChains?.length,
       dailyVolume,
     })
   }, [props])

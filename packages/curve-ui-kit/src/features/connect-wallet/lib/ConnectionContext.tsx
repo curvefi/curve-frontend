@@ -255,9 +255,6 @@ const libRef = {
     return libRef.current as T
   },
   set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
-  reset() {
-    libRef.set(null)
-  },
 }
 
 export const getLib = <TLib extends unknown>() => libRef.get<TLib>()

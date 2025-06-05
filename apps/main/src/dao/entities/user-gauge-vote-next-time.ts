@@ -4,7 +4,7 @@ import type { ChainId, CurveApi } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainQuery, UserQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { userValidationGroup } from '@ui-kit/lib/model/query/user-validation'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 
 type UserGaugeQuery = ChainQuery<ChainId> & UserQuery<string> & { gaugeAddress: string }
@@ -23,7 +23,7 @@ export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUs
     validationSuite: createValidationSuite(({ chainId, userAddress, gaugeAddress }: UserGaugeParams) => {
       chainValidationGroup({ chainId })
       curvejsValidationGroup({ chainId })
-      userValidationGroup({ userAddress })
+      userAddressValidationGroup({ userAddress })
       group('gaugeValidation', () => {
         test('gaugeAddress', () => {
           enforce(gaugeAddress).message('Gauge address is required')

@@ -48,7 +48,7 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.UserEarnings,
     header: t`My Earnings`,
     cell: PriceCell,
-    meta: { type: 'numeric' },
+    meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
   }),
   columnHelper.display({
