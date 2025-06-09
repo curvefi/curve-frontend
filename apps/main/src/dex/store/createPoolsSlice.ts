@@ -353,7 +353,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       ])
 
       const { balances } = balancesResp
-      const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
+      const isEmpty = !balances?.length || balances.every((b) => +b === 0)
       const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
@@ -362,7 +362,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const tokenAddress = tokenAddresses[idx]
         const usdRate = usdRatesMapper[tokenAddress] ?? 0
         const usdRateError = isNaN(usdRate)
-        const balance = Number(balances[idx])
+        const balance = Number(balances?.[idx])
         const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0
 
         total += balance
@@ -466,10 +466,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
         set(
           produce((state: State) => {
-            state.pools.poolsMapper[chainId][pool.id].parameters = parameters
-
-            if (volume === null) return
-            state.pools.volumeMapper[chainId][pool.id] = volume
+            if (parameters) {
+              state.pools.poolsMapper[chainId][pool.id].parameters = parameters
+            }
+            if (volume && state.pools.volumeMapper[chainId]) {
+              // volume mapper might not be initialized yet when loading the pool details page
+              state.pools.volumeMapper[chainId][pool.id] = volume
+            }
           }),
         )
       } catch (error) {
