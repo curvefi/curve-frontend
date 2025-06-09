@@ -1,5 +1,5 @@
 import { useParams } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
@@ -29,15 +29,12 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
   const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
-  const poolDataRef = useRef(poolData) // the pool data is changing too often, use a ref to avoid refetching
-  poolDataRef.current = poolData
-  const hasPoolData = !!poolData
 
   useEffect(() => {
-    if (curve && poolDataRef.current) {
-      void fetchPoolStats(curve, poolDataRef.current)
+    if (curve && poolData && !poolData?.parameters.virtualPrice) {
+      void fetchPoolStats(curve, poolData)
     }
-  }, [curve, fetchPoolStats, hasPoolData])
+  }, [curve, fetchPoolStats, poolData])
 
   return (
     <GridContainer>
