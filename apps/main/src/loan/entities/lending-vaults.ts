@@ -109,7 +109,7 @@ const {
   invalidate: invalidateUserLendingSupplies,
   useQuery: useUserLendingSuppliesQuery,
 } = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v2'] as const,
+  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v3'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Record<Address, EarningsResult>>> => {
     const vaults = await fetchLendingVaults({}, { staleTime: 5 })
     const results = await Promise.all(
@@ -122,7 +122,7 @@ const {
         ...acc,
         [vaults[i].chain]: {
           ...acc[vaults[i].chain],
-          ...(data && { [vaults[i].controller]: { deposited: data.deposited } }),
+          ...(data && { [vaults[i].controller]: { deposited: data.deposited - data.withdrawn } }),
         },
       }),
       {} as Record<ChainName, Record<Address, EarningsResult>>,
