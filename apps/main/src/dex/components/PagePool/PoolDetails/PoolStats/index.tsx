@@ -1,5 +1,5 @@
 import { useParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
@@ -24,22 +24,20 @@ type PoolStatsProps = {
 const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolId } = routerParams
-  const { chainId } = curve ?? {}
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
-  const poolId = poolData?.pool?.id
-
   const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
+  const poolDataRef = useRef(poolData) // the pool data is changing too often, use a ref to avoid refetching
+  poolDataRef.current = poolData
+  const hasPoolData = !!poolData
 
-  // fetch stats
   useEffect(() => {
-    if (curve && poolData) {
-      void fetchPoolStats(curve, poolData)
+    if (curve && poolDataRef.current) {
+      void fetchPoolStats(curve, poolDataRef.current)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId])
+  }, [curve, fetchPoolStats, hasPoolData])
 
   return (
     <GridContainer>
