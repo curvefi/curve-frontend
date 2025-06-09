@@ -24,22 +24,17 @@ type PoolStatsProps = {
 const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolId } = routerParams
-  const { chainId } = curve ?? {}
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
-  const poolId = poolData?.pool?.id
-
   const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
 
-  // fetch stats
   useEffect(() => {
-    if (curve && poolData) {
+    if (curve && poolData && !poolData?.parameters.virtualPrice) {
       void fetchPoolStats(curve, poolData)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId])
+  }, [curve, fetchPoolStats, poolData])
 
   return (
     <GridContainer>

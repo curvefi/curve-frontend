@@ -110,7 +110,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         [activeKey]: {
           ...fetchedExpected,
           loading: false,
-          virtualPrice: fetchedParameters.parameters.virtualPrice,
+          virtualPrice: fetchedParameters.parameters?.virtualPrice,
         },
       })
     },
