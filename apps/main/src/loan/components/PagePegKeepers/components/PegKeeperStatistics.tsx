@@ -2,6 +2,7 @@ import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crv
 import { LlamaApi } from '@/loan/types/loan.types'
 import { CardHeader, Box } from '@mui/material'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -18,17 +19,17 @@ export const PegKeeperStatistics = () => {
 
   return (
     <Box display="flex" flexDirection="column">
-      <CardHeader title="Statistics" />
+      <CardHeader title={t`Statistics`} />
       <Box display="grid" gridTemplateColumns="1fr 1fr" padding={Spacing.md} gap={Spacing.xl}>
         <Metric
           loading={isLoading}
-          label="Peg Stabilisation Reserve"
+          label={t`Peg Stabilisation Reserve`}
           unit={CRVUSD_OPTION}
           value={pegKeepersDebt && Number(pegKeepersDebt)}
         />
         <Metric
           loading={isLoading}
-          label="% of  crvUSD supply in reserve"
+          label={t`% of  crvUSD supply in reserve`}
           unit="percentage"
           value={formattedDebtFraction}
         />
