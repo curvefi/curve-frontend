@@ -120,7 +120,10 @@ const {
     return results.reduce(
       (acc, data, i) => ({
         ...acc,
-        [vaults[i].chain]: { ...acc[vaults[i].chain], ...(data && { [vaults[i].controller]: data.deposited }) },
+        [vaults[i].chain]: {
+          ...acc[vaults[i].chain],
+          ...(data && { [vaults[i].controller]: { deposited: data.deposited } }),
+        },
       }),
       {} as Record<ChainName, Record<Address, EarningsResult>>,
     )

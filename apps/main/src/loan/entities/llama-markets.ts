@@ -207,7 +207,11 @@ export const useLlamaMarkets = (userAddress?: Address) =>
       const userVaults = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set<Address>(
-        Object.values(userSuppliedMarkets.data ?? {}).flatMap((positions) => Object.keys(positions) as Address[]),
+        Object.values(userSuppliedMarkets.data ?? {}).flatMap((positions) =>
+          Object.entries(positions)
+            .filter(([, positions]) => positions.deposited > 0)
+            .map(([address]) => address as Address),
+        ),
       )
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
