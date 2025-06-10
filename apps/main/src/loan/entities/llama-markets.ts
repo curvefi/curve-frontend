@@ -222,7 +222,6 @@ export const useLlamaMarkets = (userAddress?: Address) =>
         userLendingVaults.isError ||
         userSuppliedMarkets.isError ||
         userMintMarkets.isError
-      console.log({ userBorrows, userMints, userSupplied })
       const data =
         showData && showUserData
           ? {

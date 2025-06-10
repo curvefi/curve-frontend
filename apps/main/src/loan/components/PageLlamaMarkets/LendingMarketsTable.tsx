@@ -101,7 +101,6 @@ export const LendingMarketsTable = ({
           title={t`Llamalend Markets`}
           subtitle={t`Borrow with the power of Curve soft liquidations`}
           onReload={onReload}
-          learnMoreUrl="https://docs.curve.finance/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
           onSearch={onSearch}

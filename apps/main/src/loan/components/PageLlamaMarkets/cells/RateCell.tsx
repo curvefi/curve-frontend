@@ -48,16 +48,16 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
           {rate && formatPercent(rate)}
         </Typography>
 
-        <Stack direction="row" gap={Spacing.xs} alignSelf="end">
-          {rate != null && poolRewards.length > 0 && (
+        {rate != null && poolRewards.length > 0 && (
+          <Stack direction="row" gap={Spacing.xs} alignSelf="end">
             <Chip
-              icon={<RewardIcons rewards={poolRewards} />}
-              size="extraSmall"
+              icon={<RewardIcons size="sm" rewards={poolRewards} />}
+              size="small"
               color="highlight"
               label={poolRewards.map((r) => r.multiplier).join(', ')}
             />
-          )}
-        </Stack>
+          </Stack>
+        )}
       </Stack>
     </Tooltip>
   )
