@@ -79,7 +79,7 @@ const SelectTokenButton = ({
   const options = useMemo(() => {
     const allTokens = filterBasepools
       ? tokens.filter((item) =>
-          basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
+          basePools[chainId]?.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
         )
       : tokens
 
@@ -106,7 +106,7 @@ const SelectTokenButton = ({
       ) {
         try {
           const token = await curve.getCoinsData([filterValueLowerCase])
-          const isBasePool = basePools[chainId].some(
+          const isBasePool = !!basePools[chainId]?.some(
             (basepool) => basepool.token.toLowerCase() === filterValueLowerCase,
           )
 
