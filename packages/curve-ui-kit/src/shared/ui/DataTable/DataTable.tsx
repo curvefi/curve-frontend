@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
@@ -31,6 +31,8 @@ export const DataTable = <T extends TableItem>({
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { rows } = table.getRowModel()
   const { shouldStickFirstColumn } = rowProps
+  const headerGroups = table.getHeaderGroups()
+  const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   return (
     <Table
       sx={{
@@ -51,10 +53,15 @@ export const DataTable = <T extends TableItem>({
       >
         {children && <FilterRow table={table}>{children}</FilterRow>}
 
-        {table.getHeaderGroups().map((headerGroup) => (
+        {headerGroups.map((headerGroup, _, headerGroups) => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
             {headerGroup.headers.map((header, index) => (
-              <HeaderCell key={header.id} header={header} isSticky={!index && shouldStickFirstColumn} />
+              <HeaderCell
+                key={header.id}
+                header={header}
+                isSticky={!index && shouldStickFirstColumn}
+                width={`calc(100% / ${columnCount})`}
+              />
             ))}
           </TableRow>
         ))}

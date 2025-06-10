@@ -78,6 +78,10 @@ export const LendingMarketsTable = ({
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
 
+  const onSearch = useCallback(
+    (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
+    [setColumnFilter],
+  )
   return (
     <Stack
       sx={{
@@ -100,10 +104,7 @@ export const LendingMarketsTable = ({
           learnMoreUrl="https://docs.curve.finance/lending/overview/"
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
-          onSearch={useCallback(
-            (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
-            [setColumnFilter],
-          )}
+          onSearch={onSearch}
           collapsible={
             <LendingMarketsFilters
               columnFilters={columnFiltersById}
@@ -114,6 +115,7 @@ export const LendingMarketsTable = ({
           }
           chips={
             <MarketsFilterChips
+              onSearch={onSearch}
               hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}

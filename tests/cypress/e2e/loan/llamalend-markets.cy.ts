@@ -65,7 +65,7 @@ describe(`LlamaLend Markets`, () => {
       desktop: [182, 128],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
-    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 64)
+    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
   })
 
   it('should sort', () => {

@@ -3,14 +3,13 @@ import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
-import { formatPercent, formatPercentFixed, getRewardsAction } from './cell.format'
+import { formatPercent, getRewardsAction } from './cell.format'
 import { RateTooltipContent } from './RateCellTooltip'
 
 const { Spacing } = SizesAndSpaces
@@ -18,11 +17,11 @@ const { Spacing } = SizesAndSpaces
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType }) => {
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  // todo: only retrieve snapshots when tooltip is visible
   const { rate, averageRate, period } = useSnapshots(market, type, entry?.isIntersecting)
   const { rewards, type: marketType } = market
   const rewardsAction = getRewardsAction(marketType, type)
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
-  const isMobile = useIsMobile()
   return (
     <Tooltip
       clickable
@@ -46,15 +45,10 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
     >
       <Stack gap={Spacing.xs} ref={ref}>
         <Typography variant="tableCellMBold" color="textPrimary">
-          {isMobile ? rate != null && formatPercentFixed(rate) : averageRate != null && formatPercentFixed(averageRate)}
+          {rate && formatPercent(rate)}
         </Typography>
 
         <Stack direction="row" gap={Spacing.xs} alignSelf="end">
-          {!isMobile && rate != null && (
-            <Typography variant="bodySRegular" color="textSecondary" sx={{ alignSelf: 'center' }}>
-              {formatPercent(rate)}
-            </Typography>
-          )}
           {rate != null && poolRewards.length > 0 && (
             <Chip
               icon={<RewardIcons rewards={poolRewards} />}

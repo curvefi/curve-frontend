@@ -111,14 +111,14 @@ export const TableFilters = <ColumnIds extends string>({
             </Button>
           )}
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
+        <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
           <TableSearchField onSearch={onSearch} />
         </Grid>
         <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
           {sort}
         </Grid>
         {!isMobile && (
-          <Grid size={{ tablet: 7, desktop: 8 }} gap={0} justifyContent="flex-end">
+          <Grid size={12} gap={0} justifyContent="flex-end">
             {chips}
           </Grid>
         )}

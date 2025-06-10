@@ -6,14 +6,16 @@ import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getAlignment, getExtraColumnPadding, getFlexAlignment, type TableItem } from './data-table.utils'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Sizing } = SizesAndSpaces
 
 export const HeaderCell = <T extends TableItem>({
   header,
   isSticky,
+  width,
 }: {
   header: Header<T, unknown>
   isSticky: boolean
+  width?: string | number
 }) => {
   const { column } = header
   const isSorted = column.getIsSorted()
@@ -42,6 +44,8 @@ export const HeaderCell = <T extends TableItem>({
           zIndex: (t) => t.zIndex.tableHeaderStickyColumn,
           backgroundColor: (t) => t.design.Table.Header.Fill,
         }),
+        width,
+        minWidth: Sizing['3xl'],
       }}
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}

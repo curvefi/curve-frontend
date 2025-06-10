@@ -61,14 +61,14 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor('rates.borrow', {
     id: LlamaMarketColumnId.BorrowRate,
-    header: t`7D Avg Borrow Rate`,
+    header: t`Borrow Rate`,
     cell: (c) => <RateCell market={c.row.original} type="borrow" />,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.lend', {
     id: LlamaMarketColumnId.LendRate,
-    header: t`7D Avg Supply Yield`,
+    header: t`Supply Yield`,
     cell: (c) => <RateCell market={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
     sortUndefined: 'last',

@@ -77,10 +77,10 @@ const convertLendingVault = (
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
-  userVaults: Set<Address>,
+  userBorrows: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
-  const hasBorrow = userVaults.has(controller)
+  const hasBorrow = userBorrows.has(controller)
   const hasLend = userSupplied.has(controller)
   const hasPosition = hasBorrow || hasLend
   return {
@@ -204,7 +204,7 @@ export const useLlamaMarkets = (userAddress?: Address) =>
         userMintMarkets,
       ] = results
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
-      const userVaults = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
+      const userBorrows = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set<Address>(
         Object.values(userSuppliedMarkets.data ?? {}).flatMap((positions) =>
@@ -222,15 +222,15 @@ export const useLlamaMarkets = (userAddress?: Address) =>
         userLendingVaults.isError ||
         userSuppliedMarkets.isError ||
         userMintMarkets.isError
-
+      console.log({ userBorrows, userMints, userSupplied })
       const data =
         showData && showUserData
           ? {
-              hasPositions: userVaults.size > 0 || userMints.size > 0,
+              hasPositions: userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? []).map((vault) =>
-                  convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userVaults, userSupplied),
+                  convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userBorrows, userSupplied),
                 ),
                 ...(mintMarkets.data ?? []).map((market) =>
                   convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),

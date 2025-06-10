@@ -57,7 +57,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           ></CardHeader>
         </Grid>
         <Grid size={6}>
-          <Metric label={t`7D Avg Borrow Rate`} value={rates.borrow} unit="percentage" />
+          <Metric label={t`Borrow Rate`} value={rates.borrow} unit="percentage" />
         </Grid>
         {leverage > 0 && (
           <Grid size={6}>
