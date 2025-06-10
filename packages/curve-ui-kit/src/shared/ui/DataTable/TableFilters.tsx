@@ -102,13 +102,16 @@ export const TableFilters = <ColumnIds extends string>({
           />
           <TableButton onClick={onReload} icon={ReloadIcon} />
         </Grid>
-        <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
-          <TableSearchField onSearch={onSearch} />
-        </Grid>
-        <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
-          {sort}
-        </Grid>
-        {!isMobile && (
+        {isMobile ? (
+          <>
+            <Grid size={12}>
+              <TableSearchField onSearch={onSearch} />
+            </Grid>
+            <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
+              {sort}
+            </Grid>
+          </>
+        ) : (
           <Grid size={12} gap={0} justifyContent="flex-end">
             {chips}
           </Grid>
