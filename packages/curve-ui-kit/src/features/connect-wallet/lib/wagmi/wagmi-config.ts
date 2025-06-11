@@ -4,9 +4,11 @@ import type { Chain } from 'viem'
 import { defineChain } from 'viem/utils'
 import type { BaseConfig } from '@ui/utils'
 import { wagmiChains } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
+import { Chain as ChainId } from '@ui-kit/utils/network'
 import { injected } from '@wagmi/connectors'
 import { createConfig, fallback, http, type Transport, unstable_connector } from '@wagmi/core'
 import { connectors } from './connectors'
+import { RPC } from './rpc'
 
 declare module 'wagmi' {
   /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
@@ -16,7 +18,7 @@ declare module 'wagmi' {
 }
 
 const DECIMALS: Record<number, number> = {
-  2390: 8, // TAC
+  [ChainId.Tac]: 8, // TAC has 8 decimals instead of 18
 }
 
 /**
@@ -40,7 +42,9 @@ export const createWagmiConfig = memoize(
           ...wagmiChain,
           name: config.name,
           rpcUrls: {
-            default: { http: uniq([config.rpcUrl, ...(wagmiChain?.rpcUrls.default.http ?? [])]) },
+            default: {
+              http: uniq([...(RPC[id] ?? []), config.rpcUrl, ...(wagmiChain?.rpcUrls.default.http ?? [])]),
+            },
           },
           ...(config.explorerUrl && {
             blockExplorers: {
@@ -63,14 +67,19 @@ export const createWagmiConfig = memoize(
            *    - Limited RPC method support
            *    - Rate-limiting of wallet provider
            *
-           * 2. http transport - Used as fallback when connector transport fails
-           *    - Configured with batch size of 3 to comply with DRPC free tier limits
+           * 2. Multiple http transports - Used as fallback when connector transport fails
+           *    - Primary: http transport with default URL (batch size 3 for DRPC compliance)
+           *    - Fallbacks: Additional http transports for each fallback RPC URL
            *    - Prevents error code 29 from exceeding batch limits
            *
-           * Note: WalletConnect ignores this http endpoint and uses chain.rpcUrls.default.http[0]
-           * regardless of the configuration here.
+           * Note: WalletConnect ignores this transport configuration and uses chain.rpcUrls.default.http
+           * in order, but having multiple transports helps with injected wallet resilience.
            */
-          fallback([unstable_connector(injected), http(undefined, { batch: { batchSize: 3 } })]),
+          fallback([
+            unstable_connector(injected),
+            http(undefined, { batch: { batchSize: 3 } }),
+            ...(RPC[id] ?? []).map((url) => http(url, { batch: { batchSize: 3 } })),
+          ]),
         ]),
       ) as Record<ChainId, Transport>,
       /**
