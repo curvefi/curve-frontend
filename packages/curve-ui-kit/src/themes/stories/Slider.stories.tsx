@@ -127,4 +127,17 @@ export const RangeSlider: Story = {
   },
 }
 
+export const Borderless: Story = {
+  args: {
+    className: 'borderless',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Slider with borderless styling',
+      },
+    },
+  },
+}
+
 export default meta

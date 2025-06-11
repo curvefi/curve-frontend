@@ -103,6 +103,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       position: 'relative',
       ...rightExtension(design),
       ...leftExtension(design),
+      '&.borderless::after': {
+        border: 0,
+      },
     },
 
     thumb: {

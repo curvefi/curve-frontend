@@ -38,6 +38,7 @@ export const TradingSlider = ({
     }}
   >
     <Slider
+      className="borderless"
       size="medium"
       value={percentage}
       onChange={(_event, newValue) => onPercentageChange?.(Array.isArray(newValue) ? newValue[0] : newValue)}
