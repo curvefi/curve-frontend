@@ -24,7 +24,7 @@ export enum Chain {
   Hyperliquid = 999,
   Xdc = 50,
   Tac = 2390,
-  Corn = 5011,
+  Corn = 21000000,
   Ink = 57073,
   Taiko = 167000,
   Plume = 161221135,
