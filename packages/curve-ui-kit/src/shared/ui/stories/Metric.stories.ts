@@ -143,4 +143,19 @@ export const CustomUnit: Story = {
   },
 }
 
+export const NotAvailable: Story = {
+  args: {
+    value: null,
+    label: 'Metric with N/A Value',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates the Metric component when the value is not available (e.g., null, undefined, "", false, NaN).',
+      },
+    },
+  },
+}
+
 export default meta

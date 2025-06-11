@@ -82,6 +82,14 @@ export const Link: Story = {
   },
 }
 
+export const Inline: Story = {
+  args: {
+    variant: 'inline',
+    color: 'ghost',
+    children: 'Inline',
+  },
+}
+
 export const Success: Story = {
   args: {
     color: 'success',

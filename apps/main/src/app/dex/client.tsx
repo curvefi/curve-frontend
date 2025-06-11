@@ -24,6 +24,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const setPageVisible = useLayoutStore((state) => state.setPageVisible)
   const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
+  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const theme = useUserProfileStore((state) => state.theme)
@@ -48,6 +49,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     void (async () => {
       await fetchNetworks()
       setAppLoaded(true)
+      updateGlobalStoreByKey('loaded', true)
     })()
 
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
@@ -64,9 +66,9 @@ export const App = ({ children }: { children: ReactNode }) => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', handleResizeListener)
       window.removeEventListener('scroll', handleScroll)
+      updateGlobalStoreByKey('loaded', false)
     }
-
-  }, [fetchNetworks, handleResizeListener, setPageVisible, updateShowScrollButton])
+  }, [fetchNetworks, handleResizeListener, setPageVisible, updateGlobalStoreByKey, updateShowScrollButton])
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
@@ -80,7 +82,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={initCurveJs}

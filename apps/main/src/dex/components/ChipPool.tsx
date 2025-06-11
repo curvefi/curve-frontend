@@ -109,12 +109,14 @@ const ChipPoolAddress = styled.span`
 const ChipPoolName = styled(TextEllipsis)`
   font-size: var(--font-size-4);
 
+  max-width: 13.125rem; // 200px
+
   @media (min-width: ${breakpoints.sm}rem) {
     font-size: 1.25rem; // 20px
-    max-width: 13.75rem; // 220px
+    max-width: 16.25rem; // 260px
   }
   @media (min-width: ${breakpoints.lg}rem) {
-    max-width: 13.125rem; // 210px
+    max-width: 16.25rem; // 260px
   }
 `
 

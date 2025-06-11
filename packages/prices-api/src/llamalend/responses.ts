@@ -5,6 +5,7 @@ export type GetChainsResponse = {
 }
 
 export type GetMarketsResponse = {
+  count: number
   data: {
     name: string
     controller: Address
@@ -48,6 +49,10 @@ export type GetMarketsResponse = {
   }[]
 }
 
+export type GetAllMarketsResponse = {
+  chains: Record<Chain, GetMarketsResponse>
+}
+
 export type GetSnapshotsResponse = {
   data: [
     {
@@ -85,6 +90,11 @@ export type GetUserMarketsResponse = {
     first_snapshot: string
     last_snapshot: string
   }[]
+}
+
+export type GetAllUserMarketsResponse = {
+  user: Address
+  chains: Record<Chain, Pick<GetUserMarketsResponse, 'markets' | 'count'>>
 }
 
 type UserMarketStats = {

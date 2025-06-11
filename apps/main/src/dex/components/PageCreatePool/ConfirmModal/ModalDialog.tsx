@@ -3,13 +3,13 @@ import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventS
 import type { AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import type { AriaDialogProps } from '@react-types/dialog'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
   footerContent?: ReactNode
@@ -38,7 +38,7 @@ const ModalDialog = ({
   const { titleProps } = useDialog(props, modalRef)
   usePreventScroll({ isDisabled: false }) // prevent scrolling while modal is open
 
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   const isSmUp = useLayoutStore((state) => state.isSmUp)
 
   const { buttonProps: closeButtonProps } = useButton(

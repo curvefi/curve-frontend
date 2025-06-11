@@ -343,10 +343,25 @@ export async function getNetworks() {
 
   const liteNetworks = Object.values(resp).reduce(
     (prev, { chainId, ...config }) => {
-      const isUpgraded = chainId == Chain.Sonic // sonic is upgraded from lite to full
+      const isUpgraded = [Chain.Sonic, Chain.Hyperliquid].includes(chainId) // networks upgraded from lite to full
       prev[chainId] = {
         ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
+        ...(isUpgraded && {
+          poolFilters: [
+            'all',
+            'usd',
+            'btc',
+            'eth',
+            'crypto',
+            'crvusd',
+            'tricrypto',
+            'stableng',
+            'cross-chain',
+            'others',
+            'user',
+          ],
+        }),
         chainId,
         hasFactory: true,
         stableswapFactory: true,

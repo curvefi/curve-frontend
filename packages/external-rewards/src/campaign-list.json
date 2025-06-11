@@ -24,7 +24,7 @@
     "campaign": "Elixir.json"
   },
   {
-    "campaign": "YieldNest.json"
+    "campaign": "YieldNestSeeds.json"
   },
   {
     "campaign": "Fraxtal.json"
@@ -106,5 +106,23 @@
   },
   {
     "campaign": "Turtle.json"
+  },
+  {
+    "campaign": "Infinifi.json"
+  },
+  {
+    "campaign": "Asymmetry.json"
+  },
+  {
+    "campaign": "GoNuts.json"
+  },
+  {
+    "campaign": "Kalypso.json"
+  },
+  {
+    "campaign": "Radius.json"
+  },
+  {
+    "campaign": "YieldNestTokens.json"
   }
 ]

@@ -140,6 +140,7 @@ const ProposalType = styled.p`
   font-weight: var(--bold);
   border-right: 2px solid var(--gray-500);
   padding-right: var(--spacing-2);
+  text-transform: capitalize;
   @media (max-width: 28.125rem) {
     display: none;
   }

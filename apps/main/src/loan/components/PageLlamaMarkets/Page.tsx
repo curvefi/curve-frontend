@@ -5,12 +5,12 @@ import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
-import { setSupportedChains, setSupportedLendingChains } from '@/loan/entities/chains'
 import {
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
   setLendingVaults,
 } from '@/loan/entities/lending-vaults'
+import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import Box from '@mui/material/Box'
@@ -18,6 +18,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
+import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { logSuccess } from '@ui-kit/lib'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
@@ -31,25 +32,26 @@ const onReload = (userAddress?: Address) => {
   invalidateLendingVaults({})
   invalidateMintMarkets({})
   invalidateAllUserLendingVaults(userAddress)
+  invalidateAllUserLendingSupplies(userAddress)
   invalidateAllUserMintMarkets(userAddress)
 }
 
-const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
+const {
+  Spacing,
+  MaxWidth,
+  Height: { modal: ModalHeight },
+} = SizesAndSpaces
 
 function useInjectServerData(props: CrvUsdServerData) {
   useEffect(() => {
-    const { lendingVaults, mintMarkets, supportedChains, supportedLendingChains, dailyVolume } = props
+    const { lendingVaults, mintMarkets, dailyVolume } = props
     lendingVaults && setLendingVaults({}, lendingVaults)
     mintMarkets && setMintMarkets({}, mintMarkets)
-    supportedChains && setSupportedChains({}, supportedChains)
-    supportedLendingChains && setSupportedLendingChains({}, supportedLendingChains)
     dailyVolume != null && setAppStatsDailyVolume({}, dailyVolume)
 
     logSuccess('useInjectServerData', {
       lendingVaults: lendingVaults?.length,
       mintMarkets: mintMarkets?.length,
-      supportedChains: supportedChains?.length,
-      supportedLendingChains: supportedLendingChains?.length,
       dailyVolume,
     })
   }, [props])
@@ -68,7 +70,7 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   const headerHeight = useHeaderHeight(bannerHeight)
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
-    <Box sx={{ marginBlockEnd: Spacing.xxl, marginInline: Spacing.md }}>
+    <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
       {showSkeleton ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (

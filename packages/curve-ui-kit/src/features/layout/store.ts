@@ -6,8 +6,9 @@ import { getPageWidthClassName } from './utils'
 interface LayoutState {
   // Layout heights
   height: LayoutHeight
+  windowWidth: number
   navHeight: number
-  
+
   // Page width and responsiveness
   pageWidthPx: number | null
   pageWidth: PageWidthClassName | null
@@ -46,6 +47,7 @@ const DEFAULT_LAYOUT_HEIGHT: LayoutHeight = {
 const DEFAULT_STATE: LayoutState = {
   height: DEFAULT_LAYOUT_HEIGHT,
   navHeight: 0,
+  windowWidth: 0,
   pageWidthPx: null,
   pageWidth: null,
   isXLgUp: false,
@@ -72,6 +74,7 @@ export const useLayoutStore = create<LayoutState & LayoutActions>()(
       const isXXSm = pageWidthClassName === 'page-small-xx'
 
       set((state) => {
+        state.windowWidth = window.innerWidth
         state.pageWidth = pageWidthClassName
         state.isXSmDown = isXSmDown
         state.isSmUp = isSmUp || isMd || isLgUp

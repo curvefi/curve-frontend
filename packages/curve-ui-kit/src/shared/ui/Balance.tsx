@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -19,17 +20,18 @@ const formatNumber = (value?: number): string => {
 type MaxButtonProps = {
   children: React.ReactNode
   underline: boolean
+  sx?: SxProps
   onClick?: () => void
 }
 
 /** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
+const MaxButton = ({ children, underline, sx, onClick }: MaxButtonProps) => (
   <Button
+    variant="inline"
     color="ghost"
     size="extraSmall"
     onClick={onClick}
     sx={{
-      minWidth: 'unset',
       /**
        * Remove any properties that cause the total height component to change
        * depending on the value of the 'max' property of BalanceText.
@@ -37,12 +39,12 @@ const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
        * white space and thus breathing room. However in this case we want the
        * link to be embedded into the typography and be as compact as possible.
        */
-      '&': { height: 'auto', padding: 0, border: 0, lineHeight: 0 },
       ...(underline && {
         '&:hover .balance': {
           textDecoration: 'underline',
         },
       }),
+      ...sx,
     }}
   >
     {children}
@@ -84,13 +86,14 @@ export type Props = {
   notionalValue?: number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
+  sx?: SxProps
   /** Callback function when max button/balance is clicked */
   onMax?: (maxValue: number) => void
 }
 
-export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center">
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
+  <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline={true} onClick={() => onMax?.(balance)}>
@@ -107,7 +110,12 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
     )}
 
     {max === 'button' && balance != null && (
-      <MaxButton underline={false} onClick={() => onMax?.(balance)}>
+      <MaxButton
+        underline={false}
+        onClick={() => onMax?.(balance)}
+        // Grow max button and place it all the way at the end
+        sx={{ flexGrow: 1, '&.MuiButtonBase-root': { justifyContent: 'end' } }}
+      >
         Max
       </MaxButton>
     )}

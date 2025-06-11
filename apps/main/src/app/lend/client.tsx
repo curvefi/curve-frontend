@@ -59,6 +59,7 @@ export const App = ({ children }: { children: ReactNode }) => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', () => handleResizeListener())
       window.removeEventListener('scroll', () => handleScrollListener())
+      setAppLoaded(false)
     }
   }, [handleResizeListener, setPageVisible, setScrollY])
 
@@ -81,7 +82,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [networkId, chainId, push])
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={helpers.initApi}

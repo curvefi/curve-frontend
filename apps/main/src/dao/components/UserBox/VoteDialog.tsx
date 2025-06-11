@@ -269,6 +269,7 @@ const SuccessWrapper = styled.div`
   padding: var(--spacing-2) var(--spacing-5);
   display: flex;
   margin: 0 auto;
+  text-align: center;
   font-family: var(--button--font);
 
   text-transform: var(--input_button--text-transform);

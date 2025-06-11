@@ -1,5 +1,14 @@
 import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
-import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
+import {
+  createChart,
+  ColorType,
+  CrosshairMode,
+  LineStyle,
+  AreaSeries,
+  CandlestickSeries,
+  HistogramSeries,
+  LineSeries,
+} from 'lightweight-charts'
 import { debounce } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -157,7 +166,7 @@ const CandleChart = ({
     // liquidation range series
     const addCurrentSeries = () => {
       if (chartRef.current) {
-        currentAreaSeriesRef.current = chartRef.current.addAreaSeries({
+        currentAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
           topColor: colors.rangeColorA25,
           bottomColor: colors.rangeColorA25,
           lineColor: colors.rangeColor,
@@ -188,7 +197,7 @@ const CandleChart = ({
             minMove: 0.0000001,
           },
         })
-        currentAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+        currentAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
           topColor: colors.backgroundColor,
           bottomColor: colors.backgroundColor,
           lineColor: colors.rangeColor,
@@ -223,7 +232,7 @@ const CandleChart = ({
     }
     const addNewSeries = () => {
       if (chartRef.current) {
-        newAreaSeriesRef.current = chartRef.current.addAreaSeries({
+        newAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
           topColor: colors.rangeColorA25,
           bottomColor: colors.rangeColorA25,
           lineColor: colors.rangeColor,
@@ -254,7 +263,7 @@ const CandleChart = ({
             minMove: 0.0000001,
           },
         })
-        newAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+        newAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
           topColor: colors.backgroundColor,
           bottomColor: colors.backgroundColor,
           lineColor: colors.rangeColor,
@@ -310,7 +319,7 @@ const CandleChart = ({
 
     // ohlc series
     if (ohlcData && !candlestickSeriesRef.current) {
-      candlestickSeriesRef.current = chartRef.current.addCandlestickSeries({
+      candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
         priceLineStyle: 2,
         upColor: '#26a69a',
         downColor: '#ef5350',
@@ -340,7 +349,7 @@ const CandleChart = ({
     }
 
     if (volumeData && !volumeSeriesRef.current) {
-      volumeSeriesRef.current = chartRef.current.addHistogramSeries({
+      volumeSeriesRef.current = chartRef.current.addSeries(HistogramSeries, {
         priceFormat: {
           type: 'volume',
         },
@@ -355,7 +364,7 @@ const CandleChart = ({
     }
 
     if (oraclePriceData && !oraclePriceSeriesRef.current) {
-      oraclePriceSeriesRef.current = chartRef.current.addLineSeries({
+      oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
         color: colors.chartOraclePrice,
         lineWidth: 2,
         priceLineStyle: 2,
@@ -509,7 +518,7 @@ const CandleChart = ({
   ])
 
   useEffect(() => {
-    wrapperRef.current = new ResizeObserver((entries) => {
+    wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       if (isUnmounting) return
 
       let { width, height } = entries[0].contentRect

@@ -67,13 +67,14 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     if (!curveApi) return
 
     const state = get()
-    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
-    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
+    const isNetworkSwitched = prevCurveApi?.chainId !== curveApi.chainId
+    const isUserSwitched = prevCurveApi?.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
     log('Hydrating DEX', curveApi?.chainId, {
       wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
       isUserSwitched,
+      hasRPC: !curveApi.isNoRPC,
     })
 
     // reset store
@@ -92,7 +93,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.dashboard.resetState()
     }
 
-    if (isUserSwitched || !curveApi.signerAddress) {
+    if (isUserSwitched) {
       state.user.resetState()
       state.userBalances.resetState()
     }
@@ -113,7 +114,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     if (!poolIds.length) {
       state.pools.setEmptyPoolListDefault(chainId)
       state.tokens.setEmptyPoolListDefault(chainId)
-      void state.pools.fetchBasePools(curveApi)
       return
     }
 
@@ -123,14 +123,13 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
-    if (!prevCurveApi || isNetworkSwitched) {
+    if (isUserSwitched || isNetworkSwitched) {
       void state.gas.fetchGasInfo(curveApi)
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
       void state.usdRates.fetchAllStoredUsdRates(curveApi)
-    } else {
     }
 
     if (curveApi.signerAddress) {

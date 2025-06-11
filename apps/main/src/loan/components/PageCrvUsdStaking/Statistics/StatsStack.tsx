@@ -31,7 +31,7 @@ const StatsStack = () => {
       <Grid>
         <Metric
           label="Total crvUSD Staked"
-          value={yieldData?.[yieldData.length - 1]?.supply ?? 0}
+          value={yieldData?.[yieldData.length - 1]?.supply}
           loading={yieldIsFetching}
           unit={CRVUSD_OPTION}
           copyText={t`Copied total crvUSD staked`}
@@ -40,7 +40,7 @@ const StatsStack = () => {
       <Grid>
         <Metric
           label="Current APY"
-          value={statisticsData?.aprProjected ?? 0}
+          value={statisticsData?.aprProjected}
           loading={statisticsIsFetching}
           decimals={2}
           unit="percentage"
@@ -50,7 +50,7 @@ const StatsStack = () => {
       <Grid>
         <Metric
           label="Total Revenue Distributed"
-          value={weiToEther(Number(revenueData?.totalDistributed)) ?? 0}
+          value={revenueData?.totalDistributed ? weiToEther(Number(revenueData.totalDistributed)) : undefined}
           loading={revenueIsFetching}
           unit={CRVUSD_OPTION}
           copyText={t`Copied total revenue distributed`}
@@ -59,7 +59,7 @@ const StatsStack = () => {
       <Grid>
         <Metric
           label="Weekly Accumulated Revenue"
-          value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue ?? 0}
+          value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue}
           loading={revenueIsFetching}
           unit={CRVUSD_OPTION}
           copyText={t`Copied weekly accumulated revenue`}

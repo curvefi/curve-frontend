@@ -20,7 +20,7 @@ import type {
   VolumeData,
 } from './types'
 
-type Props = {
+export type ChartWrapperProps = {
   chartType: ChartType
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
@@ -94,7 +94,7 @@ const ChartWrapper = ({
   toggleLiqRangeCurrentVisible,
   toggleLiqRangeNewVisible,
   latestOraclePrice,
-}: Props) => {
+}: ChartWrapperProps) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = [...ohlcData]
 
@@ -266,9 +266,7 @@ const ChartWrapper = ({
           <StyledSpinnerWrapper
             minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
           >
-            <ErrorMessage>{`Unable to fetch ${
-              selectedChartIndex !== undefined ? selectChartList?.[selectedChartIndex].label : selectChartList[0].label
-            } data.`}</ErrorMessage>
+            <ErrorMessage>{`Unable to fetch ${selectChartList?.[selectedChartIndex ?? 0]?.label ?? ''} data.`}</ErrorMessage>
             <RefreshButton
               size="small"
               variant="text"

@@ -10,18 +10,15 @@ import { TradingSlider } from './TradingSlider'
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 function clampBalance(balance: number | string, maxBalance?: number) {
-  let newBalance = Number(balance)
+  const newBalance = Math.max(0, Number(balance)) // Disallow negative values
 
-  // Disallow negative values.
-  newBalance = Math.max(0, newBalance)
+  if (maxBalance == null) {
+    return newBalance
+  }
 
   // We only clamp the positive side if there's a max balance.
   // This is up to debate and might be removed, it could be considered annoying UX.
-  if (maxBalance != null) {
-    newBalance = Math.min(newBalance, maxBalance)
-  }
-
-  return newBalance
+  return Math.min(newBalance, maxBalance)
 }
 
 type HelperMessageProps = {
@@ -35,11 +32,11 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
       backgroundColor: (t) => t.design.Layer[3].Fill,
       paddingBlock: Spacing.sm,
       paddingInlineStart: Spacing.sm,
-      outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
+      ...(isError && { outline: (t) => `1px solid ${t.design.Layer.Feedback.Error}` }),
     }}
   >
     {typeof message === 'string' ? (
-      <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textSecondary'}>
+      <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textTertiary'}>
         {message}
       </Typography>
     ) : (
@@ -82,15 +79,13 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
         },
       },
     }}
-    onClick={(e) => {
-      /**
-       * Select all content when clicked.
-       * This prevents unintended behavior when users click on the input field.
-       * For example, if the field contains "5000" and a user clicks on the left
-       * to type "4", it would become "45000" instead of the likely intended "4".
-       */
-      ;(e.target as HTMLInputElement).select()
-    }}
+    /**
+     * Select all content when clicked.
+     * This prevents unintended behavior when users click on the input field.
+     * For example, if the field contains "5000" and a user clicks on the left
+     * to type "4", it would become "45000" instead of the likely intended "4".
+     */
+    onFocus={(e) => (e.target as HTMLInputElement).select()}
     onChange={(e) => {
       /**
        * We clamp here and not in the onChange handler passed as property, because
@@ -164,30 +159,48 @@ type Props = {
   isError?: boolean
 
   /**
+   * Number of decimal places to round balance values to when calculating from percentage.
+   * @default 4
+   */
+  balanceDecimals?: number
+
+  /**
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
   onBalance: (balance: number) => void
 }
 
-export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = false, onBalance }: Props) => {
+export const LargeTokenInput = ({
+  tokenSelector,
+  maxBalance,
+  message,
+  isError = false,
+  balanceDecimals = 4,
+  onBalance,
+}: Props) => {
   const [percentage, setPercentage] = useState(0)
   const [balance, setBalance] = useState(0)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
   const showBalance = maxBalance && maxBalance.showBalance !== false
+  const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
       if (!maxBalance?.balance) return
-      const newBalance = (maxBalance.balance * newPercentage) / 100
+
+      let newBalance = (maxBalance.balance * newPercentage) / 100
+      if (balanceDecimals != null) {
+        newBalance = Number(newBalance.toFixed(balanceDecimals))
+      }
 
       setPercentage(newPercentage)
       setBalance(newBalance)
       onBalance(newBalance)
     },
-    [maxBalance, onBalance],
+    [maxBalance, balanceDecimals, onBalance],
   )
 
   const handleBalanceChange = useCallback(
@@ -214,7 +227,14 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
    */
   useEffect(() => {
     handleBalanceChange(clampBalance(balance, maxBalance?.balance))
-  }, [balance, handleBalanceChange, maxBalance])
+
+    /**
+     * Changing the percentage changes the balance, which in turn triggers this useEffect,
+     * which in turn changes the percentage again. While I am using the current balance,
+     * I really only care about triggering it when maxBalance changes.  *
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [maxBalance])
 
   return (
     <Stack
@@ -227,7 +247,7 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
     >
       <Stack gap={Spacing.xs}>
         {/** First row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="end">
+        <Stack direction="row" alignItems="end" gap={Spacing.md}>
           {tokenSelector}
 
           <BalanceTextField
@@ -239,7 +259,7 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
         </Stack>
 
         {/** Second row containing (max) balance and sliders */}
-        {maxBalance && (
+        {showMaxBalance && (
           <Stack
             direction="row"
             gap={Spacing.sm}
@@ -253,8 +273,10 @@ export const LargeTokenInput = ({ tokenSelector, maxBalance, message, isError = 
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
                 notionalValue={maxBalance.notionalValue}
-                max={maxBalance ? 'balance' : 'off'}
+                max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
+                // Stretch the balance component if there's no slider so the max button can reach the end
+                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
               />
             )}
 

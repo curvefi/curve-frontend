@@ -46,6 +46,112 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0xb01dd87b29d187f3e3a4bf6cdaebfb97f3d9ab98': {
+        alertType: 'warning',
+        address: '0xb01dd87b29d187f3e3a4bf6cdaebfb97f3d9ab98',
+        message: (
+          <div>
+            <Trans>
+              The Liquity BOLD token has been redeployed. This pool contain the legacy BOLD token.{' '}
+              <StyledExternalLink href="https://www.liquity.org/blog/liquity-v2-redeployment">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6': {
+        alertType: 'danger',
+        address: '0x8c0d76c9b18779665475f3e212d9ca1ed6a1a0e6',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0xc2e660c62f72c2ad35ace6db78a616215e2f2222': {
+        alertType: 'danger',
+        address: '0xc2e660c62f72c2ad35ace6db78a616215e2f2222',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x06d65ec13465ac5a4376dc101e1141252c4addf8': {
+        alertType: 'danger',
+        address: '0x06d65ec13465ac5a4376dc101e1141252c4addf8',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x870908873b6f940e025a7c6879678cb82ec6c9b6': {
+        alertType: 'danger',
+        address: '0x870908873b6f940e025a7c6879678cb82ec6c9b6',
+        message: (
+          <div>
+            <Trans>
+              The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
+              <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
+                Learn more here
+              </StyledExternalLink>
+              .
+            </Trans>
+          </div>
+        ),
+      },
+      '0x59d9356e565ab3a36dd77763fc0d87feaf85508c': {
+        alertType: 'warning',
+        isInformationOnly: true,
+        address: '0x59d9356e565ab3a36dd77763fc0d87feaf85508c',
+        message: (
+          <div>
+            <Trans>
+              Mountain Protocol is winding down USDM. Minting is disabled since May 12, 2025. Primary customers can
+              redeem USDM via Mountain Protocol. Other holders can swap on supported exchanges.{' '}
+              <StyledExternalLink href="https://x.com/MountainUSDM/status/1921960086362108270">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
+      '0x97effb790f2fbb701d88f89db4521348a2b77be8': {
+        alertType: 'danger',
+        address: '0x97effb790f2fbb701d88f89db4521348a2b77be8',
+        message: (
+          <div>
+            <Trans>
+              A vulnerability in the CVXRewardDistributor contract was exploited allowing the hacker to mint 58m CVG
+              intended for future emissions. CVG has been deprecated.{' '}
+              <StyledExternalLink href="https://medium.com/@cvg_wireshark/post-mortem-08-01-2024-e80a49d108a0">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])

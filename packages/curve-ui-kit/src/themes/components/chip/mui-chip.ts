@@ -16,9 +16,6 @@ const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: Design
   props: { color: color.toLowerCase() as ChipProps['color'] },
 })
 
-// note: the design system is using inverted themes for this color, there is no semantic colors for the clickable chips.
-const invertPrimary = (color: DesignSystem['Color']) => color.Neutral[50]
-
 const { Sizing, Spacing, IconSize } = SizesAndSpaces
 
 type ChipSizeDefinition = {
@@ -30,7 +27,7 @@ type ChipSizeDefinition = {
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.md, iconSize: IconSize.sm },
+  extraSmall: { font: 'bodyXsBold', height: IconSize.sm, iconSize: IconSize.sm },
   small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm },
   medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md },
   large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg },
@@ -54,7 +51,7 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { delet
  * - We do not use the "variant" prop (at the time of writing).
  */
 export const defineMuiChip = (
-  { Chips, Color, Text: { TextColors }, Layer, Badges }: DesignSystem,
+  { Chips, Text: { TextColors }, Badges }: DesignSystem,
   typography: TypographyOptions,
 ): Components['MuiChip'] => ({
   styleOverrides: {
@@ -70,7 +67,8 @@ export const defineMuiChip = (
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
         '& .MuiChip-label': {
-          paddingInline: 0,
+          paddingInlineStart: 0,
+          paddingInlineEnd: Spacing.xs.desktop,
           '&:empty': { display: 'none' },
         },
       },

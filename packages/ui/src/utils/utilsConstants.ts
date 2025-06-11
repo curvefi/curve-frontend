@@ -10,7 +10,7 @@ export const NOT_FOUND_IMAGE_URL = `${CURVE_ASSETS_URL}/branding/four-oh-llama.j
 export const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
 
 export const getImageBaseUrl = (blockchainId: string) =>
-  `${CURVE_ASSETS_URL}/images/assets${blockchainId == 'ethereum' ? '' : `-${blockchainId}`}/`
+  `${CURVE_ASSETS_URL}/images/assets${!blockchainId || blockchainId == 'ethereum' ? '' : `-${blockchainId}`}/`
 
 export const getBlockchainIconUrl = (blockchainId: string) => `${CURVE_ASSETS_URL}/chains/${blockchainId}.png`
 

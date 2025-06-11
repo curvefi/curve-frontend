@@ -48,10 +48,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
     useStore.setState(useStore.getInitialState())
 
-    const handleScrollListener = () => {
-      setScrollY(window.scrollY)
-    }
-
+    const handleScrollListener = () => setScrollY(window.scrollY)
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
 
     setAppLoaded(true)
@@ -66,9 +63,9 @@ export const App = ({ children }: { children: ReactNode }) => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', () => handleResizeListener())
       window.removeEventListener('scroll', () => handleScrollListener())
+      setAppLoaded(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [handleResizeListener, setPageVisible, setScrollY])
 
   usePageVisibleInterval(
     () => {
@@ -100,7 +97,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   }, [networkId, chainId, push])
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider<ChainId, LlamaApi>
         hydrate={hydrate}
         initLib={initLlamaApi}

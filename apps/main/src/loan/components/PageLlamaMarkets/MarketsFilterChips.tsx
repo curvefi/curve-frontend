@@ -8,11 +8,12 @@ import PersonIcon from '@mui/icons-material/Person'
 import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { type FilterProps, ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
+import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { SelectableChip, type SelectableChipProps } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -26,6 +27,7 @@ type MarketsFilterChipsProps = ColumnFilterProps & {
   hasFilters: boolean
   hasPositions: boolean | undefined
   hasFavorites: boolean | undefined
+  onSearch: (value: string) => void
 }
 
 /**
@@ -52,7 +54,6 @@ const GridItem = ({
     sx={{
       alignContent: 'center',
       ...(alignRight && { textAlign: 'right', '&': { flexGrow: '1' } }),
-      ...(extraMargin && { marginInlineEnd: { tablet: Spacing.md.tablet } }),
     }}
   >
     {children}
@@ -76,6 +77,7 @@ export const MarketsFilterChips = ({
   hasFilters,
   hasPositions,
   hasFavorites,
+  onSearch,
   ...props
 }: MarketsFilterChipsProps) => {
   const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPosition, props)
@@ -83,65 +85,64 @@ export const MarketsFilterChips = ({
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { address } = useAccount()
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
-
   return (
-    <Grid
-      container
-      rowSpacing={{ mobile: 2, tablet: 4 }}
-      columnSpacing={{ mobile: 2, tablet: '4px' }}
-      sx={{ width: '100%' }}
-      justifyContent="flex-end"
-    >
-      <GridChip
-        label={t`Mint Markets`}
-        selected={marketTypes.Mint}
-        toggle={toggleMarkets.Mint}
-        data-testid="chip-mint"
-      />
-      <GridChip
-        label={t`Lend Markets`}
-        selected={marketTypes.Lend}
-        toggle={toggleMarkets.Lend}
-        data-testid="chip-lend"
-        extraMargin
-      />
-      {address && (
+    <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
+      {!useIsMobile() && <TableSearchField onSearch={onSearch} />}
+      <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
         <GridChip
-          label={t`My Markets`}
-          selected={myMarkets}
-          toggle={toggleMyMarkets}
-          icon={<PersonIcon />}
-          data-testid="chip-my-markets"
-          disabled={!hasPositions}
+          label={t`Mint Markets`}
+          selected={marketTypes.Mint}
+          toggle={toggleMarkets.Mint}
+          data-testid="chip-mint"
         />
-      )}
-      <GridChip
-        label={t`Favorites`}
-        selected={favorites}
-        toggle={toggleFavorites}
-        icon={<HeartIcon />}
-        data-testid="chip-favorites"
-        disabled={!hasFavorites}
-      />
-      <GridChip
-        label={t`Points`}
-        selected={rewards}
-        toggle={toggleRewards}
-        icon={<PointsIcon />}
-        data-testid="chip-rewards"
-        {...(address && { size: 12 })}
-        extraMargin
-      />
-      <GridItem {...(!isMobile && { alignRight: true })}>
-        <Stack direction="column">
-          <Typography variant="bodyXsRegular">{t`Hidden Markets`}</Typography>
-          <Typography variant="highlightS">{hiddenMarketCount}</Typography>
-        </Stack>
-      </GridItem>
-      <GridItem alignRight>
-        <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
-      </GridItem>
+        <GridChip
+          label={t`Lend Markets`}
+          selected={marketTypes.Lend}
+          toggle={toggleMarkets.Lend}
+          data-testid="chip-lend"
+        />
+      </Grid>
+      <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+        {address && (
+          <GridChip
+            label={t`My Markets`}
+            selected={myMarkets}
+            toggle={toggleMyMarkets}
+            icon={<PersonIcon />}
+            data-testid="chip-my-markets"
+            disabled={!hasPositions}
+          />
+        )}
+        <GridChip
+          label={t`Favorites`}
+          selected={favorites}
+          toggle={toggleFavorites}
+          icon={<HeartIcon />}
+          data-testid="chip-favorites"
+          disabled={!hasFavorites}
+        />
+        <GridChip
+          label={t`Points`}
+          selected={rewards}
+          toggle={toggleRewards}
+          icon={<PointsIcon />}
+          data-testid="chip-rewards"
+          {...(address && { size: 12 })}
+          extraMargin
+        />
+      </Grid>
+
+      <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+        <GridItem {...(!useIsMobile() && { alignRight: true })}>
+          <Stack direction="row" gap={1} alignItems="center">
+            <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
+            <Typography variant="highlightS">{hiddenMarketCount}</Typography>
+          </Stack>
+        </GridItem>
+        <GridItem alignRight>
+          <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
+        </GridItem>
+      </Grid>
     </Grid>
   )
 }

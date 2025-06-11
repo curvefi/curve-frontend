@@ -261,14 +261,15 @@ export const SizesAndSpaces = {
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,
   LineHeight: MappedLineHeight,
-  ModalWidth: MappedModalWidth,
-  ColumnWidth: MappedColumnWidth,
-  ModalHeight: MappedModalHeight,
   OutlineWidth: '0.125rem', // 2px
+  Width: {
+    modal: MappedModalWidth,
+    column: MappedColumnWidth,
+  },
   MinWidth: {
-    table: { desktop: '60rem' }, // 960px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
+    actionCard: '20rem', // 320px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px
@@ -280,6 +281,9 @@ export const SizesAndSpaces = {
     actionCard: '29rem', // 464px
     section: '59.5rem', // 952px
     tooltip: '27.5rem', // 440px
+  },
+  Height: {
+    modal: MappedModalHeight,
   },
   MinHeight: {
     tableNoResults: '35vh',

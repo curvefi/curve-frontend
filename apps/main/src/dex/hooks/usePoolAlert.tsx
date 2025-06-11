@@ -106,6 +106,15 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
         </MessageWrapper>
       ),
     })
+    const ironbankAlert = (): PoolAlert => ({
+      alertType: 'warning',
+      isInformationOnlyAndShowInForm: true,
+      message: (
+        <MessageWrapper>
+          <div>Ironbank protocol is deprecated. Please do not supply liquidity to this pool.</div>
+        </MessageWrapper>
+      ),
+    })
 
     // Fantom networks
     const crossCurveAlert = (externalLinks: { label: string; url: string }[]): PoolAlert => ({
@@ -201,6 +210,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x19b080fe1ffa0553469d20ca36219f17fcf03859': synthetixAlert(),
       '0x8818a9bb44fbf33502be7c15c500d0c783b73067': synthetixAlert(),
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
+      '0x2dded6da1bf5dbdf597c45fcfaa3194e53ecfeaf': ironbankAlert(),
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
       // avalanche
