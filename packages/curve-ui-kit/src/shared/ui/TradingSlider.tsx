@@ -3,7 +3,7 @@ import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
+import { CLASS_BORDERLESS, SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
@@ -38,7 +38,7 @@ export const TradingSlider = ({
     }}
   >
     <Slider
-      className="borderless"
+      className={CLASS_BORDERLESS}
       size="medium"
       value={percentage}
       onChange={(_event, newValue) => onPercentageChange?.(Array.isArray(newValue) ? newValue[0] : newValue)}

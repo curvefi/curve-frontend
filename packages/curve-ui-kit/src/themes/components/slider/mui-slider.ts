@@ -7,6 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Sizing } = SizesAndSpaces
 
 const THUMB_WIDTH = 20 // 20px is a default MUI value, not responsive to reduce headaches
+export const CLASS_BORDERLESS = 'borderless'
 
 /**
  * CSS custom property name for customizing the slider background color.
@@ -103,7 +104,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       position: 'relative',
       ...rightExtension(design),
       ...leftExtension(design),
-      '&.borderless::after': {
+      [`&.${CLASS_BORDERLESS}::after`]: {
         border: 0,
       },
     },

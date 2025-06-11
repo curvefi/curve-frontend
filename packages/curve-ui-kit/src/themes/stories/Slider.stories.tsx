@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
+import { CLASS_BORDERLESS } from '../components/slider'
 
 const SliderComponent = (props: React.ComponentProps<typeof Slider>) => {
   const [value, setValue] = useState<number | number[]>(props.defaultValue as number | number[])
@@ -129,7 +130,7 @@ export const RangeSlider: Story = {
 
 export const Borderless: Story = {
   args: {
-    className: 'borderless',
+    className: CLASS_BORDERLESS,
   },
   parameters: {
     docs: {
