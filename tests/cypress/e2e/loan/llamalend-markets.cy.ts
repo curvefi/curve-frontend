@@ -1,14 +1,13 @@
 import { capitalize } from 'lodash'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
-  createLendingVaultResponses,
+  Chain,
+  createLendingVaultChainsResponse,
   HighUtilizationAddress,
-  type LendingVaultResponses,
-  mockLendingChains,
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@/support/helpers/lending-mocks'
-import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
+import { mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@/support/helpers/tokens'
 import {
   assertInViewport,
@@ -20,18 +19,17 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
+import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
   let width: number, height: number
-  let vaultData: LendingVaultResponses
+  let vaultData: Record<Chain, GetMarketsResponse>
 
   beforeEach(() => {
     ;[width, height, breakpoint] = oneViewport()
-    vaultData = createLendingVaultResponses()
-    mockChains()
-    mockLendingChains()
+    vaultData = createLendingVaultChainsResponse()
     mockTokenPrices()
     mockLendingVaults(vaultData)
     mockLendingSnapshots().as('lend-snapshots')
@@ -61,13 +59,13 @@ describe(`LlamaLend Markets`, () => {
     const filterHeight = {
       // the height of the header changes depending on how often the description text wraps
       mobile: [194, 180, 156, 144],
-      // on tablet, we expect always 3 rows to fit all market filter chips
-      tablet: [174],
-      // on desktop, we have an extra row until 1450px
-      desktop: [182, 128],
+      // on tablet, we expect 3 rows until 900px, then 2 rows
+      tablet: [208, 164],
+      // on desktop, we expect 2 rows always
+      desktop: [172],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
-    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 64)
+    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
   })
 
   it('should sort', () => {
@@ -92,12 +90,15 @@ describe(`LlamaLend Markets`, () => {
     }
   })
 
-  it('should show graphs', () => {
+  it('should show charts', () => {
     withFilterChips(() => {
       cy.get(`[data-testid="chip-lend"]`).click()
       cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
     })
     expandFirstRowOnMobile()
+    if (breakpoint != 'mobile') {
+      enableGraphColumn()
+    }
     checkLineGraphColor('borrow', '#ed242f')
 
     // check that scrolling loads more snapshots:
@@ -260,7 +261,6 @@ describe(`LlamaLend Markets`, () => {
     const { toggle, element } = oneOf(
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
       { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
-      { toggle: 'borrowChart', element: 'line-graph-borrow' },
     )
     cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
@@ -320,4 +320,11 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
+}
+
+function enableGraphColumn() {
+  cy.get(`[data-testid="line-graph-borrow"]`).should('not.exist')
+  cy.get(`[data-testid="btn-visibility-settings"]`).click()
+  cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
+  cy.get(`[data-testid="line-graph-borrow"]`).first().scrollIntoView()
 }

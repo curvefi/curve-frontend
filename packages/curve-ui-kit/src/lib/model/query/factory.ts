@@ -74,7 +74,7 @@ export function queryFactory<
     setQueryData: (params, data) => queryClient.setQueryData<TData>(queryKey(params), data),
     prefetchQuery: (params, staleTime = 0) =>
       queryClient.prefetchQuery({ queryKey: queryKey(params), queryFn, staleTime }),
-    fetchQuery: (params) => queryClient.fetchQuery(getQueryOptions(params)),
+    fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
     useQuery: createQueryHook(getQueryOptions),
     invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }

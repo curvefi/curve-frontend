@@ -67,7 +67,8 @@ export const defineMuiChip = (
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
         '& .MuiChip-label': {
-          paddingInline: 0,
+          paddingInlineStart: 0,
+          paddingInlineEnd: Spacing.xs.desktop,
           '&:empty': { display: 'none' },
         },
       },

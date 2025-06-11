@@ -1,10 +1,8 @@
 import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid2'
 import IconButton from '@mui/material/IconButton'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
@@ -57,7 +55,6 @@ export const TableFilters = <ColumnIds extends string>({
   title,
   subtitle,
   onReload,
-  learnMoreUrl,
   visibilityGroups,
   toggleVisibility,
   collapsible,
@@ -67,7 +64,6 @@ export const TableFilters = <ColumnIds extends string>({
 }: {
   title: string
   subtitle: string
-  learnMoreUrl: string
   onReload: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
@@ -105,20 +101,18 @@ export const TableFilters = <ColumnIds extends string>({
             testId="btn-expand-filters"
           />
           <TableButton onClick={onReload} icon={ReloadIcon} />
-          {!isMobile && (
-            <Button size="small" color="secondary" component={Link} href={learnMoreUrl} target="_blank">
-              Learn More
-            </Button>
-          )}
         </Grid>
-        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>
-          <TableSearchField onSearch={onSearch} />
-        </Grid>
-        <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
-          {sort}
-        </Grid>
-        {!isMobile && (
-          <Grid size={{ tablet: 7, desktop: 8 }} gap={0} justifyContent="flex-end">
+        {isMobile ? (
+          <>
+            <Grid size={12}>
+              <TableSearchField onSearch={onSearch} />
+            </Grid>
+            <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
+              {sort}
+            </Grid>
+          </>
+        ) : (
+          <Grid size={12} gap={0} justifyContent="flex-end">
             {chips}
           </Grid>
         )}

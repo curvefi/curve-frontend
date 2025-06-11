@@ -32,11 +32,11 @@ export const useLlamaMarketSortOptions = () => {
       : []),
     {
       id: LlamaMarketColumnId.BorrowRate,
-      label: t`7D Avg Borrow Rate`,
+      label: t`Borrow Rate`,
     },
     {
       id: LlamaMarketColumnId.LendRate,
-      label: t`7D Avg Supply Yield`,
+      label: t`Supply Yield`,
     },
     {
       id: LlamaMarketColumnId.UtilizationPercent,
