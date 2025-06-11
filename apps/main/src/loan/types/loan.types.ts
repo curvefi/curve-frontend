@@ -116,6 +116,7 @@ export type BandsBalancesData = {
   collateralStablecoinUsd: number
 }
 export type UserLoanDetails = {
+  loading: boolean
   healthFull: string
   healthNotFull: string
   userBands: number[]

@@ -122,10 +122,19 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
     fetchUserLoanDetails: async (curve: LlamaApi, llamma: Llamma) => {
       const chainId = curve.chainId
       const userLoanDetailsFn = networks[chainId].api.detailInfo.userLoanInfo
+
+      get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, {
+        ...get()[sliceKey].userDetailsMapper[llamma.id],
+        loading: true,
+      })
+
       const resp = await userLoanDetailsFn(llamma, curve.signerAddress)
 
-      get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, resp)
-      return resp
+      get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, {
+        ...resp,
+        loading: false,
+      })
+      return { ...resp, loading: false }
     },
     fetchUserLoanPartialDetails: async (curve: LlamaApi, llamma: Llamma) => {
       const chainId = curve.chainId
