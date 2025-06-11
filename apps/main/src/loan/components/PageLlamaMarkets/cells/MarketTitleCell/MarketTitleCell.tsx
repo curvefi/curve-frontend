@@ -11,6 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -18,9 +19,9 @@ const { Spacing } = SizesAndSpaces
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => {
   const isMobile = useIsMobile()
   return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center" marginBlock={{ ...Spacing.xxs, mobile: 0 }}>
+    <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
       <TokenPair chain={market.chain} assets={market.assets} />
-      <Stack direction="column" gap={{ ...Spacing.xs, mobile: 0 }} justifyContent="center">
+      <Stack direction="column" justifyContent="center">
         <Typography component={Stack} variant={isMobile ? 'tableCellMBold' : 'tableCellL'} direction="row" gap={2}>
           <MuiLink
             color="inherit"

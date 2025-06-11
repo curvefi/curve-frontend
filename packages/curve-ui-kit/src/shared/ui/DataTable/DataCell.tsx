@@ -1,4 +1,3 @@
-import { mapValues } from 'lodash'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -31,7 +30,7 @@ export const DataCell = <T extends TableItem>({
     textAlign: getAlignment(column),
     paddingInline: Spacing.sm,
     // 1px less for the border bottom
-    paddingBlock: mapValues({ ...Spacing.xs, mobile: Spacing.md.mobile }, (value) => `${value} calc(${value} - 1px)`),
+    // paddingBlock: mapValues({ ...Spacing.xs, mobile: Spacing.md.mobile }, (value) => `${value} calc(${value} - 1px)`),
   }
 
   const showCollapseIcon = isMobile && column.getIsLastColumn()

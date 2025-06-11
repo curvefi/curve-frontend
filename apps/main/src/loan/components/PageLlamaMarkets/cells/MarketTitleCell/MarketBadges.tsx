@@ -34,7 +34,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
     <Stack direction="row" gap={Spacing.sm} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
       <Tooltip title={poolTypeTooltips[type]()}>
         <Chip
-          size="extraSmall"
+          size="small"
           color="default"
           label={poolTypeNames[type]()}
           data-testid={`pool-type-${type.toLowerCase()}`}
@@ -47,7 +47,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
             <Typography variant="bodyXsRegular">🔥</Typography>
           ) : (
             <Chip
-              size="extraSmall"
+              size="small"
               color="highlight"
               label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`}
             />
@@ -77,7 +77,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
 
       {isCollateralEroded && (
         <Tooltip title={t`Your position is eroded`}>
-          <Chip label={t`Collateral erosion`} color="alert" size="extraSmall" />
+          <Chip label={t`Collateral erosion`} color="alert" size="small" />
         </Tooltip>
       )}
 
