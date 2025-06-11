@@ -32,28 +32,31 @@ yarn storybook:build    # Build Storybook static files
 ## Architecture Overview
 
 ### Monorepo Structure
+
 This is a **Turborepo monorepo** with a single Next.js 15.2.4 application that handles multiple DeFi domains:
 
 - **`/apps/main`**: Main Next.js app with App Router containing all domains
 - **`/packages/curve-ui-kit`**: Shared UI components with Storybook
-- **`/packages/ui`**: Additional UI components  
+- **`/packages/ui`**: Additional UI components
 - **`/packages/prices-api`**: Curve prices API client
 - **`/packages/external-rewards`**: Campaign rewards configuration
 - **`/tests`**: Cypress E2E tests with Hardhat node support
 
 ### Domain Organization
+
 The main app is organized by financial product domains under `/apps/main/src/app/`:
 
 - **`/dex`**: Router swaps, pool management (deposit/withdraw/swap), pool creation
-- **`/crvusd`**: crvUSD minting, collateral management, liquidation  
+- **`/crvusd`**: crvUSD minting, collateral management, liquidation
 - **`/lend`**: LlamaLend markets, lending/borrowing functionality
 - **`/dao`**: Governance, voting, gauge management, veCRV features
 
 Each domain follows a consistent structure:
+
 ```
 src/[domain]/
   components/          # Domain-specific React components
-  store/              # Zustand state slices  
+  store/              # Zustand state slices
   utils/              # Domain utilities
   hooks/              # Custom hooks
   entities/           # Data models and validation
@@ -63,24 +66,28 @@ src/[domain]/
 ### Key Technologies
 
 **Core Stack:**
+
 - Next.js 15.2.4 with App Router
-- React 19.1.0  
+- React 19.1.0
 - TypeScript 5.8.3
 - Node.js 22 (required)
 - Yarn 4.6.0
 
 **State & Data:**
+
 - Zustand 4.5.7 for client state (we want to deprecate this in favor of tanstack react-query)
 - Immer 9.0.21 for immutable updates
 - @tanstack/react-query 5.76.1 (we want to deprecate Zustand in favor of this)
 
 **Blockchain:**
+
 - @curvefi/api 2.67.2 (main protocol)
 - @curvefi/llamalend-api 1.0.21 (lending and minting)
 - Ethers.js 6.14.1
 - BigNumber.js 9.3.0
 
 **UI/Forms:**
+
 - Styled Components 6.1.18 (we want to deprecate this in favor of curve-ui-kit)
 - Material-UI based curve-ui-kit
 - React Hook Form 7.56.4 (we want to deprecate this in favor of curve-ui-kit)
@@ -89,13 +96,17 @@ src/[domain]/
 ## Development Patterns
 
 ### Feature-Sliced Design (FSD)
+
 The codebase follows Feature-Sliced Design architecture:
+
 - **Features**: Business logic grouped by user-facing functionality
 - **Entities**: Core business models (pools, tokens, users)
 - **Shared**: Reusable utilities, hooks, components
 
 ### Validation with Vest
+
 Data validation should use Vest library with validation groups:
+
 ```typescript
 // Example validation group
 export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
@@ -112,17 +123,20 @@ const validatedData = assertValidity(poolValidationGroup, data)
 ```
 
 ### State Management
+
 - **React Query** for any new code
 - **Zustand** and **Immer** for old code (being deprecated)
 - Local storage integration for user preferences
 
 ### Multi-Chain Support
+
 - Supports 15+ blockchain networks
 - Network-specific routing: `/[domain]/[network]/`
 - Dynamic RPC configuration via environment variables
 - Chain-specific state management and validation
 
 ## Wallet connection
+
 The wagmi configuration in this Curve Frontend codebase is quite comprehensive. Here's how it's set up:
 
 Core Configuration
@@ -134,10 +148,12 @@ The wagmi config supports 26+ chains including Ethereum, Optimism, Polygon, Arbi
 Key Features
 
 Transport Strategy:
+
 - Primary: unstable_connector(injected) for user's wallet
 - Fallback: HTTP transport with batch size 3 (DRPC compliance)
 
 Supported Wallets:
+
 - Browser/Injected wallets
 - WalletConnect (project ID: 982ea4bdf92e49746bd040a981283b36)
 - Coinbase Wallet
@@ -152,14 +168,15 @@ The wallet gives a compatibility layer for ethersJS so it may be passed to Curve
 The config is wrapped around the entire app in ClientWrapper.tsx and integrates with a custom ConnectionContext that handles chain switching and coordinates with CurveJS libraries.
 The UI uses a modal system with useConnection and useWallet hooks for wallet interactions.
 
-
 ## Environment Setup
 
-### Prerequisites  
+### Prerequisites
+
 - Node.js 22 (exact version required)
 - Yarn 4.6.0
 
 ### Setup Steps
+
 1. `git clone https://github.com/curvefi/curve-frontend.git`
 2. `cd curve-frontend && yarn`
 3. Configure environment variables as needed
@@ -167,6 +184,7 @@ The UI uses a modal system with useConnection and useWallet hooks for wallet int
 5. Access at http://localhost:3000
 
 ### Testing Environment
+
 The tests that use Cypress with Hardhat forked networks are not working.
 The idea was to run forked nodes on ports `8545 + chainId` to allow testing against mainnet state.
 However, starting up the fork takes forever and the tests are not stable.
@@ -176,7 +194,7 @@ The existing codes that run every commit do not need any fork.
 ## Code Quality Tools
 
 - **ESLint** with custom configuration
-- **Prettier** for code formatting  
+- **Prettier** for code formatting
 - **TypeScript** strict mode
 - **Husky** git hooks with **lint-staged**
 - **Commitlint** for conventional commits

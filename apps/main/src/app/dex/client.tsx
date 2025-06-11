@@ -10,7 +10,7 @@ import { type ChainId, type UrlParams } from '@/dex/types/main.types'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
+import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const App = ({ children }: { children: ReactNode }) => {
@@ -20,7 +20,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const [appLoaded, setAppLoaded] = useState(false)
 
   const pageWidth = useLayoutStore((state) => state.pageWidth)
-  const setPageWidth = useLayoutStore((state) => state.setPageWidth)
+  const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
   const setPageVisible = useLayoutStore((state) => state.setPageVisible)
   const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
@@ -34,8 +34,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   const network = networks[chainId]
 
   const handleResizeListener = useCallback(() => {
-    if (window.innerWidth) setPageWidth(window.innerWidth)
-  }, [setPageWidth])
+    if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
+  }, [setLayoutWidth])
 
   useEffect(() => {
     if (!pageWidth) return
