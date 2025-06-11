@@ -31,18 +31,19 @@ const trackAndThumbHeights = {
 }
 
 /**
- * Creates a pseudo-element style object for slider border
+ * Creates a pseudo-element style object for slider right extension
  *
- * This function generates styles for a pseudo-element that creates a border around the slider.
- * The border is extended beyond the slider's edges by half the thumb width to prevent
- * the thumb from overlapping with the border when at 0% or 100% positions.
+ * This function generates styles for a pseudo-element that creates a border around the slider
+ * and extends beyond the slider's right edge by half the thumb width to prevent
+ * the thumb from overlapping with the border when at 100% position.
  *
  * The negative z-index ensures the border appears behind the slider components.
+ * Also provides a background fill area that can be customized via CSS custom properties.
  *
  * @param design - The design system containing color definitions
- * @returns CSS style object for the border pseudo-element
+ * @returns CSS style object for the right extension pseudo-element
  */
-const borderPseudoElement = (design: DesignSystem) => ({
+const rightExtension = (design: DesignSystem) => ({
   '&::after': {
     content: '""',
     position: 'absolute',
@@ -59,19 +60,20 @@ const borderPseudoElement = (design: DesignSystem) => ({
 const singleThumbSelector = ':not(:has([data-index="1"]))'
 
 /**
- * Creates a pseudo-element style object for the left fill of the slider
+ * Creates a pseudo-element style object for slider left extension
  *
- * This function generates styles for a pseudo-element that fills the extended
- * left side of the slider with the primary button color. This creates a visual
- * continuity between the track and the extended border area.
+ * This function generates styles for a pseudo-element that extends the slider's
+ * left side by half the thumb width and fills it with the primary button color
+ * for single-thumb sliders. This creates visual continuity between the track
+ * and the extended border area.
  *
  * When the slider is disabled, it uses the standard MUI disabled color to match
  * the disabled track appearance.
  *
  * @param design - The design system containing color definitions
- * @returns CSS style object for the left fill pseudo-element
+ * @returns CSS style object for the left extension pseudo-element
  */
-const borderLeftFillPseudoElement = (design: DesignSystem) => ({
+const leftExtension = (design: DesignSystem) => ({
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -99,8 +101,8 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       // Nesting required as otherwise it'll break in mobile for some reason
       '&': { paddingBlock: 0 },
       position: 'relative',
-      ...borderPseudoElement(design),
-      ...borderLeftFillPseudoElement(design),
+      ...rightExtension(design),
+      ...leftExtension(design),
     },
 
     thumb: {
