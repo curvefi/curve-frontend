@@ -33,9 +33,16 @@ export const defineMuiSelect = (design: DesignSystem, typography: TypographyOpti
         paddingBlock: Spacing.xs,
         paddingInlineStart: Spacing.sm,
         height: Sizing.xl,
-        // The overflow hiding doesn't take into account the expansion chevron icon, so we have to deduct that from the width (100% by default).
+        /**
+         * The overflow hiding doesn't take into account the expansion chevron icon, so we need to deduct
+         * the icon width from the available text space (100% by default).
+         * Initially attempted to reduce the `width` property, but this also reduces the clickable area
+         * for opening the options menu. Instead, maintain 100% width but mask the right side using
+         * the responsive icon size to prevent text overlap with the chevron.
+         * Implementation uses a CSS mask with a linear gradient from opaque to transparent.
+         */
         '--icon-size': ICON_SIZE,
-        width: 'calc(100% - var(--icon-size))',
+        mask: 'linear-gradient(to right, black calc(100% - var(--icon-size)), transparent calc(100% - var(--icon-size)))',
       }),
     },
     icon: {
