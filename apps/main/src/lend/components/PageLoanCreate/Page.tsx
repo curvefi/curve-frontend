@@ -29,6 +29,7 @@ import {
   PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -43,8 +44,8 @@ const Page = (params: MarketUrlParams) => {
   const [isLoaded, setLoaded] = useState(false)
   const { push } = useRouter()
 
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)

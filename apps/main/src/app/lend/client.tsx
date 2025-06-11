@@ -7,19 +7,20 @@ import { ClientWrapper } from '@/app/ClientWrapper'
 import Page from '@/lend/layout'
 import { helpers } from '@/lend/lib/apiLending'
 import networks, { networksIdMapper } from '@/lend/networks'
-import { getPageWidthClassName } from '@/lend/store/createLayoutSlice'
 import useStore from '@/lend/store/useStore'
 import type { ChainId, UrlParams } from '@/lend/types/lend.types'
 import { getPath, getRestFullPathname } from '@/lend/utils/utilsRouter'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore, getPageWidthClassName } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
-  const pageWidth = useStore((state) => state.layout.pageWidth)
-  const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const pageWidth = useLayoutStore((state) => state.pageWidth)
+  const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
+  const setPageVisible = useLayoutStore((state) => state.setPageVisible)
+  const setScrollY = useLayoutStore((state) => state.setScrollY)
   const theme = useUserProfileStore((state) => state.theme)
   const hydrate = useStore((s) => s.hydrate)
   const { push } = useRouter()
@@ -41,29 +42,25 @@ export const App = ({ children }: { children: ReactNode }) => {
     // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
     useStore.setState(useStore.getInitialState())
 
-    const handleScrollListener = () => {
-      updateGlobalStoreByKey('scrollY', window.scrollY)
-    }
-
-    const handleVisibilityChange = () => {
-      updateGlobalStoreByKey('isPageVisible', !document.hidden)
-    }
+    const handleScrollListener = () => setScrollY(window.scrollY)
+    const handleVisibilityChange = () => setPageVisible(!document.hidden)
+    const handleScroll = () => delay(handleScrollListener, 200)
 
     setAppLoaded(true)
     handleResizeListener()
     handleVisibilityChange()
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
+    window.addEventListener('resize', handleResizeListener)
+    window.addEventListener('scroll', handleScroll)
 
     return () => {
+      setAppLoaded(false)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', () => handleResizeListener())
       window.removeEventListener('scroll', () => handleScrollListener())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [handleResizeListener, setPageVisible, setScrollY])
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {

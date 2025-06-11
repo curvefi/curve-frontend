@@ -3,49 +3,26 @@ import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, NetworkConfigFromApi, PageWidthClassName, Wallet } from '@/dex/types/main.types'
-import { getPageWidthClassName } from '@ui/utils'
+import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-export type LayoutHeight = {
-  globalAlert: number
-  mainNav: number
-  secondaryNav: number
-  footer: number
-}
-export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
-
 type GlobalState = {
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
-  isPageVisible: boolean
-  isXXSm: boolean
-  isXSmDown: boolean
-  isSmUp: boolean
-  isMdUp: boolean
-  isLgUp: boolean
-  isXLgUp: boolean
-  layoutHeight: LayoutHeight
   loaded: boolean
-  pageWidthPx: number | null
-  pageWidth: PageWidthClassName | null
-  showScrollButton: boolean
 }
 
 export interface GlobalSlice extends GlobalState {
   getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
   setNetworkConfigFromApi(curve: CurveApi): void
-  setPageWidth: (pageWidth: number) => void
 
   /** Hydrate resets states and refreshes store data from the API */
   hydrate(curveApi: CurveApi | null, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
 
-  updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
-  updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -57,23 +34,7 @@ export interface GlobalSlice extends GlobalState {
 const DEFAULT_STATE = {
   hasDepositAndStake: {},
   hasRouter: {},
-  pageWidthPx: null,
-  isPageVisible: true,
-  isXXSm: false,
-  isXSmDown: false,
-  isSmUp: false,
-  isMdUp: false,
-  isLgUp: false,
-  isXLgUp: false,
   loaded: false,
-  pageWidth: null,
-  layoutHeight: {
-    globalAlert: 0,
-    mainNav: 0,
-    secondaryNav: 0,
-    footer: 0,
-  },
-  showScrollButton: false,
 } satisfies GlobalState
 
 const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSlice => ({
@@ -99,28 +60,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
         state.storeCache.hasDepositAndStake[chainId] = hasDepositAndStake
         state.hasRouter[chainId] = hasRouter
         state.storeCache.hasRouter[chainId] = hasRouter
-      }),
-    )
-  },
-  setPageWidth: (pageWidth: number) => {
-    const pageWidthClassName = getPageWidthClassName(pageWidth)
-    const isXLgUp = pageWidthClassName.startsWith('page-wide')
-    const isLgUp = pageWidthClassName.startsWith('page-large') || pageWidthClassName.startsWith('page-wide')
-    const isMd = pageWidthClassName.startsWith('page-medium')
-    const isSmUp = pageWidthClassName === 'page-small'
-    const isXSmDown = pageWidthClassName.startsWith('page-small-x')
-    const isXXSm = pageWidthClassName === 'page-small-xx'
-
-    set(
-      produce((state: State) => {
-        state.pageWidthPx = pageWidth
-        state.pageWidth = pageWidthClassName
-        state.isXSmDown = isXSmDown
-        state.isSmUp = isSmUp || isMd || isLgUp
-        state.isMdUp = isMd || isLgUp
-        state.isLgUp = isLgUp
-        state.isXLgUp = isXLgUp
-        state.isXXSm = isXXSm
       }),
     )
   },
@@ -199,23 +138,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     }
 
     log('Hydrating DEX - Complete')
-  },
-  updateLayoutHeight: (key: keyof LayoutHeight, value: number) => {
-    set(
-      produce((state: State) => {
-        state.layoutHeight[key] = value
-      }),
-    )
-  },
-  updateShowScrollButton: (scrollY: number) => {
-    const showScrollButton = scrollY > 30
-    if (get().showScrollButton !== showScrollButton) {
-      set(
-        produce((state) => {
-          state.showScrollButton = showScrollButton
-        }),
-      )
-    }
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(

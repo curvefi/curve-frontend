@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 import type { SearchParams, TableLabel } from '@/lend/components/PageMarketList/types'
-import useStore from '@/lend/store/useStore'
 import { TitleMapper } from '@/lend/types/lend.types'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 const SelectFilterType = ({
   showBorrowSignerCell,
@@ -23,7 +23,7 @@ const SelectFilterType = ({
 }) => {
   const { filterTypeKey, sortBy, sortByOrder } = searchParams
 
-  const isXSmDown = useStore((state) => state.layout.isXSmDown)
+  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
 
   const sortSelectMapper = useMemo(
     () =>

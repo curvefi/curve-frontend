@@ -8,6 +8,7 @@ import ChartWrapper from '@ui/Chart'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
@@ -34,7 +35,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
   )
   const theme = useUserProfileStore((state) => state.theme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const chartFetchStatus = useStore((state) => state.ohlcCharts.chartFetchStatus)
   const timeOption = useStore((state) => state.ohlcCharts.timeOption)
   const refetchingCapped = useStore((state) => state.ohlcCharts.refetchingCapped)

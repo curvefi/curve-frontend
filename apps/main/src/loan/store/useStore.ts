@@ -11,7 +11,6 @@ import createCollateralListSlice, { CollateralListSlice } from '@/loan/store/cre
 import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
 import createGasSlice, { GasSlice } from '@/loan/store/createGasSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
-import createLayoutSlice, { AppLayoutSlice } from '@/loan/store/createLayoutSlice'
 import createLoanCollateralDecrease, {
   LoanCollateralDecreaseSlice,
 } from '@/loan/store/createLoanCollateralDecreaseSlice'
@@ -32,7 +31,6 @@ import createUsdRatesSlice, { UsdRatesSlice } from '@/loan/store/createUsdRatesS
 
 export type State = CacheSlice &
   AppSlice &
-  AppLayoutSlice &
   GasSlice &
   UsdRatesSlice &
   ChartBandsSlice &
@@ -56,7 +54,6 @@ export type State = CacheSlice &
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
-  ...createLayoutSlice(set, get),
   ...createGasSlice(set, get),
   ...createUsdRatesSlice(set, get),
   ...createChartBandsSlice(set, get),

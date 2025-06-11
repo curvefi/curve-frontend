@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import Header from '@/dex/layout/default/Header'
 import curvejsApi from '@/dex/lib/curvejs'
-import { layoutHeightKeys } from '@/dex/store/createGlobalSlice'
 import useStore from '@/dex/store/useStore'
 import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore, layoutHeightKeys } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -19,7 +19,7 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 const useAutoRefresh = (network: NetworkConfig) => {
   const { lib: curve } = useConnection<CurveApi>()
 
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchPools = useStore((state) => state.pools.fetchPools)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[network.chainId])
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
@@ -76,12 +76,12 @@ const useAutoRefresh = (network: NetworkConfig) => {
 
 const BaseLayout = ({ children, network }: { children: ReactNode } & { network: NetworkConfig }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-  useLayoutHeight(globalAlertRef, 'globalAlert', updateLayoutHeight)
+  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
+  useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
   useAutoRefresh(network)
 
-  const layoutHeight = useStore((state) => state.layoutHeight)
-  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+  const layoutHeight = useLayoutStore((state) => state.height)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
 
   const sections = useMemo(() => getSections(network.id), [network.id])
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])

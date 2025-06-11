@@ -11,6 +11,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 const TableRowContainer = (
   props: Omit<TableRowProps, 'market' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>,
@@ -19,7 +20,7 @@ const TableRowContainer = (
   const params = useParams() as NetworkUrlParams
   const { push } = useRouter()
 
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const marketsBalancesMapper = useStore((state) => state.user.marketsBalancesMapper)
   const searchedByAddresses = useStore((state) => state.marketList.searchedByAddresses[owmId])

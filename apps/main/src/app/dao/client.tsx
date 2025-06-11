@@ -10,16 +10,16 @@ import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { ChainId, type UrlParams } from '@/dao/types/dao.types'
 import { getPath, getRestFullPathname } from '@/dao/utils'
-import { getPageWidthClassName } from '@ui/utils'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore, getPageWidthClassName } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
-  const pageWidth = useStore((state) => state.layout.pageWidth)
-  const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
-  const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const pageWidth = useLayoutStore((state) => state.pageWidth)
+  const setPageWidth = useLayoutStore((state) => state.setLayoutWidth)
+  const setIsPageVisible = useLayoutStore((state) => state.setPageVisible)
+  const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
   const theme = useUserProfileStore((state) => state.theme)
   const hydrate = useStore((s) => s.hydrate)
 
@@ -45,7 +45,7 @@ export const App = ({ children }: { children: ReactNode }) => {
       updateShowScrollButton(window.scrollY)
     }
 
-    const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
+    const handleVisibilityChange = () => setIsPageVisible(!document.hidden)
 
     setAppLoaded(true)
     handleResizeListener()

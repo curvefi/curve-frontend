@@ -11,8 +11,6 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  isPageVisible: boolean
-  scrollY: number
 }
 
 // prettier-ignore
