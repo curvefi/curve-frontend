@@ -1,7 +1,6 @@
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
-import { TransitionFunction } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -57,8 +56,6 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
         content: '""',
         position: 'absolute',
         height: BORDER_SIZE,
-        opacity: 0,
-        transition: `opacity ${TransitionFunction}`,
       },
     },
   },
@@ -67,23 +64,19 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 
-const tabStyle = ({ Label, Fill, Outline }: TabStyle) => ({
+const tabStyle = ({ Label, Fill, Outline }: TabStyle, Inset?: string) => ({
   color: Label,
   backgroundColor: Fill,
   '::after': {
     backgroundColor: Outline ?? 'transparant',
+    ...(Inset && { inset: Inset }),
   },
 })
 
 const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
-  ...tabStyle(Default),
-  '&:hover': tabStyle(Hover),
-  '&:hover::after': { opacity: 1 },
-  '&.Mui-selected': tabStyle(Current),
-  '&.Mui-selected::after': { opacity: 1 },
-  '::after': Inset && {
-    inset: Inset,
-  },
+  ...tabStyle(Default, Inset),
+  '&:hover': tabStyle(Hover, Inset),
+  '&.Mui-selected': tabStyle(Current, Inset),
 })
 
 const tabPadding = (
@@ -133,7 +126,7 @@ export const defineMuiTabs = ({
         ...tabSizesNonContained,
       },
 
-      // Large tabs don't get a hover border
+      // Large tabs don't get a hover not over/underline inactive border
       [`&.${large} .MuiTab-root::after`]: {
         height: '0px',
       },
