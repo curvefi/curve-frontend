@@ -111,4 +111,11 @@ export const Navigation: Story = {
   },
 }
 
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+    children: 'Disabled',
+  },
+}
+
 export default meta
