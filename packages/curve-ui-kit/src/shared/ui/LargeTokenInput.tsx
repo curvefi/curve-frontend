@@ -60,7 +60,6 @@ const BalanceTextField = ({ balance, isError, onChange }: BalanceTextFieldProps)
           fontWeight: FontWeight.Bold,
           color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
           // Sadly there's no standardized CSS method to remove the number input spin buttons.
-          input: { textAlign: 'right' },
           '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
             display: 'none',
           },
@@ -239,14 +238,14 @@ export const LargeTokenInput = ({
       <Stack gap={Spacing.xs}>
         {/** First row containing the token selector and balance input text */}
         <Stack direction="row" alignItems="end" gap={Spacing.md}>
-          {tokenSelector}
-
           <BalanceTextField
             balance={balance}
             maxBalance={maxBalance?.balance}
             isError={isError}
             onChange={handleBalanceChange}
           />
+
+          {tokenSelector}
         </Stack>
 
         {/** Second row containing (max) balance and sliders */}
