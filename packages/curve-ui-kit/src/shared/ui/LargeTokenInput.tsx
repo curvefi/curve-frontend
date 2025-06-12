@@ -9,17 +9,8 @@ import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
-function clampBalance(balance: number | string, maxBalance?: number) {
-  const newBalance = Math.max(0, Number(balance)) // Disallow negative values
-
-  if (maxBalance == null) {
-    return newBalance
-  }
-
-  // We only clamp the positive side if there's a max balance.
-  // This is up to debate and might be removed, it could be considered annoying UX.
-  return Math.min(newBalance, maxBalance)
-}
+// Disallow negative values. We used to clamp max balance too but it's too annoying UX wise.
+const clampBalance = (balance: number | string) => Math.max(0, Number(balance))
 
 type HelperMessageProps = {
   message: string | React.ReactNode
@@ -52,7 +43,7 @@ type BalanceTextFieldProps = {
   onChange: (balance: number) => void
 }
 
-const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, isError, onChange }: BalanceTextFieldProps) => (
   <TextField
     type="number"
     placeholder="0.00"
@@ -92,7 +83,7 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
        * we need to remove leading zeros from the new balance. We don't want to pass
        * `e.target` as a callback parameter.
        */
-      const newBalance = clampBalance(e.target.value, maxBalance)
+      const newBalance = clampBalance(e.target.value)
       e.target.value = String(newBalance) // remove leading zeros
 
       onChange(newBalance)
@@ -226,7 +217,7 @@ export const LargeTokenInput = ({
    * 2. The slider percentage accurately reflects the balance/maxBalance ratio
    */
   useEffect(() => {
-    handleBalanceChange(clampBalance(balance, maxBalance?.balance))
+    handleBalanceChange(clampBalance(balance))
 
     /**
      * Changing the percentage changes the balance, which in turn triggers this useEffect,
