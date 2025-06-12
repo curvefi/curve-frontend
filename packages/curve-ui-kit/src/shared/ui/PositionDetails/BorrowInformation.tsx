@@ -10,6 +10,7 @@ import type {
   CollateralValue,
   Ltv,
   TotalDebt,
+  LiquidationThreshold,
 } from '@ui-kit/shared/ui/PositionDetails'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -23,7 +24,7 @@ type BorrowInformationProps = {
   ltv: Ltv | undefined | null
   leverage: Leverage | undefined | null
   liquidationRange: LiquidationRange | undefined | null
-  liquidationThreshold: number | undefined | null
+  liquidationThreshold: LiquidationThreshold | undefined | null
   totalDebt: TotalDebt | undefined | null
   accruedInterest: AccruedInterest | undefined | null
 }
@@ -46,51 +47,66 @@ export const BorrowInformation = ({
       <Metric
         size="small"
         label={t`7D Avg Borrow Rate`}
-        value={Number(rate?.value)}
-        loading={rate?.loading}
+        value={rate?.value}
+        loading={rate?.value == null && rate?.loading}
         unit="percentage"
       />
-      {app === 'lend' && <Metric size="small" label={t`PnL`} value={Number(pnl?.value)} loading={pnl?.loading} />}
+      {app === 'lend' && (
+        <Metric size="small" label={t`PnL`} value={pnl?.value} loading={pnl?.value == null && pnl?.loading} />
+      )}
       <Metric
         size="small"
         label={t`Collateral Value`}
-        value={Number(collateralValue?.value)}
-        loading={collateralValue?.loading}
+        value={collateralValue?.value}
+        loading={collateralValue?.value == null && collateralValue?.loading}
         unit="dollar"
       />
-      <Metric size="small" label={t`Current LTV`} value={Number(ltv?.value)} loading={ltv?.loading} unit="percentage" />
+      <Metric
+        size="small"
+        label={t`Current LTV`}
+        value={ltv?.value}
+        loading={ltv?.value == null && ltv?.loading}
+        unit="percentage"
+      />
       {app === 'lend' && (
         <Metric
           size="small"
           label={t`Leverage`}
-          value={Number(leverage?.value)}
-          loading={leverage?.loading}
+          value={leverage?.value}
+          loading={leverage?.value == null && leverage?.loading}
           unit="multiplier"
         />
       )}
-      {/* <Metric size="small" label={t`Liquidation Range`} value={liquidationRange ? `${liquidationRange[0]} - ${liquidationRange[1]}` : ''} /> */}
+      <Metric
+        size="small"
+        label={t`Liquidation Range`}
+        value={liquidationRange?.value}
+        loading={liquidationRange?.value == null && liquidationRange?.loading}
+        abbreviate={false}
+        unit="dollar"
+      />
       <Metric
         size="small"
         label={t`Liquidation Threshold`}
         abbreviate={false}
-        value={liquidationThreshold}
-        loading={liquidationRange?.loading}
+        value={liquidationThreshold?.value}
+        loading={liquidationThreshold?.value == null && liquidationThreshold?.loading}
         unit="dollar"
       />
       <Metric
         size="small"
         label={t`Total Debt`}
-        value={Number(totalDebt?.value)}
-        loading={totalDebt?.loading}
+        value={totalDebt?.value}
+        loading={totalDebt?.value == null && totalDebt?.loading}
         unit="dollar"
       />
-      <Metric
+      {/* <Metric
         size="small"
         label={t`Accrued Interest`}
-        value={Number(accruedInterest?.value)}
-        loading={accruedInterest?.loading}
+        value={accruedInterest?.value)}
+        loading={accruedInterest?.value == null && accruedInterest?.loading}
         unit="dollar"
-      />
+      /> */}
     </Box>
   </Box>
 )

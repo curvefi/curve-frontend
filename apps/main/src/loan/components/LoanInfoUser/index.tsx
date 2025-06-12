@@ -87,31 +87,35 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const positionDetailsProps: PositionDetailsProps = {
     app: 'crvusd',
     health: {
-      value: healthMode.percent,
+      value: Number(healthMode.percent),
       loading: userLoanDetails?.loading ?? true,
     },
     borrowRate: {
-      value: sevenDayAvgRate?.toString(),
-      loading: isSnapshotsLoading,
+      value: sevenDayAvgRate,
+      loading: isSnapshotsLoading || !llamma?.controller,
     },
     accruedInterest: {
-      value: '1',
+      value: null, // this data point doesn't yet exist on API
       loading: userLoanDetails?.loading ?? true,
     },
     liquidationRange: {
-      value: userLoanDetails?.userPrices,
+      value: userLoanDetails?.userPrices?.map(Number) ?? null,
+      loading: userLoanDetails?.loading ?? true,
+    },
+    liquidationThreshold: {
+      value: userLoanDetails?.userPrices ? Number(userLoanDetails.userPrices[1]) : null,
       loading: userLoanDetails?.loading ?? true,
     },
     collateralValue: {
-      value: collateralValue?.toString(),
+      value: collateralValue,
       loading: (userLoanDetails?.loading ?? true) || usdRatesLoading,
     },
     ltv: {
-      value: collateralValue ? ((Number(userLoanDetails?.userState?.debt) / collateralValue) * 100).toString() : null,
+      value: collateralValue ? (Number(userLoanDetails?.userState?.debt) / collateralValue) * 100 : null,
       loading: userLoanDetails?.loading ?? true,
     },
     totalDebt: {
-      value: userLoanDetails?.userState?.debt,
+      value: userLoanDetails?.userState?.debt ? Number(userLoanDetails.userState.debt) : null,
       loading: userLoanDetails?.loading ?? true,
     },
   }
