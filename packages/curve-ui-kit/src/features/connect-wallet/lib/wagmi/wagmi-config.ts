@@ -29,33 +29,30 @@ const DECIMALS: Record<number, number> = {
  */
 export const createWagmiConfig = memoize(
   <ChainId extends number, NetworkConfig extends BaseConfig>(networks: Record<ChainId, NetworkConfig>) => {
-    const chains = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
+    const wagmi = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
     const networkEntries = Object.entries(networks).map(([id, config]) => [+id, config]) as [ChainId, NetworkConfig][]
 
     /**
      * Gets a list of the RPC URLs for a given chain.
      * First the hardcoded RPC URLs, then the CurveJS URL and then all default wagmi URLs
      */
-    const getRpcUrls = (id: ChainId, config: NetworkConfig, wagmiChain?: Chain) =>
-      uniq([...(RPC[id] ?? []), config.rpcUrl, ...(wagmiChain?.rpcUrls.default.http ?? [])])
+    const getRpcUrls = (id: ChainId) =>
+      uniq([...(RPC[id] ?? []), networks[id].rpcUrl, ...(wagmi[id]?.rpcUrls.default.http ?? [])])
 
     return createConfig({
       chains: networkEntries.map(
         ([id, config]): Chain =>
           // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
           defineChain({
+            ...(wagmi[id] ?? {
+              nativeCurrency: { name: config.symbol, symbol: config.symbol, decimals: DECIMALS[id] ?? 18 },
+            }),
             id,
             testnet: config.isTestnet,
-            nativeCurrency: { name: config.symbol, symbol: config.symbol, decimals: DECIMALS[id] ?? 18 },
-            ...(chains[id] as Chain | undefined),
             name: config.name,
-            rpcUrls: {
-              default: { http: getRpcUrls(id, config, chains[id]) },
-            },
+            rpcUrls: { default: { http: getRpcUrls(id) } },
             ...(config.explorerUrl && {
-              blockExplorers: {
-                default: { name: new URL(config.explorerUrl).host, url: config.explorerUrl },
-              },
+              blockExplorers: { default: { name: new URL(config.explorerUrl).host, url: config.explorerUrl } },
             }),
           }),
       ) as [Chain, ...Chain[]],
@@ -83,7 +80,7 @@ export const createWagmiConfig = memoize(
            */
           fallback([
             unstable_connector(injected),
-            ...getRpcUrls(id, config, chains[id]).map((url) => http(url, { batch: { batchSize: 3 } })),
+            ...getRpcUrls(id).map((url) => http(url, { batch: { batchSize: 3 } })),
           ]),
         ]),
       ) as Record<ChainId, Transport>,
