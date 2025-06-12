@@ -153,6 +153,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -182,6 +183,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Primary,
@@ -528,6 +530,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -555,7 +558,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     OverLined: {
       Inset: InsetOverline,
-      Default: { Label: Text.TextColors.Secondary },
+      Default: {
+        Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
+      },
       Hover: {
         Label: Text.TextColors.Primary,
         Fill: Color.Neutral[200],
@@ -844,6 +850,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -873,6 +880,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Primary,
