@@ -14,6 +14,7 @@ const medium = 'size-medium' as const
 const large = 'size-large' as const
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
 export const TABS_HEIGHT_CLASSES = { small, medium, large }
+export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders'
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
@@ -99,9 +100,20 @@ const tabSizesNonContained = {
   [`&.${large} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
 }
 
-// Select a tab that's neither hovered nor active.
-const inactiveTabSelector = (...variants: string[]) =>
-  variants.map((variant) => `&.${variant} .MuiTab-root:not(.Mui-selected):not(:hover)::after`).join(', ')
+/**
+ * Generates CSS selector for inactive tabs (not selected and not hovered).
+ *
+ * @param showInactiveBorders - If true, applies to all tabs of the variant.
+ *                             If false, only applies when TABS_NO_ACTIVE_BORDERS_CLASS is present.
+ * @param variants - Tab variant class names
+ */
+const inactiveTabSelector = (showInactiveBorders: boolean, ...variants: string[]) =>
+  variants
+    .map(
+      (variant) =>
+        `${showInactiveBorders ? `&.${variant}` : `&.${variant}.${HIDE_INACTIVE_BORDERS_CLASS}`} .MuiTab-root:not(.Mui-selected):not(:hover)::after`,
+    )
+    .join(', ')
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
 export const defineMuiTabs = ({
@@ -132,8 +144,13 @@ export const defineMuiTabs = ({
       },
 
       // Inactive tabs have a smaller border size
-      [`${inactiveTabSelector(overlined, underlined)}`]: {
+      [`${inactiveTabSelector(true, overlined, underlined)}`]: {
         height: BORDER_SIZE_INACTIVE,
+      },
+
+      // Override inactive border size when no-borders class is present
+      [`${inactiveTabSelector(false, overlined, underlined)}`]: {
+        height: '0px',
       },
 
       // Large tabs don't get a hover not over/underline inactive border

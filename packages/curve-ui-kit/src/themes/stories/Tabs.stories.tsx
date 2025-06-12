@@ -10,7 +10,7 @@ const TABS = [
 ] as const
 type Tab = (typeof TABS)[number]['value']
 
-const TabSwitcherComponent = (props: React.ComponentProps<typeof TabsSwitcher>) => {
+const TabsSwitcherComponent = (props: React.ComponentProps<typeof TabsSwitcher>) => {
   const [value, setValue] = useState<Tab>(TABS[0].value)
 
   return <TabsSwitcher {...props} options={TABS} value={value} onChange={setValue} />
@@ -18,7 +18,7 @@ const TabSwitcherComponent = (props: React.ComponentProps<typeof TabsSwitcher>) 
 
 const meta: Meta<typeof TabsSwitcher> = {
   title: 'UI Kit/Primitives/Tabs',
-  component: TabSwitcherComponent,
+  component: TabsSwitcherComponent,
   argTypes: {
     variant: {
       control: 'select',
@@ -39,6 +39,16 @@ const meta: Meta<typeof TabsSwitcher> = {
 
 type Story = StoryObj<typeof TabsSwitcher>
 
-export const Default: Story = {}
+export const Default: Story = {
+  render: (args) => <TabsSwitcherComponent {...args} />,
+}
+
+export const NoInactiveBorders: Story = {
+  args: {
+    variant: 'underlined',
+    hideInactiveBorders: true,
+  },
+  render: (args) => <TabsSwitcherComponent {...args} />,
+}
 
 export default meta

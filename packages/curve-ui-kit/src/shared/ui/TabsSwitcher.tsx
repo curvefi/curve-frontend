@@ -4,7 +4,12 @@ import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { TABS_HEIGHT_CLASSES, TABS_VARIANT_CLASSES, TabSwitcherVariants } from '../../themes/components/tabs'
+import {
+  TABS_HEIGHT_CLASSES,
+  HIDE_INACTIVE_BORDERS_CLASS,
+  TABS_VARIANT_CLASSES,
+  TabSwitcherVariants,
+} from '../../themes/components/tabs'
 
 const defaultTextVariants = {
   small: 'buttonS',
@@ -24,6 +29,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   textVariant?: TypographyProps['variant']
   value: T | undefined
   options: readonly TabOption<T>[]
+  hideInactiveBorders?: boolean
   onChange?: (value: T) => void
 }
 
@@ -35,6 +41,7 @@ export const TabsSwitcher = <T extends string | number>({
   onChange,
   value,
   textVariant,
+  hideInactiveBorders = false,
   ...props
 }: TabsSwitcherProps<T>) => (
   <Tabs
@@ -42,7 +49,7 @@ export const TabsSwitcher = <T extends string | number>({
     textColor="inherit"
     value={value ?? false}
     onChange={(_, newValue) => onChange?.(newValue)}
-    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
+    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
     {...props}
   >
     {options.map(({ value, label, sx, ...props }) => (
