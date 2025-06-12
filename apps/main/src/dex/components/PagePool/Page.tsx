@@ -4,13 +4,13 @@ import { useEffect, useMemo } from 'react'
 import Transfer from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, PoolUrlParams } from '@/dex/types/main.types'
+import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 
 export const PagePool = (props: PoolUrlParams) => {
   const { push } = useRouter()
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curve = null, connectState } = useConnection()
   const { pool: rPoolId, formType: [rFormType] = [], network: networkId } = props
   const rChainId = useChainId(networkId)
 

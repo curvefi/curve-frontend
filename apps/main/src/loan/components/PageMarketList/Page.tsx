@@ -10,7 +10,7 @@ import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import Settings from '@/loan/layout/Settings'
 import useStore from '@/loan/store/useStore'
-import type { CollateralUrlParams, LlamaApi } from '@/loan/types/loan.types'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getPath, useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
@@ -25,7 +25,7 @@ enum SEARCH {
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
+  const { connectState, llama: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()

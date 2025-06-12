@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import FormCompensation from '@/dex/components/PageCompensation/index'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import Settings from '@/dex/layout/default/Settings'
-import { type CurveApi, type NetworkUrlParams, Provider } from '@/dex/types/main.types'
+import { type NetworkUrlParams, Provider } from '@/dex/types/main.types'
 import { useChainId } from '@/dex/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import Button from '@ui/Button'
@@ -16,7 +16,7 @@ import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wa
 import { t } from '@ui-kit/lib/i18n'
 
 export const PageCompensation = ({ network }: NetworkUrlParams) => {
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curve = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const [contracts, setContracts] = useState<EtherContract[]>([])
   const rChainId = useChainId(network)

@@ -2,7 +2,7 @@ import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { Header } from '@/dao/layout/Header'
 import useStore from '@/dao/store/useStore'
-import type { ChainId, CurveApi, NetworkEnum } from '@/dao/types/dao.types'
+import type { ChainId, NetworkEnum } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -16,7 +16,7 @@ import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const useAutoRefresh = () => {
-  const { lib: curve } = useConnection<CurveApi>()
+  const { curve } = useConnection()
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const getGauges = useStore((state) => state.gauges.getGauges)

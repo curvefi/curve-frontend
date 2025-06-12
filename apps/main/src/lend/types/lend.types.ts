@@ -1,17 +1,17 @@
 import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
-import type llamaApi from '@curvefi/llamalend-api'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 
 export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
+export type Api = LlamaApi
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
-export type Api = typeof llamaApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
@@ -77,13 +77,7 @@ export type ExpectedBorrowed = {
   avgPrice: string
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
-export type PageWidthClassName =
-  | 'page-wide'
-  | 'page-large'
-  | 'page-medium'
-  | 'page-small'
-  | 'page-small-x'
-  | 'page-small-xx'
+
 export type PageContentProps = {
   params: UrlParams
   rChainId: ChainId
@@ -91,7 +85,7 @@ export type PageContentProps = {
   rFormType: string | null
   userActiveKey: string
   isLoaded: boolean
-  api: Api | null
+  api: LlamaApi | null
   market: OneWayMarketTemplate | undefined
   titleMapper: TitleMapper
 }

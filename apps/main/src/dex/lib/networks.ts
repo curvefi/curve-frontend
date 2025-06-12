@@ -339,7 +339,7 @@ export const defaultNetworks = Object.entries({
 )
 
 export async function getNetworks() {
-  const resp = await curve.getCurveLiteNetworks()
+  const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
 
   const liteNetworks = Object.values(resp).reduce(
     (prev, { chainId, ...config }) => {

@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import styled from 'styled-components'
 import useStore from '@/loan/store/useStore'
-import type { LlamaApi } from '@/loan/types/loan.types'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import SubNav from '../components/SubNav'
@@ -34,7 +33,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
-  const { lib: curve = null } = useConnection<LlamaApi>()
+  const { llama: curve = null } = useConnection()
 
   const setNavChange = (key: SubNavItem['key']) => {
     setStakingModule(key as DepositWithdrawModule)

@@ -27,7 +27,7 @@
     "@types/memoizee": "^0.4.12",
     "bignumber.js": "^9.3.0",
     "curve-ui-kit": "*",
-    "ethers": "^6.14.1",
+    "ethers": "*",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "immer": "^9.0.21",

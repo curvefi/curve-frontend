@@ -89,3 +89,19 @@ export const routeToPage = (
     isActive: pathname?.startsWith(href.split('?')[0]),
   }
 }
+
+export const replaceNetworkInPath = (path: string, networkId: string) => {
+  const [, app, _network, ...rest] = path.split('/')
+  if (!app) return path // if no app, return original path
+  return ['', app, networkId, ...rest].join('/')
+}
+
+export const getCurrentApp = (path: string | null): AppName => {
+  const [, app] = path?.split('/') || []
+  return AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
+}
+
+export const getCurrentNetwork = (path: string | null): string => {
+  const [, , networkId] = path?.split('/') || []
+  return networkId ?? 'ethereum'
+}

@@ -10,7 +10,7 @@ import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import type { CollateralUrlParams, LlamaApi } from '@/loan/types/loan.types'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
   getCollateralListPathname,
@@ -42,7 +42,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
-  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
+  const { connectState, llama: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)

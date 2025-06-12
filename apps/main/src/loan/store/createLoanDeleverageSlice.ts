@@ -53,7 +53,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
     fetchDetailInfo: async (activeKey, curve, llamma, formValues, maxSlippage, userState) => {
       const { collateral } = formValues
       const { chainId, signerAddress } = curve
-      const fn = networks[chainId].api.loanDeleverage.detailInfo
+      const fn = networks[chainId as ChainId].api.loanDeleverage.detailInfo
       const fDetailInfo = await fn(activeKey, llamma, collateral, signerAddress, maxSlippage, userState)
       get()[sliceKey].setStateByKey('detailInfo', { [fDetailInfo.activeKey]: { ...fDetailInfo.resp } })
       return fDetailInfo.resp
@@ -85,7 +85,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
 
       if (!curve || !llamma || !storedUserDetails || (curve && !curve.signerAddress)) return
 
-      const { chainId } = curve
+      const chainId = curve.chainId as ChainId
       const { userState, userStatus } = storedUserDetails
       const isSoftLiquidation = userStatus?.colorKey === 'soft_liquidation'
 
@@ -151,7 +151,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         step: 'REPAY',
       })
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDeleverage.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
       if (resp.activeKey === get()[sliceKey].activeKey) {

@@ -8,7 +8,7 @@ import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
   getCollateralListPathname,
@@ -40,7 +40,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
-  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
+  const { connectState, llama: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
@@ -70,7 +70,7 @@ const Page = (params: CollateralUrlParams) => {
   const isLeverage = rFormType === 'leverage'
 
   const fetchInitial = useCallback(
-    (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
+    (curve: any, isLeverage: boolean, llamma: Llamma) => {
       // reset createLoan estGas, detailInfo state
       setStateByKeys({
         formEstGas: {},

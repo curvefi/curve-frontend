@@ -1,5 +1,7 @@
 import { type ReactNode } from 'react'
+import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
+import { getNetworks } from '@/dex/lib/networks'
 import baseCss from '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
@@ -22,10 +24,10 @@ const injectHeader = `
   })()
 `
 
-// noinspection HtmlRequiredTitleElement // title is injected via metadata
-const Layout = ({ children }: { children: ReactNode }) => (
+const Layout = async ({ children }: { children: ReactNode }) => (
   <html style={RootCssProperties}>
     <head>
+      <title>Curve.finance</title>
       <meta
         name="description"
         content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
@@ -64,7 +66,9 @@ const Layout = ({ children }: { children: ReactNode }) => (
       <style dangerouslySetInnerHTML={{ __html: baseCss }} />
     </head>
     <body>
-      <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+      <StyledComponentsRegistry>
+        <ClientWrapper networks={await getNetworks()}>{children}</ClientWrapper>
+      </StyledComponentsRegistry>
     </body>
   </html>
 )

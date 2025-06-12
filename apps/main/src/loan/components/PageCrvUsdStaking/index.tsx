@@ -8,7 +8,7 @@ import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation
 import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
-import type { LlamaApi, NetworkUrlParams } from '@/loan/types/loan.types'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -25,7 +25,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const { lib: lendApi = null } = useConnection<LlamaApi>()
+  const { llama: lendApi = null } = useConnection()
   const chainId = lendApi?.chainId
   const { address, isConnecting } = useAccount()
 

@@ -2,7 +2,7 @@
 import styled from 'styled-components'
 import Dashboard from '@/dex/components/PageDashboard/index'
 import Settings from '@/dex/layout/default/Settings'
-import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { useChainId } from '@/dex/utils/utilsRouter'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
@@ -10,7 +10,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
 export const PageDashboard = (props: NetworkUrlParams) => {
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curve = null, connectState } = useConnection()
   const rChainId = useChainId(props.network)
   const { provider, connect: connectWallet } = useWallet()
   return (

@@ -1,20 +1,12 @@
 import { ethers } from 'ethers'
 import curvejsApi from '@/dao/lib/curvejs'
-import type curveApi from '@curvefi/api'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import type { Address } from '@ui-kit/utils'
 
 export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+export type { CurveApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 
-export type PageWidthClassName =
-  | 'page-wide'
-  | 'page-large'
-  | 'page-medium'
-  | 'page-small'
-  | 'page-small-x'
-  | 'page-small-xx'
-export type CurveApi = typeof curveApi & { chainId: number }
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
@@ -216,17 +208,6 @@ export type UserGaugeVoteWeight = {
   poolUrl: string
   relativeWeight: number
   totalVeCrv: number
-}
-
-export type UserGaugeVoteWeightsMapper = {
-  [userAddress: string]: {
-    fetchingState: FetchingState
-    data: {
-      powerUsed: number
-      veCrvUsed: number
-      gauges: UserGaugeVoteWeight[]
-    }
-  }
 }
 
 export interface FnStepEstGasApprovalResponse {

@@ -11,4 +11,7 @@ export {
   isSuccess,
   getLib,
   requireLib,
+  useHydration,
+  type LlamaApi,
+  type CurveApi,
 } from './ConnectionContext'

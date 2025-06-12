@@ -1,5 +1,5 @@
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
-import { LlamaApi } from '@/loan/types/loan.types'
+import type { ChainId } from '@/loan/types/loan.types'
 import { CardHeader, Box } from '@mui/material'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 export const PegKeeperStatistics = () => {
-  const chainId = useConnection<LlamaApi>().lib?.chainId
+  const chainId = useConnection().llama?.chainId as ChainId | undefined
   const { data: crvusdTotalSupply, isLoading } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt } = crvusdTotalSupply ?? {}

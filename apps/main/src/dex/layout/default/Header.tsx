@@ -4,7 +4,6 @@ import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
-import { type CurveApi } from '@/dex/types/main.types'
 import { useChainId } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -24,7 +23,7 @@ type HeaderProps = {
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { lib: curve = {} } = useConnection<CurveApi>()
+  const { curve = {} } = useConnection()
   const rChainId = useChainId(networkId)
   const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)

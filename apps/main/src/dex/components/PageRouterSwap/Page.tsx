@@ -6,7 +6,7 @@ import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import TuneIcon from '@mui/icons-material/Tune'
 import Box, { BoxHeader } from '@ui/Box'
@@ -21,7 +21,7 @@ import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 export const PageRouterSwap = (props: NetworkUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curve = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
 

@@ -8,7 +8,7 @@ import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import Settings from '@/dao/layout/Settings'
 import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { CurveApi, type VeCrvUrlParams } from '@/dao/types/dao.types'
+import { type VeCrvUrlParams } from '@/dao/types/dao.types'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
@@ -18,7 +18,7 @@ import { WrongNetwork } from './WrongNetwork'
 
 export const PageVeCrv = (params: VeCrvUrlParams) => {
   const [rFormType] = params.formType
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curve = null, connectState } = useConnection()
   const rChainId = networksIdMapper[params.network]
   const isLoadingCurve = isLoading(connectState)
 

@@ -2,15 +2,17 @@ import { BrowserProvider } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/loan/constants'
 import curvejsApi from '@/loan/lib/apiCrvusd'
-import type llamalendApi from '@curvefi/llamalend-api'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 
+export type { LlamaApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
 
 export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
+
+/** LOAN app specific API that constrains chainId to Ethereum only */
 export type NetworkEnum = Extract<INetworkName, 'ethereum'>
 
 export type NetworkUrlParams = { network: NetworkEnum }
@@ -19,8 +21,6 @@ export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
-/** Actually the stablecoin api, but not renaming to avoid a huge rename PR */
-export type LlamaApi = typeof llamalendApi & { chainId: ChainId }
 
 export type Provider = BrowserProvider
 export type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
@@ -31,13 +31,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   showInSelectNetwork: boolean
 }
 
-export type PageWidthClassName =
-  | 'page-wide'
-  | 'page-large'
-  | 'page-medium'
-  | 'page-small'
-  | 'page-small-x'
-  | 'page-small-xx'
 export type Llamma = MintMarketTemplate
 
 export interface CollateralData {

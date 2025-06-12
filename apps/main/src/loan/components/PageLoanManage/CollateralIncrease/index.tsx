@@ -15,7 +15,7 @@ import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import useStore from '@/loan/store/useStore'
-import { LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import AlertBox from '@ui/AlertBox'
@@ -97,7 +97,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
   const handleBtnClickAdd = useCallback(
     async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const notifyMessage = t`Please confirm depositing ${formValues.collateral} ${llamma.collateralSymbol}`
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)

@@ -17,7 +17,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: Api | null, prevApi: Api | null, wallet: Wallet | null): Promise<void>
+  hydrate(api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void

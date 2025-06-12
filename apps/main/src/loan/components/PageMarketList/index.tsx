@@ -10,7 +10,6 @@ import { TITLE } from '@/loan/constants'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import { getActiveKey } from '@/loan/store/createCollateralListSlice'
 import useStore from '@/loan/store/useStore'
-import type { LlamaApi } from '@/loan/types/loan.types'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody, Tr } from '@ui/Table'
 import { breakpoints } from '@ui/utils'
@@ -25,7 +24,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
   const titleMapper = useTitleMapper()
 
   const activeKey = getActiveKey(rChainId, searchParams)
-  const { lib: curve = null } = useConnection<LlamaApi>()
+  const { llama: curve = null } = useConnection()
   const prevActiveKey = useStore((state) => state.collateralList.activeKey)
   const formStatus = useStore((state) => state.collateralList.formStatus)
   const initialLoaded = useStore((state) => state.collateralList.initialLoaded)

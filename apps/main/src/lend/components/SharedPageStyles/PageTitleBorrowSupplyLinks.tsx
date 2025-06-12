@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import type { Api, UrlParams } from '@/lend/types/lend.types'
+import type { UrlParams } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 import { AppPageFormTitleLinks } from '@ui/AppPage'
@@ -17,7 +17,7 @@ const PageTitleBorrowSupplyLinks = ({
   activeKey: 'borrow' | 'supply'
   market: OneWayMarketTemplate
 }) => {
-  const { lib: api = null } = useConnection<Api>()
+  const { llama: api = null } = useConnection()
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)

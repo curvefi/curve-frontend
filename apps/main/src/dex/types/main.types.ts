@@ -1,17 +1,16 @@
 import { ethers } from 'ethers'
 import { ReactNode } from 'react'
 import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
-import type curveApi from '@curvefi/api'
 import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 
 export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+export type { CurveApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>
-export type CurveApi = typeof curveApi & { chainId: IChainId }
 export type ChainId = IChainId | number
 export type NetworkEnum = INetworkName
 export type NetworkConfigFromApi = {
@@ -252,13 +251,6 @@ export type PricesApiSnapshotsResponse = {
 }
 export type PoolDataCacheMapper = { [poolAddress: string]: PoolDataCache }
 export type PoolDataCacheOrApi = PoolData | PoolDataCache
-export type PageWidthClassName =
-  | 'page-wide'
-  | 'page-large'
-  | 'page-medium'
-  | 'page-small'
-  | 'page-small-x'
-  | 'page-small-xx'
 
 export type Tvl = {
   poolId: string

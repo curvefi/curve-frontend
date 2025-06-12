@@ -1,9 +1,19 @@
 'use client'
-import { BrowserProvider, type Eip1193Provider } from 'ethers'
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { BrowserProvider } from 'ethers'
+import type { Eip1193Provider } from 'ethers/lib.esm'
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAccount, useChainId, useConnectorClient, useSwitchChain } from 'wagmi'
+import { createCurve, type default as curveApi } from '@curvefi/api'
+import type { IChainId as CurveChainId } from '@curvefi/api/lib/interfaces'
+import { createLlamalend, type default as llamaApi } from '@curvefi/llamalend-api'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { BaseConfig } from '@ui/utils'
+import type { AppName } from '@ui-kit/shared/routes'
 import { type Wallet } from './types'
 import { type WagmiChainId } from './wagmi/wagmi-config'
+
+export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: string }
+export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress?: string }
 
 const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -44,25 +54,25 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
 /** During hydration the status is success and the stage is set to hydrate. */
 export const isHydrated = ({ status, stage }: ConnectState) => status === SUCCESS && stage !== HYDRATE
 
-type ConnectionContextValue<TLib> = {
+type ConnectionContextValue = {
   connectState: ConnectState
-  lib?: TLib
+  lib?: CurveApi
+  curve?: CurveApi
+  llama?: LlamaApi
   error?: unknown
   wallet?: Wallet
   provider?: BrowserProvider
 }
 
-const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
+const ConnectionContext = createContext<ConnectionContextValue>({
   connectState: { status: LOADING },
 })
 
 /**
  * Compare the signer address of the wallet with the one in the library.
  */
-const compareSignerAddress = <TChainId extends any>(
-  wallet: Wallet | null,
-  lib: { chainId: TChainId; signerAddress?: string } | null,
-) => wallet?.account.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
+const compareSignerAddress = (wallet: Wallet | undefined, lib: Libs[LibKey]) =>
+  wallet?.account.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
 
 /** Module-level variables to track initialization state across multiple calls */
 let mutexPromise: Promise<unknown> | null = null
@@ -132,17 +142,22 @@ function useWagmiWallet() {
     // wagmi flips to isReconnecting when switching pages, but leaves isConnected as true
     isReconnecting: isReconnecting && !isConnected,
     ...(useMemo(() => {
-      const wallet =
-        address && client?.transport.request
-          ? {
-              provider: { request: client.transport.request },
-              account: { address }, // the ensName is set later when detected
-              chainId: client.chain.id,
-            }
-          : null
+      const wallet = address &&
+        client?.transport.request && {
+          provider: { request: client.transport.request },
+          account: { address }, // the ensName is set later when detected
+          chainId: client.chain.id,
+        }
       return { wallet, provider: wallet ? new BrowserProvider(wallet.provider) : null }
     }, [address, client?.chain.id, client?.transport.request]) ?? null),
   }
+}
+
+const AppLibs: Record<AppName, LibKey> = {
+  crvusd: 'llamaApi',
+  dao: 'curveApi',
+  dex: 'curveApi',
+  lend: 'llamaApi',
 }
 
 /**
@@ -150,20 +165,15 @@ function useWagmiWallet() {
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
  * todo: Merged with useWallet after wagmi migration. Get rid of apiStore after this is used everywhere.
  */
-export const ConnectionProvider = <
-  TChainId extends number,
-  TLib extends { chainId: TChainId; signerAddress?: string },
->({
-  hydrate,
-  initLib,
-  chainId,
+export const ConnectionProvider = <TChainId extends number, NetworkConfig extends BaseConfig>({
+  network,
   onChainUnavailable,
+  app,
   children,
 }: {
-  hydrate: (newLib: TLib | null, prevLib: TLib | null, wallet: Wallet | null) => Promise<void>
-  initLib: (chainId: TChainId, provider?: Eip1193Provider) => Promise<TLib | undefined>
-  chainId: TChainId
+  network: NetworkConfig | undefined
   onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
+  app: AppName
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
@@ -171,9 +181,10 @@ export const ConnectionProvider = <
   const walletChainId = useChainId()
   const { wallet, provider, isReconnecting } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
+  const libKey = AppLibs[app]
 
   useEffect(() => {
-    if (isReconnecting) return // wait for wagmi to auto-reconnect
+    if (isReconnecting || !network) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
 
@@ -181,6 +192,7 @@ export const ConnectionProvider = <
      * Initialize the app by connecting to the wallet and setting up the library.
      */
     const initApp = async () => {
+      const chainId = Number(network.chainId) as TChainId
       try {
         if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
@@ -192,7 +204,7 @@ export const ConnectionProvider = <
           return // hook is called again after since it depends on walletChainId
         }
 
-        const prevLib = libRef.get<TLib>()
+        const prevLib = libRef.get(libKey)
         if (compareSignerAddress(wallet, prevLib) && prevLib?.chainId == chainId) {
           return // already connected to the right chain and wallet, no need to reinitialize
         }
@@ -200,11 +212,11 @@ export const ConnectionProvider = <
         await withMutex(async () => {
           if (signal.aborted) return
           setConnectState({ status: LOADING, stage: CONNECT_API })
-          const newLib = (await initLib(chainId, wallet?.provider)) ?? null
+          const newLib = await libRef.init(libKey, network, wallet?.provider)
           if (signal.aborted) return
-          libRef.set(newLib)
+          libRef.set(libKey, newLib)
           setConnectState({ status: SUCCESS, stage: HYDRATE })
-          await hydrate(newLib, prevLib, wallet)
+          // todo await hydrate(newLib, prevLib, wallet)
         }, [chainId, wallet])
 
         setConnectState({ status: SUCCESS })
@@ -216,46 +228,100 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [
-    isReconnecting,
-    chainId,
-    hydrate,
-    initLib,
-    onChainUnavailable,
-    switchChainAsync,
-    wallet,
-    walletChainId,
-    isFocused,
-  ])
-
-  const lib = libRef.get<TLib>()
-  // the wallet is first connected, then the callback runs. So the ref is not updated yet
-  const isLibOk = lib?.chainId === chainId && compareSignerAddress(wallet, lib)
+  }, [isReconnecting, network, libKey, onChainUnavailable, switchChainAsync, wallet, walletChainId, isFocused])
 
   const value = {
     connectState,
     ...(wallet && { wallet }),
     ...(provider && { provider }),
-    ...(isLibOk && { lib }),
-  } satisfies ConnectionContextValue<TLib>
+    curve: libRef.getIfOk('curveApi', network?.chainId, wallet),
+    llama: libRef.getIfOk('llamaApi', network?.chainId, wallet),
+  }
   return <ConnectionContext.Provider value={value}>{children}</ConnectionContext.Provider>
 }
 
-export const useConnection = <TLib extends unknown>() => useContext(ConnectionContext) as ConnectionContextValue<TLib>
+export const useConnection = () => useContext(ConnectionContext)
+
+export const useHydration = <K extends LibKey>(
+  libKey: K,
+  hydrate: (lib: Libs[K], prevLib: Libs[K], wallet?: Wallet) => Promise<void>,
+) => {
+  const [hydrated, setHydrated] = useState(false)
+  const { curve, llama, wallet } = useConnection()
+  const prev = useRef<Libs[K]>(undefined)
+  const lib = (libKey === 'curveApi' ? curve : llama) as Libs[K] // todo: make the names consistent
+
+  useEffect(() => {
+    // todo: only hydrate if not hydrated yet with this chain/signer
+    const abort = new AbortController()
+    void (async () => {
+      try {
+        setHydrated(false)
+        await hydrate(lib, prev.current, wallet)
+      } catch (error) {
+        console.error(`Error during ${libKey} hydration`, error)
+      } finally {
+        if (!abort.signal.aborted) {
+          setHydrated(true)
+        }
+      }
+    })()
+    return () => abort.abort()
+  }, [hydrate, lib, libKey, wallet])
+
+  useEffect(() => {
+    prev.current = lib
+  }, [lib])
+
+  return hydrated
+}
+
+type Libs = {
+  llamaApi?: LlamaApi
+  curveApi?: CurveApi
+}
+
+type LibKey = keyof Libs
 
 /**
  * Lib is a singleton that holds the current instance of the library.
  * It would be better to use only the context, but we need to be able to access it in the store and query functions.
  */
 const libRef = {
-  current: null as unknown,
-  get: <T = unknown,>() => libRef.current as T | null,
-  require<T = unknown>() {
-    if (!libRef.current) throw new Error('Lib not initialized')
-    return libRef.current as T
+  current: {} as Libs,
+  get: <K extends LibKey>(key: K): Libs[K] | undefined => libRef.current[key],
+  getIfOk: <K extends LibKey>(key: K, chainId?: number, wallet?: Wallet): Libs[K] | undefined => {
+    const lib = libRef.current[key]
+    // the wallet is first connected, then the callback runs. So the ref is not updated yet
+    if (lib?.chainId === Number(chainId) && compareSignerAddress(wallet, lib)) {
+      return lib
+    }
   },
-  set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
+  require<K extends LibKey>(key: K): NonNullable<Libs[K]> {
+    const value = libRef.get(key)
+    if (!value) throw new Error(`${key} not initialized`)
+    return value
+  },
+  set: <K extends LibKey>(key: K, lib: Libs[K]) => (libRef.current[key] = lib),
+  init: async <K extends LibKey>(key: K, network: BaseConfig, externalProvider?: Eip1193Provider): Promise<Libs[K]> => {
+    const { chainId } = network
+    if (key === 'llamaApi') {
+      if (!externalProvider) {
+        return
+      }
+      const api = createLlamalend()
+      await api.init('Web3', { network, externalProvider }, { chainId })
+      return api as Libs[K]
+    }
+    const curveApi = createCurve()
+    if (externalProvider) {
+      await curveApi.init('Web3', { network, externalProvider }, { chainId })
+    } else {
+      await curveApi.init('NoRPC', 'NoRPC', { chainId })
+    }
+    return curveApi as Libs[K]
+  },
 }
 
-export const getLib = <TLib extends unknown>() => libRef.get<TLib>()
-export const requireLib = <TLib extends unknown>() => libRef.require<TLib>()
+export const getLib = libRef.get
+export const requireLib = libRef.require

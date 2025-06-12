@@ -8,7 +8,7 @@ import { ROUTE } from '@/dex/constants'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath, useChainId } from '@/dex/utils/utilsRouter'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -26,7 +26,7 @@ type PageProps = NetworkUrlParams
 export const PagePoolList = (params: PageProps) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { lib: curve = null } = useConnection<CurveApi>()
+  const { curve = null } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const rChainId = useChainId(params.network)
