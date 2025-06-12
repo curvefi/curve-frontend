@@ -148,13 +148,9 @@ export const defineMuiTabs = ({
         height: BORDER_SIZE_INACTIVE,
       },
 
-      // Override inactive border size when no-borders class is present
-      [`${inactiveTabSelector(false, overlined, underlined)}`]: {
-        height: '0px',
-      },
-
       // Large tabs don't get a hover not over/underline inactive border
-      [`&.${large} .MuiTab-root::after`]: {
+      // Also override and hide inactive borders if configured so
+      [`&.${large} .MuiTab-root::after, ${inactiveTabSelector(false, overlined, underlined)}`]: {
         height: '0px',
       },
     },
