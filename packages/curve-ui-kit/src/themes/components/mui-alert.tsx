@@ -24,14 +24,22 @@ export const defineMuiAlert = (
     },
   },
   styleOverrides: {
-    root: handleBreakpoints({
-      ...bodyXsRegular,
-      borderWidth: OutlineWidth,
-      paddingInlineStart: Spacing.md,
-      paddingInlineEnd: Spacing.sm,
-      paddingBlockStart: Spacing.sm,
-      paddingBlockEnd: Spacing.xs,
-    }),
+    root: {
+      ...handleBreakpoints({
+        ...bodyXsRegular,
+        borderWidth: OutlineWidth,
+        paddingInline: Spacing.xs,
+        paddingBlockStart: 0,
+        paddingBlockEnd: Spacing.xs,
+      }),
+      '& .MuiAlert-message': {
+        ...handleBreakpoints({
+          paddingInlineEnd: Spacing.sm,
+          paddingBlockStart: Spacing.sm,
+          paddingBlockEnd: Spacing.xs,
+        }),
+      },
+    },
     outlined: {
       backgroundColor: Layer1.Fill,
       color: TextColors.Secondary,
@@ -60,7 +68,12 @@ export const defineMuiAlert = (
       '&.MuiAlert-colorError': { backgroundColor: Feedback.Error },
     },
     icon: {
-      ...handleBreakpoints({ marginRight: Spacing.xs }),
+      ...handleBreakpoints({
+        paddingInlineStart: Spacing.sm,
+        paddingBlockStart: Spacing.sm,
+        paddingBlockEnd: Spacing.xs,
+        marginRight: Spacing.xs,
+      }),
       '& svg': handleBreakpoints({
         width: IconSize.sm,
         height: IconSize.sm,
