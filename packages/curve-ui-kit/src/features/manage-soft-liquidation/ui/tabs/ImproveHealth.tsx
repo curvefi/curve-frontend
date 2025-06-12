@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -65,21 +64,17 @@ export const ImproveHealth = ({
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <LargeTokenInput
+        label={t`Debt to repay`}
         tokenSelector={
-          <Stack minWidth={TOKEN_SELECT_WIDTH}>
-            <Typography variant="bodyXsRegular" color="textTertiary">
-              {t`Debt to repay`}
-            </Typography>
-
-            <TokenSelector
-              selectedToken={selectedDebtToken}
-              tokens={debtTokens}
-              showSearch={false}
-              showManageList={false}
-              compact
-              onToken={onDebtToken}
-            />
-          </Stack>
+          <TokenSelector
+            selectedToken={selectedDebtToken}
+            tokens={debtTokens}
+            showSearch={false}
+            showManageList={false}
+            compact
+            onToken={onDebtToken}
+            sx={{ minWidth: TOKEN_SELECT_WIDTH }}
+          />
         }
         maxBalance={{ ...selectedDebtToken, showSlider: false }}
         message={t`Repaying debt will increase your health temporarily.`}

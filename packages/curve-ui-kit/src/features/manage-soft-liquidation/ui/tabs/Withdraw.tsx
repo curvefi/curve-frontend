@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -85,21 +84,17 @@ export const Withdraw = ({
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <Stack>
         <LargeTokenInput
+          label={t`Debt to repay`}
           tokenSelector={
-            <Stack minWidth={TOKEN_SELECT_WIDTH}>
-              <Typography variant="bodyXsRegular" color="textTertiary">
-                {t`Debt to repay`}
-              </Typography>
-
-              <TokenSelector
-                selectedToken={selectedDebtToken}
-                tokens={debtTokens}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={onDebtToken}
-              />
-            </Stack>
+            <TokenSelector
+              selectedToken={selectedDebtToken}
+              tokens={debtTokens}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={onDebtToken}
+              sx={{ minWidth: TOKEN_SELECT_WIDTH }}
+            />
           }
           maxBalance={{ ...selectedDebtToken, showSlider: false }}
           message={t`Recover collateral by repaying debt.`}
@@ -120,21 +115,17 @@ export const Withdraw = ({
         />
 
         <LargeTokenInput
+          label={t`Collateral to withdraw`}
           tokenSelector={
-            <Stack minWidth={TOKEN_SELECT_WIDTH}>
-              <Typography variant="bodyXsRegular" color="textTertiary">
-                {t`Collateral to withdraw`}
-              </Typography>
-
-              <TokenSelector
-                selectedToken={selectedCollateralToken}
-                tokens={collateralTokens}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={onCollateralToken}
-              />
-            </Stack>
+            <TokenSelector
+              selectedToken={selectedCollateralToken}
+              tokens={collateralTokens}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={onCollateralToken}
+              sx={{ minWidth: TOKEN_SELECT_WIDTH }}
+            />
           }
           maxBalance={{ ...selectedCollateralToken, showBalance: false }}
           message={t`Collateral value: something something`}

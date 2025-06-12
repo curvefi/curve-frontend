@@ -71,15 +71,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
     <LargeTokenInput
       {...props}
       maxBalance={maxBalance}
-      tokenSelector={
-        <Stack>
-          <Typography variant="bodyXsRegular" color="textTertiary">
-            You pay
-          </Typography>
-
-          <TokenSelector onTokenChange={setTokenInfo} />
-        </Stack>
-      }
+      tokenSelector={<TokenSelector onTokenChange={setTokenInfo} />}
     />
   )
 }
@@ -95,6 +87,10 @@ const meta: Meta<typeof LargeTokenInput> = {
     message: {
       control: 'object',
       description: 'Optional message to display below the input (can be a React node)',
+    },
+    label: {
+      control: 'text',
+      description: 'Optional label explaining what the input is all about',
     },
     isError: {
       control: 'boolean',
@@ -115,6 +111,7 @@ const meta: Meta<typeof LargeTokenInput> = {
       showSlider: true,
     },
     message: '',
+    label: 'You pay',
     isError: false,
     balanceDecimals: 4,
     onBalance: fn(),

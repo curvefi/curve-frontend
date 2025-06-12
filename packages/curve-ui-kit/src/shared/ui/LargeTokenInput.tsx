@@ -39,11 +39,12 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
 type BalanceTextFieldProps = {
   balance: number
   maxBalance?: number
+  label?: string
   isError: boolean
   onChange: (balance: number) => void
 }
 
-const BalanceTextField = ({ balance, isError, onChange }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, label, isError, onChange }: BalanceTextFieldProps) => (
   <TextField
     type="number"
     placeholder="0.00"
@@ -117,7 +118,6 @@ type Props = {
    * 1. Slot in any token selector implementation
    * 2. Handle the callbacks of the token selector in the parent component
    * 3. Feed props back to LargeTokenInput via its properties
-   * 4. Customize labels like 'You pay' more easily
    *
    * See the storybook for simple implementation examples of LargeTokenInput.
    *
@@ -138,6 +138,9 @@ type Props = {
    * Can be a string or a ReactNode for greater message customization and styling.
    */
   message?: string | React.ReactNode
+
+  /** Optional label explaining what the input is all about. */
+  label?: string
 
   /**
    * Whether the input is in an error state.
@@ -162,6 +165,7 @@ export const LargeTokenInput = ({
   tokenSelector,
   maxBalance,
   message,
+  label,
   isError = false,
   balanceDecimals = 4,
   onBalance,
@@ -233,7 +237,14 @@ export const LargeTokenInput = ({
       }}
     >
       <Stack gap={Spacing.xs}>
-        {/** First row containing the token selector and balance input text */}
+        {/** First row is an optional label describing the input */}
+        {label && (
+          <Typography variant="bodyXsRegular" color="textSecondary">
+            {label}
+          </Typography>
+        )}
+
+        {/** Second row containing the token selector and balance input text */}
         <Stack direction="row" alignItems="end" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
@@ -245,7 +256,7 @@ export const LargeTokenInput = ({
           {tokenSelector}
         </Stack>
 
-        {/** Second row containing (max) balance and sliders */}
+        {/** Third row containing (max) balance and sliders */}
         {showMaxBalance && (
           <Stack
             direction="row"
@@ -278,7 +289,7 @@ export const LargeTokenInput = ({
         )}
       </Stack>
 
-      {/** Third row containing optional helper (or error) message */}
+      {/** Fourth row containing optional helper (or error) message */}
       {message && <HelperMessage message={message} isError={isError} />}
     </Stack>
   )
