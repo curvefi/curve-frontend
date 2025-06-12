@@ -120,7 +120,7 @@ export const ActionInfos = ({
         value={`${formatValue(health.new)}%`}
         valueColor={newHealthColor(health)}
         prevValue={`${formatValue(health.old)}%`}
-        prevValueColor="textPrimary"
+        prevValueColor="textTertiary"
         sx={{ flexGrow: 1 }}
       />
     }
