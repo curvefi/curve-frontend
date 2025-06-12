@@ -65,12 +65,12 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 
-const tabStyle = ({ Label, Fill, Outline }: TabStyle, Inset?: string) => ({
+const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
   backgroundColor: Fill,
   '::after': {
     backgroundColor: Outline ?? 'transparant',
-    ...(Inset && { inset: Inset }),
+    inset,
   },
 })
 
