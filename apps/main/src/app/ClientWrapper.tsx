@@ -6,7 +6,7 @@ import { WagmiProvider } from 'wagmi'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
-import type { BaseConfig } from '@ui/utils'
+import type { NetworkDef } from '@ui/utils'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
@@ -16,8 +16,8 @@ import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
-const useLayoutStoreResponsive = (window: Window) => {
-  const { document } = window
+const useLayoutStoreResponsive = (window?: Window) => {
+  const { document } = window || {}
   const theme = useUserProfileStore((state) => state.theme)
   const pageWidth = useLayoutStore((state) => state.pageWidth)
   const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
@@ -25,17 +25,18 @@ const useLayoutStoreResponsive = (window: Window) => {
   const setScrollY = useLayoutStore((state) => state.setScrollY)
 
   const handleResizeListener = useCallback(() => {
-    if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
-  }, [setLayoutWidth, window.innerWidth])
+    if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
+  }, [setLayoutWidth, window?.innerWidth])
 
   useEffect(() => {
-    if (!pageWidth) return
+    if (!pageWidth || !document) return
     document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
     document.body.setAttribute('data-theme', theme)
-  }, [document.body, pageWidth, theme])
+  }, [document, pageWidth, theme])
 
   // init app
   useEffect(() => {
+    if (!window || !document) return
     const handleScrollListener = () => setScrollY(window.scrollY)
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
 
@@ -54,7 +55,7 @@ const useLayoutStoreResponsive = (window: Window) => {
   }, [document, handleResizeListener, setPageVisible, setScrollY, window])
 }
 
-function useNetworkFromUrl<ChainId extends number, NetworkConfig extends BaseConfig>(
+function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
   networks: Record<ChainId, NetworkConfig>,
 ) {
   const { push } = useRouter()
@@ -70,7 +71,7 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends BaseCon
   return network
 }
 
-export const ClientWrapper = <ChainId extends number, NetworkConfig extends BaseConfig>({
+export const ClientWrapper = <ChainId extends number, NetworkConfig extends NetworkDef>({
   children,
   networks,
 }: {
@@ -81,7 +82,7 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Base
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
-  useLayoutStoreResponsive(window)
+  useLayoutStoreResponsive(typeof window === 'undefined' ? undefined : window)
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {

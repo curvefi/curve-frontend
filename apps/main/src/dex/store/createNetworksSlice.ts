@@ -1,6 +1,6 @@
 import sortBy from 'lodash/sortBy'
 import type { StoreApi } from 'zustand'
-import { defaultNetworks } from '@/dex/lib/networks'
+import { defaultNetworks, getNetworks } from '@/dex/lib/networks'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
 import type { ChainOption } from '@ui-kit/features/switch-chain'
@@ -17,7 +17,7 @@ type SliceState = {
 
 export type NetworksSlice = {
   networks: SliceState & {
-    setNetworks(networks: Record<number, NetworkConfig>): void
+    fetchNetworks(): Promise<Record<number, NetworkConfig>>
     setNetworkConfigs(curve: CurveApi): void
   }
 }
@@ -71,8 +71,9 @@ const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State
   return {
     [sliceKey]: {
       ...DEFAULT_STATE,
-      setNetworks: async (networks) => {
+      fetchNetworks: async () => {
         try {
+          const networks = await getNetworks()
           setStateByKey('networks', networks)
           setNetworksIdMapper(networks)
           setVisibleNetworksList(networks)

@@ -2,19 +2,18 @@ import { useMemo } from 'react'
 import networks from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useConnection } from '@ui-kit/features/connect-wallet'
-import { isHydrated } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ChainParams } from '@ui-kit/lib/model/query'
 import { useOneWayMarketNames } from './chain-query'
 
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params
   const { data: marketNames, isSuccess, error } = useOneWayMarketNames(params)
-  const { llama: api, connectState } = useConnection()
+  const { llama: api } = useConnection()
   const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
     () =>
       // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
-      isHydrated(connectState) && marketNames && api && chainId == apiChainId
+      marketNames && api && chainId == apiChainId
         ? Object.fromEntries(
             marketNames
               .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])
@@ -25,7 +24,7 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
               ]),
           )
         : undefined,
-    [api, apiChainId, chainId, marketNames, connectState],
+    [api, apiChainId, chainId, marketNames],
   )
   return { data, isSuccess, error }
 }

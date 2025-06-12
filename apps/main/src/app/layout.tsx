@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
-import { getNetworks } from '@/dex/lib/networks'
+import { getNetworkDefs } from '@/dex/lib/networks'
 import baseCss from '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
@@ -67,7 +67,7 @@ const Layout = async ({ children }: { children: ReactNode }) => (
     </head>
     <body>
       <StyledComponentsRegistry>
-        <ClientWrapper networks={await getNetworks()}>{children}</ClientWrapper>
+        <ClientWrapper networks={await getNetworkDefs()}>{children}</ClientWrapper>
       </StyledComponentsRegistry>
     </body>
   </html>

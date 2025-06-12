@@ -1,15 +1,17 @@
 'use client'
 import '@/global-extensions'
 import { useParams } from 'next/navigation'
-import { type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import Page from '@/dex/layout/default'
 import useStore from '@/dex/store/useStore'
-import { type ChainId, type NetworkConfig, type UrlParams } from '@/dex/types/main.types'
+import { type UrlParams } from '@/dex/types/main.types'
 import { useHydration } from '@ui-kit/features/connect-wallet'
 
-export const App = ({ children, networks }: { children: ReactNode; networks: Record<ChainId, NetworkConfig> }) => {
+export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
-  const setNetworks = useStore((state) => state.networks.setNetworks)
+  const [appLoaded, setAppLoaded] = useState(false)
+  const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
+  const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const hydrate = useStore((s) => s.hydrate)
   const hydrated = useHydration('curveApi', hydrate)
@@ -17,7 +19,22 @@ export const App = ({ children, networks }: { children: ReactNode; networks: Rec
   const chainId = networksIdMapper[networkId]
   const network = networks[chainId]
 
-  useEffect(() => setNetworks(networks), [networks, setNetworks])
+  useEffect(() => {
+    const abort = new AbortController()
+    void (async () => {
+      try {
+        await fetchNetworks()
+      } finally {
+        if (!abort.signal.aborted) {
+          setAppLoaded(true)
+        }
+      }
+    })()
+    return () => {
+      setAppLoaded(false)
+      abort.abort()
+    }
+  }, [fetchNetworks])
 
-  return hydrated && <Page network={network}>{children}</Page>
+  return appLoaded && hydrated && <Page network={network}>{children}</Page>
 }

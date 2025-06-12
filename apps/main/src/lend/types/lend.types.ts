@@ -22,7 +22,8 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum> {
+export interface NetworkConfig<TId extends string = string, TChainId extends number = number>
+  extends BaseConfig<TId, TChainId> {
   smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean

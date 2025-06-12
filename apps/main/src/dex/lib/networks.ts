@@ -1,6 +1,8 @@
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
+import { recordValues } from '@curvefi/prices-api/objects.util'
+import type { NetworkDef } from '@ui/utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
@@ -328,7 +330,7 @@ export const defaultNetworks = Object.entries({
     const chainId = Number(key) as ChainId
 
     prev[chainId] = {
-      ...getBaseNetworksConfig<NetworkEnum>(chainId, NETWORK_BASE_CONFIG[chainId as Chain]),
+      ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, NETWORK_BASE_CONFIG[chainId as Chain]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
       isCrvRewardsEnabled: true,
@@ -345,7 +347,7 @@ export async function getNetworks() {
     (prev, { chainId, ...config }) => {
       const isUpgraded = [Chain.Sonic, Chain.Hyperliquid].includes(chainId) // networks upgraded from lite to full
       prev[chainId] = {
-        ...getBaseNetworksConfig<NetworkEnum>(Number(chainId), config),
+        ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), config),
         ...DEFAULT_NETWORK_CONFIG,
         ...(isUpgraded && {
           poolFilters: [
@@ -378,4 +380,27 @@ export async function getNetworks() {
   )
 
   return { ...defaultNetworks, ...liteNetworks }
+}
+
+/**
+ * Strip out functions from the network config so they can be passed from server to client
+ */
+export const getNetworkDefs = async <NetworkEnum extends string, ChainId extends number>() => {
+  const networks = await getNetworks()
+  const entries = recordValues(networks)
+  const newEntries = entries.map((networkConfig) => {
+    const { id, name, chainId, explorerUrl, isTestnet, symbol, rpcUrl, showInSelectNetwork } = networkConfig
+    const def: NetworkDef<NetworkEnum, ChainId> = {
+      id: id as NetworkEnum,
+      name,
+      chainId: chainId as ChainId,
+      explorerUrl,
+      isTestnet,
+      symbol,
+      rpcUrl,
+      showInSelectNetwork,
+    }
+    return [chainId, def] as const
+  })
+  return Object.fromEntries(newEntries) as Record<ChainId, NetworkDef<NetworkEnum, ChainId>>
 }

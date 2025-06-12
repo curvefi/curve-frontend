@@ -2,7 +2,7 @@ import uniq from 'lodash/uniq'
 import memoize from 'memoizee'
 import type { Chain } from 'viem'
 import { defineChain } from 'viem/utils'
-import type { BaseConfig } from '@ui/utils'
+import type { NetworkDef } from '@ui/utils'
 import { wagmiChains } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { injected } from '@wagmi/connectors'
 import { createConfig, fallback, http, type Transport, unstable_connector } from '@wagmi/core'
@@ -26,7 +26,7 @@ const DECIMALS: Record<number, number> = {
  * @return A Wagmi configuration object that includes chains, connectors, and transports.
  */
 export const createWagmiConfig = memoize(
-  <ChainId extends number, NetworkConfig extends BaseConfig>(networks: Record<ChainId, NetworkConfig>) => {
+  <ChainId extends number, NetworkConfig extends NetworkDef>(networks: Record<ChainId, NetworkConfig>) => {
     const chains = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
     const networkEntries = Object.entries(networks).map(([id, config]) => [+id, config]) as [ChainId, NetworkConfig][]
     return createConfig({

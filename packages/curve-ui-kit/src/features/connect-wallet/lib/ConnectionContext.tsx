@@ -7,7 +7,7 @@ import { createCurve, type default as curveApi } from '@curvefi/api'
 import type { IChainId as CurveChainId } from '@curvefi/api/lib/interfaces'
 import { createLlamalend, type default as llamaApi } from '@curvefi/llamalend-api'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { BaseConfig } from '@ui/utils'
+import type { NetworkDef } from '@ui/utils'
 import type { AppName } from '@ui-kit/shared/routes'
 import { type Wallet } from './types'
 import { type WagmiChainId } from './wagmi/wagmi-config'
@@ -50,9 +50,6 @@ export const isLoading = ({ status, stage: connectionStage }: ConnectState, expe
         ? expectedStage.some((s) => connectionStage?.startsWith(s))
         : connectionStage?.startsWith(expectedStage)),
   )
-
-/** During hydration the status is success and the stage is set to hydrate. */
-export const isHydrated = ({ status, stage }: ConnectState) => status === SUCCESS && stage !== HYDRATE
 
 type ConnectionContextValue = {
   connectState: ConnectState
@@ -122,9 +119,9 @@ async function withMutex(fn: () => Promise<any>, key: unknown) {
 }
 
 function useIsDocumentFocused() {
-  const [isFocused, setIsFocused] = useState(document.hasFocus()) // only change chains on focused tab, so they don't fight each other
+  const [isFocused, setIsFocused] = useState(document?.hasFocus()) // only change chains on focused tab, so they don't fight each other
   useEffect(() => {
-    const interval = setInterval(() => setIsFocused(document.hasFocus()), 300)
+    const interval = setInterval(() => setIsFocused(document?.hasFocus()), 300)
     return () => clearInterval(interval)
   }, [])
   return isFocused
@@ -165,7 +162,7 @@ const AppLibs: Record<AppName, LibKey> = {
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
  * todo: Merged with useWallet after wagmi migration. Get rid of apiStore after this is used everywhere.
  */
-export const ConnectionProvider = <TChainId extends number, NetworkConfig extends BaseConfig>({
+export const ConnectionProvider = <TChainId extends number, NetworkConfig extends NetworkDef>({
   network,
   onChainUnavailable,
   app,
@@ -303,7 +300,7 @@ const libRef = {
     return value
   },
   set: <K extends LibKey>(key: K, lib: Libs[K]) => (libRef.current[key] = lib),
-  init: async <K extends LibKey>(key: K, network: BaseConfig, externalProvider?: Eip1193Provider): Promise<Libs[K]> => {
+  init: async <K extends LibKey>(key: K, network: NetworkDef, externalProvider?: Eip1193Provider): Promise<Libs[K]> => {
     const { chainId } = network
     if (key === 'llamaApi') {
       if (!externalProvider) {

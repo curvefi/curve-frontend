@@ -25,7 +25,7 @@ export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type Provider = BrowserProvider
 export type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum> {
+export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
