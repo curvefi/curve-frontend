@@ -111,7 +111,7 @@ const inactiveTabSelector = (hideInactiveBorders: boolean, ...variants: string[]
   variants
     .map(
       (variant) =>
-        `&.${variant}${hideInactiveBorders && `.${HIDE_INACTIVE_BORDERS_CLASS}`} .MuiTab-root:not(.Mui-selected):not(:hover)::after`,
+        `&.${variant}${hideInactiveBorders ? `.${HIDE_INACTIVE_BORDERS_CLASS}` : ''} .MuiTab-root:not(.Mui-selected):not(:hover)::after`,
     )
     .join(', ')
 
@@ -144,14 +144,14 @@ export const defineMuiTabs = ({
       },
 
       // Inactive tabs have a smaller border size
-      [`${inactiveTabSelector(false, overlined, underlined)}`]: {
+      [inactiveTabSelector(false, overlined, underlined)]: {
         height: BORDER_SIZE_INACTIVE,
       },
 
       // Large tabs don't get a hover not over/underline inactive border
       // Also override and hide inactive borders if configured so
-      [`&.${large} .MuiTab-root::after, ${inactiveTabSelector(true, overlined, underlined)}`]: {
-        height: '0px',
+      [`${inactiveTabSelector(true, overlined, underlined)}, &.${large} .MuiTab-root::after`]: {
+        height: '0px !important',
       },
     },
     indicator: {
