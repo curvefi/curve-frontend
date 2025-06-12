@@ -1,6 +1,5 @@
 import isUndefined from 'lodash/isUndefined'
-import meanBy from 'lodash/meanBy'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import PoolInfoData from '@/loan/components/ChartOhlcWrapper'
 import { getHealthMode } from '@/loan/components/DetailInfoHealth'
@@ -10,16 +9,13 @@ import ChartUserLiquidationRange from '@/loan/components/LoanInfoUser/components
 import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
-import { useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
-import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
-import type { Address } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
-import { PositionDetails, type PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
+import { PositionDetailsWrapper } from './components/PositionDetailsWrapper'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
@@ -29,41 +25,14 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const { chartExpanded } = useStore((state) => state.ohlcCharts)
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
-    blockchainId: networks[rChainId].id,
-    contractAddress: llamma?.controller as Address,
-  })
 
   const { userBands, healthFull, healthNotFull, userStatus } = userLoanDetails ?? {}
   const { oraclePriceBand } = loanDetails ?? {}
   const isSoftLiquidation = userStatus?.colorKey === 'soft_liquidation'
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
-
-  const sevenDayAvgRate = useMemo(() => {
-    if (!crvUsdSnapshots) return null
-
-    const sevenDaysAgo = new Date()
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > sevenDaysAgo)
-
-    if (recentSnapshots.length === 0) return null
-
-    return meanBy(recentSnapshots, ({ rate }) => rate) * 100
-  }, [crvUsdSnapshots])
-
-  const collateralValue = useMemo(() => {
-    if (!collateralUsdRate || !userLoanDetails?.userState?.collateral) return null
-    return (
-      Number(userLoanDetails?.userState?.collateral) * Number(collateralUsdRate) +
-      Number(userLoanDetails?.userState?.stablecoin)
-    )
-  }, [userLoanDetails?.userState?.collateral, userLoanDetails?.userState?.stablecoin, collateralUsdRate])
 
   useEffect(() => {
     if (!isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
@@ -84,45 +53,9 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
     }
   }, [oraclePriceBand, healthFull, healthNotFull, userBands])
 
-  const positionDetailsProps: PositionDetailsProps = {
-    app: 'crvusd',
-    health: {
-      value: Number(healthMode.percent),
-      loading: userLoanDetails?.loading ?? true,
-    },
-    borrowRate: {
-      value: sevenDayAvgRate,
-      loading: isSnapshotsLoading || !llamma?.controller,
-    },
-    accruedInterest: {
-      value: null, // this data point doesn't yet exist on API
-      loading: userLoanDetails?.loading ?? true,
-    },
-    liquidationRange: {
-      value: userLoanDetails?.userPrices?.map(Number) ?? null,
-      loading: userLoanDetails?.loading ?? true,
-    },
-    liquidationThreshold: {
-      value: userLoanDetails?.userPrices ? Number(userLoanDetails.userPrices[1]) : null,
-      loading: userLoanDetails?.loading ?? true,
-    },
-    collateralValue: {
-      value: collateralValue,
-      loading: (userLoanDetails?.loading ?? true) || usdRatesLoading,
-    },
-    ltv: {
-      value: collateralValue ? (Number(userLoanDetails?.userState?.debt) / collateralValue) * 100 : null,
-      loading: userLoanDetails?.loading ?? true,
-    },
-    totalDebt: {
-      value: userLoanDetails?.userState?.debt ? Number(userLoanDetails.userState.debt) : null,
-      loading: userLoanDetails?.loading ?? true,
-    },
-  }
-
   return (
     <Wrapper>
-      <PositionDetails {...positionDetailsProps} />
+      <PositionDetailsWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} health={healthMode.percent} />
       <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
         <UserInfos
           llammaId={llammaId}
