@@ -27,7 +27,7 @@ export enum Chain {
   Corn = 21000000,
   Ink = 57073,
   Taiko = 167000,
-  Plume = 161221135,
+  Plume = 98866,
   MegaEth = 6342,
   Strata = 8091,
   ExpChain = 18880,
