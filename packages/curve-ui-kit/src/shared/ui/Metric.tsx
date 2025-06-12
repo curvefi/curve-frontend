@@ -98,10 +98,21 @@ type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate
   unit: UnitOptions | undefined
   fontVariant: TypographyVariantKey
   fontVariantUnit: TypographyVariantKey
-  copyValue: () => void
+  copyValue: (valueToCopy: number | number[]) => void
 }
 
-function runFormatter(value: number, formatter: (value: number) => string, abbreviate: boolean, symbol?: string) {
+function runFormatter(
+  value: number | number[],
+  formatter: (value: number) => string,
+  abbreviate: boolean,
+  symbol?: string,
+): string {
+  if (Array.isArray(value)) {
+    const from = runFormatter(value[0], formatter, abbreviate, symbol)
+    const to = runFormatter(value[1], formatter, abbreviate, symbol)
+    return `${from} - ${to}`
+  }
+
   if (symbol === '$' && value > MAX_USD_VALUE) {
     console.warn(`USD value is too large: ${value}`)
     return `?`
@@ -119,10 +130,15 @@ const MetricValue = ({
   fontVariantUnit,
   copyValue,
 }: MetricValueProps) => {
-  const numberValue: number | null = useMemo(() => {
+  const numberValue: number | number[] | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
       return value
     }
+
+    if (Array.isArray(value) && value.every((v) => typeof v === 'number' && isFinite(v))) {
+      return value
+    }
+
     return null
   }, [value])
 
@@ -131,8 +147,14 @@ const MetricValue = ({
       <Tooltip
         arrow
         placement="bottom"
-        title={numberValue !== null ? numberValue.toLocaleString() : t`N/A`}
-        onClick={copyValue}
+        title={
+          numberValue !== null
+            ? Array.isArray(numberValue)
+              ? numberValue.join(' - ')
+              : numberValue.toLocaleString()
+            : t`N/A`
+        }
+        onClick={() => numberValue && copyValue(numberValue)}
         sx={{ cursor: 'pointer' }}
       >
         <Stack direction="row" alignItems="baseline">
@@ -149,7 +171,7 @@ const MetricValue = ({
             )}
           </Typography>
 
-          {numberValue !== null && abbreviate && (
+          {typeof numberValue === 'number' && abbreviate && (
             <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
               {scaleSuffix(numberValue)}
             </Typography>
@@ -174,7 +196,7 @@ const MetricValue = ({
 
 type Props = {
   /** The actual metric value to display */
-  value: number | '' | false | undefined | null
+  value: number | number[] | '' | false | undefined | null
   /** A unit can be a currency symbol or percentage, prefix or suffix */
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
@@ -237,9 +259,9 @@ export const Metric = ({
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
-  const copyValue = () => {
-    if (value) {
-      void copyToClipboard(value.toString())
+  const copyValue = (valueToCopy: number | number[]) => {
+    if (valueToCopy) {
+      void copyToClipboard(Array.isArray(valueToCopy) ? valueToCopy.join(' - ') : valueToCopy.toString())
     }
     setOpenCopyAlert(true)
   }
