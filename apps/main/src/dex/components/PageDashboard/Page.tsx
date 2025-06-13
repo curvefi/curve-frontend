@@ -10,7 +10,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
 export const PageDashboard = (props: NetworkUrlParams) => {
-  const { curve = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const rChainId = useChainId(props.network)
   const { provider, connect: connectWallet } = useWallet()
   return (
@@ -30,7 +30,7 @@ export const PageDashboard = (props: NetworkUrlParams) => {
       ) : (
         <Container>
           {rChainId ? (
-            <Dashboard curve={curve} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
+            <Dashboard curve={curveApi} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
           ) : (
             <SpinnerWrapper minHeight="50vh">
               <Spinner />

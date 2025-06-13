@@ -26,7 +26,7 @@ type PageProps = NetworkUrlParams
 export const PagePoolList = (params: PageProps) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { curve = null } = useConnection()
+  const { curveApi = null } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const rChainId = useChainId(params.network)
@@ -85,7 +85,7 @@ export const PagePoolList = (params: PageProps) => {
 
       // validate filter key
       const foundFilterKey = poolFilters.find((f) => f === paramFilterKey)
-      if ((paramFilterKey === 'user' && !!curve && !curve?.signerAddress) || !foundFilterKey) {
+      if ((paramFilterKey === 'user' && !!curveApi && !curveApi?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
           sortBy: paramSortBy as SortKey,
@@ -102,7 +102,7 @@ export const PagePoolList = (params: PageProps) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
+  }, [curveApi?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
 
   return (
     <>
@@ -110,7 +110,7 @@ export const PagePoolList = (params: PageProps) => {
         {rChainId && parsedSearchParams && (
           <PoolList
             rChainId={rChainId}
-            curve={curve}
+            curve={curveApi}
             params={params}
             isLite={isLite}
             tableLabels={TABLE_LABEL}

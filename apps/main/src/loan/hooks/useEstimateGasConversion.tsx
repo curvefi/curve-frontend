@@ -7,7 +7,7 @@ import { useConnection } from '@ui-kit/features/connect-wallet'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number) => {
-  const { llama: curve } = useConnection()
+  const { llamaApi: curve } = useConnection()
   const chainId = curve?.chainId as ChainId | undefined
   const chainTokenUsdRate = useStore().usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault

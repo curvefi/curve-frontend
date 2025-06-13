@@ -46,14 +46,14 @@ interface ChipTokenProps extends AriaButtonProps {
 }
 
 const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
-  const { curve } = useConnection()
+  const { curveApi } = useConnection()
   const usdRate = useStore((state) => state.usdRates.usdRatesMapper[tokenAddress])
   const fetchUsdRateByToken = useStore((state) => state.usdRates.fetchUsdRateByToken)
   const parsedUsdRate = formatNumberUsdRate(usdRate)
 
   const handleMouseEnter = (foundUsdRate?: string) => {
-    if (!foundUsdRate && curve) {
-      void fetchUsdRateByToken(curve, tokenAddress)
+    if (!foundUsdRate && curveApi) {
+      void fetchUsdRateByToken(curveApi, tokenAddress)
     }
   }
 

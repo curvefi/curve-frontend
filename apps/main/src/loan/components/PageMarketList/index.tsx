@@ -24,7 +24,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
   const titleMapper = useTitleMapper()
 
   const activeKey = getActiveKey(rChainId, searchParams)
-  const { llama: curve = null } = useConnection()
+  const { llamaApi: curve = null } = useConnection()
   const prevActiveKey = useStore((state) => state.collateralList.activeKey)
   const formStatus = useStore((state) => state.collateralList.formStatus)
   const initialLoaded = useStore((state) => state.collateralList.initialLoaded)

@@ -5,9 +5,9 @@ import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfac
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
-import type { LlamaApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
-export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+export type { Wallet } from '@ui-kit/features/connect-wallet'
 
 export type Api = LlamaApi
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'

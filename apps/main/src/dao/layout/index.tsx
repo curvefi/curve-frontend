@@ -16,13 +16,13 @@ import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const useAutoRefresh = () => {
-  const { curve } = useConnection()
+  const { curveApi } = useConnection()
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   usePageVisibleInterval(
-    () => Promise.all([curve && fetchAllStoredUsdRates(curve), getGauges(), getGaugesData()]),
+    () => Promise.all([curveApi && fetchAllStoredUsdRates(curveApi), getGauges(), getGaugesData()]),
     REFRESH_INTERVAL['5m'],
     isPageVisible,
   )

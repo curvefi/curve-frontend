@@ -25,7 +25,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const { llama: lendApi = null } = useConnection()
+  const { llamaApi: lendApi = null } = useConnection()
   const chainId = lendApi?.chainId
   const { address, isConnecting } = useAccount()
 

@@ -23,7 +23,7 @@ type HeaderProps = {
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { curve = {} } = useConnection()
+  const { curveApi = {} } = useConnection()
   const rChainId = useChainId(networkId)
   const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
@@ -34,8 +34,8 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const { data: tvlTotal } = useAppStatsTvl(curve)
-  const { data: volumeTotal } = useAppStatsVolume(curve)
+  const { data: tvlTotal } = useAppStatsTvl(curveApi)
+  const { data: volumeTotal } = useAppStatsVolume(curveApi)
 
   const network = networks[rChainId]
 

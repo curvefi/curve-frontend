@@ -4,8 +4,8 @@ import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-ki
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
-  const { connectState, curve } = useConnection()
-  const chainId = curve?.chainId
+  const { connectState, curveApi } = useConnection()
+  const chainId = curveApi?.chainId
   const { provider, connect } = useWallet()
 
   if (!provider)

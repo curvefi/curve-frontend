@@ -6,7 +6,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 
 const TableCellMarketsTotalDebt = () => {
-  const chainId = useConnection().llama?.chainId as ChainId
+  const chainId = useConnection().llamaApi?.chainId as ChainId
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}

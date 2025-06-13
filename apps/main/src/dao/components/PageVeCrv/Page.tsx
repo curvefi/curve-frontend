@@ -18,13 +18,13 @@ import { WrongNetwork } from './WrongNetwork'
 
 export const PageVeCrv = (params: VeCrvUrlParams) => {
   const [rFormType] = params.formType
-  const { curve = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const rChainId = networksIdMapper[params.network]
   const isLoadingCurve = isLoading(connectState)
 
   const { address: userAddress } = useAccount()
 
-  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curve?.chainId, userAddress })
+  const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
   const resetState = useStore((state) => state.lockedCrv.resetState)
 
   // onMount
@@ -47,7 +47,7 @@ export const PageVeCrv = (params: VeCrvUrlParams) => {
           <Content grid gridRowGap={3} padding>
             {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
               <FormCrvLocker
-                curve={curve}
+                curve={curveApi}
                 rChainId={rChainId}
                 rFormType={rFormType as FormType}
                 vecrvInfo={vecrvInfo}

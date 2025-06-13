@@ -10,7 +10,7 @@ import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 
 export const PagePool = (props: PoolUrlParams) => {
   const { push } = useRouter()
-  const { curve = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const { pool: rPoolId, formType: [rFormType] = [], network: networkId } = props
   const rChainId = useChainId(networkId)
 
@@ -32,22 +32,22 @@ export const PagePool = (props: PoolUrlParams) => {
       push(reRoutePathname)
       return
     }
-    if (!isLoading(connectState) && curve?.chainId === rChainId && haveAllPools && !poolData) {
+    if (!isLoading(connectState) && curveApi?.chainId === rChainId && haveAllPools && !poolData) {
       void (async () => {
-        const foundPoolData = await fetchNewPool(curve, rPoolId)
+        const foundPoolData = await fetchNewPool(curveApi, rPoolId)
         if (!foundPoolData) {
           push(reRoutePathname)
         }
       })()
     }
-  }, [curve, fetchNewPool, haveAllPools, network, connectState, props, poolData, push, rChainId])
+  }, [curveApi, fetchNewPool, haveAllPools, network, connectState, props, poolData, push, rChainId])
 
   return (
     rFormType &&
     poolDataCacheOrApi?.pool?.id === rPoolId &&
     hasDepositAndStake != null && (
       <Transfer
-        curve={curve}
+        curve={curveApi}
         params={props}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}

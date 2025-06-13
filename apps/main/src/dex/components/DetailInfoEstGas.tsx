@@ -31,7 +31,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const { curve } = useConnection()
+  const { curveApi } = useConnection()
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
@@ -50,7 +50,7 @@ const DetailInfoEstGas = ({
         typeof estimatedGas === 'number'
       ) {
         gasCostInWei = gasInfo.l2GasPriceWei * estimatedGas
-      } else if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curve) {
+      } else if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curveApi) {
         if (gasInfo?.l2GasPriceWei && gasInfo?.l1GasPriceWei) {
           const [l2GasUsedWei, l1GasUsedWei] = estimatedGas
           const l2GasCostWei = l2GasUsedWei * gasInfo.l2GasPriceWei
@@ -74,7 +74,7 @@ const DetailInfoEstGas = ({
     estimatedGas,
     basePlusPriority,
     chainId,
-    curve,
+    curveApi,
     chainTokenUsdRate,
     gasInfo?.l2GasPriceWei,
     gasInfo?.l1GasPriceWei,

@@ -19,7 +19,7 @@ import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
-  const { curve = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const chainId = useChainId(props.network)
   const isLite = useStore((state) => state.networks.networks[chainId]?.isLite ?? false)
 
@@ -119,7 +119,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
               <DeployGaugeButton
                 disabled={!validateDeployButton}
                 chainId={chainId}
-                curve={curve}
+                curve={curveApi}
                 pageLoaded={!isLoading(connectState)}
               />
             </ButtonWrapper>

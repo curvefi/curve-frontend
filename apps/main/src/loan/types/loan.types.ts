@@ -7,8 +7,7 @@ import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 
-export type { LlamaApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
-export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+export type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
 

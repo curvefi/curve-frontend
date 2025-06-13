@@ -8,14 +8,14 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
 export const PageCreatePool = (_: NetworkUrlParams) => {
-  const { curve = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet } = useWallet()
   const { address } = useAccount()
 
-  if (address && curve) {
+  if (address && curveApi) {
     return (
       <Container>
-        <PoolCreation curve={curve} />
+        <PoolCreation curve={curveApi} />
       </Container>
     )
   }

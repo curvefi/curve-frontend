@@ -32,7 +32,7 @@ const Page = (params: NetworkUrlParams) => {
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { llama: api = null, connectState } = useConnection()
+  const { llamaApi: api = null, connectState } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()
 

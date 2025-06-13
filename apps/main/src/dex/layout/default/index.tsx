@@ -17,7 +17,7 @@ import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const useAutoRefresh = (network: NetworkConfig) => {
-  const { curve } = useConnection()
+  const { curveApi } = useConnection()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchPools = useStore((state) => state.pools.fetchPools)
@@ -49,13 +49,13 @@ const useAutoRefresh = (network: NetworkConfig) => {
 
   usePageVisibleInterval(
     () => {
-      if (curve) {
-        void fetchGasInfo(curve)
-        void fetchAllStoredUsdRates(curve)
-        void fetchPoolsVolumeTvl(curve)
+      if (curveApi) {
+        void fetchGasInfo(curveApi)
+        void fetchAllStoredUsdRates(curveApi)
+        void fetchPoolsVolumeTvl(curveApi)
 
-        if (curve.signerAddress) {
-          void fetchAllStoredBalances(curve)
+        if (curveApi.signerAddress) {
+          void fetchAllStoredBalances(curveApi)
         }
       }
     },
@@ -65,8 +65,8 @@ const useAutoRefresh = (network: NetworkConfig) => {
 
   usePageVisibleInterval(
     () => {
-      if (curve) {
-        void refetchPools(curve)
+      if (curveApi) {
+        void refetchPools(curveApi)
       }
     },
     REFRESH_INTERVAL['11m'],

@@ -33,7 +33,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
-  const { llama: curve = null } = useConnection()
+  const { llamaApi: curve = null } = useConnection()
 
   const setNavChange = (key: SubNavItem['key']) => {
     setStakingModule(key as DepositWithdrawModule)

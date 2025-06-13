@@ -4,8 +4,7 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import type { Address } from '@ui-kit/utils'
 
-export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
-export type { CurveApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = number
 export type NetworkEnum = INetworkName

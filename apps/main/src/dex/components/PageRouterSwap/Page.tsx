@@ -21,7 +21,7 @@ import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 export const PageRouterSwap = (props: NetworkUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { curve = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
 
@@ -144,7 +144,7 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
       <Box grid gridRowGap={3} padding>
         {rChainId && (
           <QuickSwap
-            curve={curve}
+            curve={curveApi}
             pageLoaded={loaded}
             params={props}
             searchedParams={searchedParams}

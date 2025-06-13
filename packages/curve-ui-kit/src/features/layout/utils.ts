@@ -18,10 +18,11 @@ export function getPageWidthClassName(pageWidth: number): PageWidthClassName {
 }
 
 export function useIsDocumentFocused() {
-  const [isFocused, setIsFocused] = useState(document.hasFocus()) // only change chains on focused tab, so they don't fight each other
+  const document = typeof window === 'undefined' ? undefined : window.document
+  const [isFocused, setIsFocused] = useState(document?.hasFocus()) // only change chains on focused tab, so they don't fight each other
   useEffect(() => {
-    const interval = setInterval(() => setIsFocused(document.hasFocus()), 300)
+    const interval = setInterval(() => setIsFocused(document?.hasFocus()), 300)
     return () => clearInterval(interval)
-  }, [])
+  }, [document])
   return isFocused
 }

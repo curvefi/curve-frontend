@@ -39,7 +39,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
-  const { llama: api = null, connectState } = useConnection()
+  const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''

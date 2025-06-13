@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 export const PegKeeperStatistics = () => {
-  const chainId = useConnection().llama?.chainId as ChainId | undefined
+  const chainId = useConnection().llamaApi?.chainId as ChainId | undefined
   const { data: crvusdTotalSupply, isLoading } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt } = crvusdTotalSupply ?? {}

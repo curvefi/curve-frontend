@@ -17,7 +17,7 @@ const PageTitleBorrowSupplyLinks = ({
   activeKey: 'borrow' | 'supply'
   market: OneWayMarketTemplate
 }) => {
-  const { llama: api = null } = useConnection()
+  const { llamaApi: api = null } = useConnection()
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)

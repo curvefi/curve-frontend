@@ -8,7 +8,7 @@ import { useOneWayMarketNames } from './chain-query'
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params
   const { data: marketNames, isSuccess, error } = useOneWayMarketNames(params)
-  const { llama: api } = useConnection()
+  const { llamaApi: api } = useConnection()
   const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
     () =>

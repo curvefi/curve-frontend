@@ -6,8 +6,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 
-export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
-export type { CurveApi } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type Balances = IDict<string>
 export type Balance = string | IDict<string>

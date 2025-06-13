@@ -5,7 +5,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 import Page from '@/dex/layout/default'
 import useStore from '@/dex/store/useStore'
 import { type UrlParams } from '@/dex/types/main.types'
-import { useHydration } from '@ui-kit/features/connect-wallet'
+import { useHydration } from '@ui-kit/hooks/useHydration'
 
 export const App = ({ children }: { children: ReactNode }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
@@ -14,7 +14,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const hydrate = useStore((s) => s.hydrate)
-  const hydrated = useHydration('curveApi', hydrate)
+  const hydrated = useHydration('curveApi', hydrate, chainId)
 
   const chainId = networksIdMapper[networkId]
   const network = networks[chainId]
