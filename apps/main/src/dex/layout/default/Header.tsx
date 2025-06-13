@@ -8,6 +8,7 @@ import { type CurveApi } from '@/dex/types/main.types'
 import { useChainId } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
@@ -25,13 +26,13 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const mainNavRef = useRef<HTMLDivElement>(null)
   const { lib: curve = {} } = useConnection<CurveApi>()
   const rChainId = useChainId(networkId)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-  useLayoutHeight(mainNavRef, 'mainNav', updateLayoutHeight)
+  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
+  useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
 
   const hasRouter = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasRouter)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
-  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
   const { data: tvlTotal } = useAppStatsTvl(curve)

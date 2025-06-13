@@ -9,7 +9,6 @@ import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/lend/store/c
 import createChartBandsSlice, { ChartBandsSlice } from '@/lend/store/createChartBandsStore'
 import createGasSlice, { GasSlice } from '@/lend/store/createGasSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/lend/store/createIntegrationsSlice'
-import createLayoutSlice, { AppLayoutSlice } from '@/lend/store/createLayoutSlice'
 import createLoanBorrowMoreSlice, { LoanBorrowMoreSlice } from '@/lend/store/createLoanBorrowMoreSlice'
 import createLoanCollateralAddSlice, { LoanCollateralAddSlice } from '@/lend/store/createLoanCollateralAddSlice'
 import createLoanCollateralRemoveSlice, {
@@ -30,7 +29,6 @@ import createVaultWithdrawRedeemSlice, { VaultWithdrawRedeemSlice } from '@/lend
 
 export type State = CacheSlice &
   AppSlice &
-  AppLayoutSlice &
   GasSlice &
   IntegrationsSlice &
   ChartBandsSlice &
@@ -54,7 +52,6 @@ export type State = CacheSlice &
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
-  ...createLayoutSlice(set, get),
   ...createGasSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),

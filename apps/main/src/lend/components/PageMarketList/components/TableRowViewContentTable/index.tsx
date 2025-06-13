@@ -2,11 +2,11 @@ import styled from 'styled-components'
 import TableHead from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableHead'
 import TableRowContainer from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
 import type { TableProps } from '@/lend/components/PageMarketList/types'
-import useStore from '@/lend/store/useStore'
 import Box from '@ui/Box'
 import Table, { Tbody, Th } from '@ui/Table'
 import TextCaption from '@ui/TextCaption'
 import { breakpoints } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 
 const MarketListTable = ({
@@ -21,7 +21,7 @@ const MarketListTable = ({
   const { searchParams, titleMapper } = pageProps
   const { filterTypeKey, sortBy } = searchParams
 
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
 
   return (
     <StyledTable className={className} $haveSortBy={!!sortBy}>

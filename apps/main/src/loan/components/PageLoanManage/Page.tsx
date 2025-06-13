@@ -33,6 +33,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -47,9 +48,9 @@ const Page = (params: CollateralUrlParams) => {
   const rChainId = useChainId(params)
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
-  const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const navHeight = useStore((state) => state.layout.navHeight)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const navHeight = useLayoutStore((state) => state.navHeight)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId])
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)

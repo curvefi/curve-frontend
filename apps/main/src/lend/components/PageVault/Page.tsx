@@ -24,6 +24,7 @@ import {
 import Box from '@ui/Box'
 import Tabs, { Tab } from '@ui/Tab'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -35,8 +36,8 @@ const Page = (params: MarketUrlParams) => {
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
 
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)

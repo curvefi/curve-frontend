@@ -15,6 +15,7 @@ import {
 import { useChainId } from '@/loan/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
@@ -30,7 +31,7 @@ type HeaderProps = {
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const params = useParams() as UrlParams
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
 
   const rChainId = useChainId(params)
@@ -40,7 +41,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
-  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
 
   const { data: dailyVolume } = useAppStatsDailyVolume({})
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId: lib?.chainId })

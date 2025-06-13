@@ -42,6 +42,7 @@ import { ExternalLink } from '@ui/Link'
 import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -72,9 +73,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const isMdUp = useStore((state) => state.isMdUp)
-  const layoutHeight = useStore((state) => state.layoutHeight)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const layoutHeight = useLayoutStore((state) => state.height)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -117,7 +118,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     return pool.isCrypto ? '0.1' : '0.03'
   }, [storeMaxSlippage, pool])
 
-  const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.secondaryNav, [layoutHeight])
+  const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.globalAlert, [layoutHeight])
 
   const fetchData = useCallback(() => {
     if (isPageVisible && curve && poolData) {

@@ -16,6 +16,7 @@ import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 
 type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
@@ -30,7 +31,7 @@ const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const isMdUp = useStore((state) => state.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const searchedWalletAddresses = useStore((state) => state.dashboard.searchedWalletAddresses)
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
