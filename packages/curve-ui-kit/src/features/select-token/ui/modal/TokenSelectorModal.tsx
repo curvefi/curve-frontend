@@ -36,7 +36,7 @@ export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, .
       title={isManageListOpen ? t`Manage Token List` : t`Select Token`}
       titleAction={
         isManageListOpen && (
-          <IconButton onClick={closeManageList}>
+          <IconButton onClick={closeManageList} size="extraSmall">
             <ArrowBackIcon />
           </IconButton>
         )
