@@ -10,6 +10,7 @@ import Icon from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -44,7 +45,7 @@ const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) 
           </Typography>
           <Typography variant="bodyMRegular">
             {t`We recommend using Curve's`}{' '}
-            <Link href={getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}>QuickSwap</Link>
+            <RouterLink href={getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}>QuickSwap</RouterLink>
             {t`, or alternatively an aggregator like`}{' '}
             <Link href="https://swap.cow.fi/#/1/swap/WETH/scrvUSD">Cowswap</Link>.
           </Typography>

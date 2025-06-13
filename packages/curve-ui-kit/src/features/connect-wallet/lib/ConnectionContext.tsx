@@ -22,6 +22,7 @@ type ConnectionContextValue = {
   error?: unknown
   wallet?: Wallet
   provider?: BrowserProvider
+  network?: NetworkDef
 }
 
 const ConnectionContext = createContext<ConnectionContextValue>({
@@ -122,6 +123,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
     <ConnectionContext.Provider
       value={{
         connectState,
+        network,
         ...(wallet && { wallet }),
         ...(provider && { provider }),
         ...(curveApi && { curveApi }),
