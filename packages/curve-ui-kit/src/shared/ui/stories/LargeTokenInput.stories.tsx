@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { LargeTokenInput } from '../LargeTokenInput'
+import { LargeTokenInput, type LargeTokenInputRef } from '../LargeTokenInput'
 
 const TOKEN_OPTIONS = [
   { name: 'Inferium', symbol: 'ETH', balance: 1000 },
@@ -56,6 +56,8 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
     symbol: TOKEN_OPTIONS[0].symbol,
   })
 
+  const inputRef = useRef<LargeTokenInputRef>(null)
+
   const maxBalance =
     props.maxBalance === undefined
       ? undefined
@@ -70,8 +72,16 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
   return (
     <LargeTokenInput
       {...props}
+      ref={inputRef}
       maxBalance={maxBalance}
-      tokenSelector={<TokenSelector onTokenChange={setTokenInfo} />}
+      tokenSelector={
+        <TokenSelector
+          onTokenChange={(newToken) => {
+            setTokenInfo(newToken)
+            inputRef.current?.resetBalance()
+          }}
+        />
+      }
     />
   )
 }

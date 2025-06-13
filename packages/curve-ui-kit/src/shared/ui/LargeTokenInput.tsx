@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
@@ -88,6 +88,10 @@ const BalanceTextField = ({ balance, label, isError, onChange }: BalanceTextFiel
   />
 )
 
+export interface LargeTokenInputRef {
+  resetBalance: () => void
+}
+
 /**
  * Configuration for maximum balance display and input.
  * When provided, enables percentage-based input via the slider.
@@ -108,6 +112,8 @@ type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 
 }
 
 type Props = {
+  ref?: React.Ref<LargeTokenInputRef>
+
   /**
    * The token selector UI element to be rendered.
    *
@@ -162,6 +168,7 @@ type Props = {
 }
 
 export const LargeTokenInput = ({
+  ref,
   tokenSelector,
   maxBalance,
   message,
@@ -226,6 +233,15 @@ export const LargeTokenInput = ({
      */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxBalance])
+
+  const resetBalance = useCallback(() => {
+    setPercentage(0)
+    setBalance(0)
+    onBalance(0)
+  }, [onBalance])
+
+  // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
+  useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
   return (
     <Stack
