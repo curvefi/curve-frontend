@@ -5,20 +5,20 @@ import { fn } from '@storybook/test'
 import { TradingSlider } from '../TradingSlider'
 
 const TradingSliderComponent = (props: React.ComponentProps<typeof TradingSlider>) => {
-  const [percentage, setPercentage] = useState<number>(props.percentage || 50)
+  const [percentage, setPercentage] = useState<number | undefined>(props.percentage || 50)
 
   return (
     <Box sx={{ width: '400px' }}>
       <TradingSlider
         {...props}
         percentage={percentage}
-        onPercentageChange={(newPercentage) => {
+        onChange={(newPercentage) => {
           setPercentage(newPercentage)
-          props.onPercentageChange?.(newPercentage)
+          props.onCommit?.(newPercentage)
         }}
-        onPercentageCommitted={(newPercentage) => {
+        onCommit={(newPercentage) => {
           setPercentage(newPercentage)
-          props.onPercentageCommitted?.(newPercentage)
+          props.onCommit?.(newPercentage)
         }}
       />
     </Box>
@@ -42,10 +42,10 @@ const meta: Meta<typeof TradingSlider> = {
       options: ['left', 'center', 'right'],
       description: 'Text alignment for the input field',
     },
-    onPercentageChange: {
+    onChange: {
       description: 'Callback when percentage changes on the slider',
     },
-    onPercentageCommitted: {
+    onCommit: {
       description: 'Callback when percentage changes by releasing the slider or entering a number',
     },
   },
@@ -53,8 +53,8 @@ const meta: Meta<typeof TradingSlider> = {
     percentage: 50,
     step: 1,
     textAlign: 'left',
-    onPercentageChange: fn(),
-    onPercentageCommitted: fn(),
+    onChange: fn(),
+    onCommit: fn(),
   },
 }
 
