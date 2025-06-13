@@ -14,10 +14,10 @@ export const App = ({ children }: { children: ReactNode }) => {
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const hydrate = useStore((s) => s.hydrate)
-  const hydrated = useHydration('curveApi', hydrate, chainId)
 
   const chainId = networksIdMapper[networkId]
   const network = networks[chainId]
+  const hydrated = useHydration('curveApi', hydrate, chainId)
 
   useEffect(() => {
     const abort = new AbortController()

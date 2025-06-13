@@ -2,8 +2,17 @@ import type { Eip1193Provider } from 'ethers/lib.esm'
 import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
 import type { NetworkDef } from '@ui/utils'
-import type { Wallet } from '@ui-kit/features/connect-wallet'
-import type { LibKey, Libs } from '@ui-kit/features/connect-wallet/lib/types'
+import type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
+import type {
+  CurveChainId,
+  CurveNetworkId,
+  LibChainId,
+  LibKey,
+  LibNetworkId,
+  Libs,
+  LlamaNetworkId,
+  LlamaChainId,
+} from '@ui-kit/features/connect-wallet/lib/types'
 import { AppName } from '@ui-kit/shared/routes'
 
 export const AppLibs: Record<AppName, LibKey> = {
@@ -25,24 +34,36 @@ export const isWalletMatching = <TChainId extends number>(
   chainId: TChainId | undefined,
 ) => compareSignerAddress(wallet, lib) && lib?.chainId == chainId
 
-export async function initCurveApi(network: NetworkDef, externalProvider: Eip1193Provider | undefined) {
-  const { chainId } = network
-  const curveApi = createCurve()
-  if (externalProvider) {
-    await curveApi.init('Web3', { network, externalProvider }, { chainId })
-  } else {
-    await curveApi.init('NoRPC', 'NoRPC', { chainId })
-  }
-  return curveApi
-}
-
-export async function initLlamaApi(network: NetworkDef, externalProvider: Eip1193Provider | undefined) {
-  if (!externalProvider) {
-    return
-  }
-  const api = createLlamalend()
-  await api.init('Web3', { network, externalProvider }, { chainId: network.chainId })
-  return api
+const initLib: {
+  [K in LibKey]: (
+    network: NetworkDef<LibNetworkId[K], LibChainId[K]>,
+    externalProvider?: Eip1193Provider,
+  ) => Promise<Libs[K]>
+} = {
+  llamaApi: async (
+    network: NetworkDef<LlamaNetworkId, LlamaChainId>,
+    externalProvider: Eip1193Provider | undefined,
+  ) => {
+    if (!externalProvider) {
+      return
+    }
+    const api = createLlamalend()
+    await api.init('Web3', { network, externalProvider }, { chainId: network.chainId })
+    return api as LlamaApi
+  },
+  curveApi: async (
+    network: NetworkDef<CurveNetworkId, CurveChainId>,
+    externalProvider: Eip1193Provider | undefined,
+  ) => {
+    const { chainId } = network
+    const curveApi = createCurve()
+    if (externalProvider) {
+      await curveApi.init('Web3', { network, externalProvider }, { chainId })
+    } else {
+      await curveApi.init('NoRPC', 'NoRPC', { chainId })
+    }
+    return curveApi
+  },
 }
 
 /**
@@ -68,10 +89,11 @@ export const globalLibs = {
     return value
   },
   set: <K extends LibKey>(key: K, lib: Libs[K]) => (globalLibs.current[key] = lib),
-  init: async <K extends LibKey>(key: K, network: NetworkDef, provider?: Eip1193Provider): Promise<Libs[K]> =>
-    key === 'llamaApi'
-      ? ((await initLlamaApi(network, provider)) as Libs[K])
-      : ((await initCurveApi(network, provider)) as Libs[K]),
+  init: async <K extends LibKey>(
+    key: K,
+    network: NetworkDef<LibNetworkId[K], LibChainId[K]>,
+    provider?: Eip1193Provider,
+  ): Promise<Libs[K]> => await initLib[key](network, provider),
 }
 
 export const getLib = globalLibs.get

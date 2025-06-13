@@ -1,9 +1,9 @@
 import type { Eip1193Provider } from 'ethers'
 import { Address } from 'viem'
 import { type default as curveApi } from '@curvefi/api'
-import type { IChainId as CurveChainId } from '@curvefi/api/lib/interfaces'
+import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import { type default as llamaApi } from '@curvefi/llamalend-api'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 
 export type Wallet<TChainId extends number = number> = {
   readonly provider?: Eip1193Provider
@@ -20,9 +20,21 @@ export enum ConnectState {
 export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: string }
 export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress?: string }
 
+export type LibChainId = {
+  curveApi: CurveChainId
+  llamaApi: LlamaChainId
+}
+
+export type LibNetworkId = {
+  curveApi: CurveNetworkId
+  llamaApi: LlamaNetworkId
+}
+
 export type Libs = {
   llamaApi?: LlamaApi
   curveApi?: CurveApi
 }
 
 export type LibKey = keyof Libs
+
+export { CurveChainId, LlamaChainId, CurveNetworkId, LlamaNetworkId }
