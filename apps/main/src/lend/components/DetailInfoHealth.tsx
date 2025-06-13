@@ -22,6 +22,7 @@ const DetailInfoHealth = ({
   bands,
   formType,
   healthFull,
+  healthNotFull,
   healthMode,
   isPayoff,
   isManage,
@@ -53,7 +54,7 @@ const DetailInfoHealth = ({
 
   // new health mode
   useEffect(() => {
-    if (typeof oraclePriceBand === 'number' && healthFull) {
+    if (typeof oraclePriceBand === 'number' && healthFull && healthNotFull) {
       setHealthMode(
         getHealthMode(
           market,
@@ -62,6 +63,7 @@ const DetailInfoHealth = ({
           bands,
           formType,
           healthFull,
+          healthNotFull,
           currentHealthModeColorKey ?? '',
           newHealthModeColorKey ?? '',
         ),
@@ -76,6 +78,7 @@ const DetailInfoHealth = ({
     currentHealthModeColorKey,
     formType,
     healthFull,
+    healthNotFull,
     newHealthModeColorKey,
     market,
     setHealthMode,
@@ -84,9 +87,19 @@ const DetailInfoHealth = ({
   // current health mode
   useEffect(() => {
     if (typeof oraclePriceBand === 'number' && userLoanDetails) {
-      const { healthFull, bands } = userLoanDetails
+      const { healthFull, healthNotFull, bands } = userLoanDetails
       setCurrentHealthMode(
-        getHealthMode(market, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey),
+        getHealthMode(
+          market,
+          oraclePriceBand,
+          amount,
+          bands,
+          formType,
+          healthFull,
+          healthNotFull,
+          '',
+          newHealthModeColorKey,
+        ),
       )
     }
   }, [oraclePriceBand, amount, formType, newHealthModeColorKey, market, userLoanDetails])
@@ -157,11 +170,14 @@ export function getHealthMode(
   bands: [number, number] | number[],
   formType: FormType,
   healthFull: string,
+  healthNotFull: string,
   currColorKey: string,
   newColorKey: string,
 ) {
+  const health = +healthNotFull < 0 ? healthNotFull : healthFull
+
   let healthMode: HealthMode = {
-    percent: healthFull,
+    percent: health,
     colorKey: 'healthy',
     icon: <Icon name="FavoriteFilled" size={20} />,
     message: null,
@@ -189,7 +205,7 @@ export function getHealthMode(
     }
 
     healthMode = {
-      percent: healthFull,
+      percent: health,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,

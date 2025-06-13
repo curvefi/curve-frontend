@@ -6,7 +6,9 @@ const CellLoanUserHealth = ({ userActiveKey }: { userActiveKey: string }) => {
   const userLoanHealthResp = useStore((state) => state.user.loansHealthsMapper[userActiveKey])
 
   const { loanExists, error: loanExistsError } = loanExistsResp ?? {}
-  const { healthFull, error: userLoanDetailsError } = userLoanHealthResp ?? {}
+  const { healthFull, healthNotFull, error: userLoanDetailsError } = userLoanHealthResp ?? {}
+
+  const health = +healthNotFull < 0 ? healthNotFull : healthFull
 
   return (
     <>
@@ -16,7 +18,7 @@ const CellLoanUserHealth = ({ userActiveKey }: { userActiveKey: string }) => {
           ? '?'
           : !loanExists
             ? null
-            : formatNumber(healthFull, { style: 'percent', maximumFractionDigits: 2 })}
+            : formatNumber(health, { style: 'percent', maximumFractionDigits: 2 })}
     </>
   )
 }

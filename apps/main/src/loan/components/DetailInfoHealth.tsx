@@ -196,7 +196,7 @@ export function getHealthMode(
     }
 
     healthMode = {
-      percent: healthFull,
+      percent: +healthNotFull < 0 ? healthNotFull : healthFull,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,
