@@ -1,17 +1,5 @@
-import type { Eip1193Provider } from 'ethers'
-import { CurveApi, ChainId, RewardsApy } from '@/dex/types/main.types'
-import { createCurve } from '@curvefi/api'
+import { RewardsApy } from '@/dex/types/main.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
-export async function initCurveJs(chainId: ChainId, provider?: Eip1193Provider) {
-  const curveApi = createCurve() as CurveApi
-  if (provider) {
-    await curveApi.init('Web3', { network: { chainId }, externalProvider: provider }, { chainId })
-  } else {
-    await curveApi.init('NoRPC', 'NoRPC', { chainId })
-  }
-  return curveApi
-}
 
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
   if (Array.isArray(rewards)) {

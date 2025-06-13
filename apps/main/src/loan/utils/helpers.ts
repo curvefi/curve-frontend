@@ -1,5 +1,5 @@
 import networks from '@/loan/networks'
-import { LlamaApi } from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi } from '@/loan/types/loan.types'
 import { t } from '@ui-kit/lib/i18n'
 
 interface CustomError extends Error {
@@ -60,7 +60,7 @@ export function sleep(ms?: number) {
 
 export function curveProps(curve: LlamaApi | null) {
   if (curve) {
-    const chainId = curve.chainId
+    const chainId = curve.chainId as ChainId
     const signerAddress = curve.signerAddress
     return {
       chainId,
@@ -68,12 +68,11 @@ export function curveProps(curve: LlamaApi | null) {
       signerAddress: signerAddress,
       network: networks[chainId],
     }
-  } else {
-    return {
-      chainId: null,
-      haveSigner: false,
-      signerAddress: '',
-      network: null,
-    }
+  }
+  return {
+    chainId: null,
+    haveSigner: false,
+    signerAddress: '',
+    network: null,
   }
 }

@@ -9,6 +9,6 @@ type DisclaimerPageProps = {
   params: Promise<NetworkUrlParams>
 }
 
-const DisclaimerPage = async ({ params }: DisclaimerPageProps) => <Disclaimer defaultTab="lend" {...await params} />
+const DisclaimerPage = async ({ params }: DisclaimerPageProps) => <Disclaimer currentApp="lend" {...await params} />
 
 export default DisclaimerPage

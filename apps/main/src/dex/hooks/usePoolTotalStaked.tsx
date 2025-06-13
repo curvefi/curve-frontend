@@ -1,18 +1,18 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import useStore from '@/dex/store/useStore'
-import { type CurveApi, PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
+import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
-  const { lib: curve = null } = useConnection<CurveApi>()
+  const { curveApi = null } = useConnection()
   const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
-  const { rpcUrl } = useStore((state) => curve && state.networks.networks[curve.chainId]) ?? {}
+  const { rpcUrl } = useStore((state) => curveApi && state.networks.networks[curveApi.chainId]) ?? {}
 
   const updateTotalStakeValue = useCallback(
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {
@@ -77,7 +77,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
       })()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, curve?.chainId, address, rpcUrl, walletProvider])
+  }, [curveApi?.signerAddress, curveApi?.chainId, address, rpcUrl, walletProvider])
 
   return staked
 }

@@ -301,7 +301,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
     withdrawLockedCrv: async () => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
-      const curve = requireLib<CurveApi>()
+      const curve = requireLib('curveApi')
 
       await get().gas.fetchGasInfo(curve)
 

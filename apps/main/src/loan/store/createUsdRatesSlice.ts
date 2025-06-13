@@ -3,7 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { LlamaApi, UsdRate } from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi, UsdRate } from '@/loan/types/loan.types'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
 
@@ -44,7 +44,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     fetchUsdRateByToken: async (curve: LlamaApi, tokenAddress: string) => {
       log('fetchUsdRateByToken', curve.chainId, tokenAddress)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const resp = await networks[chainId].api.helpers.getUsdRate(curve, tokenAddress)
       get()[sliceKey].setStateByActiveKey('tokens', tokenAddress, resp.usdRate)
     },
@@ -52,7 +52,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
       log('fetchUsdRateByTokens', curve.chainId, tokenAddresses.join(','))
       get().usdRates.setStateByKey('loading', true)
 
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const { results } = await PromisePool.for(tokenAddresses)
         .withConcurrency(5)
         .process(async (tokenAddress) => {
@@ -80,7 +80,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

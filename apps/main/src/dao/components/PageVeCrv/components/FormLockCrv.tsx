@@ -8,12 +8,11 @@ import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/d
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { CurveApi } from '@/dao/types/dao.types'
 import Stepper from '@ui/Stepper'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { isLoading, notify, useConnection } from '@ui-kit/features/connect-wallet'
+import { type CurveApi, isLoading, notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +22,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
-  const { connectState } = useConnection<CurveApi>()
+  const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)

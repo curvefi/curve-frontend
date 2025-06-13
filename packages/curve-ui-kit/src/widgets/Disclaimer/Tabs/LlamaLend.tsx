@@ -1,20 +1,34 @@
-import RouterLink from 'next/link'
+import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { type AppName, getInternalUrl, PAGE_DISCLAIMER } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { pushSearchParams } from '@ui-kit/utils/urls'
 import { List } from '../List'
 import { Header, Paragraph, Section, Title } from '../Section'
 
-export const LlamaLend = ({ network }: { network: string }) => (
+export const LlamaLend = ({
+  currentApp,
+  network,
+}: {
+  currentApp: AppName
+  network: CurveNetworkId | LlamaNetworkId
+}) => (
   <>
     <Section>
       <Paragraph>{t`Curve Lending enables users to permissionlessly create and interact with isolated lending pairs composed of crvUSD, a decentralized stablecoin native to the Curve ecosystem, and various paired tokens. The notifications provided herein address risks associated with Curve Lending activities. The following list is not exhaustive.`}</Paragraph>
 
       <Paragraph>
         {t`Users wishing to acquaint themselves with a broader range of general risk disclosures are encouraged to read the`}{' '}
-        <Link component={RouterLink} color="textSecondary" href={`/${network}/disclaimer`} target="_blank">
+        <RouterLink
+          color="textSecondary"
+          href={getInternalUrl(currentApp, network, PAGE_DISCLAIMER + '?tab=dex')}
+          onClick={(e) => pushSearchParams(e, { tab: 'dex' })}
+        >
           {t`Curve Risk Disclosures for Liquidity Providers`}
-        </Link>
+        </RouterLink>
         {t`. Users are also advised to review the public`}{' '}
         <Link color="textSecondary" href="https://docs.curve.finance/references/audits/" target="_blank">
           {t`audit reports`}

@@ -1,5 +1,5 @@
 import { lendingJsValidationSuite } from '@/lend/entities/validation/lending-js-validation'
-import { type Api, ChainId } from '@/lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { FieldsOf } from '@ui-kit/lib'
 import type { ChainQuery } from '@ui-kit/lib/model/query'
@@ -9,7 +9,7 @@ type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
 
 const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
-  rates: await requireLib<Api>().getLendMarket(marketId).stats.rates(false, false),
+  rates: await requireLib('llamaApi').getLendMarket(marketId).stats.rates(false, false),
 })
 
 /**

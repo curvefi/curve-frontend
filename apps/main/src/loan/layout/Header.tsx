@@ -5,16 +5,9 @@ import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 import { visibleNetworksList } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import {
-  CollateralDatasMapper,
-  type LlamaApi,
-  LoanDetailsMapper,
-  type UrlParams,
-  UsdRate,
-} from '@/loan/types/loan.types'
+import { CollateralDatasMapper, LoanDetailsMapper, type UrlParams, UsdRate } from '@/loan/types/loan.types'
 import { useChainId } from '@/loan/utils/utilsRouter'
 import { formatNumber } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { t } from '@ui-kit/lib/i18n'
@@ -35,8 +28,6 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
 
   const rChainId = useChainId(params)
-  const { lib } = useConnection<LlamaApi>()
-
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
@@ -44,7 +35,7 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
 
   const { data: dailyVolume } = useAppStatsDailyVolume({})
-  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId: lib?.chainId })
+  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId: rChainId })
 
   return (
     <NewHeader
