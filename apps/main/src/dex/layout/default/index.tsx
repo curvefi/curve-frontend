@@ -4,7 +4,7 @@ import { ROUTE } from '@/dex/constants'
 import Header from '@/dex/layout/default/Header'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import type { NetworkConfig } from '@/dex/types/main.types'
+import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore, layoutHeightKeys } from '@ui-kit/features/layout'
@@ -30,7 +30,7 @@ const useAutoRefresh = (network: NetworkConfig) => {
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
 
   const fetchPoolsVolumeTvl = useCallback(
-    async (curve: any) => {
+    async (curve: CurveApi) => {
       const { chainId } = curve
       const poolDatas = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
@@ -40,7 +40,7 @@ const useAutoRefresh = (network: NetworkConfig) => {
   )
 
   const refetchPools = useCallback(
-    async (curve: any) => {
+    async (curve: CurveApi) => {
       const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
       void fetchPools(curve, poolIds, null)
     },

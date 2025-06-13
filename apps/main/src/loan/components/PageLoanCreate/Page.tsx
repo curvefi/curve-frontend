@@ -8,7 +8,7 @@ import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import { type CollateralUrlParams, Llamma } from '@/loan/types/loan.types'
+import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
   getCollateralListPathname,
@@ -70,7 +70,7 @@ const Page = (params: CollateralUrlParams) => {
   const isLeverage = rFormType === 'leverage'
 
   const fetchInitial = useCallback(
-    (curve: any, isLeverage: boolean, llamma: Llamma) => {
+    (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
       // reset createLoan estGas, detailInfo state
       setStateByKeys({
         formEstGas: {},

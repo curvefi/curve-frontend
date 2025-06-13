@@ -119,9 +119,9 @@ async function withMutex(fn: () => Promise<any>, key: unknown) {
 }
 
 function useIsDocumentFocused() {
-  const [isFocused, setIsFocused] = useState(document?.hasFocus()) // only change chains on focused tab, so they don't fight each other
+  const [isFocused, setIsFocused] = useState(document.hasFocus()) // only change chains on focused tab, so they don't fight each other
   useEffect(() => {
-    const interval = setInterval(() => setIsFocused(document?.hasFocus()), 300)
+    const interval = setInterval(() => setIsFocused(document.hasFocus()), 300)
     return () => clearInterval(interval)
   }, [])
   return isFocused

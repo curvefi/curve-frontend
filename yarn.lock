@@ -1721,7 +1721,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/ethcall@npm:6.0.15, @curvefi/ethcall@npm:^6.0.15":
+"@curvefi/ethcall@npm:6.0.13":
+  version: 6.0.13
+  resolution: "@curvefi/ethcall@npm:6.0.13"
+  dependencies:
+    "@types/node": "npm:^22.12.0"
+    abi-coder: "npm:^5.0.0"
+  peerDependencies:
+    ethers: ^6.0.0
+  checksum: 10c0/7a58d09de914372951f1c8fdf416d5071823e9f59df1c6a568a3123ab857397c64c22977a6d7f4786309e2f6a4d235e75d43b58355e5a7c8822dc9de27c1665c
+  languageName: node
+  linkType: hard
+
+"@curvefi/ethcall@npm:^6.0.15":
   version: 6.0.15
   resolution: "@curvefi/ethcall@npm:6.0.15"
   dependencies:
@@ -1733,16 +1745,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@portal:/home/schiavini/curve/curve-llamalend.js::locator=curve-frontend%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@curvefi/llamalend-api@portal:/home/schiavini/curve/curve-llamalend.js::locator=curve-frontend%40workspace%3A."
+"@curvefi/llamalend-api@npm:^1.0.21":
+  version: 1.0.21
+  resolution: "@curvefi/llamalend-api@npm:1.0.21"
   dependencies:
-    "@curvefi/ethcall": "npm:6.0.15"
-    bignumber.js: "npm:^9.3.0"
-    ethers: "npm:^6.14.3"
+    "@curvefi/ethcall": "npm:6.0.13"
+    bignumber.js: "npm:^9.1.2"
+    ethers: "npm:^6.13.5"
     memoizee: "npm:^0.4.17"
+  checksum: 10c0/7d48931421fa21c9cca666aa76be55a1f52d42b8e00d8f33d9ef35bbc45384cbbd4e6a3c837a65ff3334dd082f4f5f5af46b5105b4dbd012f9b79169c431d233
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@curvefi/prices-api@workspace:packages/prices-api":
   version: 0.0.0-use.local
@@ -9122,7 +9135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.3.0":
+"bignumber.js@npm:^9.1.2, bignumber.js@npm:^9.3.0":
   version: 9.3.0
   resolution: "bignumber.js@npm:9.3.0"
   checksum: 10c0/f54a79cd6fc98552ac0510c1cd9381650870ae443bdb20ba9b98e3548188d941506ac3c22a9f9c69b2cc60da9be5700e87d3f54d2825310a8b2ae999dfd6d99d
