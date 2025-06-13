@@ -5,7 +5,6 @@ export { notify } from './notify'
 export {
   ConnectionProvider,
   useConnection,
-  CONNECT_STAGE,
   isLoading,
   isFailure,
   isSuccess,

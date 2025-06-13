@@ -2,7 +2,7 @@ import { forwardRef, Ref } from 'react'
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
-import { CONNECT_STAGE, isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
+import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
 import { useBetaFlag, useNewDomainNotificationSeen } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -33,10 +33,9 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const { isConnected } = useAccount()
     const { switchChain } = useSwitchChain()
     const { connectState } = useConnection()
-    const showConnectApiErrorMessage = isFailure(connectState, CONNECT_STAGE.CONNECT_API)
     const walletChainId = useChainId()
-    const showSwitchNetworkMessage =
-      (isConnected && walletChainId != chainId) || isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK)
+    const showSwitchNetworkMessage = isConnected && walletChainId != chainId
+    const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)
 
     const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
 

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { PageWidthClassName } from './types'
 
 export function getPageWidthClassName(pageWidth: number): PageWidthClassName {
@@ -14,4 +15,13 @@ export function getPageWidthClassName(pageWidth: number): PageWidthClassName {
   } else {
     return 'page-small-xx'
   }
+}
+
+export function useIsDocumentFocused() {
+  const [isFocused, setIsFocused] = useState(document.hasFocus()) // only change chains on focused tab, so they don't fight each other
+  useEffect(() => {
+    const interval = setInterval(() => setIsFocused(document.hasFocus()), 300)
+    return () => clearInterval(interval)
+  }, [])
+  return isFocused
 }
