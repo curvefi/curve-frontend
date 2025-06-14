@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { LargeTokenInput } from '../LargeTokenInput'
+import { LargeTokenInput, type LargeTokenInputRef } from '../LargeTokenInput'
 
 const TOKEN_OPTIONS = [
   { name: 'Inferium', symbol: 'ETH', balance: 1000 },
@@ -56,6 +56,8 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
     symbol: TOKEN_OPTIONS[0].symbol,
   })
 
+  const inputRef = useRef<LargeTokenInputRef>(null)
+
   const maxBalance =
     props.maxBalance === undefined
       ? undefined
@@ -70,15 +72,15 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
   return (
     <LargeTokenInput
       {...props}
+      ref={inputRef}
       maxBalance={maxBalance}
       tokenSelector={
-        <Stack>
-          <Typography variant="bodyXsRegular" color="textTertiary">
-            You pay
-          </Typography>
-
-          <TokenSelector onTokenChange={setTokenInfo} />
-        </Stack>
+        <TokenSelector
+          onTokenChange={(newToken) => {
+            setTokenInfo(newToken)
+            inputRef.current?.resetBalance()
+          }}
+        />
       }
     />
   )
@@ -95,6 +97,10 @@ const meta: Meta<typeof LargeTokenInput> = {
     message: {
       control: 'object',
       description: 'Optional message to display below the input (can be a React node)',
+    },
+    label: {
+      control: 'text',
+      description: 'Optional label explaining what the input is all about',
     },
     isError: {
       control: 'boolean',
@@ -115,6 +121,7 @@ const meta: Meta<typeof LargeTokenInput> = {
       showSlider: true,
     },
     message: '',
+    label: 'You pay',
     isError: false,
     balanceDecimals: 4,
     onBalance: fn(),

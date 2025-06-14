@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { ButtonMenu } from '@ui-kit/shared/ui/ButtonMenu'
-import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { LargeTokenInput, type LargeTokenInputRef } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TOKEN_SELECT_WIDTH } from '../../lib/constants'
 import { AlertCollateralAtRisk } from '../AlertCollateralAtRisk'
@@ -76,6 +75,9 @@ export const Withdraw = ({
   const [debtBalance, setDebtBalance] = useState(0)
   const [collateralBalance, setCollateralBalance] = useState(0)
 
+  const repayInputRef = useRef<LargeTokenInputRef>(null)
+  const withdrawInputRef = useRef<LargeTokenInputRef>(null)
+
   const BUTTON_OPTION_CALLBACKS: Record<OptionId, () => void> = {
     'approve-limited': onApproveLimited,
     'approve-infinite': onApproveInfinite,
@@ -85,21 +87,21 @@ export const Withdraw = ({
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <Stack>
         <LargeTokenInput
+          ref={repayInputRef}
+          label={t`Debt to repay`}
           tokenSelector={
-            <Stack minWidth={TOKEN_SELECT_WIDTH}>
-              <Typography variant="bodyXsRegular" color="textTertiary">
-                {t`Debt to repay`}
-              </Typography>
-
-              <TokenSelector
-                selectedToken={selectedDebtToken}
-                tokens={debtTokens}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={onDebtToken}
-              />
-            </Stack>
+            <TokenSelector
+              selectedToken={selectedDebtToken}
+              tokens={debtTokens}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={(newToken) => {
+                onDebtToken(newToken)
+                repayInputRef.current?.resetBalance()
+              }}
+              sx={{ minWidth: TOKEN_SELECT_WIDTH }}
+            />
           }
           maxBalance={{ ...selectedDebtToken, showSlider: false }}
           message={t`Recover collateral by repaying debt.`}
@@ -120,21 +122,21 @@ export const Withdraw = ({
         />
 
         <LargeTokenInput
+          ref={withdrawInputRef}
+          label={t`Collateral to withdraw`}
           tokenSelector={
-            <Stack minWidth={TOKEN_SELECT_WIDTH}>
-              <Typography variant="bodyXsRegular" color="textTertiary">
-                {t`Collateral to withdraw`}
-              </Typography>
-
-              <TokenSelector
-                selectedToken={selectedCollateralToken}
-                tokens={collateralTokens}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={onCollateralToken}
-              />
-            </Stack>
+            <TokenSelector
+              selectedToken={selectedCollateralToken}
+              tokens={collateralTokens}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={(newToken) => {
+                onCollateralToken(newToken)
+                withdrawInputRef.current?.resetBalance()
+              }}
+              sx={{ minWidth: TOKEN_SELECT_WIDTH }}
+            />
           }
           maxBalance={{ ...selectedCollateralToken, showBalance: false }}
           message={t`Collateral value: something something`}

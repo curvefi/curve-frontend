@@ -1,14 +1,12 @@
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
-import LinkMui from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const AlertCollateralAtRisk = () => (
   <Alert severity="error" variant="outlined" sx={{ boxShadow: 'none' }}>
@@ -24,7 +22,13 @@ export const AlertCollateralAtRisk = () => (
       </Typography>
 
       <Stack display="inline-flex">
-        <Button variant="inline" color="ghost" size="extraSmall">
+        <Button
+          href="https://resources.curve.finance/crvusd/loan-concepts"
+          target="_blank"
+          color="ghost"
+          variant="inline"
+          size="extraSmall"
+        >
           {t`The position will be fully liquidated if health reaches 0`}
           {/** Had to make the comma part of the button to prevent awkward wrapping */}
           <Typography variant="bodySRegular" color="textSecondary">
@@ -36,19 +40,6 @@ export const AlertCollateralAtRisk = () => (
           {t`and all collateral lost.`}
         </Typography>
       </Stack>
-
-      <Button
-        component={LinkMui}
-        href="https://todo.todo"
-        target="_blank"
-        color="ghost"
-        variant="link"
-        endIcon={<ArrowTopRightIcon sx={{ width: IconSize.md, height: IconSize.md }} />}
-        size="extraSmall"
-        sx={{ justifyContent: 'end', '.MuiButton-endIcon': { marginRight: 0 } }}
-      >
-        {t`What are soft liquidations?`}
-      </Button>
     </Stack>
   </Alert>
 )

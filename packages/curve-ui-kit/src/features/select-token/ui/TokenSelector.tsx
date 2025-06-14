@@ -1,6 +1,6 @@
 import { SxProps } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import type { TokenOption } from '../types'
+import { tokenOptionEquals, type TokenOption } from '../types'
 import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
@@ -57,7 +57,10 @@ export const TokenSelector = ({
         onClose={closeModal}
         onToken={(token) => {
           toggleModal()
-          onToken?.(token)
+
+          if (!tokenOptionEquals(token, selectedToken)) {
+            onToken?.(token)
+          }
         }}
         onSearch={(search) => onSearch?.(search)}
       />

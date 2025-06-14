@@ -6,7 +6,7 @@ import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 
-const { IconSize } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
 /**
  * Formats a number to a specified number of decimal places using locale string formatting.
@@ -120,7 +120,7 @@ export const ActionInfos = ({
         value={`${formatValue(health.new)}%`}
         valueColor={newHealthColor(health)}
         prevValue={`${formatValue(health.old)}%`}
-        prevValueColor="textPrimary"
+        prevValueColor="textTertiary"
         sx={{ flexGrow: 1 }}
       />
     }
@@ -164,6 +164,7 @@ export const ActionInfos = ({
         }
         value={`$${formatValue(estimatedTxCost.dollars)}`}
         valueTooltip={`${estimatedTxCost.eth} ETH at ${estimatedTxCost.gwei} GWEI`}
+        sx={{ marginTop: Spacing.md }}
       />
     </Stack>
   </Accordion>
