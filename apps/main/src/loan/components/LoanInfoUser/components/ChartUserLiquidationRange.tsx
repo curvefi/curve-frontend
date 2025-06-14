@@ -1,16 +1,15 @@
 import { useMemo } from 'react'
 import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { HealthMode } from '@/loan/types/loan.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const { userPrices: currPrices } = useUserLoanDetails(llammaId)
 
   const theme = useUserProfileStore((state) => state.theme)
-
-  const { userPrices: currPrices } = userLoanDetails ?? {}
 
   // default to empty data to show chart
   const liqRangeData = useMemo(
