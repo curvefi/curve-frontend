@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import useStore from '@/lend/store/useStore'
-import { HeathColorKey } from '@/lend/types/lend.types'
+import { HealthColorKey } from '@/lend/types/lend.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-const HealthColorText = styled.span<{ colorKey?: HeathColorKey }>`
+const HealthColorText = styled.span<{ colorKey?: HealthColorKey }>`
   color: ${({ colorKey }) => `var(--health_mode_${colorKey}--color)`};
 `
 

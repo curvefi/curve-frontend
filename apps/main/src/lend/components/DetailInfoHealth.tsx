@@ -5,7 +5,7 @@ import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
-import { OneWayMarketTemplate, PageContentProps, HeathColorKey, HealthMode } from '@/lend/types/lend.types'
+import { OneWayMarketTemplate, PageContentProps, HealthColorKey, HealthMode } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
@@ -155,7 +155,7 @@ const DetailInfoHealth = ({
   )
 }
 
-const HealthPercent = styled.span<{ colorKey: HeathColorKey }>`
+const HealthPercent = styled.span<{ colorKey: HealthColorKey }>`
   color: ${({ colorKey }) => `var(--health_mode_${colorKey}_darkBg--color)`};
 `
 
