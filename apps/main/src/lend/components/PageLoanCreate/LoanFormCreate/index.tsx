@@ -14,6 +14,7 @@ import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -54,7 +55,7 @@ const LoanCreate = ({
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
-  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
+  const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
@@ -149,7 +150,7 @@ const LoanCreate = ({
               market={market}
               receive={expectedCollateral?.totalCollateral ?? userCollateral}
               formValueStateDebt={debt}
-              userState={userDetails?.state}
+              userState={userState}
               userWallet={userBalances}
               type="create"
             />
@@ -233,7 +234,7 @@ const LoanCreate = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [expectedCollateral?.totalCollateral, fetchStepApprove, handleClickCreate, userBalances, userDetails?.state],
+    [expectedCollateral?.totalCollateral, fetchStepApprove, handleClickCreate, userBalances, userState],
   )
 
   // onMount
@@ -298,7 +299,7 @@ const LoanCreate = ({
     market?.id,
     signerAddress,
     userBalances,
-    userDetails?.state,
+    userState,
   ])
 
   // signerAddress, maxSlippage state change

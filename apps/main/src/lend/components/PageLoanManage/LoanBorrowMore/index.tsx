@@ -15,6 +15,7 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -53,7 +54,7 @@ const LoanBorrowMore = ({
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
+  const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
@@ -163,7 +164,7 @@ const LoanBorrowMore = ({
               market={market}
               receive={expectedCollateral?.totalCollateral ?? userCollateral}
               formValueStateDebt={debt}
-              userState={userLoanDetails?.state}
+              userState={userState}
               userWallet={userBalances}
               type="change"
             />
@@ -245,7 +246,7 @@ const LoanBorrowMore = ({
       }
       return stepsKey.map((k) => stepsObj[k])
     },
-    [expectedCollateral?.totalCollateral, userLoanDetails?.state, userBalances, fetchStepApprove, handleBtnClickBorrow],
+    [expectedCollateral?.totalCollateral, userState, userBalances, fetchStepApprove, handleBtnClickBorrow],
   )
 
   // onMount
@@ -314,7 +315,7 @@ const LoanBorrowMore = ({
     activeKey,
     confirmedWarning,
     expectedCollateral?.totalCollateral,
-    userLoanDetails?.state,
+    userState,
     userBalances,
     detailInfoLeverage?.expectedCollateral,
     detailInfoLeverage?.isHighPriceImpact,
