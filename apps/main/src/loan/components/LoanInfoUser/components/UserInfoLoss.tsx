@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
-import useStore from '@/loan/store/useStore'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { Llamma } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'
@@ -20,8 +20,7 @@ const UserInfoLoss = ({
   llamma: Llamma | null
   type: 'lossCollateral' | 'lossAmount' | 'lossPercent'
 }) => {
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
-
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const { current_collateral_estimation, deposited_collateral, loss, loss_pct } = userLoanDetails?.userLoss ?? {}
 
   const [_, collateralAddress] = llamma?.coinAddresses ?? []

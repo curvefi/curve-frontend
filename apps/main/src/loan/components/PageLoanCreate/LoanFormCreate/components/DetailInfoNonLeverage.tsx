@@ -5,6 +5,7 @@ import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import DetailInfoN from '@/loan/components/DetailInfoN'
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_DETAIL_INFO } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
@@ -33,7 +34,7 @@ const DetailInfoNonLeverage = ({
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
 
   return (
     <div>

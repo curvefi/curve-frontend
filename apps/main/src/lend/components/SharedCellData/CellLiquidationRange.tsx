@@ -1,12 +1,10 @@
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'range' | 'band' | 'bandPct' }) => {
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
 
   const liqPriceRange = useMemo(() => {
     const [price1, price2] = details?.prices ?? []
@@ -23,7 +21,7 @@ const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type
     <>
       {error ? (
         '?'
-      ) : !liqPriceRange || !details ? (
+      ) : !liqPriceRange || Object.keys(details).length === 0 ? (
         '-'
       ) : type === 'range' ? (
         <strong>{`${liqPriceRange.price2} to ${liqPriceRange.price1}`}</strong>

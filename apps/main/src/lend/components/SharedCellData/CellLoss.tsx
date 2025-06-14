@@ -1,19 +1,17 @@
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 const SMALL_NUMBER = 0.0001
 
 const CellLoss = ({ userActiveKey, type }: { userActiveKey: string; type: 'amount' | 'percent' }) => {
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
   const { loss, loss_pct } = details?.loss ?? {}
 
   return (
     <>
       {error ? (
         '?'
-      ) : !details ? (
+      ) : Object.keys(details).length === 0 ? (
         '-'
       ) : type === 'amount' ? (
         <>{loss === undefined ? '?' : Number(loss) <= SMALL_NUMBER || Number(loss) === 0 ? 0 : formatNumber(loss)}</>

@@ -1,6 +1,6 @@
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
-import useStore from '@/loan/store/useStore'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { formatNumber } from '@ui/utils'
 
 const UserInfoLiquidationRange = ({
@@ -10,9 +10,7 @@ const UserInfoLiquidationRange = ({
   llammaId: string
   type: 'liquidationRange' | 'liquidationBandRange'
 }) => {
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
-
-  const { userPrices, userBands } = userLoanDetails ?? {}
+  const { userPrices, userBands } = useUserLoanDetails(llammaId)
 
   const liqPriceRange = useMemo(() => {
     const [price1, price2] = userPrices ?? []

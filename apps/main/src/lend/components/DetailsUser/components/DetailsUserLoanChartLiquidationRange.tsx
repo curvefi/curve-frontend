@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -8,11 +9,10 @@ import { t } from '@ui-kit/lib/i18n'
 
 const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)
-  const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
   const theme = useUserProfileStore((state) => state.theme)
 
-  const { prices: currPrices, status } = userLoanDetails ?? {}
+  const { prices: currPrices, status } = useUserLoanDetails(userActiveKey)
 
   // default to empty data to show chart
   const liqRangeData = useMemo(

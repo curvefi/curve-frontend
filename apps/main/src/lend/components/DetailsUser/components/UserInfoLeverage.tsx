@@ -1,9 +1,7 @@
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 
 export const UserInfoLeverage = ({ userActiveKey }: { userActiveKey: string }) => {
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
 
   if (error) return '?'
 

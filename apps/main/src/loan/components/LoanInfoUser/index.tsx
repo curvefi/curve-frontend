@@ -9,6 +9,7 @@ import ChartUserLiquidationRange from '@/loan/components/LoanInfoUser/components
 import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails, useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
@@ -22,14 +23,13 @@ interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'title
 
 const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const { userBands, healthFull, healthNotFull } = useUserLoanDetails(llammaId)
   const { chartExpanded } = useStore((state) => state.ohlcCharts)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isSoftLiquidation = useUserLoanStatus(llammaId) === 'soft_liquidation'
 
-  const { userBands, healthFull, healthNotFull, userStatus } = userLoanDetails ?? {}
   const { oraclePriceBand } = loanDetails ?? {}
-  const isSoftLiquidation = userStatus?.colorKey === 'soft_liquidation'
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
 

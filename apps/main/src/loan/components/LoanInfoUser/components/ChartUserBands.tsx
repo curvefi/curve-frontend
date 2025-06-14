@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import ChartBandBalances from '@/loan/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { Llamma } from '@/loan/types/loan.types'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,14 +22,13 @@ const DEFAULT_BAND_CHART_DATA = {
 
 const ChartUserBands = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(llammaId)
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
     endIndex: undefined,
   })
 
-  const { userBandsBalances } = userLoanDetails ?? {}
   const { oraclePrice, oraclePriceBand } = loanDetails?.priceInfo ?? {}
 
   const chartBandBalancesData = useMemo(() => {
@@ -74,7 +74,7 @@ const ChartUserBands = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma
       llamma={llamma}
       oraclePrice={oraclePrice}
       oraclePriceBand={oraclePriceBand}
-      showLiquidationIndicator={!!userLoanDetails?.userLiquidationBand}
+      showLiquidationIndicator={!!userLiquidationBand}
       title={t`Bands`}
       setBrushIndex={setBrushIndex}
     />

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import Chip from 'ui/src/Typography/Chip'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'
@@ -10,10 +10,8 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 const CellLoanState = ({ userActiveKey, market }: { userActiveKey: string; market: OneWayMarketTemplate }) => {
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
   const { address } = market?.collateral_token ?? {}
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
   const { current_collateral_estimation, deposited_collateral } = details?.loss ?? {}
 
   const diff = useMemo(() => {

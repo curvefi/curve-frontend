@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import ChartBandBalances from '@/lend/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
@@ -17,14 +18,13 @@ const DetailsUserLoanChartBandBalances = ({
   const loansPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const loansStatsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
     endIndex: undefined,
   })
 
-  const { bandsBalances } = userLoanDetails?.details ?? {}
+  const { bandsBalances } = useUserLoanDetails(userActiveKey)
   const { liquidationBand } = loansStatsBands?.bands ?? {}
   const { oraclePrice, oraclePriceBand } = loansPrices?.prices ?? {}
 

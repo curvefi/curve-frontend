@@ -11,6 +11,7 @@ import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { NOFITY_MESSAGE } from '@/lend/constants'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -50,7 +51,7 @@ const LoanSelfLiquidation = ({
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
   const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
-  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
+  const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
   const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
@@ -63,7 +64,6 @@ const LoanSelfLiquidation = ({
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
-  const { state } = userDetails ?? {}
 
   const reset = useCallback(() => {
     setTxInfoBar(null)
@@ -193,12 +193,12 @@ const LoanSelfLiquidation = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && market && state) {
-      const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, state)
+    if (isLoaded && api && market && userState) {
+      const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, userState)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances, state])
+  }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances, userState])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
 

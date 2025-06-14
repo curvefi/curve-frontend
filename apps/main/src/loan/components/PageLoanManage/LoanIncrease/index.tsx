@@ -15,6 +15,7 @@ import {
   DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import useStore from '@/loan/store/useStore'
@@ -47,7 +48,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const maxRecvActiveKey = llamma ? getMaxRecvActiveKey(llamma, formValues.collateral) : ''
   const maxRecv = useStore((state) => state.loanIncrease.maxRecv[maxRecvActiveKey])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_USER_WALLET_BALANCES,

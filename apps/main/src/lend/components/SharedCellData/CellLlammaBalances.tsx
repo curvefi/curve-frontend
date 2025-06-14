@@ -1,22 +1,20 @@
 import styled from 'styled-components'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import TextCaption from '@ui/TextCaption'
 import { formatNumber } from '@ui/utils'
 
 const CellLlammaBalances = ({ userActiveKey, market }: { userActiveKey: string; market: OneWayMarketTemplate }) => {
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
   const { borrowed_token, collateral_token } = market ?? {}
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
 
   return (
     <>
       {error ? (
         '?'
-      ) : !details ? (
+      ) : Object.keys(details).length === 0 ? (
         '-'
       ) : (
         <Box flex gridGap={3}>

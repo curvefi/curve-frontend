@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { PageContentProps } from '@/lend/types/lend.types'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -9,14 +9,11 @@ import { t } from '@ui-kit/lib/i18n'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageContentProps) => {
   const { borrowed_token, collateral_token } = market ?? {}
-  const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
-  // TODO handle error
-  const { details } = userLoanDetails ?? {}
+  const { state } = useUserLoanDetails(userActiveKey)
 
   const softLiquidationAmountText = useMemo(() => {
     let text = ''
-    const { collateral = '0', borrowed = '0' } = details?.state ?? {}
+    const { collateral = '0', borrowed = '0' } = state ?? {}
 
     text += +collateral > 0 ? `${formatNumber(collateral)} ${collateral_token?.symbol}` : ''
 
@@ -30,7 +27,7 @@ const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageCont
     }
 
     return text
-  }, [borrowed_token?.symbol, collateral_token?.symbol, details?.state])
+  }, [borrowed_token?.symbol, collateral_token?.symbol, state])
 
   return (
     <AlertBox alertType="warning">
