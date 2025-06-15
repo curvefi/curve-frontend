@@ -8,6 +8,7 @@ import DTrinity from './DTrinity.json'
 import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
+import Falcon from './Falcon.json'
 import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
 import GoNuts from './GoNuts.json'
@@ -84,4 +85,5 @@ export {
   Kalypso,
   Radius,
   YieldNestTokens,
+  Falcon,
 }
