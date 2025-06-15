@@ -22,6 +22,15 @@ export enum Chain {
   Mantle = 5000,
   Sonic = 146,
   Hyperliquid = 999,
+  Xdc = 50,
+  Tac = 2390,
+  Corn = 21000000,
+  Ink = 57073,
+  Taiko = 167000,
+  Plume = 98866,
+  MegaEth = 6342,
+  Strata = 8091,
+  ExpChain = 18880,
 }
 
 /**
