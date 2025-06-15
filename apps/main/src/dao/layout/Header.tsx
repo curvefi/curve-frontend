@@ -1,7 +1,7 @@
 import { type RefObject, useRef } from 'react'
 import { visibleNetworksList } from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
 import { ChainId } from '@/dao/types/dao.types'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -19,9 +19,9 @@ export const Header = ({
   chainId: ChainId
 }) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-  useLayoutHeight(mainNavRef, 'mainNav', updateLayoutHeight)
-  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
+  useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   return (
     <NewHeader
       chainId={chainId}

@@ -1,8 +1,3 @@
-/* createAppLayoutSlice */
-export type LayoutHeight = {
-  globalAlert: number
-}
-
 /* createCreateLoanSlice */
 export type DetailInfo = {
   healthFull: string

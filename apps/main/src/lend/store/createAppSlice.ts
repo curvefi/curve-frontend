@@ -10,10 +10,7 @@ export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type SliceState = {
-  isPageVisible: boolean
-  scrollY: number
-}
+type SliceState = {}
 
 // prettier-ignore
 export interface AppSlice extends SliceState {

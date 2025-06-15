@@ -2,10 +2,10 @@ import { ReactNode, useMemo } from 'react'
 import styled from 'styled-components'
 import type { SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 import { TITLE } from '@/loan/constants'
-import useStore from '@/loan/store/useStore'
 import { TitleMapper } from '@/loan/types/loan.types'
 import TableSortSelect from '@ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@ui/TableSort/TableSortSelectMobile'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 const SelectFilterType = ({
   someLoanExists,
@@ -22,7 +22,7 @@ const SelectFilterType = ({
 }) => {
   const { sortBy, sortByOrder } = searchParams
 
-  const isXSmDown = useStore((state) => state.layout.isXSmDown)
+  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
 
   const sortSelectMapper = useMemo(
     () =>

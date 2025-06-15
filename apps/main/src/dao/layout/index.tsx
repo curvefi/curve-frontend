@@ -5,6 +5,7 @@ import useStore from '@/dao/store/useStore'
 import type { ChainId, CurveApi, NetworkEnum } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -17,7 +18,7 @@ import { NavigationSection } from '@ui-kit/widgets/Header/types'
 const useAutoRefresh = () => {
   const { lib: curve } = useConnection<CurveApi>()
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   usePageVisibleInterval(
@@ -37,11 +38,11 @@ export const BaseLayout = ({
   chainId: ChainId
 }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-  useLayoutHeight(globalAlertRef, 'globalAlert', updateLayoutHeight)
+  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
+  useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
 
-  const layoutHeight = useStore((state) => state.layoutHeight)
-  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+  const layoutHeight = useLayoutStore((state) => state.height)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   useAutoRefresh()
 
   const minHeight = useMemo(

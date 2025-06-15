@@ -3,10 +3,9 @@ import { ReactNode, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { ROUTE } from '@/loan/constants'
 import Header from '@/loan/layout/Header'
-import { layoutHeightKeys } from '@/loan/store/createLayoutSlice'
-import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams, UrlParams } from '@/loan/types/loan.types'
 import { getPath } from '@/loan/utils/utilsRouter'
+import { useLayoutStore, layoutHeightKeys } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -15,11 +14,11 @@ import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: ReactNode }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
 
-  const layoutHeight = useStore((state) => state.layout.height)
-  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
+  const layoutHeight = useLayoutStore((state) => state.height)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const params = useParams() as UrlParams
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])

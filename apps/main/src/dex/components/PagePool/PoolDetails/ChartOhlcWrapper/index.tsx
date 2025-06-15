@@ -10,6 +10,7 @@ import ChartWrapper from '@ui/Chart'
 import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -28,7 +29,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
   const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
   const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
   const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
-  const isMdUp = useStore((state) => state.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
 
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
   const [selectChartList, setSelectChartList] = useState<LabelList[]>([])

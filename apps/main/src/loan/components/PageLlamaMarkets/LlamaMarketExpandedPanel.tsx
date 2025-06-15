@@ -4,13 +4,13 @@ import { LineGraphCell } from '@/loan/components/PageLlamaMarkets/cells'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { FavoriteMarketButton } from '@/loan/components/PageLlamaMarkets/FavoriteMarketButton'
 import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
-import useStore from '@/loan/store/useStore'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
@@ -23,7 +23,7 @@ import { LlamaMarketType } from '../../entities/llama-markets'
 const { Spacing } = SizesAndSpaces
 
 function useMobileGraphSize() {
-  const pageWidth = useStore((state) => state.layout.windowWidth)
+  const pageWidth = useLayoutStore((state) => state.windowWidth)
   const isTiny = useIsTiny()
   return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }

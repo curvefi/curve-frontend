@@ -27,6 +27,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -49,7 +50,7 @@ const LoanBorrowMore = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanBorrowMore.formStatus)
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])

@@ -11,6 +11,7 @@ import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/type
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
@@ -39,7 +40,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   )
   const theme = useUserProfileStore((state) => state.theme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const timeOption = useStore((state) => state.ohlcCharts.timeOption)

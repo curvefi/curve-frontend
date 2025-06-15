@@ -12,6 +12,7 @@ import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody } from '@ui/Table'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -29,9 +30,9 @@ const PoolList = ({
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
-  const isMdUp = useStore((state) => state.isMdUp)
-  const isXSmDown = useStore((state) => state.isXSmDown)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const results = useStore((state) => state.poolList.result)

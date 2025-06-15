@@ -3,13 +3,13 @@ import styled from 'styled-components'
 import ChipInactive from '@/lend/components/ChipInactive'
 import CellRewardsTooltip from '@/lend/components/SharedCellData/CellRewardsTooltip'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
-import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import Button from '@ui/Button'
 import { buttonOutlinedStyles } from '@ui/Button/styles'
 import Icon from '@ui/Icon'
 import Chip from '@ui/Typography/Chip'
 import type { ChipProps } from '@ui/Typography/types'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 
 const CellRewards = ({
@@ -23,7 +23,7 @@ const CellRewards = ({
   rOwmId: string
 }) => {
   const { isReady, isError, invalidGaugeAddress, totalApr, tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
 
   const [showDetails, setShowDetails] = useState(false)
 

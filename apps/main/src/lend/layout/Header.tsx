@@ -1,9 +1,9 @@
 import { type RefObject } from 'react'
 import { useTvl } from '@/lend/entities/chain'
 import { visibleNetworksList } from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
 import { ChainId, type NetworkEnum } from '@/lend/types/lend.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
@@ -19,7 +19,7 @@ export const Header = ({
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: NetworkEnum
 }) => {
-  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const { data: tvl } = useTvl(chainId)
   return (
     <NewHeader<ChainId>

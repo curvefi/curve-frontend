@@ -1,14 +1,14 @@
 import styled, { keyframes } from 'styled-components'
-import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 type Props = {
   showScrollButton?: boolean
 }
 
 const Settings = ({ showScrollButton }: Props) => {
-  const scrollY = useStore((state) => state.scrollY)
+  const scrollY = useLayoutStore((state) => state.scrollY)
 
   const handleScrollTopClick = () => {
     window.scroll({
