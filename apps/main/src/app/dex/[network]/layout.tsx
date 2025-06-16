@@ -11,6 +11,7 @@ type NetworkLayoutProps = { params: Promise<NetworkUrlParams>; children: ReactNo
 
 const Layout = async ({ children, params }: NetworkLayoutProps) => {
   const [urlParams, httpHeaders] = await Promise.all([params, headers()])
+  console.log('layout [network]', JSON.stringify({ urlParams, httpHeaders }))
   const network = await getNetworkConfig(urlParams.network)
   if (!network) {
     return notFound()
