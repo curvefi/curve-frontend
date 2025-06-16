@@ -82,7 +82,7 @@ const MultiSelect = <T extends string>({
     <>
       <Select
         ref={selectRef}
-        open={false}
+        open={isOpen}
         onOpen={open}
         onClose={close}
         displayEmpty

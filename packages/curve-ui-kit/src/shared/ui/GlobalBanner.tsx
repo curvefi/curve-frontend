@@ -40,43 +40,37 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
 
     return (
-      (showSwitchNetworkMessage ||
-        showConnectApiErrorMessage ||
-        maintenanceMessage ||
-        showBetaBanner ||
-        showDomainChangeMessage) && (
-        <Box ref={ref}>
-          {showBetaBanner && (
-            <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
-              <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
-            </Banner>
-          )}
-          {maintenanceMessage && (
-            <Banner severity="warning" color={warnColor}>
-              {maintenanceMessage}
-            </Banner>
-          )}
-          {showSwitchNetworkMessage && (
-            <Banner
-              severity="warning"
-              color={warnColor}
-              buttonText={t`Change network`}
-              onClick={() => switchChain({ chainId: chainId as WagmiChainId })}
-            >
-              {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
-              <strong>{networkId}</strong>.{' '}
-            </Banner>
-          )}
-          {showConnectApiErrorMessage && (
-            <Banner severity="alert">
-              {t`There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.`}
-            </Banner>
-          )}
-          {showDomainChangeMessage && (
-            <DomainChangedBanner onDismiss={() => setIsNewDomainNotificationSeen(true)} color={warnColor} />
-          )}
-        </Box>
-      )
+      <Box ref={ref}>
+        {showBetaBanner && (
+          <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
+            <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
+          </Banner>
+        )}
+        {maintenanceMessage && (
+          <Banner severity="warning" color={warnColor}>
+            {maintenanceMessage}
+          </Banner>
+        )}
+        {showSwitchNetworkMessage && (
+          <Banner
+            severity="warning"
+            color={warnColor}
+            buttonText={t`Change network`}
+            onClick={() => switchChain({ chainId: chainId as WagmiChainId })}
+          >
+            {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
+            <strong>{networkId}</strong>.{' '}
+          </Banner>
+        )}
+        {showConnectApiErrorMessage && (
+          <Banner severity="alert">
+            {t`There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.`}
+          </Banner>
+        )}
+        {showDomainChangeMessage && (
+          <DomainChangedBanner onDismiss={() => setIsNewDomainNotificationSeen(true)} color={warnColor} />
+        )}
+      </Box>
     )
   },
 )
