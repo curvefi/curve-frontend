@@ -37,10 +37,10 @@ type BalanceTextFieldProps = {
   balance: number | undefined
   maxBalance?: number
   isError: boolean
-  onBlur: (balance: number | undefined) => void
+  onCommit: (balance: number | undefined) => void
 }
 
-const BalanceTextField = ({ balance, isError, onBlur }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
     variant="standard"
@@ -58,7 +58,7 @@ const BalanceTextField = ({ balance, isError, onBlur }: BalanceTextFieldProps) =
         },
       },
     }}
-    onBlur={onBlur}
+    onBlur={onCommit}
   />
 )
 
@@ -244,7 +244,7 @@ export const LargeTokenInput = ({
             balance={balance}
             maxBalance={maxBalance?.balance}
             isError={isError}
-            onBlur={handleBalanceChange}
+            onCommit={handleBalanceChange}
           />
 
           {tokenSelector}
