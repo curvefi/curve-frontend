@@ -177,7 +177,7 @@ export const NETWORK_BASE_CONFIG = {
     nativeCurrencySymbol: 'HYPE',
     explorerUrl: 'https://www.hyperscan.com/',
   },
-} satisfies { [key in Chain]: { chainId: key; [_: string]: any } }
+} as const
 
 export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
   id: TId

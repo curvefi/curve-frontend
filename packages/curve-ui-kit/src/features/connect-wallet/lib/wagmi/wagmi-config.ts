@@ -4,9 +4,11 @@ import type { Chain } from 'viem'
 import { defineChain } from 'viem/utils'
 import type { NetworkDef } from '@ui/utils'
 import { wagmiChains } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
+import { Chain as ChainId } from '@ui-kit/utils/network'
 import { injected } from '@wagmi/connectors'
 import { createConfig, fallback, http, type Transport, unstable_connector } from '@wagmi/core'
 import { connectors } from './connectors'
+import { RPC } from './rpc'
 
 declare module 'wagmi' {
   /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
@@ -16,7 +18,7 @@ declare module 'wagmi' {
 }
 
 const DECIMALS: Record<number, number> = {
-  2390: 8, // TAC
+  [ChainId.Tac]: 8, // TAC has 8 decimals instead of 18
 }
 
 /**
@@ -27,31 +29,36 @@ const DECIMALS: Record<number, number> = {
  */
 export const createWagmiConfig = memoize(
   <ChainId extends number, NetworkConfig extends NetworkDef>(networks: Record<ChainId, NetworkConfig>) => {
-    const chains = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
+    const wagmi = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
     const networkEntries = Object.entries(networks).map(([id, config]) => [+id, config]) as [ChainId, NetworkConfig][]
+
+    /**
+     * Gets a list of the RPC URLs for a given chain.
+     * First the hardcoded RPC URLs, then the CurveJS URL and then all default wagmi URLs
+     */
+    const getRpcUrls = (id: ChainId) =>
+      uniq([...(RPC[id] ?? []), networks[id].rpcUrl, ...(wagmi[id]?.rpcUrls.default.http ?? [])])
+
     return createConfig({
-      chains: networkEntries.map(([id, config]): Chain => {
-        // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
-        const wagmiChain = chains[id] as Chain | undefined
-        return defineChain({
-          id,
-          testnet: config.isTestnet,
-          nativeCurrency: { name: config.symbol, symbol: config.symbol, decimals: DECIMALS[id] ?? 18 },
-          ...wagmiChain,
-          name: config.name,
-          rpcUrls: {
-            default: { http: uniq([config.rpcUrl, ...(wagmiChain?.rpcUrls.default.http ?? [])]) },
-          },
-          ...(config.explorerUrl && {
-            blockExplorers: {
-              default: { name: new URL(config.explorerUrl).host, url: config.explorerUrl },
-            },
+      chains: networkEntries.map(
+        ([id, config]): Chain =>
+          // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
+          defineChain({
+            ...(wagmi[id] ?? {
+              nativeCurrency: { name: config.symbol, symbol: config.symbol, decimals: DECIMALS[id] ?? 18 },
+            }),
+            id,
+            testnet: config.isTestnet,
+            name: config.name,
+            rpcUrls: { default: { http: getRpcUrls(id) } },
+            ...(config.explorerUrl && {
+              blockExplorers: { default: { name: new URL(config.explorerUrl).host, url: config.explorerUrl } },
+            }),
           }),
-        })
-      }) as [Chain, ...Chain[]],
+      ) as [Chain, ...Chain[]],
       connectors: Object.values(connectors),
       transports: Object.fromEntries(
-        networkEntries.map(([id]) => [
+        networkEntries.map(([id, config]) => [
           id,
           /**
            * Transport configuration for Wagmi:
@@ -63,14 +70,18 @@ export const createWagmiConfig = memoize(
            *    - Limited RPC method support
            *    - Rate-limiting of wallet provider
            *
-           * 2. http transport - Used as fallback when connector transport fails
-           *    - Configured with batch size of 3 to comply with DRPC free tier limits
+           * 2. Multiple http transports - Used as fallback when connector transport fails
+           *    - Primary: http transport with default URL (batch size 3 for DRPC compliance)
+           *    - Fallbacks: Additional http transports for each fallback RPC URL
            *    - Prevents error code 29 from exceeding batch limits
            *
-           * Note: WalletConnect ignores this http endpoint and uses chain.rpcUrls.default.http[0]
-           * regardless of the configuration here.
+           * Note: WalletConnect ignores this transport configuration and uses chain.rpcUrls.default.http
+           * in order, but having multiple transports helps with injected wallet resilience.
            */
-          fallback([unstable_connector(injected), http(undefined, { batch: { batchSize: 3 } })]),
+          fallback([
+            unstable_connector(injected),
+            ...getRpcUrls(id).map((url) => http(url, { batch: { batchSize: 3 } })),
+          ]),
         ]),
       ) as Record<ChainId, Transport>,
       /**
