@@ -21,8 +21,5 @@ export function useUserLoanDetails(userActiveKey: string): Details {
  * @param userActiveKey - The unique identifier for the user's active loan
  * @returns Health color key indicating loan status, or empty string if no status available
  */
-export function useUserLoanStatus(userActiveKey: string): HealthColorKey {
-  const userDetails = useUserLoanDetails(userActiveKey)
-
-  return userDetails?.status?.colorKey ?? ''
-}
+export const useUserLoanStatus = (userActiveKey: string): HealthColorKey =>
+  useUserLoanDetails(userActiveKey)?.status?.colorKey ?? ''

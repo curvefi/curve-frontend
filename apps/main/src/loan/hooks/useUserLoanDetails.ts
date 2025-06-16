@@ -6,17 +6,13 @@ import type { HealthColorKey } from '@/loan/types/loan.types'
  * @param llammaId - The llamma market identifier
  * @returns User loan details object or empty object if not found
  */
-export function useUserLoanDetails(llammaId: string) {
-  return useStore((state) => state.loans.userDetailsMapper[llammaId]) ?? {}
-}
+export const useUserLoanDetails = (llammaId: string) =>
+  useStore((state) => state.loans.userDetailsMapper[llammaId]) ?? {}
 
 /**
  * Gets the health status color key for a user's loan
  * @param llammaId - The llamma market identifier
  * @returns Health color key indicating loan status, or empty string if no status available
  */
-export function useUserLoanStatus(llammaId: string): HealthColorKey {
-  const loanDetails = useUserLoanDetails(llammaId)
-
-  return loanDetails?.userStatus?.colorKey ?? ''
-}
+export const useUserLoanStatus = (llammaId: string): HealthColorKey =>
+  useUserLoanDetails(llammaId)?.userStatus?.colorKey ?? ''
