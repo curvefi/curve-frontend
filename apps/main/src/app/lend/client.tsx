@@ -55,7 +55,6 @@ export const App = ({ children }: { children: ReactNode }) => {
     window.addEventListener('scroll', handleScroll)
 
     return () => {
-      setAppLoaded(false)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', () => handleResizeListener())
       window.removeEventListener('scroll', () => handleScrollListener())
