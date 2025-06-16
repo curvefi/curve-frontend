@@ -13,7 +13,7 @@ type Props = {
   percentage: number | undefined
   /** Callback when percentage changes on the slider */
   onChange?: (percentage: number | undefined) => void
-  /** Callback when percentage changes by rleasing the slider or entering a number */
+  /** Callback when percentage changes by releasing the slider or entering a number */
   onCommit?: (percentage: number | undefined) => void
   /** Step increment for the slider and input */
   step?: number
