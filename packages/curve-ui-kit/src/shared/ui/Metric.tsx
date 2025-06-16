@@ -34,6 +34,13 @@ const MetricUnitSize = {
   extraLarge: 'highlightL',
 } as const satisfies Record<string, TypographyVariantKey>
 
+const MetricChangeSize = {
+  small: 'highlightXs',
+  medium: 'highlightM',
+  large: 'highlightM',
+  extraLarge: 'highlightM',
+} as const satisfies Record<string, TypographyVariantKey>
+
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 export type UnitOptions = {
@@ -96,6 +103,7 @@ const formatChange = (value: number) => {
 type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate'>> & {
   change?: number
   unit: UnitOptions | undefined
+  size: keyof typeof MetricSize
   fontVariant: TypographyVariantKey
   fontVariantUnit: TypographyVariantKey
   copyValue: () => void
@@ -115,6 +123,7 @@ const MetricValue = ({
   change,
   abbreviate,
   unit,
+  size,
   fontVariant,
   fontVariantUnit,
   copyValue,
@@ -164,7 +173,10 @@ const MetricValue = ({
       </Tooltip>
 
       {(change || change === 0) && (
-        <Typography variant="highlightM" color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}>
+        <Typography
+          variant={MetricChangeSize[size]}
+          color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}
+        >
           {formatChange(change)}%
         </Typography>
       )}
@@ -250,6 +262,7 @@ export const Metric = ({
     abbreviate,
     change,
     formatter,
+    size,
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
