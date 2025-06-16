@@ -61,7 +61,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Blues[500],
+        Fill: Color.Primary[100],
       },
     },
     Secondary: {
@@ -75,7 +75,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Neutral[900],
+        Fill: Color.Neutral[600],
       },
     },
     Outlined: {
@@ -101,7 +101,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[900],
+        Fill: Grays[500],
       },
     },
     Success: {
@@ -114,8 +114,8 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Grays[900],
       },
       Disabled: {
-        Label: Grays[950],
-        Fill: Greens[200],
+        Label: Text.TextColors.Disabled,
+        Fill: Greens[600],
       },
     },
     Error: {
@@ -128,8 +128,8 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Grays[900],
       },
       Disabled: {
-        Label: Grays[50],
-        Fill: Reds[500],
+        Label: Grays[300],
+        Fill: Reds[700],
       },
     },
     Navigation: {
@@ -153,6 +153,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -182,6 +183,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Primary,
@@ -436,7 +438,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Blues[500],
+        Fill: Color.Primary[800],
       },
     },
     Secondary: {
@@ -450,7 +452,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Neutral[50],
+        Fill: Color.Neutral[600],
       },
     },
     Outlined: {
@@ -489,8 +491,8 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: color[50],
       },
       Disabled: {
-        Label: color[950],
-        Fill: Greens[200],
+        Label: Text.TextColors.Disabled,
+        Fill: Greens[600],
       },
     },
     Error: {
@@ -503,8 +505,8 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: color[900],
       },
       Disabled: {
-        Label: color[50],
-        Fill: Reds[500],
+        Label: color[300],
+        Fill: Reds[700],
       },
     },
     Navigation: {
@@ -528,6 +530,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -555,7 +558,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     OverLined: {
       Inset: InsetOverline,
-      Default: { Label: Text.TextColors.Secondary },
+      Default: {
+        Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
+      },
       Hover: {
         Label: Text.TextColors.Primary,
         Fill: Color.Neutral[200],
@@ -752,7 +758,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violet[500],
+        Fill: Violet[200],
       },
     },
     Secondary: {
@@ -766,7 +772,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Primary[950],
+        Fill: Grays[600],
       },
     },
     Outlined: {
@@ -780,7 +786,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Outline: Text.TextColors.Disabled,
+        Outline: Violet[200],
       },
     },
     Ghost: {
@@ -792,7 +798,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violet[950],
+        Fill: Violet[200],
       },
     },
     Success: {
@@ -805,8 +811,8 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Grays[900],
       },
       Disabled: {
-        Label: Grays[950],
-        Fill: Greens[200],
+        Label: Text.TextColors.Disabled,
+        Fill: Greens[600],
       },
     },
     Error: {
@@ -819,8 +825,8 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Grays[900],
       },
       Disabled: {
-        Label: Grays[50],
-        Fill: Reds[500],
+        Label: Grays[300],
+        Fill: Reds[700],
       },
     },
     Navigation: {
@@ -844,6 +850,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -873,6 +880,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
+        Outline: Color.Neutral[200],
       },
       Hover: {
         Label: Text.TextColors.Primary,

@@ -1,7 +1,6 @@
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
-import { TransitionFunction } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -15,10 +14,12 @@ const medium = 'size-medium' as const
 const large = 'size-large' as const
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
 export const TABS_HEIGHT_CLASSES = { small, medium, large }
+export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders'
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
 const BORDER_SIZE = '2px' as const
+const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
 
 /**
@@ -57,8 +58,6 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
         content: '""',
         position: 'absolute',
         height: BORDER_SIZE,
-        opacity: 0,
-        transition: `opacity ${TransitionFunction}`,
       },
     },
   },
@@ -67,23 +66,19 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 
-const tabStyle = ({ Label, Fill, Outline }: TabStyle) => ({
+const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
   backgroundColor: Fill,
   '::after': {
     backgroundColor: Outline ?? 'transparant',
+    inset,
   },
 })
 
 const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
-  ...tabStyle(Default),
-  '&:hover': tabStyle(Hover),
-  '&:hover::after': { opacity: 1 },
-  '&.Mui-selected': tabStyle(Current),
-  '&.Mui-selected::after': { opacity: 1 },
-  '::after': Inset && {
-    inset: Inset,
-  },
+  ...tabStyle(Default, Inset),
+  '&:hover': tabStyle(Hover, Inset),
+  '&.Mui-selected': tabStyle(Current, Inset),
 })
 
 const tabPadding = (
@@ -104,6 +99,21 @@ const tabSizesNonContained = {
   [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
   [`&.${large} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
 }
+
+/**
+ * Generates CSS selector for inactive tabs (not selected and not hovered).
+ *
+ * @param hideInactiveBorders - If true, applies to all tabs when HIDE_INACTIVE_BORDERS_CLASS is present.
+ *                             If false, applies to all tabs of the variant unconditionally.
+ * @param variants - Tab variant class names
+ */
+const inactiveTabSelector = (hideInactiveBorders: boolean, ...variants: string[]) =>
+  variants
+    .map(
+      (variant) =>
+        `&.${variant}${hideInactiveBorders ? `.${HIDE_INACTIVE_BORDERS_CLASS}` : ''} .MuiTab-root:not(.Mui-selected):not(:hover)::after`,
+    )
+    .join(', ')
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
 export const defineMuiTabs = ({
@@ -133,9 +143,15 @@ export const defineMuiTabs = ({
         ...tabSizesNonContained,
       },
 
-      // Large tabs don't get a hover border
-      [`&.${large} .MuiTab-root::after`]: {
-        height: '0px',
+      // Inactive tabs have a smaller border size
+      [inactiveTabSelector(false, overlined, underlined)]: {
+        height: BORDER_SIZE_INACTIVE,
+      },
+
+      // Large tabs don't get a hover not over/underline inactive border
+      // Also override and hide inactive borders if configured so
+      [`${inactiveTabSelector(true, overlined, underlined)}, &.${large} .MuiTab-root::after`]: {
+        height: '0px !important',
       },
     },
     indicator: {
