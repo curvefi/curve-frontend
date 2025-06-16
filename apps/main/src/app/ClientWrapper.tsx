@@ -12,7 +12,6 @@ import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wag
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
@@ -59,17 +58,17 @@ const useLayoutStoreResponsive = (window?: Window) => {
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
   networks: Record<ChainId, NetworkConfig>,
 ) {
-  const { replace } = useRouter()
+  const { push } = useRouter()
   const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
   const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
   useEffect(() => {
-    if (!network && pathname) {
-      const newUrl = getHashRedirectUrl(window.location)
-      console.info(`Redirecting from ${window.location.href} to ${newUrl}`)
-      replace(newUrl)
+    if (networkId && !network && pathname) {
+      debugger
+      console.warn(`Network unknown ${networkId}, redirecting to ethereum...`)
+      push(replaceNetworkInPath(pathname, 'ethereum'))
     }
-  }, [network, networkId, pathname, replace])
+  }, [network, networkId, pathname, push])
   return network
 }
 
