@@ -3,7 +3,7 @@ import { isAddress } from 'viem'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { UserParams } from './root-keys'
 
-export const userAddressValidationGroup = ({ userAddress }: UserParams) =>
+export const userAddressValidationGroup = <T extends string>({ userAddress }: UserParams<T>) =>
   group('userAddressValidation', () => {
     test('userAddress', 'Address is required', () => {
       enforce(userAddress).isNotEmpty()

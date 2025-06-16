@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
+import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from './types'
 import { TokenSelector } from './'
@@ -168,7 +170,16 @@ const TokenSelectorComponent = ({
 }: React.ComponentProps<typeof TokenSelector>) => {
   const [selectedToken, setSelectedToken] = useState(selectedTokenInit)
 
-  return <TokenSelector {...props} selectedToken={selectedToken} onToken={setSelectedToken} />
+  return (
+    <TokenSelector
+      {...props}
+      selectedToken={selectedToken}
+      onToken={(newToken) => {
+        action('onToken')(newToken)
+        setSelectedToken(newToken)
+      }}
+    />
+  )
 }
 
 const meta: Meta<typeof TokenSelector> = {
@@ -187,7 +198,7 @@ const meta: Meta<typeof TokenSelector> = {
     error: '',
     disabledTokens: defaultDisabledTokens,
     disableSorting: false,
-    onToken: (token) => console.info('Selected token:', token),
+    onToken: fn(),
   },
   argTypes: {
     tokens: {

@@ -15,9 +15,10 @@ import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { Metric } from '@ui-kit/shared/ui/Metric'
+import { Metric, type UnitOptions } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarket } from '../../entities/llama-markets'
+import { LlamaMarketType } from '../../entities/llama-markets'
 
 const { Spacing } = SizesAndSpaces
 
@@ -30,7 +31,8 @@ function useMobileGraphSize() {
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
-  const { leverage, utilizationPercent, liquidityUsd, userHasPosition, url, address, rates } = market
+  const { address, assets, leverage, liquidityUsd, rates, type, url, userHasPosition, utilizationPercent } = market
+  const borrowedUnit: UnitOptions = { symbol: assets.borrowed.symbol, position: 'suffix', abbreviate: true }
   const graphSize = useMobileGraphSize()
   return (
     <>
@@ -55,7 +57,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           ></CardHeader>
         </Grid>
         <Grid size={6}>
-          <Metric label={t`7D Avg Borrow Rate`} value={rates.borrow} unit="percentage" />
+          <Metric label={t`Borrow Rate`} value={rates.borrow} unit="percentage" />
         </Grid>
         {leverage > 0 && (
           <Grid size={6}>
@@ -91,12 +93,16 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </Grid>
           {earnings?.earnings != null && (
             <Grid size={6}>
-              <Metric label={t`Earnings`} value={earnings.earnings} unit="dollar" />
+              <Metric label={t`Earnings`} value={earnings.earnings.earnings} unit="dollar" />
             </Grid>
           )}
-          {deposited?.deposited != null && (
+          {deposited?.earnings != null && (
             <Grid size={6}>
-              <Metric label={t`Supplied Amount`} value={deposited.deposited} unit="dollar" />
+              <Metric
+                label={t`Supplied Amount`}
+                value={deposited.earnings.deposited}
+                unit={type === LlamaMarketType.Lend ? borrowedUnit : 'dollar'}
+              />
             </Grid>
           )}
         </Grid>

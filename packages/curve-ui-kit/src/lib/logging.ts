@@ -46,7 +46,12 @@ const getStatusStyle = (status: LogStatus) => {
 }
 
 function argToString(i: unknown, max = 200, trailing = 3) {
-  let str = JSON.stringify(i)
+  let str
+  try {
+    str = JSON.stringify(i)
+  } catch {
+    return String(i)
+  }
   if (str.length > max) {
     str = `${str.slice(0, max - trailing)}...${str.slice(-trailing)}`
   }

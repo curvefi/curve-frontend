@@ -101,6 +101,7 @@ export const Sizing = {
 
 export const Duration = {
   Snackbar: 6000,
+  TooltipEnter: 500,
 }
 
 export const TransitionFunction = `ease-out 256ms`
