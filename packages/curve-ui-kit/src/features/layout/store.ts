@@ -1,5 +1,6 @@
-import { create } from 'zustand'
-import { immer } from 'zustand/middleware/immer'
+import produce from 'immer'
+import { create, type StateCreator } from 'zustand'
+import { devtools } from 'zustand/middleware'
 import type { LayoutHeight, PageWidthClassName } from './types'
 
 interface LayoutState {
@@ -54,17 +55,18 @@ const DEFAULT_STATE: LayoutState = {
   isPageVisible: true,
 }
 
-export const useLayoutStore = create<LayoutState & LayoutActions>()(
-  immer((set) => ({
-    ...DEFAULT_STATE,
-    setLayoutWidth: (pageWidthClassName: PageWidthClassName) => {
-      const isLgUp = pageWidthClassName.startsWith('page-large') || pageWidthClassName.startsWith('page-wide')
-      const isMd = pageWidthClassName.startsWith('page-medium')
-      const isSmUp = pageWidthClassName === 'page-small'
-      const isXSmDown = pageWidthClassName.startsWith('page-small-x')
-      const isXXSm = pageWidthClassName === 'page-small-xx'
+type LayoutStore = LayoutState & LayoutActions
 
-      set((state) => {
+const layoutStore: StateCreator<LayoutStore> = (set) => ({
+  ...DEFAULT_STATE,
+  setLayoutWidth: (pageWidthClassName: PageWidthClassName) => {
+    const isLgUp = pageWidthClassName.startsWith('page-large') || pageWidthClassName.startsWith('page-wide')
+    const isMd = pageWidthClassName.startsWith('page-medium')
+    const isSmUp = pageWidthClassName === 'page-small'
+    const isXSmDown = pageWidthClassName.startsWith('page-small-x')
+    const isXXSm = pageWidthClassName === 'page-small-xx'
+    set(
+      produce((state) => {
         state.windowWidth = window.innerWidth
         state.pageWidth = pageWidthClassName
         state.isXSmDown = isXSmDown
@@ -72,32 +74,38 @@ export const useLayoutStore = create<LayoutState & LayoutActions>()(
         state.isMdUp = isMd || isLgUp
         state.isLgUp = isLgUp
         state.isXXSm = isXXSm
-      })
-    },
-    setLayoutHeight: (key: keyof LayoutHeight, value: number) => {
-      set((state) => {
+      }),
+    )
+  },
+  setLayoutHeight: (key: keyof LayoutHeight, value: number) =>
+    set(
+      produce((state) => {
         state.height[key] = value
 
         // Calculate navHeight based on mainNav and secondaryNav
         state.navHeight = state.height.mainNav + state.height.secondaryNav
-      })
-    },
-    updateShowScrollButton: (scrollY: number) => {
-      const showScrollButton = scrollY > 30
-      set((state) => {
+      }),
+    ),
+  updateShowScrollButton: (scrollY) =>
+    set(
+      produce((state) => {
         state.scrollY = scrollY
-        state.showScrollButton = showScrollButton
-      })
-    },
-    setScrollY: (scrollY: number) => {
-      set((state) => {
+        state.showScrollButton = scrollY > 30
+      }),
+    ),
+  setScrollY: (scrollY) =>
+    set(
+      produce((state) => {
         state.scrollY = scrollY
-      })
-    },
-    setPageVisible: (visible: boolean) => {
-      set((state) => {
+      }),
+    ),
+  setPageVisible: (visible) =>
+    set(
+      produce((state) => {
         state.isPageVisible = visible
-      })
-    },
-  })),
-)
+      }),
+    ),
+})
+
+export const useLayoutStore =
+  process.env.NODE_ENV === 'development' ? create(devtools(layoutStore)) : create(layoutStore)
