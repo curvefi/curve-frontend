@@ -107,7 +107,7 @@ const tabSizesNonContained = {
  *                             If false, applies to all tabs of the variant unconditionally.
  * @param variants - Tab variant class names
  */
-const inactiveTabSelector = (hideInactiveBorders: boolean, ...variants: string[]) =>
+const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boolean }, ...variants: string[]) =>
   variants
     .map(
       (variant) =>
@@ -144,15 +144,16 @@ export const defineMuiTabs = ({
       },
 
       // Inactive tabs have a smaller border size
-      [inactiveTabSelector(false, overlined, underlined)]: {
+      [inactiveTabSelector({ hideInactiveBorders: false }, overlined, underlined)]: {
         height: BORDER_SIZE_INACTIVE,
       },
 
       // Large tabs don't get a hover not over/underline inactive border
       // Also override and hide inactive borders if configured so
-      [`${inactiveTabSelector(true, overlined, underlined)}, &.${large} .MuiTab-root::after`]: {
-        height: '0px !important',
-      },
+      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${large} .MuiTab-root::after`]:
+        {
+          height: '0px !important',
+        },
     },
     indicator: {
       backgroundColor: Layer.Highlight.Outline,
