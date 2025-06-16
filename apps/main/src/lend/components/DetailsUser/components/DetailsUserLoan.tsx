@@ -24,6 +24,7 @@ import Box from '@ui/Box'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { breakpoints } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { PositionDetailsWrapper } from './PositionDetailsWrapper'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
@@ -90,6 +91,8 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
               <DetailsUserLoanAlertSoftLiquidation {...pageProps} />
             </AlertContent>
           )}
+
+          <PositionDetailsWrapper rChainId={rChainId} market={market} userActiveKey={userActiveKey} />
 
           <ContentWrapper paddingTop isBorderBottom>
             <StatsWrapper>

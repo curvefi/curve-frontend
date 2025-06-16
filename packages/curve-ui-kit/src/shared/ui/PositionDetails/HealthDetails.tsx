@@ -25,13 +25,14 @@ export const HealthDetails = ({ health }: { health: Health }) => (
         borderColor: (t) => t.design.Layer.Highlight.Fill,
       }}
     >
-      <Box display="grid" gridTemplateColumns="6rem 1fr" alignItems="center">
+      <Box display="grid" gridTemplateColumns="7rem 1fr" alignItems="end">
         <Metric
           label={t`Health`}
           value={Number(health?.value)}
           loading={health?.loading}
           unit="percentage"
           decimals={2}
+          size="large"
         />
         <HealthBar health={Number(health?.value)} />
       </Box>

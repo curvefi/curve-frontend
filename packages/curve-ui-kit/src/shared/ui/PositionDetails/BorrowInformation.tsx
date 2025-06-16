@@ -52,7 +52,14 @@ export const BorrowInformation = ({
         unit="percentage"
       />
       {app === 'lend' && (
-        <Metric size="small" label={t`PnL`} value={pnl?.value} loading={pnl?.value == null && pnl?.loading} />
+        <Metric
+          size="small"
+          label={t`PnL`}
+          unit="dollar"
+          value={pnl?.value}
+          change={pnl?.percentageChange ?? undefined}
+          loading={pnl?.value == null && pnl?.loading}
+        />
       )}
       <Metric
         size="small"
@@ -68,7 +75,7 @@ export const BorrowInformation = ({
         loading={ltv?.value == null && ltv?.loading}
         unit="percentage"
       />
-      {app === 'lend' && (
+      {app === 'lend' && leverage?.value && leverage?.value > 1 && (
         <Metric
           size="small"
           label={t`Leverage`}
