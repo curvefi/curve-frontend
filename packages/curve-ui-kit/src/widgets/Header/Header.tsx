@@ -12,7 +12,7 @@ import { DESKTOP_HEADER_HEIGHT, DesktopHeader } from './DesktopHeader'
 import { calcMobileHeaderHeight, MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
 
-export const Header = <TChainId extends number>({ routes, currentApp, ...props }: HeaderProps<TChainId>) => {
+export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const isDesktop = useIsDesktop()
   const [isBeta] = useBetaFlag()

@@ -1,9 +1,7 @@
-import sortBy from 'lodash/sortBy'
 import type { StoreApi } from 'zustand'
 import { defaultNetworks, getNetworks } from '@/dex/lib/networks'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
-import type { ChainOption } from '@ui-kit/features/switch-chain'
+import { CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -12,7 +10,6 @@ type SliceState = {
   networks: Record<number, NetworkConfig>
   nativeToken: Record<number, NativeToken | undefined>
   networksIdMapper: Record<string, number>
-  visibleNetworksList: ChainOption<ChainId>[]
 }
 
 export type NetworksSlice = {
@@ -27,7 +24,6 @@ const DEFAULT_STATE: SliceState = {
   networks: defaultNetworks,
   nativeToken: {},
   networksIdMapper: {},
-  visibleNetworksList: [],
 }
 
 const sliceKey = 'networks'
@@ -50,24 +46,6 @@ const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State
       ),
     )
 
-  const setVisibleNetworksList = (networks: Networks): void => {
-    const visibleNetworksList = Object.values(networks)
-      .filter((networkConfig) => networkConfig.showInSelectNetwork)
-      .map((networkConfig) => ({
-        label: networkConfig.name,
-        chainId: networkConfig.chainId,
-        networkId: networkConfig.networkId,
-        src: networkConfig.logoSrc,
-        srcDark: networkConfig.logoSrcDark,
-        isTestnet: networkConfig.isTestnet,
-      }))
-
-    setStateByKey(
-      'visibleNetworksList',
-      sortBy(visibleNetworksList, (n) => n.label),
-    )
-  }
-
   return {
     [sliceKey]: {
       ...DEFAULT_STATE,
@@ -76,7 +54,6 @@ const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State
           const networks = await getNetworks()
           setStateByKey('networks', networks)
           setNetworksIdMapper(networks)
-          setVisibleNetworksList(networks)
           return networks
         } catch (error) {
           console.error(error)

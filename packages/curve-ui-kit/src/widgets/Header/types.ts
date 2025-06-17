@@ -1,5 +1,5 @@
 import type { RefObject } from 'react'
-import type { ChainOption } from '@ui-kit/features/switch-chain'
+import type { NetworkMapping } from '@ui/utils'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
 export type AppPage = {
@@ -27,24 +27,24 @@ export type NavigationSection = {
   links: AppPage[]
 }
 
-export type HeaderBaseProps<TChainId> = {
+export type HeaderBaseProps = {
   mainNavRef: RefObject<HTMLDivElement | null>
   currentMenu: AppMenuOption
   isLite: boolean | undefined
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: string // ID of the network as displayed in the URL
-  chainId: TChainId
-  chains: ChainOption<TChainId>[]
+  chainId: number
+  networks: NetworkMapping
   appStats?: { label: string; value: string }[]
 }
 
-export type HeaderImplementationProps<TChainId> = HeaderBaseProps<TChainId> & {
+export type HeaderImplementationProps = HeaderBaseProps & {
   pages: AppPage[]
   sections: NavigationSection[]
   height: string
 }
 
-export type HeaderProps<TChainId> = HeaderBaseProps<TChainId> & {
+export type HeaderProps = HeaderBaseProps & {
   currentApp: AppName
   routes: Record<AppMenuOption, AppRoute[]>
 }

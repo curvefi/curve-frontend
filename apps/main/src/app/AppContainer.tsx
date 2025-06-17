@@ -1,12 +1,11 @@
 import { type ReactNode, useMemo, useRef } from 'react'
-import { visibleNetworksList } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { useLendAppStats } from '@/lend/hooks/useLendAppStats'
 import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
 import type { IChainId as CurveChainId } from '@curvefi/api/lib/interfaces'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
-import type { NetworkDef } from '@ui/utils'
+import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
 import { APP_LINK, type AppName } from '@ui-kit/shared/routes'
@@ -28,14 +27,16 @@ export const useAppRoutes = (chainId: CurveChainId) => ({
   dex: useDexRoutes(chainId),
 })
 
-export const AppContainer = ({
+export const AppContainer = <TId extends string, TChainId extends number>({
   children,
   currentApp,
   network,
+  networks,
 }: {
   children: ReactNode
   currentApp: AppName
-  network: NetworkDef
+  network: NetworkDef<TId, TChainId>
+  networks: NetworkMapping<TId, TChainId>
 }) => {
   const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   const layoutHeight = useLayoutStore((state) => state.height)
@@ -67,7 +68,7 @@ export const AppContainer = ({
         networkId={network.id}
         mainNavRef={mainNavRef}
         currentMenu={currentApp}
-        chains={visibleNetworksList}
+        networks={networks}
         globalAlertRef={globalAlertRef}
         isLite={network.isLite}
         appStats={useAppStats(currentApp, network)}

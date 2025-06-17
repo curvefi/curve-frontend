@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import Box from '@mui/material/Box'
-import { ChainOption } from './ChainSwitcher'
+import type { NetworkDef } from '@ui/utils'
 
-type ChainIconProps<TChainId> = {
-  chain: ChainOption<TChainId>
+type ChainIconProps = {
+  network: NetworkDef
   size?: number
 }
 
@@ -11,15 +11,12 @@ type ChainIconProps<TChainId> = {
  * Display a chain icon for the chain switcher.
  * This is different from icons/ChainIcon because it requires a fixed size, some padding and no responsive design.
  */
-export const ChainSwitcherIcon = <TChainId extends number>({
-  chain: { chainId, label, src },
-  size = 28,
-}: ChainIconProps<TChainId>) => (
+export const ChainSwitcherIcon = ({ network: { chainId, name, logoSrc }, size = 28 }: ChainIconProps) => (
   <Box component="span" alignItems="center" display="flex" data-testid={`chain-icon-${chainId}`}>
     <Image
-      alt={label}
+      alt={name}
       // onError={(evt) => (evt.target as HTMLImageElement).src = src}
-      src={src}
+      src={logoSrc}
       loading="lazy"
       width={size}
       height={size}

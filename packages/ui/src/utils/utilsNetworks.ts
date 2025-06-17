@@ -189,7 +189,14 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   symbol: string
   rpcUrl: string
   showInSelectNetwork: boolean
+  logoSrc: string
+  logoSrcDark: string
 }
+
+export type NetworkMapping<TId extends string = string, TChainId extends number = number> = Record<
+  TChainId,
+  NetworkDef<TId, TChainId>
+>
 
 export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
   networkId: string
@@ -199,8 +206,6 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  logoSrc: string
-  logoSrcDark: string
   integrations: { listUrl: string; tagsUrl: string }
   rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   scanAddressPath: (hash: string) => string

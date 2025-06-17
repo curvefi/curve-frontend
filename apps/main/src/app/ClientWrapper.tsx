@@ -75,12 +75,12 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
   return network
 }
 
-export const ClientWrapper = <ChainId extends number, NetworkConfig extends NetworkDef>({
+export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
 }: {
   children: ReactNode
-  networks: Record<ChainId, NetworkConfig>
+  networks: Record<ChainId, NetworkDef<TId, ChainId>>
 }) => {
   const theme = useUserProfileStore((state) => state.theme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
@@ -110,7 +110,7 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
             <QueryProvider persister={persister} queryClient={queryClient}>
               <WagmiProvider config={config}>
                 <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
-                  <AppContainer currentApp={currentApp} network={network}>
+                  <AppContainer currentApp={currentApp} network={network} networks={networks}>
                     {children}
                   </AppContainer>
                 </ConnectionProvider>
