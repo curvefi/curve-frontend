@@ -392,7 +392,7 @@ export const getNetworkDefs = async <NetworkEnum extends string, ChainId extends
   const networks = await getNetworks()
   const entries = recordValues(networks)
   const newEntries = entries.map((networkConfig) => {
-    const { id, name, chainId, explorerUrl, isTestnet, symbol, rpcUrl, showInSelectNetwork } = networkConfig
+    const { id, name, chainId, explorerUrl, isTestnet, symbol, rpcUrl, showInSelectNetwork, isLite } = networkConfig
     const def: NetworkDef<NetworkEnum, ChainId> = {
       id: id as NetworkEnum,
       name,
@@ -402,6 +402,7 @@ export const getNetworkDefs = async <NetworkEnum extends string, ChainId extends
       symbol,
       rpcUrl,
       showInSelectNetwork,
+      isLite,
     }
     return [chainId, def] as const
   })

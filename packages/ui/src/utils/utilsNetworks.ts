@@ -180,6 +180,7 @@ export const NETWORK_BASE_CONFIG = {
 } as const
 
 export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
+  isLite?: boolean
   id: TId
   name: string
   chainId: TChainId

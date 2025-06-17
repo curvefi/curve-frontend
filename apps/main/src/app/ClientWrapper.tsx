@@ -3,6 +3,7 @@ import delay from 'lodash/delay'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { WagmiProvider } from 'wagmi'
+import { AppContainer } from '@/app/AppContainer'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -99,6 +100,7 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
   )
   const network = useNetworkFromUrl(networks)
 
+  const currentApp = getCurrentApp(pathname)
   return (
     network && (
       <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
@@ -107,12 +109,10 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <WagmiProvider config={config}>
-                <ConnectionProvider
-                  app={getCurrentApp(pathname)}
-                  network={network}
-                  onChainUnavailable={onChainUnavailable}
-                >
-                  {children}
+                <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
+                  <AppContainer currentApp={currentApp} network={network}>
+                    {children}
+                  </AppContainer>
                 </ConnectionProvider>
               </WagmiProvider>
             </QueryProvider>

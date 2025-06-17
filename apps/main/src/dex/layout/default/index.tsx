@@ -1,20 +1,11 @@
-import { ReactNode, useCallback, useMemo, useRef } from 'react'
-import styled from 'styled-components'
-import { ROUTE } from '@/dex/constants'
-import Header from '@/dex/layout/default/Header'
+import { ReactNode, useCallback } from 'react'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore, layoutHeightKeys } from '@ui-kit/features/layout'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
-import { isChinese, t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { Footer } from '@ui-kit/widgets/Footer'
-import { useHeaderHeight } from '@ui-kit/widgets/Header'
-import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
 const useAutoRefresh = (network: NetworkConfig) => {
   const { curveApi } = useConnection()
@@ -75,68 +66,8 @@ const useAutoRefresh = (network: NetworkConfig) => {
 }
 
 const BaseLayout = ({ children, network }: { children: ReactNode } & { network: NetworkConfig }) => {
-  const globalAlertRef = useRef<HTMLDivElement>(null)
-  const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
-  useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
   useAutoRefresh(network)
-
-  const layoutHeight = useLayoutStore((state) => state.height)
-  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
-
-  const sections = useMemo(() => getSections(network.id), [network.id])
-  const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
-
-  return (
-    <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header sections={sections} globalAlertRef={globalAlertRef} networkId={network.id} />
-      <Main minHeight={minHeight}>{children}</Main>
-      <Footer appName="dex" networkId={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
-    </Container>
-  )
+  return children
 }
-
-const getSections = (network: string): NavigationSection[] => [
-  {
-    title: t`Documentation`,
-    links: [
-      { href: 'https://news.curve.finance/', label: t`News` },
-      { href: 'https://resources.curve.finance/lending/understanding-lending/', label: t`User Resources` },
-      { href: 'https://docs.curve.finance', label: t`Developer Resources` },
-      { href: getPath({ network }, ROUTE.PAGE_DISCLAIMER), label: t`Risk Disclaimers` },
-      { href: getPath({ network }, ROUTE.PAGE_INTEGRATIONS), label: t`Integrations` },
-      { href: 'https://resources.curve.finance/glossary-branding/branding/', label: t`Branding` },
-      ...(isChinese() ? [{ href: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
-    ],
-  },
-  {
-    title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
-    links: [
-      { href: 'https://docs.curve.finance/references/audits/', label: t`Audits` },
-      { href: 'https://docs.curve.finance/security/security/', label: t`Bug Bounty` },
-      { href: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
-      { href: 'https://curvemonitor.com', label: t`Curve Monitor` },
-      { href: 'https://crvhub.com/', label: t`Crvhub` },
-    ],
-  },
-]
-
-type MainProps = {
-  minHeight: number
-}
-
-const Main = styled.main<MainProps>`
-  margin: 0 auto;
-  max-width: var(--width);
-  min-height: ${({ minHeight }) => `calc(100vh - ${minHeight}px)`};
-  width: 100%;
-`
-
-const Container = styled.div<{ globalAlertHeight: number }>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
-`
 
 export default BaseLayout

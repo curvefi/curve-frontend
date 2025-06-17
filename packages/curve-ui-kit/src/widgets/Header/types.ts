@@ -30,20 +30,21 @@ export type NavigationSection = {
 export type HeaderBaseProps<TChainId> = {
   mainNavRef: RefObject<HTMLDivElement | null>
   currentMenu: AppMenuOption
-  isLite?: boolean
+  isLite: boolean | undefined
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: string // ID of the network as displayed in the URL
   chainId: TChainId
   chains: ChainOption<TChainId>[]
-  height: string
-  sections: NavigationSection[]
   appStats?: { label: string; value: string }[]
 }
 
 export type HeaderImplementationProps<TChainId> = HeaderBaseProps<TChainId> & {
   pages: AppPage[]
+  sections: NavigationSection[]
+  height: string
 }
 
 export type HeaderProps<TChainId> = HeaderBaseProps<TChainId> & {
-  routes: AppRoute[]
+  currentApp: AppName
+  routes: Record<AppMenuOption, AppRoute[]>
 }

@@ -63,7 +63,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   app,
   children,
 }: {
-  network: NetworkConfig | undefined
+  network: NetworkConfig
   onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
   app: AppName
   children: ReactNode
@@ -76,7 +76,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   const libKey = AppLibs[app]
 
   useEffect(() => {
-    if (isReconnecting || !network) return // wait for wagmi to auto-reconnect
+    if (isReconnecting) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
 
