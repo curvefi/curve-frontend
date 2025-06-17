@@ -38,7 +38,6 @@ import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
-import YieldNestSeeds from './YieldNestSeeds.json'
 import YieldNestTokens from './YieldNestTokens.json'
 
 export {
@@ -50,7 +49,6 @@ export {
   Mellow,
   Symbiotic,
   Usual,
-  YieldNestSeeds,
   Fraxtal,
   Resolv,
   Lombard,
