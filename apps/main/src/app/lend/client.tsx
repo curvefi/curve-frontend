@@ -14,6 +14,6 @@ export const App = ({ children }: { children: ReactNode }) => {
   const chainId = networksIdMapper[networkId]
   const hydrate = useStore((s) => s.hydrate)
   const isHydrated = useHydration('llamaApi', hydrate, chainId)
-  useRedirectToEth(networks[chainId], networkId)
+  useRedirectToEth(networks[chainId], networkId, isHydrated)
   return <Page>{isHydrated && children}</Page>
 }

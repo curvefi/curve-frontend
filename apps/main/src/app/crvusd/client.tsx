@@ -22,7 +22,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const hydrate = useStore((s) => s.hydrate)
 
-  const hydrated = useHydration('llamaApi', hydrate, chainId)
+  const isHydrated = useHydration('llamaApi', hydrate, chainId)
 
   usePageVisibleInterval(
     () => {
@@ -35,7 +35,7 @@ export const App = ({ children }: { children: ReactNode }) => {
     isPageVisible,
   )
 
-  useRedirectToEth(networks[chainId], networkId)
+  useRedirectToEth(networks[chainId], networkId, isHydrated)
 
-  return <Page>{hydrated && children}</Page>
+  return <Page>{isHydrated && children}</Page>
 }

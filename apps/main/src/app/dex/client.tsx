@@ -17,9 +17,9 @@ export const App = ({ children }: { children: ReactNode }) => {
   const hydrate = useStore((s) => s.hydrate)
 
   const chainId = networksIdMapper[networkId]
-  const network = networks[chainId]
-  const hydrated = useHydration('curveApi', hydrate, chainId)
-  useRedirectToEth(networks[chainId], networkId)
+  const network = networks?.[chainId]
+  const isHydrated = useHydration('curveApi', hydrate, chainId)
+  useRedirectToEth(network, networkId, isHydrated)
 
   useEffect(() => {
     const abort = new AbortController()
@@ -38,5 +38,5 @@ export const App = ({ children }: { children: ReactNode }) => {
     }
   }, [fetchNetworks])
 
-  return <Page network={network}>{appLoaded && hydrated && children}</Page>
+  return <Page network={network}>{appLoaded && isHydrated && children}</Page>
 }
