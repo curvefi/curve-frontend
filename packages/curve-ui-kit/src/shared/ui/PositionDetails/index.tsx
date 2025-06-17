@@ -1,7 +1,11 @@
-import { CardHeader, Box } from '@mui/material'
+import { CardHeader, Box, Typography } from '@mui/material'
+import { Alert } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { BorrowInformation } from '@ui-kit/shared/ui/PositionDetails/BorrowInformation'
 import { HealthDetails } from '@ui-kit/shared/ui/PositionDetails/HealthDetails'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 export type Pnl = { value: number | undefined | null; percentageChange: number | undefined | null; loading: boolean }
 export type Health = { value: number | undefined | null; loading: boolean }
@@ -16,6 +20,7 @@ export type TotalDebt = { value: number | undefined | null; loading: boolean }
 
 export type PositionDetailsProps = {
   app: 'crvusd' | 'lend'
+  isSoftLiquidation: boolean
   health: Health
   borrowRate: BorrowRate
   accruedInterest?: AccruedInterest // doesn't yet exist on API for any app
@@ -30,6 +35,7 @@ export type PositionDetailsProps = {
 
 export const PositionDetails = ({
   app,
+  isSoftLiquidation,
   health,
   borrowRate,
   accruedInterest,
@@ -43,6 +49,24 @@ export const PositionDetails = ({
 }: PositionDetailsProps) => (
   <Box>
     <CardHeader title={t`Your Position Details`} />
+    {isSoftLiquidation && (
+      <Box
+        sx={{
+          paddingTop: Spacing.md,
+          paddingRight: Spacing.md,
+          paddingLeft: Spacing.md,
+        }}
+      >
+        <Alert variant="filled" severity="error">
+          <Box display="flex" flexDirection="column">
+            <Typography variant="bodySBold">{t`Soft-Liquidation active`}</Typography>
+            <Typography variant="bodyXsRegular">
+              {t`Price has entered the liquidation zone and your collateral is at risk. Manage your position to avoid full liquidation.`}
+            </Typography>
+          </Box>
+        </Alert>
+      </Box>
+    )}
     <HealthDetails health={health} />
     <BorrowInformation
       app={app}

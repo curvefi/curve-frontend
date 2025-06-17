@@ -52,6 +52,7 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
 
   const positionDetailsProps: PositionDetailsProps = {
     app: 'lend',
+    isSoftLiquidation: userLoanDetails?.status?.colorKey === 'soft_liquidation',
     health: {
       value: Number(userLoanDetails?.healthFull),
       loading: isFetchingAll ?? true,
