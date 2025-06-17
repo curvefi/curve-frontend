@@ -40,7 +40,7 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
 
     if (recentSnapshots.length === 0) return null
 
-    return meanBy(recentSnapshots, ({ rate }) => rate) * 100
+    return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
   }, [crvUsdSnapshots])
 
   const collateralValue = useMemo(() => {
