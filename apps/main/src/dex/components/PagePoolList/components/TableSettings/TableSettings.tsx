@@ -11,6 +11,7 @@ import SearchListInput from '@ui/SearchInput/SearchListInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -39,7 +40,7 @@ const TableSettings = ({
   updatePath,
 }: Props) => {
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey])
-  const isLgUp = useStore((state) => state.isLgUp)
+  const isLgUp = useLayoutStore((state) => state.isLgUp)
   const { poolFilters } = useStore((state) => state.networks.networks[rChainId])
 
   const FILTERS: PoolListFilter[] = useMemo(

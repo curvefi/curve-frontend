@@ -17,6 +17,7 @@ import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
@@ -36,7 +37,7 @@ const IntegrationsComp = ({
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)
-  const isXSmDown = useStore((state) => state.layout.isXSmDown)
+  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
 

@@ -31,6 +31,7 @@ import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -52,7 +53,7 @@ const LoanCreate = ({
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
