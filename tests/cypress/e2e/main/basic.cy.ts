@@ -1,3 +1,4 @@
+import { oneOf } from '@/support/generators'
 import { LOAD_TIMEOUT } from '@/support/ui'
 
 describe('Basic Access Test', () => {
@@ -12,6 +13,12 @@ describe('Basic Access Test', () => {
       cy.visit(`${path}#/ethereum/create-pool`)
       cy.title(LOAD_TIMEOUT).should('equal', 'Create Pool - Curve')
       cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/create-pool\/$/)
+    })
+
+    it('should redirect from the old integrations URL successfully', () => {
+      cy.visit(`${path}${oneOf('', '#')}/integrations`)
+      cy.title(LOAD_TIMEOUT).should('equal', 'Integrations - Curve')
+      cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/integrations\/$/)
     })
   })
 })

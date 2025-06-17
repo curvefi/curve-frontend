@@ -113,5 +113,5 @@ export const getCurrentApp = (path: string | null): AppName => {
 
 export const getCurrentNetwork = (path: string | null): string => {
   const [, , networkId] = path?.split('/') || []
-  return networkId ?? 'ethereum'
+  return networkId
 }

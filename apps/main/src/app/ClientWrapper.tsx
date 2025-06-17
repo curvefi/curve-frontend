@@ -12,12 +12,13 @@ import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wag
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
+import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const useLayoutStoreResponsive = (window?: Window) => {
-  const { document } = window || {}
+  const { document } = typeof window === 'undefined' ? {} : window
   const theme = useUserProfileStore((state) => state.theme)
   const pageWidth = useLayoutStore((state) => state.pageWidth)
   const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
@@ -58,17 +59,18 @@ const useLayoutStoreResponsive = (window?: Window) => {
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
   networks: Record<ChainId, NetworkConfig>,
 ) {
-  const { push } = useRouter()
+  const { replace } = useRouter()
   const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
   const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
   useEffect(() => {
-    if (networkId && !network && pathname) {
-      debugger
-      console.warn(`Network unknown ${networkId}, redirecting to ethereum...`)
-      push(replaceNetworkInPath(pathname, 'ethereum'))
+    if (network || !pathname) {
+      return
     }
-  }, [network, networkId, pathname, push])
+    const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(window.location)
+    console.warn(`Network unknown in ${window.location.href}, redirecting to ${redirectUrl}...`)
+    replace(redirectUrl)
+  }, [network, networkId, pathname, replace])
   return network
 }
 
@@ -83,7 +85,7 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
-  useLayoutStoreResponsive(typeof window === 'undefined' ? undefined : window)
+  useLayoutStoreResponsive()
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
@@ -105,15 +107,13 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <WagmiProvider config={config}>
-                {network && (
-                  <ConnectionProvider
-                    app={getCurrentApp(pathname)}
-                    network={network}
-                    onChainUnavailable={onChainUnavailable}
-                  >
-                    {children}
-                  </ConnectionProvider>
-                )}
+                <ConnectionProvider
+                  app={getCurrentApp(pathname)}
+                  network={network}
+                  onChainUnavailable={onChainUnavailable}
+                >
+                  {children}
+                </ConnectionProvider>
               </WagmiProvider>
             </QueryProvider>
           </OverlayProvider>
