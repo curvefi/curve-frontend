@@ -39,6 +39,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -60,7 +61,7 @@ const LoanDeleverage = ({
   const formEstGas = useStore((state) => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
   const formStatus = useStore((state) => state.loanDeleverage.formStatus)
   const formValues = useStore((state) => state.loanDeleverage.formValues)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
