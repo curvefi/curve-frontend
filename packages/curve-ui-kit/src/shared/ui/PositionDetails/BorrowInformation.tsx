@@ -54,7 +54,7 @@ export const BorrowInformation = ({
       {app === 'lend' && (
         <Metric
           size="small"
-          label={t`PnL`}
+          label={t`PNL`}
           unit="dollar"
           value={pnl?.value}
           change={pnl?.percentageChange ?? undefined}

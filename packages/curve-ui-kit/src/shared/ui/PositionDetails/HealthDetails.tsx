@@ -25,10 +25,11 @@ export const HealthDetails = ({ health }: { health: Health }) => (
         borderColor: (t) => t.design.Layer.Highlight.Fill,
       }}
     >
-      <Box display="grid" gridTemplateColumns="7rem 1fr" alignItems="end">
+      <Box display="grid" gridTemplateColumns="auto 1fr" alignItems="end" gap={5}>
         <Metric
           label={t`Health`}
           value={Number(health?.value)}
+          abbreviate
           loading={health?.loading}
           unit="percentage"
           decimals={2}
