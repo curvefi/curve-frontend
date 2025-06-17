@@ -12,14 +12,14 @@ import {
 } from 'recharts'
 import styled from 'styled-components'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
-import { HeathColorKey } from '@/lend/types/lend.types'
+import { HealthColorKey } from '@/lend/types/lend.types'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]
-  healthColorKey: HeathColorKey | undefined
+  healthColorKey: HealthColorKey | undefined
   height?: number
   isDetailView?: boolean // component not inside the form
   isManage: boolean

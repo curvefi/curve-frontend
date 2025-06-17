@@ -23,6 +23,7 @@ import {
   DEFAULT_HEALTH_MODE,
   hasDeleverage,
 } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -63,7 +64,7 @@ const LoanDeleverage = ({
   const formValues = useStore((state) => state.loanDeleverage.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)

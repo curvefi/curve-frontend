@@ -11,6 +11,7 @@ import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 const DetailInfoLiqRange = ({
   rChainId,
@@ -43,13 +44,12 @@ const DetailInfoLiqRange = ({
   userActiveKey: string
   handleLiqRangesEdit?: () => void
 }) => {
-  const userDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
+  const { prices: currPrices, bands: currBands } = useUserLoanDetails(userActiveKey)
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
   const theme = useUserProfileStore((state) => state.theme)
 
   const { prices: loanPrices } = loanPricesResp ?? {}
-  const { prices: currPrices, bands: currBands } = userDetailsResp?.details ?? {}
 
   const { parsedNewBands, parsedNewPrices } = useMemo(
     () =>
