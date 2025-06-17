@@ -47,7 +47,11 @@ const Page = (params: CollateralUrlParams) => {
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
 
-  const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
+  const { llamma, displayName } = useStore(
+    (state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId],
+  )
+  const llammaId = llamma?.id || ''
+
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const navHeight = useLayoutStore((state) => state.navHeight)
@@ -63,8 +67,6 @@ const Page = (params: CollateralUrlParams) => {
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
 
-  const llamma = collateralData?.llamma
-  const llammaId = llamma?.id || ''
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!llamma
 
@@ -134,7 +136,7 @@ const Page = (params: CollateralUrlParams) => {
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
-      <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
+      <Title>{displayName || getTokenName(llamma).collateral}</Title>
     </AppPageFormTitleWrapper>
   )
 

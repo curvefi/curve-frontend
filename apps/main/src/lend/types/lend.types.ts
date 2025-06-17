@@ -90,10 +90,10 @@ export type PageContentProps = {
   market: OneWayMarketTemplate | undefined
   titleMapper: TitleMapper
 }
-export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
+export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 export type HealthMode = {
   percent: string
-  colorKey: HeathColorKey
+  colorKey: HealthColorKey
   icon: ReactNode
   message: string | null
   warningTitle: string
@@ -230,7 +230,7 @@ export type UserLoanDetails = {
     prices: string[]
     range: number | null
     state: { collateral: string; borrowed: string; debt: string; N: string }
-    status: { label: string; colorKey: HeathColorKey; tooltip: string }
+    status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
     pnl: Record<string, string>
   } | null

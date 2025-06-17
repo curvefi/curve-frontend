@@ -7,7 +7,7 @@ import UserInfoLlammaBalances from '@/loan/components/LoanInfoUser/components/Us
 import UserInfoLoss from '@/loan/components/LoanInfoUser/components/UserInfoLoss'
 import { HealthColorText } from '@/loan/components/LoanInfoUser/styles'
 import { TITLE } from '@/loan/constants'
-import useStore from '@/loan/store/useStore'
+import { useUserLoanDetails, useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/loan/types/loan.types'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
@@ -26,8 +26,8 @@ const UserInfos = ({
   healthMode: HealthMode
   titleMapper: TitleMapper
 }) => {
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
-
+  const { userBandsPct, userStatus } = useUserLoanDetails(llammaId)
+  const colorKey = useUserLoanStatus(llammaId)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const {
@@ -35,14 +35,13 @@ const UserInfos = ({
     coinAddresses: [stablecoinAddress],
   } = llamma ?? { coins: [], coinAddresses: [] }
 
-  const { userBandsPct, userStatus } = userLoanDetails ?? {}
   const props = { llammaId, llamma }
 
   // prettier-ignore
   const contents: { titleKey: TitleKey; content: ReactNode; show?: boolean }[][] = [
     [
-      { titleKey: TITLE.healthStatus, content: <HealthColorText colorKey={userStatus?.colorKey}>{userStatus?.label ?? '-'}</HealthColorText> },
-      { titleKey: TITLE.healthPercent, content: <HealthColorText colorKey={userStatus?.colorKey}>{healthMode?.percent ? formatNumber(healthMode?.percent, FORMAT_OPTIONS.PERCENT) : '-'}</HealthColorText> },
+      { titleKey: TITLE.healthStatus, content: <HealthColorText colorKey={colorKey}>{userStatus?.label ?? '-'}</HealthColorText> },
+      { titleKey: TITLE.healthPercent, content: <HealthColorText colorKey={colorKey}>{healthMode?.percent ? formatNumber(healthMode?.percent, FORMAT_OPTIONS.PERCENT) : '-'}</HealthColorText> },
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <UserInfoLiquidationRange {...props} type='liquidationRange' /> },
