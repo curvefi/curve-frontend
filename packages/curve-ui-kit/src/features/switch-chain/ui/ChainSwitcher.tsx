@@ -73,7 +73,7 @@ export const ChainSwitcher = <TChainId extends number>({
           title={isSettingsOpen ? t`Select Network Settings` : t`Select Network`}
           titleAction={
             isSettingsOpen && (
-              <IconButton onClick={closeSettings}>
+              <IconButton onClick={closeSettings} size="extraSmall">
                 <ArrowBackIcon />
               </IconButton>
             )
