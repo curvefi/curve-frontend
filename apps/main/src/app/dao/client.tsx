@@ -16,10 +16,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   const hydrated = useHydration('curveApi', hydrate, chainId)
   useRedirectToEth(networks[chainId], network)
   return (
-    hydrated && (
-      <BaseLayout networkId={network} chainId={chainId}>
-        {children}
-      </BaseLayout>
-    )
+    <BaseLayout networkId={network} chainId={chainId}>
+      {hydrated && children}
+    </BaseLayout>
   )
 }

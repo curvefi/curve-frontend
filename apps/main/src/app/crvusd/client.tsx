@@ -37,5 +37,5 @@ export const App = ({ children }: { children: ReactNode }) => {
 
   useRedirectToEth(networks[chainId], networkId)
 
-  return hydrated && <Page>{children}</Page>
+  return <Page>{hydrated && children}</Page>
 }
