@@ -3,7 +3,7 @@ import { shortenTokenName } from '@/dex/utils'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { t } from '@ui-kit/lib/i18n'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
@@ -81,7 +81,7 @@ const FieldToken = ({
         />
       )}
       <Box flex flexAlignItems="center">
-        <Token blockchainId={blockchainId} tooltip={token} address={tokenAddress} />
+        <TokenIcon blockchainId={blockchainId} tooltip={token} address={tokenAddress} />
       </Box>
     </InputProvider>
   )

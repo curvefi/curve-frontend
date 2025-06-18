@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -179,7 +179,7 @@ export const CustomRendering: Story = {
       options={options.map((x) => x)}
       placeholder="Select tokens"
       renderItem={(symbol: (typeof options)[number]) => (
-        <Token blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} label={symbol} size="mui-sm" />
+        <TokenLabel blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} label={symbol} size="mui-sm" />
       )}
     />
   ),

@@ -12,7 +12,7 @@ import { formatDate, formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 type PoolParametersProps = {
@@ -396,7 +396,7 @@ const ExternalLinkTokenWrapper = styled.div`
   align-items: center;
 `
 
-const StyledTokenIcon = styled(Token)`
+const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);
 `
 

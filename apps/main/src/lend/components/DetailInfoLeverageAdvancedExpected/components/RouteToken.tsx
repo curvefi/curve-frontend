@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Box from '@ui/Box'
 import { formatNumber } from '@ui/utils'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const RouteToken = ({
   blockchainId,
@@ -23,7 +23,7 @@ const RouteToken = ({
     <Wrapper flex flexAlignItems="center" flexJustifyContent="space-between">
       <Label>
         {tokenAddress && tokenSymbol && (
-          <Token blockchainId={blockchainId} tooltip={tokenSymbol} address={tokenAddress} />
+          <TokenIcon blockchainId={blockchainId} tooltip={tokenSymbol} address={tokenAddress} />
         )}
         <strong>{tokenSymbol}</strong>
       </Label>{' '}

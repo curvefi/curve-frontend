@@ -5,7 +5,7 @@ import Tooltip from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { LiquidityDataProps } from './types'
 
 const LiquidityData = ({ lendControllerData, chainId, coins }: LiquidityDataProps) => (
@@ -98,7 +98,7 @@ const TransactionRow = styled.div`
   }
 `
 
-const StyledTokenIcon = styled(Token)`
+const StyledTokenIcon = styled(TokenIcon)`
   margin: auto var(--spacing-1) auto 0;
   &.bought {
     margin: auto 0 auto var(--spacing-1);

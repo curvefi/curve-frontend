@@ -6,7 +6,7 @@ import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
 import Tooltip from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const TradesData = ({
   lpTradesData,
@@ -97,7 +97,7 @@ const TimestampColumn = styled.span`
   justify-content: end;
 `
 
-const StyledTokenIcon = styled(Token)`
+const StyledTokenIcon = styled(TokenIcon)`
   margin: auto var(--spacing-1) auto 0;
   &.bought {
     margin: auto 0 auto var(--spacing-1);

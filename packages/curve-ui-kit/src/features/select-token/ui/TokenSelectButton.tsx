@@ -2,14 +2,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import CircularProgress from '@mui/material/CircularProgress'
 import Select from '@mui/material/Select'
 import type { SxProps } from '@mui/system'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../types'
 
 const { Spacing, ButtonSize, MinWidth } = SizesAndSpaces
 
 const ButtonContent = ({ token, disabled }: { token: TokenOption; disabled: boolean }) => (
-  <Token
+  <TokenLabel
     blockchainId={token.chain}
     address={token.address}
     size="mui-md"

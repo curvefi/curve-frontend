@@ -3,7 +3,7 @@ import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const MarketListItemHeader = ({
   rChainId,
@@ -40,7 +40,7 @@ const Wrapper = styled(Box)`
   min-width: 100px;
 `
 
-const StyledTokenIcon = styled(Token)`
+const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);
 `
 

@@ -3,7 +3,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
 import { formatNumber } from '@ui/utils'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const HopSteps = ({
   fromTokenAddress,
@@ -48,7 +48,7 @@ const StepsListItem = styled(TextCaption)`
   }
 `
 
-const StyledTokenIcon = styled(Token)`
+const StyledTokenIcon = styled(TokenIcon)`
   margin-bottom: var(--spacing-1);
 `
 

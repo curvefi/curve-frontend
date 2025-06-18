@@ -7,7 +7,7 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import TextEllipsis from '@ui/TextEllipsis'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard } from '@ui-kit/utils'
 
 const TokenLabel = ({
@@ -76,7 +76,7 @@ const ExternalLinkTokenWrapper = styled.div`
   align-items: center;
 `
 
-const StyledTokenIcon = styled(Token)`
+const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);
 `
 

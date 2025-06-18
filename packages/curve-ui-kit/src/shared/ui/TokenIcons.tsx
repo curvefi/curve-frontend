@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { Token } from './Token'
+import { TokenIcon } from './TokenIcon'
 
 type Props = {
   blockchainId: string
@@ -37,7 +37,7 @@ export function TokenIcons({ tokens, ...props }: Props) {
         const shouldOffsetLastRowToken = isOddCount && !isLast && totalCount < 6 && isNotFirstRow
 
         return (
-          <Token
+          <TokenIcon
             key={`${address}${idx}`}
             {...props}
             address={address}

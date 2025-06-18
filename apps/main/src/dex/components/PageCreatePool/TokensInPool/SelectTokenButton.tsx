@@ -16,7 +16,7 @@ import { Chip } from '@ui/Typography'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { type Address, filterTokens, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
@@ -202,7 +202,7 @@ const SelectTokenButton = ({
   )
 }
 
-const ButtonTokenIcon = styled(Token)`
+const ButtonTokenIcon = styled(TokenIcon)`
   margin-right: 0.25rem;
 `
 

@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { Token as TokenIcon } from '@ui-kit/shared/ui/Token'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -24,7 +24,7 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
     [data, field, symbol],
   )
 
-  return <TokenIcon blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="lg" />
+  return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="lg" />
 }
 
 const formatUsd = (value: number) => formatNumber(value, { currency: 'USD' })

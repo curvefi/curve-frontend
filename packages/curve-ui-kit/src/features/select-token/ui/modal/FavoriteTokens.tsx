@@ -2,7 +2,7 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { Token } from '@ui-kit/shared/ui/Token'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../../types'
 
@@ -27,7 +27,7 @@ export const FavoriteTokens = ({ tokens, onToken }: Props) => (
         <Chip
           key={token.address}
           size="small"
-          icon={<Token blockchainId={token.chain} tooltip={token.symbol} address={token.address} size="mui-md" />}
+          icon={<TokenIcon blockchainId={token.chain} tooltip={token.symbol} address={token.address} size="mui-md" />}
           clickable={true}
           label={token.symbol}
           onClick={() => onToken(token)}
