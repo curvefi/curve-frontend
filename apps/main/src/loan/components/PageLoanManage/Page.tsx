@@ -47,9 +47,8 @@ const Page = (params: CollateralUrlParams) => {
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
 
-  const { llamma, displayName } = useStore(
-    (state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId],
-  ) ?? {}
+  const { llamma, displayName } =
+    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
   const llammaId = llamma?.id || ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
