@@ -38,32 +38,32 @@ const nextConfiguration = {
   // todo: make permanent=true once it all works fine in production. Otherwise it's hard to revert changes!
   redirects: async () => [{
     source: '/dex/integrations',
-    destination: '/dex/ethereum/integrations',
+    destination: '/dex/ethereum/integrations/',
     permanent: false
   }, {
     source: '/integrations',
-    destination: '/dex/ethereum/integrations',
+    destination: '/dex/ethereum/integrations/',
     permanent: false
   }, {
     source: '/dex/:network',
-    destination: '/dex/:network/pools',
+    destination: '/dex/:network/pools/',
     permanent: false
   }, {
     source: '/crvusd/:network',
-    destination: '/crvusd/:network/markets',
+    destination: '/crvusd/:network/markets/',
     permanent: false
   }, {
     source: '/lend/:network',
-    destination: '/lend/:network/markets',
+    destination: '/lend/:network/markets/',
     permanent: false
   }, {
     source: '/dao/:network',
-    destination: '/dao/:network/proposals',
+    destination: '/dao/:network/proposals/',
     permanent: false
   }, {
     // DAO doesn't have an integrations page, but the link is in the footer. Redirect to dex.
     source: '/dao/:network/integrations',
-    destination: '/dex/:network/integrations',
+    destination: '/dex/:network/integrations/',
     permanent: false
   }],
 }
