@@ -23,14 +23,8 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
     () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
     [data, field, symbol],
   )
-  return (
-    <>
-      <TokenIcon blockchainId={chain} tooltip={symbol} address={address} size="mui-md" />
-      <Typography component="span" variant="bodyMBold">
-        {symbol}
-      </Typography>
-    </>
-  )
+
+  return <TokenIcon blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="mui-md" />
 }
 
 const formatUsd = (value: number) => formatNumber(value, { currency: 'USD' })

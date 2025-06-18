@@ -1,8 +1,6 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import CircularProgress from '@mui/material/CircularProgress'
 import Select from '@mui/material/Select'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
 import { Token } from '@ui-kit/shared/ui/Token'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -11,18 +9,16 @@ import type { TokenOption } from '../types'
 const { Spacing, ButtonSize, MinWidth } = SizesAndSpaces
 
 const ButtonContent = ({ token, disabled }: { token: TokenOption; disabled: boolean }) => (
-  <Stack direction="row" gap={Spacing.xxs} alignItems="center">
-    <Token
-      blockchainId={token.chain}
-      address={token.address}
-      size="mui-md"
-      sx={{
-        opacity: disabled ? 0.5 : 1,
-        filter: disabled ? 'saturate(0)' : 'none',
-      }}
-    />
-    <Typography variant="bodyMBold">{token.symbol}</Typography>
-  </Stack>
+  <Token
+    blockchainId={token.chain}
+    address={token.address}
+    size="mui-md"
+    label={token.symbol}
+    sx={{
+      opacity: disabled ? 0.5 : 1,
+      filter: disabled ? 'saturate(0)' : 'none',
+    }}
+  />
 )
 
 const Spinner = () => (

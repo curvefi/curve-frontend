@@ -179,10 +179,7 @@ export const CustomRendering: Story = {
       options={options.map((x) => x)}
       placeholder="Select tokens"
       renderItem={(symbol: (typeof options)[number]) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Token blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} size="mui-sm" />
-          <Typography>{symbol}</Typography>
-        </Box>
+        <Token blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} label={symbol} size="mui-sm" />
       )}
     />
   ),
