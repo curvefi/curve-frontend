@@ -1,4 +1,3 @@
-import RouterLink from 'next/link'
 import { MouseEvent } from 'react'
 import { MarketBadges } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
@@ -13,6 +12,7 @@ import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/Da
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,11 +23,10 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
       <TokenPair chain={market.chain} assets={market.assets} />
       <Stack direction="column" justifyContent="center">
         <Typography component={Stack} variant={isMobile ? 'tableCellMBold' : 'tableCellL'} direction="row" gap={2}>
-          <MuiLink
+          <RouterLink
             color="inherit"
             underline="none"
             href={market.url}
-            {...(!market.url.startsWith('http') && { component: RouterLink })} // use RouterLink for internal URLs
             className={ClickableInRowClass}
             data-testid={`market-link-${market.address}`}
             {...(isMobile && {
@@ -44,7 +43,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
             }}
           >
             {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
-          </MuiLink>
+          </RouterLink>
           <CopyIconButton
             className={`${DesktopOnlyHoverClass} ${ClickableInRowClass}`}
             label={t`Copy market address`}

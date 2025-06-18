@@ -98,6 +98,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
 
         const prevLib = globalLibs.get(libKey)
         if (isWalletMatching(wallet, prevLib, chainId)) {
+          setConnectState(SUCCESS)
           return // already connected to the right chain and wallet, no need to reinitialize
         }
 
