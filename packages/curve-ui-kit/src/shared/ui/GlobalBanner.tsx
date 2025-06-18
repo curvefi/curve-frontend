@@ -25,7 +25,7 @@ const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   ({ networkId, chainId }, ref) => {
     const [isBeta, setIsBeta] = useBetaFlag()
-    const showBetaBanner = isBeta && !isCypress
+    const showBetaBanner = isBeta && !isCypress && typeof window !== 'undefined'
 
     const [isNewDomainNotificationSeen, setIsNewDomainNotificationSeen] = useNewDomainNotificationSeen()
     const showDomainChangeMessage = !isNewDomainNotificationSeen && new Date() < new Date('2025-06-01') // TODO: delete after this date
@@ -42,6 +42,7 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
     return (
       <Box ref={ref}>
         {showBetaBanner && (
+          // ignore hydration warning because isBeta comes from localStorage and is not available on the server side
           <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
             <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
           </Banner>

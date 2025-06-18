@@ -37,6 +37,14 @@ const nextConfiguration = {
   },
   // todo: make permanent=true once it all works fine in production. Otherwise it's hard to revert changes!
   redirects: async () => [{
+    source: '/dex/integrations',
+    destination: '/dex/ethereum/integrations',
+    permanent: false
+  }, {
+    source: '/integrations',
+    destination: '/dex/ethereum/integrations',
+    permanent: false
+  }, {
     source: '/dex/:network',
     destination: '/dex/:network/pools',
     permanent: false
