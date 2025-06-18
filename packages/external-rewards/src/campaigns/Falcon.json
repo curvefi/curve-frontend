@@ -1,0 +1,21 @@
+{
+  "campaignName": "Falcon Miles",
+  "platform": "Falcon Finance",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "falcon.png",
+  "dashboardLink": "https://app.falcon.finance/miles",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x72310DAAed61321b02B08A547150c07522c6a976",
+      "network": "ethereum",
+      "multiplier": "40x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

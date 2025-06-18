@@ -118,5 +118,8 @@
   },
   {
     "campaign": "YieldNestTokens.json"
+  },
+  {
+    "campaign": "Falcon.json"
   }
 ]
