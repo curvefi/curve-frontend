@@ -31,6 +31,7 @@ import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -46,12 +47,15 @@ const Page = (params: CollateralUrlParams) => {
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
-  const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
+  const { llamma, displayName } =
+    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
+  const llammaId = llamma?.id ?? ''
+
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const navHeight = useStore((state) => state.layout.navHeight)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const navHeight = useLayoutStore((state) => state.navHeight)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -62,8 +66,6 @@ const Page = (params: CollateralUrlParams) => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
-  const llamma = collateralData?.llamma
-  const llammaId = llamma?.id ?? ''
   const isReady = !!llamma
   const isValidRouterParams = !!rChainId && !!rCollateralId
   const isLeverage = rFormType === 'leverage'
@@ -150,7 +152,7 @@ const Page = (params: CollateralUrlParams) => {
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
-      <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
+      <Title>{displayName || getTokenName(llamma).collateral}</Title>
     </AppPageFormTitleWrapper>
   )
 

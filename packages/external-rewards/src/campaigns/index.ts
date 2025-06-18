@@ -8,6 +8,7 @@ import DTrinity from './DTrinity.json'
 import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
+import Falcon from './Falcon.json'
 import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
 import GoNuts from './GoNuts.json'
@@ -33,12 +34,10 @@ import Symbiotic from './Symbiotic.json'
 import Tac from './Tac.json'
 import Taiko from './Taiko.json'
 import Turtle from './Turtle.json'
-import TurtleSeeds from './TurtleSeeds.json'
 import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
-import YieldNestSeeds from './YieldNestSeeds.json'
 import YieldNestTokens from './YieldNestTokens.json'
 
 export {
@@ -50,11 +49,9 @@ export {
   Mellow,
   Symbiotic,
   Usual,
-  YieldNestSeeds,
   Fraxtal,
   Resolv,
   Lombard,
-  TurtleSeeds,
   SolvProtocol,
   Hinkal,
   Inception,
@@ -84,4 +81,5 @@ export {
   Kalypso,
   Radius,
   YieldNestTokens,
+  Falcon,
 }

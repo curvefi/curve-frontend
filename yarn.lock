@@ -10469,6 +10469,7 @@ __metadata:
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.14.1"
+    immer: "npm:^9.0.21"
     next: "npm:*"
     pino-pretty: "npm:^13.0.0"
     react: "npm:*"
@@ -10480,6 +10481,7 @@ __metadata:
     viem: "npm:^2.30.0"
     wagmi: "npm:^2.15.4"
     webpack: "npm:*"
+    zustand: "npm:^4.5.7"
   peerDependencies:
     eslint-config-custom: "*"
     next: "*"

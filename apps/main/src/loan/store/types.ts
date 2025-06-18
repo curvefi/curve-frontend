@@ -1,18 +1,10 @@
 import { BrowserProvider } from 'ethers'
 
-/* createAppSlice */
-
-/* createAppLayoutSlice */
-export type LayoutHeight = { globalAlert: number; mainNav: number; secondaryNav: number; footer: number }
-
 /* createCreateLoanSlice */
 export type DetailInfo = { healthFull: string; healthNotFull: string; prices: string[]; bands: [number, number] }
 
 /* createGasSlice */
 export type GasInfo = { base: number; priority: number[]; max: number[]; basePlusPriority: number[] }
-
-/* createGlobalSlice */
-/* createGasSlice */
 
 /* createLiqRangesSlice */
 export type MaxRecvLeverage = { maxBorrowable: string; maxCollateral: string; leverage: string; routeIdx: number }

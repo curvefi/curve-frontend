@@ -34,6 +34,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -67,7 +68,7 @@ const QuickSwap = ({
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)

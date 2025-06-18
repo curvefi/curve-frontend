@@ -24,9 +24,6 @@
     "campaign": "Elixir.json"
   },
   {
-    "campaign": "YieldNestSeeds.json"
-  },
-  {
     "campaign": "Fraxtal.json"
   },
   {
@@ -34,9 +31,6 @@
   },
   {
     "campaign": "Lombard.json"
-  },
-  {
-    "campaign": "TurtleSeeds.json"
   },
   {
     "campaign": "SolvProtocol.json"
@@ -124,5 +118,8 @@
   },
   {
     "campaign": "YieldNestTokens.json"
+  },
+  {
+    "campaign": "Falcon.json"
   }
 ]

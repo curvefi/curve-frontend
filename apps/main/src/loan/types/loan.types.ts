@@ -60,10 +60,10 @@ export type CollateralDataCache = {
 }
 export type CollateralDataCacheMapper = { [collateralId: string]: CollateralDataCache }
 export type CollateralDataCacheOrApi = CollateralDataCache | CollateralData
-export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
+export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 export type HealthMode = {
   percent: string
-  colorKey: HeathColorKey
+  colorKey: HealthColorKey
   icon: ReactNode
   message: string | null
   warningTitle: string
@@ -128,7 +128,7 @@ export type UserLoanDetails = {
   userIsCloseToLiquidation: boolean
   userLiquidationBand: number | null
   userLoss: { deposited_collateral: string; current_collateral_estimation: string; loss: string; loss_pct: string }
-  userStatus: { label: string; colorKey: HeathColorKey; tooltip: string }
+  userStatus: { label: string; colorKey: HealthColorKey; tooltip: string }
 }
 export type UserWalletBalances = {
   stablecoin: string
