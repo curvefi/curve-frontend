@@ -13,11 +13,11 @@ const LABEL_SPACING = {
   xl: 'md',
 } satisfies Record<Size, keyof typeof Spacing>
 
-type TokenProps = TokenIconProps & {
+type TokenLabelProps = TokenIconProps & {
   label: string
 }
 
-export const TokenLabel = ({ label, ...tokenIconProps }: TokenProps) => (
+export const TokenLabel = ({ label, ...tokenIconProps }: TokenLabelProps) => (
   <Stack direction="row" gap={Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]]} alignItems="center">
     <TokenIcon {...tokenIconProps} />
     <Typography
