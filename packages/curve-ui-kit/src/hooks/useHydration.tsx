@@ -20,7 +20,7 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
   const lib = connection[libKey]
 
   useEffect(() => {
-    if (!isWalletMatching(wallet, lib, chainId)) {
+    if (lib && !isWalletMatching(wallet, lib, chainId)) {
       return
     }
 

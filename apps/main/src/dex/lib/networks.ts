@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
@@ -388,36 +389,36 @@ export async function getNetworks() {
 /**
  * Strip out functions from the network config so they can be passed from server to client
  */
-export const getNetworkDefs = async () =>
+const createNetworkDef = ({
+  id,
+  name,
+  chainId,
+  explorerUrl,
+  isTestnet,
+  symbol,
+  rpcUrl,
+  showInSelectNetwork,
+  isLite,
+  logoSrc,
+  logoSrcDark,
+}: NetworkConfig): NetworkDef<NetworkEnum, ChainId> => ({
+  id: id as NetworkEnum,
+  name,
+  chainId: chainId as ChainId,
+  explorerUrl,
+  isTestnet,
+  symbol,
+  rpcUrl,
+  showInSelectNetwork,
+  isLite,
+  logoSrc,
+  logoSrcDark,
+})
+
+export const getNetworkDefs = cache(async () =>
   fromEntries(
-    recordValues(await getNetworks()).map(
-      ({
-        id,
-        name,
-        chainId,
-        explorerUrl,
-        isTestnet,
-        symbol,
-        rpcUrl,
-        showInSelectNetwork,
-        isLite,
-        logoSrc,
-        logoSrcDark,
-      }): [ChainId, NetworkDef<NetworkEnum, ChainId>] => [
-        chainId,
-        {
-          id: id as NetworkEnum,
-          name,
-          chainId: chainId as ChainId,
-          explorerUrl,
-          isTestnet,
-          symbol,
-          rpcUrl,
-          showInSelectNetwork,
-          isLite,
-          logoSrc,
-          logoSrcDark,
-        },
-      ],
-    ),
-  )
+    recordValues(await getNetworks())
+      .map(createNetworkDef)
+      .map((def) => [def.chainId, def] as const),
+  ),
+)
