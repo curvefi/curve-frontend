@@ -17,9 +17,13 @@ const meta: Meta<typeof TokenIcon> = {
       control: 'text',
       description: 'Token contract address',
     },
+    label: {
+      control: 'text',
+      description: 'Optional label to the right of the icon, usually the token symbol',
+    },
     size: {
       control: 'select',
-      options: ['sm', 'mui-sm', 'mui-md'],
+      options: ['sm', 'mui-sm', 'mui-md', 'xl'],
       description: 'Size of the icon',
     },
   },
@@ -59,6 +63,12 @@ export const MuiMedium: Story = {
 export const WithFallback: Story = {
   args: {
     address: '0x0',
+  },
+}
+
+export const WithLabel: Story = {
+  args: {
+    label: 'ETH',
   },
 }
 
