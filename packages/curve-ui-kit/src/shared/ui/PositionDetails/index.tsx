@@ -7,6 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+export type App = 'mint' | 'borrow' | 'lend'
 export type Pnl = { value: number | undefined | null; percentageChange: number | undefined | null; loading: boolean }
 export type Health = { value: number | undefined | null; loading: boolean }
 export type BorrowRate = { value: number | undefined | null; loading: boolean }
@@ -14,12 +15,23 @@ export type AccruedInterest = { value: number | undefined | null; loading: boole
 export type LiquidationRange = { value: number[] | undefined | null; loading: boolean }
 export type LiquidationThreshold = { value: number | undefined | null; loading: boolean }
 export type Leverage = { value: number | undefined | null; loading: boolean }
-export type CollateralValue = { value: number | undefined | null; loading: boolean }
+export type CollateralValue = {
+  totalValue: number | undefined | null
+  collateral: {
+    value: number | undefined | null
+    symbol: string | undefined
+  }
+  borrow: {
+    value: number | undefined | null
+    symbol: string | undefined
+  }
+  loading: boolean
+}
 export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
 
 export type PositionDetailsProps = {
-  app: 'crvusd' | 'lend'
+  app: App
   isSoftLiquidation: boolean
   health: Health
   borrowRate: BorrowRate

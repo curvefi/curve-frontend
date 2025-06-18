@@ -46,7 +46,8 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
   }, [userLoanDetails?.userState?.collateral, userLoanDetails?.userState?.stablecoin, collateralUsdRate])
 
   const positionDetailsProps: PositionDetailsProps = {
-    app: 'crvusd',
+    app: 'mint',
+    isSoftLiquidation: userLoanDetails?.userStatus?.colorKey === 'soft_liquidation',
     health: {
       value: Number(health),
       loading: userLoanDetails?.loading ?? true,
@@ -68,7 +69,15 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
       loading: userLoanDetails?.loading ?? true,
     },
     collateralValue: {
-      value: collateralValue,
+      totalValue: collateralValue,
+      collateral: {
+        value: userLoanDetails?.userState?.collateral ? Number(userLoanDetails.userState.collateral) : null,
+        symbol: llamma?.collateral,
+      },
+      borrow: {
+        value: userLoanDetails?.userState?.stablecoin ? Number(userLoanDetails.userState.stablecoin) : null,
+        symbol: 'crvUSD',
+      },
       loading: (userLoanDetails?.loading ?? true) || usdRatesLoading,
     },
     ltv: {

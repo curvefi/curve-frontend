@@ -11,13 +11,15 @@ import type {
   Ltv,
   TotalDebt,
   LiquidationThreshold,
+  App,
 } from '@ui-kit/shared/ui/PositionDetails'
+import { CollateralMetric } from '@ui-kit/shared/ui/PositionDetails/CollateralMetric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
 type BorrowInformationProps = {
-  app: 'crvusd' | 'lend'
+  app: App
   rate: BorrowRate | undefined | null
   pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null
@@ -61,13 +63,7 @@ export const BorrowInformation = ({
           loading={pnl?.value == null && pnl?.loading}
         />
       )}
-      <Metric
-        size="small"
-        label={t`Collateral Value`}
-        value={collateralValue?.value}
-        loading={collateralValue?.value == null && collateralValue?.loading}
-        unit="dollar"
-      />
+      <CollateralMetric collateralValue={collateralValue} />
       <Metric
         size="small"
         label={t`Current LTV`}

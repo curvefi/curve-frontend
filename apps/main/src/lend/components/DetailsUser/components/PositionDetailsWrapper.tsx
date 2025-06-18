@@ -74,7 +74,15 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
       loading: isFetchingAll ?? true,
     },
     collateralValue: {
-      value: collateralValue,
+      totalValue: collateralValue,
+      collateral: {
+        value: userLoanDetails?.state?.collateral ? Number(userLoanDetails.state.collateral) : null,
+        symbol: market?.collateral_token?.symbol,
+      },
+      borrow: {
+        value: userLoanDetails?.state?.borrowed ? Number(userLoanDetails.state.borrowed) : null,
+        symbol: market?.borrowed_token?.symbol,
+      },
       loading: isFetchingAll || collateralUsdRateLoading,
     },
     ltv: {
