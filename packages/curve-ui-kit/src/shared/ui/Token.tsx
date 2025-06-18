@@ -12,12 +12,17 @@ const DEFAULT_IMAGE = '/images/default-crypto.png'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xl'
+// TODO: For another time, we should infer the size type from `keyof typeof IconSize` and generate
+// the corresponding size classes programmatically. This component is also used in legacy UI,
+// where 'sm' differs from MUI's 'sm'. At the moment of writing this refactor is out of scope.
+type Size = 'sm' | 'mui-sm' | 'mui-md' | 'lg' | 'xl'
+
 const LABEL_SPACING = {
-  sm: 'xs',
-  'mui-sm': 'xs',
-  'mui-md': 'xs',
-  xl: 'sm',
+  sm: 'sm',
+  'mui-sm': 'sm',
+  'mui-md': 'sm',
+  lg: 'sm',
+  xl: 'md',
 } satisfies Record<Size, keyof typeof Spacing>
 
 export interface TokenProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -25,7 +30,7 @@ export interface TokenProps extends ImgHTMLAttributes<HTMLImageElement> {
   blockchainId?: string
   tooltip?: string
   address?: string | null
-  size?: 'sm' | 'mui-sm' | 'mui-md' | 'xl'
+  size?: Size
   label?: string
   sx?: SxProps
 }
@@ -65,6 +70,7 @@ export const Token = ({
           }),
           ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
           ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
+          ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
           ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
           ...applySxProps(sx, theme),
         })}

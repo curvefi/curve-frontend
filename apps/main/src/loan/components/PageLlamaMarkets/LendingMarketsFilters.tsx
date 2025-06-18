@@ -24,7 +24,7 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
     [data, field, symbol],
   )
 
-  return <TokenIcon blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="mui-md" />
+  return <TokenIcon blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="lg" />
 }
 
 const formatUsd = (value: number) => formatNumber(value, { currency: 'USD' })
