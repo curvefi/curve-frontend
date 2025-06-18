@@ -22,6 +22,7 @@ export type TokenIconProps = {
   tooltip?: string
   size?: Size
   address?: string | null
+  disabled?: boolean
   sx?: SxProps
 }
 
@@ -31,6 +32,7 @@ export const TokenIcon = ({
   tooltip = '',
   size = DEFAULT_SIZE,
   address,
+  disabled,
   sx,
 }: TokenIconProps) => (
   <Tooltip title={tooltip} placement="top">
@@ -61,6 +63,10 @@ export const TokenIcon = ({
         ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
         ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
         ...applySxProps(sx, theme),
+        ...(disabled && {
+          opacity: 0.5,
+          filter: 'saturate(0)',
+        }),
       })}
     />
   </Tooltip>

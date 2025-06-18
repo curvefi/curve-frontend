@@ -17,6 +17,10 @@ const meta: Meta<typeof TokenIcon> = {
       control: 'text',
       description: 'Token contract address',
     },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the icon belongs to a disabled element or not',
+    },
     size: {
       control: 'select',
       options: ['sm', 'mui-sm', 'mui-md', 'xl'],
@@ -27,6 +31,7 @@ const meta: Meta<typeof TokenIcon> = {
     blockchainId: 'ethereum',
     tooltip: 'ETH',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    disabled: false,
     size: 'sm',
   },
 }
@@ -59,6 +64,13 @@ export const MuiMedium: Story = {
 export const WithFallback: Story = {
   args: {
     address: '0x0',
+  },
+}
+
+export const Disabled: Story = {
+  args: {
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    disabled: true,
   },
 }
 

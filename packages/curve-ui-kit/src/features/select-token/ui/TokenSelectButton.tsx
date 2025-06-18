@@ -8,19 +8,6 @@ import type { TokenOption } from '../types'
 
 const { Spacing, ButtonSize, MinWidth } = SizesAndSpaces
 
-const ButtonContent = ({ token, disabled }: { token: TokenOption; disabled: boolean }) => (
-  <TokenLabel
-    blockchainId={token.chain}
-    address={token.address}
-    size="mui-md"
-    label={token.symbol}
-    sx={{
-      opacity: disabled ? 0.5 : 1,
-      filter: disabled ? 'saturate(0)' : 'none',
-    }}
-  />
-)
-
 const Spinner = () => (
   <CircularProgress
     size={20}
@@ -56,7 +43,19 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     open={false}
     disabled={disabled}
     displayEmpty
-    renderValue={() => (!!token ? <ButtonContent token={token} disabled={disabled} /> : <Spinner />)}
+    renderValue={() =>
+      !!token ? (
+        <TokenLabel
+          blockchainId={token.chain}
+          address={token.address}
+          size="mui-md"
+          label={token.symbol}
+          disabled={disabled}
+        />
+      ) : (
+        <Spinner />
+      )
+    }
     IconComponent={KeyboardArrowDownIcon}
     sx={{
       minHeight: ButtonSize.sm,

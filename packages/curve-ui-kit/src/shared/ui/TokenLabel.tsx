@@ -22,6 +22,7 @@ export const TokenLabel = ({ label, ...tokenIconProps }: TokenProps) => (
     <TokenIcon {...tokenIconProps} />
     <Typography
       variant="bodyMBold"
+      color={tokenIconProps.disabled ? 'textDisabled' : undefined}
       sx={{
         // Lineheight is unset, as setting the line height to a certain size (as is default ehavior for Typography)
         // causes the text not to be perfectly centered vertically for unknown reason. Setting the 'vertical-align'

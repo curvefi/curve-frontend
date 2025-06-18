@@ -21,6 +21,10 @@ const meta: Meta<typeof TokenLabel> = {
       control: 'text',
       description: 'Optional label to the right of the icon, usually the token symbol',
     },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the icon and label belong to a disabled element or not',
+    },
     size: {
       control: 'select',
       options: ['sm', 'mui-sm', 'mui-md', 'xl'],
@@ -32,6 +36,7 @@ const meta: Meta<typeof TokenLabel> = {
     tooltip: 'ETH',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     label: 'ETH',
+    disabled: false,
     size: 'sm',
   },
 }
@@ -46,6 +51,13 @@ export const Default: Story = {
         story: 'Default view with small size',
       },
     },
+  },
+}
+
+export const Disabled: Story = {
+  args: {
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    disabled: true,
   },
 }
 
