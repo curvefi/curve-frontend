@@ -159,7 +159,11 @@ const convertMintMarket = (
     rates: { borrow: rate * 100, lend: null },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-    url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`),
+    url: getInternalUrl(
+      'crvusd',
+      chain,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
+    ),
     isFavorite: favoriteMarkets.has(address),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,

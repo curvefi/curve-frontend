@@ -1,4 +1,3 @@
-import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 
 export type GetAndSet<T, D = T> = [T | D, Dispatch<SetStateAction<T | D>>]

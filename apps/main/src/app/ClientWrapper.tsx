@@ -1,7 +1,7 @@
 'use client'
 import delay from 'lodash/delay'
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
@@ -15,8 +15,8 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
+import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window

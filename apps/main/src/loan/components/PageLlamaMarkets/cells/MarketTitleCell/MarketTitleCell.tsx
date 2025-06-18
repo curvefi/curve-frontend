@@ -1,7 +1,6 @@
 import { MouseEvent } from 'react'
 import { MarketBadges } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
-import MuiLink from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
@@ -9,10 +8,10 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 
 const { Spacing } = SizesAndSpaces
 
