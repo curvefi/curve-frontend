@@ -47,9 +47,8 @@ const Page = (params: CollateralUrlParams) => {
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
-  const { llamma, displayName } = useStore(
-    (state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId],
-  )
+  const { llamma, displayName } =
+    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
   const llammaId = llamma?.id ?? ''
 
   const formValues = useStore((state) => state.loanCreate.formValues)
