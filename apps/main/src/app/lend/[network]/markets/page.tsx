@@ -1,11 +1,10 @@
-import type { Metadata } from 'next'
-import MarketList from '@/lend/components/PageMarketList/Page'
-import type { NetworkUrlParams } from '@/lend/types/lend.types'
+import { redirect } from 'next/navigation'
 
-type MarketListPageProps = { params: Promise<NetworkUrlParams> }
+type Props = {
+  params: Promise<{ network: string }>
+}
 
-export const metadata: Metadata = { title: 'Markets - Curve Lend' }
-
-const MarketListPage = async ({ params }: MarketListPageProps) => <MarketList {...await params} />
-
-export default MarketListPage
+export default async function LendMarketsRedirect({ params }: Props) {
+  const { network } = await params
+  redirect(`/llamalend/${network}/lend-markets`)
+}

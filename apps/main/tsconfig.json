@@ -4,6 +4,8 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
+      "@/lend/*": ["llamalend/lend/*"],
+      "@/loan/*": ["llamalend/loan/*"],
       "@ui": ["../../../packages/ui/src/index.ts"],
       "@ui/*": ["../../../packages/ui/src/*"],
       "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],

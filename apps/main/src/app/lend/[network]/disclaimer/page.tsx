@@ -1,14 +1,10 @@
-import type { Metadata } from 'next'
-import type { NetworkUrlParams } from '@/lend/types/lend.types'
-import { t } from '@ui-kit/lib/i18n'
-import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = { title: t`Risk Disclaimer - Curve Lend` }
-
-type DisclaimerPageProps = {
-  params: Promise<NetworkUrlParams>
+type Props = {
+  params: Promise<{ network: string }>
 }
 
-const DisclaimerPage = async ({ params }: DisclaimerPageProps) => <Disclaimer currentApp="lend" {...await params} />
-
-export default DisclaimerPage
+export default async function LendDisclaimerRedirect({ params }: Props) {
+  const { network } = await params
+  redirect(`/llamalend/${network}/disclaimer`)
+}

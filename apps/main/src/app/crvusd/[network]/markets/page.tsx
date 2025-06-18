@@ -1,11 +1,10 @@
-import type { Metadata } from 'next'
-import MarketList from '@/loan/components/PageMarketList/Page'
-import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { redirect } from 'next/navigation'
 
-type MarketListPageProps = { params: Promise<CollateralUrlParams> }
+type Props = {
+  params: Promise<{ network: string }>
+}
 
-export const metadata: Metadata = { title: 'Markets - Curve' }
-
-const CreateLoanPage = async ({ params }: MarketListPageProps) => <MarketList {...await params} />
-
-export default CreateLoanPage
+export default async function CrvUsdMarketsRedirect({ params }: Props) {
+  const { network } = await params
+  redirect(`/llamalend/${network}/mint-markets`)
+}

@@ -4,7 +4,7 @@ type Props = {
   params: Promise<{ network: string }>
 }
 
-export default async function ScrvUsdRedirect({ params }: Props) {
+export default async function NetworkPage({ params }: Props) {
   const { network } = await params
-  redirect(`/llamalend/${network}/scrvUSD`)
+  redirect(`/llamalend/${network}/lend-markets`)
 }

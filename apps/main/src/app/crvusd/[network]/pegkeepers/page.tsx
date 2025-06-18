@@ -1,11 +1,10 @@
-import type { Metadata } from 'next'
-import PegKeepers from '@/loan/components/PagePegKeepers/Page'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import { redirect } from 'next/navigation'
 
-type PegKeepersPageProps = { params: Promise<NetworkUrlParams> }
+type Props = {
+  params: Promise<{ network: string }>
+}
 
-export const metadata: Metadata = { title: 'PegKeepers - Curve' }
-
-const PegKeepersPage = async ({ params }: PegKeepersPageProps) => <PegKeepers {...await params} />
-
-export default PegKeepersPage
+export default async function PegKeepersRedirect({ params }: Props) {
+  const { network } = await params
+  redirect(`/llamalend/${network}/pegkeepers`)
+}

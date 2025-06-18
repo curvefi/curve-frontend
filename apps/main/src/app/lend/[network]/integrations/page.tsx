@@ -1,11 +1,10 @@
-import type { Metadata } from 'next'
-import Integrations from '@/lend/components/PageIntegrations/Page'
-import type { NetworkUrlParams } from '@/lend/types/lend.types'
+import { redirect } from 'next/navigation'
 
-type IntegrationsPageProps = { params: Promise<NetworkUrlParams> }
+type Props = {
+  params: Promise<{ network: string }>
+}
 
-export const metadata: Metadata = { title: 'Integrations - Curve Lend' }
-
-const IntegrationsPage = async ({ params }: IntegrationsPageProps) => <Integrations {...await params} />
-
-export default IntegrationsPage
+export default async function LendIntegrationsRedirect({ params }: Props) {
+  const { network } = await params
+  redirect(`/llamalend/${network}/integrations`)
+}
