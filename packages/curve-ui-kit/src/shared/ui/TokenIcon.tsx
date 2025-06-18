@@ -17,11 +17,17 @@ export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'lg' | 'xl'
 export const DEFAULT_SIZE: Size = 'sm'
 
 export type TokenIconProps = {
+  /** Additional CSS class name to apply to the token icon */
   className?: string
+  /** Blockchain ID used for constructing the image URL */
   blockchainId?: string
+  /** Tooltip text to display on hover */
   tooltip?: string
+  /** Size variant for the token icon */
   size?: Size
+  /** Token contract address used for fetching the icon image */
   address?: string | null
+  /** Whether the icon should appear disabled (greyed out) */
   disabled?: boolean
   sx?: SxProps
 }
