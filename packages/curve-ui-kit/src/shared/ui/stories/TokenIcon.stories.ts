@@ -23,7 +23,7 @@ const meta: Meta<typeof TokenIcon> = {
     },
     size: {
       control: 'select',
-      options: ['sm', 'mui-sm', 'mui-md', 'xl'],
+      options: ['sm', 'mui-sm', 'mui-md', 'lg', 'xl'],
       description: 'Size of the icon',
     },
   },
