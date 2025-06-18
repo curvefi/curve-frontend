@@ -15,6 +15,7 @@ import type {
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
@@ -29,6 +30,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
 
   const loanExists = useStore((state) => state.loans.existsMapper[llammaId]?.loanExists)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
+  const isSoftLiquidation = useUserLoanStatus(llammaId) === 'soft_liquidation'
 
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
@@ -40,7 +42,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     // { label: t`Swap`, key: MANAGE_LOAN_FORM_TYPE.swap }, // hide swap (aka liquidation) from UI for now
   ].filter((f) => {
     if (f.key === 'deleverage') {
-      return hasDeleverage(llamma)
+      return hasDeleverage(llamma) && !isSoftLiquidation
     } else {
       return true
     }
