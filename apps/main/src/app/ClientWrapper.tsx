@@ -17,8 +17,9 @@ import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
-const useLayoutStoreResponsive = (window?: Window) => {
-  const { document } = typeof window === 'undefined' ? {} : window
+const useLayoutStoreResponsive = () => {
+  const win = typeof window === 'undefined' ? undefined : window
+  const { document } = win ?? {}
   const theme = useUserProfileStore((state) => state.theme)
   const pageWidth = useLayoutStore((state) => state.pageWidth)
   const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
@@ -26,8 +27,8 @@ const useLayoutStoreResponsive = (window?: Window) => {
   const setScrollY = useLayoutStore((state) => state.setScrollY)
 
   const handleResizeListener = useCallback(() => {
-    if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
-  }, [setLayoutWidth, window?.innerWidth])
+    if (win?.innerWidth) setLayoutWidth(getPageWidthClassName(win.innerWidth))
+  }, [setLayoutWidth, win?.innerWidth])
 
   useEffect(() => {
     if (!pageWidth || !document) return
@@ -37,23 +38,23 @@ const useLayoutStoreResponsive = (window?: Window) => {
 
   // init app
   useEffect(() => {
-    if (!window || !document) return
-    const handleScrollListener = () => setScrollY(window.scrollY)
+    if (!win || !document) return
+    const handleScrollListener = () => setScrollY(win.scrollY)
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
 
     handleResizeListener()
     handleVisibilityChange()
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
+    win.addEventListener('resize', () => handleResizeListener())
+    win.addEventListener('scroll', () => delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('resize', () => handleResizeListener())
-      window.removeEventListener('scroll', () => handleScrollListener())
+      win.removeEventListener('resize', () => handleResizeListener())
+      win.removeEventListener('scroll', () => handleScrollListener())
     }
-  }, [document, handleResizeListener, setPageVisible, setScrollY, window])
+  }, [document, handleResizeListener, setPageVisible, setScrollY, win])
 }
 
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(

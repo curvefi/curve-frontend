@@ -4,8 +4,9 @@ import { ROUTE } from '@/dex/constants'
 import Header from '@/dex/layout/default/Header'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, NetworkConfig } from '@/dex/types/main.types'
+import type { CurveApi } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import type { NetworkDef } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore, layoutHeightKeys } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -16,18 +17,19 @@ import { Footer } from '@ui-kit/widgets/Footer'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
 import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 
-const useAutoRefresh = (network: NetworkConfig) => {
+const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchPools = useStore((state) => state.pools.fetchPools)
-  const poolDataMapper = useStore((state) => state.pools.poolsMapper[network.chainId])
+  const poolDataMapper = useStore((state) => state.pools.poolsMapper[networkDef.chainId])
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
+  const network = useStore((state) => state.networks.networks[networkDef.chainId])
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
@@ -39,13 +41,11 @@ const useAutoRefresh = (network: NetworkConfig) => {
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
-  const refetchPools = useCallback(
-    async (curve: CurveApi) => {
-      const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
-      void fetchPools(curve, poolIds, null)
-    },
-    [fetchPools, network],
-  )
+  const refetchPools = useCallback(async () => {
+    if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
+    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
+    void fetchPools(curveApi, poolIds, null)
+  }, [curveApi, fetchPools, network])
 
   usePageVisibleInterval(
     () => {
@@ -63,18 +63,10 @@ const useAutoRefresh = (network: NetworkConfig) => {
     isPageVisible,
   )
 
-  usePageVisibleInterval(
-    () => {
-      if (curveApi) {
-        void refetchPools(curveApi)
-      }
-    },
-    REFRESH_INTERVAL['11m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(refetchPools, REFRESH_INTERVAL['11m'], isPageVisible && !!curveApi && !!network)
 }
 
-const BaseLayout = ({ children, network }: { children: ReactNode } & { network: NetworkConfig }) => {
+const BaseLayout = ({ children, network }: { children: ReactNode; network: NetworkDef }) => {
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   useLayoutHeight(globalAlertRef, 'globalAlert', setLayoutHeight)
