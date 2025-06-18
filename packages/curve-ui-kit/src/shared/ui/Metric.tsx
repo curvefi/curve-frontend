@@ -107,6 +107,7 @@ type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate
   fontVariant: TypographyVariantKey
   fontVariantUnit: TypographyVariantKey
   copyValue: (valueToCopy: number | number[]) => void
+  hideTooltip?: boolean
 }
 
 function runFormatter(
@@ -138,6 +139,7 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
+  hideTooltip,
 }: MetricValueProps) => {
   const numberValue: number | number[] | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
@@ -151,48 +153,56 @@ const MetricValue = ({
     return null
   }, [value])
 
+  const content = (
+    <Stack direction="row" alignItems="baseline">
+      {unit?.position === 'prefix' && numberValue !== null && (
+        <Typography variant={fontVariantUnit} color="textSecondary">
+          {unit.symbol}
+        </Typography>
+      )}
+
+      <Typography variant={fontVariant} color="textPrimary">
+        {useMemo(
+          () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, unit?.symbol)),
+          [numberValue, formatter, abbreviate, unit?.symbol],
+        )}
+      </Typography>
+
+      {typeof numberValue === 'number' && abbreviate && (
+        <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
+          {scaleSuffix(numberValue)}
+        </Typography>
+      )}
+
+      {unit?.position === 'suffix' && numberValue !== null && (
+        <Typography variant={fontVariantUnit} color="textSecondary">
+          {unit.symbol}
+        </Typography>
+      )}
+    </Stack>
+  )
+
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
-      <Tooltip
-        arrow
-        placement="bottom"
-        title={
-          numberValue !== null
-            ? Array.isArray(numberValue)
-              ? numberValue.join(' - ')
-              : numberValue.toLocaleString()
-            : t`N/A`
-        }
-        onClick={() => numberValue && copyValue(numberValue)}
-        sx={{ cursor: 'pointer' }}
-      >
-        <Stack direction="row" alignItems="baseline">
-          {unit?.position === 'prefix' && numberValue !== null && (
-            <Typography variant={fontVariantUnit} color="textSecondary">
-              {unit.symbol}
-            </Typography>
-          )}
-
-          <Typography variant={fontVariant} color="textPrimary">
-            {useMemo(
-              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, unit?.symbol)),
-              [numberValue, formatter, abbreviate, unit?.symbol],
-            )}
-          </Typography>
-
-          {typeof numberValue === 'number' && abbreviate && (
-            <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
-              {scaleSuffix(numberValue)}
-            </Typography>
-          )}
-
-          {unit?.position === 'suffix' && numberValue !== null && (
-            <Typography variant={fontVariantUnit} color="textSecondary">
-              {unit.symbol}
-            </Typography>
-          )}
-        </Stack>
-      </Tooltip>
+      {!hideTooltip ? (
+        <Tooltip
+          arrow
+          placement="bottom"
+          title={
+            numberValue !== null
+              ? Array.isArray(numberValue)
+                ? numberValue.join(' - ')
+                : numberValue.toLocaleString()
+              : t`N/A`
+          }
+          onClick={() => numberValue && copyValue(numberValue)}
+          sx={{ cursor: 'pointer' }}
+        >
+          {content}
+        </Tooltip>
+      ) : (
+        content
+      )}
 
       {(change || change === 0) && (
         <Typography
@@ -224,6 +234,8 @@ type Props = {
   label: string
   /** Optional tooltip content shown next to the label */
   tooltip?: string
+  /** If the tooltip should be hidden */
+  hideTooltip?: boolean
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
@@ -250,6 +262,7 @@ export const Metric = ({
 
   label,
   tooltip,
+  hideTooltip = false,
   copyText,
 
   notional,
@@ -262,7 +275,8 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
-}: Props) => {
+  ...props
+}: Props & React.ComponentProps<typeof Stack>) => {
   unit = typeof unit === 'string' ? UNIT_MAP[unit] : unit
   abbreviate ??= unit?.abbreviate ?? false
 
@@ -288,10 +302,11 @@ export const Metric = ({
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
+    hideTooltip,
   }
 
   return (
-    <Stack alignItems={alignment} data-testid={testId}>
+    <Stack alignItems={alignment} data-testid={testId} {...props}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {tooltip && (
