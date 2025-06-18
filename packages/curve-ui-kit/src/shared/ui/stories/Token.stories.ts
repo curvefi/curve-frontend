@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { TokenIcon } from '../TokenIcon'
+import { Token } from '../Token'
 
-const meta: Meta<typeof TokenIcon> = {
-  title: 'UI Kit/Widgets/TokenIcon',
-  component: TokenIcon,
+const meta: Meta<typeof Token> = {
+  title: 'UI Kit/Widgets/Token',
+  component: Token,
   argTypes: {
     blockchainId: {
       control: 'text',
@@ -35,13 +35,13 @@ const meta: Meta<typeof TokenIcon> = {
   },
 }
 
-type Story = StoryObj<typeof TokenIcon>
+type Story = StoryObj<typeof Token>
 
 export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        component: 'TokenIcon displays a token logo with fallback to default image',
+        component: 'Token displays a token logo with fallback to default image',
         story: 'Default view with small size',
       },
     },

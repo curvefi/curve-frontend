@@ -10,7 +10,7 @@ import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Chip from '@ui/Typography/Chip'
 import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 import { shortenAddress } from '@ui-kit/utils'
 
 const CurrencyReservesContent = ({
@@ -25,7 +25,7 @@ const CurrencyReservesContent = ({
 }: CurrencyReservesProps) => (
   <Wrapper flex flexJustifyContent="space-between" isBorderBottom>
     <Box flex flexAlignItems="center" gridGap={1}>
-      <TokenIcon
+      <Token
         size="sm"
         blockchainId={network?.networkId ?? ''}
         tooltip={token}

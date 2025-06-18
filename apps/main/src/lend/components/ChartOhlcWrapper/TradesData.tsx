@@ -4,7 +4,7 @@ import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 import { TradesDataProps } from './types'
 
 const TradesData = ({ lendTradesData, chainId }: TradesDataProps) => (
@@ -84,7 +84,7 @@ const TimestampColumn = styled.span`
   justify-content: end;
 `
 
-const StyledTokenIcon = styled(TokenIcon)`
+const StyledTokenIcon = styled(Token)`
   margin: auto var(--spacing-1) auto 0;
   &.bought {
     margin: auto 0 auto var(--spacing-1);

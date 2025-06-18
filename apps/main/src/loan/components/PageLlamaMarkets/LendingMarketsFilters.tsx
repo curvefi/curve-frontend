@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token as TokenIcon } from '@ui-kit/shared/ui/Token'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

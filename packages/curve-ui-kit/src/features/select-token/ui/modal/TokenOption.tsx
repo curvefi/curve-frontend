@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenAddress } from '@ui-kit/utils'
@@ -46,7 +46,7 @@ export const TokenOption = ({ chain, symbol, label, address, balance, tokenPrice
           }),
         }}
       >
-        <TokenIcon
+        <Token
           blockchainId={chain}
           address={address}
           size="xl"

@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ChainIcon } from '../icons/ChainIcon'
-import { TokenIcon } from './TokenIcon'
+import { Token } from './Token'
 
 const { IconSize } = SizesAndSpaces
 
@@ -21,14 +21,14 @@ type Props = {
 
 export const TokenPair = ({ chain, assets: { borrowed, collateral } }: Props) => (
   <Box sx={{ position: 'relative', width: IconSize.xxl, height: IconSize.xxl }}>
-    <TokenIcon
+    <Token
       blockchainId={chain}
       address={borrowed.address}
       tooltip={borrowed.symbol}
       sx={{ position: 'absolute', top: '30%', left: '30%' }}
     />
 
-    <TokenIcon
+    <Token
       blockchainId={chain}
       address={collateral.address}
       tooltip={collateral.symbol}

@@ -5,7 +5,7 @@ import useStore from '@/loan/store/useStore'
 import { CollateralData, CollateralDataCache } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 
 type Props = {
   className?: string
@@ -51,8 +51,7 @@ const TokenLabel = ({
           </AlertTooltipIcon>
         </TooltipIconWrapper>
       )}
-      <TokenIcon blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} />{' '}
-      <Label size={size}>{symbol}</Label>
+      <Token blockchainId={blockchainId} tooltip={symbol} address={tokenAddress} /> <Label size={size}>{symbol}</Label>
       {campaignRewards && type === 'collateral' && <CampaignRewardsRow rewardItems={campaignRewards} />}
     </Wrapper>
   )

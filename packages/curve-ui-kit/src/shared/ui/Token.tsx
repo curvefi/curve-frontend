@@ -20,7 +20,7 @@ const LABEL_SPACING = {
   xl: 'sm',
 } satisfies Record<Size, keyof typeof Spacing>
 
-export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
+export interface TokenProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
   blockchainId?: string
   tooltip?: string
@@ -30,7 +30,7 @@ export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   sx?: SxProps
 }
 
-export const TokenIcon = ({
+export const Token = ({
   className = '',
   blockchainId = '',
   tooltip = '',
@@ -38,7 +38,7 @@ export const TokenIcon = ({
   address,
   label,
   sx,
-}: TokenIconProps) => (
+}: TokenProps) => (
   <Stack direction="row" gap={Spacing[LABEL_SPACING[size]]} alignItems="center">
     <Tooltip title={tooltip} placement="top">
       <Box

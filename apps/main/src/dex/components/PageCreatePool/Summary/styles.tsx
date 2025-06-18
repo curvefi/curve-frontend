@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 
 export const CategoryColumn = styled.div`
   display: flex;
@@ -121,6 +121,6 @@ export const AddressLink = styled(ExternalLink)`
   }
 `
 
-export const ButtonTokenIcon = styled(TokenIcon)`
+export const ButtonTokenIcon = styled(Token)`
   margin-right: 0.25rem;
 `

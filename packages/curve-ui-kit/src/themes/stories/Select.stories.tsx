@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -180,7 +180,7 @@ export const CustomRendering: Story = {
       placeholder="Select tokens"
       renderItem={(symbol: (typeof options)[number]) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <TokenIcon blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} size="mui-sm" />
+          <Token blockchainId="ethereum" address={addresses[symbol]} tooltip={symbol} size="mui-sm" />
           <Typography>{symbol}</Typography>
         </Box>
       )}
@@ -192,7 +192,7 @@ export const CustomRendering: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'A multi-select component with custom rendering of options using TokenIcon',
+        story: 'A multi-select component with custom rendering of options using Token',
       },
     },
   },

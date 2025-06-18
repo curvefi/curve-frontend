@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
@@ -35,7 +35,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
       <Tooltip title={`${formatNumber(value)} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
-          <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-md" />
+          <Token blockchainId={chain} address={address} tooltip={symbol} size="mui-md" />
         </Stack>
       </Tooltip>
       <Tooltip title={usdTooltip}>

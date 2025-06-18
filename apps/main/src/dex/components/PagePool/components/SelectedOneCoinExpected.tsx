@@ -8,7 +8,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import TextEllipsis from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Token } from '@ui-kit/shared/ui/Token'
 import { shortenAddress } from '@ui-kit/utils'
 
 const SelectedOneCoinExpected = ({
@@ -79,7 +79,7 @@ const StyledChip = styled(Chip)`
   margin-left: var(--spacing-2);
 `
 
-const StyledTokenIcon = styled(TokenIcon)`
+const StyledTokenIcon = styled(Token)`
   margin-right: var(--spacing-2);
 `
 
