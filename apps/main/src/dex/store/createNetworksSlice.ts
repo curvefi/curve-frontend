@@ -3,7 +3,6 @@ import type { StoreApi } from 'zustand'
 import { defaultNetworks, getNetworks } from '@/dex/lib/networks'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
-import type { NetworkDef } from '@ui/utils'
 import type { ChainOption } from '@ui-kit/features/switch-chain'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -11,7 +10,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   aliases: Record<number, NetworkAliases | undefined>
   networks: Record<number, NetworkConfig>
-  networkDefs: Record<number, NetworkDef>
   nativeToken: Record<number, NativeToken | undefined>
   networksIdMapper: Record<string, number>
   visibleNetworksList: ChainOption<ChainId>[]
@@ -21,7 +19,6 @@ export type NetworksSlice = {
   networks: SliceState & {
     fetchNetworks(): Promise<Record<number, NetworkConfig>>
     setNetworkConfigs(curve: CurveApi): void
-    setNetworkDefs: (networks: Record<number, NetworkDef>) => void
   }
 }
 
@@ -31,7 +28,6 @@ const DEFAULT_STATE: SliceState = {
   nativeToken: {},
   networksIdMapper: {},
   visibleNetworksList: [],
-  networkDefs: {},
 }
 
 const sliceKey = 'networks'
@@ -91,9 +87,6 @@ const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State
         const { ALIASES, NATIVE_TOKEN } = curve.getNetworkConstants()
         setStateByActiveKey('nativeToken', curve.chainId.toString(), { ...NATIVE_TOKEN })
         setStateByActiveKey('aliases', curve.chainId.toString(), { ...ALIASES })
-      },
-      setNetworkDefs: (networks: Record<number, NetworkDef>) => {
-        setStateByKey('networkDefs', networks)
       },
     },
   }
