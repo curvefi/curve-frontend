@@ -15,4 +15,4 @@ export const t = (key: string | readonly string[], ...template: unknown[]) =>
  */
 export const Trans = ({ children }: { children: ReactNode }) => children
 
-export const isChinese = () => navigator.languages?.[0]?.startsWith('zh') ?? false
+export const isChinese = () => (typeof navigator !== 'undefined' && (navigator.languages?.[0]?.startsWith('zh') ?? false))

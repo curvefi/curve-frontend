@@ -17,7 +17,7 @@ export function getFromLocalStorage<T>(storageKey: string): T | null {
  *
  * It is not exported, as we want to keep an overview of all the local storage keys used in the app.
  */
-const useLocalStorage = <Type, Default = Type>(key: string, initialValue?: Default) =>
+const useLocalStorage = <Type, Default = Type>(key: string, initialValue: Default) =>
   useStoredState<Type, Default>({
     key,
     initialValue,
@@ -37,8 +37,7 @@ const useLocalStorage = <Type, Default = Type>(key: string, initialValue?: Defau
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
 export const useNewDomainNotificationSeen = () => useLocalStorage<boolean>('isNewDomainNotificationSeen', false)
-export const useFilterExpanded = (tableTitle: string) =>
-  useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`)
+export const useFilterExpanded = (tableTitle: string) => useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
 export const useFavoriteMarkets = () => useLocalStorage<Address[]>('favoriteMarkets', [])

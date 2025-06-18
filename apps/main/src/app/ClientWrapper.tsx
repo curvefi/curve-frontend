@@ -1,7 +1,7 @@
 'use client'
 import delay from 'lodash/delay'
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useCallback, useEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
@@ -16,10 +16,10 @@ import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
+import { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 const useLayoutStoreResponsive = () => {
-  const win = typeof window === 'undefined' ? undefined : window
-  const { document } = win ?? {}
+  const { document } = typeof window === 'undefined' ? {} : window
   const theme = useUserProfileStore((state) => state.theme)
   const pageWidth = useLayoutStore((state) => state.pageWidth)
   const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
@@ -27,8 +27,8 @@ const useLayoutStoreResponsive = () => {
   const setScrollY = useLayoutStore((state) => state.setScrollY)
 
   const handleResizeListener = useCallback(() => {
-    if (win?.innerWidth) setLayoutWidth(getPageWidthClassName(win.innerWidth))
-  }, [setLayoutWidth, win?.innerWidth])
+    if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
+  }, [setLayoutWidth])
 
   useEffect(() => {
     if (!pageWidth || !document) return
@@ -36,25 +36,24 @@ const useLayoutStoreResponsive = () => {
     document.body.setAttribute('data-theme', theme)
   }, [document, pageWidth, theme])
 
-  // init app
   useEffect(() => {
-    if (!win || !document) return
-    const handleScrollListener = () => setScrollY(win.scrollY)
+    if (!window || !document) return
+    const handleScrollListener = () => setScrollY(window.scrollY)
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
 
     handleResizeListener()
     handleVisibilityChange()
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    win.addEventListener('resize', () => handleResizeListener())
-    win.addEventListener('scroll', () => delay(handleScrollListener, 200))
+    window.addEventListener('resize', () => handleResizeListener())
+    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
-      win.removeEventListener('resize', () => handleResizeListener())
-      win.removeEventListener('scroll', () => handleScrollListener())
+      window.removeEventListener('resize', () => handleResizeListener())
+      window.removeEventListener('scroll', () => handleScrollListener())
     }
-  }, [document, handleResizeListener, setPageVisible, setScrollY, win])
+  }, [document, handleResizeListener, setPageVisible, setScrollY])
 }
 
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
@@ -75,14 +74,29 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
   return network
 }
 
+/**
+ * During SSR, we cannot access the user's theme preference, so that can lead to hydration mismatch.
+ * TODO: Store the preference in a cookie so we can read it from the server.
+ */
+function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
+  const [theme, setTheme] = useState<ThemeKey>(preferredScheme ?? 'light')
+  const storeTheme = useUserProfileStore((state) => state.theme)
+  useEffect(() => {
+    setTheme(storeTheme)
+  }, [setTheme, storeTheme])
+  return theme
+}
+
 export const ClientWrapper = <ChainId extends number, NetworkConfig extends NetworkDef>({
   children,
   networks,
+  preferredScheme,
 }: {
   children: ReactNode
   networks: Record<ChainId, NetworkConfig>
+  preferredScheme: 'light' | 'dark' | null
 }) => {
-  const theme = useUserProfileStore((state) => state.theme)
+  const theme = useThemeAfterSsr(preferredScheme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
@@ -102,7 +116,7 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
 
   return (
     network && (
-      <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <div style={{ ...(theme === 'chad' && ChadCssProperties) }}>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
           <OverlayProvider>

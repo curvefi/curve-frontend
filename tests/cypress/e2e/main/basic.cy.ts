@@ -16,7 +16,7 @@ describe('Basic Access Test', () => {
     })
 
     it('should redirect from the old integrations URL successfully', () => {
-      cy.visit(`${path}${oneOf('', '#')}/integrations`)
+      cy.visit(`${path}${oneOf('', '#/')}integrations`)
       cy.title(LOAD_TIMEOUT).should('equal', 'Integrations - Curve')
       cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/integrations\/$/)
     })

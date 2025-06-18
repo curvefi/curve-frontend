@@ -49,7 +49,7 @@ const Page = (params: CollateralUrlParams) => {
 
   const { llamma, displayName } = useStore(
     (state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId],
-  )
+  ) ?? {}
   const llammaId = llamma?.id ?? ''
 
   const formValues = useStore((state) => state.loanCreate.formValues)

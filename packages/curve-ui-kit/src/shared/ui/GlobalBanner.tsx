@@ -25,7 +25,7 @@ const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   ({ networkId, chainId }, ref) => {
     const [isBeta, setIsBeta] = useBetaFlag()
-    const showBetaBanner = isBeta && !isCypress && typeof window !== 'undefined'
+    const showBetaBanner = isBeta && !isCypress
 
     const [isNewDomainNotificationSeen, setIsNewDomainNotificationSeen] = useNewDomainNotificationSeen()
     const showDomainChangeMessage = !isNewDomainNotificationSeen && new Date() < new Date('2025-06-01') // TODO: delete after this date
