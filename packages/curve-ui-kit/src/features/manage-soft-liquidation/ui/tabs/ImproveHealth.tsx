@@ -6,7 +6,6 @@ import { ButtonMenu } from '@ui-kit/shared/ui/ButtonMenu'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TOKEN_SELECT_WIDTH } from '../../lib/constants'
 import type { Token } from '../../types'
 import { AlertCollateralAtRisk } from '../AlertCollateralAtRisk'
 

@@ -5,8 +5,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
-import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveHealth'
 import { ClosePosition, type Props as ClosePositionProps } from './tabs/ClosePosition'
+import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveHealth'
 
 const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 

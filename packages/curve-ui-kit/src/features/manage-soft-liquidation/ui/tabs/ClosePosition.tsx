@@ -1,16 +1,13 @@
-import { useMemo, useRef, useState } from 'react'
 import Stack from '@mui/material/Stack'
-import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { ButtonMenu } from '@ui-kit/shared/ui/ButtonMenu'
-import { LargeTokenInput, type LargeTokenInputRef } from '@ui-kit/shared/ui/LargeTokenInput'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TOKEN_SELECT_WIDTH } from '../../lib/constants'
+import type { Token } from '../../types'
 import { AlertCollateralAtRisk } from '../AlertCollateralAtRisk'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const BUTTON_OPTIONS = [
   { id: 'approve-limited' as const, label: t`Approve limited` },
@@ -21,34 +18,17 @@ type OptionId = (typeof BUTTON_OPTIONS)[number]['id']
 type Status = 'idle' | 'repay' | OptionId
 
 type ClosePositionProps = {
-  /** Available debt tokens for selection */
-  debtTokens: TokenOption[]
-  /** Available collateral tokens for selection */
-  collateralTokens: TokenOption[]
-  /** Currently selected debt token with balance information */
-  selectedDebtToken: (TokenOption & { balance: number }) | undefined
-  /** Currently selected collateral token with balance information */
-  selectedCollateralToken: (TokenOption & { balance: number }) | undefined
+  /** The token that's been borrowed that has to be paid back */
+  debtToken: Token
+  /** The token that's been used as collateral for the loan */
+  collateralToken: Token
   /** Current operation status */
   status: Status
 }
 
 type ClosePositionCallbacks = {
-  /** Called when a debt token is selected */
-  onDebtToken: (token: TokenOption) => void
-  /** Called when a collateral token is selected */
-  onCollateralToken: (token: TokenOption) => void
-  /** Called when debt balance amount changes */
-  onDebtBalance: (balance: number) => void
-  /** Called when collateral balance amount changes */
-  onCollateralBalance: (balance: number) => void
-  /** Called when repay action is triggered */
-  onRepay: (
-    debtToken: TokenOption,
-    collateralToken: TokenOption,
-    debtBalance: number,
-    collateralBalance: number,
-  ) => void
+  /** Called when close action is triggered */
+  onClose: (debtToken: Token, collateralToken: Token) => void
   /** Called when limited approval is requested */
   onApproveLimited: () => void
   /** Called when infinite approval is requested */
@@ -58,116 +38,53 @@ type ClosePositionCallbacks = {
 export type Props = ClosePositionProps & ClosePositionCallbacks
 
 export const ClosePosition = ({
-  debtTokens,
-  collateralTokens,
-  selectedDebtToken,
-  selectedCollateralToken,
+  debtToken,
+  collateralToken,
   status = 'idle',
-  onDebtToken,
-  onCollateralToken,
-  onDebtBalance,
-  onCollateralBalance,
-  onRepay,
+  onClose: onRepay,
   onApproveLimited,
   onApproveInfinite,
 }: Props) => {
   const [isOpen, open, close] = useSwitch(false)
-  const [debtBalance, setDebtBalance] = useState(0)
-  const [collateralBalance, setCollateralBalance] = useState(0)
-
-  const repayInputRef = useRef<LargeTokenInputRef>(null)
-  const withdrawInputRef = useRef<LargeTokenInputRef>(null)
 
   const BUTTON_OPTION_CALLBACKS: Record<OptionId, () => void> = {
     'approve-limited': onApproveLimited,
     'approve-infinite': onApproveInfinite,
   }
 
-  const maxBalanceDebt = useMemo(() => ({ ...selectedDebtToken, showSlider: false }), [selectedDebtToken])
-  const maxBalanceCollateral = useMemo(
-    () => ({ ...selectedCollateralToken, showBalance: false }),
-    [selectedCollateralToken],
-  )
-
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
-      <Stack>
-        <LargeTokenInput
-          ref={repayInputRef}
+      <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
+        <Metric
           label={t`Debt to repay`}
-          tokenSelector={
-            <TokenSelector
-              selectedToken={selectedDebtToken}
-              tokens={debtTokens}
-              showSearch={false}
-              showManageList={false}
-              compact
-              onToken={(newToken) => {
-                onDebtToken(newToken)
-                repayInputRef.current?.resetBalance()
-              }}
-              sx={{ minWidth: TOKEN_SELECT_WIDTH }}
-            />
-          }
-          maxBalance={maxBalanceDebt}
-          message={t`Recover collateral by repaying debt.`}
-          onBalance={(balance) => {
-            balance ??= 0
-
-            if (debtBalance !== balance) {
-              setDebtBalance(balance)
-              onDebtBalance(balance)
-            }
-          }}
+          value={2650000}
+          valueOptions={{ decimals: 1, unit: { symbol: debtToken.symbol, position: 'suffix', abbreviate: true } }}
+          notional={{ value: 26539422, unit: { symbol: ' ETH', position: 'suffix', abbreviate: false } }}
+          alignment="center"
+          size="large"
         />
 
-        <ArrowDownIcon
-          sx={{
-            width: IconSize.lg,
-            height: IconSize.lg,
-            alignSelf: 'center',
-          }}
-        />
-
-        <LargeTokenInput
-          ref={withdrawInputRef}
-          label={t`Collateral to withdraw`}
-          tokenSelector={
-            <TokenSelector
-              selectedToken={selectedCollateralToken}
-              tokens={collateralTokens}
-              showSearch={false}
-              showManageList={false}
-              compact
-              onToken={(newToken) => {
-                onCollateralToken(newToken)
-                withdrawInputRef.current?.resetBalance()
-              }}
-              sx={{ minWidth: TOKEN_SELECT_WIDTH }}
-            />
-          }
-          maxBalance={maxBalanceCollateral}
-          message={t`Collateral value: something something`}
-          onBalance={(balance) => {
-            balance ??= 0
-
-            if (collateralBalance !== balance) {
-              setCollateralBalance(balance)
-              onCollateralBalance(balance)
-            }
-          }}
+        <Metric
+          label={t`Collateral to recover`}
+          value={650450}
+          valueOptions={{ decimals: 2, unit: 'dollar' }}
+          notional={[
+            { value: 26539422, unit: { symbol: ' ETH', position: 'suffix', abbreviate: false } },
+            { value: 12450, unit: { symbol: ' crvUSD', position: 'suffix', abbreviate: true } },
+          ]}
+          alignment="center"
+          size="large"
         />
       </Stack>
 
       <AlertCollateralAtRisk />
 
       <ButtonMenu
-        primary={t`Repay debt & withdraw collateral`}
+        primary={t`Repay debt & close position`}
         options={BUTTON_OPTIONS}
         open={isOpen}
         executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
-        disabled={!selectedDebtToken || !selectedCollateralToken || debtBalance === 0 || collateralBalance === 0}
-        onPrimary={() => onRepay(selectedDebtToken!, selectedCollateralToken!, debtBalance, collateralBalance)}
+        onPrimary={() => onRepay(debtToken, collateralToken)}
         onOption={(id) => {
           close()
           BUTTON_OPTION_CALLBACKS[id]()

@@ -20,41 +20,22 @@ const actionInfos = {
 
 type Token = TokenOption & { balance: number }
 
-const debtTokens: Token[] = [
-  {
-    symbol: 'crvUSD',
-    address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
-    balance: 321.01,
-  },
-]
+const debtToken: Token = {
+  symbol: 'crvUSD',
+  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
+  balance: 321.01,
+}
 
-const collateralTokens: Token[] = [
-  {
-    symbol: 'ETH',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    balance: 1337,
-  },
-  {
-    symbol: 'WBTC',
-    address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
-    balance: 0.5,
-  },
-  {
-    symbol: 'USDC',
-    address: '0xA0b86a33E6417aFf13d68399C5D6d693C006c5aF',
-    balance: 2500.75,
-  },
-]
+const collateralToken: Token = {
+  symbol: 'ETH',
+  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  balance: 1337,
+}
 
 type ImproveHealthStatus = ImproveHealthProps['status']
 type ClosePositionStatus = ClosePositionProps['status']
 
 const ManageSoftLiquidationWithState = (props: Props) => {
-  const [withdrawDebtToken, setWithdrawDebtToken] = useState<Token>(props.closePosition.selectedDebtToken!)
-  const [withdrawCollateralToken, setWithdrawCollateralToken] = useState<Token>(
-    props.closePosition.selectedCollateralToken!,
-  )
-
   const [improveHealthStatus, setImproveHealthStatus] = useState<ImproveHealthStatus>('idle')
   const [withdrawStatus, setWithdrawStatus] = useState<ClosePositionStatus>('idle')
 
@@ -71,7 +52,6 @@ const ManageSoftLiquidationWithState = (props: Props) => {
       improveHealth={{
         ...props.improveHealth,
         status: improveHealthStatus,
-        debtToken: debtTokens[0],
         onRepay: (...args) => {
           props.improveHealth.onRepay(...args)
           mockExecution('repay', 'improve-health')
@@ -88,18 +68,8 @@ const ManageSoftLiquidationWithState = (props: Props) => {
       closePosition={{
         ...props.closePosition,
         status: withdrawStatus,
-        selectedDebtToken: withdrawDebtToken,
-        selectedCollateralToken: withdrawCollateralToken,
-        onDebtToken: (token) => {
-          props.closePosition.onDebtToken(token)
-          setWithdrawDebtToken(debtTokens.find((x) => x.address === token.address)!)
-        },
-        onCollateralToken: (token) => {
-          props.closePosition.onCollateralToken(token)
-          setWithdrawCollateralToken(collateralTokens.find((x) => x.address === token.address)!)
-        },
-        onRepay: (...args) => {
-          props.closePosition.onRepay(...args)
+        onClose: (...args) => {
+          props.closePosition.onClose(...args)
           mockExecution('repay', 'withdraw')
         },
         onApproveLimited: (...args) => {
@@ -134,7 +104,7 @@ export const Default: Story = {
   args: {
     actionInfos,
     improveHealth: {
-      debtToken: debtTokens[0],
+      debtToken,
       status: 'idle' as const,
       onDebtBalance: fn(),
       onRepay: fn(),
@@ -142,16 +112,10 @@ export const Default: Story = {
       onApproveInfinite: fn(),
     },
     closePosition: {
-      debtTokens,
-      collateralTokens,
-      selectedDebtToken: debtTokens[0],
-      selectedCollateralToken: collateralTokens[0],
+      debtToken,
+      collateralToken,
       status: 'idle' as const,
-      onDebtToken: fn(),
-      onCollateralToken: fn(),
-      onDebtBalance: fn(),
-      onCollateralBalance: fn(),
-      onRepay: fn(),
+      onClose: fn(),
       onApproveLimited: fn(),
       onApproveInfinite: fn(),
     },
