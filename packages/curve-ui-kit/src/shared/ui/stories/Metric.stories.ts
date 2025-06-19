@@ -37,7 +37,7 @@ const meta: Meta<typeof Metric> = {
     },
     unit: {
       control: 'select',
-      options: UNITS,
+      options: Object.values(UNITS),
       description: 'Optional unit like dollars or percentage to give context to the number',
     },
     change: {
@@ -56,7 +56,7 @@ const meta: Meta<typeof Metric> = {
     },
     notionalUnit: {
       control: 'select',
-      options: UNITS,
+      options: Object.values(UNITS),
     },
   },
   args: {
