@@ -15,6 +15,7 @@ import GoNuts from './GoNuts.json'
 import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import HumanNetwork from './HumanNetwork.json'
+import Hyperwave from './Hyperwave.json'
 import Inception from './Inception.json'
 import Infinifi from './Infinifi.json'
 import Kalypso from './Kalypso.json'
@@ -82,4 +83,5 @@ export {
   Radius,
   YieldNestTokens,
   Falcon,
+  Hyperwave,
 }
