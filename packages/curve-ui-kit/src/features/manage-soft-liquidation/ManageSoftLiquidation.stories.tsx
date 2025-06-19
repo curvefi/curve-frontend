@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import type { TokenOption } from '../select-token'
-import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type WithdrawProps } from './'
+import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
 
 const actionInfos = {
   health: { new: 69, old: 42.123 },
@@ -47,17 +47,19 @@ const collateralTokens: Token[] = [
 ]
 
 type ImproveHealthStatus = ImproveHealthProps['status']
-type WithdrawStatus = WithdrawProps['status']
+type ClosePositionStatus = ClosePositionProps['status']
 
 const ManageSoftLiquidationWithState = (props: Props) => {
   const [improveHealthDebtToken, setImproveHealthDebtToken] = useState<Token>(props.improveHealth.selectedDebtToken!)
-  const [withdrawDebtToken, setWithdrawDebtToken] = useState<Token>(props.withdraw.selectedDebtToken!)
-  const [withdrawCollateralToken, setWithdrawCollateralToken] = useState<Token>(props.withdraw.selectedCollateralToken!)
+  const [withdrawDebtToken, setWithdrawDebtToken] = useState<Token>(props.closePosition.selectedDebtToken!)
+  const [withdrawCollateralToken, setWithdrawCollateralToken] = useState<Token>(
+    props.closePosition.selectedCollateralToken!,
+  )
 
   const [improveHealthStatus, setImproveHealthStatus] = useState<ImproveHealthStatus>('idle')
-  const [withdrawStatus, setWithdrawStatus] = useState<WithdrawStatus>('idle')
+  const [withdrawStatus, setWithdrawStatus] = useState<ClosePositionStatus>('idle')
 
-  const mockExecution = (status: ImproveHealthStatus | WithdrawStatus, type: 'improve-health' | 'withdraw') => {
+  const mockExecution = (status: ImproveHealthStatus | ClosePositionStatus, type: 'improve-health' | 'withdraw') => {
     const setState = type === 'improve-health' ? setImproveHealthStatus : setWithdrawStatus
 
     setState(status)
@@ -88,29 +90,29 @@ const ManageSoftLiquidationWithState = (props: Props) => {
           mockExecution('approve-infinite', 'improve-health')
         },
       }}
-      withdraw={{
-        ...props.withdraw,
+      closePosition={{
+        ...props.closePosition,
         status: withdrawStatus,
         selectedDebtToken: withdrawDebtToken,
         selectedCollateralToken: withdrawCollateralToken,
         onDebtToken: (token) => {
-          props.withdraw.onDebtToken(token)
+          props.closePosition.onDebtToken(token)
           setWithdrawDebtToken(debtTokens.find((x) => x.address === token.address)!)
         },
         onCollateralToken: (token) => {
-          props.withdraw.onCollateralToken(token)
+          props.closePosition.onCollateralToken(token)
           setWithdrawCollateralToken(collateralTokens.find((x) => x.address === token.address)!)
         },
         onRepay: (...args) => {
-          props.withdraw.onRepay(...args)
+          props.closePosition.onRepay(...args)
           mockExecution('repay', 'withdraw')
         },
         onApproveLimited: (...args) => {
-          props.withdraw.onApproveLimited(...args)
+          props.closePosition.onApproveLimited(...args)
           mockExecution('approve-limited', 'withdraw')
         },
         onApproveInfinite: (...args) => {
-          props.withdraw.onApproveInfinite(...args)
+          props.closePosition.onApproveInfinite(...args)
           mockExecution('approve-infinite', 'withdraw')
         },
       }}
@@ -146,7 +148,7 @@ export const Default: Story = {
       onApproveLimited: fn(),
       onApproveInfinite: fn(),
     },
-    withdraw: {
+    closePosition: {
       debtTokens,
       collateralTokens,
       selectedDebtToken: debtTokens[0],

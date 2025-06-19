@@ -20,7 +20,7 @@ const BUTTON_OPTIONS = [
 type OptionId = (typeof BUTTON_OPTIONS)[number]['id']
 type Status = 'idle' | 'repay' | OptionId
 
-type WithdrawProps = {
+type ClosePositionProps = {
   /** Available debt tokens for selection */
   debtTokens: TokenOption[]
   /** Available collateral tokens for selection */
@@ -33,7 +33,7 @@ type WithdrawProps = {
   status: Status
 }
 
-type WithdrawCallbacks = {
+type ClosePositionCallbacks = {
   /** Called when a debt token is selected */
   onDebtToken: (token: TokenOption) => void
   /** Called when a collateral token is selected */
@@ -55,9 +55,9 @@ type WithdrawCallbacks = {
   onApproveInfinite: () => void
 }
 
-export type Props = WithdrawProps & WithdrawCallbacks
+export type Props = ClosePositionProps & ClosePositionCallbacks
 
-export const Withdraw = ({
+export const ClosePosition = ({
   debtTokens,
   collateralTokens,
   selectedDebtToken,
