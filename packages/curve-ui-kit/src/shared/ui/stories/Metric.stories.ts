@@ -27,18 +27,9 @@ const meta: Meta<typeof Metric> = {
       control: 'number',
       description: 'The value of the component',
     },
-    decimals: {
-      control: 'number',
-      description: 'The number of decimals used in value rounding when using the default value formatter',
-    },
-    abbreviate: {
-      control: 'boolean',
-      description: 'Should the value be abbreviated together with a suffix? Does not work with a postfix unit.',
-    },
-    unit: {
-      control: 'select',
-      options: Object.values(UNITS),
-      description: 'Optional unit like dollars or percentage to give context to the number',
+    valueOptions: {
+      control: 'object',
+      description: 'Options for formatting the value including decimals, abbreviation, and unit',
     },
     change: {
       control: 'number',
@@ -63,15 +54,16 @@ const meta: Meta<typeof Metric> = {
     size: 'medium',
     alignment: 'start',
     value: 26539422,
-    decimals: 1,
+    valueOptions: {
+      decimals: 1,
+      unit: 'dollar',
+    },
     label: 'Metrics label',
     copyText: 'Copied metric value',
-    unit: 'dollar',
   },
 }
 
 type Story = StoryObj<typeof Metric>
-
 export const Default: Story = {
   parameters: {
     docs: {
@@ -86,8 +78,10 @@ export const Default: Story = {
 export const Percentage: Story = {
   args: {
     value: 1337.42,
-    decimals: 2,
-    unit: 'percentage',
+    valueOptions: {
+      decimals: 2,
+      unit: 'percentage',
+    },
   },
 }
 
@@ -134,10 +128,12 @@ export const Notional: Story = {
 
 export const CustomUnit: Story = {
   args: {
-    unit: {
-      symbol: '¥',
-      position: 'prefix',
-      abbreviate: true,
+    valueOptions: {
+      unit: {
+        symbol: '¥',
+        position: 'prefix',
+        abbreviate: true,
+      },
     },
     change: 0,
   },
