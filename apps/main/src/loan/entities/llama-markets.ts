@@ -204,7 +204,6 @@ export const useLlamaMarkets = (userAddress?: Address) =>
         userMintMarkets,
       ] = results
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
-      console.log({ favoriteMarkets: favoriteMarkets.data })
       const userBorrows = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set<Address>(
