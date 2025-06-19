@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0x9C90921aD69069f386488321B95E25bF7f0310A7",
       "network": "hyperliquid",
-      "multiplier": "1x",
+      "multiplier": "2x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0x0A591a85cbB6d8c1C07DEAf2E3ff241b9ea698f7",
       "network": "hyperliquid",
-      "multiplier": "2x",
+      "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
     }
