@@ -45,7 +45,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
     >
       <Stack gap={Spacing.xs} ref={ref}>
         <Typography variant="tableCellMBold" color="textPrimary">
-          {rate && formatPercentFixed(rate)}
+          {rate != null && formatPercentFixed(rate)}
         </Typography>
 
         {rate != null && poolRewards.length > 0 && (
