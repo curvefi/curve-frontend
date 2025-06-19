@@ -239,7 +239,7 @@ export const LargeTokenInput = ({
         )}
 
         {/** Second row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="end" gap={Spacing.md}>
+        <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
             maxBalance={maxBalance?.balance}

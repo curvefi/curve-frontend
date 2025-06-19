@@ -50,7 +50,6 @@ type ImproveHealthStatus = ImproveHealthProps['status']
 type ClosePositionStatus = ClosePositionProps['status']
 
 const ManageSoftLiquidationWithState = (props: Props) => {
-  const [improveHealthDebtToken, setImproveHealthDebtToken] = useState<Token>(props.improveHealth.selectedDebtToken!)
   const [withdrawDebtToken, setWithdrawDebtToken] = useState<Token>(props.closePosition.selectedDebtToken!)
   const [withdrawCollateralToken, setWithdrawCollateralToken] = useState<Token>(
     props.closePosition.selectedCollateralToken!,
@@ -72,11 +71,7 @@ const ManageSoftLiquidationWithState = (props: Props) => {
       improveHealth={{
         ...props.improveHealth,
         status: improveHealthStatus,
-        selectedDebtToken: improveHealthDebtToken,
-        onDebtToken: (token) => {
-          props.improveHealth.onDebtToken(token)
-          setImproveHealthDebtToken(debtTokens.find((x) => x.address === token.address)!)
-        },
+        debtToken: debtTokens[0],
         onRepay: (...args) => {
           props.improveHealth.onRepay(...args)
           mockExecution('repay', 'improve-health')
@@ -139,10 +134,8 @@ export const Default: Story = {
   args: {
     actionInfos,
     improveHealth: {
-      debtTokens,
-      selectedDebtToken: debtTokens[0],
+      debtToken: debtTokens[0],
       status: 'idle' as const,
-      onDebtToken: fn(),
       onDebtBalance: fn(),
       onRepay: fn(),
       onApproveLimited: fn(),
