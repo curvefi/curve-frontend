@@ -1,12 +1,10 @@
 import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
 import { oneToken } from '@/support/helpers/tokens'
-import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend/responses'
+import type { GetMarketsResponse } from '@curvefi/prices-api/dist/llamalend'
+import { fromEntries } from '../../../../packages/prices-api/src/objects.util'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
-type Chain = (typeof LendingChains)[number]
-
-export const mockLendingChains = () =>
-  cy.intercept('https://prices.curve.finance/v1/lending/chains', { body: { data: LendingChains } })
+export type Chain = (typeof LendingChains)[number]
 
 const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['data'][number] => {
   const collateral = oneToken(chain)
@@ -58,14 +56,14 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
   }
 }
 
-export const HighUtilizationAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+export const HighUtilizationAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 
-function oneLendingVaultResponse(chain: Chain) {
+function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(2, 20)
   const data = [
     ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
     ...(chain == 'ethereum'
-      ? [
+      ? ([
           {
             // fixed vault address to test campaign rewards
             ...oneLendingPool(chain, oneFloat()),
@@ -86,25 +84,19 @@ function oneLendingVaultResponse(chain: Chain) {
             ...oneLendingPool(chain, oneFloat()),
             total_debt_usd: 0,
           },
-        ]
+        ] as GetMarketsResponse['data'])
       : []),
   ]
-  return { chain, count: data.length, data }
+  return { count: data.length, data }
 }
 
-type LendingVaultsResponse = ReturnType<typeof oneLendingVaultResponse>
-export type LendingVaultResponses = Record<Chain, LendingVaultsResponse>
+export const createLendingVaultChainsResponse = (): Record<Chain, GetMarketsResponse> =>
+  fromEntries(LendingChains.map((chain) => [chain, oneLendingVaultResponse(chain)]))
 
-export const createLendingVaultResponses = (): LendingVaultResponses =>
-  Object.fromEntries(LendingChains.map((c) => [c, oneLendingVaultResponse(c)])) as LendingVaultResponses
-
-export const mockLendingVaults = (responses: LendingVaultResponses) =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets/*', (req) => {
-    const chain = new URL(req.url).pathname.split('/').pop() as Chain
-    req.reply(responses[chain])
-  })
+export const mockLendingVaults = (chains: Record<Chain, GetMarketsResponse>) =>
+  cy.intercept('https://prices.curve.finance/v1/lending/markets?fetch_on_chain=false', { body: { chains } })
 
 export const mockLendingSnapshots = () =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none', {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none&fetch_on_chain=false', {
     fixture: 'lending-snapshots.json',
   })

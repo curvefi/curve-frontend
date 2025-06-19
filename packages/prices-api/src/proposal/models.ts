@@ -21,6 +21,8 @@ export type Proposal = {
   votesFor: number // Voting power in veCRV.
   votesAgainst: number // Voting power in veCRV.
   executed: boolean
+  executionTx: Address | null
+  executionDate: Date | null
   totalSupply: number // Voting power in veCRV.
   txCreation: Address
 }

@@ -16,7 +16,6 @@ import {
   NetworkConfig,
   Pool,
   PoolData,
-  PoolParameters,
   Provider,
   RewardCrv,
   RewardOther,
@@ -44,6 +43,7 @@ import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
 
 const helpers = {
@@ -199,25 +199,25 @@ const pool = {
     }
   },
   poolBalances: async (p: Pool, isWrapped: boolean) => {
-    const resp = { balances: [] as string[], error: '' }
+    if (p.curve.isNoRPC) {
+      return { error: t`Connect your wallet to see pool balances` }
+    }
     try {
-      resp.balances = isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances()
-      return resp
+      return { balances: isWrapped ? await p.stats.wrappedBalances() : await p.stats.underlyingBalances() }
     } catch (error) {
       console.error(error)
-      resp.error = getErrorMessage(error, 'error-stats-balances')
-      return resp
+      return { error: getErrorMessage(error, 'error-stats-balances') }
     }
   },
   poolParameters: async (p: Pool) => {
-    const resp = { parameters: {} as PoolParameters, error: '' }
+    if (p.curve.isNoRPC) {
+      return { error: t`Connect your wallet to see pool parameters` }
+    }
     try {
-      resp.parameters = await p.stats.parameters()
-      return resp
+      return { parameters: await p.stats.parameters() }
     } catch (error) {
       console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-parameters')
-      return resp
+      return { error: getErrorMessage(error, 'error-get-parameters') }
     }
   },
   poolAllRewardsApy: async (network: NetworkConfig, p: Pool) => {

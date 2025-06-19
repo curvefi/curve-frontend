@@ -24,9 +24,6 @@
     "campaign": "Elixir.json"
   },
   {
-    "campaign": "YieldNest.json"
-  },
-  {
     "campaign": "Fraxtal.json"
   },
   {
@@ -34,9 +31,6 @@
   },
   {
     "campaign": "Lombard.json"
-  },
-  {
-    "campaign": "TurtleSeeds.json"
   },
   {
     "campaign": "SolvProtocol.json"
@@ -112,5 +106,20 @@
   },
   {
     "campaign": "Asymmetry.json"
+  },
+  {
+    "campaign": "GoNuts.json"
+  },
+  {
+    "campaign": "Kalypso.json"
+  },
+  {
+    "campaign": "Radius.json"
+  },
+  {
+    "campaign": "YieldNestTokens.json"
+  },
+  {
+    "campaign": "Falcon.json"
   }
 ]

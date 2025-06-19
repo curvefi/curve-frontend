@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
@@ -9,17 +9,8 @@ import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
-function clampBalance(balance: number | string, maxBalance?: number) {
-  const newBalance = Math.max(0, Number(balance)) // Disallow negative values
-
-  if (maxBalance == null) {
-    return newBalance
-  }
-
-  // We only clamp the positive side if there's a max balance.
-  // This is up to debate and might be removed, it could be considered annoying UX.
-  return Math.min(newBalance, maxBalance)
-}
+// Disallow negative values. We used to clamp max balance too but it's too annoying UX wise.
+const clampBalance = (balance: number | string) => Math.max(0, Number(balance))
 
 type HelperMessageProps = {
   message: string | React.ReactNode
@@ -48,11 +39,12 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
 type BalanceTextFieldProps = {
   balance: number
   maxBalance?: number
+  label?: string
   isError: boolean
   onChange: (balance: number) => void
 }
 
-const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, label, isError, onChange }: BalanceTextFieldProps) => (
   <TextField
     type="number"
     placeholder="0.00"
@@ -69,12 +61,8 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
           fontWeight: FontWeight.Bold,
           color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
           // Sadly there's no standardized CSS method to remove the number input spin buttons.
-          input: { textAlign: 'right' },
           '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
             display: 'none',
-          },
-          '& input': {
-            padding: 0,
           },
         },
       },
@@ -92,13 +80,17 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
        * we need to remove leading zeros from the new balance. We don't want to pass
        * `e.target` as a callback parameter.
        */
-      const newBalance = clampBalance(e.target.value, maxBalance)
+      const newBalance = clampBalance(e.target.value)
       e.target.value = String(newBalance) // remove leading zeros
 
       onChange(newBalance)
     }}
   />
 )
+
+export interface LargeTokenInputRef {
+  resetBalance: () => void
+}
 
 /**
  * Configuration for maximum balance display and input.
@@ -120,6 +112,8 @@ type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 
 }
 
 type Props = {
+  ref?: React.Ref<LargeTokenInputRef>
+
   /**
    * The token selector UI element to be rendered.
    *
@@ -130,7 +124,6 @@ type Props = {
    * 1. Slot in any token selector implementation
    * 2. Handle the callbacks of the token selector in the parent component
    * 3. Feed props back to LargeTokenInput via its properties
-   * 4. Customize labels like 'You pay' more easily
    *
    * See the storybook for simple implementation examples of LargeTokenInput.
    *
@@ -152,6 +145,9 @@ type Props = {
    */
   message?: string | React.ReactNode
 
+  /** Optional label explaining what the input is all about. */
+  label?: string
+
   /**
    * Whether the input is in an error state.
    * @default false
@@ -172,9 +168,11 @@ type Props = {
 }
 
 export const LargeTokenInput = ({
+  ref,
   tokenSelector,
   maxBalance,
   message,
+  label,
   isError = false,
   balanceDecimals = 4,
   onBalance,
@@ -185,6 +183,7 @@ export const LargeTokenInput = ({
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
   const showBalance = maxBalance && maxBalance.showBalance !== false
+  const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
     (newPercentage: number) => {
@@ -225,7 +224,7 @@ export const LargeTokenInput = ({
    * 2. The slider percentage accurately reflects the balance/maxBalance ratio
    */
   useEffect(() => {
-    handleBalanceChange(clampBalance(balance, maxBalance?.balance))
+    handleBalanceChange(clampBalance(balance))
 
     /**
      * Changing the percentage changes the balance, which in turn triggers this useEffect,
@@ -234,6 +233,15 @@ export const LargeTokenInput = ({
      */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxBalance])
+
+  const resetBalance = useCallback(() => {
+    setPercentage(0)
+    setBalance(0)
+    onBalance(0)
+  }, [onBalance])
+
+  // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
+  useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
   return (
     <Stack
@@ -245,20 +253,27 @@ export const LargeTokenInput = ({
       }}
     >
       <Stack gap={Spacing.xs}>
-        {/** First row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="end" gap={Spacing.md}>
-          {tokenSelector}
+        {/** First row is an optional label describing the input */}
+        {label && (
+          <Typography variant="bodyXsRegular" color="textSecondary">
+            {label}
+          </Typography>
+        )}
 
+        {/** Second row containing the token selector and balance input text */}
+        <Stack direction="row" alignItems="end" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
             maxBalance={maxBalance?.balance}
             isError={isError}
             onChange={handleBalanceChange}
           />
+
+          {tokenSelector}
         </Stack>
 
-        {/** Second row containing (max) balance and sliders */}
-        {maxBalance && (
+        {/** Third row containing (max) balance and sliders */}
+        {showMaxBalance && (
           <Stack
             direction="row"
             gap={Spacing.sm}
@@ -272,8 +287,10 @@ export const LargeTokenInput = ({
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
                 notionalValue={maxBalance.notionalValue}
-                max={maxBalance ? 'balance' : 'off'}
+                max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
+                // Stretch the balance component if there's no slider so the max button can reach the end
+                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
               />
             )}
 
@@ -288,7 +305,7 @@ export const LargeTokenInput = ({
         )}
       </Stack>
 
-      {/** Third row containing optional helper (or error) message */}
+      {/** Fourth row containing optional helper (or error) message */}
       {message && <HelperMessage message={message} isError={isError} />}
     </Stack>
   )

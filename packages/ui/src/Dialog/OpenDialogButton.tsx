@@ -1,3 +1,4 @@
+import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { ReactNode, useRef } from 'react'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
@@ -5,7 +6,6 @@ import Button from 'ui/src/Button'
 import type { ButtonProps } from 'ui/src/Button/types'
 import Icon from 'ui/src/Icon/Icon'
 import { delayAction } from 'ui/src/utils/helpers'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import type { OverlayTriggerState } from '@react-stately/overlays'
 
 interface OpenDialogButtonProps extends ButtonProps {
@@ -23,7 +23,7 @@ const OpenDialogButton = ({
   ...props
 }: OpenDialogButtonProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   const { buttonProps } = useButton(
     { onPress: () => (isMobile ? delayAction(overlayTriggerState.open) : overlayTriggerState.open()) },
     openButtonRef,

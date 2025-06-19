@@ -1,40 +1,35 @@
 import { capitalize } from 'lodash'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
-  createLendingVaultResponses,
+  Chain,
+  createLendingVaultChainsResponse,
   HighUtilizationAddress,
-  type LendingVaultResponses,
-  mockLendingChains,
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@/support/helpers/lending-mocks'
-import { mockChains, mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
+import { mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@/support/helpers/tokens'
 import {
   assertInViewport,
   assertNotInViewport,
   type Breakpoint,
-  checkIsDarkMode,
   hideDomainBanner,
   LOAD_TIMEOUT,
   oneDesktopViewport,
-  oneMobileViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
+import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
-  let isDarkMode: boolean
   let breakpoint: Breakpoint
   let width: number, height: number
-  let vaultData: LendingVaultResponses
+  let vaultData: Record<Chain, GetMarketsResponse>
 
   beforeEach(() => {
     ;[width, height, breakpoint] = oneViewport()
-    vaultData = createLendingVaultResponses()
-    mockChains()
-    mockLendingChains()
+    vaultData = createLendingVaultChainsResponse()
     mockTokenPrices()
     mockLendingVaults(vaultData)
     mockLendingSnapshots().as('lend-snapshots')
@@ -46,7 +41,6 @@ describe(`LlamaLend Markets`, () => {
     cy.visit('/crvusd/ethereum/beta-markets/', {
       onBeforeLoad: (window) => {
         window.localStorage.clear()
-        isDarkMode = checkIsDarkMode(window)
         hideDomainBanner(window)
       },
       ...LOAD_TIMEOUT,
@@ -55,11 +49,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).eq(0)
-  const copyFirstAddress = () => cy.get(`[data-testid^="copy-market-address"]:visible`).first()
-
   it('should have sticky headers', () => {
-    cy.viewport(...oneMobileViewport())
-    const breakpoint = 'mobile'
     cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
     cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
@@ -69,16 +59,13 @@ describe(`LlamaLend Markets`, () => {
     const filterHeight = {
       // the height of the header changes depending on how often the description text wraps
       mobile: [194, 180, 156, 144],
-      // on tablet, we expect always 3 rows to fit all market filter chips
-      tablet: [174],
-      // on desktop, we expect 2 rows as the chips should always fit. The original design was 128 px.
-      desktop: [174, 128],
+      // on tablet, we expect 3 rows until 900px, then 2 rows
+      tablet: [208, 164],
+      // on desktop, we expect 2 rows always
+      desktop: [172],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
-
-    // mobile row is usually 77px but can be higher when the text is long
-    const rowHeight = { mobile: [77, 88], tablet: [88], desktop: [88] }[breakpoint]
-    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('be.oneOf', rowHeight)
+    cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
   })
 
   it('should sort', () => {
@@ -103,20 +90,16 @@ describe(`LlamaLend Markets`, () => {
     }
   })
 
-  it('should show graphs', () => {
+  it('should show charts', () => {
     withFilterChips(() => {
       cy.get(`[data-testid="chip-lend"]`).click()
       cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
     })
     expandFirstRowOnMobile()
-
-    const [green, red] = [isDarkMode ? '#32ce79' : '#167d4a', '#ed242f']
-    checkLineGraphColor('borrow', red)
-
     if (breakpoint != 'mobile') {
-      showHiddenColumn({ element: 'line-graph-lend', toggle: 'lendChart' })
+      enableGraphColumn()
     }
-    checkLineGraphColor('lend', green)
+    checkLineGraphColor('borrow', '#ed242f')
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
@@ -124,6 +107,7 @@ describe(`LlamaLend Markets`, () => {
         .last()
         .scrollIntoView({ offset: { top: -height / 2, left: 0 } }) // scroll to the last row, make sure it's still visible
       if (breakpoint == 'mobile') {
+        cy.get(`[data-testid="expand-icon"]`).last().scrollIntoView()
         cy.get(`[data-testid="expand-icon"]`).last().click()
       }
       cy.wait('@lend-snapshots')
@@ -200,10 +184,11 @@ describe(`LlamaLend Markets`, () => {
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
     expandFirstRowOnMobile()
     if (breakpoint == 'desktop') {
-      // on desktop, favorite icon is only visible on hover
-      firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
+      // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
+      cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
+    } else {
+      cy.get(`[data-testid="favorite-icon"]:visible`).first().click()
     }
-    cy.get(`[data-testid="favorite-icon"]:visible`).first().click()
     withFilterChips(() => cy.get(`[data-testid="chip-favorites"]`).click())
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
@@ -225,21 +210,17 @@ describe(`LlamaLend Markets`, () => {
       }),
     ))
 
-  it(`should hover and copy the market address`, RETRY_IN_CI, () => {
+  it(`should copy the market address`, RETRY_IN_CI, () => {
     if (breakpoint === 'mobile') {
       expandFirstRowOnMobile()
-    } else {
-      const hoverBackground = isDarkMode ? 'rgb(254, 250, 239)' : 'rgb(37, 36, 32)'
-      cy.get(`[data-testid^="copy-market-address"]`).should('have.css', 'opacity', breakpoint === 'desktop' ? '0' : '1')
-      firstRow().should('not.have.css', 'background-color', hoverBackground)
-      cy.scrollTo(0, 0)
-      firstRow().trigger('mouseenter', { waitForAnimations: true, scrollBehavior: false, force: true })
-      firstRow().should('have.css', 'background-color', hoverBackground)
-      copyFirstAddress().should('have.css', 'opacity', '1')
     }
-    // todo: this test fails sometimes in ci because the click doesn't work
-    copyFirstAddress().click()
-    copyFirstAddress().click() // click again, in chrome in CI the first click doesn't work (because of tooltip?)
+    // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
+    range(2).forEach(() =>
+      breakpoint === 'desktop'
+        ? // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
+          cy.get(`[data-testid^="copy-market-address"]`).first().click({ force: true })
+        : cy.get(`[data-testid^="copy-market-address"]:visible`).first().click(),
+    )
     cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
   })
 
@@ -264,7 +245,9 @@ describe(`LlamaLend Markets`, () => {
     withFilterChips(() => {
       cy.get(`[data-testid="chip-rewards"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
+    })
+    cy.get(`[data-testid="rewards-badge"]`).should('be.visible')
+    withFilterChips(() => {
       cy.get(`[data-testid="chip-rewards"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
@@ -278,7 +261,6 @@ describe(`LlamaLend Markets`, () => {
     const { toggle, element } = oneOf(
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
       { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
-      { toggle: 'borrowChart', element: 'line-graph-borrow' },
     )
     cy.get(`[data-testid="${element}"]`).first().scrollIntoView()
     cy.get(`[data-testid="${element}"]`).should('be.visible')
@@ -337,12 +319,12 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
-  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('be.visible')
+  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
 }
 
-function showHiddenColumn({ element, toggle }: { element: string; toggle: string }) {
-  cy.get(`[data-testid="${element}"]`).should('not.exist')
+function enableGraphColumn() {
+  cy.get(`[data-testid="line-graph-borrow"]`).should('not.exist')
   cy.get(`[data-testid="btn-visibility-settings"]`).click()
-  cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
-  cy.get(`[data-testid="${element}"]`).should('be.visible')
+  cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
+  cy.get(`[data-testid="line-graph-borrow"]`).first().scrollIntoView()
 }

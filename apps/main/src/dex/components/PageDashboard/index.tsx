@@ -22,6 +22,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table from '@ui/Table'
 import { breakpoints } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 
 const Dashboard = ({
@@ -47,7 +48,7 @@ const Dashboard = ({
   const noResult = useStore((state) => state.dashboard.noResult)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
   const isLoading = useStore((state) => state.dashboard.loading)
-  const isXSmDown = useStore((state) => state.isXSmDown)
+  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
   const poolsMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
   const setFormValues = useStore((state) => state.dashboard.setFormValues)

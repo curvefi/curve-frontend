@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
-import { HealthMode, HeathColorKey, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
+import { HealthMode, HealthColorKey, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import { getIsUserCloseToLiquidation } from '@/loan/utils/utilsCurvejs'
 import { parseHealthPercent } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
@@ -151,7 +151,7 @@ const DetailInfoHealth = ({
   )
 }
 
-const HealthPercent = styled.span<{ colorKey: HeathColorKey }>`
+const HealthPercent = styled.span<{ colorKey: HealthColorKey }>`
   color: ${({ colorKey }) => `var(--health_mode_${colorKey}_darkBg--color)`};
 `
 
@@ -196,7 +196,7 @@ export function getHealthMode(
     }
 
     healthMode = {
-      percent: healthNotFull,
+      percent: +healthNotFull < 0 ? healthNotFull : healthFull,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,

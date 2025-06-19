@@ -17,6 +17,7 @@ const { Spacing } = SizesAndSpaces
 export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType }) => {
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  // todo: only retrieve snapshots when tooltip is visible
   const { rate, averageRate, period } = useSnapshots(market, type, entry?.isIntersecting)
   const { rewards, type: marketType } = market
   const rewardsAction = getRewardsAction(marketType, type)
@@ -44,24 +45,19 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
     >
       <Stack gap={Spacing.xs} ref={ref}>
         <Typography variant="tableCellMBold" color="textPrimary">
-          {averageRate != null && formatPercent(averageRate)}
+          {rate && formatPercent(rate)}
         </Typography>
 
-        <Stack direction="row" gap={Spacing.xs} alignSelf="end">
-          {rate != null && (
-            <Typography variant="bodySRegular" color="textSecondary" sx={{ alignSelf: 'center' }}>
-              {formatPercent(rate)}
-            </Typography>
-          )}
-          {rate != null && poolRewards.length > 0 && (
+        {rate != null && poolRewards.length > 0 && (
+          <Stack direction="row" gap={Spacing.xs} alignSelf="end">
             <Chip
-              icon={<RewardIcons rewards={poolRewards} />}
-              size="extraSmall"
+              icon={<RewardIcons size="sm" rewards={poolRewards} />}
+              size="small"
               color="highlight"
               label={poolRewards.map((r) => r.multiplier).join(', ')}
             />
-          )}
-        </Stack>
+          </Stack>
+        )}
       </Stack>
     </Tooltip>
   )

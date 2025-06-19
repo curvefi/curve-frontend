@@ -121,6 +121,37 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0x59d9356e565ab3a36dd77763fc0d87feaf85508c': {
+        alertType: 'warning',
+        isInformationOnly: true,
+        address: '0x59d9356e565ab3a36dd77763fc0d87feaf85508c',
+        message: (
+          <div>
+            <Trans>
+              Mountain Protocol is winding down USDM. Minting is disabled since May 12, 2025. Primary customers can
+              redeem USDM via Mountain Protocol. Other holders can swap on supported exchanges.{' '}
+              <StyledExternalLink href="https://x.com/MountainUSDM/status/1921960086362108270">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
+      '0x97effb790f2fbb701d88f89db4521348a2b77be8': {
+        alertType: 'danger',
+        address: '0x97effb790f2fbb701d88f89db4521348a2b77be8',
+        message: (
+          <div>
+            <Trans>
+              A vulnerability in the CVXRewardDistributor contract was exploited allowing the hacker to mint 58m CVG
+              intended for future emissions. CVG has been deprecated.{' '}
+              <StyledExternalLink href="https://medium.com/@cvg_wireshark/post-mortem-08-01-2024-e80a49d108a0">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])

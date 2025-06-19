@@ -1,10 +1,10 @@
 import uniq from 'lodash/uniq'
-import { fetchSupportedChains } from '@/loan/entities/chains'
 import { getCoinPrices } from '@/loan/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
-import { getMarkets, getUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
+import { getAllMarkets, getAllUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { userValidationSuite } from '@ui-kit/lib/model/query/user-validation'
+import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
 import { UserContractParams, UserContractQuery, userContractValidationSuite } from './user-contract'
@@ -38,16 +38,12 @@ export const {
 } = queryFactory({
   queryKey: () => ['mint-markets', 'v1'] as const,
   queryFn: async (): Promise<MintMarket[]> => {
-    const chains = await fetchSupportedChains({})
-    const allMarkets = await Promise.all(
-      // todo: create separate query for the loop, so it can be cached separately
-      chains.map(async (blockchainId) => {
-        const chain = blockchainId as Chain
-        const data = await getMarkets(chain)
-        return await addStableCoinPrices({ chain, data })
-      }),
+    const results = await Promise.all(
+      Object.entries(await getAllMarkets()).flatMap(([blockchainId, data]) =>
+        addStableCoinPrices({ chain: blockchainId as Chain, data }),
+      ),
     )
-    return allMarkets.flat()
+    return results.flat()
   },
   validationSuite: EmptyValidationSuite,
 })
@@ -58,17 +54,14 @@ const {
   invalidate: invalidateUserMintMarkets,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
-  queryFn: async ({ userAddress }: UserQuery) => {
-    const chains = await fetchSupportedChains({})
-    const markets = await Promise.all(
-      chains.map(async (chain) => {
-        const markets = await getUserMarkets(userAddress, chain, {})
-        return [chain, markets.map((market) => market.controller)] as const
-      }),
-    )
-    return Object.fromEntries(markets) as Record<Chain, Address[]>
-  },
-  validationSuite: userValidationSuite,
+  queryFn: async ({ userAddress }: UserQuery) =>
+    Object.fromEntries(
+      Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
+        chain,
+        userMarkets.map((market) => market.controller),
+      ]),
+    ) as Record<Chain, Address[]>,
+  validationSuite: userAddressValidationSuite,
 })
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions
@@ -83,8 +76,7 @@ const { useQuery: useUserMintMarketStatsQuery, invalidate: invalidateUserMintMar
 
 export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) => {
   invalidateUserMintMarkets({ userAddress })
-  const markets = Object.entries(getCurrentUserMintMarkets({ userAddress }) ?? {}) as [Chain, Address[]][]
-  markets.forEach(([blockchainId, contracts]) =>
+  recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) =>
     contracts.forEach((contractAddress) =>
       invalidateUserMintMarketStats({
         userAddress,

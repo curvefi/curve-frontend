@@ -10,6 +10,7 @@ import { type ChainId, type UrlParams } from '@/dex/types/main.types'
 import { initCurveJs } from '@/dex/utils/utilsCurvejs'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const App = ({ children }: { children: ReactNode }) => {
@@ -18,10 +19,11 @@ export const App = ({ children }: { children: ReactNode }) => {
   const restFullPathname = useRestFullPathname()
   const [appLoaded, setAppLoaded] = useState(false)
 
-  const pageWidth = useStore((state) => state.pageWidth)
-  const setPageWidth = useStore((state) => state.setPageWidth)
+  const pageWidth = useLayoutStore((state) => state.pageWidth)
+  const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
+  const setPageVisible = useLayoutStore((state) => state.setPageVisible)
+  const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
-  const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
@@ -32,8 +34,8 @@ export const App = ({ children }: { children: ReactNode }) => {
   const network = networks[chainId]
 
   const handleResizeListener = useCallback(() => {
-    if (window.innerWidth) setPageWidth(window.innerWidth)
-  }, [setPageWidth])
+    if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
+  }, [setLayoutWidth])
 
   useEffect(() => {
     if (!pageWidth) return
@@ -46,21 +48,27 @@ export const App = ({ children }: { children: ReactNode }) => {
     useStore.setState(useStore.getInitialState())
     void (async () => {
       await fetchNetworks()
-
-      const handleVisibilityChange = () => {
-        updateGlobalStoreByKey('isPageVisible', !document.hidden)
-      }
-
       setAppLoaded(true)
       updateGlobalStoreByKey('loaded', true)
-      handleResizeListener()
-      handleVisibilityChange()
-
-      document.addEventListener('visibilitychange', handleVisibilityChange)
-      window.addEventListener('resize', () => handleResizeListener())
-      window.addEventListener('scroll', () => delay(() => updateShowScrollButton(window.scrollY), 200))
     })()
-  }, [fetchNetworks, handleResizeListener, updateGlobalStoreByKey, updateShowScrollButton])
+
+    const handleVisibilityChange = () => setPageVisible(!document.hidden)
+    const handleScroll = () => delay(() => updateShowScrollButton(window.scrollY), 200)
+    handleResizeListener()
+    handleVisibilityChange()
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('resize', handleResizeListener)
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      setAppLoaded(false)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('resize', handleResizeListener)
+      window.removeEventListener('scroll', handleScroll)
+      updateGlobalStoreByKey('loaded', false)
+    }
+  }, [fetchNetworks, handleResizeListener, setPageVisible, updateGlobalStoreByKey, updateShowScrollButton])
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
@@ -74,7 +82,7 @@ export const App = ({ children }: { children: ReactNode }) => {
   )
 
   return (
-    <ClientWrapper loading={!appLoaded}>
+    <ClientWrapper loading={!appLoaded} networks={networks}>
       <ConnectionProvider
         hydrate={hydrate}
         initLib={initCurveJs}

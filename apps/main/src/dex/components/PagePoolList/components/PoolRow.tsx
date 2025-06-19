@@ -16,6 +16,7 @@ import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface PoolRowProps {
@@ -57,7 +58,7 @@ export const PoolRow = ({
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)
-  const isXSmDown = useStore((state) => state.isXSmDown)
+  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
   const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId])
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId])

@@ -1,10 +1,9 @@
 'use client'
-import { type Eip1193Provider } from 'ethers'
-import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
-import { useAccount, useChainId, useSwitchChain } from 'wagmi'
-import { type Wallet } from '@ui-kit/features/connect-wallet'
-import { useWallet } from '@ui-kit/features/connect-wallet/lib/useWallet'
-import type { WagmiChainId } from './wagmi/chains'
+import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
+import { useAccount, useChainId, useConnectorClient, useSwitchChain } from 'wagmi'
+import { type Wallet } from './types'
+import { type WagmiChainId } from './wagmi/wagmi-config'
 
 const CONNECT_STATUS = {
   LOADING: 'loading',
@@ -49,6 +48,8 @@ type ConnectionContextValue<TLib> = {
   connectState: ConnectState
   lib?: TLib
   error?: unknown
+  wallet?: Wallet
+  provider?: BrowserProvider
 }
 
 const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
@@ -56,12 +57,12 @@ const ConnectionContext = createContext<ConnectionContextValue<unknown>>({
 })
 
 /**
- * Compare the signer address of the wallet with the one in the library. Without wallet, returns true.
+ * Compare the signer address of the wallet with the one in the library.
  */
 const compareSignerAddress = <TChainId extends any>(
   wallet: Wallet | null,
   lib: { chainId: TChainId; signerAddress?: string } | null,
-) => !wallet || wallet.account?.address?.toLowerCase() == lib?.signerAddress?.toLowerCase()
+) => wallet?.account.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
 
 /** Module-level variables to track initialization state across multiple calls */
 let mutexPromise: Promise<unknown> | null = null
@@ -110,6 +111,40 @@ async function withMutex(fn: () => Promise<any>, key: unknown) {
   return mutexPromise
 }
 
+function useIsDocumentFocused() {
+  const [isFocused, setIsFocused] = useState(document.hasFocus()) // only change chains on focused tab, so they don't fight each other
+  useEffect(() => {
+    const interval = setInterval(() => setIsFocused(document.hasFocus()), 300)
+    return () => clearInterval(interval)
+  }, [])
+  return isFocused
+}
+
+/**
+ * Separate hook to get the wallet and provider from wagmi.
+ * This is moved here so that it's only used once in the context provider.
+ */
+function useWagmiWallet() {
+  const { data: client } = useConnectorClient()
+  const address = client?.account?.address
+  const { isReconnecting, isConnected } = useAccount()
+  return {
+    // wagmi flips to isReconnecting when switching pages, but leaves isConnected as true
+    isReconnecting: isReconnecting && !isConnected,
+    ...(useMemo(() => {
+      const wallet =
+        address && client?.transport.request
+          ? {
+              provider: { request: client.transport.request },
+              account: { address }, // the ensName is set later when detected
+              chainId: client.chain.id,
+            }
+          : null
+      return { wallet, provider: wallet ? new BrowserProvider(wallet.provider) : null }
+    }, [address, client?.chain.id, client?.transport.request]) ?? null),
+  }
+}
+
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
@@ -134,8 +169,8 @@ export const ConnectionProvider = <
   const [connectState, setConnectState] = useState<ConnectState>({ status: LOADING })
   const { switchChainAsync } = useSwitchChain()
   const walletChainId = useChainId()
-  const { isReconnecting } = useAccount()
-  const { wallet } = useWallet()
+  const { wallet, provider, isReconnecting } = useWagmiWallet()
+  const isFocused = useIsDocumentFocused()
 
   useEffect(() => {
     if (isReconnecting) return // wait for wagmi to auto-reconnect
@@ -147,30 +182,27 @@ export const ConnectionProvider = <
      */
     const initApp = async () => {
       try {
-        const isFocused = document.hasFocus() // only change chains on focused tab, so they don't fight each other
-        if (walletChainId && walletChainId !== chainId && isFocused) {
+        if (walletChainId && walletChainId !== chainId) {
           setConnectState({ status: LOADING, stage: SWITCH_NETWORK })
-          if (!(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
+          if (isFocused && !(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
             if (signal.aborted) return
             setConnectState({ status: FAILURE, stage: SWITCH_NETWORK })
             onChainUnavailable([chainId, walletChainId as TChainId])
           }
+          return // hook is called again after since it depends on walletChainId
+        }
+
+        const prevLib = libRef.get<TLib>()
+        if (compareSignerAddress(wallet, prevLib) && prevLib?.chainId == chainId) {
+          return // already connected to the right chain and wallet, no need to reinitialize
         }
 
         await withMutex(async () => {
-          const prevLib = libRef.get<TLib>()
-          let newLib = prevLib
-
-          if (!compareSignerAddress(wallet, prevLib) || prevLib?.chainId != chainId) {
-            if (signal.aborted) return
-            setConnectState({ status: LOADING, stage: CONNECT_API })
-            newLib = (await initLib(chainId, wallet?.provider)) ?? null
-
-            if (signal.aborted) return
-            libRef.set(newLib)
-          }
-
           if (signal.aborted) return
+          setConnectState({ status: LOADING, stage: CONNECT_API })
+          const newLib = (await initLib(chainId, wallet?.provider)) ?? null
+          if (signal.aborted) return
+          libRef.set(newLib)
           setConnectState({ status: SUCCESS, stage: HYDRATE })
           await hydrate(newLib, prevLib, wallet)
         }, [chainId, wallet])
@@ -184,17 +216,29 @@ export const ConnectionProvider = <
     }
     void initApp()
     return () => abort.abort()
-  }, [isReconnecting, chainId, hydrate, initLib, onChainUnavailable, switchChainAsync, wallet, walletChainId])
+  }, [
+    isReconnecting,
+    chainId,
+    hydrate,
+    initLib,
+    onChainUnavailable,
+    switchChainAsync,
+    wallet,
+    walletChainId,
+    isFocused,
+  ])
 
   const lib = libRef.get<TLib>()
   // the wallet is first connected, then the callback runs. So the ref is not updated yet
   const isLibOk = lib?.chainId === chainId && compareSignerAddress(wallet, lib)
 
-  return (
-    <ConnectionContext.Provider value={{ connectState, ...(isLibOk && { lib }) }}>
-      {children}
-    </ConnectionContext.Provider>
-  )
+  const value = {
+    connectState,
+    ...(wallet && { wallet }),
+    ...(provider && { provider }),
+    ...(isLibOk && { lib }),
+  } satisfies ConnectionContextValue<TLib>
+  return <ConnectionContext.Provider value={value}>{children}</ConnectionContext.Provider>
 }
 
 export const useConnection = <TLib extends unknown>() => useContext(ConnectionContext) as ConnectionContextValue<TLib>
@@ -211,9 +255,6 @@ const libRef = {
     return libRef.current as T
   },
   set: <T extends unknown>(newLib: T) => (libRef.current = newLib),
-  reset() {
-    libRef.set(null)
-  },
 }
 
 export const getLib = <TLib extends unknown>() => libRef.get<TLib>()

@@ -35,6 +35,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -72,7 +73,7 @@ const Swap = ({
   const formValues = useStore((state) => state.poolSwap.formValues)
   const hasRouter = useStore((state) => state.hasRouter)
   const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)

@@ -1,11 +1,6 @@
-import { cloneElement, type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import type { Theme } from '@mui/material'
-import { useClassObserver } from '@ui-kit/hooks/useClassObserver'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import type { SxProps } from '@ui-kit/utils'
-import { classNames, CypressHoverClass, useNativeEventInCypress } from '@ui-kit/utils/dom'
 
 /**
  * A component that inverts the theme when hovered.
@@ -37,36 +32,8 @@ type InvertOnHoverProps = {
   disabled?: boolean
 }
 
-const defaultHoverColor = (t: Theme) => t.design.Layer.TypeAction.Hover
-
-export const InvertOnHover = ({
-  children: child,
-  hoverEl,
-  hoverColor = defaultHoverColor,
-  disabled,
-}: InvertOnHoverProps) => {
-  const [isHover, onMouseEnter, onMouseLeave] = useSwitch(false)
-  const inverted = useClassObserver(hoverEl, 'Mui-focusVisible') || isHover
-  const childSx = (child.props.sx as Record<string, object>) ?? {}
-
-  useNativeEventInCypress(hoverEl, 'mouseenter', onMouseEnter)
-  if (disabled) return child
-
-  return (
-    <InvertTheme inverted={inverted}>
-      {cloneElement(child, {
-        ...child.props,
-        className: classNames(inverted && CypressHoverClass, child.props?.className),
-        onMouseEnter,
-        onMouseLeave,
-        sx: {
-          ...childSx,
-          color: (theme) => theme.palette.text.secondary, // by default components have color: 'inherit' which breaks the inverted theme
-          transition: [`background-color ${TransitionFunction}`, childSx['transition']].filter(Boolean).join(', '),
-          '&:hover': { ...childSx['&:hover'], backgroundColor: hoverColor },
-          ...(inverted && { backgroundColor: hoverColor }),
-        },
-      })}
-    </InvertTheme>
-  )
-}
+/**
+ * A component that inverts the theme when hovered. Currently, disabled due to performance issues.
+ * In the future we want to use css variables to achieve the same effect without fully changing the theme.
+ */
+export const InvertOnHover = ({ children }: InvertOnHoverProps) => children

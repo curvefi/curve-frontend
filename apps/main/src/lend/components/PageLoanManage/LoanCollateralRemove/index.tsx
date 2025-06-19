@@ -13,6 +13,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlice'
@@ -40,7 +41,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const maxRemovable = useStore((state) => state.loanCollateralRemove.maxRemovable)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
+  const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
   const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
   const resetState = useStore((state) => state.loanCollateralRemove.resetState)
@@ -114,7 +115,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
               pendingMessage={notifyMessage}
               market={market}
               receive={`-${formValues.collateral}`}
-              userState={userDetails?.state}
+              userState={userState}
               userWallet={userBalances}
               type="change"
             />
@@ -164,7 +165,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [handleBtnClickRemove, userBalances, userDetails?.state],
+    [handleBtnClickRemove, userBalances, userState],
   )
 
   // onMount
@@ -210,7 +211,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
     formStatus,
     formValues,
     userBalances,
-    userDetails?.state,
+    userState,
   ])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null

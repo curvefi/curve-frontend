@@ -1,7 +1,6 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { type Address, isAddressEqual } from 'viem'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import Deposit from '@/dex/components/PagePool/Deposit'
 import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
@@ -20,14 +19,12 @@ import type {
 import MySharesStats from '@/dex/components/PagePool/UserDetails'
 import Withdraw from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
-import { useGaugeManager } from '@/dex/entities/gauge'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import AlertBox from '@ui/AlertBox'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import {
@@ -42,10 +39,10 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
-import { BlockSkeleton } from '@ui/skeleton'
 import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -76,9 +73,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const isMdUp = useStore((state) => state.isMdUp)
-  const layoutHeight = useStore((state) => state.layoutHeight)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const layoutHeight = useLayoutStore((state) => state.height)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -87,15 +84,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
-  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
-
-  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
-    chainId: rChainId,
-    poolId: poolData?.pool.id!,
-  })
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
@@ -127,7 +118,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     return pool.isCrypto ? '0.1' : '0.03'
   }, [storeMaxSlippage, pool])
 
-  const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.secondaryNav, [layoutHeight])
+  const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.globalAlert, [layoutHeight])
 
   const fetchData = useCallback(() => {
     if (isPageVisible && curve && poolData) {
@@ -167,15 +158,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
 
-  const isAvailableManageGauge = useMemo(
-    () =>
-      !isPendingGaugeManager &&
-      !!signerAddress &&
-      !!gaugeManager &&
-      isAddressEqual(gaugeManager, signerAddress as Address),
-    [isPendingGaugeManager, signerAddress, gaugeManager],
-  )
-
   const ACTION_TABS: { key: TransferFormType; label: string }[] = [
     { key: 'deposit', label: t`Deposit` },
     { key: 'withdraw', label: t`Withdraw/Claim` },
@@ -188,12 +170,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     },
     [push, params],
   )
-
-  useEffect(() => {
-    if (!isAvailableManageGauge && rFormType === 'manage-gauge') {
-      toggleForm('deposit')
-    }
-  }, [isAvailableManageGauge, rFormType, toggleForm])
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
@@ -239,7 +215,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               formTypes={ACTION_TABS}
               activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
               handleClick={(key: string) => toggleForm(key as TransferFormType)}
-              showMenuButton={isAvailableManageGauge}
             />
 
             <AppFormContentWrapper>
@@ -285,12 +260,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   userPoolBalances={userPoolBalances}
                   userPoolBalancesLoading={userPoolBalancesLoading}
                 />
-              ) : rFormType === 'manage-gauge' ? (
-                poolData ? (
-                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-                ) : (
-                  <BlockSkeleton width={339} />
-                )
               ) : null}
             </AppFormContentWrapper>
           </AppFormContent>

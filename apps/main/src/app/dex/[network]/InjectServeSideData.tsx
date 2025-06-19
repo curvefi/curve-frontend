@@ -14,7 +14,7 @@ type ServerSideStoreProps = {
 export const InjectServeSideData = ({ chainId, pools, tvl, volume, children }: ServerSideStoreProps) => {
   const setServerPreloadData = useStore((state) => state.storeCache.setServerPreloadData)
   useEffect(() => {
-    setServerPreloadData(chainId, { pools, tvl, volume })
+    if (pools || tvl || volume) setServerPreloadData(chainId, { pools, tvl, volume })
   }, [setServerPreloadData, chainId, pools, tvl, volume])
   return children
 }
