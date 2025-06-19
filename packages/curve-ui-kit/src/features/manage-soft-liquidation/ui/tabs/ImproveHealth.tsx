@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -63,6 +63,8 @@ export const ImproveHealth = ({
     'approve-infinite': onApproveInfinite,
   }
 
+  const maxBalance = useMemo(() => ({ ...selectedDebtToken, showSlider: false }), [selectedDebtToken])
+
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <LargeTokenInput
@@ -82,9 +84,11 @@ export const ImproveHealth = ({
             sx={{ minWidth: TOKEN_SELECT_WIDTH }}
           />
         }
-        maxBalance={{ ...selectedDebtToken, showSlider: false }}
+        maxBalance={maxBalance}
         message={t`Repaying debt will increase your health temporarily.`}
         onBalance={(balance) => {
+          balance ??= 0
+
           if (debtBalance !== balance) {
             const newBalance = Number(balance.toFixed(4))
             setDebtBalance(newBalance)
