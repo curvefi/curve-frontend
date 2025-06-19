@@ -3,11 +3,18 @@ import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
 
 function TestComponent({ initialValue = 5, max }: { initialValue?: number; max?: number }) {
   const [value, setValue] = useState<number | undefined>(initialValue)
+  const [tempValue, setTempValue] = useState<number | undefined>(initialValue)
 
   return (
     <>
-      <NumericTextField value={value} onChange={setValue} max={max} />
-      <div data-testid="state-value">{value}</div>
+      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} max={max} />
+      <div>
+        Comitted value: <span data-testid="state-value">{value}</span>
+      </div>
+
+      <div>
+        Temp value: <span data-testid="state-temp-value">{tempValue}</span>
+      </div>
     </>
   )
 }
@@ -100,7 +107,7 @@ describe('NumericTextField', () => {
     cy.mount(<TestComponent />)
     cy.get('input').click().type('4.')
     cy.get('input').should('have.value', '4.')
-    cy.get('[data-testid="state-value"]').should('contain', '4')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '4')
   })
 
   it('handles replacing decimal value correctly', () => {
