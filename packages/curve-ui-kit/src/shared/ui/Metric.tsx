@@ -243,7 +243,7 @@ export const Metric = ({
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
-  // Coverge the various notional types to an array of Notional
+  // Converge the various notional types to an array of Notional
   const notionals =
     typeof notional === 'number'
       ? [{ value: notional }]
