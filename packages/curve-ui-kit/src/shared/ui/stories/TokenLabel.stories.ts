@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { TokenIcon } from '../TokenIcon'
+import { TokenLabel } from '../TokenLabel'
 
-const meta: Meta<typeof TokenIcon> = {
-  title: 'UI Kit/Widgets/TokenIcon',
-  component: TokenIcon,
+const meta: Meta<typeof TokenLabel> = {
+  title: 'UI Kit/Widgets/TokenLabel',
+  component: TokenLabel,
   argTypes: {
     blockchainId: {
       control: 'text',
@@ -17,9 +17,13 @@ const meta: Meta<typeof TokenIcon> = {
       control: 'text',
       description: 'Token contract address',
     },
+    label: {
+      control: 'text',
+      description: 'Optional label to the right of the icon, usually the token symbol',
+    },
     disabled: {
       control: 'boolean',
-      description: 'Whether the icon belongs to a disabled element or not',
+      description: 'Whether the icon and label belong to a disabled element or not',
     },
     size: {
       control: 'select',
@@ -31,39 +35,22 @@ const meta: Meta<typeof TokenIcon> = {
     blockchainId: 'ethereum',
     tooltip: 'ETH',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    label: 'ETH',
     disabled: false,
     size: 'sm',
   },
 }
 
-type Story = StoryObj<typeof TokenIcon>
+type Story = StoryObj<typeof TokenLabel>
 
 export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        component: 'TokenIcon displays a token logo with fallback to default image',
+        component: 'TokenLabel displays a token logo with label, often the token symbol',
         story: 'Default view with small size',
       },
     },
-  },
-}
-
-export const MuiSmall: Story = {
-  args: {
-    size: 'mui-sm',
-  },
-}
-
-export const MuiMedium: Story = {
-  args: {
-    size: 'mui-md',
-  },
-}
-
-export const WithFallback: Story = {
-  args: {
-    address: '0x0',
   },
 }
 
