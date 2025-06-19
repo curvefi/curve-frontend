@@ -1,4 +1,3 @@
-import { mount } from 'cypress/react'
 import { approveSpending } from './approval'
 import { inputMaxCollateral } from './collateral'
 import { inputMaxBorrow } from './debt'
@@ -33,6 +32,3 @@ Cypress.Commands.add('inputMaxCollateral', inputMaxCollateral)
 Cypress.Commands.add('inputMaxBorrow', inputMaxBorrow)
 Cypress.Commands.add('approveSpending', approveSpending)
 Cypress.Commands.add('createSofLiquidationLoan', createSofLiquidationLoan)
-
-// custom mounting of react components
-Cypress.Commands.add('mount', (component, options) => mount(component, options))
