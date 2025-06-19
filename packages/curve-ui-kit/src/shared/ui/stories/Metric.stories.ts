@@ -36,18 +36,8 @@ const meta: Meta<typeof Metric> = {
       description: 'Optional value to denote a change in percentage since last time, whenever that may be',
     },
     notional: {
-      control: 'number',
-      description: 'Optional notional value that gives context or underlying value of the key metric',
-    },
-    notionalAbbreviate: {
-      control: 'boolean',
-    },
-    notionalDecimals: {
-      control: 'number',
-    },
-    notionalUnit: {
-      control: 'select',
-      options: Object.values(UNITS),
+      control: 'object',
+      description: 'Optional notional values that gives context or underlying value of the key metric',
     },
   },
   args: {
@@ -115,14 +105,33 @@ export const Loading: Story = {
 
 export const Notional: Story = {
   args: {
-    notional: 50012345.345353,
-    notionalAbbreviate: true,
-    notionalDecimals: 2,
-    notionalUnit: {
-      symbol: ' ETH',
-      position: 'suffix',
-      abbreviate: true,
+    notional: {
+      value: 50012345.345353,
+      decimals: 2,
+      unit: { symbol: ' ETH', position: 'suffix', abbreviate: true },
     },
+  },
+}
+
+export const Notionals: Story = {
+  args: {
+    value: 650450,
+    valueOptions: { unit: 'dollar' },
+    label: 'Collateral to recover',
+    size: 'large',
+    alignment: 'center',
+    notional: [
+      {
+        value: 26539422,
+        decimals: 0,
+        unit: { symbol: ' ETH', position: 'suffix', abbreviate: false },
+      },
+      {
+        value: 12450,
+        decimals: 2,
+        unit: { symbol: ' crvUSD', position: 'suffix', abbreviate: true },
+      },
+    ],
   },
 }
 
