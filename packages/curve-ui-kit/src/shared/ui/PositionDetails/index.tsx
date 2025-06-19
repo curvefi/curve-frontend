@@ -19,10 +19,12 @@ export type CollateralValue = {
   totalValue: number | undefined | null
   collateral: {
     value: number | undefined | null
+    usdRate: number | undefined | null
     symbol: string | undefined
   }
   borrow: {
     value: number | undefined | null
+    usdRate: number | undefined | null
     symbol: string | undefined
   }
   loading: boolean

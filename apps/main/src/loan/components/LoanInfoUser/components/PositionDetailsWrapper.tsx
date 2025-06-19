@@ -1,5 +1,6 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
+import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
@@ -18,6 +19,7 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const usdRatesLoading = useStore((state) => state.usdRates.loading)
   const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+  const borrowedUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
 
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId: networks[rChainId].id,
@@ -37,7 +39,7 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
     return meanBy(recentSnapshots, ({ rate }) => rate) * 100
   }, [crvUsdSnapshots])
 
-  const collateralValue = useMemo(() => {
+  const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !userLoanDetails?.userState?.collateral) return null
     return (
       Number(userLoanDetails?.userState?.collateral) * Number(collateralUsdRate) +
@@ -69,19 +71,21 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
       loading: userLoanDetails?.loading ?? true,
     },
     collateralValue: {
-      totalValue: collateralValue,
+      totalValue: collateralTotalValue,
       collateral: {
         value: userLoanDetails?.userState?.collateral ? Number(userLoanDetails.userState.collateral) : null,
-        symbol: llamma?.collateral,
+        usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
+        symbol: llamma?.collateralSymbol,
       },
       borrow: {
         value: userLoanDetails?.userState?.stablecoin ? Number(userLoanDetails.userState.stablecoin) : null,
+        usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
         symbol: 'crvUSD',
       },
       loading: (userLoanDetails?.loading ?? true) || usdRatesLoading,
     },
     ltv: {
-      value: collateralValue ? (Number(userLoanDetails?.userState?.debt) / collateralValue) * 100 : null,
+      value: collateralTotalValue ? (Number(userLoanDetails?.userState?.debt) / collateralTotalValue) * 100 : null,
       loading: userLoanDetails?.loading ?? true,
     },
     totalDebt: {

@@ -22,6 +22,10 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
     chainId: rChainId,
     tokenAddress: market?.addresses?.collateral_token,
   })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId: rChainId,
+    tokenAddress: market?.addresses?.borrowed_token,
+  })
 
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
 
@@ -43,7 +47,7 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
     return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
   }, [crvUsdSnapshots])
 
-  const collateralValue = useMemo(() => {
+  const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !userLoanDetails?.state?.collateral) return null
     return (
       Number(userLoanDetails?.state?.collateral) * Number(collateralUsdRate) + Number(userLoanDetails?.state?.borrowed) // assuming crvusd is borrowed
@@ -74,19 +78,21 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
       loading: isFetchingAll ?? true,
     },
     collateralValue: {
-      totalValue: collateralValue,
+      totalValue: collateralTotalValue,
       collateral: {
         value: userLoanDetails?.state?.collateral ? Number(userLoanDetails.state.collateral) : null,
+        usdRate: collateralUsdRate ?? null,
         symbol: market?.collateral_token?.symbol,
       },
       borrow: {
         value: userLoanDetails?.state?.borrowed ? Number(userLoanDetails.state.borrowed) : null,
+        usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
       loading: isFetchingAll || collateralUsdRateLoading,
     },
     ltv: {
-      value: collateralValue ? (Number(userLoanDetails?.state?.debt) / collateralValue) * 100 : null,
+      value: collateralTotalValue ? (Number(userLoanDetails?.state?.debt) / collateralTotalValue) * 100 : null,
       loading: isFetchingAll ?? true,
     },
     pnl: {
