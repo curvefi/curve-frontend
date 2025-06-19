@@ -1,7 +1,6 @@
+import { approveSpending } from './support/approval'
 import { inputMaxCollateral } from './support/collateral'
 import { inputMaxBorrow } from './support/debt'
-import { approveSpending } from './support/approval'
-import { createSofLiquidationLoan } from './support/lend'
 import {
   dataTestId,
   createJsonRpcProvider,
@@ -12,6 +11,7 @@ import {
   tokenBalance,
   cyForEach,
 } from './support/helpers'
+import { createSofLiquidationLoan } from './support/lend'
 
 type DropFirst<T extends unknown[]> = T extends [any, ...infer U] ? U : never
 type ChainableFn<T extends (...args: any) => unknown> = (...args: DropFirst<Parameters<T>>) => ReturnType<T>
@@ -36,6 +36,7 @@ declare global {
       inputMaxBorrow: typeof inputMaxBorrow
       approveSpending: typeof approveSpending
       createSofLiquidationLoan: typeof createSofLiquidationLoan
+      mount: typeof mount
     }
   }
 }
