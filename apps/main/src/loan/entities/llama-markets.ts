@@ -165,7 +165,7 @@ const convertMintMarket = (
       { network: chain as NetworkEnum },
       `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
     ),
-    isFavorite: favoriteMarkets.has(address),
+    isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
     userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
@@ -204,6 +204,7 @@ export const useLlamaMarkets = (userAddress?: Address) =>
         userMintMarkets,
       ] = results
       const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
+      console.log({ favoriteMarkets: favoriteMarkets.data })
       const userBorrows = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
       const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set<Address>(
