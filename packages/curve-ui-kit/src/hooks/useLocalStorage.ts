@@ -1,8 +1,8 @@
 import { kebabCase } from 'lodash'
+import { useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
 import { isBetaDefault } from '@ui-kit/utils'
 import { useStoredState } from './useStoredState'
-import { useMemo } from 'react'
 
 export function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {

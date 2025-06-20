@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { type ReactNode } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
@@ -5,7 +6,6 @@ import { getNetworkDefs } from '@/dex/lib/networks'
 import baseCss from '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
-import { headers } from 'next/headers'
 
 const injectIpfsPrefix = `
 (function () {
