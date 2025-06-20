@@ -1,6 +1,6 @@
-import { cache } from 'react'
+import memoize from 'memoizee'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
-import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig, type NetworkEnum, NetworkUrlParams } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import type { NetworkDef } from '@ui/utils'
@@ -415,10 +415,24 @@ const createNetworkDef = ({
   logoSrcDark,
 })
 
-export const getNetworkDefs = cache(async () =>
-  fromEntries(
-    recordValues(await getNetworks())
-      .map(createNetworkDef)
-      .map((def) => [def.chainId, def] as const),
-  ),
+export const getNetworkDefs = memoize(
+  async () =>
+    fromEntries(
+      recordValues(await getNetworks())
+        .map(createNetworkDef)
+        .map((def) => [def.chainId, def] as const),
+    ),
+  { maxAge: 5 * 60 * 1000, promise: true, preFetch: true },
 )
+
+export const getNetworkDef = async ({
+  network,
+}: NetworkUrlParams): Promise<NetworkDef<NetworkEnum, ChainId> | undefined> => {
+  const config = recordValues(await getNetworks()).find((n) => n.id === network)
+  return config && createNetworkDef(config)
+}
+
+export const getChainId = async ({ network }: NetworkUrlParams): Promise<number | undefined> => {
+  const find = recordValues(await getNetworks()).find((n) => n.id === network)
+  return find?.chainId
+}

@@ -19,6 +19,8 @@ yarn format:check       # Check code formatting without fixing
 cd tests
 yarn cy:open:e2e        # Open Cypress E2E tests interactively
 yarn cy:run:e2e         # Run Cypress E2E tests headless
+yarn cy:open:component  # Open Cypress component tests interactively
+yarn cy:run:component   # Run Cypress component tests headless
 
 # Bundle Analysis
 cd apps/main

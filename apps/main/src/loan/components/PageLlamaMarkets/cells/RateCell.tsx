@@ -9,7 +9,7 @@ import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
-import { formatPercent, getRewardsAction } from './cell.format'
+import { formatPercentFixed, getRewardsAction } from './cell.format'
 import { RateTooltipContent } from './RateCellTooltip'
 
 const { Spacing } = SizesAndSpaces
@@ -45,7 +45,7 @@ export const RateCell = ({ market, type }: { market: LlamaMarket; type: RateType
     >
       <Stack gap={Spacing.xs} ref={ref}>
         <Typography variant="tableCellMBold" color="textPrimary">
-          {rate && formatPercent(rate)}
+          {rate != null && formatPercentFixed(rate)}
         </Typography>
 
         {rate != null && poolRewards.length > 0 && (

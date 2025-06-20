@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -83,6 +83,12 @@ export const Withdraw = ({
     'approve-infinite': onApproveInfinite,
   }
 
+  const maxBalanceDebt = useMemo(() => ({ ...selectedDebtToken, showSlider: false }), [selectedDebtToken])
+  const maxBalanceCollateral = useMemo(
+    () => ({ ...selectedCollateralToken, showBalance: false }),
+    [selectedCollateralToken],
+  )
+
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <Stack>
@@ -103,9 +109,11 @@ export const Withdraw = ({
               sx={{ minWidth: TOKEN_SELECT_WIDTH }}
             />
           }
-          maxBalance={{ ...selectedDebtToken, showSlider: false }}
+          maxBalance={maxBalanceDebt}
           message={t`Recover collateral by repaying debt.`}
           onBalance={(balance) => {
+            balance ??= 0
+
             if (debtBalance !== balance) {
               setDebtBalance(balance)
               onDebtBalance(balance)
@@ -138,9 +146,11 @@ export const Withdraw = ({
               sx={{ minWidth: TOKEN_SELECT_WIDTH }}
             />
           }
-          maxBalance={{ ...selectedCollateralToken, showBalance: false }}
+          maxBalance={maxBalanceCollateral}
           message={t`Collateral value: something something`}
           onBalance={(balance) => {
+            balance ??= 0
+
             if (collateralBalance !== balance) {
               setCollateralBalance(balance)
               onCollateralBalance(balance)

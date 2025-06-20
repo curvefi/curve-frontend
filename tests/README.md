@@ -42,12 +42,14 @@ To open Cypress:
 
 ```sh
 yarn cy:open:e2e
+yarn cy:open:component
 ```
 
 To run Cypress tests in headless mode:
 
 ```sh
 yarn cy:run:e2e
+yarn cy:run:component
 ```
 
 ### Writing New Tests
@@ -57,6 +59,10 @@ Tests for each DApp are created in the corresponding directory:
 - `tests/cypress/e2e/main`
 - `tests/cypress/e2e/loan`
 - `tests/cypress/e2e/lend`
+
+Tests for just components can be found in
+
+- `tests/cypress/component`
 
 Helper functions can be found in the `tests/cypress/support/helpers` directory.
 

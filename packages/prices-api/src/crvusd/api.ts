@@ -77,7 +77,7 @@ export async function getAllUserMarkets(
 ) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetAllUserMarketsResponse>(
-    `${host}/v1/lending/users/all/${userAddr}${addQueryString(params)}`,
+    `${host}/v1/crvusd/users/all/${userAddr}${addQueryString(params)}`,
   )
   return Parsers.parseAllUserMarkets(resp)
 }

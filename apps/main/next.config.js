@@ -20,13 +20,14 @@ const nextConfiguration = {
       test: /\.svg$/,
       use: ['@svgr/webpack', 'url-loader']
     })
-
+    // config.optimization ??= {}
+    // config.optimization.minimize = false // Uncomment to disable minification for debugging purposes
     return config
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
-    // ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // speed up the build, lint ci job is now marked as required
   },
   typescript: {
     // !! WARN !!

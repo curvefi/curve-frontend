@@ -3,11 +3,10 @@ import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
-import { useBetaFlag, useNewDomainNotificationSeen } from '@ui-kit/hooks/useLocalStorage'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
-import { DomainChangedBanner } from '@ui-kit/shared/ui/DomainChangedBanner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isCypress } from '@ui-kit/utils'
 
@@ -25,16 +24,13 @@ const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   ({ networkId, chainId }, ref) => {
     const [isBeta, setIsBeta] = useBetaFlag()
-    const showBetaBanner = isBeta && !isCypress && typeof window !== 'undefined'
-
-    const [isNewDomainNotificationSeen, setIsNewDomainNotificationSeen] = useNewDomainNotificationSeen()
-    const showDomainChangeMessage = !isNewDomainNotificationSeen && new Date() < new Date('2025-06-01') // TODO: delete after this date
+    const showBetaBanner = isBeta && !isCypress
 
     const { isConnected } = useAccount()
     const { switchChain } = useSwitchChain()
     const { connectState } = useConnection()
     const walletChainId = useChainId()
-    const showSwitchNetworkMessage = isConnected && walletChainId != chainId
+    const showSwitchNetworkMessage = isConnected && chainId && walletChainId != chainId
     const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)
 
     const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
@@ -67,9 +63,6 @@ export const GlobalBanner = forwardRef<HTMLDivElement, Omit<GlobalBannerProps, '
           <Banner severity="alert">
             {t`There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.`}
           </Banner>
-        )}
-        {showDomainChangeMessage && (
-          <DomainChangedBanner onDismiss={() => setIsNewDomainNotificationSeen(true)} color={warnColor} />
         )}
       </Box>
     )

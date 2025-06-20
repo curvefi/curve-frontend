@@ -309,3 +309,8 @@ export interface FnStepResponse {
   hash: string
   error: string
 }
+
+export enum claimButtonsKey {
+  '3CRV' = '3CRV',
+  crvUSD = 'crvUSD',
+}

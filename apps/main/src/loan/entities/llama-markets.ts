@@ -3,8 +3,6 @@ import { getFavoriteMarketOptions } from '@/loan/entities/favorite-markets'
 import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/loan/entities/lending-vaults'
 import { getUserLendingSuppliesOptions } from '@/loan/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/loan/entities/mint-markets'
-import { NetworkEnum } from '@/loan/types/loan.types'
-import { getPath } from '@/loan/utils/utilsRouter'
 import { Chain } from '@curvefi/prices-api'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
@@ -161,11 +159,12 @@ const convertMintMarket = (
     rates: { borrow: rate * 100, lend: null },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
-    url: getPath(
-      { network: chain as NetworkEnum },
+    url: getInternalUrl(
+      'crvusd',
+      chain,
       `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
     ),
-    isFavorite: favoriteMarkets.has(address),
+    isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
     userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
