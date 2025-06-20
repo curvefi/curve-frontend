@@ -8,12 +8,14 @@ import DTrinity from './DTrinity.json'
 import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
+import Falcon from './Falcon.json'
 import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
 import GoNuts from './GoNuts.json'
 import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import HumanNetwork from './HumanNetwork.json'
+import Hyperwave from './Hyperwave.json'
 import Inception from './Inception.json'
 import Infinifi from './Infinifi.json'
 import Kalypso from './Kalypso.json'
@@ -80,4 +82,6 @@ export {
   Kalypso,
   Radius,
   YieldNestTokens,
+  Falcon,
+  Hyperwave,
 }

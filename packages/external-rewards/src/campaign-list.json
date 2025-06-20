@@ -118,5 +118,11 @@
   },
   {
     "campaign": "YieldNestTokens.json"
+  },
+  {
+    "campaign": "Falcon.json"
+  },
+  {
+    "campaign": "Hyperwave.json"
   }
 ]

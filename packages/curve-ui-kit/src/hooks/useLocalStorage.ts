@@ -41,4 +41,7 @@ export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
-export const useFavoriteMarkets = () => useLocalStorage<Address[]>('favoriteMarkets', useMemo(() => [], []))
+export const useFavoriteMarkets = () => {
+  const initialValue = useMemo(() => [], [])
+  return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+}

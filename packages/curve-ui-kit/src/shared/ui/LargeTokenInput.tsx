@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Balance, type Props as BalanceProps } from './Balance'
+import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
-
-// Disallow negative values. We used to clamp max balance too but it's too annoying UX wise.
-const clampBalance = (balance: number | string) => Math.max(0, Number(balance))
 
 type HelperMessageProps = {
   message: string | React.ReactNode
@@ -37,16 +34,14 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
 )
 
 type BalanceTextFieldProps = {
-  balance: number
+  balance: number | undefined
   maxBalance?: number
-  label?: string
   isError: boolean
-  onChange: (balance: number) => void
+  onCommit: (balance: number | undefined) => void
 }
 
-const BalanceTextField = ({ balance, label, isError, onChange }: BalanceTextFieldProps) => (
-  <TextField
-    type="number"
+const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps) => (
+  <NumericTextField
     placeholder="0.00"
     variant="standard"
     value={balance}
@@ -60,31 +55,10 @@ const BalanceTextField = ({ balance, label, isError, onChange }: BalanceTextFiel
           fontSize: FontSize.xl,
           fontWeight: FontWeight.Bold,
           color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
-          // Sadly there's no standardized CSS method to remove the number input spin buttons.
-          '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-            display: 'none',
-          },
         },
       },
     }}
-    /**
-     * Select all content when clicked.
-     * This prevents unintended behavior when users click on the input field.
-     * For example, if the field contains "5000" and a user clicks on the left
-     * to type "4", it would become "45000" instead of the likely intended "4".
-     */
-    onFocus={(e) => (e.target as HTMLInputElement).select()}
-    onChange={(e) => {
-      /**
-       * We clamp here and not in the onChange handler passed as property, because
-       * we need to remove leading zeros from the new balance. We don't want to pass
-       * `e.target` as a callback parameter.
-       */
-      const newBalance = clampBalance(e.target.value)
-      e.target.value = String(newBalance) // remove leading zeros
-
-      onChange(newBalance)
-    }}
+    onBlur={onCommit}
   />
 )
 
@@ -164,7 +138,7 @@ type Props = {
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
-  onBalance: (balance: number) => void
+  onBalance: (balance: number | undefined) => void
 }
 
 export const LargeTokenInput = ({
@@ -177,8 +151,8 @@ export const LargeTokenInput = ({
   balanceDecimals = 4,
   onBalance,
 }: Props) => {
-  const [percentage, setPercentage] = useState(0)
-  const [balance, setBalance] = useState(0)
+  const [percentage, setPercentage] = useState<number | undefined>(undefined)
+  const [balance, setBalance] = useState<number | undefined>(undefined)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
@@ -186,15 +160,22 @@ export const LargeTokenInput = ({
   const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
-    (newPercentage: number) => {
+    (newPercentage: number | undefined) => {
+      setPercentage(newPercentage)
+
       if (!maxBalance?.balance) return
+
+      if (newPercentage == null) {
+        setBalance(undefined)
+        onBalance(undefined)
+        return
+      }
 
       let newBalance = (maxBalance.balance * newPercentage) / 100
       if (balanceDecimals != null) {
         newBalance = Number(newBalance.toFixed(balanceDecimals))
       }
 
-      setPercentage(newPercentage)
       setBalance(newBalance)
       onBalance(newBalance)
     },
@@ -202,15 +183,17 @@ export const LargeTokenInput = ({
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: number) => {
+    (newBalance: number | undefined) => {
       setBalance(newBalance)
       onBalance(newBalance)
 
-      if (maxBalance?.balance) {
+      if (maxBalance?.balance && newBalance) {
         // Calculate percentage based on new balance and round to 2 decimal places
         const calculatedPercentage = (newBalance / maxBalance.balance) * 100
         const newPercentage = Math.min(Math.round(calculatedPercentage * 100) / 100, 100)
         setPercentage(newPercentage)
+      } else {
+        setPercentage(undefined)
       }
     },
     [maxBalance, onBalance],
@@ -218,26 +201,21 @@ export const LargeTokenInput = ({
 
   /**
    * When maxBalance changes, adjust the slider and balance values accordingly
+   * This ensures the slider percentage accurately reflects the balance/maxBalance ratio
    *
-   * This ensures:
-   * 1. The current balance remains valid relative to the new max
-   * 2. The slider percentage accurately reflects the balance/maxBalance ratio
+   * Changing the percentage changes the balance, which in turn triggers this useEffect,
+   * which in turn changes the percentage again. While I am using the current balance,
+   * I really only care about triggering it when maxBalance changes.
    */
   useEffect(() => {
-    handleBalanceChange(clampBalance(balance))
-
-    /**
-     * Changing the percentage changes the balance, which in turn triggers this useEffect,
-     * which in turn changes the percentage again. While I am using the current balance,
-     * I really only care about triggering it when maxBalance changes.  *
-     */
+    handleBalanceChange(balance)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxBalance])
 
   const resetBalance = useCallback(() => {
-    setPercentage(0)
-    setBalance(0)
-    onBalance(0)
+    setPercentage(undefined)
+    setBalance(undefined)
+    onBalance(undefined)
   }, [onBalance])
 
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
@@ -266,7 +244,7 @@ export const LargeTokenInput = ({
             balance={balance}
             maxBalance={maxBalance?.balance}
             isError={isError}
-            onChange={handleBalanceChange}
+            onCommit={handleBalanceChange}
           />
 
           {tokenSelector}
@@ -297,8 +275,8 @@ export const LargeTokenInput = ({
             {showSlider && (
               <TradingSlider
                 percentage={percentage}
-                onPercentageChange={handlePercentageChange}
-                onPercentageCommitted={handlePercentageChange}
+                onChange={handlePercentageChange}
+                onCommit={handlePercentageChange}
               />
             )}
           </Stack>

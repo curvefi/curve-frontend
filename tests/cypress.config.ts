@@ -10,4 +10,12 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*',
   },
+  component: {
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
+    },
+    indexHtmlFile: 'cypress/support/component-index.html',
+    supportFile: 'cypress/support/component.ts',
+  },
 })

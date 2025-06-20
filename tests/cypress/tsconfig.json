@@ -1,6 +1,7 @@
 {
   "extends": "tsconfig/cypress.json",
   "compilerOptions": {
+    "jsx": "react",
     "baseUrl": "./",
     "paths": {
       "@/*": ["*"],
@@ -8,5 +9,5 @@
       "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"]
     }
   },
-  "include": ["./**/*.ts", "types/**/*.d.ts", "../cypress.config.ts"]
+  "include": ["./**/*.ts", "**/*.tsx", "types/**/*.d.ts", "../cypress.config.ts"]
 }
