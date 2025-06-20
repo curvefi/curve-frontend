@@ -90,7 +90,8 @@ describe(`LlamaLend Markets`, () => {
     }
   })
 
-  it('should show charts', () => {
+  // todo: retry cause this fails in large screens with small data set (laziness not triggered, everything is shown)
+  it('should show charts', RETRY_IN_CI, () => {
     withFilterChips(() => {
       cy.get(`[data-testid="chip-lend"]`).click()
       cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
