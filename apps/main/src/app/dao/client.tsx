@@ -15,9 +15,5 @@ export const App = ({ children }: { children: ReactNode }) => {
   const chainId = networksIdMapper[network]
   const isHydrated = useHydration('curveApi', hydrate, chainId)
   useRedirectToEth(networks[chainId], network, isHydrated)
-  return (
-    <BaseLayout networkId={network} chainId={chainId}>
-      {isHydrated && children}
-    </BaseLayout>
-  )
+  return <BaseLayout>{isHydrated && children}</BaseLayout>
 }

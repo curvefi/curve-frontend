@@ -398,6 +398,9 @@ const createNetworkDef = ({
   symbol,
   rpcUrl,
   showInSelectNetwork,
+  isLite,
+  logoSrc,
+  logoSrcDark,
 }: NetworkConfig): NetworkDef<NetworkEnum, ChainId> => ({
   id: id as NetworkEnum,
   name,
@@ -407,6 +410,9 @@ const createNetworkDef = ({
   symbol,
   rpcUrl,
   showInSelectNetwork,
+  isLite,
+  logoSrc,
+  logoSrcDark,
 })
 
 export const getNetworkDefs = memoize(

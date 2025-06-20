@@ -37,7 +37,7 @@ const IntegrationsComp = ({
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
   const networks = useStore((state) => state.networks.networks)
-  const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
+  const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
   const { filterKey, filterNetworkId } = parseSearchParams(
@@ -71,7 +71,7 @@ const IntegrationsComp = ({
 
       push(pathname)
     },
-    [integrationsTags, push, params, rChainId, searchParams, visibleNetworksList],
+    [integrationsTags, push, params, rChainId, searchParams, networks],
   )
 
   const filterKeyLabel = useMemo(() => {

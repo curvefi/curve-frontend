@@ -6,12 +6,12 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
+import type { NetworkDef } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AppNames } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
-import { ChainOption } from './ChainSwitcher'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
 enum ChainType {
@@ -30,22 +30,22 @@ export function getNetworkPathname(pathname: string, networkId: string) {
   return ['', appName, networkId, ...rest].join('/')
 }
 
-export function ChainList<TChainId extends number>({
+export function ChainList({
   options,
   showTestnets,
   selectedNetwork,
 }: {
-  options: ChainOption<TChainId>[]
+  options: NetworkDef[]
   showTestnets: boolean
-  selectedNetwork: ChainOption<TChainId>
+  selectedNetwork: NetworkDef
 }) {
   const pathname = usePathname() || ''
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
       groupBy(
-        options.filter((o) => o.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
-        (o: ChainOption<TChainId>) => (o.isTestnet ? ChainType.test : ChainType.main),
+        options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        (o) => (o.isTestnet ? ChainType.test : ChainType.main),
       ),
     [options, searchValue],
   )
@@ -68,20 +68,20 @@ export function ChainList<TChainId extends number>({
         {entries.length ? (
           entries
             .filter(([key]) => showTestnets || key !== ChainType.test)
-            .flatMap(([key, chains]) => (
+            .flatMap(([key, networks]) => (
               <Fragment key={key}>
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
-                  {chains.map((chain) => (
-                    <MenuItem<TChainId, typeof Link>
-                      data-testid={`menu-item-chain-${chain.chainId}`}
-                      key={chain.chainId}
-                      value={chain.chainId}
+                  {networks.map((network) => (
+                    <MenuItem<number, typeof Link>
+                      data-testid={`menu-item-chain-${network.chainId}`}
+                      key={network.chainId}
+                      value={network.chainId}
                       component={Link}
-                      href={getNetworkPathname(pathname, chain.networkId)}
-                      isSelected={chain.chainId == selectedNetwork?.chainId}
-                      icon={<ChainSwitcherIcon chain={chain} size={36} />}
-                      label={chain.label}
+                      href={getNetworkPathname(pathname, network.id)}
+                      isSelected={network.chainId == selectedNetwork?.chainId}
+                      icon={<ChainSwitcherIcon network={network} size={36} />}
+                      label={network.name}
                     />
                   ))}
                 </MenuList>
