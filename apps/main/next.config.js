@@ -15,14 +15,13 @@ const nextConfiguration = {
   },
   trailingSlash: true,
   transpilePackages: ['curve-ui-kit'],
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack', 'url-loader']
-    })
-    // config.optimization ??= {}
-    // config.optimization.minimize = false // Uncomment to disable minification for debugging purposes
-    return config
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
